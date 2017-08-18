@@ -1,0 +1,25 @@
+     <div class="import-has-errors"  ng-show="gridHasErrors && onRow">
+                <h4>Validation errors for selected row:</h4>
+                <div class="alert alert-danger" ng-show="onRow.errors">
+                    <div ng-repeat="error in onRow.errors track by $index">
+                        {{error}}
+                    </div>
+                </div>		
+                <div ng-show="!onRow.errors" class="alert alert-info">
+                    Header has no errors.
+                </div>	
+                <div class="alert alert-danger" ng-show="onRow.entity.errors">
+                    <div ng-repeat="error in onRow.entity.errors track by $index">
+                        {{error}}
+                    </div>
+                </div>
+                <div ng-show="!onRow.entity.errors" class="alert alert-info">
+                    Row has no errors.
+                </div>
+            </div>
+            <div class="alert alert-success" style="margin-right: 20px;" ng-show="!gridHasErrors && onRow">
+                All rows look good.  No validation errors found.
+            </div>
+    </div>
+    <button ng-show="autoUpdate" style="margin-top: -17px;" class="btn btn-warning right" ng-click="undoAutoUpdate()">Undo cascaded update</button>
+    

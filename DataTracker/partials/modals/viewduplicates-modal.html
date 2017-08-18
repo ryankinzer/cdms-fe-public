@@ -1,0 +1,17 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Duplicate Data</h3>
+            The following Location and Dates already have an activity existing in the system.
+        </div>
+        <div class="modal-body">
+    		<div class="duplicateGridStyle" ng-grid="gridDuplicates"></div>
+    		Total duplicate records detected: {{DuplicateRecordsBucket.length}}
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">Done</button>
+        </div>
+    	
+    </div>
+</div>    

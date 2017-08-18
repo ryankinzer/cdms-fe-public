@@ -1,0 +1,18 @@
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li class="active">My Datasets</li>
+</ul>
+
+<h3>Your favorite datasets</h3>
+<p>Below are the datasets you've added to your favorites list.</p>
+
+<div class="panel panel-default">
+  <div class="panel-body" ng-repeat="store in favoriteDatasetStores">
+  		<!--<h3>{{store.Datastore.Name}}</h3><button ng-show="false" ng-click="go('query/'+store.Datastore.Id)" class="btn btn-xs">Query</button> <button ng-click="openReportWindow(store.Datastore.TablePrefix)" class="btn btn-xs">Reports</button>-->
+  		<h3>{{store.Datastore.Name}}</h3><button ng-show="store.Datastore.Id" ng-click="go('query/'+store.Datastore.Id)" class="btn btn-xs">Query</button> <button ng-click="openReportWindow(store.Datastore.TablePrefix)" class="btn btn-xs">Reports</button>
+  		<hr/>
+    	<ul>
+    		<li ng-repeat="dataset in store.favoriteDatasets"><a href="#/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}}</a></li>
+    	</ul>
+  </div>
+</div>

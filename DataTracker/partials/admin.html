@@ -1,0 +1,22 @@
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li class="active">Administration</li>
+</ul>
+
+
+	<div class="panel panel-default">
+	  <div class="panel-body" ng-repeat="store in datastores">
+	  		<h3>Dataset: {{store.Name}}</h3>
+	  		<p><i>Select a dataset to manage.</i></p>
+	  		<button class="hidden btn btn-sm" ng-click="addNewProjectDataset(store)">Add New Dataset</button>
+	  		<button class="btn btn-sm" ng-click="go('admin-master/'+store.Id)">Edit Master Dataset</button>
+	  		<hr/>
+
+	    	<ul>
+	    		<li ng-repeat="dataset in store.Datasets"><a href="#/admin-dataset/{{dataset.Id}}">{{dataset.Name}}</a>{{getProjectName(dataset.ProjectId)}}<br/><div><i>{{dataset.Description}}</i></div><br/></li>
+	    	</ul>
+
+	  </div>
+	</div>
+
+	

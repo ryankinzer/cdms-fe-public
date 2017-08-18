@@ -1,0 +1,171 @@
+
+<style>
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.content {
+	background-color: #FAFAFA;
+	border: solid 1px #F5ECCE;
+	-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+
+.hover-line {
+	stroke: #6E7B8B;
+}
+
+.hide {
+	opacity: 0;
+}
+				
+svg.line-graph .axis {
+  shape-rendering: crispEdges;
+}
+
+</style>
+
+<div class="content"></div>
+<div id="log"></div>
+<script>
+
+
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+    
+		// automatically size to the container using JQuery to get width/height
+		var w = width;
+		var h = height;
+		
+		// make sure to use offset() and not position() as we want it relative to the document, not its parent
+		var hoverLineXOffset = margin.bottom+$(".content").offset().left;
+		var hoverLineYOffset = margin.top+$(".content").offset().top;
+console.log(hoverLineXOffset, hoverLineYOffset,w,h);
+
+
+var parseDate = d3.time.format("%m/%d/%y %H:%M %p").parse;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.close); });
+
+var svg = d3.select("div").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.tsv("water_data2.tsv", function(error, data) {
+  data.forEach(function(d) {
+  //console.log(d.date);
+    d.date = parseDate(d.date);
+    //console.dir(d.date);
+    d.close = +d.close;
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+  y.domain(d3.extent(data, function(d) { return d.close; }));
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Temperature (C)");
+
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+});
+
+// add a 'hover' line that we'll show as a user moves their mouse (or finger)
+		// so we can use it to show detailed values of each line
+		var hoverLineGroup = svg.append("svg:g")
+							.attr("class", "hover-line");
+		// add the line to the group
+		var hoverLine = hoverLineGroup
+			.append("svg:line")
+				.attr("x1", 10).attr("x2", 10) // vertical line so same value on each
+				.attr("y1", 0).attr("y2", h); // top to bottom	
+				
+		// hide it by default
+		hoverLine.classed("hide", true);
+
+$( ".content" ).mousemove(function( event ) {
+  var mouseX = event.pageX-hoverLineXOffset;
+		var mouseY = event.pageY-hoverLineYOffset;
+		
+		//console.log("MouseOver svg [] => x: " + mouseX + " y: " + mouseY + "  height: " + h + " event.clientY: " + event.clientY + " offsetY: " + event.offsetY + " pageY: " + event.pageY + " hoverLineYOffset: " + hoverLineYOffset)
+		if(mouseX >= 0 && mouseX <= w && mouseY >= 0 && mouseY <= h) {
+			// show the hover line
+			hoverLine.classed("hide", false);
+
+			// set position of hoverLine
+			hoverLine.attr("x1", mouseX).attr("x2", mouseX)
+			
+//			displayValueLabelsForPositionX(mouseX)
+			
+			// user is interacting
+//			userCurrentlyInteracting = true;
+//			currentUserPositionX = mouseX;
+		} else {
+			// proactively act as if we've left the area since we're out of the bounds we want
+			handleMouseOutGraph(event)
+		}
+});
+
+var handleMouseOutGraph = function(event) {	
+		// hide the hover-line
+		hoverLine.classed("hide", true);
+		
+};
+
+
+
+graph.selectAll("text.legend.value")
+		.text(function(d, i) {
+			var valuesForX = getValueForPositionXFromData(xPosition, i);
+			dateToShow = valuesForX.date;
+			return valuesForX.value;
+		})
+
+</script>

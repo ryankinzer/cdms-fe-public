@@ -1,0 +1,51 @@
+<ul class="breadcrumb">
+    <!--<li><a href="#/projects">Projects</a> <span class="divider"></span> </li>-->
+    <li class="active">Preferences</li>
+</ul>
+
+<h3>Your preferences</h3>
+<p>Below is information related to your account.</p>
+
+<div class="panel panel-default">
+	<div class="panel-body">
+		<h3>My Preferences</h3>
+		<div class="import-has-errors"  ng-show="savePreferencesResults.success">		
+			<div class="alert alert-success" ng-show="savePreferencesResults.success" >
+				Success!
+			</div>		
+		</div>
+		<div class="import-has-errors"  ng-show="savePreferencesResults.failure">		
+			<div class="alert alert-danger" ng-show="savePreferencesResults.failure" >
+				Could not find that user!
+			</div>		
+		</div>
+		<div class="modal-body">
+
+			<!--<div class="header-label">User Name</div>
+			<div class="header-value">
+				<input  class="form-control" type="text" disabled ng-model="Profile.Username" />
+			</div>
+			-->
+
+			<div class="header-label">Description</div>
+			<div class="header-value">
+				<input  class="form-control" type="text" ng-model="Profile.Description" />
+			</div>
+
+			<!--<div class="header-label">Department Id</div>
+			<div class="header-value">
+				<input  class="form-control" type="text" disabled ng-model="Profile.Department.Name" />
+			</div>
+			-->
+
+			<div class="header-label">Full Name</div>
+			<div class="header-value">
+				<input  class="form-control" type="text" ng-model="Profile.Fullname" />
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+			<button class="btn btn-primary" ng-click="savePreferences()">Save</button>
+		</div>
+	</div>
+</div>

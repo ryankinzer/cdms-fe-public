@@ -1,0 +1,21 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Manage: {{file_field.Label}}</h3>
+            Upload a waypoint file using the form below.  These waypoints will not be saved, but can be used when entering data on the form.
+            <div>    
+                <p ng-show="errorMessage" class="alert alert-danger">{{locationErrorMessage}}</p>
+            </div>
+        </div>
+        <div class="modal-body">
+            <h4>Upload file:</h4>
+            <input type="file" ng-file-select="onFileSelect(file_field.DbColumnName,$files)" value="Something" multiple>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="uploadWaypoints()">Upload</button>
+        </div>
+
+    </div>
+</div>

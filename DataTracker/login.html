@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml" ng-app="loginModule">
+<head>
+    <title>Dataset Tracker v.1.0</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='//fonts.googleapis.com/css?family=Lusitana' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+
+    <link rel="stylesheet" href="css/app.css"/>
+    
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-route.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-resource.min.js"></script>
+
+    <script src="../assets/js/ui-bootstrap-tpls-0.7.0.js"></script>
+
+    <script src="js/config.js"></script>
+    <script src="js/controllers/login-controller.js"></script>
+    
+</head>
+<body>
+<div ng-include="'partials/login-header.html'"></div>
+<div id="wrap">
+    <div class="well well-small" style="margin: 20px;">
+      <div class="view-container">
+        <div ng-view class="view-frame"></div>
+      </div>
+    </div>
+    <div id="push"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Export data as CSV/Excel</h3>
+            Name the file you want to save your data to:
+            <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
+        <div class="modal-body">
+			Filename: <input type="text" ng-model="Export.Filename" >
+        </div>
+        <div class="alert alert-success" ng-show="downloadQuery.exportedFile">File is ready: <a href="{{downloadQuery.exportedFile.file}}" target="_blank">Download file</a></div>
+        <div ng-show="downloadQuery.loading" class="alert alert-success">Executing...</div>
+        <div ng-show="downloadQuery.failed" class="alert alert-danger">Failed</div>
+
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Done</button>
+            <button class="btn btn-primary" ng-hide="downloadQuery.exportedFile" ng-click="ok()">Create Export</button>
+        </div>
+    </div>
+    </div>
+</div>    

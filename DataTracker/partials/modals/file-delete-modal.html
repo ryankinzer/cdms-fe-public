@@ -1,0 +1,33 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Manage: {{file_field.Label}}</h3>
+            Remove files using the form below.  Note that changes and files are not actually removed, until you save the parent record.
+            <div>    
+                <p ng-show="errorMessage" class="alert alert-danger">{{locationErrorMessage}}</p>
+            </div>
+        </div>
+        <div class="modal-body">
+            <h4>Existing file(s):</h4>
+            <div ng-show="currentFiles.length == 0">None</div>
+            <table class="table striped">
+                <tr ng-repeat="file in currentFiles">
+                    <td>{{file.Name}}</td><td><input type="checkbox" ng-model="file.DeleteThisFile"/></td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="verifyDelete()">Done</button>
+			<div ng-show="verifyBeforeDelete">
+				<button class="btn btn-danger" ng-show="verifyBeforeDelete" ng-click="removeFiles()">Click here to confirm that you want to delete the checked files...</button>
+			</div>
+			<div ng-show="readyToClose">
+				<button class="btn-ready" ng-show="readyToClose" ng-click="cancel()">Close</button>
+			</div>
+        </div>
+
+    </div>
+</div>

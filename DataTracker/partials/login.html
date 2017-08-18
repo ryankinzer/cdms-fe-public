@@ -1,0 +1,39 @@
+<center>
+<img src="images/flag.jpg" width="300">
+<h3>Welcome to the CTUIR CDMS</h3>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="alert alert-danger" ng-show="error">
+            <a class="close" ng-click="error=undefined">x</a>
+            <h4 class="alert-heading">Failed to login</h4>
+            {{error}}
+        </div>
+
+        <div style="width: 400px; margin-top: 25px; height: 140px; margin-bottom: 100px; padding: 20px;" class="panel">
+            <div ng-hide="loggingIn">
+                <form ng-submit="login()">
+                	If you are an authorized user, please login:
+                	<div style="margin-top: 15px; margin-right: 30px;">
+                		<input class="form-control" placeholder="Username" ng-model="Username" type="text">	
+                		<input class="form-control" placeholder="Password" ng-model="Password" type="password">
+                        <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+                	</div>
+                    
+                	<div class="right" style="margin-top: -35px; margin-right: 10px;"><button class="btn" ng-click="login()">Login</button></div>
+                </form>
+            </div>
+            <div style="margin-top: 30px;" ng-show="loggingIn"><h3>{{loginMessage}}</h3></div>
+        </div>
+
+    </div>
+
+</div>
+
+<div>
+    <img width="100%" src="images/FirstFoodsBanner.png">
+</div>
+<br/>
+<i>Unauthorized access to this system is prohibited and will be prosecuted to the full extent of the law.</i><br/>
+    (C) 2014  -  Confederated Tribes of the Umatilla Indian Reservation
+    </div>
+</div>

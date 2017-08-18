@@ -1,0 +1,19 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Import data</h3>
+            Select the file you want to upload into this dataset.
+            <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
+        <div class="modal-body">
+			<input type="file" ng-file-select="onFileSelect($files)" value="{{file.name}}">
+			<div>{{file.name}}</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </div>
+    </div>
+</div>    

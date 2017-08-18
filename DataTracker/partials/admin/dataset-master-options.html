@@ -1,0 +1,46 @@
+<h3>Field Properties</h3>
+<table class="inherited-properties">
+<tr>
+	<td class="prop-name">Name:</td><td class="prop-val"><input class="form-control" type="text" ng-model="SelectedField.Name" name="Name"></input></td>
+</tr>
+<tr>
+	<td class="prop-name">Description:</td><td class="prop-val"><textarea textarea rows="4" style="margin-left: 2px;"class="form-control" type="text" ng-model="SelectedField.Description" name="Description"></textarea></td>
+</tr>
+<tr>
+	<td class="prop-name">Units:</td><td class="prop-val"><input class="form-control" type="text" ng-model="SelectedField.Units" name="Units"></input></td>
+</tr>
+<tr>
+	<td class="prop-name">TechnicalName:</td><td class="prop-val"><input class="form-control" type="text" ng-model="SelectedField.TechnicalName" name="TechnicalName"></input></td>
+</tr>
+<tr>
+	<td class="prop-name">Db Column Name:</td><td class="prop-val"><input class="form-control" type="text" ng-model="SelectedField.DbColumnName" name="DbColumnName"></input></td>
+</tr>
+<tr>
+	<td class="prop-name">Data Type:</td><td class="prop-val"><select ng-model="SelectedField.DataType"><option>date</option><option>int</option><option>float</option><option>string</option><option>relation</option></select></td>
+</tr>
+<tr>
+	<td class="prop-name">Control Type:</td><td class="prop-val"><select ng-model="SelectedField.ControlType"><option>date</option><option>datetime</option><option>multiselect</option><option>number</option><option>select</option><option>text</option><option>textarea</option><option>currency</option><option>lookup</option><option>multilookup</option><option>grid</option></select></td>
+</tr>
+<tr>
+	<td class="prop-name">Validation:</td><td class="prop-val"><input class="form-control" type="text" ng-model="SelectedField.Validation" name="Validation"></td>
+</tr>
+<tr>
+	<td class="prop-name">Rule:</td><td class="prop-val"><textarea textarea rows="4" style="margin-left: 2px;"class="form-control" type="text" ng-model="SelectedField.Rule" name="Rule"></textarea></td>
+</tr>
+<tr>
+	<td class="prop-name">Possible Values:</td><td class="prop-val"><textarea rows="4" style="margin-left: 2px;"class="form-control" type="text" ng-model="SelectedField.PossibleValues" name="PossibleValues"></textarea></td>
+</tr>
+
+<tr>
+	<td class="prop-name">(Parsed):</td><td class="prop-val"><pre><span ng-repeat="value in SelectedField.Values">{{value}}<br/></span></pre></td>
+</tr>
+
+
+
+</table>
+
+<button style="margin-top: 30px;" class="right btn" ng-click="saveField()">Save Changes</button>
+<div ng-show="saveResults.saving" style="float: right;margin-right: 20px;" class="alert alert-success">Saving...</div>
+
+
+

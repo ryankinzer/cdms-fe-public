@@ -1,0 +1,21 @@
+<div class="modal" >
+	<div class="modal-dialog" style="width: 90%">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>{{relationgrid_field.Label}}</h3>
+            Enter the related items into the grid below.
+            <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
+
+        <div class="modal-body">
+    		<div style="height: 300px; width: 100%;" class="gridStyleWide gridTable" ng-grid="relationGrid"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn" ng-click="addRow()">Add Row</button>
+            <button class="btn btn">Remove Row</button>
+            <button class="btn btn-primary" ng-click="save()">Close</button>
+        </div>
+
+    	
+    </div>
+</div>    

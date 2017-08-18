@@ -1,0 +1,64 @@
+    <div class="content">
+    <div class="project-details">
+          <div class="panel" style="padding: 10px;">
+                <div class="row">
+                  <div class="col-md-7">
+                    <h5>Project Statement/Goal:</h5>
+                    <p><pre>{{project.MetadataValue[9]}}</pre></p>
+
+                    <h5>Project Objectives:</h5>
+                    <p><pre>{{project.MetadataValue[20]}}</pre></p>
+
+                    <h5>Outputs: (specific 6 month accomplishments)</h5>
+                    <p id="outputs"><pre>{{project.MetadataValue[1]}}</pre></p>
+
+                    <h5>Outcomes:</h5>
+                    <p id="outcomes"><pre>{{project.MetadataValue[14]}}</pre></p>
+
+                    <h5>Impacts:</h5>
+                    <p id="impacts"><pre>{{project.MetadataValue[15]}}</pre></p>
+
+                  </div>
+
+                  <div class="col-md-5">
+                        <h5>Project Coordinator:</h5>
+                        <p><pre>{{project.Owner.Fullname}}</pre></p>
+
+                        <h5>Project Inputs:</h5>
+                        <table class="foundation">
+                            <tr>
+                                <td class="input-label">Funding:</td>
+                                <td>
+                                    <pre>{{project.MetadataValue[3]}}</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="input-label">Staff:</td>
+                                <td>
+                                    <pre>{{project.MetadataValue[4]}}</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="input-label">Collaborators:</td>
+                                <td><pre>{{project.MetadataValue[5]}}</pre></td>
+                            </tr>
+                        </table>
+
+
+                        <div class="quad-images" ng-bind-html="imagesHtml"></div>
+
+                        <div project-role="editor">
+                            <button ng-click="openProjectEditor()" class="btn" >Edit Project</button>
+                            <button ng-click="openChooseSummaryImages()" class="btn" >Choose Images</button>
+                            <button ng-click="openPrintWindow()" class="btn">Quad Report</button>
+                        </div>
+
+                        
+                            
+                    </div>
+                </div>
+          </div>
+    
+    </div>
+    </div>
+    

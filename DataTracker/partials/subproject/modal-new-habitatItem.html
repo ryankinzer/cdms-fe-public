@@ -1,0 +1,86 @@
+<!doctype html>
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+  			<h4>{{header_message}}</h4>
+  		</div>
+  		<div class="modal-body">
+
+  		<!--<tabset justified="true">
+  			<tab heading="Add new record">
+  			<br/>-->
+			<div ng-show="showFormItems">
+				<form name="form" class="css-form" novalidate>
+					<!--<div>-->
+						<div class="header-label">Item Type</div>
+						<div class="header-value">
+							<select class="form-control" type="text" ng-model="hi_row.ItemType">
+								<option value="Communication">Communication</option>
+								<option value="Design">Design</option>
+								<option value="EC Document">EC Document</option>
+								<option value="FISMA Attestation">FISMA Attestation</option>
+								<option value="HEP Report">HEP Report</option>
+								<option value="Line Item Budget">Line Item Budget</option>
+								<option value="Management Plan">Management Plan</option>
+								<option value="Map">Map</option>
+								<option value="Monitoring Report">Monitoring Report</option>
+								<option value="MOU/MOA">MOU/MOA</option>
+								<option value="Other">Other</option>
+								<option value="Permits">Permits</option>
+								<option value="Photo">Photo</option>
+								<option value="Presentation">Presentation</option>
+								<option value="Progress (Annual) Report">Progress (Annual) Report</option>
+								<option value="Progress (Annual) Report Comments">Progress (Annual) Report Comments</option>
+								<option value="Property Inventory">Property Inventory</option>
+								<option value="SOW Review">SOW Review</option>
+								<option value="Transmittal Memo">Transmittal Memo</option>
+								<option value="Water Right Certificate">Water Right Certificate</option>
+								<option value="Water Survey ">Water Survey </option>
+								<option value="Water Transaction List">Water Transaction List</option>
+							</select>
+						</div>
+						<div class="header-label">Item Name</div>
+						<div class="header-value">
+							<input class="form-control" type="text" ng-model="hi_row.ItemName" />
+						</div>
+					<!--</div>-->
+					
+					<div class="header-label">Copy of the Document</div>
+					<!--<div class="header-value" style="margin-left: 198px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">-->
+					<div class="header-value" style="margin-left: 250px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">
+						<!--<button class="right btn btn-xs" ng-click="openFileModal(hi_row, field)">Add</button>-->
+						<button class="right btn btn-xs" ng-click="openFileModal(hi_row, field)">Add/Remove</button>
+						<div ng-bind-html="hi_row['ItemFiles'] | fileNamesFromString">&nbsp;</div>
+					</div>
+					
+					<div class="header-label">External Links</div>
+					<div class="header-value" style="margin-left: 250px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">
+						<!--<input class="form-control" type="text" ng-model="hi_row.ExternalLinks" />-->
+						<button class="right btn btn-xs" ng-click="openLinkModal(hi_row, field)">Add/Remove</button>
+						<div ng-bind-html="hi_row['ExternalLinks'] | urlsFromString">&nbsp;</div>
+						<!--<textarea type="text" rows="4" class="form-control" ng-bind-html="hi_row['ExternalLinks'] | urlsFromString" ng-model="hi_row.ExternalLinks"></textarea>-->
+					</div>
+				</form>
+			</div>
+
+            <!--<button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="remove()">Remove</button>
+            <button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="save()">Save</button>
+            <button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Cancel</button>-->
+        <!--</tab>-->
+        </div>
+		<div ng-show="showCancelButton" class="modal-footer" style="margin-top: 30px;">
+            <button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="remove()">Remove</button>
+            <button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="save()">Save</button>
+            <button class="btn btn-warning right"  style="margin: 10px;" ng-click="cancel()">Cancel</button>
+			<div><img ng-show="loading" src="images/FishLoading.gif"/>{{ReadyToClose}}</div>
+
+        </div>
+		<div ng-show="showCloseButton" class="modal-footer-center" style="margin-top: 30px;">
+			<label>Save was successful...</label>
+			<br>
+			<button class="btn btn-primary" style="margin: 10px;" ng-click="close()">Close</button>
+		</div>
+
+  </div>
+</div>

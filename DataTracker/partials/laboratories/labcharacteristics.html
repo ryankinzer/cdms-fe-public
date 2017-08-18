@@ -1,0 +1,19 @@
+<h4>Characteristics for this laboratory</h4>
+
+<div ng-show="viewLaboratory.Characteristics.length == 0">There are no characteristics for this laboratory.</div>
+
+<div ng-show="viewLaboratory.Characteristics.length > 0">
+	<table style="background-color: lightyellow;" class="table table-striped table-bordered table-condensed">
+	<tr ><th>Name</th><th>MDL</th><th>Units</th><th>Method Id</th><th>Context</th><th>Description</th><th></th></tr>
+	<tr class="accuracy-check-block" ng-repeat="characteristic in viewLaboratory.Characteristics">
+		<td><a href ng-click="openCharacteristicForm(characteristic)" title="Click to edit">{{characteristic.Name}}</a></td>
+		<td>{{characteristic.MDL}}</td>
+		<td>{{characteristic.Units}}</td>
+		<td>{{characteristic.MethodId}}</td>
+		<td>{{characteristic.Context}}</td>
+		<td>{{characteristic.Description}}</td>
+		<td><a href ng-click="deleteCharacteristic(characteristic)" title="Click to delete">Delete</a></td>
+	</tr>
+	</table>
+</div>
+

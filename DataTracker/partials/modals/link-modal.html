@@ -1,0 +1,42 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Manage: {{link_field.Label}}</h3>
+            Add or remove links using the form below.  Note that changes and files are not actually uploaded or saved  until you save the parent record.
+            <div>    
+                <p ng-show="errorMessage" class="alert alert-danger">{{locationErrorMessage}}</p>
+            </div>
+        </div>
+        <div class="modal-body">
+            <h4>Existing links(s):</h4>
+            <div ng-show="currentLinks.length == 0">None</div>
+            <table class="table striped">
+                <tr ng-repeat="link in currentLinks">
+                    <td>{{link.Name}}</td><td><button class="btn btn-xs" ng-click="removeLink(link)">Remove</button></td>
+                </tr>
+            </table>
+
+            <h4>Add link(s):</h4>
+
+            <div class="header-label">Label:</div>
+            <div class="header-value">
+                <input class="form-control" type="text" ng-model="newLink.Name"></input>
+            </div>
+
+            <div class="header-label">Link:</div>
+            <div class="header-value">
+                <input class="form-control" type="text" ng-model="newLink.Link"></input>
+            </div>
+
+            <button class="right btn btn-sm btn-primary" style="margin-right: 115px" ng-click="addLink()">Add</button>
+
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="save()">Done</button>
+        </div>
+
+    </div>
+</div>

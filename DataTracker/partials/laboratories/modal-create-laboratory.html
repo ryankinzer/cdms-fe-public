@@ -1,0 +1,31 @@
+<div class="modal">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>{{header_message}}</h4>
+        </div>
+        <div class="modal-body">
+
+            <div class="header-label">Name of Laboratory</div>
+            <div class="header-value">
+                <input  class="form-control" type="text" ng-model="laboratory_row.Name" />
+            </div>
+
+            <div class="header-label">Address</div>
+            <div class="header-value">
+                <textarea class="form-control" ng-model="laboratory_row.Address" ></textarea>
+            </div>
+
+            <div class="header-label">Date of Limit/Method</div>
+            <div class="header-value">
+                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="laboratory_row.DateOfLimit" is-open="aopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+            </div>
+        
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="save()">Save</button>
+        </div>
+
+  </div>
+</div>

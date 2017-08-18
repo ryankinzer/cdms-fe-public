@@ -1,0 +1,16 @@
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li class="active">My Projects</li>
+</ul>
+
+<h3>Your favorite projects</h3>
+<p>Below are the projects you've added to your favorites list.</p>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+  <h3>My Projects</h3>
+  		<ul>
+    		<li ng-repeat="project in myprojects"><a href="#/projects/{{project.Id}}">{{project.Name}}</a></li>
+    	</ul>
+  </div>
+</div>

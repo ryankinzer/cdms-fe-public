@@ -1,0 +1,31 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Manage: {{file_field.Label}}</h3>
+            Add or remove files using the form below.  Note that changes and files are not actually uploaded or saved  until you save the parent record.
+            <div>    
+                <p ng-show="errorMessage" class="alert alert-danger">{{locationErrorMessage}}</p>
+            </div>
+        </div>
+        <div class="modal-body">
+            <h4>Existing file(s):</h4>
+            <div ng-show="currentFiles.length == 0">None</div>
+            <table class="table striped">
+                <tr ng-repeat="file in currentFiles">
+                    <td>{{file.Name}}</td><td><button class="btn btn-xs" ng-click="removeFile(file)">Remove</button></td>
+                </tr>
+            </table>
+
+            <h4>Add file(s):</h4>
+            <input type="file" ng-file-select="onFileSelect(file_field.DbColumnName,$files)" value="Something" multiple>
+
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="save()">Done</button>
+        </div>
+
+    </div>
+</div>

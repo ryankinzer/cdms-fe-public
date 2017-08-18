@@ -1,0 +1,54 @@
+<h3>Field Properties</h3>
+<table class="inherited-properties">
+<tr>
+	<td class="prop-name">Name:</td><td class="prop-val">{{SelectedField.Field.Name}}</td>
+</tr>
+<tr>
+	<td class="prop-name">Description:</td><td class="prop-val">{{SelectedField.Field.Description}}</td>
+</tr>
+<tr>
+	<td class="prop-name">Units:</td><td class="prop-val">{{SelectedField.Field.Units}}</td>
+</tr>
+<tr>
+	<td class="prop-name">TechnicalName:</td><td class="prop-val">{{SelectedField.Field.TechnicalName}}</td>
+</tr>
+<tr>
+	<td class="prop-name">DbColumnName:</td><td class="prop-val">{{SelectedField.Field.DbColumnName}}</td>
+</tr>
+<tr>
+	<td class="prop-name">Data Type:</td><td class="prop-val">{{SelectedField.Field.DataType}}</td>
+</tr>
+<tr>
+	<td class="prop-name">Control Type:</td><td class="prop-val">{{SelectedField.Field.ControlType}}</td>
+</tr>
+<tr>
+	<td class="prop-name">Validation:</td><td class="prop-val"><pre>{{SelectedField.Field.Validation}}</pre></td>
+</tr>
+<tr>
+	<td class="prop-name">Rule:</td><td class="prop-val"><pre>{{SelectedField.Field.Rule}}</pre></td>
+</tr>
+<tr>
+	<td class="prop-name">Possible Values:</td><td class="prop-val"><pre><span ng-repeat="value in SelectedField.Values">{{value}}<br/></span></pre></td>
+</tr>
+<tr><td class="prop-name">Label:</td><td><input class="form-control" type="text" ng-model="SelectedField.Label" name="Label"></input></td></tr>
+<tr><td class="prop-name">Source:</td><td><select ng-model="SelectedField.SourceId" ng-options="id as name for (id, name) in SourcesLookup"></select></td></tr>
+<tr><td class="prop-name">Instrument:</td><td><select ng-model="SelectedField.InstrumentId" ng-options="id as name for (id, name) in InstrumentsLookup"></select></td></tr>
+<tr><td class="prop-name">FieldRole:</td><td>
+	<select ng-model="SelectedField.FieldRoleId"><option value="1">Header</option><option value="2">Details</option>
+		<option value="3">Summary</option><option value="4">Calculated</option><option value="5">Virtual</option>
+	</select>
+</td></tr>
+<tr><td class="prop-name">ControlType:</td><td><select ng-model="SelectedField.ControlType"><option>date</option><option>datetime</option><option>multiselect</option><option>number</option><option>select</option><option>text</option><option>textarea</option><option>currency</option><option>file</option></select></td></tr>
+<tr><td class="prop-name">Validation:</td><td><input class="form-control" type="text" ng-model="SelectedField.Validation" name="Validation"></td></tr>
+<tr><td class="prop-name">Rule:</td><td><textarea style="margin-left: 2px;"class="form-control" type="text" ng-model="SelectedField.Rule" name="Rule"></textarea></td></tr>
+<tr><td class="prop-name">OrderIndex:</td><td><input class="form-control" type="text" ng-model="SelectedField.OrderIndex" name="OrderIndex"></td></tr>
+
+</table>
+
+<button style="margin-top: 30px;" class="btn btn-warning" ng-click="removeField()">Remove</button>
+<button style="margin-top: 30px;" class="right btn" ng-click="saveField()">Save Changes</button>
+
+<div ng-show="saveResults.saving" style="float: right;margin-right: 20px;" class="alert alert-success">Saving...</div>
+
+
+

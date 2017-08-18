@@ -1,0 +1,15 @@
+<div class="content">
+         <div class="project-files">
+         	<div project-role="editor" class="right" style="margin-top: 5px;">
+         		<button class="btn" ng-click="newFile()">New</button>
+         		<button ng-disabled="fileSelection.length == 0" class="btn" ng-click="editFile()">Edit</button>
+         		<button ng-disabled="fileSelection.length == 0" class="btn btn-danger" ng-click="deleteFile()">Delete</button>
+         		
+         	</div>
+         	<div style="padding: 8px; width: 260px;">
+         		<input class="form-control" ng-model="FileFilterOptions.filterText" placeholder="Find Files" type="text"/><img class="right" style="margin-top: -30px;" src="images/search-sm.png"/>
+         	</div>
+            <div class="gridStyleWide gridTable" ng-grid="gridFiles"></div>
+                <p>Number of files in this project: {{project.Docs.length}}</p>
+        </div>
+    </div>

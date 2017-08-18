@@ -1,0 +1,7 @@
+<div class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;">
+<div class="header-label">{{field.Label}}:</div>
+<div class="header-value">
+	<input class="form-control" type="text" ng-model="row[field.DbColumnName]" ng-blur="updateHeaderField(field.DbColumnName)" name="{{field.DbColumnName}}"></input>
+	<p class="field-error-block" ng-show="headerFieldErrors[field.DbColumnName]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>
+</div>
+</div>

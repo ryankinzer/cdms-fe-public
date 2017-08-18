@@ -1,0 +1,98 @@
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li class="active">{{dataset.Name}}</li>    
+</ul>
+
+
+<h4>Dataset Metadata for {{dataset.Name}}:</h4>
+
+<div class="panel" style="margin: 20px 20px 45px 20px; background-color: #F5FBEF; padding: 4px 10px 45px 10px;">
+    <table class="table table-striped">
+        <thead>
+        <tr style="background-color: #E6E6E6;">
+            <th>Metadata Field</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="md in metadataList">
+            <td><b>{{ md.field }}</b></td>
+            <td>{{ md.value }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="top-divider"></div>
+    <button class="btn right" style="margin-top: 5px; margin-left: 5px;" ng-click="close()">Close</button>
+    <button project-role="editor" class="btn right" style="margin-top: 5px; margin-left: 5px;" ng-click="edit()">Edit</button>
+   
+</div>
+
+<h4>Dataset Fields</h4>
+<div class="panel" style="margin: 20px 20px 45px 20px; background-color: #F5FBEF; padding: 4px 10px 45px 10px;">
+    <table class="table table-striped">
+        <thead>
+        <tr style="background-color: #E6E6E6;">
+            <th>Field</th>
+            <th>Definition</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="field in dataset.Fields">
+            <td width="200"><b>{{ field.Label }}</b></td>
+            <td>
+                <table class="table table-striped">
+                    <tr>
+                        <td width="170">Description</td>
+                        <td>{{field.Field.Description}}</td>
+                    </tr>
+                    <tr>
+                        <td>DbColumnName</td>
+                        <td>{{field.DbColumnName}}</td>
+                    </tr>
+                    <tr>
+                        <td>Units</td>
+                        <td>{{field.Field.Units}}</td>
+                    </tr>
+                    <tr>
+                        <td>Validation</td>
+                        <td>{{field.Field.Validation}}</td>
+                    </tr>
+                    <tr>
+                        <td>Data Type</td>
+                        <td>{{field.Field.DataType}}</td>
+                    </tr>
+                    <tr>
+                        <td>Field Control Type</td>
+                        <td>{{field.ControlType}}</td>
+                    </tr>
+                    <tr>
+                        <td>Possible Values</td>
+                        <td>{{field.Field.PossibleValues | arrayValues}}</td>
+                    </tr>
+                    <tr>
+                        <td>Field Role</td>
+                        <td>{{field.FieldRole.Name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Source</td>
+                        <td>{{field.Source.Name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Instrument</td>
+                        <td>{{Instrument.Name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Order Index</td>
+                        <td>{{field.OrderIndex}}</td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="top-divider"></div>
+    <button class="btn right" style="margin-top: 5px; margin-left: 5px;" ng-click="close()">Close</button>
+    
+</div>

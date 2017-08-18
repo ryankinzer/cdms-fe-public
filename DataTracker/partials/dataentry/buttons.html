@@ -1,0 +1,21 @@
+<div>
+	<div ng-hide="dataset.Config && (dataset.Config.DataEntryPage.HiddenFields.indexOf('theDetails') > -1)">
+		<!-- We will hide and show some buttons on Creel Survey that are either present or not present on the other datasets. -->
+		<!--<button class="btn" ng-click="addNewRow()">Add Row</button>-->
+		<button class="btn" ng-hide="showDetails && dataset.Config && (dataset.Config.DataEntryPage.HiddenFields.indexOf('addNewRow') > -1)" ng-click="addNewRow()">Add Row</button>
+		
+		<button class="btn" ng-show="dataEntryPage && dataset.Config && (dataset.Config.DataEntryPage.ShowFields.indexOf('addSection') > -1)" ng-click="addSection()">Add Section</button>	
+		<button class="btn" ng-show="dataset.Config && (dataset.Config.DataEntryPage.ShowFields.indexOf('addInterview') > -1)" ng-click="addNewInterview()">Add Interview</button>
+		<button class="btn" ng-show="dataset.Config && (dataset.Config.DataEntryPage.ShowFields.indexOf('addFisherman') > -1)" ng-click="addFisherman()">Add a Fisherman</button>
+		<button class="btn" ng-show="dataset.Config && (dataset.Config.DataEntryPage.ShowFields.indexOf('addAnotherFish') > -1)" ng-click="addAnotherFish()">Add Another Fish</button>	
+		
+		<button class="btn" ng-disabled="!onRow" ng-click="removeRow()">Remove Row</button>
+		<button ng-show="deletedRows.length" class="btn" ng-click="undoRemoveRow()">Undo</button>
+    </div>
+    
+    <button class="right btn" ng-disabled="activities.saving" ng-click="saveData()">Save and close</button>
+    <button class="btn btn-warning right" ng-click="cancel()" style="margin-right: 10px;">Cancel</button>
+    <br/>
+	<div ng-show="activities.saving" style="float: right;margin-right: 20px;" class="alert alert-success">Saving...</div>
+</div>
+

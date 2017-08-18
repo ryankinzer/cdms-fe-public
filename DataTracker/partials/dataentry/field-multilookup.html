@@ -1,0 +1,5 @@
+<div class="header-label">{{field.Label}}:</div>
+<div class="header-value" style="margin-left: 198px;">
+	<select class="form-control" multiple="true" ng-model="row[field.DbColumnName]" ng-options="id as name for (id, name) in selectOptions">
+	</select>
+</div>

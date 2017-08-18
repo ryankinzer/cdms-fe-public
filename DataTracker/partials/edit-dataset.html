@@ -1,0 +1,35 @@
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li class="active">{{dataset.Name}}</li>    
+</ul>
+
+
+<h4>Dataset Metadata for {{dataset.Name}}:</h4>
+
+<div class="panel" style="margin: 20px 20px 45px 20px; background-color: #F5FBEF; padding: 4px 10px 45px 10px;">
+    <table class="table table-striped">
+        <thead>
+        <tr style="background-color: #E6E6E6;">
+            <th>Metadata Field</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="md in metadataList">
+            <td width="160"><b>{{ md.field }}</b></td>
+            <td>
+                <ng-include src="'partials/metadata/field-' + md.controlType + '.html'"></ng-include>
+                <div ng-show="md.locked">{{metadataList[md.field].value}}</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="top-divider"></div>
+    <button class="btn right" style="margin-top: 5px; margin-left: 5px;" ng-click="save()">Save</button>
+    <button class="btn right" style="margin-top: 5px; margin-left: 5px;" ng-click="cancel()">Cancel</button>
+    <div class="alert alert-danger" ng-show="saveResults.failure">Error Saving Metadata.</div>
+   
+</div>
+
+

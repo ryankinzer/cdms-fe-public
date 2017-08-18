@@ -1,0 +1,25 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Change QA Status</h3>
+            Select the new QA status and enter a comment.
+        </div>
+        <div class="modal-body">
+            <div class="header-label">QA Status:</div>
+            <div class="header-value" title="by {{dataset_activities.Header.Activity.ActivityQAStatus.User.Fullname}}">
+                <select class="form-control" ng-model="row.ActivityQAStatus['QAStatusId']" ng-input="row.ActivityQAStatus['QAStatusId']" ng-options="id as name for (id, name) in QAStatusOptions"></select>
+            </div>  
+
+            <div class="header-label">QA Comments:</div>
+            <div class="header-value">
+                <textarea class="form-control" ng-model="row.ActivityQAStatus['Comments']" ng-input="row.ActivityQAStatus['Comments']"></textarea>
+            </div>  
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="save()">Save</button>
+        </div>
+    </div>
+    </div>
+</div>    

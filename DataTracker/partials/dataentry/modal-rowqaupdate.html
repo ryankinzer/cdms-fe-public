@@ -1,0 +1,24 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Set QA Status for {{gridDatasheetOptions.selectedItems.length}} rows</h3>
+        </div>
+        <div class="modal-body">
+        <form name="form" class="css-form" novalidate>
+            <div class="header-label">Row QA Status:</div>
+            <div class="header-value">
+                <select class="form-control" ng-model="newRowQAStatus.Id" ng-options="id as name for (id, name) in RowQAStatuses"></select>
+            </div>  
+
+        </form>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="save()">Change</button>
+        </div>
+
+    </div>
+    </div>
+</div>    

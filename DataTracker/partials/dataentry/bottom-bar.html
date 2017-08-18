@@ -1,0 +1,8 @@
+<div ng-style="gridWidth" class="grid-bar-info">
+	<div ng-show="onField" class="grid-bar-item"><b>{{onField.Label}}</b>: {{onField.Field.Description}}&nbsp;</div>
+</div>
+<div ng-style="gridWidth" class="grid-bar-stats">
+	<div ng-show="onNumberField()" class="grid-bar-item"><b>Stats</b>: {{getFieldStats()}}&nbsp;</div>
+</div>
+
+

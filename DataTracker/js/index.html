@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Just a map test</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css">
+  <style>
+    html, body, #mapDiv{
+      padding: 0;
+      margin: 0;
+      height: 100%;
+    }
+  </style>
+
+  <script src="http://js.arcgis.com/3.9/"></script>
+  <script>
+    var map;
+    require(["esri/map", "esri/layers/FeatureLayer",
+        "esri/dijit/AttributeInspector",
+        "esri/symbols/SimpleLineSymbol",
+        "esri/InfoTemplate",
+        "esri/dijit/InfoWindow",
+        "esri/symbols/SimpleFillSymbol",
+        "esri/Color",
+        "dojo/dom",
+        "dojo/dom-construct",
+        "dojo/domReady!"], function(Map, FeatureLayer, AttributeInspector, SimpleLineSymbol, InfoTemplate, InfoWindow, SimpleFillSymbol, Color,dom, domConstruct) {
+
+//define the info template that is used to display the popup content.
+      var template = new InfoTemplate();
+      template.setTitle("Hi there");
+      template.setContent("Name: <input type='text'/>");
+
+
+      var infoWindow = new InfoWindow({}, dojo.create("div"));
+      infoWindow.startup();
+
+      map = new Map("mapDiv", {
+        center: [-118.049, 45.485],
+        zoom: 8,
+        basemap: "streets",
+        infoWindow: infoWindow
+      });
+
+
+      var newPoint = null;
+
+      //var points = new FeatureLayer("//restdata.ctuir.org/arcgis/rest/services/CDMS/DNR_CDMS/FeatureServer/0", {
+      var points = new FeatureLayer("https://arcserv.ctuir.org/arcgis/rest/services/CDMS_ProjectPoints/FeatureServer/0", {
+          outFields: ["*"],
+          infoTemplate: template,
+        });
+
+        map.addLayers([points]);
+
+
+        dojo.connect(map, 'onClick', function(evt) {
+
+          newPoint = evt.mapPoint;
+
+          map.graphics.add(new esri.Graphic(
+            evt.mapPoint,
+            new esri.symbol.SimpleMarkerSymbol(),
+            null,
+            template
+          ));
+
+          console.dir(newPoint);
+
+          map.infoWindow.show(newPoint);
+
+        });
+
+
+      function getTextContent(graphic)
+      {
+          "Hi there.";
+      };
+
+    });
+  </script>
+
+</head>
+<body class="claro">
+  <div id="mapDiv"></div>
+</body>
+</html>

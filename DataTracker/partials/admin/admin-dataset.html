@@ -1,0 +1,48 @@
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#/admin">Administration</a><span class="divider"></span> </li>
+    <li class="active">Edit Project Dataset</li>
+</ul>
+
+	<div class="panel panel-default">
+	  <div class="panel-body">
+	  		<h3>{{dataset.Datastore.Name}} :: {{dataset.Name}}</h3>
+
+	  		<p><i>Manage this dataset view.</i></p>
+	  		<hr/>
+
+	  		<div class="col-md-6 admin-field-list-box">
+				<div class="row">
+						<div ng-click="selectField(field)" class="admin-field" ng-class="{'admin-field-selected': field.Id == SelectedField.Id}" ng-repeat="field in dataFields">
+							<span class="admin-field-name">{{field.Label}}</span><br/>
+							<span class="admin-field-desc">{{field.Field.Description}}</span>
+						</div>
+				</div>
+
+			</div>
+			<div ng-hide="SelectedField" class="col-md-6"><H2 class="text-center">Select a field</h2></div>
+			<div ng-show="SelectedField" class="col-md-6 admin-criteria-list-box">
+				<div class="row">
+					<div class="col-md-12">
+						<div ng-include="'partials/admin/dataset-field-options.html'"></div>
+					</div>
+				</div>
+				
+
+			</div>
+
+	  </div>
+
+	<div class="panel-body" style="width: 400px;">
+		<h3>Add a field:</h3>
+		
+		<select ui-select2="select2Options" data-placeholder="Add a field" ng-model="newField" style="width: 200px;">
+			    <option ng-repeat="field in MasterFields" value="{{field.Id}}">{{field.Name}}</option>
+		</select>
+
+		<button style="margin-top: -30px" class="right btn" ng-click="addMasterField()">Add Field</button>
+		
+	</div>
+
+	</div>
+

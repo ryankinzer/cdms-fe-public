@@ -1,0 +1,82 @@
+﻿<div id="overlay" ng-show="map.loading">Searching...</div>
+<div id="fade" ng-show="map.loading"></div>
+<div title="Toggle 'Favorite' status" class="fav-dataset">
+    <a href='' ng-click="toggleFavorite()">
+        <img id="favorite-active" ng-show="isFavorite" class="on" src='images/favorite-on.png'/>
+        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='images/favorite-off.png'/>
+    </a></div>
+
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li class="active">{{dataset.Name}}</li>  
+</ul>
+
+<div style="margin-right:40px; margin-bottom: -44px;" id="basemapDropdown">
+    <img src="images/imgBaseMap.png" width="35px"/>
+    <select class="form-control" style="display: inline" ng-options="b.name as b.label for b in map.basemaps" ng-model="map.selectedBasemap" ng-change="map.updateLayers()"></select>
+
+    <img src="images/Layers-icon.png" width="35px" style="margin-left: 20px;" />
+    <select ui-select2="select2Options" multiple="true" data-placeholder="Map layers" ng-model="map.selectedServiceLayers" style="width: 200px;" ng-change="map.updateLayers()">
+          <option ng-repeat="item in map.serviceLayers" value="{{item.name}}">{{item.label}}</option>
+    </select>
+</div>
+
+<div style="height: 66px; width: 100%;">
+    <div style="padding: 8px; width: 330px; float: right;">
+        <form ng-submit="parcelSearch()">
+            <img style="margin-top: 1px;" src="images/search-sm.png"/>
+            <button type="button" class="btn right" ng-click="parcelSearch()">Search</button>
+            <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+            <input class="form-control right" ng-model="parcelSearchText" placeholder="Find CRPP Contract" type="text"/>
+            <div ng-if="hasResults" class="parcel-sidebar-box">
+                <table ng-show="map.searchResults.length > 0" class="table table-striped table-hover table-bordered">
+                    <tr><th>Document Id</th><th>Address</th></tr>
+                    <tr ng-repeat="parcel in map.searchResults">
+                        <td><a href ng-click="selectParcel(parcel.OBJECTID)">{{parcel.PARCELID}}</a></td>
+                        <td><a href ng-click="selectParcel(parcel.OBJECTID)">{{parcel.Address}}</a></td>
+                    </tr>
+                </table>
+                <div ng-show="map.searchResults.length == 0">{{map.searchMessage}}</div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div class="alert alert-info" ng-show="!project.Id">Loading...</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2">
+            
+            <appraisal-map class="claro" id="map" center="-118.45,45.56" zoom="10" onclick="click">
+            </appraisal-map>
+            
+            <h4>{{dataset.Name}}</h4>
+            <div ng-show="filteringActivities"><i>Filtering by map selection</i>  <button ng-click="clearAll()" class="btn btn-xs">clear</button><br/><br/></div>
+
+			<!--<button class="btn" project-role="editor" ng-disabled="!map.selectedFeature" ng-click="newRecord()">Start CRPP Document</button>-->
+			<button class="btn" project-role="editor" ng-click="newRecord()">Start CRPP Contract</button>
+			<button class="btn" ng-click="openQueryWindow()">Query/Export data</button>
+			<button class="btn" ng-click="showFilter= !showFilter">Filter</button>
+            
+            <div ng-show="showFilter" style="padding: 8px; width: 260px;">
+                <input class="form-control" ng-model="gridOptionsFilter.filterText" placeholder="Filter By" type="text"/><img class="right" style="margin-top: -30px;" src="images/search-sm.png"/>
+            </div>
+
+            <div class="right" project-role="editor" style="margin-top: -40px;">
+                <div ng-show="saveResults" style="float: left;">
+                    <div ng-click="saveResults=null" ng-show="saveResults.success" class="delete-error alert alert-success">Deleted</div>
+                    <div ng-click="saveResults=null" ng-show="saveResults.failure" class="delete-error alert alert-danger">Error</div>
+                </div>
+                <button project-role="editor" class="btn right" ng-show="gridOptions.selectedItems.length > 0" ng-click="deleteActivities()">Delete Document</button>
+                
+            </div>
+
+            <div class="gridActivities" ng-grid="gridOptions" style="margin-top: 10px;"></div>
+            Total Activities: {{activities.length}} <img ng-show="loading" src="images/FishLoading.gif"/>
+
+
+        </div>
+    </div>
+</div>

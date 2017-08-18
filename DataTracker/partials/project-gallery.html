@@ -1,0 +1,15 @@
+<div class="content">
+         <div class="project-files">
+         	<div project-role="editor" class="right" style="margin-top: 5px;">
+         		<button class="btn" ng-click="newGalleryFile()">New</button>
+         		<button ng-disabled="galleryFileSelection.length == 0" class="btn" ng-click="editGalleryFile()">Edit</button>
+         		<button ng-disabled="galleryFileSelection.length == 0" class="btn btn-danger" ng-click="deleteGalleryFile()">Delete</button>
+         		
+         	</div>
+         	<div style="padding: 8px; width: 260px;">
+         		<input class="form-control" ng-model="GalleryFilterOptions.filterText" placeholder="Find Images" type="text"/><img class="right" style="margin-top: -30px;" src="images/search-sm.png"/>
+         	</div>
+            <div class="gridStyleWide gridTable" ng-grid="gridGallery"></div>
+                <p>Number of images in this project: {{project.Images.length}}</p>
+        </div>
+    </div>

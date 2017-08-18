@@ -1,0 +1,35 @@
+<!-- Datasheet data entry -->
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li><a href="#/activities/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
+    <li class="active">Data entry sheet</li>
+</ul>
+<h4>Add new activity to: {{dataset.Name}}</h4>
+
+
+<div ng-include="'partials/dataentry/messages.html'"></div>
+
+<div class="row" ng-show="!activities.success">
+    <div class="error-table" style="width: 300px; margin-top: 10px;" >
+        <table class="table table-striped table-bordered table-condensed">
+            <tbody>
+                <tr>
+                    <td>Total Records:</td><td>{{dataSheetDataset.length}}</td>
+                </tr>
+                <tr>
+                    <td>Records with errors: </td><td>{{validation_error_count}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="height: 100px; width: 400px; float: right; margin-top: -130px;" ng-include="'partials/grid-validation-error-box.html'"></div>
+    
+    <!--<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>-->
+    <div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 120px;"></div>
+    <div ng-include="'partials/dataentry/bottom-bar.html'"/>    
+    <div ng-include="'partials/dataentry/buttons.html'"/>
+
+</div>
+

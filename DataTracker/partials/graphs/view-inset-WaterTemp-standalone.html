@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+<style>
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.right { float: right;}
+
+.small-graph-box {
+	width: 400px; 
+	height: 200px; 
+	border: 1px solid lightgrey;
+	border-radius: 6px;
+}
+
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.js"></script>
+
+<div class="right small-graph-box chart" id="chart-div"></div>
+
+<script>
+var margin = {top: 10, right: 10, bottom: 20, left: 30},
+					    width = 400 - margin.left - margin.right,
+					    height = 200 - margin.top - margin.bottom;
+
+					var parseDate = d3.time.format("%d-%b-%y").parse;
+
+					var x = d3.time.scale()
+					    .range([0, width]);
+
+					var y = d3.scale.linear()
+					    .range([height, 0]);
+
+					var xAxis = d3.svg.axis()
+					    .scale(x)
+					    .orient("bottom");
+
+					var yAxis = d3.svg.axis()
+					    .scale(y)
+					    .orient("left");
+
+					var line = d3.svg.line()
+					    .x(function(d) { return x(d.date); })
+					    .y(function(d) { return y(d.close); });
+
+					var svg = d3.select("#chart-div").append("svg")
+					    .attr("width", width + margin.left + margin.right)
+					    .attr("height", height + margin.top + margin.bottom)
+					  .append("g")
+					    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+					var data = [
+						{date: "1-May-12", close:"58.13"},
+						{date: "30-Apr-12",close:"58.98"},
+						{date: "27-Apr-12",close:"60.00"},
+						{date: "26-Apr-12",close:"67.70"},
+						{date: "25-Apr-12",close:"61.00"},
+						{date: "24-Apr-12",close:"56.28"}	
+					];
+
+
+					  data.forEach(function(d) {
+					    d.date = parseDate(d.date);
+					    d.close = +d.close;
+					  });
+
+					  x.domain(d3.extent(data, function(d) { return d.date; }));
+					  y.domain(d3.extent(data, function(d) { return d.close; }));
+
+					  svg.append("g")
+					      .attr("class", "x axis")
+					      .attr("transform", "translate(0," + height + ")")
+					      .call(xAxis);
+
+					  svg.append("g")
+					      .attr("class", "y axis")
+					      .call(yAxis)
+					    .append("text")
+					      .attr("transform", "rotate(-90)")
+					      .attr("y", 6)
+					      .attr("dy", ".71em")
+					      .style("text-anchor", "end")
+					      .text("Temperature");
+
+					  svg.append("path")
+					      .datum(data)
+					      .attr("class", "line")
+					      .attr("d", line);
+</script>

@@ -1,0 +1,89 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+  			<h4>{{header_message}}</h4>
+  		</div>
+  		<div class="modal-body">
+
+  			<div class="header-label">Name</div>
+  			<div class="header-value">
+	  			<input  class="form-control" type="text" ng-model="instrument_row.Name" />
+	  		</div>
+
+	  		<div class="header-label">Description</div>
+  			<div class="header-value">
+	  			<textarea class="form-control" ng-model="instrument_row.Description" ></textarea>
+	  		</div>
+	  		<div class="header-label">Owning Department/Org</div>
+
+	  		<div class="header-value">
+	  				<select class="form-control" ng-model="instrument_row.OwningDepartmentId">
+	  					<option ng-repeat="dept in Departments" ng-selected="dept.Id == instrument_row.OwningDepartmentId" value="{{dept.Id}}">{{dept.Organization.Name}}: {{dept.Name}}</option>
+	  				</select>	
+			</div>
+
+			<div class="header-label">Purchasing Project</div>
+			<div class="header-value">
+	  				<select class="form-control" ng-model="instrument_row.PurchasingProgramProjectId">
+	  					<option value="" ng-selected="instrument_row.PurchasingProgramProjectId == null">Unknown / NA</option>
+	  					<option ng-repeat="proj in RawProjects" ng-selected="proj.Id == instrument_row.PurchasingProgramProjectId" value="{{proj.Id}}">{{proj.Name}}</option>
+	  				</select>	
+			</div>
+
+	  		<div class="header-label">Serial Number</div>
+  			<div class="header-value">
+	  			<input  class="form-control" type="text" ng-model="instrument_row.SerialNumber" />
+	  		</div>
+
+	  		<div class="header-label">Manufacturer</div>
+  			<div class="header-value">
+	  			<input  class="form-control" type="text" ng-model="instrument_row.Manufacturer" />
+	  		</div>
+
+	  		<div class="header-label">Model</div>
+  			<div class="header-value">
+	  			<input  class="form-control" type="text" ng-model="instrument_row.Model" />
+	  		</div>
+	  		
+  			<div class="header-label">Instrument Type</div>
+	  		<div class="header-value">
+	  				<select class="form-control" ng-model="instrument_row.InstrumentTypeId" ng-options="t.Id as t.Name for t in InstrumentTypes">
+	  				</select>
+					
+			</div>
+
+
+  			<div class="header-label">Purchase Date</div>
+  			<div class="header-value">
+	  				<input class="form-control" type="text" datepicker-popup="longDate" ng-model="instrument_row.PurchaseDate" is-open="aopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+	  		</div>
+
+	  		<div class="header-label">Entered Service Date</div>
+  			<div class="header-value">
+	  				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="instrument_row.EnteredService" is-open="bopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+	  		</div>
+  		
+  			<div class="header-label">Ended Service Date</div>
+  			<div class="header-value">
+	  				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="instrument_row.EndedService" is-open="copened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+	  		</div>
+
+			<div class="header-label">Instrument Status</div>
+	  		<div class="header-value">
+	  				<select class="form-control" ng-model="instrument_row.StatusId">
+	  					<option value="0">Active</option>
+	  					<option value="1">Inactive</option>
+	  				</select>
+					
+			</div>
+
+  		
+  		</div>
+		<div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="save()">Save</button>
+        </div>
+
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+  			<h4>Add an accuracy check to {{viewInstrument.Name}}</h4>
+  		</div>
+  		<div class="modal-body">
+
+  		<tabset justified="true">
+  			<tab heading="Add new record">
+  			<br/>
+		  	<form name="form" class="css-form" novalidate>
+		  			<div class="header-label">Check Date</div>
+		  			<div class="header-value">
+			  				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="ac_row.CheckDate" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+			  		</div>
+
+					<div class="header-label">Check Method</div>
+					<div class="header-value">
+			  				<select class="form-control" ng-model="ac_row.CheckMethod" >
+			  					<option ng-repeat="method in DataGradeMethods" ng-selected="$index == 5" value="{{$index}}">{{method}}</option>
+			  				</select>
+			  		</div>
+
+			  		<div class="header-label">Bath 1 Grade</div>
+			  		<div class="header-value">
+			  				<select class="form-control" ng-model="ac_row.Bath1Grade">
+			  					<option value="">&nbsp;</option>
+			  					<option value="A">A</option>
+			  					<option value="B">B</option>
+			  					<option value="C">C</option>
+			  				</select>
+							
+					</div>
+
+					<div class="header-label">Bath 2 Grade</div>
+					<div class="header-value">
+			  				<select class="form-control" ng-model="ac_row.Bath2Grade">
+			  					<option value="">&nbsp;</option>
+			  					<option value="A">A</option>
+			  					<option value="B">B</option>
+			  					<option value="C">C</option>
+			  				</select>
+
+			  		</div>
+
+			  		<div class="header-label">Comments</div>
+			  		<div class="header-value">
+			  				<textarea class="form-control" ng-model="ac_row.Comments" name="Comments"></textarea>
+			  		</div>
+			  	
+			</form>
+
+            <button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="save()">Save</button>
+            <button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Close</button>
+
+		
+        </tab>
+        <tab heading="Existing records">
+        	<ng-include src="'partials/instruments/accuracychecks.html'" ></ng-include>
+        	<button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Cancel</button>
+        </tab>
+        </tabset>
+
+        </div>
+		<div class="modal-footer" style="margin-top: 30px;">
+
+        </div>
+
+  </div>
+</div>

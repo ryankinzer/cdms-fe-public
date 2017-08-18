@@ -1,0 +1,41 @@
+<h3>Administrative Scripts</h3>
+<h5>These are manual and powerful, so be careful.</h5>
+
+
+<div class="alert alert-danger" ng-show="ErrorMessage">
+<a class="close" ng-click="ErrorMessage=undefined">X</a>
+<h4 class="alert-heading">Error!</h4>
+{{ErrorMessage}}
+</div>
+
+<div class="row" style="min-height: fill-available;">
+
+    <div class="panel">
+	    <h3>Update value data for DECD appraisals</h3>
+	    <h3>{{uploadErrorMessage}}</h3>
+	    Project Id: <input type="text" ng-model="project.Id" /><br/>
+	    Start on line: <input type="text" ng-model="startOnLine" /></br>
+
+	    <input type="file" ng-file-select="onFileSelect($files)" value="{{file.name}}">
+
+
+	    <button class="btn" ng-click="uploadFile()">Load</button>
+
+	    <div ng-show="file">
+		    Number of records to change: {{records.length}}<br/>
+		    Field names we will update: Value, Date of Value<br/>
+
+		    <button ng-click="doDECDUpdate()" class="btn">Update!</button>
+	    </div>
+	    {{loading}}
+	    <hr/>
+	    Activities:
+	    {{activities}}
+    </div>
+
+    <div class="panel">
+    	<h3>update files for DECD appraisals</h3>
+    	<button ng-click="doDECDFileLinking()" class="btn">Link Files!</button>
+    </div>
+</div>
+

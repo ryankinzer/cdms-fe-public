@@ -1,0 +1,42 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+  			<h4>{{header_message}}</h4>
+  		</div>
+  		<div class="modal-body">
+
+  			<div ng-show="row.FileType.Name=='Image'" class="header-label">&nbsp;</div>
+  			<div ng-show="row.FileType.Name=='Image'" class="header-value">
+	  			<img ng-src="{{row.Link}}" width="250px"/>
+	  		</div>
+
+			<div ng-show="row.FileType.Name!='Image'" class="header-label">&nbsp;</div>
+  			<div ng-show="row.FileType.Name!='Image'" class="header-value">
+	  			<img ng-src="images/file_image.png" width="100px"/>
+	  		</div>
+
+  			<div class="header-label">Name</div>
+  			<div class="header-value">
+	  			<input ng-disabled="true" class="form-control" type="text" ng-model="row.Name" />
+	  		</div>  			
+
+  			<div class="header-label">Title</div>
+  			<div class="header-value">
+	  			<input  class="form-control" type="text" ng-model="row.Title" style="width:250px"/>
+	  		</div>
+
+	  		<div class="header-label">Description</div>
+  			<div class="header-value">
+	  			<textarea class="form-control" ng-model="row.Description" ></textarea>
+	  		</div>
+
+  		
+  		</div>
+		<div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="save()">Save</button>
+        </div>
+
+  </div>
+</div>

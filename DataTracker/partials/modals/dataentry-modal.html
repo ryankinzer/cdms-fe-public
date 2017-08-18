@@ -1,0 +1,41 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>Enter data</h3>
+            <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
+        <div class="modal-body">
+
+<form role="form">
+<div class="row">
+<div class="form-group col-lg-2">
+
+			<div ng-repeat="field in detailFields" ng-switch on="field.ControlType">
+                <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                <ctuir-number-field ng-switch-when="number"></ctuir-number-field> 
+                <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
+                <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
+                <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
+                <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                <ctuir-lookup-field ng-switch-when="lookup"></ctuir-lookup-field>
+                <ctuir-multilookup-field ng-switch-when="multilookup"></ctuir-multilookup-field>
+                <ctuir-text-field ng-switch-default></ctuir-text-field>
+            </div>
+</div>
+</div>
+</form>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </div>
+    </div>
+</div>    

@@ -1,0 +1,63 @@
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li><a href="#/activities/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
+    <li><a href="#/dataview/{{grid.Header.Activity.Id}}">{{grid.Header.Activity.CreateDate}}</a></li>
+    <li class="active">QA</li>
+</ul>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span6">
+
+        <h4>Activity Detail for: {{grid.Header.Activity.CreateDate}}</h4>
+
+        <div class="header-box">
+            <div class="header-label">Location:</div>
+            <div class="header-value">{{grid.Header.Activity.Location.Label}}&nbsp;</div>
+
+            <div class="header-label">Activity Date:</div>
+            <div class="header-value">{{grid.Header.Activity.ActivityDate}}&nbsp;</div>            
+
+            <div ng-repeat="field in header.fields">
+            <div class="header-column">
+                <div class="header-label">{{field.Label}}:</div>
+                <div class="header-value">{{grid.Header[field.DbColumnName]}}&nbsp;</div>
+            </div>
+            </div>
+
+            <div class="header-label">Current QA Status:</div>
+            <div class="header-value">Approved&nbsp;</div>  
+
+            <div class="header-label">Current QA Comments:</div>
+            <div class="header-value">&nbsp;</div>  
+
+        </div>
+        
+        <hr/>
+
+        <div class="gridStyle" ng-grid="gridOptions" ng-click="openDataEntryModal()">
+        </div>
+
+        <br/><br/>
+
+        <div class="header-box panel">
+            <div class="header-label">QA Status:</div>
+            <div class="header-value">
+                <select class="form-control" ng-model="row['QAActivityStatus']">
+                    <option ng-repeat="option in QAActivityStatuses" value="{{option}}">{{option}}</option>    
+                </select>
+            </div>
+
+            <div class="header-label">QA Comments:</div>
+            <div class="header-value">
+                <textarea class="form-control" ng-model="row[field.DbColumnName]" name="{{field.DbColumnName}}"></textarea>
+            </div>
+
+            <button class="btn right">Cancel</button>
+            <button class="btn right">Save</button>
+
+        </div>
+        </div>
+    </div>
+</div>

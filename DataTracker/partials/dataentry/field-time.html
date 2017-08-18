@@ -1,0 +1,13 @@
+<!-- <div class="header-label">{{field.Label}}:</div>
+<div class="header-value">
+	<div ng-model="row[field.DbColumnName]">
+		<timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+	</div>
+</div> -->
+<div class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;">
+<div class="header-label">{{field.Label}}:</div>
+<div class="header-value">
+	<input class="form-control" type="text" placeholder="ex. 16:20" ng-model="row[field.DbColumnName]" ng-blur="updateHeaderField(field.DbColumnName)" name="{{field.DbColumnName}}"></input>
+	<p class="field-error-block" ng-show="headerFieldErrors[field.DbColumnName]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>
+</div>
+</div>
