@@ -2281,7 +2281,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 
                 //this is pure awesomeness: setup a watcher so that when we navigate the grid we update our current row and validate it.
                 scope.$watch('gridDatasheetOptions.$gridScope.selectionProvider.lastClickedRow', function(){
-                    //Logger.debug(scope.gridDatasheetOptions.$gridScope);
+                    //console.dir(scope.gridDatasheetOptions.$gridScope);
                     scope.onRow = scope.gridDatasheetOptions.$gridScope.selectionProvider.lastClickedRow;
                     //console.dir(scope.gridDatasheetOptions.$gridScope.selectionProvider);
                 });
@@ -2654,11 +2654,18 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
             {
                 if(row)
                 {
+					//console.log("scope is next...");
+					//console.dir(scope);
+					//console.log("row is next...");
+					//console.dir(row);
+					
                     //spin through our fields and validate our value according to validation rules
                     var row_errors = [];
 
                     //console.log("Validating a row with " + array_count(scope.FieldLookup) + " rows.");
-                    var row_num = 0;
+					
+					// We use row_num to give us a reference for what line of data we are on, in the debugger.
+                    //var row_num = 0;
 
                     angular.forEach(scope.FieldLookup, function(field, key){
                          //TODO: first check if there is no value but one is required.
@@ -2673,6 +2680,38 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                         //console.log("  >>incrementing!");
 
                     });
+					
+					if (scope.DatastoreTablePrefix === "CreelSurvey")
+					{
+						// Do we have a valid location?
+						if ((typeof row.LocationId !== 'undefined') && (row.LocationId !== null))
+						{
+							row_errors.push("[LocationId] The Location does not match anything in the Locations table for this dataset.");
+						}
+						
+						// if we have an interview, we must have a fisherman.
+						if (((typeof row.InterviewTime !== 'undefined') && (row.InterviewTime !== null)) && ((typeof row.FishermanId === 'undefined') || (row.FishermanId === null)))
+						{
+							row_errors.push("[Fisherman] InterviewTime is present, but the Fisherman is missing.");
+						}
+						
+						// Verify that the fisherman is in the Fishermen table.
+						var foundName = false;
+						angular.forEach(scope.fishermenList, function(aFisherman){
+							//console.log("aFisherman.Fullname = " + aFisherman.Fullname + ", row.Fullname =" + row.Fullname);
+							if (aFisherman.Id === row.FishermanId)
+							{
+								//console.log("Matched the fisherman to a name in the Fishermen table.");
+								foundName = true;
+							}
+							
+						});
+						
+						if ((row.FishermanId !== null) && (!foundName))
+							row_errors.push("Fisherman name does not match any name in the Fishermen table."); // This turns the row color to red.
+	
+					}
+					
                     //console.log(row_num + " --------------- is our rownum");
                     if(row_errors.length > 0)
                     {
@@ -2746,7 +2785,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                     //TODO -- eww don't do it this way! don't need rendered rows
                     var entityFieldValue = scope.gridDatasheetOptions.$gridScope.renderedRows[i].entity[scope.autoUpdate.field];
 
-                    //Logger.debug("Unsetting "+scope.autoUpdate.field+": " + entityFieldValue + " back to " + scope.autoUpdate.from);
+                    //console.log("Unsetting "+scope.autoUpdate.field+": " + entityFieldValue + " back to " + scope.autoUpdate.from);
 
                     scope.gridDatasheetOptions.$gridScope.renderedRows[i].entity[scope.autoUpdate.field] = scope.autoUpdate.from;
                 }
@@ -2833,7 +2872,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                     {
                         data_row.entity[field] = toValue;
                         scope.autoUpdate.updated.push(key);
-                        //Logger.debug("Autoupdated: " + key);
+                        //console.log("Autoupdated: " + key);
                     }
                 });
                 */
@@ -2921,7 +2960,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                 if(!scope.gridDatasheetOptions.enableCellEdit)
                     return;
 
-                Logger.debug(">>>>>>> validating the whole grid baby");
+                console.log(">>>>>>> validating the whole grid baby");
                 scope.validation_error_count = 0;
 
                 angular.forEach(scope.dataSheetDataset, function(data_row, key){
@@ -3548,13 +3587,15 @@ function makeNewRow(coldefs)
 //returns "{keyProperty: valueProperty, ...}
 function makeObjects(optionList, keyProperty, valueProperty)
 {
-	console.log("Inside services.js, makeObjects...");
+	//console.log("Inside services.js, makeObjects...");
+	//console.log("optionList is next...  keyProperty = " + keyProperty + ", valueProperty = " + valueProperty);
+	//console.dir(optionList);
     var objects = {};
 
     angular.forEach(optionList, function(item){
 		//console.log("item is next...");
 		//console.dir(item);
-		//console.log("keyProperty = " + keyProperty + ", valueProperty = " + valueProperty);
+		//console.log("item[keyProperty] = " + item[keyProperty] + ", item[valueProperty] = " + item[valueProperty]);
         objects[item[keyProperty]] = item[valueProperty];
     });
 
@@ -3564,9 +3605,12 @@ function makeObjects(optionList, keyProperty, valueProperty)
 //specific for instruments because we need the serial number too
 function makeInstrumentObjects(optionList)
 {
+	console.log("Inside services.js, makeInstrumentObjects...");
     var objects = {};
 
     angular.forEach(optionList, function(item){
+		//console.dir(item);
+        //objects[item['Id']] = item['Name'] + '(' + item['SerialNumber'] + ')';
         objects[item['Id']] = item['Name'] + '(' + item['SerialNumber'] + ')';
     });
 
@@ -3823,29 +3867,30 @@ function validateField(field, row, key, scope, row_errors)
 			
 			if (!timeContentValid)
                 row_errors.push("["+field.DbColumnName+"] Value is not a time (hh:mm).");
+			
             break;
         case 'text':
 			if(field.Field.Validation && (field.Field.Validation !== 'null'))
 			{
 				if (field.Field.Validation === "t")  // For a time
 				{
-					console.log("Text time field name = " + field.DbColumnName);
+					//console.log("Text time field name = " + field.DbColumnName);
 					//if ((field.DbColumnName === "InterviewTime") || (field.DbColumnName === "TimeStart") || (field.DbColumnName === "TimeEnd")) // This looks for specific field names.
 					if ((field.Field.Units === "00:00") || (field.Field.Units === "HH:MM")) // This looks for time fields (better).
 					{
-						console.log("In services, validateField, found time field...");
+						//console.log("In services, validateField, found time field...");
 						//if(!stringIsNumber(value) && !is_empty(value))
 						
 						// value may contain a time (HH:MM) or the time may be in a datetime string (YYYY-MM-DDTHH:mm:SS format).
-						console.log("value = " + value);
+						//console.log("value (before extracting time)= " + value);
 						var colonLocation = value.indexOf(":");
 						value = value.substr(colonLocation - 2);
 						if (value.length > 5)
 							value = value.substr(0,6);
 					
-						console.log("value = " + value);
+						//console.log("value (after extracting time)= " + value);
 						var validTime = checkTime(value);
-						console.log("validTime = " + validTime)
+						//console.log("validTime (time is valid)= " + validTime)
 						if ((typeof validTime === 'undefined') || (value.length < 5))
 						{
 							console.log("Error: Invalid time entry in " + field.DbColumnName + "." );
@@ -3897,12 +3942,21 @@ function validateField(field, row, key, scope, row_errors)
 			//return checkNumber(row, field, value, field.Field.Validation, row_errors); // Chris' code.
 			
 			//console.log("Inside validateField, case number...");
+			//console.log("field.Field.DbColumnName = " + field.Field.DbColumnName);
 			//console.log("field.Field.Validation = " + field.Field.Validation);
 			//console.log("field.Field.DataType = " + field.Field.DataType);
+			//console.log("value = " + value);
 			//if (field.Field.DataType === 'float')
 			//{
 			//	return checkNumber(row, field, value, field.Field.Validation, row_errors);
 			//}
+			//console.log("typeof field.Field.Validation = " + typeof field.Field.Validation);
+			
+			if (typeof field.Field.Validation === "number")
+			{
+				field.Field.Validation = "" + field.Field.Validation;
+				//console.log("typeof field.Field.Validation = " + typeof field.Field.Validation);
+			}
 			
 			if ((field.Field.Validation !== null) && (field.Field.Validation.indexOf("null") < 0))
 			{	
@@ -3915,8 +3969,10 @@ function validateField(field, row, key, scope, row_errors)
 					//console.log("value = " + value);
 					if ((typeof value !== 'undefined') && (value !== null))
 					{
+						//console.log("field.DbColumnName = " + field.DbColumnName + ", value = " + value);	
+						// First verify the number is an integer.
 						var validNumber = checkInteger(value);
-						console.log("validNumber = " + validNumber)
+						//console.log("validNumber = " + validNumber)
 						if (typeof validNumber === 'undefined')
 						{
 							console.log("Error: Invalid entry in " + field.DbColumnName + "." );
@@ -3930,7 +3986,7 @@ function validateField(field, row, key, scope, row_errors)
 							}
 						}
 						
-						//console.log("NumberAnglersInterviewed = " + value);							
+						//console.log("NumberAnglersInterviewed = " + value);
 						if (field.DbColumnName === "NumberAnglersInterviewed")
 						{	
 							//console.log("Found NumberAnglersInterviewed...");
@@ -3940,7 +3996,7 @@ function validateField(field, row, key, scope, row_errors)
 							{
 								row_errors.push("["+field.DbColumnName+"] cannot be more than [NumberAnglersObserved]");
 							}
-			
+							
 						}								
 
 					}					

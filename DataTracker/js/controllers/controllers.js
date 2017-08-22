@@ -252,6 +252,12 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 		console.log("Inside projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
 		
+		if ((typeof scope.activities !== 'undefined') && (scope.activites !== null))
+		{
+			scope.activities = null;
+			console.log("Set scope.activities to null for project page...");
+		}
+		
 		scope.datasets = DataService.getProjectDatasets(routeParams.Id);
 		scope.project = DataService.getProject(routeParams.Id);
 		scope.currentUserId = $rootScope.Profile.Id;

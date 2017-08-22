@@ -11,6 +11,13 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 			ServiceUtilities) {
 //    		$scope.QAActivityStatuses = QAActivityStatuses;
     	$scope.dataset = DataService.getDataset($routeParams.Id);
+		
+			if ((typeof $scope.activities !== 'undefined') && ($scope.activites !== null))
+			{
+				$scope.activities = null;
+				console.log("Set $scope.activities to null for project page...");
+			}
+		
 			$scope.mappedActivityFields = {};
 			$scope.userId = $rootScope.Profile.Id;
 			$scope.fields = { header: [], detail: [], relation: []}; 
@@ -23,7 +30,9 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 			$scope.DetailColDefs = []; //fields always present in the grid
 			$scope.RowQAColDef = [];
 
-			$scope.existingActivitiesLoad = DataService.getActivities($routeParams.Id);
+			// Q:  Why are we loading the activities, on the import page?
+			// A:  Is a user entering a set of duplicate records?  We need the dataset activities to answer that question.
+			//$scope.existingActivitiesLoad = DataService.getActivities($routeParams.Id);
 			$scope.existingActivities = [];
 			$scope.sortedLocations = [];
 			$scope.datasetLocationType=0;
@@ -203,12 +212,24 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				if ($scope.DatastoreTablePrefix === 'WaterTemp')
 					$scope.ShowInstrument = true;
 				else if ($scope.DatastoreTablePrefix === "CreelSurvey")
+				{
 					$scope.fishermenList = DatastoreService.getFishermen();
+					$scope.datasheetColDefs2 = [ 
+							{
+								field: 'FishermanId',
+								displayName: 'Fisherman',
+								cellFilter: 'fishermanFilter',
+							}
+						];
+				}
 				
 				$scope.datasetLocationType = DatastoreService.getDatasetLocationType($scope.DatastoreTablePrefix);				
 				console.log("LocationType = " + $scope.datasetLocationType);	
 				
 				$scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix);  // Pass the TablePrefix (name of the dataset), because it will never change.
+				console.log("$scope.datasheetColDefs is next...");
+				console.dir($scope.datasheetColDefs);
+				
 				$scope.mappableFields = $scope.setMappableFields($scope.DatastoreTablePrefix);
 									
 				//DataService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
@@ -452,7 +473,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 
 			//setup our existingActivities array so we can manage duplicates
 	        var ealoadwatcher = $scope.$watch('existingActivitiesLoad.length', function(){
-	        	if($scope.existingActivitiesLoad.length > 0)
+	        	if (($scope.existingActivitiesLoad) && ($scope.existingActivitiesLoad.length > 0))
 	        	{
 	        		$scope.existingActivitiesLoad.$promise.then(function(){
 	        			angular.forEach($scope.existingActivitiesLoad, function(activity, key){
@@ -557,7 +578,10 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 	    		{
 	    			if(loc.OtherAgencyId && loc.Label.indexOf(loc.OtherAgencyId)==-1)
 	    				loc.Label = loc.Label + ' (' + loc.OtherAgencyId + ')';
-	    		});				
+	    		});
+
+				console.log("$scope (at the end of $scope.finishLocationProcessing) is next...");
+				console.dir($scope);
 			};	
 			
 			$scope.setMappableFields = function()
@@ -575,14 +599,14 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				}
 				else if ($scope.DatastoreTablePrefix === "Benthic")
 				{
-					console.log("Setting for Benthic...");
+					console.log("Setting for CreelSurvey...");
 					mappableFields.push({ Label: "[-- Do not map --]" });
 					mappableFields.push({ Label: "[-- Activity Date --]" });					
 					mappableFields.push({ Label: "[-- Location Id --]" });
 				}
 				else
 				{
-					console.log("Setting for other (normal)...");
+					console.log("Setting for non-CreelSurvey...");
 					mappableFields.push({ Label: "[-- Do not map --]" });
 					mappableFields.push({ Label: "[-- Activity Date --]" });					
 					mappableFields.push({ Label: "[-- Index Field --]" });
@@ -898,8 +922,15 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				{
 					//execute upload
 					Logger.debug("displaying preview...");
+					console.log("$scope.datasheetColDefs (inside $scope.previewUpload) is next...");
+					console.dir($scope.datasheetColDefs);
 					$scope.displayImportPreview();
 				}else{
+					$scope.uploadErrorMessage = "";
+					angular.forEach($scope.errors, function(anError){
+						$scope.uploadErrorMessage += anError + "  ";
+					});
+					
 					console.log("Doing nothing since there are errors");
 					$scope.enablePreview = true;
 				}
@@ -913,21 +944,26 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				console.log("Inside displayImportPreview");
 				console.log("$scope is next...");
 				console.dir($scope);
+				console.log("$scope.datasheetColDefs is next...");
+				console.dir($scope.datasheetColDefs);
+				console.log("$scope.RowQAColDef is next...");
+				console.dir($scope.RowQAColDef);
 				
 				//decide if we are going to show the headerForm.  we DO if they entered an activity date, DO NOT if they mapped it.
 				if($scope.mappedActivityFields[ACTIVITY_DATE] || $scope.mappedActivityFields[INDEX_FIELD])
 				{
 					$scope.showHeaderForm = false; //because we have mapped the activity date field to our datafile, meaning multiple activity dates needs the wide sheet.
-					$scope.datasheetColDefs =$scope.RowQAColDef.concat($scope.datasheetColDefs,$scope.HeaderColDefs, $scope.DetailColDefs);
+					$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.datasheetColDefs,$scope.HeaderColDefs, $scope.DetailColDefs);
 				}
 				else
 				{
 					$scope.showHeaderForm = true; //single activity, use the headerform.
-					$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.DetailColDefs);
+					//$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.DetailColDefs);
+					$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.datasheetColDefs2,$scope.DetailColDefs);
 				}
-				
-				//console.log("$scope.datasheetColDefs is next...");  // Note:  Column ReleaseLocation is already present here, col 9.
-				//console.dir($scope.datasheetColDefs);
+
+				console.log("$scope.datasheetColDefs (after concatentation) is next...");  // Note:  Column ReleaseLocation is already present here, col 9.
+				console.dir($scope.datasheetColDefs);
 
 				$scope.recalculateGridWidth($scope.datasheetColDefs.length);
 				
@@ -985,7 +1021,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						//console.dir(data_row);
 
 						// On each row of imported data (data_row), we only want to pull in the fields we have mapped.
-						// Therefore, we loop through $scope.mapping, which contains those fields.
+						// Therefore, we loop through $scope.mapping, which contains those fields.
 						//console.log("About to loop through $scope.mapping, field & col, checking mapped fields...");
 						angular.forEach($scope.mapping, function(field, col){
 							// If we DID NOT map a field to Activity Date, we need headers.
@@ -997,9 +1033,9 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 							//console.log("**data_row[col] = " + data_row[col] + ", typeof = " + typeof data_row[col]);
 							
 							try{
-								console.log("field/col are next...");
-								console.dir(field);
-								console.log(col);
+								//console.log("field/col are next...");
+								//console.dir(field);
+								//console.log(col);
 								// Did the user map the field to something in the database?
 								// On the form, if the user mapped the Activity date in Step 2, rather than setting it in Step 3,
 								// then we get the Activity date from the first row.
@@ -1010,6 +1046,11 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 									//just ditch if it is an empty value
 									if(data_row[col] === null || data_row[col] === "")
 									{
+										return; // This just pops us out of this iteration early.
+									}
+									
+									if ($scope.DatastoreTablePrefix === "CreelSurvey")
+									{
 										// Guess what?  If the value is 0, on Test CDMS treats it as an empty value.  We have to handle that...
 										if ((field.DbColumnName === "FishCount") && (data_row[col] !== null))
 										{
@@ -1019,54 +1060,73 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 												new_row.FishCount = 0;
 											
 										}
-										else if ($scope.DatastoreTablePrefix === "CreelSurvey")
+										else if ((field.DbColumnName === "NumberAnglersObserved") && (data_row[col] !== null))
 										{
-											if ((field.DbColumnName === "NumberAnglersObserved") && (data_row[col] !== null))
+											//console.log("Found FishCount.  Value = " + data_row[col]);
+											var strNumberAnglersObserved = data_row[col].toString();
+											if (strNumberAnglersObserved === "0")
+												new_row.NumberAnglersObserved = 0;
+											
+										}
+										else if ((field.DbColumnName === "NumberAnglersInterviewed") && (data_row[col] !== null))
+										{
+											//console.log("Found FishCount.  Value = " + data_row[col]);
+											var strNumberAnglersInterviewed = data_row[col].toString();
+											if (strNumberAnglersInterviewed === "0")
+												new_row.NumberAnglersInterviewed = 0;
+											
+										}
+										else if (field.DbColumnName === "InterviewTime")// && (data_row[col] !== null))
+										{
+											console.log("Found InterviewTime... new row is next...");
+											console.dir(new_row);
+											var strNumberAnglersInterviewed = new_row.NumberAnglersInterviewed.toString();
+											
+											if (strNumberAnglersInterviewed === "0")
 											{
-												//console.log("Found FishCount.  Value = " + data_row[col]);
-												var strNumberAnglersObserved = data_row[col].toString();
-												if (strNumberAnglersObserved === "0")
-													new_row.NumberAnglersObserved = 0;
-												
-											}
-											else if ((field.DbColumnName === "NumberAnglersInterviewed") && (data_row[col] !== null))
-											{
-												//console.log("Found FishCount.  Value = " + data_row[col]);
-												var strNumberAnglersInterviewed = data_row[col].toString();
-												if (strNumberAnglersInterviewed === "0")
-													new_row.NumberAnglersInterviewed = 0;
-												
+												$scope.uploadErrorMessage = "NumberAnglersInterviewed cannot be 0, if InterviewTime has a time.";
+												$scope.errors.push($scope.uploadErrorMessage);
 											}
 										}
-										else if ($scope.DatastoreTablePrefix === "Benthic")
+										
+										if (field.Label === "[-- Fisherman --]")
 										{
-											console.log("Working with Benthic..., field.DbColumnName = " + field.DbColumnName);
-											console.log("data_row[col] = " + data_row[col]);
-											if (field.DbColumnName === "TareMass")
+											new_row.FishermanId = parseInt($scope.getFishermanId(data_row[col]));
+											console.log("new_row.FishermanId = " + new_row.FishermanId);
+											//if (new_row.FishermanId < 0)
+											if (new_row.FishermanId < 2)
 											{
-												console.log("data_row[col] = " + data_row[col]);
-												if ((typeof data_row[col] !== 'undefined') && (data_row[col] !== null))
-												{
-													tmpValue = parseFloat(Math.round(data_row[col] * 10000)/10000);
-													console.log("tmpValue = " + tmpValue);
-													new_row.TareMass = tmpValue
-												}
+												$scope.uploadErrorMessage = "Fisherman [" + data_row[col] + "] does not match any name in the Fishermen table.";
+												//$scope.errors.push($scope.uploadErrorMessage); // This leaves the trace for postmortem.
+												$scope.errors.push($scope.uploadErrorMessage); // This leaves the trace for postmortem.
 											}
 										}
-								
-										return; // This just pops us out of this iteration early.
+										else if (field.Label === "[-- Location Id --]")
+										{
+											new_row.locationId = parseInt($scope.getLocationId(data_row[col]));
+											console.log("new_row.locationId = " + new_row.locationId);
+											if (new_row.locationId < 0)
+												$scope.errors.push("Location [" + data_row[col] + "] does not match any name in the Locations table."); // This leaves the trace for postmortem.
+										}
 									}
-									
-									if (($scope.DatastoreTablePrefix === "WaterTemp") || ($scope.DatastoreTablePrefix === "WaterQuality"))
+									else if ($scope.DatastoreTablePrefix === "Benthic")
+									{
+										//console.log("Working with Benthic..., field.DbColumnName = " + field.DbColumnName);
+										//console.log("data_row[col] = " + data_row[col]);
+										if (field.DbColumnName === "TareMass")
+										{
+											if ((typeof data_row[col] !== 'undefined') && (data_row[col] !== null))
+											{
+												tmpValue = parseFloat(Math.round(data_row[col] * 10000)/10000);
+												//console.log("tmpValue = " + tmpValue);
+												new_row.TareMass = tmpValue
+											}
+										}
+									}
+									else if (($scope.DatastoreTablePrefix === "WaterTemp") || ($scope.DatastoreTablePrefix === "WaterQuality"))
 									{
 										if(field.Label == $scope.mappableFields[ROW_QA_STATUS_ID].Label)
 											new_row.RowQAStatusId = data_row[col];
-									}
-									
-									if(field.Label === "[-- Fisherman --]")
-									{
-										new_row.FishermanId = parseInt($scope.getFishermanId(data_row[col]));
-										//console.log("new_row.FishermanId = " + new_row.FishermanId);
 									}
 
 									
@@ -1076,29 +1136,29 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 									//console.dir(new_row);
 									if(field.ControlType == "number" && !isNumber(data_row[col]) )
 									{
-										console.log("ignoring: " + field.DbColumnName + " is a number field but value is not a number: " + data_row[col]);
+										//console.log("ignoring: " + field.DbColumnName + " is a number field but value is not a number: " + data_row[col]);
 										return; //don't set this as a value
 									}
 									else if (field.ControlType === "number" && ($scope.DatastoreTablePrefix === "Benthic"))
 									{
-										console.log("data_row[col] = " + data_row[col]);
+										//console.log("data_row[col] = " + data_row[col]);
 										var tmpValue = -1;
 										if (field.Validation === '2d') // 2-decimal places
 										{
-											console.log("Found 2d..." + field.DbColumnName);
+											//console.log("Found 2d..." + field.DbColumnName);
 											tmpValue = parseFloat(Math.round(data_row[col] * 100)/100);
-											console.log("tmpValue = " + tmpValue);
+											//console.log("tmpValue = " + tmpValue);
 											new_row[field.DbColumnName] = tmpValue
 										}
 										else if (field.Validation === 'p2d') // % with 2 decimal places
 										{
-											console.log("Found p2d..." + field.DbColumnName);
+											//console.log("Found p2d..." + field.DbColumnName);
 											if (data_row[col] === 0)
 												new_row[field.DbColumnName] = "0";
 											else
 											{
 												tmpValue = parseFloat(Math.round(data_row[col] * 10000)/100);
-												console.log("tmpValue = " + tmpValue);
+												//console.log("tmpValue = " + tmpValue);
 												new_row[field.DbColumnName] = tmpValue
 											}
 										}
@@ -1254,7 +1314,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 										//else if (($scope.DatastoreTablePrefix === "CreelSurvey") && (field.DbColumnName === "LocationId"))
 										else if (($scope.DatastoreTablePrefix === "CreelSurvey") && (field.DbColumnName === "Location"))
 										{
-											console.log("field.DbColumnName = " + field.DbColumnName + "; data_row[col] = " + data_row[col]);
+											//console.log("field.DbColumnName = " + field.DbColumnName + "; data_row[col] = " + data_row[col]);
 											new_row[field.DbColumnName] = data_row[col];
 										}
 										
@@ -1483,6 +1543,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				
 				var theFishermanId = 0;
 				var keepGoing = true;
+				var foundFisherman = false;
 				angular.forEach($scope.fishermenOptions, function(fisherman, key){
 					if (keepGoing)
 					{
@@ -1491,12 +1552,45 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						{
 							//console.log("Fount the fisherman:  " + fisherman);
 							theFishermanId = key;
+							foundFisherman = true;
 							keepGoing = false;
 						}
 					}
 				});
 				
-				return theFishermanId;	
+				//return theFishermanId;
+				if (foundFisherman)
+					return theFishermanId;
+				else
+					return 1; //-1;				
+			};
+			
+			$scope.getLocationId = function(locationName)
+			{
+				//console.log("Inside getLocationId...");
+				//console.log("locationName = " + locationName);
+				
+				var theLocationId = 0;
+				var keepGoing = true;
+				var foundLocation = false;
+				angular.forEach($scope.locationOptions, function(location, key){
+					if (keepGoing)
+					{
+						//console.log("key = " + key + ", location = " + location);
+						if (locationName === location)
+						{
+							console.log("Found the location:  " + location);
+							theLocationId = key;
+							foundLocation = true;
+							keepGoing = false;
+						}
+					}
+				});
+				
+				if (foundLocation)
+					return theLocationId;
+				else
+					return -1;
 			};
 
 			$scope.uploadFile = function()
@@ -1600,6 +1694,10 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						return;
 				}
 				
+				var theHours = -1;
+				var theMinutes = -1;
+				var TotalTimeFished = -1;
+				
 				for (var i = 0; i < $scope.dataSheetDataset.length; i++)
 				{
 					if ($scope.DatastoreTablePrefix === "CreelSurvey")
@@ -1607,13 +1705,17 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						if ((typeof $scope.dataSheetDataset[i].TotalTimeFished !== 'undefined') && ($scope.dataSheetDataset[i].TotalTimeFished != null))
 						{
 							//console.log("TotalTimeFished for row " + i + " = " + $scope.dataSheetDataset[i].TotalTimeFished);
-							var theHours = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(0,2));
+							theHours = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(0,2));
 							//console.log("theHours = " + theHours);
-							var theMinutes = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(3,5));
+							theMinutes = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(3,5));
 							//console.log("theMinutes = " + theMinutes);
-							var TotalTimeFished = theHours * 60 + theMinutes;
+							TotalTimeFished = theHours * 60 + theMinutes;
 							//console.log("TotalTimeFished (in min) = " + TotalTimeFished);
 							$scope.dataSheetDataset[i].TotalTimeFished = TotalTimeFished;
+							
+							theHours = -1;
+							theMinutes = -1;
+							TotalTimeFished = -1;
 						}
 						
 						//console.log("$scope.dataSheetDataset[i].activityDate = " + $scope.dataSheetDataset[i].activityDate);
@@ -1645,10 +1747,10 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 					if (typeof $scope.dataSheetDataset[i].Dry === 'undefined') // If Dry is missing, added and default it to NO?
 						$scope.dataSheetDataset[i].Dry = "NO";
 				}
-
+				
 				//console.log("ActivityFields...");
 				//console.dir($scope.ActivityFields);
-
+				
 				//prepare dataset for saving -- add defaultrowqastatusid, move activityqastatusid
 				for (var i = 0; i < $scope.dataSheetDataset.length; i++) {
 					var row = $scope.dataSheetDataset[i];
