@@ -33,7 +33,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 			// Q:  Why are we loading the activities, on the import page?
 			// A:  Is a user entering a set of duplicate records?  We need the dataset activities to answer that question.
 			//$scope.existingActivitiesLoad = DataService.getActivities($routeParams.Id);
-			$scope.existingActivities = [];
+			//$scope.existingActivities = []; // These are for checking for duplicates.
 			$scope.sortedLocations = [];
 			$scope.datasetLocationType=0;
 			$scope.datasetLocations = [[]];
@@ -245,6 +245,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				$scope.FieldLookup['activityDate'] = { DbColumnName: 'activityDate', ControlType: "date" };
 				$scope.FieldLookup['QAStatusId'] = 	 { DbColumnName: 'QAStatusId', ControlType: "select" };
 				$scope.CellOptions['QAStatusIdOptions'] = 	 $scope.QAStatusOptions;
+				$scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
 
 				//iterate fields and set 'em up
 				angular.forEach($scope.dataset.Fields.sort(orderByAlpha), function(field){
@@ -472,7 +473,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 	        });
 
 			//setup our existingActivities array so we can manage duplicates
-	        var ealoadwatcher = $scope.$watch('existingActivitiesLoad.length', function(){
+	        /*var ealoadwatcher = $scope.$watch('existingActivitiesLoad.length', function(){
 	        	if (($scope.existingActivitiesLoad) && ($scope.existingActivitiesLoad.length > 0))
 	        	{
 	        		$scope.existingActivitiesLoad.$promise.then(function(){
@@ -486,6 +487,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 	        	}
 
 	        });
+			*/
 			
     		//$scope.$watch('UploadResults.activities', function(){
     		//	$scope.activity_count = array_count($scope.UploadResults.activities.activities);

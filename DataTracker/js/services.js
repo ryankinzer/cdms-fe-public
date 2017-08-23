@@ -3829,7 +3829,7 @@ function validateField(field, row, key, scope, row_errors)
             }
             else
             {
-                console.log("Error: no cellOptions for " + field.DbColumnName+'Options' );
+                console.log("Error: no cellOptions for " + field.DbColumnName +' Options' );
                 console.dir(scope.CellOptions);
                 console.log("This might be because you're calling a rule wrong?");
             }
