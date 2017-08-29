@@ -961,7 +961,10 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				{
 					$scope.showHeaderForm = true; //single activity, use the headerform.
 					//$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.DetailColDefs);
-					$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.datasheetColDefs2,$scope.DetailColDefs);
+					if ($scope.DatastoreTablePrefix === "CreelSurvey")
+						$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.datasheetColDefs2,$scope.DetailColDefs);
+					else
+						$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.DetailColDefs);
 				}
 
 				console.log("$scope.datasheetColDefs (after concatentation) is next...");  // Note:  Column ReleaseLocation is already present here, col 9.

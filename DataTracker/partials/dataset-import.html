@@ -16,7 +16,7 @@
 {{uploadErrorMessage}}
 </div>
 
-<div ng-include="'partials/dataentry/messages.html'"/><!--Need the "/" here; otherwise services.js has a problem with it.-->
+<div ng-include="'partials/dataentry/messages.html'"/><!--Need the closing "/" here; otherwise services.js has a problem with it.-->
 
 	<div class="row" style="min-height: fill-available;" ng-show="!activities.success">
 
@@ -248,7 +248,7 @@
 				</div>
 
 				<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>
-				<div ng-include="'partials/dataentry/bottom-bar.html'">
+				<div ng-include="'partials/dataentry/bottom-bar.html'"/><!--Note the closing "/" here!-->
 					<div style="margin-top: 15px; padding-bottom: 30px;">
 						<button class="btn" ng-disabled="!onRow" ng-click="removeRow()">Remove Row</button>
 						<button ng-show="deletedRows.length" class="btn" ng-click="undoRemoveRow()">Undo</button>
@@ -259,11 +259,11 @@
 						<br/>
 						<div ng-show="activities.saving" style="float: right;margin-right: 20px;" class="alert alert-success">Saving...</div>
 					</div>
-				</div>
+				<!--</div>--><!--Opening tag has a closing "/".-->
 			</div>
 		</div>
 	</div>
 	<div ng-show="dataSheetDataset.length>0" class="large-graph-box" id="chart-div">
 		<ng-include src="'partials/graphs/view-inset-' + dataset.Datastore.TablePrefix + '.html'"></ng-include>
 	</div>
-<!--</div>-->
+<!--</div>--><!--This closing tag is unnecesary, because the opening tag has a closing "/".-->
