@@ -99,7 +99,10 @@
 								<!--<select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-change="selectInstrument()" style="width: 170px; margin-top: 4px;" ng-model="ActivityFields.InstrumentId">
 										<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
 								</select>-->
-								<select class="form-control" ng-model="ActivityFields.InstrumentId" ng-options="id as name for (id, name) in instrumentOptions">
+								<!--<select class="form-control" ng-model="ActivityFields.InstrumentId" ng-options="id as name for (id, name) in instrumentOptions">-->
+								<select class="form-control" ng-model="ActivityFields.InstrumentId" >
+									<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
+								</select>
 							</td>
 						</tr>              
 
