@@ -3784,8 +3784,8 @@ function checkNumber(row, field, value, range, row_errors) {
         return false;
     }
 	// The range (Validation field) could be an alphanumeric string (4d for 4 decimal places), not just [min, max], and we must allow for the possibility.
-    //else if(range && range.length == 2)     // Expecting a 2-element array [min,max]
-    else if (range && (range.indexOf("[") > -1) && range.length === 2)     // Expecting a 2-element array [min,max]
+    //else if(range && range.length == 2)     // Expecting a 2-element array [min,max]; yes, but if the value is a string, this will be a false positive for a range.
+    else if (range && (typeof range === 'object') && range.length === 2)     // Expecting a 2-element array [min,max], an array is an object...
     {
         var min = range[0];
         var max = range[1];
@@ -4068,15 +4068,21 @@ function validateField(field, row, key, scope, row_errors)
 						}
 					}
 				}
+				//else if (field.Field.DataType === 'float')
+				else if (field.Field.DataType.indexOf("float") > -1)
+				{
+					//console.log("We have a float type...");
+					return checkNumber(row, field, value, field.Field.Validation, row_errors);
+				}
 				else
 				{
 					return checkNumber(row, field, value, field.Field.Validation, row_errors);
 				}
 			}
-			else if (field.Field.DataType === 'float')
-			{
-				return checkNumber(row, field, value, field.Field.Validation, row_errors);
-			}
+			//else if (field.Field.DataType === 'float')
+			//{
+			//	return checkNumber(row, field, value, field.Field.Validation, row_errors);
+			//}
             break;
         case 'checkbox':
             //anything here?
