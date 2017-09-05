@@ -2689,27 +2689,35 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 							row_errors.push("[LocationId] The Location does not match anything in the Locations table for this dataset.");
 						}
 						
-						// if we have an interview, we must have a fisherman.
-						if (((typeof row.InterviewTime !== 'undefined') && (row.InterviewTime !== null)) && ((typeof row.FishermanId === 'undefined') || (row.FishermanId === null)))
+						
+						if ((typeof row.InterviewTime === 'undefined') && (typeof row.FishermanId === 'undefined')) // No interviewTime && No FishermandId
 						{
+							// Do nothing, because we probably do not have a detail; no error.
+							console.log("No detail...");
+						}
+						else if (((typeof row.InterviewTime !== 'undefined') && (row.InterviewTime !== null)) && ((typeof row.FishermanId === 'undefined') || (row.FishermanId === null)))
+						{
+							// We have an interview, so we must have a fisherman also; error
 							row_errors.push("[Fisherman] InterviewTime is present, but the Fisherman is missing.");
 						}
-						
-						// Verify that the fisherman is in the Fishermen table.
-						var foundName = false;
-						angular.forEach(scope.fishermenList, function(aFisherman){
-							//console.log("aFisherman.Fullname = " + aFisherman.Fullname + ", row.Fullname =" + row.Fullname);
-							if (aFisherman.Id === row.FishermanId)
-							{
-								//console.log("Matched the fisherman to a name in the Fishermen table.");
-								foundName = true;
-							}
+						else // We have row.InterviewTime && row.FishermanId
+						{
+							// Verify that the fisherman is in the Fishermen table.
+							var foundName = false;
+							angular.forEach(scope.fishermenList, function(aFisherman){
+								//console.log("aFisherman.Fullname = " + aFisherman.Fullname + ", row.Fullname =" + row.Fullname);
+								if ((typeof row.FishermanId !== 'undefined') && (aFisherman.Id === row.FishermanId))
+								{
+									console.log("Matched the fisherman to a name in the Fishermen table.");
+									foundName = true;
+								}
+								
+							});
 							
-						});
-						
-						if ((row.FishermanId !== null) && (!foundName))
-							row_errors.push("Fisherman name does not match any name in the Fishermen table."); // This turns the row color to red.
-	
+							//console.log("typeof row.FishermanId = " + typeof row.FishermanId + ", row.FishermanId = " + row.FishermanId + ", foundName = " + foundName);
+							if ((row.FishermanId !== null) && (!foundName))
+								row_errors.push("Fisherman name does not match any name in the Fishermen table."); // This turns the row color to red.
+						}
 					}
 					
                     //console.log(row_num + " --------------- is our rownum");

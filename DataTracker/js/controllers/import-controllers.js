@@ -1723,19 +1723,30 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 							TotalTimeFished = -1;
 						}
 						
-						//console.log("$scope.dataSheetDataset[i].activityDate = " + $scope.dataSheetDataset[i].activityDate);
-						strYear = $scope.dataSheetDataset[i].activityDate.substr(0, 4);
-						//console.log("strYear = " + strYear);
+						console.log("typeof $scope.dataSheetDataset[i].activityDate = " + typeof $scope.dataSheetDataset[i].activityDate);
+						if (typeof $scope.dataSheetDataset[i].activityDate === 'object')
+						{
+							strYear = "" + $scope.dataSheetDataset[i].activityDate.getFullYear();
+							strMonth = "" + $scope.dataSheetDataset[i].activityDate.getMonth();
+							strDay = "" + $scope.dataSheetDataset[i].activityDate.getDate();
+						}
+						else if (typeof $scope.dataSheetDataset[i].activityDate === 'string')
+						{
+							//console.log("$scope.dataSheetDataset[i].activityDate = " + $scope.dataSheetDataset[i].activityDate);
+							strYear = $scope.dataSheetDataset[i].activityDate.substr(0, 4);
+							//console.log("strYear = " + strYear);
+							
+							strMonth = $scope.dataSheetDataset[i].activityDate.substr(5, 2);
+							//console.log("strMonth = " + strMonth);
+							if (strMonth.length < 2)
+								strMonth = "0" + strMonth;
+							
+							strDay = $scope.dataSheetDataset[i].activityDate.substr(8, 2);
+							//console.log("strDay = " + strDay);
+							if (strDay.length < 2)
+								strDay = "0" + strDay;
 						
-						strMonth = $scope.dataSheetDataset[i].activityDate.substr(5, 2);
-						//console.log("strMonth = " + strMonth);
-						if (strMonth.length < 2)
-							strMonth = "0" + strMonth;
-						
-						strDay = $scope.dataSheetDataset[i].activityDate.substr(8, 2);
-						//console.log("strDay = " + strDay);
-						if (strDay.length < 2)
-							strDay = "0" + strDay;
+						}
 						
 						$scope.dataSheetDataset[i].TimeStart = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeStart + ":00.000";
 						//console.log("$scope.dataSheetDataset[i].TimeStart = " + $scope.dataSheetDataset[i].TimeStart);
