@@ -1,4 +1,5 @@
-# exclude the ProjectTracker directory
-/ProjectTracker/*
-/DataTracker/js/config.js
 DataTracker/js/config.js
+Thumbs.db
+bower_components/*
+App_Data/*
+web.config
