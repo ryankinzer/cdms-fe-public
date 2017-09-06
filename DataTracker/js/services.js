@@ -2708,23 +2708,27 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 								//console.log("aFisherman.Fullname = " + aFisherman.Fullname + ", row.Fullname =" + row.Fullname);
 								if ((typeof row.FishermanId !== 'undefined') && (aFisherman.Id === row.FishermanId))
 								{
-									console.log("Matched the fisherman to a name in the Fishermen table.");
+									//console.log("Matched the fisherman to a name in the Fishermen table.");
 									foundName = true;
 								}
 								
 							});
 							
 							//console.log("typeof row.FishermanId = " + typeof row.FishermanId + ", row.FishermanId = " + row.FishermanId + ", foundName = " + foundName);
-							if ((row.FishermanId !== null) && (!foundName))
-								row_errors.push("Fisherman name does not match any name in the Fishermen table."); // This turns the row color to red.
+							//if ((row.FishermanId !== null) && (!foundName))
+							//	row_errors.push("Fisherman name does not match any name in the Fishermen table."); // This turns the row color to red.
 						}
 					}
 					
                     //console.log(row_num + " --------------- is our rownum");
+					//console.log("row_errors is next...");
+					//console.dir(row_errors);
                     if(row_errors.length > 0)
                     {
                         row.isValid = false;
-                        row.errors = row_errors;
+                        //row.errors = row_errors;
+						row.errors = angular.copy(row_errors); // row.errors is $scope.dataSheetDataset.errors
+						//scope.row.errors = angular.copy(row_errors);
                         scope.gridHasErrors = true;
                     }
                     else
@@ -3829,6 +3833,7 @@ function validateField(field, row, key, scope, row_errors)
     {
         case 'select':
             //is the value in our list of options?
+			//console.log("scope.CellOptions for " + field.DbColumnName + " are next...");
             //console.log(scope.CellOptions[field.DbColumnName+'Options']);
             if(scope.CellOptions[field.DbColumnName+'Options'])
             {
@@ -4130,7 +4135,6 @@ if(field.DbColumnName == "FinClip")
 */
 
     fireRules("OnValidate",row,field,value,scope.row,row_errors, scope);
-
 
 }
 

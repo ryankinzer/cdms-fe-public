@@ -245,7 +245,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				$scope.FieldLookup['activityDate'] = { DbColumnName: 'activityDate', ControlType: "date" };
 				$scope.FieldLookup['QAStatusId'] = 	 { DbColumnName: 'QAStatusId', ControlType: "select" };
 				$scope.CellOptions['QAStatusIdOptions'] = 	 $scope.QAStatusOptions;
-				$scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
+				//$scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
 
 				//iterate fields and set 'em up
 				angular.forEach($scope.dataset.Fields.sort(orderByAlpha), function(field){
@@ -467,8 +467,14 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 	    		}
 				
 				$scope.fishermenOptions = $rootScope.fishermenOptions = makeObjects($scope.project.Fishermen, 'Id','FullName');
+				
+				//setup location field to participate in validation
+				$scope.FieldLookup['FishermanId'] = { DbColumnName: 'FishermanId', ControlType: "select" };
 				console.log("Just set $scope.fishermenOptions...");
 				console.dir($scope.fishermenOptions);
+				$scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
+				console.log("$scope (at end of watch project.name) is next...");
+				console.dir($scope);
 
 	        });
 
@@ -923,9 +929,9 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				if($scope.errors.length == 0)
 				{
 					//execute upload
-					Logger.debug("displaying preview...");
-					console.log("$scope.datasheetColDefs (inside $scope.previewUpload) is next...");
-					console.dir($scope.datasheetColDefs);
+					console.log("Displaying preview...");
+					//console.log("$scope.datasheetColDefs (inside $scope.previewUpload) is next...");
+					//console.dir($scope.datasheetColDefs);
 					$scope.displayImportPreview();
 				}else{
 					$scope.uploadErrorMessage = "";
@@ -944,12 +950,12 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 			$scope.displayImportPreview = function()
 			{
 				console.log("Inside displayImportPreview");
-				console.log("$scope is next...");
-				console.dir($scope);
-				console.log("$scope.datasheetColDefs is next...");
-				console.dir($scope.datasheetColDefs);
-				console.log("$scope.RowQAColDef is next...");
-				console.dir($scope.RowQAColDef);
+				//console.log("$scope is next...");
+				//console.dir($scope);
+				//console.log("$scope.datasheetColDefs is next...");
+				//console.dir($scope.datasheetColDefs);
+				//console.log("$scope.RowQAColDef is next...");
+				//console.dir($scope.RowQAColDef);
 				
 				//decide if we are going to show the headerForm.  we DO if they entered an activity date, DO NOT if they mapped it.
 				if($scope.mappedActivityFields[ACTIVITY_DATE] || $scope.mappedActivityFields[INDEX_FIELD])
@@ -1083,9 +1089,12 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 										}
 										else if (field.DbColumnName === "InterviewTime")// && (data_row[col] !== null))
 										{
-											console.log("Found InterviewTime... new row is next...");
-											console.dir(new_row);
-											var strNumberAnglersInterviewed = new_row.NumberAnglersInterviewed.toString();
+											//console.log("Found InterviewTime... new row is next...");
+											//console.dir(new_row);
+											var strNumberAnglersInterviewed = null;
+											
+											if (new_row.NumberAnglersInterviewed)
+												new_row.NumberAnglersInterviewed.toString();
 											
 											if (strNumberAnglersInterviewed === "0")
 											{
@@ -1101,12 +1110,13 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 											//if (new_row.FishermanId < 0)
 											if (new_row.FishermanId < 2)
 											{
-												$scope.uploadErrorMessage = "Fisherman [" + data_row[col] + "] does not match any name in the Fishermen table.";
+												//$scope.uploadErrorMessage = "Fisherman [" + data_row[col] + "] does not match any name in the Fishermen table.";
 												//$scope.errors.push($scope.uploadErrorMessage); // This leaves the trace for postmortem.
-												$scope.errors.push($scope.uploadErrorMessage); // This leaves the trace for postmortem.
 											}
 										}
-										else if (field.Label === "[-- Location Id --]")
+										
+										//else if (field.Label === "[-- Location Id --]")
+										if (field.Label === "[-- Location Id --]")
 										{
 											new_row.locationId = parseInt($scope.getLocationId(data_row[col]));
 											console.log("new_row.locationId = " + new_row.locationId);
@@ -1567,7 +1577,10 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				if (foundFisherman)
 					return theFishermanId;
 				else
-					return 1; //-1;				
+				{
+					//return 1; //-1;
+					return -1;
+				}
 			};
 			
 			$scope.getLocationId = function(locationName)
