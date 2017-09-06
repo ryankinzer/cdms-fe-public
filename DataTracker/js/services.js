@@ -3820,8 +3820,8 @@ function checkNumber(row, field, value, range, row_errors) {
 function validateField(field, row, key, scope, row_errors)
 {
 	//console.log("Inside services, validateField...");
-	console.log("field is next...");
-	console.dir(field);
+	//console.log("field is next...");
+	//console.dir(field);
 	
     var value = row[key];
 
