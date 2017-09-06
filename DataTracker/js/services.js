@@ -3820,8 +3820,8 @@ function checkNumber(row, field, value, range, row_errors) {
 function validateField(field, row, key, scope, row_errors)
 {
 	//console.log("Inside services, validateField...");
-	//console.log("field is next...");
-	//console.dir(field);
+	console.log("field is next...");
+	console.dir(field);
 	
     var value = row[key];
 
@@ -3838,7 +3838,7 @@ function validateField(field, row, key, scope, row_errors)
             if(scope.CellOptions[field.DbColumnName+'Options'])
             {
                 if(isInvalidOption(scope, field, value)) // Is value in the option list?
-                    row_errors.push("["+field.DbColumnName+"] Invalid selection");
+                    row_errors.push("["+field.DbColumnName+"] Invalid selection, value = " + value);
             }
             else
             {
