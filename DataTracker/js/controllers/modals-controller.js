@@ -3102,6 +3102,7 @@ mod_fmc.controller('ModalAddCorrespondenceEventCtrl', ['$scope', '$rootScope','$
 				//$scope.viewSelectedSubproject();
 				$scope.viewSelectedSubproject($scope.viewSubproject);
 				$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
+				//$("#correspondenceEvents").load("partials/subproject/correspondenceEvents.html #correspondenceEvents");
 				$modalInstance.dismiss();
 
 			});
@@ -3380,6 +3381,7 @@ mod_fmc.controller('ModalAddCorrespondenceEventCtrl', ['$scope', '$rootScope','$
 					$scope.viewSelectedSubproject();
 					$scope.viewSelectedSubproject($scope.viewSubproject);
 					$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
+					//$("#correspondenceEvents").load("partials/subproject/correspondenceEvents.html #correspondenceEvents");
 					//$modalInstance.dismiss();
 					})
 					
@@ -3402,7 +3404,8 @@ mod_fmc.controller('ModalAddCorrespondenceEventCtrl', ['$scope', '$rootScope','$
 				promise.$promise.then(function(){
 					$scope.reloadSubprojects();
 					$scope.viewSelectedSubproject();
-					$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
+					//$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
+					$("#correspondenceEvents").load("partials/subproject/correspondenceEvents.html #correspondenceEvents");
 					//$modalInstance.dismiss();
 					})
 					
