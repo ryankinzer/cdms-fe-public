@@ -1,4 +1,9 @@
-     <div class="import-has-errors"  ng-show="gridHasErrors && onRow">
+	<!--Notes:  onRow starts out undefined.
+		If an import has errors, the applicable rows with errors will be highlighted (colored red).
+		When a user clicks on a row that is highlighted, THEN onRow gets set,
+		and the appropriate error box appears.
+	-->
+	<div class="import-has-errors"  ng-show="gridHasErrors && onRow">
                 <h4>Validation errors for selected row:</h4>
                 <div class="alert alert-danger" ng-show="onRow.errors">
                     <div ng-repeat="error in onRow.errors track by $index">
