@@ -1,9 +1,10 @@
 {
-  "name": "cdms-dev",
-  "homepage": "https://github.com/CTUIR/cdms-dev",
+  "name": "cdms-fe",
+  "version": "1.0.0",
+  "homepage": "https://github.com/CTUIR/cdms-fe",
   "description": "The web browser client for CTUIR Data Management System (CDMS)",
   "main": "",
-  "license": "MIT",
+  "license": "SEE LICENSE",
   "private": true,
   "ignore": [
     "**/.*",
