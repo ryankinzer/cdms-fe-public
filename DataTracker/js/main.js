@@ -1,10 +1,18 @@
+//analytics configuration
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', ANALYTICS_CODE, 'auto');
+ga('send', 'pageview');
+
 define([
   'angular'
 ], function(angular){
 
- 
+
   // define our app as an angular module - with our dependencies and our routes
-  var app = angular.module("app", 
+  var app = angular.module("app",
 	 [
 										// All files, unless otherwise noted, are in js/controllers.
 	  'ngRoute',						// assets/js/angular/angular-route.js (referred to in js/controllers/login-controller.js)
@@ -22,25 +30,25 @@ define([
 	  'MyPreferencesControllers',		// mod_mydata, MyPreferencesController.js
 	  'ActivitiesController',			// mod_dac, activities-controller.js
 	  'ModalsController',				// mod_fmc, modals-controller.js
-	  'ChartServices',					// cmod, js/chartservices.js			
+	  'ChartServices',					// cmod, js/chartservices.js
 	  'DatasetServices',				// mod.factory, mod.service, js/services.js
 	  'angularFileUpload',				// assets/js/angular-file-upload/angular-file-upload.js (referred to in controllers.js)
 	  'DatasetDirectives',				// mod.directive, js/directives/directives.js
-	  'AdminController',				// mod_ac, admin-controller.js			
+	  'AdminController',				// mod_ac, admin-controller.js
 	  'angularCharts',					// assets/js/angular-charts.ken.js
 	  'checklist-model',				// js/directives/checklists.js
-	  'ScriptControllers',				// mod_script, script-controllers.js
+	  'ScriptControllers'				// mod_script, script-controllers.js
 
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
-	    	
+
 	        $routeProvider.when('/projects', {templateUrl: 'partials/projects.html', controller: 'ProjectsCtrl'});
 	        $routeProvider.when('/projects/:Id', {templateUrl: 'partials/project-datasets.html', controller: 'ProjectDatasetsCtrl'});
 
 	        //this one is a little special -- loads up the arcgis mapping stuff.
 	        $routeProvider.when('/mydata', {templateUrl: 'partials/mydatasets.html', controller: 'MyDatasetsCtrl'});
 	        $routeProvider.when('/myprojects', {templateUrl: 'partials/myprojects.html', controller: 'MyProjectsCtrl'});
-	        $routeProvider.when('/mypreferences', {templateUrl: 'partials/mypreferences.html', controller: 'MyPreferencesCtrl'});	
+	        $routeProvider.when('/mypreferences', {templateUrl: 'partials/mypreferences.html', controller: 'MyPreferencesCtrl'});
 	        $routeProvider.when('/activities/:Id', {templateUrl: 'partials/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit'});
 	        $routeProvider.when('/dataview/:Id', {templateUrl: 'partials/dataset-view.html', controller: 'DatasetViewCtrl'});
 	        $routeProvider.when('/dataentry/:Id',{templateUrl: 'partials/dataset-entry.html', controller: 'DataEntryDatasheetCtrl', permission: 'Edit'});
@@ -69,11 +77,10 @@ define([
 	    }]);
 
 	//any functions in here are available to EVERY scope.  use sparingly!
-	app.run(function($rootScope,$location) {
+	app.run(function($rootScope,$window, $location) {
 	  $rootScope.config = {
 	      version: CURRENT_VERSION,
 	      CDMS_DOCUMENTATION_URL: CDMS_DOCUMENTATION_URL,
-
 	  };
 
 	  $rootScope.Cache = {};
@@ -87,7 +94,17 @@ define([
 
 	  $rootScope.SystemTimezones = SystemTimezones; //defined in init.js
 	  $rootScope.DataGradeMethods = DataGradeMethods; //ditto
-	});
+
+    //Fire analytics call on location change in URL for SPA.
+    $rootScope.$on('$locationChangeSuccess', function () {
+      console.log("Sending "+ $location.url() +" to: "+ANALYTICS_CODE);
+      $window.ga('send', {
+        'hitType': 'screenview',
+        'appName' : 'CDMS',
+        'screenName' : $location.url()
+      });
+    });
+  });
 
 	return app;
 
@@ -104,14 +121,14 @@ function configureProfile(profile)
 	{
 		return;
 	}
-	var favoriteDatasets = getByName(profile.UserPreferences, "Datasets"); 
+	var favoriteDatasets = getByName(profile.UserPreferences, "Datasets");
 	if(favoriteDatasets)
 		profile.favoriteDatasets = favoriteDatasets.Value.split(",");
 	else
 		profile.favoriteDatasets = [];
 
 	//same for favorite projects
-	var favoriteProjects = getByName(profile.UserPreferences, "Projects"); 
+	var favoriteProjects = getByName(profile.UserPreferences, "Projects");
 	if(favoriteProjects)
 		profile.favoriteProjects = favoriteProjects.Value.split(",");
 	else
@@ -120,7 +137,7 @@ function configureProfile(profile)
 
 	if(profile.Roles)
 		profile.Roles = angular.fromJson(profile.Roles);
-	
+
 	profile.isAdmin = function()
 	{
 		return (profile.hasRole("Admin"));
@@ -143,12 +160,12 @@ function configureProfile(profile)
 	profile.isProjectOwner = function(project){
 		if(project && project.OwnerId == profile.Id)
 			return true;
-		
+
 		if(profile.isAdmin())
 			return true;
 
 		//console.log(profile.Id + " is not owner: " + project.OwnerId);
-		return false;                 
+		return false;
 	};
 
 	//is the profile editor for the given project?
@@ -165,10 +182,10 @@ function configureProfile(profile)
              		isEditor = true;
              		break;
                 }
-            }         
+            }
         }
 
-        return isEditor;    
+        return isEditor;
 	};
 
 	profile.isDatasetFavorite = function(datasetId){
@@ -177,7 +194,7 @@ function configureProfile(profile)
 
 	profile.isProjectFavorite = function(projectId){
 		return (profile.favoriteProjects.indexOf(projectId+"") != -1);
-	};	
+	};
 
 	profile.toggleDatasetFavorite = function(dataset)
 	{
