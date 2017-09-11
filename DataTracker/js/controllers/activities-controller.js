@@ -26,7 +26,7 @@ mod_dac.controller('ModalAddLocationCtrl', ['$scope','$modalInstance', 'DataServ
 
         $scope.save = function(){
 			console.log("Inside ModalAddLocationCtrl, save...");
-			
+
             if(!$scope.row.GPSEasting || !$scope.row.GPSNorthing)
             {
                 $scope.locationErrorMessage = "Please enter an Easting and a Northing for this point.";
@@ -35,7 +35,7 @@ mod_dac.controller('ModalAddLocationCtrl', ['$scope','$modalInstance', 'DataServ
 
 			// Clean-up, just in case we had an error and then the user supplied the necessary info.
             $scope.locationErrorMessage = undefined;
-			
+
             //OK -- if we are saving a NEW location then start off by adding the point to the featurelayer
             if(!$scope.row.Id)
             {
@@ -133,7 +133,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
     	function ($scope, $routeParams, DataService, DatastoreService, $modal, $location, $window, $rootScope) {
 			console.log("Inside datasetActivitiesController...");
             $scope.dataset = DataService.getDataset($routeParams.Id);
-            $scope.activities = DataService.getActivities($routeParams.Id);
+            $scope.activities = DataService.getActivitiesForView($routeParams.Id);
             $scope.loading = true;
             $scope.project = null;
             $scope.saveResults = null;
@@ -148,7 +148,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
             var linkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
             				   '<a href="#/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("ActivityDate") | date:\'MM/dd/yyyy\'}}</a>' +
             				   '</div>';
-							   
+
             var yearReportedTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
             				   '<a href="#/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("headerdata.YearReported") }}</a>' +
             				   '</div>';
@@ -165,7 +165,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
                     '<span>{{row.getProperty("Location.Label") }}</span>'+
                     '<span ng-if="row.getProperty(\'Location.OtherAgencyId\')"> ({{row.getProperty(\'Location.OtherAgencyId\')}})</span>' +
                     '</div>';
-             
+
             var QATemplate = '<div class="ngCellText" ng-class="col.colIndex()">{{QAStatusList[row.getProperty("ActivityQAStatus.QAStatusId")]}}</div>';
 
             //performance idea: if project-role evaluation ends up being slow, you can conditionally include here...
@@ -178,11 +178,11 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 						//{field:'YearReported', displayName:'Year Reported', cellTemplate: linkTemplate, width:'120px'},
 						{field:'headerdata.YearReported', displayName:'Year Reported', cellTemplate: yearReportedTemplate, width:'120px'},
 
-                        {field:'headerdata.TimeStart',displayName: 'Time Start', visible: false, width: '80px'},						
-						
+                        {field:'headerdata.TimeStart',displayName: 'Time Start', visible: false, width: '80px'},
+
                         //for demo
                         {field:'headerdata.Allotment',displayName: 'Allotment', cellTemplate: allotmentTemplate, visible: false, width: '100px'},
-                        {field:'headerdata.AllotmentStatus',displayName: 'Status', visible: false, width: '120px'},						
+                        {field:'headerdata.AllotmentStatus',displayName: 'Status', visible: false, width: '120px'},
 
                         // {field:'Location.Id',displayName: 'LocId', visible: false, width: '55px'}, // We do not want to show this column.
                         {field:'Location.Label',displayName: 'Location', cellTemplate: locationLabelTemplate},
@@ -203,7 +203,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
             $scope.newPoint = null;
             $scope.newGraphic = null;
 			$scope.showDataEntrySheetButton = true;
-			
+
             $scope.gridOptionsFilter = {};
             $scope.gridOptions = {
             	data: 'activities',
@@ -227,19 +227,19 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 				console.log("$scope is next...");
 				console.dir($scope);
             });
-			
+
             $scope.$watch('dataset.Fields', function() {
                 if(!$scope.dataset.Fields ) return;
-							
+
 				console.log("Inside dataset.Fields watcher...");
 				console.log("$scope is next...");
 				console.dir($scope);
-				
+
 				$rootScope.datasetId = $scope.dataset.Id;
                 //load our project based on the projectid we get back from the dataset
                 $scope.project = DataService.getProject($scope.dataset.ProjectId);
                 $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id','Name');
-				
+
 				$scope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
 				console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
 				//console.log("$scope.columnDefs is next...");
@@ -258,7 +258,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 				// $scope.columnDefs[9] = Date Range
 				// $scope.columnDefs[10] = By User
 				// $scope.columnDefs[11] = QAStatus
-				
+
 				$scope.showDataEntrySheetButton = true;
 				if($scope.DatastoreTablePrefix === "WaterTemp")
                 {
@@ -269,7 +269,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
                     $scope.columnDefs[7].visible = true;  // FieldActivityType
                     $scope.columnDefs[9].visible = true;  // Date Range
                     $scope.columnDefs[10].visible = true; // By User
-					
+
 					$scope.reloadDatasetLocations("WaterTemp", LOCATION_TYPE_WaterTemp);
                 }
 				else if($scope.DatastoreTablePrefix === "WaterQuality")
@@ -328,9 +328,9 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
                     $scope.columnDefs[5].visible = true;  // Location
                     $scope.columnDefs[10].visible = true; // By User
                     $scope.columnDefs[11].visible = true; // QAStatus
-					
+
 					$scope.showDataEntrySheetButton = false;
-					
+
 					$scope.gridOptions = {};
 					$scope.gridOptions = {
 						data: 'activities',
@@ -341,7 +341,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 						columnDefs: 'columnDefs',
 						filterOptions: $scope.gridOptionsFilter,
 					};
-					
+
 					$scope.reloadDatasetLocations("Metrics", LOCATION_TYPE_Hab);
                 }
 				else
@@ -354,21 +354,21 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
                     $scope.columnDefs[10].visible = true; // By User
                     $scope.columnDefs[11].visible = true; // QAStatus
 				}
-				
+
 				console.log("$scope at end of watch, dataset.Fields is next...");
 				console.dir($scope);
             });
-			
+
             $scope.$watch('project.Name', function(){
                 if($scope.project && $scope.project.$resolved){
 					console.log("Inside watch project.Name...");
-					
+
 					console.log("$scope.project.Id = " + $scope.project.Id);
 					//$scope.subprojectType = DatastoreService.getSubprojectType($scope.project.Id);
 					//$scope.subprojectType = DatastoreService.getProjectType($scope.project.Id);
 					console.log("$scope.subprojectType = " + $scope.subprojectType);
 					DataService.setServiceSubprojectType($scope.subprojectType);
-					
+
 					//if ($scope.subprojectType === "Habitat")
 					if ($scope.DatastoreTablePrefix === "Metrics")
 					{
@@ -391,13 +391,13 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 								console.log("$scope.subprojectList.length is 0");
 								return;
 							}
-							
+
 							console.log("$scope.subprojectList.length = " + $scope.subprojectList.length);
 							console.log("subprojects is loaded...");
 							console.dir($scope.subprojectList);
-							
+
 							$scope.reloadProjectLocations();
-							
+
 							if($scope.map && $scope.map.locationLayer && $scope.map.locationLayer.hasOwnProperty('showLocationsById'))
 							{
 								//$scope.map.locationLayer.showLocationsById($scope.thisProjectsLocationObjects); //bump and reload the locations.
@@ -405,9 +405,9 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 								// If we supply an Id that we know does not exist (0), we get no locations, which is what we expect.
 								$scope.map.locationLayer.showLocationsById(0); //bump and reload the locations.
 							}
-							
+
 							watcher();
-						});			
+						});
 					}
 					else
 					{
@@ -423,7 +423,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 					console.log("Inside watch activities.$resolved...");
 					console.log("$scope is next...");
 					console.log($scope);
-					
+
                     if(!$scope.allActivities)
                        $scope.allActivities = $scope.activities;
 
@@ -432,7 +432,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
                     if($scope.activities.length > 0)
                     {
                         $scope.gridOptions.ngGrid.data.$promise.then(function(){
-							
+
 							var intLocT = -1;
 							var strTheTime = "";
 							angular.forEach($scope.gridOptions.ngGrid.data, function(row){
@@ -442,12 +442,12 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 									intLocT = row.headerdata.TimeStart.indexOf("T");
 									strTheTime = row.headerdata.TimeStart.substr(intLocT + 1, 5);
 									row.headerdata.TimeStart = strTheTime;
-									
+
 									intLocT = -1;
 									strTheTime = "";
 								}
 							});
-							
+
                             $rootScope.GridActivities = $scope.gridOptions.ngGrid.data;
                         });
                     }
@@ -459,9 +459,9 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
                     $scope.loading = false;
 
             });
-			
+
 			$scope.reloadDatasetLocations = function(datasetName, locationType){
-				console.log("Inside activities-controllers.js, scope.reloadDatasetLocations...");	
+				console.log("Inside activities-controllers.js, scope.reloadDatasetLocations...");
 
 				console.log("$scope is next...");
 				console.dir($scope);
@@ -469,11 +469,11 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 				//console.dir($scope.project.Locations);
 
 				$scope.thisDatasetLocationObjects = []; // Dump this list, before refilling it.
-				
+
 				if (datasetName === "WaterTemp")
 				{
 					console.log("We have a WaterTemp dataset...");
-					
+
 					angular.forEach($scope.project.Locations, function(location, key){
 						if (location.LocationType.Id === LOCATION_TYPE_WaterTemp)
 							$scope.thisDatasetLocationObjects.push(location.SdeObjectId);
@@ -484,9 +484,9 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 					console.log("We have a Metrics dataset...");
 					console.log("$scope.subprojectList is next...");
 					console.dir($scope.subprojectList);
-					
+
 					angular.forEach($scope.subprojectList, function(subproject){
-						
+
 						angular.forEach($scope.project.Locations, function(location, key){
 							//console.log("location key = " + key);
 							//console.log("location is next...");
@@ -549,13 +549,13 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
                 {
                     var deleting = DatastoreService.deleteLocation($scope.selectedLocation.Id);
                     $scope.removeFilter();
-                    
+
                     deleting.$promise.then(function(){
                         $scope.refreshProjectLocations();
                         $scope.reloadProjectLocations();
                     });
                 }
-                    
+
             };
 
             $scope.editLocation = function(){
@@ -726,10 +726,10 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 				$scope.subprojectList = angular.copy($scope.subprojectList);
 				//console.log("$scope.subprojectList is next...");
 				//console.dir($scope.subprojectList);
-				
-				$scope.datasetLocationType = DatastoreService.getDatasetLocationType($scope.DatastoreTablePrefix);			
+
+				$scope.datasetLocationType = DatastoreService.getDatasetLocationType($scope.DatastoreTablePrefix);
 				console.log("LocationType = " + $scope.datasetLocationType);
-				
+
                 //$scope.locationsArray = getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId");
                 $scope.locationsArray = getMatchingByField($scope.project.Locations,$scope.datasetLocationType,"LocationTypeId");
 				//console.log("$scope.locationsArray (after adding Locations based upon location type) is next...");
@@ -747,11 +747,11 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 								$scope.locationsArray.push(location);
 							}
 						});
-					});				
+					});
 
 					console.log("$scope.locationsArray (after adding subproject locs) is next...");
 					console.dir($scope.locationsArray);
-					
+
 					$scope.locationObjectIds = getLocationObjectIdsFromLocationsWithSubprojects($scope.locationsArray);
 				}
 				else
