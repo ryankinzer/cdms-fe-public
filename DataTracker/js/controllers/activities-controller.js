@@ -133,6 +133,12 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
     	function ($scope, $routeParams, DataService, DatastoreService, $modal, $location, $window, $rootScope) {
 			console.log("Inside datasetActivitiesController...");
             $scope.dataset = DataService.getDataset($routeParams.Id);
+
+			if ((typeof $scope.activities !== 'undefined') && ($scope.activites !== null))
+			{
+				$scope.activities = null;
+				console.log("Set $scope.activities to null for project page...");
+			}
             $scope.activities = DataService.getActivitiesForView($routeParams.Id);
             $scope.loading = true;
             $scope.project = null;
@@ -218,13 +224,13 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
 
             //Maybe there is a better way?!
             $scope.activities.$promise.then(function(){
-				console.log("Loading header data...");
+				console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
                 $scope.headerdata.$promise.then(function(){
                     angular.forEach($scope.activities, function(activity, key){
                         activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
                     });
                 });
-				console.log("$scope is next...");
+				console.log("$scope at end of $scope.activities.$promise is next...");
 				console.dir($scope);
             });
 
@@ -432,30 +438,37 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
                     if($scope.activities.length > 0)
                     {
                         $scope.gridOptions.ngGrid.data.$promise.then(function(){
+            							if ($scope.DatastoreTablePrefix === "CreelSurvey")
+            							{
+            								var intLocT = -1;
+            								var strTheTime = "";
+            								console.log("Starting to extract TimeStart...");
+            								angular.forEach($scope.gridOptions.ngGrid.data, function(row){
+            									// Verify that we have a StartTime, before we try to extract the time from it.
+            									if ((typeof row.headerdata.TimeStart !== 'undefined') && (row.headerdata.TimeStart !== null))
+            									{
+            										intLocT = row.headerdata.TimeStart.indexOf("T");
+            										strTheTime = row.headerdata.TimeStart.substr(intLocT + 1, 5);
+            										row.headerdata.TimeStart = strTheTime;
 
-							var intLocT = -1;
-							var strTheTime = "";
-							angular.forEach($scope.gridOptions.ngGrid.data, function(row){
-								// Verify that we have a StartTime, before we try to extract the time from it.
-								if ($scope.row && (typeof $scope.row.headerdata.TimeStart !== 'undefined') && ($scope.row.headerdata.TimeStart !== null))
-								{
-									intLocT = row.headerdata.TimeStart.indexOf("T");
-									strTheTime = row.headerdata.TimeStart.substr(intLocT + 1, 5);
-									row.headerdata.TimeStart = strTheTime;
+            										intLocT = -1;
+            										strTheTime = "";
+            									}
+            									else
+            										console.log("$scope.row.headerdata.TimeStart exists and has data...");
+            								});
+            								console.log("Done extracting TimeStart...");
 
-									intLocT = -1;
-									strTheTime = "";
-								}
-							});
-
-                            $rootScope.GridActivities = $scope.gridOptions.ngGrid.data;
+            								// This makes a copy of ALL the activities.  When the dataset has lots of activities, it causes problems.
+            								//$rootScope.GridActivities = $scope.gridOptions.ngGrid.data;
+            							}
                         });
                     }
 
                 }
 
                 //turn off the wheel of fishies
-                if(typeof $scope.activities.$resolved == "undefined")
+                if (($scope.activities) && (typeof $scope.activities.$resolved == "undefined"))
                     $scope.loading = false;
 
             });
@@ -783,6 +796,7 @@ var datasetActivitiesController = ['$scope','$routeParams', 'DataService', 'Data
             };
 
             $scope.openImportWindow = function() {
+				$scope.activities = null; // Dump the activities to free up memory.
 				$location.path("/datasetimport/"+$scope.dataset.Id);
 			};
 

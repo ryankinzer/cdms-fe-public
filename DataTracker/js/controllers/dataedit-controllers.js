@@ -175,6 +175,7 @@ mod_edit.controller('DataEditCtrl', ['$scope','$q','$sce','$routeParams','DataSe
         	$scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id','Name');
 			
         	//set the header field values
+			console.log("Setting header fields...");
         	$scope.row['ActivityId'] = $scope.dataset_activities.Header.ActivityId;
         	$scope.row['activityDate'] = $scope.dataset_activities.Header.Activity.ActivityDate;
         	$scope.row['locationId'] = ""+$scope.dataset_activities.Header.Activity.LocationId; //note the conversion of this to a string!

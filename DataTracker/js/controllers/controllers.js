@@ -252,6 +252,12 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 		console.log("Inside projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
 		
+		if ((typeof scope.activities !== 'undefined') && (scope.activites !== null))
+		{
+			scope.activities = null;
+			console.log("Set scope.activities to null for project page...");
+		}
+		
 		scope.datasets = DataService.getProjectDatasets(routeParams.Id);
 		scope.project = DataService.getProject(routeParams.Id);
 		scope.currentUserId = $rootScope.Profile.Id;
@@ -387,7 +393,7 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			console.dir(scope.fishermenList);		
 		
 			// If we switch the parameters for the makeObjects, like this makeObjects(scope.fishermenList, 'FullName', 'Id'), it will put them in alpha order by name.
-			// However, we must test this first, to verify that it does not mess anything up.
+			// However, we must test this first, to verify that it does not mess anything up. ~GC tested the idea; it needed more work.  It does not work in it simplicity here.
 			scope.fishermenOptions = $rootScope.fishermenOptions = makeObjects(scope.fishermenList, 'Id','FullName');
 			
 			// Debug output ... wanted to verify the contents of scope.fishermenOptions
@@ -419,7 +425,7 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 				// The only things that would be uploading/editing/deleting from this level, though, would be project-level, or subproject-level (Habitat or CRPP).
 				// Project-level documents/images do not require scope.DatastoreTablePrefix; only subproject-level do.
 				// Therefore, we only need to check the datasets for those (Habitat or CRPP), and it would be one or the other, but never both.
-				// If the user picks a WaterTemp dataset, under a Habitat project, the dataset-level controllers will set the DatastoreTablePrefix accordingling.
+				// If the user picks a WaterTemp dataset, under a Habitat project, the dataset-level controllers will set the DatastoreTablePrefix accordingly.
 				//scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[0].Datastore.TablePrefix;
 				//console.log("scope.DatastoreTablePrefix (in datasets watcher) = " + scope.DatastoreTablePrefix);
 				
@@ -439,16 +445,20 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 						scope.ShowFishermen = true;
 						// Note:  Fishermen follows the logic/flow of instruments.
 						// Example:  There are more instruments than what are assigned to just one project.
-						// Therefore, we allowed that more fishermen coult exist, besides what is in only the Harvest project -- just following the logic.
+						// Therefore, we allowed that more fishermen could exist, besides what is in only the Harvest project -- just following the logic.
 						scope.fishermenList = DatastoreService.getFishermen(); // All fishermen, but only CreelSurvey has fishermen.//
 						scope.theFishermen = DatastoreService.getProjectFishermen(scope.datasets[i].ProjectId);
-						//scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
+						// Note:  If we are on Harvest, it has only one dataset.
+						scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
 					}
 					else if (scope.datasets[i].Datastore.TablePrefix === "CrppContracts")
 					{
 						scope.ShowSubproject = true;
 						scope.subprojectList = DataService.getSubprojects();
-						//scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
+						// Note:  If we are on CRPP, it has only one dataset.
+						// We must set the scope.DatastoreTablePrefix, in order for the Edit Subproject to work.
+						// The Correspondence Event also needs scope.DatastoreTablePrefix, in order to save documents properly.
+						scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
 					}
 					//else if (scope.datasets[i].Datastore.TablePrefix === "Metrics")
 					else if ((scope.datasets[i].Datastore.TablePrefix === "Metrics") || 
@@ -1711,11 +1721,11 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 				//$rootScope.DatastoreTablePrefix = scope.DatastoreTablePrefix;
 				$rootScope.viewSubproject = scope.viewSubproject = angular.copy(subproject);
 				
-				console.log("scope is next...");
+				console.log("scope (in scope.viewSelectedSubproject) is next...");
 				console.dir(scope);			
-				console.log("scope.viewSubproject is next...");
+				console.log("scope.viewSubproject (in scope.viewSelectedSubproject) is next...");
 				console.dir(scope.viewSubproject);
-				console.log("scope.viewSubproject.ProjectName = " +  scope.viewSubproject.ProjectName);
+				console.log("scope.viewSubproject.ProjectName (in scope.viewSelectedSubproject) = " +  scope.viewSubproject.ProjectName);
 				$rootScope.subprojectId = scope.viewSubproject.Id;
 			}
         };
