@@ -4026,8 +4026,6 @@ function validateField(field, row, key, scope, row_errors)
 
 						}
 
-						}
-
 					}
 				}
 				else if (field.Field.Validation === "i4") // 4-digit integer
@@ -4153,6 +4151,7 @@ if(field.DbColumnName == "FinClip")
     fireRules("OnValidate",row,field,value,scope.row,row_errors, scope);
 
 }
+
 
 function stringIsNumber(s) {
     return !isNaN(parseFloat(s)) && isFinite(s);
