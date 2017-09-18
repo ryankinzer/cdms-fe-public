@@ -269,7 +269,7 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 		// Therefore, we need to handle the number in a string instead.
 
 		$scope.strFinalResult += strFirstNumber + strSecondNumber;
-		console.log("$scope.strFinalResult (after concat) = " + $scope.strFinalResult);
+		//console.log("$scope.strFinalResult (after concat) = " + $scope.strFinalResult);
 
 		var n = -1;
 		//for (int i = (strSecondNumber.length - 1); i > -1; i--)
@@ -286,7 +286,7 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 			}
 			$scope.strFinalResult = angular.copy($scope.strFinalResult) + $scope.strLastDigit;
 		}
-		//console.log("$scope.strFinalResult (after final hash)= " + $scope.strFinalResult);
+		console.log("$scope.strFinalResult (after final hash)= " + $scope.strFinalResult);
 
 		//$scope.strFinalResult = intFinalResult.toString();
 
