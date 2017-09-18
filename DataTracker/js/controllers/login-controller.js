@@ -65,11 +65,11 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 				//var GetServerNumber = LoginSvc.retrieveNumber();
 				strFirstNumber = $scope.buildRandomString10();
 				//strFirstNumber = "8989898989"; // Use this for development/testing.
-				console.log("strFirstNumber = " + strFirstNumber);
+				//console.log("strFirstNumber = " + strFirstNumber);
 				
 				strSecondNumber = $scope.buildRandomString10();
 				//strSecondNumber = "7878787878"; // Use this for development/testing.
-				console.log("strSecondNumber = " + strSecondNumber);
+				//console.log("strSecondNumber = " + strSecondNumber);
 
 				for (var i = 0; i < strOriginalText.length; i++)
 				{
@@ -118,7 +118,7 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 					
 				}
 				$scope.Password = $scope.buildFinalResults($scope.originalTextList, strFirstNumber, strSecondNumber);
-				console.log("$scope.Password = " + $scope.Password);
+				//console.log("$scope.Password = " + $scope.Password);
 							
 				//throw "Stopping right here...";
 				
@@ -259,7 +259,7 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 		{
 			$scope.strFinalResult += item.intNumber.toString().length +  item.intNumber.toString();
 		});
-		console.log("$scope.strFinalResult (before concat)= " + $scope.strFinalResult);
+		//console.log("$scope.strFinalResult (before concat)= " + $scope.strFinalResult);
 
 		// Note:  The string contained in strFinalResult has a good probability of being too long 
 		// for either int32 or int64.
@@ -279,19 +279,19 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 			n = parseInt(strFirstNumber.substr(i, 1));
 			if ( n > 2)
 			{
-				console.log("Last hash # = " + n);
+				//console.log("Last hash # = " + n);
 				$scope.strFinalResult = $scope.multiply($scope.strFinalResult, n.toString());
 				$scope.strLastDigit = n.toString();
 				i = -1;
 			}
 			$scope.strFinalResult = angular.copy($scope.strFinalResult) + $scope.strLastDigit;
 		}
-		console.log("$scope.strFinalResult (after final hash)= " + $scope.strFinalResult);
+		//console.log("$scope.strFinalResult (after final hash)= " + $scope.strFinalResult);
 
 		//$scope.strFinalResult = intFinalResult.toString();
 
-		console.log("$scope.strFinalResult (final)= " + $scope.strFinalResult);
-		console.log("$scope.strFinalResult.length = " + $scope.strFinalResult.length);
+		//console.log("$scope.strFinalResult (final)= " + $scope.strFinalResult);
+		//console.log("$scope.strFinalResult.length = " + $scope.strFinalResult.length);
 		//console.log("strOriginalText.length = " + strOriginalText.length);
 		//console.log("strFirstNumber = " + strFirstNumber);
 		//console.log("strSecondNumber = " + strClientNumber);
