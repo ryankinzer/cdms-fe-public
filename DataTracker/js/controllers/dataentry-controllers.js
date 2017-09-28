@@ -1557,6 +1557,7 @@ mod_de.controller('DataEntryFormCtrl', ['$scope','$routeParams','DataService','$
 			var strYear = null;
 			var strMonth = null;
 			var strDay = null;
+			var tmpTime = null;
 			
 			/**** CreeSurvey Detail Time Time calculations Start ****/
 			if ($scope.DatastoreTablePrefix === "CreelSurvey")
@@ -1589,7 +1590,7 @@ mod_de.controller('DataEntryFormCtrl', ['$scope','$routeParams','DataService','$
 						$scope.dataSheetDataset[i].TotalTimeFished = TotalTimeFished;
 					}
 					
-					if ((typeof $scope.dataSheetDataset[i].InterviewTime !== 'undefined') && ($scope.dataSheetDataset[i].InterviewTime != null))
+					if ((typeof $scope.dataSheetDataset[i].InterviewTime !== 'undefined') && ($scope.dataSheetDataset[i].InterviewTime !== null))
 					{
 						tmpTime = $scope.dataSheetDataset[i].InterviewTime;
 						//console.log("tmpTime (TimeEnd) = " + tmpTime);

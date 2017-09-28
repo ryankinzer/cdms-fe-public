@@ -252,9 +252,9 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 					$scope.migrationYearsList = DataService.getMigrationYears($scope.dataset.Id);
 				}
 				//else if ($scope.DatastoreTablePrefix === "Metrics")
-				else if ((scope.datasets[i].Datastore.TablePrefix === "Metrics") || 
-					(scope.datasets[i].Datastore.TablePrefix === "Benthic") ||
-					(scope.datasets[i].Datastore.TablePrefix === "Drift")
+				else if (($scope.DatastoreTablePrefix === "Metrics") || 
+					($scope.DatastoreTablePrefix === "Benthic") ||
+					($scope.DatastoreTablePrefix === "Drift")
 					)
 				{
 					$scope.showActivitiesWhereAll = false;
