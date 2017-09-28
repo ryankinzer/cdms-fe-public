@@ -239,7 +239,8 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 				}
 				else if ($scope.DatastoreTablePrefix === "AdultWeir") 
 				{
-					$scope.showActivitiesWhereAll = false;
+					//$scope.showActivitiesWhereAll = false;
+					$scope.showActivitiesWhereAll = true;
 					$scope.showActivitiesWhereRunYear = true;
 					$scope.Criteria.paramActivityDateType = "singleYear";
 					$scope.runYearsList = DataService.getRunYears($scope.dataset.Id);
