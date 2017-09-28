@@ -746,7 +746,7 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 						query.criteria.RunYear = $scope.Criteria.paramActivityWhereRunYear;
 					}
 					else
-						query.criteria.DateSearchType = $scope.Criteria.paramActivityDateType = "all";
+						query.criteria.DateSearchType = $scope.Criteria.paramActivityDateType;
 				}
 				else if ($scope.DatastoreTablePrefix === "ScrewTrap")
 				{
