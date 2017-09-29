@@ -121,7 +121,7 @@ mod_de.controller('DataEntryDatasheetCtrl', ['$scope','$routeParams','DataServic
 		
 		//update our location options as soon as our project is loaded.
         $scope.$watch('project.Name', function(){
-        	if(!$scope.project) return;
+        	if(!$scope.project.Name) return;
 			
 			console.log("Inside watch project.Name...");
 			//console.log("$scope.project is next...");
