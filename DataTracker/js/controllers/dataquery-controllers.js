@@ -372,7 +372,7 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 	    	});
 								
     		$scope.$watch('project.Name', function(){
-    			if($scope.project){	
+    			if($scope.project.Name){	
 					console.log("Inside DataQueryCtrl, project.Name watcher...");
 					
 					// Original code

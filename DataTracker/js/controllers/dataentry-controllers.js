@@ -121,7 +121,7 @@ mod_de.controller('DataEntryDatasheetCtrl', ['$scope','$routeParams','DataServic
 		
 		//update our location options as soon as our project is loaded.
         $scope.$watch('project.Name', function(){
-        	if(!$scope.project) return;
+        	if(!$scope.project.Name) return;
 			
 			console.log("Inside watch project.Name...");
 			//console.log($scope.project is next...");
@@ -720,10 +720,11 @@ mod_de.controller('DataEntryFormCtrl', ['$scope','$routeParams','DataService','$
         //update our location options as soon as our project is loaded.
 		// The project gets called/loaded in $scope.$watch('dataset.Fields' (above), so $scope.DatastoreTablePrefix was set there.
         $scope.$watch('project.Name', function(){
-        	if(!$scope.project) return;
-        	//console.dir($scope.project);
+        	if(!$scope.project.Name) return;
 			
 			console.log("Inside watch project.Name...");
+			//console.log($scope.project is next...");
+        	//console.dir($scope.project);
 			
 			$rootScope.projectId = $scope.project.Id;
 			$scope.project.Files = null;
