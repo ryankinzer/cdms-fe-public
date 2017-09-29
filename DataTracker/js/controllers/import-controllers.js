@@ -304,7 +304,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
     		});
 			
 			$scope.$watch('project.Name', function(){
-	        	if(!$scope.project) return;
+	        	if(!$scope.project.Name) return;
 				
 				console.log("Inside DatasetImportCtrl, project.Name watcher...");
 	        	//Logger.debug($scope.project);
