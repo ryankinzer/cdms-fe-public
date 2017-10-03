@@ -434,14 +434,17 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 					//DataService.configureDataset(dataset);
 					//DataService.configureDataset(dataset, scope);  // We must pass the scope along on this call.
 					DataService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
+					console.log("Found dataset for..." + scope.datasets[i].Datastore.TablePrefix);
 					
 					if (scope.datasets[i].Datastore.TablePrefix === "WaterTemp")
 					{
+						console.log("Adding instruments to tab bar...");
 						scope.ShowInstruments = true;
 						// scope.project.Instruments gets pulled in automatically with the project.
 					}
 					else if (scope.datasets[i].Datastore.TablePrefix === "CreelSurvey")
 					{
+						console.log("Adding Fishermen to tab bar...");
 						scope.ShowFishermen = true;
 						// Note:  Fishermen follows the logic/flow of instruments.
 						// Example:  There are more instruments than what are assigned to just one project.
@@ -453,8 +456,10 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 					}
 					else if (scope.datasets[i].Datastore.TablePrefix === "CrppContracts")
 					{
+						console.log("Adding Correspondence to tab bar...");
 						scope.ShowSubproject = true;
 						scope.subprojectList = DataService.getSubprojects();
+						console.log("Fetching CRPP subproject...");
 						// Note:  If we are on CRPP, it has only one dataset.
 						// We must set the scope.DatastoreTablePrefix, in order for the Edit Subproject to work.
 						// The Correspondence Event also needs scope.DatastoreTablePrefix, in order to save documents properly.
@@ -466,6 +471,7 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 						(scope.datasets[i].Datastore.TablePrefix === "Drift")
 						)
 					{
+						console.log("Adding Sites to tab bar...");
 						scope.ShowHabitat = true;
 						//scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
 						
@@ -734,7 +740,7 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 				//}
 				//else
 				//{
-					console.log("scope.project.Files empty; nothing to load...");
+				//	console.log("scope.project.Files empty; nothing to load...");
 				//}
 			//}
 		});
@@ -1459,6 +1465,21 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			//scope.project = [];
 			console.log("Inside controllers.js, projectDatasetsController, scope.reloadThisProject...");
 			console.log("scope.projectId = " + scope.projectId + ", scope.SdeObjectId = " + scope.SdeObjectId);
+			
+			scope.FileLocationSubprojectFundersWatchVariable = ""; // Clean GateKeeper variable.
+			
+			// Right now, we still now what the project and subproject type are, so reload the extra items for these specific projects.
+			if (scope.subprojectType === "CRPP") // CRPP
+				scope.subprojectList = DataService.getSubprojects();
+			else if (scope.subprojectType === "Habitat")
+			{
+				console.log("scope.projectId = " + scope.projectId);
+				scope.project = DataService.getProject(scope.projectId);
+				//scope.subprojectList = DataService.getHabSubprojects();
+				scope.subprojectList = DataService.getProjectSubprojects(scope.projectId);
+				scope.funderList = DataService.getProjectFunders(scope.projectId);
+			}
+			
 			scope.project = DataService.getProject(parseInt(scope.projectId));
         };
 		

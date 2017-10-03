@@ -3577,9 +3577,15 @@ mod_fmc.controller('ModalAddHabitatItemCtrl', ['$scope', '$rootScope','$modalIns
 			
 			promise.$promise.then(function(){
 				$scope.subprojects = null;
-				$scope.reloadThisProject();
-				//$scope.reloadSubprojects();
-				$scope.viewSelectedSubproject();
+				
+				// If we were down in the list of subprojects (sites) somewhere, and we removed a Habitat Item
+				// -- perhaps we entered it in error on the wrong Subproject (site) -- 
+				// we would want that item to pop to the top; all updated items to go the top (most recent).
+				// Therefore we must reload all the subprojects to pop it to the top, not just this project.
+				//$scope.reloadThisProject();
+				
+				$scope.reloadSubprojects(); // Need to reload ALL the subprojects, so that this one will pop to the top.
+				//$scope.viewSelectedSubproject(); // Don't run this just yet, because the project has not re-loaded yet.
 				$("#habitatItems").load("habitatItems.html #habitatItems");
 				$modalInstance.dismiss();
 			});

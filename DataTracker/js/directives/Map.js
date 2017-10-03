@@ -152,8 +152,8 @@ console.dir(bing_layers_map);
               try{
                 this.clearSelection();
                 var definitionExpression = "OBJECTID IN (" + locationObjectIds + ")";
-                //console.log("Definition expression: " + definitionExpression);
-                console.log("In Map.js, definitionExpression: ...");
+                //console.log("Definition expression: " + definitionExpression); // Use this for testing.
+                console.log("In Map.js, definitionExpression: ..."); // Use this for production; it does not fill up the console.
                 this.setDefinitionExpression(definitionExpression);
                 this.refresh();
               }
