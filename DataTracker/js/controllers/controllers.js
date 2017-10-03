@@ -693,14 +693,14 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			console.log("project.Files is next...");
 			console.dir(scope.project.Files);
 			
-			if ((typeof scope.project.Files === 'undefined') || (scope.project.Files === null))
-			{
-				scope.project.Files = [];
-			}
-			else
-			{
-				if (scope.project.Files.length > 0)
-				{
+			//if ((typeof scope.project.Files === 'undefined') || (scope.project.Files === null))
+			//{
+			//	scope.project.Files = [];
+			//}
+			//else
+			//{
+				//if (scope.project.Files.length > 0)
+				//{
 					scope.project.Images = [];
 					scope.project.Docs = [];
 					
@@ -731,12 +731,12 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 							}	     
 						}
 					});
-				}
-				else
-				{
+				//}
+				//else
+				//{
 					console.log("scope.project.Files empty; nothing to load...");
-				}
-			}
+				//}
+			//}
 		});
 		
         scope.$watch('project.Id', function(){

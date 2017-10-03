@@ -3102,7 +3102,6 @@ mod_fmc.controller('ModalAddCorrespondenceEventCtrl', ['$scope', '$rootScope','$
 				//$scope.viewSelectedSubproject();
 				$scope.viewSelectedSubproject($scope.viewSubproject);
 				$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
-				//$("#correspondenceEvents").load("partials/subproject/correspondenceEvents.html #correspondenceEvents");
 				$modalInstance.dismiss();
 
 			});
@@ -3378,10 +3377,9 @@ mod_fmc.controller('ModalAddCorrespondenceEventCtrl', ['$scope', '$rootScope','$
 			{
 				promise.$promise.then(function(){
 					$scope.reloadSubprojects();
-					$scope.viewSelectedSubproject();
+					//$scope.viewSelectedSubproject();
 					$scope.viewSelectedSubproject($scope.viewSubproject);
 					$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
-					//$("#correspondenceEvents").load("partials/subproject/correspondenceEvents.html #correspondenceEvents");
 					//$modalInstance.dismiss();
 					})
 					
@@ -3403,9 +3401,8 @@ mod_fmc.controller('ModalAddCorrespondenceEventCtrl', ['$scope', '$rootScope','$
 			{
 				promise.$promise.then(function(){
 					$scope.reloadSubprojects();
-					$scope.viewSelectedSubproject();
-					//$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
-					$("#correspondenceEvents").load("partials/subproject/correspondenceEvents.html #correspondenceEvents");
+					//$scope.viewSelectedSubproject();
+					$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
 					//$modalInstance.dismiss();
 					})
 					
@@ -3476,16 +3473,18 @@ mod_fmc.controller('ModalAddHabitatItemCtrl', ['$scope', '$rootScope','$modalIns
 	$scope.fileCount = 0;
 	$scope.fileProgress = 0;
 	
+	$rootScope.projectId = $scope.project.Id;
 	console.log("$scope.projectId = " + $scope.projectId);
 	
-	if ($scope.hi_row)
-	{
-		$scope.hi_row = angular.copy($scope.hi_row);
+    $scope.hi_row = angular.copy($scope.hi_row);
+	//if ($scope.hi_row)
+	//{
+	//	$scope.hi_row = angular.copy($scope.hi_row);
 
-	}
-	else
-		$scope.hi_row = {};
-
+	//}
+	//else
+	//	$scope.hi_row = {};
+	
 	var keepGoing = true;
 	var foundIt = false;
 
@@ -3506,7 +3505,7 @@ mod_fmc.controller('ModalAddHabitatItemCtrl', ['$scope', '$rootScope','$modalIns
 	
 	console.log("$scope (after initialization) is next...");
 	console.dir($scope);
-		
+	
 	$scope.openFileModal = function(row, field)
 	{
 		console.log("Inside ModalAddHabitatItemCtrl, openFileModal...");
@@ -3578,9 +3577,9 @@ mod_fmc.controller('ModalAddHabitatItemCtrl', ['$scope', '$rootScope','$modalIns
 			
 			promise.$promise.then(function(){
 				$scope.subprojects = null;
-				$scope.reloadSubprojects();
-				//$scope.viewSelectedSubproject();
-				$scope.viewSelectedSubproject($scope.viewSubproject);
+				$scope.reloadThisProject();
+				//$scope.reloadSubprojects();
+				$scope.viewSelectedSubproject();
 				$("#habitatItems").load("habitatItems.html #habitatItems");
 				$modalInstance.dismiss();
 			});
@@ -3669,7 +3668,7 @@ mod_fmc.controller('ModalAddHabitatItemCtrl', ['$scope', '$rootScope','$modalIns
 							// withCredential: true,
 							//data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name},
 							//data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, DatastoreTablePrefix: $scope.DatastoreTablePrefix},
-							data: {ProjectId: $scope.projectId, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, SubprojectType: "Hab"},
+							data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, SubprojectType: "Hab"},
 							file: file,
 
 							}).progress(function(evt) {
@@ -4257,8 +4256,8 @@ mod_fmc.controller('FileModalCtrl', ['$scope','$modalInstance', 'DataService','D
 					}
 				}
         	});
+			
 			console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);			
-
 			if (!$scope.foundDuplicate)
 			{
 				//copy back to the actual row field
@@ -4452,7 +4451,7 @@ mod_fmc.controller('FileAddModalCtrl', ['$scope','$modalInstance', 'DataService'
 				}
         	});
 			
-			console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);			
+			console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);
 			if (!$scope.foundDuplicate)
 			{
 				//copy back to the actual row field
@@ -4468,7 +4467,9 @@ mod_fmc.controller('FileAddModalCtrl', ['$scope','$modalInstance', 'DataService'
 				if ($scope.DatastoreTablePrefix === "Harvest")
 					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.FieldSheetFile;
 				else if ($scope.DatastoreTablePrefix === "ScrewTrap")
-					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.FileTitle;				
+					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.FileTitle;
+				else if ($scope.DatastoreTablePrefix === "CrppContracts")
+					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.DocumentLink;
 				else
 					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.FieldSheetFile;	
 				
@@ -4479,7 +4480,10 @@ mod_fmc.controller('FileAddModalCtrl', ['$scope','$modalInstance', 'DataService'
 				$scope.filesToUpload[$scope.file_field.DbColumnName] = undefined;
 			}
 			
+			console.log("$scope is next...");
 			console.dir($scope);
+			console.log("$rootScope is next...");
+			console.dir($rootScope);
             $modalInstance.dismiss();
 			
 			// Inform the user immediately, if there are duplicate files.
