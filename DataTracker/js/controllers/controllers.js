@@ -2088,8 +2088,8 @@ var projectsController = ['$scope', 'DataService', '$modal',
                 angular.forEach(scope.locationObjectArray, function(item, key){
                     scope.locationObjectIdArray.push(item.SdeObjectId);
                 });
-				console.log("scope.locationObjectIdArray is next...");
-				console.dir(scope.locationObjectIdArray);
+				//console.log("scope.locationObjectIdArray is next...");
+				//console.dir(scope.locationObjectIdArray);
 
                 scope.locationObjectIds = scope.locationObjectIdArray.join();
 				console.log("typeof scope.locationObjectId = " + typeof scope.locationObjectId);
