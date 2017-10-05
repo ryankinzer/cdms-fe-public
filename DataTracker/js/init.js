@@ -19,6 +19,8 @@ require([
 	//check our authentication and setup our user profile first of all!
 	//http://nadeemkhedr.wordpress.com/2013/11/25/how-to-do-authorization-and-role-based-permissions-in-angularjs/
   	$.get(WHOAMI_URL, function(data){
+		console.log("Inside init.js, $.get, data is next...");
+		console.dir(data);
   		profile = data;
   	})
     .fail(function(){

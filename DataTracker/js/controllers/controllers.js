@@ -249,7 +249,7 @@ mod_ds.controller('ModalNewFileCtrl', ['$scope','$modalInstance', 'DataService',
 
 var projectDatasetsController = ['$scope', '$routeParams', 'DataService','DatastoreService', '$rootScope','$modal','$sce','$window','$http','ServiceUtilities','ConvertStatus','$location','$anchorScroll',
 	function(scope, routeParams, DataService, DatastoreService, $rootScope, $modal,$sce, $window, $http, ServiceUtilities, ConvertStatus, $location, $anchorScroll){
-		console.log("Inside projectDatasetsController...");
+		console.log("Inside controllers.js, projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
 		
 		if ((typeof scope.activities !== 'undefined') && (scope.activites !== null))
@@ -1896,7 +1896,7 @@ var projectsController = ['$scope', 'DataService', '$modal',
                                '<a title="{{row.getProperty(\'Description\')}}" href="#/projects/{{row.getProperty(\'Id\')}}">{{row.getProperty("Name")}}</a>' +
                                '</div>';
 							  
-		console.log("In projectsController, scope is next...");
+		console.log("In controllers.js, projectsController, scope is next...");
 		console.dir(scope);
 
 		// This just makes the "box" for the Projects list; it is empty.
@@ -2088,19 +2088,20 @@ var projectsController = ['$scope', 'DataService', '$modal',
                 angular.forEach(scope.locationObjectArray, function(item, key){
                     scope.locationObjectIdArray.push(item.SdeObjectId);
                 });
+				console.log("scope.locationObjectIdArray is next...");
+				console.dir(scope.locationObjectIdArray);
 
                 scope.locationObjectIds = scope.locationObjectIdArray.join();
+				console.log("typeof scope.locationObjectId = " + typeof scope.locationObjectId);
                 console.log("In controllers, projects watcher, found project locations: " + scope.locationObjectIds);
 
-				console.log("scope.map is next...");
-				console.dir(scope.map);
-				console.log("scope.map.locationLayer is next...");
-				console.dir(scope.map.locationLayer);
-				console.log("scope.map.locationLayer is next...");
-				console.dir(scope.map.locationLayer);
-                if(scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
-                    scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
+				//console.log("scope.map is next...");
+				//console.dir(scope.map);
+				//console.log("scope.map.locationLayer is next...");
+				//console.dir(scope.map.locationLayer);
 
+				if(scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
+					scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
             }
         },true);
 
