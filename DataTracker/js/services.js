@@ -3103,6 +3103,7 @@ mod.service('ConvertStatus',[ 'Logger', '$window', '$route',
     }]);	
 	
 mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
+//mod.service('ServiceUtilities',[ 'Logger', '$window', '$route', $q, // Note:  If you had the $q on this line, it causes an error.
     function(Logger,$window, $route, $q){
 		
         var service = {
@@ -3289,7 +3290,7 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 			{
 				scope.FieldSheetFile = aFileName;
 			}
-		}	
+		}		
 		return service;
 
     }]);	
