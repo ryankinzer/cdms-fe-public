@@ -48,7 +48,6 @@ define([
       // this is great for when you need to expose an API for manipulating your directive
       // this is also the best place to setup our map
       controller: function($scope, $element, $attrs){
-
         //possible bing maps
         var bing_layers_map = {
           BingMapsRoad: esri.virtualearth.VETiledLayer.MAP_STYLE_ROAD,
@@ -56,7 +55,7 @@ define([
           BingMapsHybrid: esri.virtualearth.VETiledLayer.MAP_STYLE_AERIAL_WITH_LABELS
         };
 
-console.dir(bing_layers_map);
+		console.dir(bing_layers_map);
         // setup our map options based on the attributes and scope
         var mapOptions = {
           center: ($attrs.center) ? $attrs.center.split(",") : $scope.center,
@@ -149,13 +148,28 @@ console.dir(bing_layers_map);
 
             //setup our layer locationid function so we can all it again sometime
             layer.showLocationsById = function(locationObjectIds){
+				
               try{
                 this.clearSelection();
-                var definitionExpression = "OBJECTID IN (" + locationObjectIds + ")";
-                //console.log("Definition expression: " + definitionExpression); // Use this for testing.
-                console.log("In Map.js, definitionExpression: ..."); // Use this for production; it does not fill up the console.
+				
+                var definitionExpression = "";
+				// If we have a new user, 
+				if (locationObjectIds === "")
+				{
+					console.log("locationObjectIds is blank; give it a number, but we won't pull anything...");
+					definitionExpression = "OBJECTID IN (0)";
+				}
+				else
+				{
+					console.log("locationObjectIds has something; pull only those points...");
+					definitionExpression = "OBJECTID IN (" + locationObjectIds + ")";
+				}
+                console.log("Definition expression: " + definitionExpression);
+                //console.log("In Map.js, definitionExpression: ...");
+				
                 this.setDefinitionExpression(definitionExpression);
                 this.refresh();
+				
               }
 			  catch(e)
               {

@@ -115,12 +115,25 @@ define([
 function configureProfile(profile)
 {
 	//setup our favoritedatasets array for checking later.
-	console.log("profile is next...");
+	console.log("Inside main.js, configureProfile, profile is next...");
 	console.dir(profile);
 	if ((typeof profile === 'undefined') || (profile === null))
 	{
+		// When a new user logs in, they will eventually have favorites, etc.,
+		// so we just initialize their profile for now.
+		// Otherwise, CDMS will choke later, because of the undefined profile.
+		//profile = {};
+		//profile.favoriteDatasets = [];
+		//profile.favoriteProjects = [];
+		//profile.isAdmin = false;
+		//profile.hasRole = false;
+		//profile.canEdit = false;
+		//profile.isProjectOwner = false;
+		//profile.isProjectEditor = false;
+		//console.log("profile was undefined or null, so created it...");
 		return;
 	}
+	
 	var favoriteDatasets = getByName(profile.UserPreferences, "Datasets");
 	if(favoriteDatasets)
 		profile.favoriteDatasets = favoriteDatasets.Value.split(",");
