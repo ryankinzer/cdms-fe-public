@@ -1021,6 +1021,21 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 
 						if($scope.mappedActivityFields[INDEX_FIELD])
 							new_row.activityIndex = data_row[$scope.mappedActivityFields[INDEX_FIELD]];
+						
+						var strYear = new_row.activityDate.getFullYear().toString();
+						console.log("strYear = " + strYear);
+						
+						var intMonth = new_row.activityDate.getMonth() + 1;
+						console.log("intMonth = " + intMonth);
+						var strMonth = "" + intMonth;
+						console.log("strMonth = " + strMonth);
+						if (strMonth.length < 2)
+							strMonth = "0" + strMonth;
+						
+						var strDay = new_row.activityDate.getDate().toString();
+						console.log("strDay = " + strDay);
+						if (strDay.length < 2)
+							strDay = "0" + strDay;
 
 						// End Activities fields*********************************************************
 						
