@@ -1102,7 +1102,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 												new_row.NumberAnglersInterviewed = 0;
 											
 										}
-										else if (field.DbColumnName === "InterviewTime")// && (data_row[col] !== null))
+										/*else if (field.DbColumnName === "InterviewTime")// && (data_row[col] !== null))
 										{
 											//console.log("Found InterviewTime... new row is next...");
 											//console.dir(new_row);
@@ -1116,7 +1116,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 												$scope.uploadErrorMessage = "NumberAnglersInterviewed cannot be 0, if InterviewTime has a time.";
 												$scope.errors.push($scope.uploadErrorMessage);
 											}
-										}
+										}*/
 										
 										if (field.Label === "[-- Fisherman --]")
 										{
@@ -1319,35 +1319,52 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 										}
 										*/
 										
-										if (($scope.DatastoreTablePrefix === "CreelSurvey") && (field.DbColumnName === "TotalTimeFished"))
+										if ($scope.DatastoreTablePrefix === "CreelSurvey")
 										{
-											var NumMinutes = parseInt(data_row[col]);
-											//console.log("NumMinutes = " + NumMinutes);
-											var theHours = parseInt(NumMinutes / 60, 10);
-											//console.log("theHours = " + theHours);
-											var theMinutes = NumMinutes - (theHours * 60);
-											//console.log("theMinutes = " + theMinutes);
-											
-											if (theHours < 10)
-												var strHours = "0" + theHours;
-											else
-												var strHours = "" + theHours;
-											
-											if (theMinutes < 10)
-												var strMinutes = "0" + theMinutes;
-											else
-												var strMinutes = "" + theMinutes;
-																
-											new_row[field.DbColumnName] = strHours + ":" + strMinutes;
-											//console.log("TotalTimeFished is now = " + new_row[field.DbColumnName]);
+											if (field.DbColumnName === "TotalTimeFished")
+											{
+												var NumMinutes = parseInt(data_row[col]);
+												//console.log("NumMinutes = " + NumMinutes);
+												var theHours = parseInt(NumMinutes / 60, 10);
+												//console.log("theHours = " + theHours);
+												var theMinutes = NumMinutes - (theHours * 60);
+												//console.log("theMinutes = " + theMinutes);
+												
+												if (theHours < 10)
+													var strHours = "0" + theHours;
+												else
+													var strHours = "" + theHours;
+												
+												if (theMinutes < 10)
+													var strMinutes = "0" + theMinutes;
+												else
+													var strMinutes = "" + theMinutes;
+																	
+												new_row[field.DbColumnName] = strHours + ":" + strMinutes;
+												//console.log("TotalTimeFished is now = " + new_row[field.DbColumnName]);
+											}
+											//else if (field.DbColumnName === "LocationId")
+											else if (field.DbColumnName === "Location")
+											{
+												//console.log("field.DbColumnName = " + field.DbColumnName + "; data_row[col] = " + data_row[col]);
+												new_row[field.DbColumnName] = data_row[col];
+											}
+											else if (field.DbColumnName === "InterviewTime")// && (data_row[col] !== null))
+											{
+												//console.log("Found InterviewTime... new row is next...");
+												//console.dir(new_row);
+												var strNumberAnglersInterviewed = null;
+												
+												if (new_row.NumberAnglersInterviewed)
+													new_row.NumberAnglersInterviewed.toString();
+												
+												if (strNumberAnglersInterviewed === "0")
+												{
+													$scope.uploadErrorMessage = "NumberAnglersInterviewed cannot be 0, if InterviewTime has a time.";
+													$scope.errors.push($scope.uploadErrorMessage);
+												}
+											}
 										}
-										//else if (($scope.DatastoreTablePrefix === "CreelSurvey") && (field.DbColumnName === "LocationId"))
-										else if (($scope.DatastoreTablePrefix === "CreelSurvey") && (field.DbColumnName === "Location"))
-										{
-											//console.log("field.DbColumnName = " + field.DbColumnName + "; data_row[col] = " + data_row[col]);
-											new_row[field.DbColumnName] = data_row[col];
-										}
-										
 										else if ($scope.DatastoreTablePrefix === "SpawningGroundSurvey")
 										{
 											//console.log("SpawningGroundSurvey..., field.DbColumnName = " + field.DbColumnName);
