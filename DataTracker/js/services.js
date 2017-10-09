@@ -3179,6 +3179,44 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 
 				return newTime;
 			},
+			
+			extractDateFromString2:  function(strDateTime)
+			{
+				// This function take an incoming date as string, in one of these formats,
+				/*	(HH:MM),
+				*	(HH:MM:SS),
+				*	(YYYY-MM-DDTHH:mm:SS format)
+				*/
+				// and extracts the time (HH:MM) from the string.
+				
+				//console.log("strDateTime = " + strDateTime);
+				var theString = strDateTime;
+				var theLength = theString.length;
+				var colonLocation = theString.indexOf(":");
+				
+				// Some fields may have double quotes on the time fields.
+				// To determine if they do, we remove (via replace) the double quotes.
+				// Then we compare the string length from before and after the replace action.
+				var stringLength = theString.length;
+				var tmpString = theString.replace("\"", "");
+				var tmpStringLength = tmpString.length;
+				console.log("colonLocation = " + colonLocation + ", stringLength = " + stringLength);
+				
+				if (stringLength !== tmpStringLength)
+				{
+					console.log("The string includes double quotes..");
+					// The string includes "" (coming from a CSV file) so we must allow for them.
+					if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
+						theString = theString.substring(colonLocation - 2, stringLength - 4);
+				}
+				else
+				{
+					console.log("The string DOES NOT have double quotes...");
+					if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
+						theString = theString.substring(colonLocation - 2, stringLength - 3);
+				}
+				return theString;
+			},
 
             padNumber: function(number){
 				// This function take a number (< 10) as string, and adds a leading zero do it.

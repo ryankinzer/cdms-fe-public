@@ -164,7 +164,7 @@ mod_dv.controller('DatasetViewCtrl', ['$scope','$routeParams','DataService','$mo
 							$scope.dataSheetDataset[i].TotalTimeFished = strHours + ":" + strMinutes;
 							//console.log("TotalTimeFished is now = " + $scope.dataSheetDataset[i].TotalTimeFished);
 							
-							numMinutes = -1;
+							NumMinutes = -1;
 							theHours = -1;
 							theMinutes = -1;
 							strHours = "";

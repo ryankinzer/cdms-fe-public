@@ -1055,7 +1055,8 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 							//console.log("field is next...");
 							//console.dir(field);
 							// field is the column, and col is actually the value.
-							//console.log("field.DbColumnName = " + field.DbColumnName + ", field.Label = " + field.Label + ", col = " + col);
+							console.log("-----");
+							console.log("field.DbColumnName = " + field.DbColumnName + ", field.Label = " + field.Label + ", col = " + col);
 							//console.log("**data_row[col] = " + data_row[col] + ", typeof = " + typeof data_row[col]);
 							
 							try{
@@ -1077,47 +1078,6 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 									
 									if ($scope.DatastoreTablePrefix === "CreelSurvey")
 									{
-										// Guess what?  If the value is 0, on Test CDMS treats it as an empty value.  We have to handle that...
-										if ((field.DbColumnName === "FishCount") && (data_row[col] !== null))
-										{
-											//console.log("Found FishCount.  Value = " + data_row[col]);
-											var strFishCount = data_row[col].toString();
-											if (strFishCount === "0")
-												new_row.FishCount = 0;
-											
-										}
-										else if ((field.DbColumnName === "NumberAnglersObserved") && (data_row[col] !== null))
-										{
-											//console.log("Found FishCount.  Value = " + data_row[col]);
-											var strNumberAnglersObserved = data_row[col].toString();
-											if (strNumberAnglersObserved === "0")
-												new_row.NumberAnglersObserved = 0;
-											
-										}
-										else if ((field.DbColumnName === "NumberAnglersInterviewed") && (data_row[col] !== null))
-										{
-											//console.log("Found FishCount.  Value = " + data_row[col]);
-											var strNumberAnglersInterviewed = data_row[col].toString();
-											if (strNumberAnglersInterviewed === "0")
-												new_row.NumberAnglersInterviewed = 0;
-											
-										}
-										else if (field.DbColumnName === "InterviewTime")// && (data_row[col] !== null))
-										{
-											//console.log("Found InterviewTime... new row is next...");
-											//console.dir(new_row);
-											var strNumberAnglersInterviewed = null;
-											
-											if (new_row.NumberAnglersInterviewed)
-												new_row.NumberAnglersInterviewed.toString();
-											
-											if (strNumberAnglersInterviewed === "0")
-											{
-												$scope.uploadErrorMessage = "NumberAnglersInterviewed cannot be 0, if InterviewTime has a time.";
-												$scope.errors.push($scope.uploadErrorMessage);
-											}
-										}
-										
 										if (field.Label === "[-- Fisherman --]")
 										{
 											new_row.FishermanId = parseInt($scope.getFishermanId(data_row[col]));
@@ -1129,9 +1089,8 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 												//$scope.errors.push($scope.uploadErrorMessage); // This leaves the trace for postmortem.
 											}
 										}
-										
-										//else if (field.Label === "[-- Location Id --]")
-										if (field.Label === "[-- Location Id --]")
+										else if (field.Label === "[-- Location Id --]")
+										//if (field.Label === "[-- Location Id --]")
 										{
 											new_row.locationId = parseInt($scope.getLocationId(data_row[col]));
 											console.log("new_row.locationId = " + new_row.locationId);
@@ -1164,32 +1123,90 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 									//check for numeric or ignore as blank if it isn't.
 									//console.log("new_row is next...");
 									//console.dir(new_row);
-									if(field.ControlType == "number" && !isNumber(data_row[col]) )
+									if (field.ControlType == "number")
 									{
-										//console.log("ignoring: " + field.DbColumnName + " is a number field but value is not a number: " + data_row[col]);
-										return; //don't set this as a value
-									}
-									else if (field.ControlType === "number" && ($scope.DatastoreTablePrefix === "Benthic"))
-									{
-										//console.log("data_row[col] = " + data_row[col]);
-										var tmpValue = -1;
-										if (field.Validation === '2d') // 2-decimal places
+										if (!isNumber(data_row[col]))
 										{
-											//console.log("Found 2d..." + field.DbColumnName);
-											tmpValue = parseFloat(Math.round(data_row[col] * 100)/100);
-											//console.log("tmpValue = " + tmpValue);
-											new_row[field.DbColumnName] = tmpValue
+											//console.log("ignoring: " + field.DbColumnName + " is a number field but value is not a number: " + data_row[col]);
+											return; //don't set this as a value
 										}
-										else if (field.Validation === 'p2d') // % with 2 decimal places
+										else if ($scope.DatastoreTablePrefix === "CreelSurvey")
 										{
-											//console.log("Found p2d..." + field.DbColumnName);
-											if (data_row[col] === 0)
-												new_row[field.DbColumnName] = "0";
+											// Guess what?  If the value is 0, on Test CDMS treats it as an empty value.  We have to handle that...
+											if ((field.DbColumnName === "FishCount") && (data_row[col] !== null))
+											{
+												console.log("Found FishCount.  Value = " + data_row[col]);
+												var strFishCount = data_row[col].toString();
+												if (strFishCount === "0")
+													new_row.FishCount = 0;
+												
+											}
+											else if ((field.DbColumnName === "NumberAnglersObserved") && (data_row[col] !== null))
+											{
+												console.log("Found NumberAnglersObserved.  Value = " + data_row[col]);
+												
+												var strNumberAnglersObserved = data_row[col].toString();
+												if (strNumberAnglersObserved === "0")
+													if ($scope.showHeaderForm)
+														$scope.row.NumberAnglersObserved = 0;
+													else
+														new_row.NumberAnglersObserved = 0;
+												else
+													if ($scope.showHeaderForm)
+														$scope.row.NumberAnglersObserved = data_row[col];
+													else
+														new_row.NumberAnglersObserved = data_row[col];
+													
+											}
+											else if ((field.DbColumnName === "NumberAnglersInterviewed") && (data_row[col] !== null))
+											{
+												console.log("Found NumberAnglersInterviewed.  Value = " + data_row[col]);
+												var strNumberAnglersInterviewed = data_row[col].toString();
+												if (strNumberAnglersInterviewed === "0")
+													if ($scope.showHeaderForm)
+														$scope.row.NumberAnglersInterviewed = 0;
+													else
+														new_row.NumberAnglersInterviewed = 0;
+												else
+													if ($scope.showHeaderForm)
+														$scope.row.NumberAnglersInterviewed = data_row[col];
+													else
+														new_row.NumberAnglersInterviewed = data_row[col];
+													
+												
+													
+											}
 											else
 											{
-												tmpValue = parseFloat(Math.round(data_row[col] * 10000)/100);
+												new_row[field.DbColumnName] = data_row[col];
+											}
+										}
+										else if ($scope.DatastoreTablePrefix === "Benthic")
+										{
+											//console.log("data_row[col] = " + data_row[col]);
+											var tmpValue = -1;
+											if (field.Validation === '2d') // 2-decimal places
+											{
+												//console.log("Found 2d..." + field.DbColumnName);
+												tmpValue = parseFloat(Math.round(data_row[col] * 100)/100);
 												//console.log("tmpValue = " + tmpValue);
 												new_row[field.DbColumnName] = tmpValue
+											}
+											else if (field.Validation === 'p2d') // % with 2 decimal places
+											{
+												//console.log("Found p2d..." + field.DbColumnName);
+												if (data_row[col] === 0)
+													new_row[field.DbColumnName] = "0";
+												else
+												{
+													tmpValue = parseFloat(Math.round(data_row[col] * 10000)/100);
+													//console.log("tmpValue = " + tmpValue);
+													new_row[field.DbColumnName] = tmpValue
+												}
+											}
+											else
+											{
+												new_row[field.DbColumnName] = data_row[col];
 											}
 										}
 										else
@@ -1292,132 +1309,93 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 									else //just add the value to the cell
 									{
 										//set the value
-										if ((typeof new_row.activityDate !== 'string') && (field.FieldRoleId === 1))
-											$scope.row[field.DbColumnName] = data_row[col];
-										else
-											new_row[field.DbColumnName] = data_row[col]; //but don't uppercase anything that isn't a multiselect or select.
-										
-										//console.log("new_row[field.DbColumnName] = " + new_row[field.DbColumnName]);
-
-										//console.log(field.ControlType);
-										//console.log(typeof data_row[col]);
-
-										//console.log("found a map value: " +new_row[field.DbColumnName]+" = "+data_row[col]);
-										/*if(field.ControlType == "select" && data_row[col] && typeof data_row[col] == "string")
+										console.log("$scope.showHeaderForm = " + $scope.showHeaderForm + ", field.FieldRoleId = " + field.FieldRoleId);
+										// Using Header form...
+										//if ((typeof new_row.activityDate !== 'string') && (field.FieldRoleId === 1))
+										if ($scope.showHeaderForm && (field.FieldRoleId === 1))
 										{
-											//console.log(" -- " + data_row[col].trim().toUpperCase());
-											//if(typeof data_row == "string") //might otherwise be a number or something...
-											//new_row[field.DbColumnName] = data_row[col].trim().toUpperCase(); //uppercase select's too....  KBHERE
-											
-											if ((field.DbColumnName !== "Shift") &&
-												(field.DbColumnName !== "Direction") &&
-												//(field.DbColumnName !== "Disposition") &&
-												(field.DbColumnName !== "TotalTimeFished"))
-											{										
-												new_row[field.DbColumnName] = data_row[col].trim().toUpperCase(); //uppercase select's too....  KBHERE
-											}
-										}
-										*/
-										
-										if ($scope.DatastoreTablePrefix === "CreelSurvey")
-										{
-											if (field.DbColumnName === "TotalTimeFished")
+											//$scope.row[field.DbColumnName] = data_row[col]; Original line.
+											if ($scope.DatastoreTablePrefix === "CreelSurvey")
 											{
-												/*var NumMinutes = parseInt(data_row[col]);
-												//console.log("NumMinutes = " + NumMinutes);
-												var theHours = parseInt(NumMinutes / 60, 10);
-												//console.log("theHours = " + theHours);
-												var theMinutes = NumMinutes - (theHours * 60);
-												//console.log("theMinutes = " + theMinutes);
-												
-												if (theHours < 10)
-													var strHours = "0" + theHours;
-												else
-													var strHours = "" + theHours;
-												
-												if (theMinutes < 10)
-													var strMinutes = "0" + theMinutes;
-												else
-													var strMinutes = "" + theMinutes;
-																	
-												new_row[field.DbColumnName] = strHours + ":" + strMinutes;
-												*/
-												//console.log("TotalTimeFished is now = " + new_row[field.DbColumnName]);
-												new_row[field.DbColumnName] = ServiceUtilities.convertMinutesToHhMm(parseInt(data_row[col]));
-											}
-											//else if (field.DbColumnName === "LocationId")
-											else if (field.DbColumnName === "Location")
-											{
-												//console.log("field.DbColumnName = " + field.DbColumnName + "; data_row[col] = " + data_row[col]);
-												new_row[field.DbColumnName] = data_row[col];
-											}
-											else if (field.DbColumnName === "InterviewTime")// && (data_row[col] !== null))
-											{
-												//console.log("Found InterviewTime... new row is next...");
-												//console.dir(new_row);
-											}
-										}
-										else if ($scope.DatastoreTablePrefix === "SpawningGroundSurvey")
-										{
-											//console.log("SpawningGroundSurvey..., field.DbColumnName = " + field.DbColumnName);
-											if ((field.DbColumnName === "StartTime") ||
-												(field.DbColumnName === "EndTime") ||
-												(field.DbColumnName === "Time"))
-											{
-												//console.log(field.DbColumnName + " = " + data_row[col]);
-												var theString = data_row[col];
-												var theLength = theString.length;
-												
-												// 	theString may contain a time in this formats:
-												/*	(HH:MM),
-												*	(HH:MM:SS),
-												*	(YYYY-MM-DDTHH:mm:SS format)
-												*	We must extract the time (HH:MM) from the string.
-												*/
-												console.log("field.DbColumnName = " + field.DbColumnName + ", theString = " + theString);
-												var colonLocation = theString.indexOf(":");
-												
-												// Some fields may have double quotes on the time fields.
-												// To determine if they do, we remove (via replace) the double quotes.
-												// Then we compare the string length from before and after the replace action.
-												var stringLength = theString.length;
-												var tmpString = theString.replace("\"", "");
-												var tmpStringLength = tmpString.length;
-												console.log("colonLocation = " + colonLocation + ", stringLength = " + stringLength);
-												
-												if (stringLength !== tmpStringLength)
+												// Header items
+												if ((field.DbColumnName === "TimeStart") ||
+													(field.DbColumnName === "TimeEnd")
+													)
 												{
-													console.log("The string includes double quotes..");
-													// The string includes "" (coming from a CSV file) so we must allow for them.
-													if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
-														theString = theString.substring(colonLocation - 2, stringLength - 4);
+													$scope.row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
+												}
+												//else if (field.DbColumnName === "LocationId")
+												else if (field.DbColumnName === "Location")
+												{
+													//console.log("field.DbColumnName = " + field.DbColumnName + "; data_row[col] = " + data_row[col]);
+													$scope.row[field.DbColumnName] = data_row[col];
 												}
 												else
 												{
-													console.log("The string DOES NOT have double quotes...");
-													if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
-														theString = theString.substring(colonLocation - 2, stringLength - 3);
-												}	
-												console.log("theString = " + theString);
-												new_row[field.DbColumnName] = theString;
-											}									
+													$scope.row[field.DbColumnName] = data_row[col];
+												}
+											}
+											else
+												$scope.row[field.DbColumnName] = data_row[col];
+
+											
+										}
+										// Using spreadsheet form, or it's a detail.
+										else
+										{
+											// Original line
+											//new_row[field.DbColumnName] = data_row[col]; //but don't uppercase anything that isn't a multiselect or select.
+											
+											if ($scope.DatastoreTablePrefix === "CreelSurvey")
+											{
+												if ((field.DbColumnName === "TimeStart") ||
+													(field.DbColumnName === "TimeEnd") ||
+													(field.DbColumnName === "InterviewTime") ||
+													(field.DbColumnName === "FishReleased")
+													)
+													{
+														new_row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
+													
+														if (field.DbColumnName === "InterviewTime")
+														{
+															var strNumberAnglersInterviewed = null;
+															
+															if ($scope.showHeaderForm)
+																strNumberAnglersInterviewed = $scope.row.NumberAnglersInterviewed.toString();
+															else
+																strNumberAnglersInterviewed = new_row.NumberAnglersInterviewed.toString();
+															
+															console.log("strNumberAnglersInterviewed = " + strNumberAnglersInterviewed);
+															if (strNumberAnglersInterviewed === "0")
+															{
+																$scope.uploadErrorMessage = "NumberAnglersInterviewed cannot be 0, if InterviewTime has a time.";
+																$scope.errors.push($scope.uploadErrorMessage);
+															}
+														}
+													}
+												else if (field.DbColumnName === "TotalTimeFished")
+												{
+													new_row[field.DbColumnName] = ServiceUtilities.convertMinutesToHhMm(parseInt(data_row[col]));
+												}
+												else
+													new_row[field.DbColumnName] = data_row[col];
+											}
+											else if ($scope.DatastoreTablePrefix === "SpawningGroundSurvey")
+											{
+												//console.log("SpawningGroundSurvey..., field.DbColumnName = " + field.DbColumnName);
+												if ((field.DbColumnName === "StartTime") ||
+													(field.DbColumnName === "EndTime") ||
+													(field.DbColumnName === "Time"))
+												{
+													new_row[field.DbColumnName] = extractDateFromString2(data_row[col]);
+												}
+												else
+													new_row[field.DbColumnName] = data_row[col];												
+											}
+											else
+												new_row[field.DbColumnName] = data_row[col];
 										}
 										
-										if ((field.DbColumnName === "TimeStart") ||
-											(field.DbColumnName === "TimeEnd") ||
-											(field.DbColumnName === "InterviewTime") ||
-											(field.DbColumnName === "FishReleased")
-											)
-										{
-											// The time will come in looking like this:  YYYY-MM-DDTHH:mm:SS
-											//console.log(field.DbColumnName + " = " + data_row[col]);
-											var theString = data_row[col];
-											var locOfTheT = theString.indexOf("T");
-											theString = theString.substring(locOfTheT + 1, locOfTheT + 6);
-											//console.log("theString = " + theString);
-											new_row[field.DbColumnName] = theString;
-										}									
-
 									}//else  just plain text...
 									
 									//if ((field.FieldRoleId === 1) && ($scope.showHeaderForm)) // Header field
