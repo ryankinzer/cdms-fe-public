@@ -3117,6 +3117,7 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 
         var service = {
 
+			// ***** Date and Time functions start *****
 			dateTimeNowToStrYYYYMMDD_HHmmSS:  function(){
 				// This function gets a date/time hack (now), and returns it in the format of YYYYMMDD_HHmmSS
 				var dtNow = new Date();
@@ -3180,6 +3181,9 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 			},
 
             padNumber: function(number){
+				// This function take a number (< 10) as string, and adds a leading zero do it.
+				// Changes this:  "2"
+				// To this:  "02"
 				console.log("Inside padNumber...");
 
 				if (number < 10) {
@@ -3189,6 +3193,8 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
             },
 
 			toExactISOString: function(a_date){
+				// This function takes a date as DateTime, and converts is to a string
+				// that looks like this:  2017-02-04T08:05:04.123Z
 				console.log("Inside toExactISOString...");
 				console.log("a_date is next...");
 				console.dir(a_date);
@@ -3209,9 +3215,9 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 				return s_utc;
 			},
 
-			//date to friendly format: "3/05/2014 04:35:44"
 			formatDate: function(d){
-
+				//date to friendly format: "3/05/2014 04:35:44"
+				
 				var d_str =
 					[d.getMonth()+1,d.getDate(), d.getFullYear()].join('/') + " " +
 					[("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
@@ -3219,16 +3225,60 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 				return d_str;
 			},
 
-			//date to friendly format: "03/05/2014 04:35:44"  Note the 2-digit month.
 			formatDate2: function(d){
-
+				//date to friendly format: "03/05/2014 04:35:44"  Note the 2-digit month.
+			
 				var d_str =
 					[this.padNumber(d.getMonth()+1),this.padNumber(d.getDate()), d.getFullYear()].join('/') + " " +
 					[("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
 
 				return d_str;
 			},
+			
+			convertHhMmToMinutes: function(aTime)
+			{
+				// This function expects a time duration like this:  01:15 (an hour and 15 minutes), and converts it to minutes.
+				
+				var numberMinutes = 0;
+				
+				var theHours = parseInt(aTime.substr(0,2)); // (start at, get this many)
+				//console.log("theHours = " + theHours);
+				var theMinutes = parseInt(aTime.substr(3,2));
+				//console.log("theMinutes = " + theMinutes);
+				numberMinutes = theHours * 60 + theMinutes;
+				//console.log("TotalTimeFished (in min) = " + TotalTimeFished);
+				return  numberMinutes;
+			},
+			
+			convertMinutesToHhMm: function(numberMinutes)
+			{
+				// This function expects a number of minutes, and converts it to a time duration (as a string) formatted like this:  hh:mm
+				
+				var NumMinutes = numberMinutes;
+				//console.log("NumMinutes = " + NumMinutes);
+				var theHours = parseInt(NumMinutes / 60, 10);
+				//console.log("theHours = " + theHours);
+				var theMinutes = NumMinutes - (theHours * 60);
+				//console.log("theMinutes = " + theMinutes);
+				var strTime = "";
+				
+				if (theHours < 10)
+					var strHours = "0" + theHours;
+				else
+					var strHours = "" + theHours;
+				
+				if (theMinutes < 10)
+					var strMinutes = "0" + theMinutes;
+				else
+					var strMinutes = "" + theMinutes;
+				
+				strTime = strHours + ":" + strMinutes;
+				
+				return strTime;
+			},
+			// ***** Date and Time functions end *****
 
+			// ***** Number-related (how many digits, etc.) functions start *****
 			// Given a float type number, this function verifies that it has six digits before the decimal.
 			checkSixFloat: function(aNumber)
 			{
@@ -3294,6 +3344,7 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 					return undefined;
 				}
 			},
+			// ***** Number-related (how many digits, etc.) functions end *****
 
 			setFileName: function(aFileName, scope)
 			{

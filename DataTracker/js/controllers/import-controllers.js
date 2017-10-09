@@ -1102,7 +1102,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 												new_row.NumberAnglersInterviewed = 0;
 											
 										}
-										/*else if (field.DbColumnName === "InterviewTime")// && (data_row[col] !== null))
+										else if (field.DbColumnName === "InterviewTime")// && (data_row[col] !== null))
 										{
 											//console.log("Found InterviewTime... new row is next...");
 											//console.dir(new_row);
@@ -1116,7 +1116,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 												$scope.uploadErrorMessage = "NumberAnglersInterviewed cannot be 0, if InterviewTime has a time.";
 												$scope.errors.push($scope.uploadErrorMessage);
 											}
-										}*/
+										}
 										
 										if (field.Label === "[-- Fisherman --]")
 										{
@@ -1323,7 +1323,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 										{
 											if (field.DbColumnName === "TotalTimeFished")
 											{
-												var NumMinutes = parseInt(data_row[col]);
+												/*var NumMinutes = parseInt(data_row[col]);
 												//console.log("NumMinutes = " + NumMinutes);
 												var theHours = parseInt(NumMinutes / 60, 10);
 												//console.log("theHours = " + theHours);
@@ -1341,7 +1341,9 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 													var strMinutes = "" + theMinutes;
 																	
 												new_row[field.DbColumnName] = strHours + ":" + strMinutes;
+												*/
 												//console.log("TotalTimeFished is now = " + new_row[field.DbColumnName]);
+												new_row[field.DbColumnName] = ServiceUtilities.convertMinutesToHhMm(parseInt(data_row[col]));
 											}
 											//else if (field.DbColumnName === "LocationId")
 											else if (field.DbColumnName === "Location")
@@ -1353,16 +1355,6 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 											{
 												//console.log("Found InterviewTime... new row is next...");
 												//console.dir(new_row);
-												var strNumberAnglersInterviewed = null;
-												
-												if (new_row.NumberAnglersInterviewed)
-													new_row.NumberAnglersInterviewed.toString();
-												
-												if (strNumberAnglersInterviewed === "0")
-												{
-													$scope.uploadErrorMessage = "NumberAnglersInterviewed cannot be 0, if InterviewTime has a time.";
-													$scope.errors.push($scope.uploadErrorMessage);
-												}
 											}
 										}
 										else if ($scope.DatastoreTablePrefix === "SpawningGroundSurvey")
@@ -1744,9 +1736,9 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						return;
 				}
 				
-				var theHours = -1;
-				var theMinutes = -1;
-				var TotalTimeFished = -1;
+				//var theHours = -1;
+				//var theMinutes = -1;
+				//var TotalTimeFished = -1;
 				
 				for (var i = 0; i < $scope.dataSheetDataset.length; i++)
 				{
@@ -1754,7 +1746,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 					{
 						if ((typeof $scope.dataSheetDataset[i].TotalTimeFished !== 'undefined') && ($scope.dataSheetDataset[i].TotalTimeFished != null))
 						{
-							//console.log("TotalTimeFished for row " + i + " = " + $scope.dataSheetDataset[i].TotalTimeFished);
+							/*//console.log("TotalTimeFished for row " + i + " = " + $scope.dataSheetDataset[i].TotalTimeFished);
 							theHours = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(0,2));
 							//console.log("theHours = " + theHours);
 							theMinutes = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(3,5));
@@ -1762,10 +1754,12 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 							TotalTimeFished = theHours * 60 + theMinutes;
 							//console.log("TotalTimeFished (in min) = " + TotalTimeFished);
 							$scope.dataSheetDataset[i].TotalTimeFished = TotalTimeFished;
+							*/
+							$scope.dataSheetDataset[i].TotalTimeFished = ServiceUtilities.convertHhMmToMinutes($scope.dataSheetDataset[i].TotalTimeFished);
 							
-							theHours = -1;
-							theMinutes = -1;
-							TotalTimeFished = -1;
+							//theHours = -1;
+							//theMinutes = -1;
+							//TotalTimeFished = -1;
 						}
 						
 						console.log("typeof $scope.dataSheetDataset[i].activityDate = " + typeof $scope.dataSheetDataset[i].activityDate);
