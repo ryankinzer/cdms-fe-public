@@ -304,7 +304,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
     		});
 			
 			$scope.$watch('project.Name', function(){
-	        	if(!$scope.project) return;
+	        	if(!$scope.project.Name) return;
 				
 				console.log("Inside DatasetImportCtrl, project.Name watcher...");
 	        	//Logger.debug($scope.project);
@@ -1433,11 +1433,13 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						angular.forEach($scope.mapping, function(field, col){
 							//console.log("field = " + field + ", col = " + col);
 							//var value = row[field.DbColumnName];
-							//if (typeof field.DbColumnName !== 'undefined')
-							//{
-							//	var value = row[field.DbColumnName];
+							var value = null;
+							if (typeof field.DbColumnName !== 'undefined')
+							{
+								//var value = row[field.DbColumnName];
+								value = row[field.DbColumnName];								
 								//console.log("field.DbColumnName = " + field.DbColumnName + "; value = " + value); // Debug step
-							//}
+							}
 
 							if (($scope.DatastoreTablePrefix === "ScrewTrap") && (field.DbColumnName === "TextualComments"))
 							{
@@ -1494,6 +1496,8 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 
 							try{
 								//fire Field rule if it exists -- OnChange
+								//console.log("field is next...");
+								//console.dir(field);
 								if(field.Field && field.Field.Rule && field.Field.Rule.OnChange){
 									//console.log("Firing master rule: " + field.Field.Rule.OnChange);
 									eval(field.Field.Rule.OnChange);
