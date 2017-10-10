@@ -5,7 +5,7 @@ var mod = angular.module('DatasetServices', ['ngResource']);
 //Note: typically you won't want to use these factories directly in your
 // controllers, but rather use the DataService below.
 mod.factory('Projects',['$resource', function(resource){
-        return resource(serviceUrl+'/api/projects',{}, {
+        return resource(serviceUrl+'/api/v1/projects',{}, {
             query: {method: 'GET', params: {}, isArray: true}
         });
 }]);

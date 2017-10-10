@@ -115,7 +115,7 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 }]);
 
 app.factory('RetrieveNumber',['$resource', function(resource){
-        return resource(serviceUrl+'/account/GetNumber', {}, {
+    return resource(serviceUrl +'/api/v1/account/GetNumber', {}, {
         //return resource("http://10.10.10.86:81/Development/services-dev/account/GetNumber', {}, {			
 			query: {method: 'GET', params: {}, isArray: false} 
 		});
@@ -130,11 +130,11 @@ app.factory('RetrieveNumber',['$resource', function(resource){
 //}]);
 
 app.factory('LoginRequest',['$resource', function(resource){
-        return resource(serviceUrl+'/account/login');
+        return resource(serviceUrl+'/api/v1/account/login');
 }]);
 
 app.factory('LogoutRequest', ['$resource', function(resource){
-		return resource(serviceUrl+'/account/logout', {}, { query: {method: 'GET', params: {}, isArray: false}});
+    return resource(serviceUrl +'/api/v1/account/logout', {}, { query: {method: 'GET', params: {}, isArray: false}});
 }]);
 
 //app.service('LoginSvc', ['LoginRequest','LogoutRequest', function(LoginRequest, LogoutRequest){
