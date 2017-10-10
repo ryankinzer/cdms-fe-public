@@ -3113,199 +3113,190 @@ mod.service('ConvertStatus',[ 'Logger', '$window', '$route',
     }]);
 
 mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
+//mod.service('ServiceUtilities',[ 'Logger', '$window', '$route', $q, // Note:  If you had the $q on this line, it causes an error.
     function(Logger,$window, $route, $q){
 
         var service = {
 
-			dateTimeNowToStrYYYYMMDD_HHmmSS:  function(){
-				// This function gets a date/time hack (now), and returns it in the format of YYYYMMDD_HHmmSS
-				var dtNow = new Date();
-				var intYear = dtNow.getFullYear();
-				var intMonth = dtNow.getMonth();
-				var	strMonth = this.padNumber(intMonth);
-				var intDate = dtNow.getDate();
-				var	strDate = this.padNumber(intDate);
-				var intHours = dtNow.getHours();
-				var	strHours = this.padNumber(intHours);
-				var intMinutes = dtNow.getMinutes();
-				var	strMinutes = this.padNumber(intMinutes);
-				var intSeconds = dtNow.getSeconds();
-				var	strSeconds = this.padNumber(intSeconds);
-				var strNow = intYear + strMonth + strDate + "_" + strHours + strMinutes + strSeconds;
-				return strNow;
-			},
-
-			dateTimeNowToStrYYYYMMDD_HHmmSS2:  function(){
-				// This function gets a date/time hack (now), and returns it in the format of YYYY-MM-DD HH:mm:SS.nnn
-				var dtNow = new Date();
-				var intYear = dtNow.getFullYear();
-				var intMonth = dtNow.getMonth();
-				var	strMonth = this.padNumber(intMonth);
-				var intDate = dtNow.getDate();
-				var	strDate = this.padNumber(intDate);
-				var intHours = dtNow.getHours();
-				var	strHours = this.padNumber(intHours);
-				var intMinutes = dtNow.getMinutes();
-				var	strMinutes = this.padNumber(intMinutes);
-				var intSeconds = dtNow.getSeconds();
-				var	strSeconds = this.padNumber(intSeconds);
-				var intMilliseconds = dtNow.getMilliseconds();
-				var strMilliseconds = this.padNumber(intMilliseconds);
-				var strNow = intYear + "-" + strMonth + "-" + strDate + " " + strHours + ":" + strMinutes + ":" + strSeconds + "." + strMilliseconds;
-				return strNow;
-			},
-
-			extractDateFromString:  function(strDate){
-				// This function takes an incoming date in this format:  2015-08-14T00:00:00
-				// and extracts/converts it to this format:  2015-08-14
-				console.log("Inside extractDateFromString...");
-				console.log("strDate = " + strDate);
-
-				var newDate = strDate.substring(0,10);
-				console.log("newDate = " + newDate);
-
-				return newDate;
-			},
-
-			extractTimeFromString:  function(strDateTime){
-				// This function takes an incoming date in this format:  2015-08-14T08:00:00
-				// and extracts/converts it to this format:  08:00
-				console.log("Inside extractTimeFromString...");
-				console.log("strDateTime = " + strDateTime);
-
-				var newTime = strDateTime.substring(11,16);
-				console.log("newTime = " + newTime);
-
-				return newTime;
-			},
-
-            padNumber: function(number){
-				console.log("Inside padNumber...");
-
-				if (number < 10) {
-					return '0' + number;
-				}
-				return number;
+            dateTimeNowToStrYYYYMMDD_HHmmSS: function () {
+                // This function gets a date/time hack (now), and returns it in the format of YYYYMMDD_HHmmSS
+                var dtNow = new Date();
+                var intYear = dtNow.getFullYear();
+                var intMonth = dtNow.getMonth();
+                var strMonth = this.padNumber(intMonth);
+                var intDate = dtNow.getDate();
+                var strDate = this.padNumber(intDate);
+                var intHours = dtNow.getHours();
+                var strHours = this.padNumber(intHours);
+                var intMinutes = dtNow.getMinutes();
+                var strMinutes = this.padNumber(intMinutes);
+                var intSeconds = dtNow.getSeconds();
+                var strSeconds = this.padNumber(intSeconds);
+                var strNow = intYear + strMonth + strDate + "_" + strHours + strMinutes + strSeconds;
+                return strNow;
             },
 
-			toExactISOString: function(a_date){
-				console.log("Inside toExactISOString...");
-				console.log("a_date is next...");
-				console.dir(a_date);
+            dateTimeNowToStrYYYYMMDD_HHmmSS2: function () {
+                // This function gets a date/time hack (now), and returns it in the format of YYYY-MM-DD HH:mm:SS.nnn
+                var dtNow = new Date();
+                var intYear = dtNow.getFullYear();
+                var intMonth = dtNow.getMonth();
+                var strMonth = this.padNumber(intMonth);
+                var intDate = dtNow.getDate();
+                var strDate = this.padNumber(intDate);
+                var intHours = dtNow.getHours();
+                var strHours = this.padNumber(intHours);
+                var intMinutes = dtNow.getMinutes();
+                var strMinutes = this.padNumber(intMinutes);
+                var intSeconds = dtNow.getSeconds();
+                var strSeconds = this.padNumber(intSeconds);
+                var intMilliseconds = dtNow.getMilliseconds();
+                var strMilliseconds = this.padNumber(intMilliseconds);
+                var strNow = intYear + "-" + strMonth + "-" + strDate + " " + strHours + ":" + strMinutes + ":" + strSeconds + "." + strMilliseconds;
+                return strNow;
+            },
 
-				if(a_date.getFullYear() < 1950)
-					a_date.setFullYear(a_date.getFullYear() + 100);
+            extractDateFromString: function (strDate) {
+                // This function takes an incoming date in this format:  2015-08-14T00:00:00
+                // and extracts/converts it to this format:  2015-08-14
+                console.log("Inside extractDateFromString...");
+                console.log("strDate = " + strDate);
 
-				var s_utc = a_date.getFullYear() +
-					'-' + this.padNumber(a_date.getMonth() + 1) +
-					'-' + this.padNumber(a_date.getDate()) +
-					'T' + this.padNumber(a_date.getHours()) +
-					':' + this.padNumber(a_date.getMinutes()) +
-					':' + this.padNumber(a_date.getSeconds()) +
-					// '.' + (a_date.getMilliseconds() / 1000).toFixed(3).slice(2, 5); // original line
-					'.' + (a_date.getMilliseconds() / 1000).toFixed(3).slice(2, 5) +
-					'Z';
+                var newDate = strDate.substring(0, 10);
+                console.log("newDate = " + newDate);
 
-				return s_utc;
-			},
+                return newDate;
+            },
 
-			//date to friendly format: "3/05/2014 04:35:44"
-			formatDate: function(d){
+            extractTimeFromString: function (strDateTime) {
+                // This function takes an incoming date in this format:  2015-08-14T08:00:00
+                // and extracts/converts it to this format:  08:00
+                console.log("Inside extractTimeFromString...");
+                console.log("strDateTime = " + strDateTime);
 
-				var d_str =
-					[d.getMonth()+1,d.getDate(), d.getFullYear()].join('/') + " " +
-					[("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
+                var newTime = strDateTime.substring(11, 16);
+                console.log("newTime = " + newTime);
 
-				return d_str;
-			},
+                return newTime;
+            },
 
-			//date to friendly format: "03/05/2014 04:35:44"  Note the 2-digit month.
-			formatDate2: function(d){
+            padNumber: function (number) {
+                console.log("Inside padNumber...");
 
-				var d_str =
-					[this.padNumber(d.getMonth()+1),this.padNumber(d.getDate()), d.getFullYear()].join('/') + " " +
-					[("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
+                if (number < 10) {
+                    return '0' + number;
+                }
+                return number;
+            },
 
-				return d_str;
-			},
+            toExactISOString: function (a_date) {
+                console.log("Inside toExactISOString...");
+                console.log("a_date is next...");
+                console.dir(a_date);
 
-			// Given a float type number, this function verifies that it has six digits before the decimal.
-			checkSixFloat: function(aNumber)
-			{
-				// Regular Expression explanation.  Also see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-				// Enclosing characters:  / ... /
-				// At the beginning:  ^
-				// Escape character for special characters:  \  , in this case the - has special meaning
-				// Match the preceding character 0 or 1 time; in other words, like -123.  The - sign in front may or may not be present:  ?
-				// A sequence of 6 digits:  \d{6}
-				// Start a section to be remembered:  (       and another section   (
-				// Look for a decimal, but the decimal needs escaping, because the . is special:  \.
-				// Close the decimal section:  )
-				// Look for a digit:  \d
-				// Match the preceding character 1 or more times:  +
-				// Closed this section for the fractional value:  )
-				// The decimal followed by 1 or more numbers may or may not be present (the whole .123 section):  ?
-				// The fractional part (.123) is treated as the end of the number, and we want to see if the number has a fractional part:  $
-				// Basically, the $ matches the whole () section before the ?, so the decimal section must be at the end of the number.
-				// Example:  For example, /t$/ does not match the 't' in "eater", but does match it in "eat".
-				var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
-				var n = "" + aNumber;
-				n = n.replace(',', '.');
+                if (a_date.getFullYear() < 1950)
+                    a_date.setFullYear(a_date.getFullYear() + 100);
 
-				if (FLOAT_REGEXP6.test(n))
-				{
-					return parseFloat(n.replace(',', '.'));
-				}
-				else
-				{
-					return undefined;
-				}
-			},
-			// Given text that could be an integer, this function verifies that it is an integer.
-			checkInteger: function(aNumber)
-			{
-				var INTEGER_REGEXP = /^\-?\d+$/;
-				var n = "" + aNumber;
-				n = n.replace(',', '.');
+                var s_utc = a_date.getFullYear() +
+                    '-' + this.padNumber(a_date.getMonth() + 1) +
+                    '-' + this.padNumber(a_date.getDate()) +
+                    'T' + this.padNumber(a_date.getHours()) +
+                    ':' + this.padNumber(a_date.getMinutes()) +
+                    ':' + this.padNumber(a_date.getSeconds()) +
+                    // '.' + (a_date.getMilliseconds() / 1000).toFixed(3).slice(2, 5); // original line
+                    '.' + (a_date.getMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+                    'Z';
 
-				if (INTEGER_REGEXP.test(n))
-				{
-					return parseFloat(n.replace(',', '.'));
-				}
-				else
-				{
-					return undefined;
-				}
-			},
+                return s_utc;
+            },
 
-			check4Digits: function(aNumber)
-			{
-				console.log("Inside check4Digits...")
-				var INTEGER_REGEXP = /^\d{4}$/;
-				var n = "" + aNumber;
-				n = n.replace(',', '.');
+            //date to friendly format: "3/05/2014 04:35:44"
+            formatDate: function (d) {
 
-				if (INTEGER_REGEXP.test(n))
-				{
-					return parseFloat(n.replace(',', '.'));
-				}
-				else
-				{
-					return undefined;
-				}
-			},
+                var d_str =
+                    [d.getMonth() + 1, d.getDate(), d.getFullYear()].join('/') + " " +
+                    [("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
 
-			setFileName: function(aFileName, scope)
-			{
-				scope.FieldSheetFile = aFileName;
-			}
-		}
+                return d_str;
+            },
+
+            //date to friendly format: "03/05/2014 04:35:44"  Note the 2-digit month.
+            formatDate2: function (d) {
+
+                var d_str =
+                    [this.padNumber(d.getMonth() + 1), this.padNumber(d.getDate()), d.getFullYear()].join('/') + " " +
+                    [("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
+
+                return d_str;
+            },
+
+            // Given a float type number, this function verifies that it has six digits before the decimal.
+            checkSixFloat: function (aNumber) {
+                // Regular Expression explanation.  Also see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+                // Enclosing characters:  / ... /
+                // At the beginning:  ^
+                // Escape character for special characters:  \  , in this case the - has special meaning
+                // Match the preceding character 0 or 1 time; in other words, like -123.  The - sign in front may or may not be present:  ?
+                // A sequence of 6 digits:  \d{6}
+                // Start a section to be remembered:  (       and another section   (
+                // Look for a decimal, but the decimal needs escaping, because the . is special:  \.
+                // Close the decimal section:  )
+                // Look for a digit:  \d
+                // Match the preceding character 1 or more times:  +
+                // Closed this section for the fractional value:  )
+                // The decimal followed by 1 or more numbers may or may not be present (the whole .123 section):  ?
+                // The fractional part (.123) is treated as the end of the number, and we want to see if the number has a fractional part:  $
+                // Basically, the $ matches the whole () section before the ?, so the decimal section must be at the end of the number.
+                // Example:  For example, /t$/ does not match the 't' in "eater", but does match it in "eat".
+                var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
+                var n = "" + aNumber;
+                n = n.replace(',', '.');
+
+                if (FLOAT_REGEXP6.test(n)) {
+                    return parseFloat(n.replace(',', '.'));
+                }
+                else {
+                    return undefined;
+                }
+            },
+            // Given text that could be an integer, this function verifies that it is an integer.
+            checkInteger: function (aNumber) {
+                var INTEGER_REGEXP = /^\-?\d+$/;
+                var n = "" + aNumber;
+                n = n.replace(',', '.');
+
+                if (INTEGER_REGEXP.test(n)) {
+                    return parseFloat(n.replace(',', '.'));
+                }
+                else {
+                    return undefined;
+                }
+            },
+
+            check4Digits: function (aNumber) {
+                console.log("Inside check4Digits...")
+                var INTEGER_REGEXP = /^\d{4}$/;
+                var n = "" + aNumber;
+                n = n.replace(',', '.');
+
+                if (INTEGER_REGEXP.test(n)) {
+                    return parseFloat(n.replace(',', '.'));
+                }
+                else {
+                    return undefined;
+                }
+            },
+
+            setFileName: function (aFileName, scope) {
+                scope.FieldSheetFile = aFileName;
+            }
+        };		
+
 		return service;
 
     }]);
-//common utility functions -- should this be broken out elsewhere?
 
-//refactore me even more
+
 // makes a field column definition
 function makeField(colName, placeholder) {
     return '<input type="text" placeholder="' + placeholder + '" ng-blur="updateCell(row,\'' + colName + '\')" ng-model="COL_FIELD" ng-input="COL_FIELD" />';

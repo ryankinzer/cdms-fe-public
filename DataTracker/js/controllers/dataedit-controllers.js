@@ -339,7 +339,7 @@ mod_edit.controller('DataEditCtrl', ['$scope','$q','$sce','$routeParams','DataSe
 		
 		//update our location options as soon as our project is loaded.
         $scope.$watch('project.Name', function(){
-        	if(!$scope.project) return;
+        	if(!$scope.project.Name) return;
 			
 			console.log("Inside watcher, project.Name...");
 			console.log("$scope is next...");

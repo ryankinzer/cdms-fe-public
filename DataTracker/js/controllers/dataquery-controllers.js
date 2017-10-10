@@ -239,9 +239,10 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 				}
 				else if ($scope.DatastoreTablePrefix === "AdultWeir") 
 				{
-					$scope.showActivitiesWhereAll = false;
+					//$scope.showActivitiesWhereAll = false;
+					$scope.showActivitiesWhereAll = true;
 					$scope.showActivitiesWhereRunYear = true;
-					$scope.Criteria.paramActivityDateType = "singleYear";
+					//$scope.Criteria.paramActivityDateType = "singleYear"; // We set this in BuildQuery instead.
 					$scope.runYearsList = DataService.getRunYears($scope.dataset.Id);
 				}
 				else if ($scope.DatastoreTablePrefix === "ScrewTrap") 
@@ -252,9 +253,9 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 					$scope.migrationYearsList = DataService.getMigrationYears($scope.dataset.Id);
 				}
 				//else if ($scope.DatastoreTablePrefix === "Metrics")
-				else if ((scope.datasets[i].Datastore.TablePrefix === "Metrics") || 
-					(scope.datasets[i].Datastore.TablePrefix === "Benthic") ||
-					(scope.datasets[i].Datastore.TablePrefix === "Drift")
+				else if (($scope.DatastoreTablePrefix === "Metrics") || 
+					($scope.DatastoreTablePrefix === "Benthic") ||
+					($scope.DatastoreTablePrefix === "Drift")
 					)
 				{
 					$scope.showActivitiesWhereAll = false;
@@ -372,7 +373,7 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 	    	});
 								
     		$scope.$watch('project.Name', function(){
-    			if($scope.project){	
+    			if($scope.project.Name){	
 					console.log("Inside DataQueryCtrl, project.Name watcher...");
 					
 					// Original code
@@ -556,6 +557,13 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 						Year:	yearRec["RunYear"]
 					});
 				});
+				if ($scope.RowRunYears.length > 0)
+				{
+					$scope.RowRunYears.push({
+						Id:		["0"],
+						Year:	[null]
+					});
+				}
 				console.log("$scope.RowRunYears is next...");
 				console.dir($scope.RowRunYears);
 				$scope.RunYearOptions = makeObjects($scope.RowRunYears, 'Id', 'Year');
@@ -729,9 +737,16 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 					loading: true,
 				};
 				
+				//if ($scope.DatastoreTablePrefix === "AdultWeir")
 				if ($scope.DatastoreTablePrefix === "AdultWeir")
 				{
-					query.criteria.RunYear = $scope.Criteria.paramActivityWhereRunYear;
+					if (($scope.Criteria.paramActivityWhereRunYear) && ($scope.Criteria.paramActivityWhereRunYear > 0))
+					{
+						query.criteria.DateSearchType = $scope.Criteria.paramActivityDateType = "singleYear";
+						query.criteria.RunYear = $scope.Criteria.paramActivityWhereRunYear;
+					}
+					else
+						query.criteria.DateSearchType = $scope.Criteria.paramActivityDateType;
 				}
 				else if ($scope.DatastoreTablePrefix === "ScrewTrap")
 				{

@@ -249,7 +249,7 @@ mod_ds.controller('ModalNewFileCtrl', ['$scope','$modalInstance', 'DataService',
 
 var projectDatasetsController = ['$scope', '$routeParams', 'DataService','DatastoreService', '$rootScope','$modal','$sce','$window','$http','ServiceUtilities','ConvertStatus','$location','$anchorScroll',
 	function(scope, routeParams, DataService, DatastoreService, $rootScope, $modal,$sce, $window, $http, ServiceUtilities, ConvertStatus, $location, $anchorScroll){
-		console.log("Inside projectDatasetsController...");
+		console.log("Inside controllers.js, projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
 		
 		if ((typeof scope.activities !== 'undefined') && (scope.activites !== null))
@@ -434,14 +434,17 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 					//DataService.configureDataset(dataset);
 					//DataService.configureDataset(dataset, scope);  // We must pass the scope along on this call.
 					DataService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
+					console.log("Found dataset for..." + scope.datasets[i].Datastore.TablePrefix);
 					
 					if (scope.datasets[i].Datastore.TablePrefix === "WaterTemp")
 					{
+						console.log("Adding instruments to tab bar...");
 						scope.ShowInstruments = true;
 						// scope.project.Instruments gets pulled in automatically with the project.
 					}
 					else if (scope.datasets[i].Datastore.TablePrefix === "CreelSurvey")
 					{
+						console.log("Adding Fishermen to tab bar...");
 						scope.ShowFishermen = true;
 						// Note:  Fishermen follows the logic/flow of instruments.
 						// Example:  There are more instruments than what are assigned to just one project.
@@ -453,8 +456,10 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 					}
 					else if (scope.datasets[i].Datastore.TablePrefix === "CrppContracts")
 					{
+						console.log("Adding Correspondence to tab bar...");
 						scope.ShowSubproject = true;
 						scope.subprojectList = DataService.getSubprojects();
+						console.log("Fetching CRPP subproject...");
 						// Note:  If we are on CRPP, it has only one dataset.
 						// We must set the scope.DatastoreTablePrefix, in order for the Edit Subproject to work.
 						// The Correspondence Event also needs scope.DatastoreTablePrefix, in order to save documents properly.
@@ -466,6 +471,7 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 						(scope.datasets[i].Datastore.TablePrefix === "Drift")
 						)
 					{
+						console.log("Adding Sites to tab bar...");
 						scope.ShowHabitat = true;
 						//scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
 						
@@ -693,14 +699,14 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			console.log("project.Files is next...");
 			console.dir(scope.project.Files);
 			
-			if ((typeof scope.project.Files === 'undefined') || (scope.project.Files === null))
-			{
-				scope.project.Files = [];
-			}
-			else
-			{
-				if (scope.project.Files.length > 0)
-				{
+			//if ((typeof scope.project.Files === 'undefined') || (scope.project.Files === null))
+			//{
+			//	scope.project.Files = [];
+			//}
+			//else
+			//{
+				//if (scope.project.Files.length > 0)
+				//{
 					scope.project.Images = [];
 					scope.project.Docs = [];
 					
@@ -731,12 +737,12 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 							}	     
 						}
 					});
-				}
-				else
-				{
-					console.log("scope.project.Files empty; nothing to load...");
-				}
-			}
+				//}
+				//else
+				//{
+				//	console.log("scope.project.Files empty; nothing to load...");
+				//}
+			//}
 		});
 		
         scope.$watch('project.Id', function(){
@@ -1459,6 +1465,21 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			//scope.project = [];
 			console.log("Inside controllers.js, projectDatasetsController, scope.reloadThisProject...");
 			console.log("scope.projectId = " + scope.projectId + ", scope.SdeObjectId = " + scope.SdeObjectId);
+			
+			scope.FileLocationSubprojectFundersWatchVariable = ""; // Clean GateKeeper variable.
+			
+			// Right now, we still now what the project and subproject type are, so reload the extra items for these specific projects.
+			if (scope.subprojectType === "CRPP") // CRPP
+				scope.subprojectList = DataService.getSubprojects();
+			else if (scope.subprojectType === "Habitat")
+			{
+				console.log("scope.projectId = " + scope.projectId);
+				scope.project = DataService.getProject(scope.projectId);
+				//scope.subprojectList = DataService.getHabSubprojects();
+				scope.subprojectList = DataService.getProjectSubprojects(scope.projectId);
+				scope.funderList = DataService.getProjectFunders(scope.projectId);
+			}
+			
 			scope.project = DataService.getProject(parseInt(scope.projectId));
         };
 		
@@ -1896,7 +1917,7 @@ var projectsController = ['$scope', 'DataService', '$modal',
                                '<a title="{{row.getProperty(\'Description\')}}" href="#/projects/{{row.getProperty(\'Id\')}}">{{row.getProperty("Name")}}</a>' +
                                '</div>';
 							  
-		console.log("In projectsController, scope is next...");
+		console.log("In controllers.js, projectsController, scope is next...");
 		console.dir(scope);
 
 		// This just makes the "box" for the Projects list; it is empty.
@@ -2088,19 +2109,20 @@ var projectsController = ['$scope', 'DataService', '$modal',
                 angular.forEach(scope.locationObjectArray, function(item, key){
                     scope.locationObjectIdArray.push(item.SdeObjectId);
                 });
+				//console.log("scope.locationObjectIdArray is next...");
+				//console.dir(scope.locationObjectIdArray);
 
                 scope.locationObjectIds = scope.locationObjectIdArray.join();
+				console.log("typeof scope.locationObjectId = " + typeof scope.locationObjectId);
                 console.log("In controllers, projects watcher, found project locations: " + scope.locationObjectIds);
 
-				console.log("scope.map is next...");
-				console.dir(scope.map);
-				console.log("scope.map.locationLayer is next...");
-				console.dir(scope.map.locationLayer);
-				console.log("scope.map.locationLayer is next...");
-				console.dir(scope.map.locationLayer);
-                if(scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
-                    scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
+				//console.log("scope.map is next...");
+				//console.dir(scope.map);
+				//console.log("scope.map.locationLayer is next...");
+				//console.dir(scope.map.locationLayer);
 
+				if(scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
+					scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
             }
         },true);
 

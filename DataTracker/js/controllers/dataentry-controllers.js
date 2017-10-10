@@ -121,10 +121,10 @@ mod_de.controller('DataEntryDatasheetCtrl', ['$scope','$routeParams','DataServic
 		
 		//update our location options as soon as our project is loaded.
         $scope.$watch('project.Name', function(){
-        	if(!$scope.project) return;
+        	if(!$scope.project.Name) return;
 			
 			console.log("Inside watch project.Name...");
-			//console.log($scope.project is next...");
+			//console.log("$scope.project is next...");
         	//console.dir($scope.project);
 			
 			$rootScope.projectId = $scope.project.Id;
@@ -720,10 +720,11 @@ mod_de.controller('DataEntryFormCtrl', ['$scope','$routeParams','DataService','$
         //update our location options as soon as our project is loaded.
 		// The project gets called/loaded in $scope.$watch('dataset.Fields' (above), so $scope.DatastoreTablePrefix was set there.
         $scope.$watch('project.Name', function(){
-        	if(!$scope.project) return;
-        	//console.dir($scope.project);
+        	if(!$scope.project.Name) return;
 			
 			console.log("Inside watch project.Name...");
+			//console.log("$scope.project is next...");
+        	//console.dir($scope.project);
 			
 			$rootScope.projectId = $scope.project.Id;
 			$scope.project.Files = null;
@@ -1557,6 +1558,7 @@ mod_de.controller('DataEntryFormCtrl', ['$scope','$routeParams','DataService','$
 			var strYear = null;
 			var strMonth = null;
 			var strDay = null;
+			var tmpTime = null;
 			
 			/**** CreeSurvey Detail Time Time calculations Start ****/
 			if ($scope.DatastoreTablePrefix === "CreelSurvey")
@@ -1589,7 +1591,7 @@ mod_de.controller('DataEntryFormCtrl', ['$scope','$routeParams','DataService','$
 						$scope.dataSheetDataset[i].TotalTimeFished = TotalTimeFished;
 					}
 					
-					if ((typeof $scope.dataSheetDataset[i].InterviewTime !== 'undefined') && ($scope.dataSheetDataset[i].InterviewTime != null))
+					if ((typeof $scope.dataSheetDataset[i].InterviewTime !== 'undefined') && ($scope.dataSheetDataset[i].InterviewTime !== null))
 					{
 						tmpTime = $scope.dataSheetDataset[i].InterviewTime;
 						//console.log("tmpTime (TimeEnd) = " + tmpTime);
