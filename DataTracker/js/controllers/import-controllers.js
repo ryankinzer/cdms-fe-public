@@ -972,6 +972,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 					else
 						$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.DetailColDefs);
 				}
+				console.log("$scope.showHeaderForm = " + $scope.showHeaderForm);
 
 				console.log("$scope.datasheetColDefs (after concatentation) is next...");  // Note:  Column ReleaseLocation is already present here, col 9.
 				console.dir($scope.datasheetColDefs);
@@ -985,7 +986,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				
 				//console.log("About to loop through $scope.UploadResults.Data.rows, data_row");
 				angular.forEach($scope.UploadResults.Data.rows, function(data_row){
-					//console.log("*data_row is next...");
+					//console.log("*data_row (at top of loop) is next...");
 					//console.dir(data_row);
 					try
 					{
@@ -995,11 +996,10 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 							var new_row = {
 								RowQAStatusId: $scope.dataset.DefaultRowQAStatusId
 							};
-
+						
 						// Start Activities fields********************************************************
 						// ActivityFields first.  These come from the import form.
 						//console.log($scope.mapping[$scope.ActivityFields.LocationId]);
-
 						if($scope.mapping[$scope.ActivityFields.LocationId])
 							new_row.locationId = data_row[$scope.ActivityFields.LocationId];
 						else
@@ -1007,38 +1007,27 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						
 						if ($scope.ActivityFields.InstrumentId)
 							new_row.InstrumentId = $scope.ActivityFields.InstrumentId;
-
-
+						
 						if($scope.mapping[$scope.ActivityFields.ActivityDate])
 							new_row.activityDate = data_row[$scope.ActivityFields.ActivityDate];
 						else
 							new_row.activityDate = $scope.ActivityFields.ActivityDate;
 						
+						//console.log("new_row.activityDate = " + new_row.activityDate);
+						
 						if($scope.mapping[$scope.ActivityFields.QAStatusId])
 							new_row.QAStatusId = data_row[$scope.ActivityFields.QAStatusId];
 						else
 							new_row.QAStatusId = $scope.ActivityFields.QAStatusId;
-
+						
+						console.log("$scope.mappedActivityFields is next...");
+						console.dir($scope.mappedActivityFields);
 						if($scope.mappedActivityFields[INDEX_FIELD])
 							new_row.activityIndex = data_row[$scope.mappedActivityFields[INDEX_FIELD]];
-						
-						var strYear = new_row.activityDate.getFullYear().toString();
-						console.log("strYear = " + strYear);
-						
-						var intMonth = new_row.activityDate.getMonth() + 1;
-						console.log("intMonth = " + intMonth);
-						var strMonth = "" + intMonth;
-						console.log("strMonth = " + strMonth);
-						if (strMonth.length < 2)
-							strMonth = "0" + strMonth;
-						
-						var strDay = new_row.activityDate.getDate().toString();
-						console.log("strDay = " + strDay);
-						if (strDay.length < 2)
-							strDay = "0" + strDay;
 
 						// End Activities fields*********************************************************
-						
+						//console.log("new_row (after activity fields) is next...");
+						//console.dir(new_row);
 						
 						// Start data rows***************************************************************
 						// Next, we load the fields that come from the imported data.
@@ -1055,8 +1044,8 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 							//console.log("field is next...");
 							//console.dir(field);
 							// field is the column, and col is actually the value.
-							console.log("-----");
-							console.log("field.DbColumnName = " + field.DbColumnName + ", field.Label = " + field.Label + ", col = " + col);
+							//console.log("-----");
+							//console.log("field.DbColumnName = " + field.DbColumnName + ", field.Label = " + field.Label + ", col = " + col);
 							//console.log("**data_row[col] = " + data_row[col] + ", typeof = " + typeof data_row[col]);
 							
 							try{
@@ -1309,7 +1298,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 									else //just add the value to the cell
 									{
 										//set the value
-										console.log("$scope.showHeaderForm = " + $scope.showHeaderForm + ", field.FieldRoleId = " + field.FieldRoleId);
+										//console.log("$scope.showHeaderForm = " + $scope.showHeaderForm + ", field.FieldRoleId = " + field.FieldRoleId);
 										// Using Header form...
 										//if ((typeof new_row.activityDate !== 'string') && (field.FieldRoleId === 1))
 										if ($scope.showHeaderForm && (field.FieldRoleId === 1))
@@ -1334,6 +1323,17 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 												{
 													$scope.row[field.DbColumnName] = data_row[col];
 												}
+											}
+											else if ($scope.DatastoreTablePrefix === "SpawningGroundSurvey")
+											{
+												//console.log("SpawningGroundSurvey..., field.DbColumnName = " + field.DbColumnName);
+												if ((field.DbColumnName === "StartTime") ||
+													(field.DbColumnName === "EndTime"))
+												{
+													$scope.row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
+												}
+												else
+													new_row[field.DbColumnName] = data_row[col];												
 											}
 											else
 												$scope.row[field.DbColumnName] = data_row[col];
@@ -1384,14 +1384,16 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 											{
 												//console.log("SpawningGroundSurvey..., field.DbColumnName = " + field.DbColumnName);
 												if ((field.DbColumnName === "StartTime") ||
-													(field.DbColumnName === "EndTime") ||
-													(field.DbColumnName === "Time"))
+													(field.DbColumnName === "EndTime"))
+													//(field.DbColumnName === "Time"))
 												{
-													new_row[field.DbColumnName] = extractDateFromString2(data_row[col]);
+													new_row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
 												}
 												else
 													new_row[field.DbColumnName] = data_row[col];												
 											}
+											else if (field.DbColumnName === "Time")
+												new_row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
 											else
 												new_row[field.DbColumnName] = data_row[col];
 										}

@@ -3200,18 +3200,18 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 				var stringLength = theString.length;
 				var tmpString = theString.replace("\"", "");
 				var tmpStringLength = tmpString.length;
-				console.log("colonLocation = " + colonLocation + ", stringLength = " + stringLength);
+				//console.log("colonLocation = " + colonLocation + ", stringLength = " + stringLength);
 				
 				if (stringLength !== tmpStringLength)
 				{
-					console.log("The string includes double quotes..");
+					//console.log("The string includes double quotes..");
 					// The string includes "" (coming from a CSV file) so we must allow for them.
 					if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
 						theString = theString.substring(colonLocation - 2, stringLength - 4);
 				}
 				else
 				{
-					console.log("The string DOES NOT have double quotes...");
+					//console.log("The string DOES NOT have double quotes...");
 					if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
 						theString = theString.substring(colonLocation - 2, stringLength - 3);
 				}
