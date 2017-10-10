@@ -115,12 +115,14 @@ define([
 function configureProfile(profile)
 {
 	//setup our favoritedatasets array for checking later.
-	console.log("profile is next...");
-	console.dir(profile);
+	console.log("Inside main.js, configureProfile...");
+	//console.log("profile is next...");
+	//console.dir(profile);
 	if ((typeof profile === 'undefined') || (profile === null))
 	{
 		return;
 	}
+	
 	var favoriteDatasets = getByName(profile.UserPreferences, "Datasets");
 	if(favoriteDatasets)
 		profile.favoriteDatasets = favoriteDatasets.Value.split(",");
