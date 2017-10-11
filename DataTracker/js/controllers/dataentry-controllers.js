@@ -1499,7 +1499,7 @@ mod_de.controller('DataEntryFormCtrl', ['$scope','$routeParams','DataService','$
 						{
 							$scope.upload = $upload.upload({
 								//url: serviceUrl + '/data/UploadProjectFile',
-								url: serviceUrl + '/data/UploadDatasetFile',
+                                url: serviceUrl + '/api/v1/file/uploaddatasetfile',
 								method: "POST",
 								// headers: {'headerKey': 'headerValue'},
 								// withCredential: true,

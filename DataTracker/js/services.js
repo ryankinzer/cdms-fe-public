@@ -5,401 +5,406 @@ var mod = angular.module('DatasetServices', ['ngResource']);
 //Note: typically you won't want to use these factories directly in your
 // controllers, but rather use the DataService below.
 mod.factory('Projects',['$resource', function(resource){
-        return resource(serviceUrl+'/api/v1/projects',{}, {
+        return resource(serviceUrl+'/api/v1/project/getprojects',{}, {
             query: {method: 'GET', params: {}, isArray: true}
         });
 }]);
 
 mod.factory('Users',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/users', {}, {
+        return $resource(serviceUrl+'/api/v1/user/getusers', {}, {
             query: {method: 'GET', params: {}, isArray: true}
         });
 }]);
 
 mod.factory('Project',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/projects', {}, {
+        return $resource(serviceUrl+'/api/v1/project/getproject', {}, {
             query: {method: 'GET', params: {id:'id'}, isArray: false}
         });
 }]);
 
 mod.factory('ProjectDatasets',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/ProjectDatasets', {}, {
+        return $resource(serviceUrl+'/api/v1/project/getprojectdatasets', {}, {
             query: {method: 'GET', params: {id:'projectId'}, isArray: true}
         });
 }]);
 
 mod.factory('MigrationYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/MigrationYears', {}, {
+        return $resource(serviceUrl+'/api/v1/list/getmigrationyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
 
 mod.factory('RunYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/RunYears', {}, {
+        return $resource(serviceUrl+'/api/v1/list/getrunyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
 
 mod.factory('ReportYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/ReportYears', {}, {
+        return $resource(serviceUrl+'/api/v1/list/getreportyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
 
 mod.factory('SpawningYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/SpawningYears', {}, {
+        return $resource(serviceUrl+'/api/v1/getspawningyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
 
 mod.factory('BroodYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/BroodYears', {}, {
+        return $resource(serviceUrl+'/api/v1/list/getbroodyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
 
 mod.factory('OutmigrationYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/OutmigrationYears', {}, {
+        return $resource(serviceUrl+'/api/v1/getoutmigrationyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
 
-/*mod.factory('ProjectSubprojects',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/ProjectSubprojects', {}, {
-            query: {method: 'GET', params: {id:'projectId'}, isArray: true}
-        });
-}]);*/
 mod.factory('ProjectSubprojects',['$resource', function($resource){
-        return $resource(serviceUrl+'/data/ProjectSubprojects', {}, {
+    return $resource(serviceUrl +'/api/v1/habsubproject/gethabsubprojects', {}, {
            save: {method: 'POST', isArray: true}
         });
 }]);
 
+mod.factory('SubprojectFiles', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/getcrppsubprojectfiles', {}, {
+        query: { method: 'GET', params: { id: 'projectId' }, isArray: true }
+    });
+}]);
+
 mod.factory('ProjectFunders',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/ProjectFunders', {}, {
+        return $resource(serviceUrl+'/api/v1/project/getprojectfunders', {}, {
             query: {method: 'GET', params: {id:'projectId'}, isArray: true}
         });
 }]);
 
 mod.factory('ProjectCollaborators',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/ProjectCollaborators', {}, {
+        return $resource(serviceUrl+'/api/v1/project/getprojectcollaborators', {}, {
             query: {method: 'GET', params: {id:'projectId'}, isArray: true}
         });
 }]);
 
 mod.factory('ProjectFiles',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/ProjectFiles', {}, {
+        return $resource(serviceUrl+'/api/v1/file/getprojectfiles', {}, {
             query: {method: 'GET', params: {id:'projectId'}, isArray: true}
         });
 }]);
 
 mod.factory('DatasetFiles',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/DatasetFiles', {}, {
+        return $resource(serviceUrl+'/api/v1/file/getdatasetfiles', {}, {
             query: {method: 'GET', params: {id:'datasetId'}, isArray: true}
         });
 }]);
 
-mod.factory('SubprojectFiles',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/SubprojectFiles', {}, {
-            query: {method: 'GET', params: {id:'projectId'}, isArray: true}
-        });
-}]);
-
 mod.factory('Activities',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/DatasetActivities', {}, {
+        return $resource(serviceUrl+'/api/v1/activity/getdatasetactivities', {}, {
             query: {method: 'GET', params: {id:'datasetId'}, isArray: true}
         });
 }]);
 
 mod.factory('ActivitiesForView',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/DatasetActivitiesView', {}, {
+        return $resource(serviceUrl+'/api/v1/activity/getdatasetactivitiesview', {}, {
             query: {method: 'GET', params: {id:'datasetId'}, isArray: true}
         });
 }]);
 
+mod.factory('Dataset', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/dataset/getdataset', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: false }
+    });
+}]);
+
+
 mod.factory('Datasets',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/datasets', {}, {
-            query: {method: 'GET', params: {id:'datasetId'}, isArray: false}
+        return $resource(serviceUrl+'/api/v1/dataset/getdatasets', {}, {
+            query: {method: 'GET', params: {}, isArray: true}
         });
 }]);
 
 mod.factory('Data',['$resource', function($resource){
-        return $resource(serviceUrl+'/action/DatasetData', {}, {
+    return $resource(serviceUrl +'/api/v1/activity/getdatasetactivitydata', {}, {
             query: {method: 'GET', params: {id:'activityId'}, isArray: false}
         });
 }]);
 
 mod.factory('SaveActivitiesAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveDatasetActivities');
+        return $resource(serviceUrl+'/api/v1/activity/savedatasetactivities');
 }]);
 
 mod.factory('UpdateActivitiesAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/UpdateDatasetActivities');
+        return $resource(serviceUrl+'/api/v1/activity/updatedatasetactivities');
 }]);
 
 mod.factory('QueryActivitiesAction',  ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/QueryDatasetActivities', {}, {
+        return $resource(serviceUrl+'/api/v1/query/querydatasetactivities', {}, {
            save: {method: 'POST', isArray: true}
         });
 }]);
 
 mod.factory('ExportActivitiesAction',  ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/DownloadDatasetActivities', {}, {
+        return $resource(serviceUrl+'/api/v1/export/exportdatasetactivities', {}, {
            save: {method: 'POST', isArray: false}
         });
 }]);
 
 mod.factory('SetProjectEditors', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SetProjectEditors');
+        return $resource(serviceUrl+'/api/v1/project/setprojecteditors');
 }]);
 
 mod.factory('DeleteActivitiesAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/DeleteDatasetActivities');
+        return $resource(serviceUrl+'/api/v1/activity/deletedatasetactivities');
 }]);
 
 mod.factory('DeleteLocationAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/DeleteLocation');
+        return $resource(serviceUrl+'/api/v1/location/deletelocation');
 }]);
 
 
 mod.factory('SetQaStatusAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SetQaStatus');
+        return $resource(serviceUrl+'/api/v1/activity/setqastatus');
 }]);
 
 mod.factory('GetMyDatasetsAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetMyDatasets', {}, {
+        return $resource(serviceUrl+'/api/v1/user/getmydatasets', {}, {
             query: {method: 'GET', params: {}, isArray: true}
         });
 }]);
 
 mod.factory('GetMyProjectsAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetMyProjects', {}, {
+        return $resource(serviceUrl+'/api/v1/user/getmyprojects', {}, {
             query: {method: 'GET', params: {}, isArray: true}
         });
 }]);
 
-
 mod.factory('SaveUserPreferenceAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/action/SaveUserPreference');
+    return $resource(serviceUrl +'/api/v1/user/saveuserpreference');
 }]);
 
 mod.factory('GetMetadataProperties', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/MetadataProperties');
+        return $resource(serviceUrl+'/api/v1/metadata/getmetadataproperties');
 }]);
 
 mod.factory('GetAllPossibleDatastoreLocations', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetAllPossibleDatastoreLocations');
+    return $resource(serviceUrl +'/api/v1/datastore/getdatastorelocations');
 }]);
 
 mod.factory('GetAllDatastoreFields', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetAllDatastoreFields');
+    return $resource(serviceUrl +'/api/v1/datastore/getdatastorefields');
 }]);
 
+//shouldn't this have an ID parameter? my guess is we don't actually use this anywhere...
 mod.factory('GetDatastore', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetDatastore', {}, { query: {method: 'GET', params: {}, isArray: false}});
+        return $resource(serviceUrl+'/api/v1/datastore/getdatastore', {}, { query: {method: 'GET', params: {}, isArray: false}});
 }]);
 
 mod.factory('GetDatastoreProjects', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetDatastoreProjects');
+    return $resource(serviceUrl +'/api/v1/datastore/getdatastoreprojects');
 }]);
 
 mod.factory('GetAllDatastores', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetAllDatastores');
+        return $resource(serviceUrl+'/api/v1/datastore/getdatastores');
 }]);
 
 mod.factory('GetDatastoreDatasets', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetDatastoreDatasets');
+    return $resource(serviceUrl +'/api/v1/datastore/getdatastoredatasets');
 }]);
 
 
 mod.factory('SaveDatasetMetadata', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SetDatasetMetadata');
+    return $resource(serviceUrl +'/api/v1/metadata/setdatasetmetadata');
 }]);
 
 mod.factory('GetSources', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetSources');
+        return $resource(serviceUrl+'/api/v1/list/getsources');
 }]);
 
 mod.factory('GetInstruments', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetInstruments');
+        return $resource(serviceUrl+'/api/v1/instrument/getinstruments');
 }]);
 
 mod.factory('SaveDatasetField', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveDatasetField');
+    return $resource(serviceUrl +'/api/v1/dataset/savedatasetfield');
 }]);
 
 mod.factory('SaveMasterField', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveMasterField');
+    return $resource(serviceUrl +'/api/v1/datastore/savemasterfield');
 }]);
 
 mod.factory('DeleteDatasetField', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/DeleteDatasetField');
+    return $resource(serviceUrl +'/api/v1/dataset/deletedatasetfield');
 }]);
 
 mod.factory('GetAllFields', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetAllFields');
+    return $resource(serviceUrl +'/api/v1/datastore/getfieldcategoryfields');
 }]);
 
 mod.factory('GetLocationTypes', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetLocationTypes');
+    return $resource(serviceUrl +'/api/v1/location/getlocationtypes');
 }]);
 
 mod.factory('AddMasterFieldToDataset', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/AddMasterFieldToDataset');
+    return $resource(serviceUrl +'/api/v1/datastore/addmasterfieldtodataset');
 }]);
 
 mod.factory('SaveProjectLocation', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveProjectLocation');
+    return $resource(serviceUrl +'/api/v1/location/saveprojectlocation');
 }]);
 
 mod.factory('GetAllInstruments', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetAllInstruments');
+    return $resource(serviceUrl +'/api/v1/instrument/getinstruments');
 }]);
 
 mod.factory('SaveProjectInstrument', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveProjectInstrument');
+    return $resource(serviceUrl +'/api/v1/instrument/saveprojectinstrument');
 }]);
 
 mod.factory('SaveProjectFisherman', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveProjectFisherman');
+    return $resource(serviceUrl +'/api/v1/fishermen/saveprojectfishermen');
 }]);
 
 mod.factory('SaveInstrument', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveInstrument');
+    return $resource(serviceUrl +'/api/v1/instrument/saveinstrument');
 }]);
 
 mod.factory('SaveInstrumentAccuracyCheck', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveInstrumentAccuracyCheck');
+    return $resource(serviceUrl +'/api/v1/instrument/saveinstrumentaccuracycheck');
 }]);
 
 mod.factory('SaveCorrespondenceEvent', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveCorrespondenceEvent');
+    return $resource(serviceUrl +'/api/v1/crppsubproject/savecorrespondenceevent');
 }]);
 
 mod.factory('SaveHabitatItem', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveHabitatItem');
+    return $resource(serviceUrl +'/api/v1/habsubproject/savehabitatitem');
 }]);
 
 mod.factory('GetInstrumentTypes', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetInstrumentTypes');
+    return $resource(serviceUrl +'/api/v1/instrument/getinstrumenttypes');
 }]);
 
 mod.factory('RemoveProjectInstrument', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/RemoveProjectInstrument');
+    return $resource(serviceUrl +'/api/v1/instrument/removeprojectinstrument');
 }]);
 
+// TODO: why a POST?
 mod.factory('GetMetadataFor',['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetMetadataFor', {}, {
+    return $resource(serviceUrl +'/api/v1/metadata/getmetadatafor', {}, {
            save: {method: 'POST', isArray: true}
         });
 }]);
 
 mod.factory('GetWaterBodies', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetWaterBodies');
+        return $resource(serviceUrl+'/api/v1/list/getwaterbodies');
 }]);
 
 mod.factory('SaveProject', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveProject');
+    return $resource(serviceUrl +'/api/v1/project/saveproject');
 }]);
 
 
 mod.factory('GetHeadersDataForDataset', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetHeadersDataForDataset');
+    return $resource(serviceUrl +'/api/v1/dataset/getheadersdatafordataset');
 }]);
 
 mod.factory('UpdateFile', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/UpdateFile');
+    return $resource(serviceUrl +'/api/v1/file/updatefile');
 }]);
 
 mod.factory('DeleteFile', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/DeleteFile');
+    return $resource(serviceUrl +'/api/v1/file/deletefile');
 }]);
 
 mod.factory('DeleteDatasetFile', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/DeleteDatasetFile');
+    return $resource(serviceUrl +'/api/v1/file/deletedatasetfile');
 }]);
 
 mod.factory('DeleteCorresEventFile', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/DeleteCorresEventFile');
+    return $resource(serviceUrl +'/api/v1/crppsubproject/deletecorreseventfile');
 }]);
 
 mod.factory('DeleteHabitatItemFile', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/DeleteHabitatItemFile');
+        return $resource(serviceUrl+'/api/v1/habsubproject/deletehabitatitemfile');
 }]);
 
 mod.factory('DeleteHabSubprojectFile', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/DeleteHabSubprojectFile');
+    return $resource(serviceUrl +'/api/v1/habsubproject/deletehabsubprojectfile');
 }]);
 
 mod.factory('GetTimeZones', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetTimeZones');
+        return $resource(serviceUrl+'/api/v1/list/gettimezones');
 }]);
 
+//TODO: needs an id -- probably we don't use this one
 mod.factory('GetDepartments', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/Department');
+        return $resource(serviceUrl+'/api/v1/department/getdepartment');
 }]);
+
 
 mod.factory('SaveFisherman', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveFisherman');
+    return $resource(serviceUrl +'/api/v1/fishermen/savefishermen');
 }]);
 
 mod.factory('SaveSubproject', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveSubproject');
+    return $resource(serviceUrl +'/api/v1/crppsubproject/savecrppsubproject');
 }]);
 
 mod.factory('SaveHabSubproject', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/SaveHabSubproject');
+    return $resource(serviceUrl +'/api/v1/habsubproject/savehabsubproject');
 }]);
 
 mod.factory('GetFishermen', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetFishermen');
+    return $resource(serviceUrl +'/api/v1/fishermen/getfishermen');
 }]);
 
 mod.factory('GetSubprojects', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetSubprojects');
+    return $resource(serviceUrl +'/api/v1/crppsubproject/getcrppsubprojects');
 }]);
 
+//TODO: does this need an ID parameter?
 mod.factory('GetHabSubproject', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetHabSubproject');
+    return $resource(serviceUrl +'/api/v1/habsubproject/gethabsubproject');
 }]);
 
 mod.factory('GetHabSubprojects', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetHabSubprojects');
-        //return $resource(serviceUrl+'/data/GetHabSubprojects', {}, { query: {method: 'GET', params: {}, isArray: false}});
+    return $resource(serviceUrl +'/api/v1/habsubproject/gethabsubprojects');
 }]);
 
 mod.factory('GetProjectFishermen', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetProjectFishermen');
+    return $resource(serviceUrl +'/api/v1/fishermen/getprojectfishermen');
 }]);
 
 mod.factory('RemoveProjectFisherman', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/RemoveProjectFisherman');
+    return $resource(serviceUrl +'/api/v1/fishermen/removeprojectfishermen');
 }]);
 
 mod.factory('RemoveSubproject', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/RemoveSubproject');
+    return $resource(serviceUrl +'/api/v1/crppsubproject/removecrppsubproject');
 }]);
 
 mod.factory('RemoveHabSubproject', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/RemoveHabSubproject');
+    return $resource(serviceUrl +'/api/v1/habsubproject/removehabsubproject');
 }]);
 
 mod.factory('RemoveCorrespondenceEvent', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/RemoveCorrespondenceEvent');
+    return $resource(serviceUrl +'/api/v1/crppsubproject/removecorrespondenceevent');
 }]);
 
 mod.factory('RemoveHabitatItem', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/RemoveHabitatItem');
+    return $resource(serviceUrl +'/api/v1/habsubproject/removehabitatitem');
 }]);
 
-mod.factory('GetRelationData', ['$resource', function($resource){
-        return $resource(serviceUrl+'/data/GetRelationData',{},{
+mod.factory('GetRelationData', ['$resource', function ($resource) {
+    return $resource(serviceUrl +'/api/v1/dataset/getrelationdata',{},{
                        save: {method: 'POST', isArray: true}
         });
-}]);
+}])
 
 mod.factory('SaveUserInfo', ['$resource', function($resource){
-        return $resource(serviceUrl+'/account/SaveUserInfo');
+        return $resource(serviceUrl+'/api/v1/user/saveuserinfo');
 }]);
 
 mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAllDatastoreFields','GetDatastore','GetDatastoreProjects','GetAllDatastores',
@@ -803,13 +808,13 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
     }
 ]);
 
-mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','ProjectDatasets', 'Activities', 'ActivitiesForView', 'Datasets', 'Data', 'SaveActivitiesAction',
+mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','ProjectDatasets', 'Activities', 'ActivitiesForView', 'Datasets', 'Dataset', 'Data', 'SaveActivitiesAction',
 		'UpdateActivitiesAction','QueryActivitiesAction','SetProjectEditors', 'DeleteActivitiesAction', 'SetQaStatusAction', 'GetMyDatasetsAction',
 		'GetMyProjectsAction','SaveUserPreferenceAction','ExportActivitiesAction','GetMetadataProperties','SaveDatasetMetadata','GetMetadataFor',
 		'SaveProject','GetHeadersDataForDataset','GetDepartments','GetRelationData','SaveUserInfo', 'GetSubprojects','GetHabSubprojects','ProjectSubprojects',
 		'ProjectFunders','SubprojectFiles','ProjectCollaborators','DatasetFiles','ProjectFiles','MigrationYears','RunYears','ReportYears','SpawningYears','BroodYears',
 		'OutmigrationYears',
-    function($q, resource, Projects, Users, Project, ProjectDatasets, Activities, ActivitiesForView, Datasets, Data, SaveActivitiesAction, UpdateActivitiesAction, QueryActivitiesAction,
+    function($q, resource, Projects, Users, Project, ProjectDatasets, Activities, ActivitiesForView, Datasets, Dataset, Data, SaveActivitiesAction, UpdateActivitiesAction, QueryActivitiesAction,
 		SetProjectEditors, DeleteActivitiesAction, SetQaStatusAction, GetMyDatasetsAction, GetMyProjectsAction, SaveUserPreferenceAction, ExportActivitiesAction,
 		GetMetadataProperties, SaveDatasetMetadata, GetMetadataFor, SaveProject,GetHeadersDataForDataset, GetDepartments, GetRelationData, SaveUserInfo,
 		GetSubprojects, GetHabSubprojects, ProjectSubprojects, ProjectFunders, SubprojectFiles, ProjectCollaborators, DatasetFiles, ProjectFiles, MigrationYears,
@@ -898,7 +903,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 
 			console.log("Inside services.js, getDataset...");
 
-            service.dataset = Datasets.query({id: datasetId});
+            service.dataset = Dataset.query({id: datasetId});
 
             //load our configuration if there is one
             service.dataset.$promise.then(function(){
@@ -906,6 +911,10 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
             });
 
             return service.dataset;
+        },
+
+        getDatasets: function () {
+            return Datasets.query();
         },
 
         getRelationData: function(relationFieldId, activityId, rowId){
@@ -1946,7 +1955,7 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 							if ($scope.DatastoreTablePrefix === "CrppContracts")
 							{
 								$upload.upload({
-									url: serviceUrl + '/data/UploadSubProjectFile',
+                                    url: serviceUrl + '/api/v1/crppsubproject/uploadcrppsubprojectfile',
 									method: "POST",
 									// headers: {'headerKey': 'headerValue'},
 									// withCredential: true,
@@ -1977,7 +1986,7 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 							{
 								$upload.upload({
 									//url: serviceUrl + '/data/UploadProjectFile',
-									url: serviceUrl + '/data/UploadDatasetFile',
+                                    url: serviceUrl + '/api/v1/file/uploaddatasetfile',
 									method: "POST",
 									// headers: {'headerKey': 'headerValue'},
 									// withCredential: true,
@@ -2086,7 +2095,7 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 						if ($scope.DatastoreTablePrefix === "CrppContracts")
 						{
 							$upload.upload({
-								url: serviceUrl + '/data/UploadSubprojectFile',
+                                url: serviceUrl + '/api/v1/crppsubproject/uploadcrppsubprojectfile',
 								method: "POST",
 								// headers: {'headerKey': 'headerValue'},
 								// withCredential: true,
@@ -2112,10 +2121,10 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 
 							promises.push(deferred.promise);
 						}
-						else
+						else //not a crpp... habitat then i guess (for now)
 						{
 							$upload.upload({
-								url: serviceUrl + '/data/UploadProjectFile',
+                                url: serviceUrl + '/api/v1/habsubproject/uploadhabitatfile',
 								method: "POST",
 								// headers: {'headerKey': 'headerValue'},
 								// withCredential: true,

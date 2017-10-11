@@ -213,7 +213,7 @@ mod_ds.controller('ModalNewFileCtrl', ['$scope','$modalInstance', 'DataService',
 					{
 						console.log("file.success does not exist yet...");
 						$scope.upload = $upload.upload({
-							url: serviceUrl + '/data/UploadProjectFile',
+                            url: serviceUrl + '/api/v1/file/uploadprojectfile',
 							method: "POST",
 							// headers: {'headerKey': 'headerValue'},
 							// withCredential: true,
@@ -1353,7 +1353,7 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 
         scope.syncToStreamnet = function(){
             $.ajax({
-                url: serviceUrl + '/action/SyncToStreamnet',
+                url: serviceUrl + '/api/v1/streamnet/synctostreamnet',
                 type : 'GET',
                 // data : formData,
                 // processData: false,  // tell jQuery not to process the data

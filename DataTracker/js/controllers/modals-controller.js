@@ -1742,7 +1742,7 @@ mod_fmc.controller('ModalCreateHabSubprojectCtrl', ['$scope', '$rootScope','$mod
 								console.log("No file.success means we have not saved the file yet, so let's save it...");
 								// *** Note:  Timing issue.  After the upload kicks off, JavaScript goes on, running the stuff that follows, and then this completes. ***
 								$scope.upload = $upload.upload({
-									url: serviceUrl + '/data/UploadHabitatFile',
+                                    url: serviceUrl + '/api/v1/habsubproject/uploadhabitatfile',
 									method: "POST",
 									// headers: {'headerKey': 'headerValue'},
 									// withCredential: true,
@@ -3187,7 +3187,7 @@ mod_fmc.controller('ModalAddCorrespondenceEventCtrl', ['$scope', '$rootScope','$
 					{
 						console.log("No file.success, so let's save the file...");
 						$scope.upload = $upload.upload({
-							url: serviceUrl + '/data/UploadSubprojectFile',
+                            url: serviceUrl + '/api/v1/crppsubproject/uploadcrppsubprojectfile',
 							method: "POST",
 							// headers: {'headerKey': 'headerValue'},
 							// withCredential: true,
@@ -3668,7 +3668,7 @@ mod_fmc.controller('ModalAddHabitatItemCtrl', ['$scope', '$rootScope','$modalIns
 					{
 						console.log("No file.success, so let's save the file...");
 						$scope.upload = $upload.upload({
-							url: serviceUrl + '/data/UploadHabitatFile',
+                            url: serviceUrl + '/api/v1/habsubproject/uploadhabitatfile',
 							method: "POST",
 							// headers: {'headerKey': 'headerValue'},
 							// withCredential: true,
@@ -4312,7 +4312,7 @@ mod_fmc.controller('FileModalCtrl', ['$scope','$modalInstance', 'DataService','D
             });
 
             $.ajax({
-                url: serviceUrl + '/data/HandleWaypoints',
+                url: serviceUrl + '/api/v1/file/handlewaypoints',
                 type : 'POST',
                 data : formData,
                 processData: false,  // tell jQuery not to process the data
@@ -4508,7 +4508,7 @@ mod_fmc.controller('FileAddModalCtrl', ['$scope','$modalInstance', 'DataService'
             });
 
             $.ajax({
-                url: serviceUrl + '/data/HandleWaypoints',
+                url: serviceUrl + '/api/v1/file/handlewaypoints',
                 type : 'POST',
                 data : formData,
                 processData: false,  // tell jQuery not to process the data

@@ -46,7 +46,7 @@ mod_script.controller('ScriptletController', ['$scope','$upload', 'DataService',
 
 			$scope.loading=true;
 		      $scope.upload = $upload.upload({
-		        url: serviceUrl + '/data/UploadImportFile', //upload.php script, node.js route, or servlet url
+		        url: serviceUrl + '/api/v1/import/uploadimportfile', //upload.php script, node.js route, or servlet url
 		        method: "POST",
 		        // headers: {'headerKey': 'headerValue'},
 		        // withCredential: true,
