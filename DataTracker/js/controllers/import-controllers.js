@@ -87,6 +87,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 			$scope.UploadResults.showPreview = false;
 			$scope.Logger = Logger;
 			$scope.enablePreview = false;
+			$scope.callingPage = "Import";
 			
 
 			
@@ -729,7 +730,8 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						$scope.DuplicateRecordsBucket = [];
 					}
 
-					$scope.validateGrid($scope);
+					//$scope.validateGrid($scope);
+					$scope.validateGrid($scope, "Import");
 		        	$scope.floatErrorsToTop();
 		        }
 		        catch(e)
@@ -984,6 +986,8 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 				//var loadHeader = true;  // Do we still need this?
 				var activityDateType = "";
 				
+				var strErrorMessage = "";
+				
 				//console.log("About to loop through $scope.UploadResults.Data.rows, data_row");
 				angular.forEach($scope.UploadResults.Data.rows, function(data_row){
 					//console.log("*data_row (at top of loop) is next...");
@@ -996,6 +1000,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 							var new_row = {
 								RowQAStatusId: $scope.dataset.DefaultRowQAStatusId
 							};
+							//new_row.errors = [];
 						
 						// Start Activities fields********************************************************
 						// ActivityFields first.  These come from the import form.
@@ -1036,7 +1041,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						//console.dir(data_row);
 
 						// On each row of imported data (data_row), we only want to pull in the fields we have mapped.
-						// Therefore, we loop through $scope.mapping, which contains those fields.
+						// Therefore, we loop through $scope.mapping, which contains those fields.
 						//console.log("About to loop through $scope.mapping, field & col, checking mapped fields...");
 						angular.forEach($scope.mapping, function(field, col){
 							// If we DID NOT map a field to Activity Date, we need headers.
@@ -1044,9 +1049,9 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 							//console.log("field is next...");
 							//console.dir(field);
 							// field is the column, and col is actually the value.
-							//console.log("-----");
-							//console.log("field.DbColumnName = " + field.DbColumnName + ", field.Label = " + field.Label + ", col = " + col);
-							//console.log("**data_row[col] = " + data_row[col] + ", typeof = " + typeof data_row[col]);
+							console.log("-----");
+							console.log("field.DbColumnName = " + field.DbColumnName + ", field.Label = " + field.Label + ", col = " + col);
+							console.log("**data_row[col] = " + data_row[col] + ", typeof = " + typeof data_row[col]);
 							
 							try{
 								//console.log("field/col are next...");
@@ -1244,11 +1249,16 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 										{
 											if(data_row[col])
 											{
+												//console.log("data_row[col] = " + data_row[col]);
+												//console.log("typeof data_row[col] = " + typeof data_row[col]);
 												var d = new Date(data_row[col]);
+												//console.log("The date is next...");
+												//console.log(toExactISOString(d));
+												
 												if ((typeof new_row.activityDate !== 'string') && (field.FieldRoleId === 1))
-													row[field.DbColumnName] = toExactISOString(d);
+													row[field.DbColumnName] = toExactISOString(d); // Header form
 												else
-													new_row[field.DbColumnName] = toExactISOString(d);
+													new_row[field.DbColumnName] = toExactISOString(d); // Datasheet form
 											}
 										}
 										catch(e)
@@ -1311,10 +1321,19 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 													(field.DbColumnName === "TimeEnd")
 													)
 												{
-													$scope.row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
+													$scope.row[field.DbColumnName] = ServiceUtilities.removeTSfromDateTimeString(data_row[col]);
+													
+													var theYear = ServiceUtilities.extractYearFromString(data_row[col]);
+													if (theYear < 1901)
+													{
+														//$scope.uploadErrorMessage = "Time has a less than 1901 (Excel default year); user must enter a valid year (YYYY)";
+													strErrorMessage = "[" + field.DbColumnName + "] has a less than 1901 (Excel default year); user must enter a valid year (YYYY)";
+														//new_row.errors.push($scope.uploadErrorMessage);
+													}
 												}
 												//else if (field.DbColumnName === "LocationId")
 												else if (field.DbColumnName === "Location")
+												//if (field.DbColumnName === "Location")
 												{
 													//console.log("field.DbColumnName = " + field.DbColumnName + "; data_row[col] = " + data_row[col]);
 													$scope.row[field.DbColumnName] = data_row[col];
@@ -1327,10 +1346,20 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 											else if ($scope.DatastoreTablePrefix === "SpawningGroundSurvey")
 											{
 												//console.log("SpawningGroundSurvey..., field.DbColumnName = " + field.DbColumnName);
-												if ((field.DbColumnName === "StartTime") ||
-													(field.DbColumnName === "EndTime"))
+												//if ((field.DbColumnName === "StartTime") ||
+												//	(field.DbColumnName === "EndTime"))
+												//{
+												//	$scope.row[field.DbColumnName] = ServiceUtilities.extractTimeFromString2(data_row[col]);
+												//}
+												if (field.DbColumnName === "Time")
 												{
-													$scope.row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
+													var theYear = ServiceUtilities.extractYearFromString(data_row[col]);
+													if (theYear < 1901)
+													{
+														//$scope.uploadErrorMessage = "Time has a less than 1901 (Excel default year); user must enter a valid year (YYYY)";
+														strErrorMessage = "[" + field.DbColumnName + "] has a less than 1901 (Excel default year); user must enter a valid year (YYYY)";
+														//new_row.errors.push($scope.uploadErrorMessage);
+													}
 												}
 												else
 													new_row[field.DbColumnName] = data_row[col];												
@@ -1350,26 +1379,28 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 											{
 												if ((field.DbColumnName === "TimeStart") ||
 													(field.DbColumnName === "TimeEnd") ||
-													(field.DbColumnName === "InterviewTime") ||
-													(field.DbColumnName === "FishReleased")
+													(field.DbColumnName === "InterviewTime")
 													)
 													{
-														new_row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
+														console.log(field.DbColumnName + " = " + data_row[col]);
+														new_row[field.DbColumnName] = ServiceUtilities.removeTSfromDateTimeString(data_row[col]);
 													
 														if (field.DbColumnName === "InterviewTime")
 														{
 															var strNumberAnglersInterviewed = null;
 															
+															// Get the value for NumberAnglersInterviewed, because we cannot have an interview,
+															// if NumberAnglersInterviewed = 0.
 															if ($scope.showHeaderForm)
 																strNumberAnglersInterviewed = $scope.row.NumberAnglersInterviewed.toString();
 															else
 																strNumberAnglersInterviewed = new_row.NumberAnglersInterviewed.toString();
 															
-															console.log("strNumberAnglersInterviewed = " + strNumberAnglersInterviewed);
+															//console.log("strNumberAnglersInterviewed = " + strNumberAnglersInterviewed);
 															if (strNumberAnglersInterviewed === "0")
 															{
 																$scope.uploadErrorMessage = "NumberAnglersInterviewed cannot be 0, if InterviewTime has a time.";
-																$scope.errors.push($scope.uploadErrorMessage);
+																new_row.errors.push($scope.uploadErrorMessage);
 															}
 														}
 													}
@@ -1380,20 +1411,49 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 												else
 													new_row[field.DbColumnName] = data_row[col];
 											}
-											else if ($scope.DatastoreTablePrefix === "SpawningGroundSurvey")
-											{
+											//else if ($scope.DatastoreTablePrefix === "SpawningGroundSurvey")
+											//{
 												//console.log("SpawningGroundSurvey..., field.DbColumnName = " + field.DbColumnName);
-												if ((field.DbColumnName === "StartTime") ||
-													(field.DbColumnName === "EndTime"))
-													//(field.DbColumnName === "Time"))
-												{
-													new_row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
-												}
-												else
-													new_row[field.DbColumnName] = data_row[col];												
+												//if (//(field.DbColumnName === "StartTime") ||
+													//(field.DbColumnName === "EndTime"))
+												//	(field.DbColumnName === "Time"))
+												//{
+												//	new_row[field.DbColumnName] = ServiceUtilities.extractTimeFromString2(data_row[col]);
+													
+												//	var theYear = ServiceUtilities.extractYearFromString(data_row[col]);
+												//	if (parseint(theYear) < 1901)
+												//	{
+												//		$scope.uploadErrorMessage = "Time has a less than 1901 (Excel default year); user must enter a valid year (YYYY)";
+												//		$scope.errors.push($scope.uploadErrorMessage);
+												//	}
+												//}
+												//else
+												//	new_row[field.DbColumnName] = data_row[col];												
+											//}
+											else if (field.DbColumnName === "FishReleased")
+											{
+												new_row[field.DbColumnName] = data_row[col];
 											}
 											else if (field.DbColumnName === "Time")
-												new_row[field.DbColumnName] = ServiceUtilities.extractDateFromString2(data_row[col]);
+											{
+												new_row[field.DbColumnName] = ServiceUtilities.extractTimeFromString2(data_row[col]);
+												var theYear = ServiceUtilities.extractYearFromString(data_row[col]);
+												console.log("theYear = " + theYear);
+												if (theYear < 0)
+												{
+													//$scope.uploadErrorMessage = "Time does not have a year; it must have a valid year (YYYY-MM-DD HH:MM:SS format)";
+													strErrorMessage = "Time does not have a year; it must have a valid year (YYYY-MM-DD HH:MM:SS format)";
+													//new_row.errors.push($scope.uploadErrorMessage);
+													//new_row.errors.push(strErrorMessage);
+												}
+												else if (theYear < 1901)
+												{
+													//$scope.uploadErrorMessage = "Time has a year less than 1901 (Excel default year); user must enter a valid year (YYYY-MM-DD HH:MM:SS format)";
+													strErrorMessage = "Time has a year less than 1901 (Excel default year); user must enter a valid year (YYYY-MM-DD HH:MM:SS format)";
+													//new_row.errors.push($scope.uploadErrorMessage);
+													//new_row.errors.push(strErrorMessage);
+												}
+											}
 											else
 												new_row[field.DbColumnName] = data_row[col];
 										}
@@ -1521,6 +1581,8 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						//last validation before we add row:
 						// -- nothing so far.
 						
+						console.log("new_row is next...");
+						console.dir(new_row);
 						//add imported row to datasheet.
 						if(new_row.activityDate)
 							$scope.dataSheetDataset.push(new_row);
@@ -1543,6 +1605,8 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 
 				$scope.toggleDuplicates();
 
+            	//$scope.validateGrid($scope);
+				console.log("$scope.callingPage = " + $scope.callingPage);
             	$scope.validateGrid($scope);
         		$scope.floatErrorsToTop();
 
@@ -1720,6 +1784,24 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						return;
 				}
 				
+				if($scope.showHeaderForm)
+				{
+					if ($scope.DatastoreTablePrefix === "CreelSurvey")
+					{
+						if ((typeof $scope.row.TimeStart !== 'undefined') && ($scope.row.TimeStart !== null))
+						{
+							$scope.row.TimeStart = $scope.row.TimeStart.replace(" ", "T");
+							$scope.row.TimeStart += ":00.000";
+						}
+						
+						if ((typeof $scope.row.TimeEnd !== 'undefined') && ($scope.row.TimeEnd !== null))
+						{
+							$scope.row.TimeEnd = $scope.row.TimeEnd.replace(" ", "T");
+							$scope.row.TimeEnd += ":00.000";
+						}
+					}
+				}
+				
 				//var theHours = -1;
 				//var theMinutes = -1;
 				//var TotalTimeFished = -1;
@@ -1771,15 +1853,25 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						
 						}
 						
-						$scope.dataSheetDataset[i].TimeStart = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeStart + ":00.000";
-						//console.log("$scope.dataSheetDataset[i].TimeStart = " + $scope.dataSheetDataset[i].TimeStart);
-						$scope.dataSheetDataset[i].TimeEnd = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeEnd + ":00.000";
-						//console.log("$scope.dataSheetDataset[i].TimeEnd = " + $scope.dataSheetDataset[i].TimeEnd);
+						if ((typeof $scope.dataSheetDataset[i].TimeStart !== 'undefined') && ($scope.dataSheetDataset[i].TimeStart !== null))
+						{
+							//$scope.dataSheetDataset[i].TimeStart = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeStart + ":00.000";
+							$scope.dataSheetDataset[i].TimeStart = $scope.dataSheetDataset[i].TimeStart.replace(" ", "T");
+							$scope.dataSheetDataset[i].TimeStart = $scope.dataSheetDataset[i].TimeStart + ":00.000";
+						}
+						
+						if ((typeof $scope.dataSheetDataset[i].TimeEnd !== 'undefined') && ($scope.dataSheetDataset[i].TimeEnd !== null))
+						{
+							//$scope.dataSheetDataset[i].TimeEnd = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeEnd + ":00.000";
+							$scope.dataSheetDataset[i].TimeEnd = $scope.dataSheetDataset[i].TimeEnd.replace(" ", "T");
+							$scope.dataSheetDataset[i].TimeEnd = $scope.dataSheetDataset[i].TimeStart + ":00.000";
+						}
 						
 						if ((typeof $scope.dataSheetDataset[i].InterviewTime !== 'undefined') && ($scope.dataSheetDataset[i].InterviewTime != null))
 						{
-							$scope.dataSheetDataset[i].InterviewTime = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].InterviewTime + ":00.000";
-							//console.log("$scope.dataSheetDataset[i].InterviewTime = " + $scope.dataSheetDataset[i].InterviewTime);
+							//$scope.dataSheetDataset[i].InterviewTime = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].InterviewTime + ":00.000";
+							$scope.dataSheetDataset[i].InterviewTime = $scope.dataSheetDataset[i].InterviewTime.replace(" ", "T");
+							$scope.dataSheetDataset[i].InterviewTime = $scope.dataSheetDataset[i].InterviewTime + ":00.000";
 						}
 					}
 					
