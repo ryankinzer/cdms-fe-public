@@ -425,7 +425,6 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
                 service.datastoreId = id;
                 return GetAllPossibleDatastoreLocations.query({id: id});
             },
-
             getFields: function(id)
             {
                 return GetAllDatastoreFields.query({id: id});
@@ -437,22 +436,18 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
             {
                 return GetDatastore.query({id: id});
             },
-
             getProjects: function(id)
             {
                 return GetDatastoreProjects.query({id: id});
             },
-
             getDatastores: function()
             {
                 return GetAllDatastores.query();
             },
-
             getWaterBodies: function()
             {
                 return GetWaterBodies.query();
             },
-
             getDatasets: function(id)
             {
                 return GetDatastoreDatasets.query({id: id});
@@ -975,7 +970,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
         getProjects: function() {
             return Projects.query();
         },
-
+		
 		getSubprojects: function()
 		{
 			return GetSubprojects.query();

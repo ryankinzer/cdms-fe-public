@@ -1864,7 +1864,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 						{
 							//$scope.dataSheetDataset[i].TimeEnd = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeEnd + ":00.000";
 							$scope.dataSheetDataset[i].TimeEnd = $scope.dataSheetDataset[i].TimeEnd.replace(" ", "T");
-							$scope.dataSheetDataset[i].TimeEnd = $scope.dataSheetDataset[i].TimeStart + ":00.000";
+							$scope.dataSheetDataset[i].TimeEnd = $scope.dataSheetDataset[i].TimeEnd + ":00.000";
 						}
 						
 						if ((typeof $scope.dataSheetDataset[i].InterviewTime !== 'undefined') && ($scope.dataSheetDataset[i].InterviewTime != null))
