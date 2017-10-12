@@ -77,13 +77,13 @@ mod.factory('SubprojectFiles', ['$resource', function ($resource) {
 }]);
 
 mod.factory('ProjectFunders',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/project/getprojectfunders', {}, {
+        return $resource(serviceUrl+'/api/v1/habsubproject/getprojectfunders', {}, {
             query: {method: 'GET', params: {id:'projectId'}, isArray: true}
         });
 }]);
 
 mod.factory('ProjectCollaborators',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/project/getprojectcollaborators', {}, {
+        return $resource(serviceUrl+'/api/v1/habsubproject/getprojectcollaborators', {}, {
             query: {method: 'GET', params: {id:'projectId'}, isArray: true}
         });
 }]);
@@ -1053,6 +1053,8 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
             //this.getProject(projectId); //set our local project to the one selected
             return ProjectSubprojects.query({id: projectId});
         },*/
+
+        //TODO: why is this .save()? -- to get a POST instead of a GET?
         getProjectSubprojects: function(projectId){
 			console.log("Inside getProjectSubprojects, projectId = " + projectId);
             //this.getProject(projectId); //set our local project to the one selected
