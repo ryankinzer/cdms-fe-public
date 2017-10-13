@@ -111,6 +111,12 @@ mod.factory('Activities',['$resource', function($resource){
         });
 }]);
 
+mod.factory('ActivitiesForView',['$resource', function($resource){
+        return $resource(serviceUrl+'/action/DatasetActivitiesView', {}, {
+            query: {method: 'GET', params: {id:'datasetId'}, isArray: true}
+        });
+}]);
+
 mod.factory('Datasets',['$resource', function($resource){
         return $resource(serviceUrl+'/api/datasets', {}, {
             query: {method: 'GET', params: {id:'datasetId'}, isArray: false}
@@ -403,11 +409,11 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
 		'SaveProjectFisherman','GetProjectFishermen','RemoveProjectFisherman','SaveSubproject','GetSubprojects','RemoveSubproject','SaveCorrespondenceEvent',
 		'RemoveCorrespondenceEvent','DeleteCorresEventFile','SaveHabSubproject','RemoveHabSubproject','SaveHabitatItem','RemoveHabitatItem','DeleteHabitatItemFile',
 		'DeleteHabSubprojectFile','DeleteDatasetFile','GetHabSubproject',
-    function($q, GetAllPossibleDatastoreLocations, GetAllDatastoreFields, GetDatastore, GetDatastoreProjects, GetAllDatastores, GetDatastoreDatasets, GetSources, 
-		GetInstruments, SaveDatasetField, SaveMasterField, DeleteDatasetField, GetAllFields, AddMasterFieldToDataset, GetLocationTypes, SaveProjectLocation, 
-		GetAllInstruments, SaveProjectInstrument, SaveInstrument, SaveInstrumentAccuracyCheck, GetInstrumentTypes, RemoveProjectInstrument, GetWaterBodies, UpdateFile, 
-		DeleteFile, GetTimeZones, DeleteLocationAction, SaveFisherman, GetFishermen, SaveProjectFisherman, GetProjectFishermen, RemoveProjectFisherman, SaveSubproject, 
-		GetSubprojects, RemoveSubproject, SaveCorrespondenceEvent, RemoveCorrespondenceEvent, DeleteCorresEventFile, SaveHabSubproject, RemoveHabSubproject, 
+    function($q, GetAllPossibleDatastoreLocations, GetAllDatastoreFields, GetDatastore, GetDatastoreProjects, GetAllDatastores, GetDatastoreDatasets, GetSources,
+		GetInstruments, SaveDatasetField, SaveMasterField, DeleteDatasetField, GetAllFields, AddMasterFieldToDataset, GetLocationTypes, SaveProjectLocation,
+		GetAllInstruments, SaveProjectInstrument, SaveInstrument, SaveInstrumentAccuracyCheck, GetInstrumentTypes, RemoveProjectInstrument, GetWaterBodies, UpdateFile,
+		DeleteFile, GetTimeZones, DeleteLocationAction, SaveFisherman, GetFishermen, SaveProjectFisherman, GetProjectFishermen, RemoveProjectFisherman, SaveSubproject,
+		GetSubprojects, RemoveSubproject, SaveCorrespondenceEvent, RemoveCorrespondenceEvent, DeleteCorresEventFile, SaveHabSubproject, RemoveHabSubproject,
 		SaveHabitatItem, RemoveHabitatItem, DeleteHabitatItemFile, DeleteHabSubprojectFile, DeleteDatasetFile, GetHabSubproject){
 
         var service = {
@@ -419,7 +425,6 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
                 service.datastoreId = id;
                 return GetAllPossibleDatastoreLocations.query({id: id});
             },
-
             getFields: function(id)
             {
                 return GetAllDatastoreFields.query({id: id});
@@ -431,22 +436,18 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
             {
                 return GetDatastore.query({id: id});
             },
-
             getProjects: function(id)
             {
                 return GetDatastoreProjects.query({id: id});
             },
-
             getDatastores: function()
             {
                 return GetAllDatastores.query();
             },
-
             getWaterBodies: function()
             {
                 return GetWaterBodies.query();
             },
-
             getDatasets: function(id)
             {
                 return GetDatastoreDatasets.query({id: id});
@@ -458,7 +459,7 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
             getInstruments: function()
             {
                 return GetInstruments.query();
-            },          
+            },
             getInstrumentTypes: function()
             {
                 return GetInstrumentTypes.query();
@@ -467,7 +468,7 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
             {
 				console.log("Inside getFishermen...");
                 return GetFishermen.query();
-            },	
+            },
 			getSubprojects: function()
             {
 				console.log("Inside getSubprojects...");
@@ -523,32 +524,32 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
                 {
                     console.log("This dataset is for Snorkel Fish...");
                     theLocationType = LOCATION_TYPE_SnorkelFish;
-                }				
+                }
                 else if (aDatastoreName === "ScrewTrap")
                 {
                     console.log("This dataset is for Screw Trap...");
                     theLocationType = LOCATION_TYPE_ScrewTrap;
-                }               
+                }
                 else if (aDatastoreName === "FishScales")
                 {
                     console.log("This dataset is for Fish Scales...");
                     theLocationType = LOCATION_TYPE_FishScales;
-                }                
+                }
                 else if (aDatastoreName === "WaterQuality")
                 {
                     console.log("This dataset is for Water Quality with Labs...");
                     theLocationType = LOCATION_TYPE_WaterQuality;
-                }                  
+                }
                 else if (aDatastoreName === "StreamNet_RperS")
                 {
                     console.log("This dataset is for StreamNet_RperS...");
                     theLocationType = LOCATION_TYPE_StreamNet_NOSA;
-                }  
+                }
                 else if (aDatastoreName === "StreamNet_NOSA")
                 {
                     console.log("This dataset is for StreamNet_NOSA...");
                     theLocationType = LOCATION_TYPE_StreamNet_NOSA;
-                } 
+                }
                 else if (aDatastoreName === "StreamNet_SAR")
                 {
                     console.log("This dataset is for StreamNet_SAR...");
@@ -584,7 +585,7 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
                     console.log("This dataset is for Drift...");
                     theLocationType = LOCATION_TYPE_Drift;
                 }
-				
+
 				return theLocationType;
 			},
 			// We don't really like to set things this way...  Is there a better way?
@@ -592,7 +593,7 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
 			getProjectType: function(aProjectId)
 			{
 				var theType = null;
-				
+
 				if (aProjectId === 2247) 			// CRPP
 				{
 					theType = "CRPP";
@@ -613,7 +614,7 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
 					theType = "Harvest";
 				else if (aProjectId === 2246)
 					theType = "DECD";
-				
+
 				return theType;
 			},
             saveDatasetField: function(field, saveResults)
@@ -666,29 +667,29 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
 				console.log("Inside saveFisherman...");
 				saveResults.saving = true;
 				console.log("saveResults.saving = " + saveResults.saving);
-	
-				return SaveFisherman.save({ProjectId: projectId, Fisherman:  fisherman});			
+
+				return SaveFisherman.save({ProjectId: projectId, Fisherman:  fisherman});
             },
             saveSubproject: function(projectId, subproject, saveResults){
 				console.log("Inside saveSubproject...");
 				saveResults.saving = true;
 				console.log("saveResults.saving = " + saveResults.saving);
-	
-				return SaveSubproject.save({ProjectId: projectId, Subproject:  subproject});			
+
+				return SaveSubproject.save({ProjectId: projectId, Subproject:  subproject});
             },
             saveHabSubproject: function(projectId, subproject, saveResults){
 				console.log("Inside services.js, saveHabSubproject...");
 				saveResults.saving = true;
 				console.log("saveResults.saving = " + saveResults.saving);
-	
-				return SaveHabSubproject.save({ProjectId: projectId, Subproject:  subproject});			
-            },            
+
+				return SaveHabSubproject.save({ProjectId: projectId, Subproject:  subproject});
+            },
             saveProjectInstrument: function(projectId, instrument){
                 return SaveProjectInstrument.save({ProjectId: projectId, Instrument: instrument});
             },
             saveProjectFisherman: function(projectId, fisherman){
                 return SaveProjectFisherman.save({ProjectId: projectId, Fisherman: fisherman});
-            },	
+            },
 		    removeProjectFisherman: function(projectId, fishermanId){
                 return RemoveProjectFisherman.save({ProjectId: projectId, FishermanId: fishermanId});
             },
@@ -741,7 +742,7 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
             saveInstrumentAccuracyCheck: function(instrumentId, ac)
             {
                 return SaveInstrumentAccuracyCheck.save({InstrumentId: instrumentId, AccuracyCheck: ac});
-            },            
+            },
             updateFile: function(projectId, file)
             {
                 return UpdateFile.save({ProjectId: projectId, File: file});
@@ -797,15 +798,15 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
     }
 ]);
 
-mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','ProjectDatasets', 'Activities', 'Datasets', 'Data', 'SaveActivitiesAction', 
+mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','ProjectDatasets', 'Activities', 'ActivitiesForView', 'Datasets', 'Data', 'SaveActivitiesAction',
 		'UpdateActivitiesAction','QueryActivitiesAction','SetProjectEditors', 'DeleteActivitiesAction', 'SetQaStatusAction', 'GetMyDatasetsAction',
 		'GetMyProjectsAction','SaveUserPreferenceAction','ExportActivitiesAction','GetMetadataProperties','SaveDatasetMetadata','GetMetadataFor',
 		'SaveProject','GetHeadersDataForDataset','GetDepartments','GetRelationData','SaveUserInfo', 'GetSubprojects','GetHabSubprojects','ProjectSubprojects',
 		'ProjectFunders','SubprojectFiles','ProjectCollaborators','DatasetFiles','ProjectFiles','MigrationYears','RunYears','ReportYears','SpawningYears','BroodYears',
 		'OutmigrationYears',
-    function($q, resource, Projects, Users, Project, ProjectDatasets, Activities, Datasets, Data, SaveActivitiesAction, UpdateActivitiesAction, QueryActivitiesAction, 
+    function($q, resource, Projects, Users, Project, ProjectDatasets, Activities, ActivitiesForView, Datasets, Data, SaveActivitiesAction, UpdateActivitiesAction, QueryActivitiesAction,
 		SetProjectEditors, DeleteActivitiesAction, SetQaStatusAction, GetMyDatasetsAction, GetMyProjectsAction, SaveUserPreferenceAction, ExportActivitiesAction,
-		GetMetadataProperties, SaveDatasetMetadata, GetMetadataFor, SaveProject,GetHeadersDataForDataset, GetDepartments, GetRelationData, SaveUserInfo, 
+		GetMetadataProperties, SaveDatasetMetadata, GetMetadataFor, SaveProject,GetHeadersDataForDataset, GetDepartments, GetRelationData, SaveUserInfo,
 		GetSubprojects, GetHabSubprojects, ProjectSubprojects, ProjectFunders, SubprojectFiles, ProjectCollaborators, DatasetFiles, ProjectFiles, MigrationYears,
 		RunYears, ReportYears, SpawningYears, BroodYears, OutmigrationYears){
     var service = {
@@ -834,17 +835,17 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
         {
             service.project = null;
         },
-		
+
 		clearSubproject: function()
 		{
 			service.subproject = null;
 		},
-		
+
 		clearSubprojects: function()
 		{
 			service.subprojects = null;
 		},
-		
+
 		getSubproject: function(id)
 		{
 			console.log("Inside services.js, getSubproject...");
@@ -891,7 +892,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
                 return service.dataset;
 
 			console.log("Inside services.js, getDataset...");
-			
+
             service.dataset = Datasets.query({id: datasetId});
 
             //load our configuration if there is one
@@ -919,7 +920,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 			console.dir(dataset.Config);
             //if(dataset.Config) // Original line.
 			// If we are verifying the variable is defined, this works the best.  Lastly, the database column config may either be null, or contain the text "NULL", so we must check for that too.
-			if ((typeof dataset.Config !== 'undefined') && (dataset.Config !== null) && (dataset.Config !== "NULL")) 
+			if ((typeof dataset.Config !== 'undefined') && (dataset.Config !== null) && (dataset.Config !== "NULL"))
             {
                 dataset.Config = angular.fromJson(dataset.Config);
 
@@ -930,7 +931,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
                 //part of configuration is authorization.  If the user isn't authorized
                 //  for this dataset, bump them to error
                 if(dataset.Config.RestrictRoles)
-                {   
+                {
                     var authorized = false;
                     for (var i = dataset.Config.RestrictRoles.length - 1; i >= 0; i--) {
                         if(angular.rootScope.Profile.hasRole(dataset.Config.RestrictRoles[i]))
@@ -942,7 +943,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 						//angular.rootScope.go('/unauthorized');
 						scope.AuthorizedToViewProject = false;
 					}
-                    
+
                     //console.dir(angular.rootScope.Profile);
                     //console.dir(dataset.Config.RestrictRoles);
                 }
@@ -962,6 +963,10 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
             return Activities.query({id: id});
         },
 
+        getActivitiesForView: function(id) {
+            return ActivitiesForView.query({id: id});
+        },
+
         getProjects: function() {
             return Projects.query();
         },
@@ -970,7 +975,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 		{
 			return GetSubprojects.query();
 		},
-		
+
 		getHabSubprojects: function()
 		//getHabSubprojects: function(id)
 		{
@@ -979,25 +984,25 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 			return GetHabSubprojects.query();
 			//return GetHabSubprojects.query({id: id});
 		},
-		
+
 		getMigrationYears: function(datasetId)
 		{
 			console.log("Inside services, getMigrationYears");
 			return MigrationYears.query({id: datasetId});
 		},
-		
+
 		getRunYears: function(datasetId)
 		{
 			console.log("Inside services, getRunYears");
 			return RunYears.query({id: datasetId});
 		},
-		
+
 		getReportYears: function(datasetId)
 		{
 			console.log("Inside services, getReportYears");
 			return ReportYears.query({id: datasetId});
 		},
-		
+
 		getSpawningYears: function(datasetId)
 		{
 			console.log("Inside services, getSpawningYears");
@@ -1009,7 +1014,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 			console.log("Inside services, getBroodYears");
 			return BroodYears.query({id: datasetId});
 		},
-		
+
 		getOutmigrationYears: function(datasetId)
 		{
 			console.log("Inside services, getOutmigrationYears");
@@ -1028,7 +1033,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
             this.getProject(projectId); //set our local project to the one selected
             return ProjectDatasets.query({id: projectId});
         },
-		
+
         /*getProjectSubprojects: function(projectId){
 			console.log("Inside getProjectSubprojects...");
             //this.getProject(projectId); //set our local project to the one selected
@@ -1045,7 +1050,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
             this.getProject(projectId); //set our local project to the one selected
             return ProjectFunders.query({id: projectId});
         },
-		
+
         getProjectCollaborators: function(projectId){
 			console.log("Inside getProjectCollaborators...");
             this.getProject(projectId); //set our local project to the one selected
@@ -1057,14 +1062,14 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 			console.log("projectId = " + projectId);
             return ProjectFiles.query({id: projectId});
         },
-		
+
         getDatasetFiles: function(datasetId){
 			console.log("Inside getDatasetFiles...");
 			console.log("datasetId = " + datasetId);
             //this.getProject(projectId); //set our local project to the one selected
             return DatasetFiles.query({id: datasetId});
         },
-		
+
         getSubprojectFiles: function(projectId){
 			console.log("Inside getSubprojectFiles...");
 			console.log("projectId = " + projectId);
@@ -1254,16 +1259,16 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
             });
 
         },
-		
+
         saveActivities: function(userId, datasetId, activities)
         {
 			console.log("Inside saveActivities...starting save...");
 			console.log("activities is next...");
 			console.dir(activities);
-			
+
 			var theDate = new Date();
 			console.log(formatDate(theDate));
-			
+
             activities.saving = true; //tell everyone we are saving
             activities.UserId = userId;
             activities.DatasetId = datasetId;
@@ -1291,7 +1296,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 					console.log("Add Section save successful..., Add Section only clicked.");
 					activities.addNewSection = false; // This flag indicates to the Data Entry form that we are adding a new section, not save and close.
 				}
-				
+
                 activities.saving = false; //and... we're done.
             }, function(data){
                 activities.success = false;
@@ -1311,7 +1316,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 					{
 						theErrorText =  data.data;
 						var titleStartLoc = theErrorText.indexOf("<title>") + 7;
-						console.log("titleStartLoc = " + titleStartLoc);				
+						console.log("titleStartLoc = " + titleStartLoc);
 						var titleEndLoc = theErrorText.indexOf("</title>");
 						console.log("titleEndLoc = " + titleEndLoc);
 						theErrorText = theErrorText.substr(titleStartLoc, titleEndLoc - titleStartLoc);
@@ -1406,7 +1411,7 @@ mod.service('ActivityParser',[ 'Logger',
             parseMetricsActivity: function(heading, fields, qaStatuses) {
 				console.log("Inside service, ActivityParser, parseMetricsActivity...");
 				console.log("heading is next...");
-				console.dir(heading);		
+				console.dir(heading);
 				console.log("qaStatuses is next");
 				console.dir(qaStatuses);
                 var activities = {activities: {}, errors: false};
@@ -1429,7 +1434,7 @@ mod.service('ActivityParser',[ 'Logger',
                         //at least do a single.
                         console.log("trying a single with no rows!");
                         //service.addActivity(activities, key, heading, fields);
-                        service.addActivity(activities, key, heading, fields, qaStatuses);						
+                        service.addActivity(activities, key, heading, fields, qaStatuses);
                     //}
                 }
                 else
@@ -1441,12 +1446,12 @@ mod.service('ActivityParser',[ 'Logger',
                 return activities;
 
             },
-			
+
 			//parseSingleActivity: function(heading, data, fields) {
             parseSingleActivity: function(heading, data, fields, qaStatuses) {
 				console.log("Inside service, ActivityParser, parseSingleActivity...");
 				console.log("heading is next...");
-				console.dir(heading);		
+				console.dir(heading);
 				console.log("qaStatuses is next");
 				console.dir(qaStatuses);
                 var activities = {activities: {}, errors: false};
@@ -1469,7 +1474,7 @@ mod.service('ActivityParser',[ 'Logger',
                         //at least do a single.
                         console.log("trying a single with no rows!");
                         //service.addActivity(activities, key, heading, fields);
-                        service.addActivity(activities, key, heading, fields, qaStatuses);						
+                        service.addActivity(activities, key, heading, fields, qaStatuses);
                     }
                 }
                 else
@@ -1496,21 +1501,21 @@ mod.service('ActivityParser',[ 'Logger',
                 var tmpdata = data.slice(0); //create a copy
 
 				var activityDateToday = new Date(); //need an activity date to use for the whole sheet, if we need to provide one.
-				
+
 				/* If we are adding data from a temperature logger, we will have lots of data with the same FieldActivityType (Data File Upload).
 				*  In this case, the FieldActivityType will be the same, but the ReadingDateTime will change for each record.
-				*  However, if the user adds several different other activities using the Data Entry Sheet, the FieldActivityType could be the same, 
+				*  However, if the user adds several different other activities using the Data Entry Sheet, the FieldActivityType could be the same,
 				*  but the ReadingDateTime will change. Therefore, we must check the FieldActivityType AND the ReadingDateTime of each non-Data File Upload
 				*  record we are saving.  If either value is different from the last record, the activity has changed and we must get/create a new key,
 				*  so that the record is stored as a new activity.
 				*/
 				var holdRow = tmpdata[0];
-				var rowCount = 0;				
+				var rowCount = 0;
                 angular.forEach(tmpdata, function(row, index){
 					if ((typeof datastoreTablePrefix !== 'undefined') && (datastoreTablePrefix === "WaterTemp") &&
 						(typeof callingPage !== 'undefined') && (callingPage === "DataEntrySheet"))
 					{
-					
+
 						console.log("holdRow is next...");
 						console.dir(holdRow);
 
@@ -1518,15 +1523,15 @@ mod.service('ActivityParser',[ 'Logger',
 						console.log("row.FieldActivityType.toString() = " + row.FieldActivityType.toString());
 						console.log("holdRow.ReadingDateTime.toString() = " + holdRow.ReadingDateTime.toString());
 						console.log("row.ReadingDateTime.toString() = " + row.ReadingDateTime.toString());
-					
+
 						if (rowCount > 0)
 						{
 							//var tmpReadingDateTime = formatDateFromFriendlyToUtc(row.ReadingDateTime.toString());
 						}
-						
+
 						// If the FieldActivityType IS NOT "Data File Upload", we need to check two more things.
 						if (row.FieldActivityType.toString().indexOf("Data File Upload") === -1)
-						{	
+						{
 							console.log("We are working with something other than Data File Upload.");
 							// If rowCount = 0, we are on the first record, with nothing to compare with but itself.
 							if (rowCount > 0)
@@ -1535,21 +1540,21 @@ mod.service('ActivityParser',[ 'Logger',
 								// so we need a new date for the key.
 								if ((row.FieldActivityType.toString().indexOf(holdRow.FieldActivityType.toString()) === -1) ||
 									(row.ReadingDateTime.toString().indexOf(holdRow.ReadingDateTime.toString()) === -1))
-								{							
-									console.log("Something changed...");							
+								{
+									console.log("Something changed...");
 									activityDateToday = new Date();
 								}
 							}
 						}
 
 
-						var key = service.makeKey(row, activityDateToday); 					
+						var key = service.makeKey(row, activityDateToday);
 						console.log("row...index");
 						console.dir(row);
 						console.dir(index);
 						console.log("key...");
 						console.dir(key);
-						
+
 						if(key)
 						{
 							//service.addActivity(activities, key, row, fields);
@@ -1560,7 +1565,7 @@ mod.service('ActivityParser',[ 'Logger',
 
 						rowCount++;
 						holdRow = row;
-						
+
 						console.log("holdRow.ReadingDateTime = " + holdRow.ReadingDateTime);
 						var utcFormatSeparatorLoc = holdRow.ReadingDateTime.toString().indexOf("-");
 						console.log("utcFormatSeparatorLoc = " + utcFormatSeparatorLoc);
@@ -1570,21 +1575,21 @@ mod.service('ActivityParser',[ 'Logger',
 							holdRow.ReadingDateTime = formatDateFromUtcToFriendly(holdRow.ReadingDateTime);
 							console.log("Reformatted holdRow.ReadingDateTime = " + holdRow.ReadingDateTime);
 						}
-					}					
+					}
 					else
 					{
 						var key = service.makeKey(row, activityDateToday);
-						
+
 						if(key)
 						{
 							//service.addActivity(activities, key, row, fields);
                             service.addActivity(activities, key, row, fields, qaStatuses);
 						}
 						else
-							service.addError(activities, index, "Please check for errors, something required is missing to save a new Activity.");						
+							service.addError(activities, index, "Please check for errors, something required is missing to save a new Activity.");
 					}
-					
-					//console.log("At the end of the angular.forEach, going back to the top...");	
+
+					//console.log("At the end of the angular.forEach, going back to the top...");
 				});
 
                 return activities;
@@ -1599,7 +1604,7 @@ mod.service('ActivityParser',[ 'Logger',
                 activities.errors.saveError = message;
             },
 
-            
+
             makeKey: function(row, activityDateToday) {
 
                 // Some codepaths pass null for activityDateToday
@@ -1681,7 +1686,7 @@ mod.service('ActivityParser',[ 'Logger',
 						//console.log("row.ActivityQAStatus already exists...");
 						//console.dir(row.ActivityQAStatus);
 					}
-					
+
 					if ((typeof qaStatuses !== 'undefined') && (qaStatuses !== null))
 					{
 						for (var i = 0; i < qaStatuses.length; i++)
@@ -1748,7 +1753,7 @@ mod.service('ActivityParser',[ 'Logger',
                             Comments: ''
                         };
                     row.QAStatusId = row.RowQAStatusId; // and then set QA status for this row...
-							
+
 					for (var i = 0; i < qaStatuses.length; i++)
 					{
 						//console.log("Checking QId:  " +qaStatuses[i].Id + ", Name:  " + qaStatuses[i].Name);
@@ -1771,7 +1776,7 @@ mod.service('ActivityParser',[ 'Logger',
 					//console.log("row.ActivityQAStatus already exists...");
 					//console.dir(row);
 				}
-				
+
 				if ((typeof qaStatuses !== 'undefined') && (qaStatuses !== null))
 				{
 					for (var i = 0; i < qaStatuses.length; i++)
@@ -1791,7 +1796,7 @@ mod.service('ActivityParser',[ 'Logger',
 						}
 					}
 				}
-				else					
+				else
 				{
 					throw qaStatusError ("Services-addActivity, check2 has a problem with QAStatus...");
 				}
@@ -1847,7 +1852,7 @@ function prepFieldsToSave(row, fields, currentTimezone)
                 }
                 else
                 {
-                    try{    
+                    try{
                         row[field.DbColumnName] = toExactISOString(new Date(row[field.DbColumnName]));
                     }catch(e){
                         console.log("Error converting date: "+row[field.DbColumnName]);
@@ -1932,7 +1937,7 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 						{
 
 							var deferred = $q.defer();
-							
+
 							if ($scope.DatastoreTablePrefix === "CrppContracts")
 							{
 								$upload.upload({
@@ -2020,7 +2025,7 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 								//config.file.success = "Failed";
 								//deferred.reject();
 								//promises.push(deferred.promise);
-							}							
+							}
 						}
 
 					}
@@ -2029,7 +2034,7 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 
 			return $q.all(promises);
 		},
-		
+
 		uploadSubprojectFiles: function(filesToUpload, $scope){
 			console.log("Inside FileUploadService, uploadSubprojectFiles...");
 			console.log("$scope is next...");
@@ -2050,7 +2055,7 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 				{
 					var file = files[i];
 					console.log("Checking if file " + file.Name + " already exists in the subproject files...");
-					
+
 					for (var p = 0; p < $scope.viewSubproject.Files.length; p++)
 					{
 						if (file.Name.length <= $scope.viewSubproject.Files[p].Name.length)
@@ -2072,7 +2077,7 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 					if (($scope.foundDuplicate === false) && (file.success != "Success"))
 					{
 						var deferred = $q.defer();
-						
+
 						if ($scope.DatastoreTablePrefix === "CrppContracts")
 						{
 							$upload.upload({
@@ -2181,7 +2186,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 
 		var FishermanCellEditTemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'FishermanId\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in fishermenOptions"/>';  // GC
 
-		var TimezoneCellEditTemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'timezone\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in timezoneOptions"/>';				
+		var TimezoneCellEditTemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'timezone\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in timezoneOptions"/>';
 
         var service = {
 
@@ -2205,8 +2210,9 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                 scope.updateCell = function(row, field) { service.updateCell(row,field,scope)};
                 //scope.updateHeaderField = function(field) { service.updateHeaderField(field, scope)};
 				scope.updateHeaderField = function(row, field) { service.updateHeaderField(row,field,scope)};
+                //scope.validateGrid = function() { service.validateGrid(scope)};
                 scope.validateGrid = function() { service.validateGrid(scope)};
-                scope.validate = function(row) { service.validate(row, scope)};
+                scope.validate = function(row) { service.validate(scope, row)};
                 scope.removeRow = function() { service.removeOnRow(scope)};
                 scope.undoRemoveRow = function() {service.undoRemoveOnRow(scope)};
                 scope.getFieldStats = function() {return service.getFieldStats(scope)};
@@ -2287,12 +2293,12 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                 });
 
             },
-		
-            getColDefs: function(DatastoreTablePrefix, theMode){				
+
+            getColDefs: function(DatastoreTablePrefix, theMode){
 				console.log("Inside services, getColDefs...");
-				console.log("theMode = " + theMode);							
-				console.log("DatastoreTablePrefix = " + DatastoreTablePrefix);				
-				
+				console.log("theMode = " + theMode);
+				console.log("DatastoreTablePrefix = " + DatastoreTablePrefix);
+
 				if (DatastoreTablePrefix === "WaterTemp")   // Water Temp related
 				{
 					if ((typeof theMode !== 'undefined') && (theMode.indexOf("form") > -1))
@@ -2308,7 +2314,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 								editableCellTemplate: InstrumentCellEditTemplate, //'<input ng-blur="updateCell(row,\'instrumentId\')" ng-model="COL_FIELD" ng-input="COL_FIELD" />',   'InstrumentCellEditTemplate',
 								visible:  false,
 								Field: { Description: "Instrument the detected this value."}
-							},							
+							},
 						];
 						console.log("Water Temp-related form...");
 					}
@@ -2369,7 +2375,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 								editableCellTemplate: InstrumentCellEditTemplate, //'<input ng-blur="updateCell(row,\'instrumentId\')" ng-model="COL_FIELD" ng-input="COL_FIELD" />',   'InstrumentCellEditTemplate',
 								visible:  false,
 								Field: { Description: "Instrument the detected this value."}
-							},							
+							},
 						];
 						console.log("Water Quality-related form...");
 					}
@@ -2408,7 +2414,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 					}
 				}
 				//else if (theDatasetId == 1206) // This changes the order of the fields, to what makes for sense for the users of this dataset.
-				else if (DatastoreTablePrefix === "CreelSurvey") // Creel Survey related				
+				else if (DatastoreTablePrefix === "CreelSurvey") // Creel Survey related
 				{
 					if ((typeof theMode !== 'undefined') && (theMode.indexOf("form") > -1))
 					{
@@ -2462,11 +2468,11 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 								Field: { Description: "Fisherman that was interviewed."}
 							}
 						];
-					}		
+					}
 				}
 				else if ((DatastoreTablePrefix === "SpawningGroundSurvey") || //Spawning Ground related
 					(DatastoreTablePrefix === "SnorkelFish") || //Snorkel Fish related
-					(DatastoreTablePrefix === "FishTransport") || //Fish Transport related					
+					(DatastoreTablePrefix === "FishTransport") || //Fish Transport related
 					(DatastoreTablePrefix === "Electrofishing") || //Electrofishing related
 					(DatastoreTablePrefix === "ScrewTrap") || //Screw Trap related
 					(DatastoreTablePrefix === "ArtificialProduction") || //ArtificialProduction related
@@ -2475,7 +2481,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 					(DatastoreTablePrefix === "Genetic") || //Genetic related
 					(DatastoreTablePrefix === "Benthic") || //Benthic related
 					(DatastoreTablePrefix === "Drift") || //Drift related
-					(DatastoreTablePrefix === "AdultWeir") //Adult Weir related					
+					(DatastoreTablePrefix === "AdultWeir") //Adult Weir related
 					)
 				{
 					if ((typeof theMode !== 'undefined') && (theMode.indexOf("form") > -1))
@@ -2499,7 +2505,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 								displayName: 'Activity Date (MM/DD/YYYY)',
 								cellFilter: 'date: \'MM/dd/yyyy\'',
 								editableCellTemplate: '<input ng-blur="updateCell(row,\'activityDate\')" type="text" ng-pattern="'+date_pattern+'" ng-model="COL_FIELD" ng-input="COL_FIELD" />',
-								Field: { Description: "Date of activity in format: '10/22/2014'"}							
+								Field: { Description: "Date of activity in format: '10/22/2014'"}
 							},
 							{
 								field: 'QAStatusId',
@@ -2507,14 +2513,14 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 								displayName: 'QA Status',
 								cellFilter: 'QAStatusFilter',
 								editableCellTemplate: QACellEditTemplate,
-								Field: { Description: "Quality Assurance workflow status"}							
+								Field: { Description: "Quality Assurance workflow status"}
 							}
 						];
 					}
 				}
                 else if ((DatastoreTablePrefix === "StreamNet_RperS") ||
 						(DatastoreTablePrefix === "StreamNet_NOSA") ||
-						(DatastoreTablePrefix === "StreamNet_SAR") 
+						(DatastoreTablePrefix === "StreamNet_SAR")
 					)
                 {
                     if ((typeof theMode !== 'undefined') && (theMode.indexOf("form") > -1))
@@ -2538,7 +2544,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                                 displayName: 'Activity Date (MM/DD/YYYY)',
                                 cellFilter: 'date: \'MM/dd/yyyy\'',
                                 editableCellTemplate: '<input ng-blur="updateCell(row,\'activityDate\')" type="text" ng-pattern="'+date_pattern+'" ng-model="COL_FIELD" ng-input="COL_FIELD" />',
-                                Field: { Description: "Date of activity in format: '10/22/2014'"}                           
+                                Field: { Description: "Date of activity in format: '10/22/2014'"}
                             },
                             {
                                 field: 'QAStatusId',
@@ -2546,11 +2552,11 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                                 displayName: 'QA Status',
                                 cellFilter: 'QAStatusFilter',
                                 editableCellTemplate: QACellEditTemplate,
-                                Field: { Description: "Quality Assurance workflow status"}                          
+                                Field: { Description: "Quality Assurance workflow status"}
                             }
                         ];
                     }
-                }                                                 
+                }
                 else if (DatastoreTablePrefix === "FishScales") //Fish Scales related
                 {
                     if ((typeof theMode !== 'undefined') && (theMode.indexOf("form") > -1))
@@ -2565,11 +2571,11 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                             displayName: 'QA Status',
                             cellFilter: 'QAStatusFilter',
                             editableCellTemplate: QACellEditTemplate,
-                            Field: { Description: "Quality Assurance workflow status"}                                                                                                                
+                            Field: { Description: "Quality Assurance workflow status"}
                         }];
                     }
                 }
-				
+
 				else if (DatastoreTablePrefix === "Metrics")
 				{
                     if ((typeof theMode !== 'undefined') && (theMode.indexOf("form") > -1))
@@ -2584,11 +2590,11 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                             displayName: 'QA Status',
                             cellFilter: 'QAStatusFilter',
                             editableCellTemplate: QACellEditTemplate,
-                            Field: { Description: "Quality Assurance workflow status"}                                                                                                                
+                            Field: { Description: "Quality Assurance workflow status"}
                         }];
-                    }	
+                    }
 				}
-				
+
                 else if (DatastoreTablePrefix === "Appraisal") // Appraisal-related (Tax Parcels)
                 {
 					console.log("Configuring for Appraisal...");
@@ -2601,7 +2607,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                         var coldefs = [];
                     }
                 }
-				
+
                 else if (DatastoreTablePrefix === "CrppContracts") // CRPP Contracts-related
                 {
 					console.log("Configuring for CrppContracts...");
@@ -2611,7 +2617,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                     }
                     else
                     {
-                        var coldefs = [];	
+                        var coldefs = [];
                     }
                 }
 
@@ -2642,11 +2648,11 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 							editableCellTemplate: QACellEditTemplate,
 							Field: { Description: "Quality Assurance workflow status"}
 						}
-					];					
+					];
 				}
-				
+
                 return coldefs;
-            },				
+            },
 
             //in order to call validate, you'll need to have your FieldLookup and CellOptions set
             //  on the controller (and obviously previously populated by the DataSheet service.)
@@ -2654,16 +2660,18 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
             {
                 if(row)
                 {
+					console.log("Inside validate...");
+					console.log("scope.callingPage = " + scope.callingPage);
 					//console.log("scope is next...");
 					//console.dir(scope);
 					//console.log("row is next...");
 					//console.dir(row);
-					
+
                     //spin through our fields and validate our value according to validation rules
                     var row_errors = [];
 
                     //console.log("Validating a row with " + array_count(scope.FieldLookup) + " rows.");
-					
+
 					// We use row_num to give us a reference for what line of data we are on, in the debugger.
                     //var row_num = 0;
 
@@ -2680,7 +2688,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                         //console.log("  >>incrementing!");
 
                     });
-					
+
 					if (scope.DatastoreTablePrefix === "CreelSurvey")
 					{
 						// Do we have a valid location?
@@ -2688,8 +2696,8 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 						{
 							row_errors.push("[LocationId] The Location does not match anything in the Locations table for this dataset.");
 						}
-						
-						
+
+
 						if ((typeof row.InterviewTime === 'undefined') && (typeof row.FishermanId === 'undefined')) // No interviewTime && No FishermandId
 						{
 							// Do nothing, because we probably do not have a detail; no error.
@@ -2711,15 +2719,15 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 									//console.log("Matched the fisherman to a name in the Fishermen table.");
 									foundName = true;
 								}
-								
+
 							});
-							
+
 							//console.log("typeof row.FishermanId = " + typeof row.FishermanId + ", row.FishermanId = " + row.FishermanId + ", foundName = " + foundName);
 							//if ((row.FishermanId !== null) && (!foundName))
 							//	row_errors.push("Fisherman name does not match any name in the Fishermen table."); // This turns the row color to red.
 						}
 					}
-					
+
                     //console.log(row_num + " --------------- is our rownum");
 					//console.log("row_errors is next...");
 					//console.dir(row_errors);
@@ -2741,7 +2749,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
             },
 
             //updateHeaderField: function(field_name, scope)
-            updateHeaderField: function(row, field_name, scope)		
+            updateHeaderField: function(row, field_name, scope)
             {
                 scope.dataChanged = true;
 
@@ -2757,8 +2765,8 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 				{
 					var value = scope.row[field_name];
 				}
-				console.log("value = " + value);		
-				
+				console.log("value = " + value);
+
                 var field = scope.FieldLookup[field_name];
                 var errors = [];
                 var row = scope.row;
@@ -2770,8 +2778,11 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                 {
                     scope.headerFieldErrors[field_name] = errors;
 					row.isValid = false;
-					scope.onRow.errors = errors;
-                    scope.gridHasErrors = true;	
+					//if (typeof scope.onRow !== 'undefined')
+					//{
+						scope.onRow.errors = errors;
+						scope.gridHasErrors = true;
+					//}
                 }
                 else
                 {
@@ -2779,7 +2790,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 					row.isValid = true;
 					//row.errors = undefined;
 					if (typeof scope.onRow !== 'undefined')
-						scope.onRow.errors = undefined;	
+						scope.onRow.errors = undefined;
                 }
 
 
@@ -2921,10 +2932,10 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                 var headers = scope.row;
 				console.log("headers is next...");
 				console.dir(headers);
-				
+
 				if (typeof scope.onRow.entity.errors === 'undefined')
 					scope.onRow.entity.errors = [];
-				
+
                 if ((typeof field !== 'undefined') && (field.FieldRoleId !== null) && (field.FieldRoleId == 1))
 				{
 					scope.onRow.errors = [];
@@ -2933,8 +2944,8 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 				else
 				{
 					fireRules("OnValidate",row, field, value, headers, scope.onRow.entity.errors, scope);
-				}				
-				
+				}
+
                 if(field && value)
                 {
                     fireRules("OnChange",row, field, value, headers, [], scope);
@@ -2968,7 +2979,10 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 
             //spin through all of the rows and re-validate.
             validateGrid: function(scope){
-
+				console.log("Inside validateGrid...");
+				console.log("scope.callingPage = " + scope.callingPage);
+				console.dir(scope);
+				
                 if(!scope.gridDatasheetOptions.enableCellEdit)
                     return;
 
@@ -3061,11 +3075,11 @@ mod.service('ConvertStatus',[ 'Logger', '$window', '$route',
     function(Logger,$window, $route, $q){
 
         var service = {
-			
+
 			convertStatus: function(aStatus){
 				console.log("Inside convertStatus...");
 				console.log("aStatus = " + aStatus);
-				
+
 				var strStatus = null;
 
 				if (aStatus === 0)
@@ -3076,14 +3090,14 @@ mod.service('ConvertStatus',[ 'Logger', '$window', '$route',
 				{
 					strStatus = "Inactive";
 				}
-				console.log("strStatus = " + strStatus);					
-				
+				console.log("strStatus = " + strStatus);
+
 				return strStatus;
 			},
 			convertOkToCall: function(aStatus){
 				console.log("Inside convertOkToCall...");
 				console.log("aStatus = " + aStatus);
-				
+
 				var strStatus = null;
 
 				if (aStatus === 0)
@@ -3094,19 +3108,34 @@ mod.service('ConvertStatus',[ 'Logger', '$window', '$route',
 				{
 					strStatus = "No";
 				}
-				console.log("strStatus = " + strStatus);					
-				
+				console.log("strStatus = " + strStatus);
+
 				return strStatus;
-			},			
-		}	
+			},
+		}
 		return service;
-    }]);	
-	
+    }]);
+
 mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 //mod.service('ServiceUtilities',[ 'Logger', '$window', '$route', $q, // Note:  If you had the $q on this line, it causes an error.
     function(Logger,$window, $route, $q){
-		
+
         var service = {
+
+			// ***** Date and Time functions start *****
+			checkDateTimeFormat1: function(strDateTime)
+			{//var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
+				var DateTime_REGEXP = /^\d{4}(-)\d{2}(-)\d{2}( )\d{2}(:)\d{2}$/;
+
+				if (DateTime_REGEXP.test(strDateTime))
+				{
+					return true;
+				}
+				else
+				{
+					return undefined;
+				}
+			},
 			
 			dateTimeNowToStrYYYYMMDD_HHmmSS:  function(){
 				// This function gets a date/time hack (now), and returns it in the format of YYYYMMDD_HHmmSS
@@ -3124,10 +3153,10 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 				var	strSeconds = this.padNumber(intSeconds);
 				var strNow = intYear + strMonth + strDate + "_" + strHours + strMinutes + strSeconds;
 				return strNow;
-			},	
+			},
 
 			dateTimeNowToStrYYYYMMDD_HHmmSS2:  function(){
-				// This function gets a date/time hack (now), and returns it in the format of YYYY-MM-DD HH:mm:SS.nnn
+				// This function takes a date/time hack (now), and returns it in the format of YYYY-MM-DD HH:mm:SS.nnn
 				var dtNow = new Date();
 				var intYear = dtNow.getFullYear();
 				var intMonth = dtNow.getMonth();
@@ -3144,7 +3173,17 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 				var strMilliseconds = this.padNumber(intMilliseconds);
 				var strNow = intYear + "-" + strMonth + "-" + strDate + " " + strHours + ":" + strMinutes + ":" + strSeconds + "." + strMilliseconds;
 				return strNow;
-			},	
+			},
+			
+			removeTSfromDateTimeString:  function(strDate)
+			{
+				// This function takes a date/time string like this:  2015-08-14T00:00:00
+				// and make it look like this:  2015-08-14 00:00
+				console.log("strDate = " + strDate);
+				strDate = strDate.replace("T", " ");
+				strDate = strDate.substring(0, (strDate.length - 3));
+				return strDate;
+			},
 
 			extractDateFromString:  function(strDate){
 				// This function takes an incoming date in this format:  2015-08-14T00:00:00
@@ -3154,10 +3193,10 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 
 				var newDate = strDate.substring(0,10);
 				console.log("newDate = " + newDate);
-				
+
 				return newDate;
 			},
-			
+
 			extractTimeFromString:  function(strDateTime){
 				// This function takes an incoming date in this format:  2015-08-14T08:00:00
 				// and extracts/converts it to this format:  08:00
@@ -3166,20 +3205,95 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 
 				var newTime = strDateTime.substring(11,16);
 				console.log("newTime = " + newTime);
-				
+
 				return newTime;
 			},
-		
+			
+			extractTimeFromString2:  function(strDateTime)
+			{
+				// This function takes an incoming date as string, in one of these formats,
+				/*	(HH:MM),
+				*	(HH:MM:SS),
+				*	(YYYY-MM-DDTHH:mm:SS format)
+				*/
+				// and extracts the time (HH:MM) from the string.
+				
+				//console.log("strDateTime = " + strDateTime);
+				var theString = strDateTime;
+				//var theLength = theString.length;
+				var colonLocation = theString.indexOf(":");
+				
+				// Some fields may have double quotes on the time fields.
+				// To determine if they do, we remove (via replace) the double quotes.
+				// Then we compare the string length from before and after the replace action.
+				var stringLength = theString.length;
+				var tmpString = theString.replace("\"", "");
+				var tmpStringLength = tmpString.length;
+				//console.log("colonLocation = " + colonLocation + ", stringLength = " + stringLength);
+				
+				if (stringLength !== tmpStringLength)
+				{
+					//console.log("The string includes double quotes..");
+					// The string includes "" (coming from a CSV file) so we must allow for them.
+					if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
+						theString = theString.substring(colonLocation - 2, stringLength - 4);
+				}
+				else
+				{
+					//console.log("The string DOES NOT have double quotes...");
+					if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
+						theString = theString.substring(colonLocation - 2, stringLength - 3);
+				}
+				return theString;
+			},
+			
+			extractYearFromString:  function(strDateTime)
+			{
+				// This function takes an incomving date as string (YYYY-MM-DDTHH:mm:SS format), and extracts the year (YYYY) from it.
+				var theString = strDateTime;
+				var hyphenLocation = theString.indexOf("-");
+				if (hyphenLocation < 0)
+					return hyphenLocation;
+				
+				theString = theString.substr(0, hyphenLocation); //(start where, how many)
+				
+				// Some fields may have double quotes on the time fields.
+				// To determine if they do, we remove (via replace) the double quotes.
+				// Then we compare the string length from before and after the replace action.
+				var stringLength = theString.length;
+				var tmpString = theString.replace("\"", "");
+				var tmpStringLength = tmpString.length;
+				//console.log("hyphenLocation = " + hyphenLocation + ", stringLength = " + stringLength);
+				
+				if (stringLength !== tmpStringLength)
+				{
+					//console.log("The string includes double quotes..");
+					// The string includes "" (coming from a CSV file) so we must allow for them.
+					theString = theString.substr(1, 4);
+				}
+				else
+				{
+					//console.log("The string DOES NOT have double quotes...");
+					theString = theString.substr(0, 4);
+				}
+				return theString;
+			},
+
             padNumber: function(number){
-				console.log("Inside padNumber...");		
-		
+				// This function take a number (< 10) as string, and adds a leading zero do it.
+				// Changes this:  "2"
+				// To this:  "02"
+				console.log("Inside padNumber...");
+
 				if (number < 10) {
 					return '0' + number;
 				}
 				return number;
             },
-			
+
 			toExactISOString: function(a_date){
+				// This function takes a date as DateTime, and converts is to a string
+				// that looks like this:  2017-02-04T08:05:04.123Z
 				console.log("Inside toExactISOString...");
 				console.log("a_date is next...");
 				console.dir(a_date);
@@ -3199,20 +3313,20 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 
 				return s_utc;
 			},
-			
-			//date to friendly format: "3/05/2014 04:35:44"
-			formatDate: function(d){
 
+			formatDate: function(d){
+				//date to friendly format: "3/05/2014 04:35:44"
+				
 				var d_str =
 					[d.getMonth()+1,d.getDate(), d.getFullYear()].join('/') + " " +
 					[("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
 
 				return d_str;
 			},
-			
-			//date to friendly format: "03/05/2014 04:35:44"  Note the 2-digit month.
-			formatDate2: function(d){
 
+			formatDate2: function(d){
+				//date to friendly format: "03/05/2014 04:35:44"  Note the 2-digit month.
+			
 				var d_str =
 					[this.padNumber(d.getMonth()+1),this.padNumber(d.getDate()), d.getFullYear()].join('/') + " " +
 					[("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
@@ -3220,6 +3334,52 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 				return d_str;
 			},
 			
+			convertHhMmToMinutes: function(aTime)
+			{
+				// This function expects a time duration like this:  01:15 (an hour and 15 minutes), and converts it to minutes.
+				console.log("typeof aTime = " + typeof aTime);
+					
+				
+				var numberMinutes = 0;
+				
+				var theHours = parseInt(aTime.substr(0,2)); // (start at, get this many)
+				//console.log("theHours = " + theHours);
+				var theMinutes = parseInt(aTime.substr(3,2));
+				//console.log("theMinutes = " + theMinutes);
+				numberMinutes = theHours * 60 + theMinutes;
+				//console.log("TotalTimeFished (in min) = " + TotalTimeFished);
+				return  numberMinutes;
+			},
+			
+			convertMinutesToHhMm: function(numberMinutes)
+			{
+				// This function expects a number of minutes, and converts it to a time duration (as a string) formatted like this:  hh:mm
+				
+				var NumMinutes = numberMinutes;
+				//console.log("NumMinutes = " + NumMinutes);
+				var theHours = parseInt(NumMinutes / 60, 10);
+				//console.log("theHours = " + theHours);
+				var theMinutes = NumMinutes - (theHours * 60);
+				//console.log("theMinutes = " + theMinutes);
+				var strTime = "";
+				
+				if (theHours < 10)
+					var strHours = "0" + theHours;
+				else
+					var strHours = "" + theHours;
+				
+				if (theMinutes < 10)
+					var strMinutes = "0" + theMinutes;
+				else
+					var strMinutes = "" + theMinutes;
+				
+				strTime = strHours + ":" + strMinutes;
+				
+				return strTime;
+			},
+			// ***** Date and Time functions end *****
+
+			// ***** Number-related (how many digits, etc.) functions start *****
 			// Given a float type number, this function verifies that it has six digits before the decimal.
 			checkSixFloat: function(aNumber)
 			{
@@ -3242,10 +3402,10 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 				var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
 				var n = "" + aNumber;
 				n = n.replace(',', '.');
-				
+
 				if (FLOAT_REGEXP6.test(n))
 				{
-					return parseFloat(n.replace(',', '.'));	
+					return parseFloat(n.replace(',', '.'));
 				}
 				else
 				{
@@ -3258,42 +3418,44 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 				var INTEGER_REGEXP = /^\-?\d+$/;
 				var n = "" + aNumber;
 				n = n.replace(',', '.');
-				
+
 				if (INTEGER_REGEXP.test(n))
 				{
-					return parseFloat(n.replace(',', '.'));	
+					return parseFloat(n.replace(',', '.'));
 				}
 				else
 				{
 					return undefined;
 				}
 			},
-			
+
 			check4Digits: function(aNumber)
 			{
 				console.log("Inside check4Digits...")
 				var INTEGER_REGEXP = /^\d{4}$/;
 				var n = "" + aNumber;
 				n = n.replace(',', '.');
-				
+
 				if (INTEGER_REGEXP.test(n))
 				{
-					return parseFloat(n.replace(',', '.'));	
+					return parseFloat(n.replace(',', '.'));
 				}
 				else
 				{
 					return undefined;
 				}
 			},
-			
+			// ***** Number-related (how many digits, etc.) functions end *****
+
 			setFileName: function(aFileName, scope)
 			{
 				scope.FieldSheetFile = aFileName;
 			}
-		}		
+		}
+
 		return service;
 
-    }]);	
+    }]);
 //common utility functions -- should this be broken out elsewhere?
 
 //refactore me even more
@@ -3307,7 +3469,7 @@ function makeFieldColDef(field, scope) {
 	//console.log("Inside makeFieldColDef...");
 	//console.log("field is next...");
 	//console.dir(field);
-	
+
     var coldef =
     {
         field: field.DbColumnName,
@@ -3320,12 +3482,12 @@ function makeFieldColDef(field, scope) {
 	if (scope.DatastoreTablePrefix == "CreelSurvey")
 	{
 		scope.disableFields = true;
-	}	
+	}
 	else
 	{
 		scope.datasheetColDefs.cellEditableCondition = true;
-	}	
-	
+	}
+
     //only setup edit templates for fields in grids with cell editing enabled.
     if(scope.gridDatasheetOptions.enableCellEdit)
     {
@@ -3382,7 +3544,7 @@ function makeFieldColDef(field, scope) {
             case 'datetime':
                 coldef.editableCellTemplate = makeField(field.DbColumnName, 'ex. 07/23/2014 16:20');
                 break;
-				
+
             case 'textarea':
             case 'text':
                 coldef.editableCellTemplate = '<input type="text" ng-blur="updateCell(row,\''+field.DbColumnName+'\')" ng-model="COL_FIELD" ng-input="COL_FIELD" />';
@@ -3458,7 +3620,7 @@ function parseField(field, scope)
 	//console.log("Inside services, parseField...");
 	//console.log("field is next...");
 	//console.dir(field);
-	
+
     //do this no matter what.
     scope.FieldLookup[field.DbColumnName] = field; //setup our little convenience lookup associative array - used for validation
 
@@ -3478,7 +3640,7 @@ function parseField(field, scope)
 
     //include units in the label if we are a DatasetField
     if(field.Field && field.Field.Units)
-		if (field.Field.Units !== "NULL") // DO NOT include units, if it = "NULL"		
+		if (field.Field.Units !== "NULL") // DO NOT include units, if it = "NULL"
 			displayName += " (" + field.Field.Units+")";
 
     //or if we are a Field
@@ -3498,11 +3660,15 @@ function parseField(field, scope)
         {
 			// Original code
 			//console.log("*** There is an error parsing the validation for: "+ field.Field.Name + " ***");
-            //console.dir(e);
-            //console.log("Validation == " + field.Field.Validation);
-			
-            //console.log("e string = " + e.description.toString());
-			var errorDescription = e.description.valueOf();
+      //console.dir(e);
+      //console.log("Validation == " + field.Field.Validation);
+
+      //TODO: we need to talk about this whole validation approach... no reason to "angular.fromJson" above
+      //      when we are going to fail a bunch of times on purpose because we're doing something different
+      //      with the whole switch thing below...
+
+      console.log("e string = " + e.message.toString());
+			var errorDescription = e.message.valueOf();
 			if ( (field.Field.Validation === "t") ||
 				(field.Field.Validation === "i") ||
 				(field.Field.Validation === "y") ||
@@ -3513,7 +3679,7 @@ function parseField(field, scope)
 				// Ken previously used the field validation for checking upper/lower limits on numbers.
 				// GC added these letters...
 				// t :  to indicate a time value
-				// i :  to indicate an integer 
+				// i :  to indicate an integer
 				// y :  to indicate a 4-digit year
 				if (field.Field.Validation === "y")
 				{
@@ -3546,7 +3712,7 @@ function parseField(field, scope)
 		// Original code
         //console.log("*** there is a rule parsing error for " + field.Field.Name + " *** ");
         //console.dir(e);
-		
+
 		//console.log("e string = " + e.description.toString());
 		var errorDescription = e.description.valueOf();
 		if ( (field.Field.Validation === "t") ||
@@ -3558,7 +3724,7 @@ function parseField(field, scope)
 			// Ken previously used the field validation for checking upper/lower limits on numbers.
 			// GC added these letters...
 			// t :  to indicate a time value
-			// i :  to indicate an integer 
+			// i :  to indicate an integer
 		}
 		else if (errorDescription == "Invalid character")
 		{
@@ -3571,7 +3737,7 @@ function parseField(field, scope)
 			console.log("Validation == " + field.Field.Validation);
 		}
     }
-    
+
     fireRules("DefaultValue", null, field, null, null, null, null);
     fireRules("Default", null, field, null, null, null, null);
 
@@ -3700,17 +3866,17 @@ function makeObjectsFromValues(key, valuesList)
 function order2dArrayByAlpha(a, b)
 {
     if(!a || !b)
-        return 0;		
-	
+        return 0;
+
 	//console.log(a[1] + ", " + b[1]);
 	var a = a[1].toLowerCase();
 	var b = b[1].toLowerCase();
 	//console.log(a + ", " + b);
-	
+
 	if (a < b)
 		return -1;
 	else if (a > b)
-		return 1; 
+		return 1;
 	else
 		return 0;
 }
@@ -3754,7 +3920,7 @@ function orderUserByAlpha(a,b)
 function orderByIndex(a,b) {
 	if(!a || !b || !a.OrderIndex || !b.OrderIndex || !a.FieldRoleId || !b.FieldRoleId)
         return 0;
-	
+
     if(a.OrderIndex && b.OrderIndex)
         return (a.OrderIndex - b.OrderIndex);
     else
@@ -3802,7 +3968,7 @@ function checkNumber(row, field, value, range, row_errors) {
     {
         var min = range[0];
         var max = range[1];
-        
+
         if(min && value < min) {
             row_errors.push("["+field.DbColumnName+"] Value is too low.");
             return false;
@@ -3818,12 +3984,14 @@ function checkNumber(row, field, value, range, row_errors) {
 }
 
 
+//function validateField(field, row, key, scope, row_errors)
 function validateField(field, row, key, scope, row_errors)
 {
 	//console.log("Inside services, validateField...");
 	//console.log("field is next...");
 	//console.dir(field);
-	
+	//console.log("scope.callingPage = " + scope.callingPage);
+
     var value = row[key];
 
 	//if (typeof field.DbColumnName !== 'undefined')
@@ -3866,11 +4034,26 @@ function validateField(field, row, key, scope, row_errors)
                 row_errors.push("["+field.DbColumnName+"] Value is not a date (mm/dd/yyyy).");
             break;
         case 'datetime':
+			console.log("Inside datetime...");
+			console.log("value = " + value);
             if(isNaN(Date.parse(value)))
                 row_errors.push("["+field.DbColumnName+"] Value is not a date-time (mm/dd/yyyy hh:mm).");
+			else // Valid date value.
+			{
+				var theDate = new Date(value);
+				var theYear = theDate.getFullYear();
+				console.log("theYear = " + theYear);
+				if (theYear < 1901)
+					row_errors.push("["+field.DbColumnName+"] Value has a default year (from Excel?); user must set year.");
+			}
+			
             break;
 
         case 'time':
+			var theTime = value;
+			var strTime = theTime.toString();
+			console.log("strTime = " + strTime);
+			
 			var timeContentValid = true;
             if(!stringIsTime(value) && !is_empty(value))
 				timeContentValid = false;
@@ -3878,11 +4061,12 @@ function validateField(field, row, key, scope, row_errors)
 				timeContentValid = false;
 			else if (value.indexOf(":") === -1)
 				timeContentValid = false;
-			
+
 			if (!timeContentValid)
                 row_errors.push("["+field.DbColumnName+"] Value is not a time (hh:mm).");
-			
+
             break;
+			
         case 'text':
 			if(field.Field.Validation && (field.Field.Validation !== 'null'))
 			{
@@ -3893,24 +4077,70 @@ function validateField(field, row, key, scope, row_errors)
 					if ((field.Field.Units === "00:00") || (field.Field.Units === "HH:MM")) // This looks for time fields (better).
 					{
 						//console.log("In services, validateField, found time field...");
+						//console.log("scope.callingPage = " + scope.callingPage);
 						//if(!stringIsNumber(value) && !is_empty(value))
+
+						// 
 						
-						// value may contain a time (HH:MM) or the time may be in a datetime string (YYYY-MM-DDTHH:mm:SS format).
-						//console.log("value (before extracting time)= " + value);
-						var colonLocation = value.indexOf(":");
-						value = value.substr(colonLocation - 2);
-						if (value.length > 5)
-							value = value.substr(0,6);
-					
-						//console.log("value (after extracting time)= " + value);
-						var validTime = checkTime(value);
-						//console.log("validTime (time is valid)= " + validTime)
-						if ((typeof validTime === 'undefined') || (value.length < 5))
+
+						if ((field.DbColumnName === "InterviewTime") ||
+							(field.DbColumnName === "TimeStart") ||
+							(field.DbColumnName === "TimeEnd"))
 						{
-							console.log("Error: Invalid time entry in " + field.DbColumnName + "." );
-							row_errors.push("["+field.DbColumnName+"] Invalid entry.  The entry must use the 24-hr military time format.  Example:  8:00 a.m. = 08:00 and 5:15 p.m. = 17:15");
+							if ((typeof scope.callingPage !== 'undefined') && (scope.callingPage === "Import"))
+							{
+								if (!checkDateTimeFormat1(value))
+									row_errors.push("["+field.DbColumnName+"] Value is not a date-time format (YYYY-MM-DD hh:mm)");
+								
+								var theYear = extractYearFromString(value);
+								if (parseInt(theYear) < 1901)
+								{
+									strErrorMessage = "["+field.DbColumnName+"] has a less than 1901 (Excel default year); user must enter a valid year (YYYY)";
+									console.log(strErrorMessage);
+									row_errors.push(strErrorMessage);
+								}
+							}
+							else
+							{
+								// value may contain a time (HH:MM) or the time may be in a datetime string (YYYY-MM-DDTHH:mm:SS format).
+								//console.log("value (before extracting time)= " + value);
+								if (value !== null)
+								{
+									var colonLocation = value.indexOf(":");
+									value = value.substr(colonLocation - 2);
+									if (value.length > 5)
+										value = value.substr(0,6);
+
+									//console.log("value (after extracting time)= " + value);
+									var validTime = checkTime(value);
+									//console.log("validTime (time is valid)= " + validTime)
+									if ((typeof validTime === 'undefined') || (value.length < 5))
+									{
+										console.log("Error: Invalid time entry in " + field.DbColumnName + "." );
+										row_errors.push("["+field.DbColumnName+"] Invalid entry.  The entry must use the 24-hr military time format.  Example:  8:00 a.m. = 08:00 and 5:15 p.m. = 17:15");
+									}
+								}
+							}
 						}
-						
+						else
+						{
+							// value may contain a time (HH:MM) or the time may be in a datetime string (YYYY-MM-DDTHH:mm:SS format).
+							console.log("value (before extracting time)= " + value);
+							var colonLocation = value.indexOf(":");
+							value = value.substr(colonLocation - 2);
+							if (value.length > 5)
+								value = value.substr(0,6);
+
+							//console.log("value (after extracting time)= " + value);
+							var validTime = checkTime(value);
+							//console.log("validTime (time is valid)= " + validTime)
+							
+							if ((typeof validTime === 'undefined') || (value.length < 5))
+							{
+								console.log("Error: Invalid time entry in " + field.DbColumnName + "." );
+								row_errors.push("["+field.DbColumnName+"] Invalid entry.  The entry must use the 24-hr military time format.  Example:  8:00 a.m. = 08:00 and 5:15 p.m. = 17:15");
+							}
+						}
 						/* Before import change
 						console.log("Found time field...");
 						//if(!stringIsNumber(value) && !is_empty(value))
@@ -3923,7 +4153,7 @@ function validateField(field, row, key, scope, row_errors)
 							row_errors.push("["+field.DbColumnName+"] Invalid entry.  The entry must use the 24-hr military time format.  Example:  8:00 a.m. = 08:00 and 5:15 p.m. = 17:15");
 						}
 						*/
-					}	
+					}
 				}
 				else if (field.Field.Validation === "nb")  // For a name, nb = not blank
 				{
@@ -3937,13 +4167,13 @@ function validateField(field, row, key, scope, row_errors)
 							var validName = value;
 						else
 							console.log("validName = " + validName);
-						
+
 						if (typeof validName === 'undefined')
 						{
 							console.log("Error: Invalid time entry in " + field.DbColumnName + "." );
 							row_errors.push("["+field.DbColumnName+"] Invalid entry.  [Surveyor] cannot be blank.");
 						}
-					}	
+					}
 				}
 			}
             break;
@@ -3954,7 +4184,7 @@ function validateField(field, row, key, scope, row_errors)
 
         case 'number':
 			//return checkNumber(row, field, value, field.Field.Validation, row_errors); // Chris' code.
-			
+
 			//console.log("Inside validateField, case number...");
 			//console.log("field.Field.DbColumnName = " + field.Field.DbColumnName);
 			//console.log("field.Field.Validation = " + field.Field.Validation);
@@ -3965,15 +4195,15 @@ function validateField(field, row, key, scope, row_errors)
 			//	return checkNumber(row, field, value, field.Field.Validation, row_errors);
 			//}
 			//console.log("typeof field.Field.Validation = " + typeof field.Field.Validation);
-			
+
 			if (typeof field.Field.Validation === "number")
 			{
 				field.Field.Validation = "" + field.Field.Validation;
 				//console.log("typeof field.Field.Validation = " + typeof field.Field.Validation);
 			}
-			
+
 			if ((field.Field.Validation !== null) && (field.Field.Validation.indexOf("null") < 0))
-			{	
+			{
 				//console.log("Validation exists and is not null...");
 				if (field.Field.Validation === "i")  // For an Integer
 				//if (field.Field.Validation.indexOf("i") > -1)  // For an Integer
@@ -3983,7 +4213,7 @@ function validateField(field, row, key, scope, row_errors)
 					//console.log("value = " + value);
 					if ((typeof value !== 'undefined') && (value !== null))
 					{
-						//console.log("field.DbColumnName = " + field.DbColumnName + ", value = " + value);	
+						//console.log("field.DbColumnName = " + field.DbColumnName + ", value = " + value);
 						// First verify the number is an integer.
 						var validNumber = checkInteger(value);
 						//console.log("validNumber = " + validNumber)
@@ -3999,10 +4229,10 @@ function validateField(field, row, key, scope, row_errors)
 								row_errors.push("["+field.DbColumnName+"] Invalid entry.  The entry must be a whole number.  Example:  3");
 							}
 						}
-						
+
 						//console.log("NumberAnglersInterviewed = " + value);
 						if (field.DbColumnName === "NumberAnglersInterviewed")
-						{	
+						{
 							//console.log("Found NumberAnglersInterviewed...");
 							//console.log("scope is next...");
 							console.dir(scope);
@@ -4010,10 +4240,10 @@ function validateField(field, row, key, scope, row_errors)
 							{
 								row_errors.push("["+field.DbColumnName+"] cannot be more than [NumberAnglersObserved]");
 							}
-							
-						}								
 
-					}					
+						}
+
+					}
 				}
 				else if (field.Field.Validation === "i4") // 4-digit integer
 				{
@@ -4027,7 +4257,7 @@ function validateField(field, row, key, scope, row_errors)
 					else if ((typeof value !== 'undefined') && (value !== null))
 					{
 						var strErrorMessage = "["+field.DbColumnName+"] Invalid entry.  The entry must be a 4-digit whole number.  Example:  1234";
-						
+
 						var strValue = value.toString();
 						var validNumber = checkInteger(value);
 						//console.log("validNumber = " + validNumber)
@@ -4046,7 +4276,7 @@ function validateField(field, row, key, scope, row_errors)
 					//console.log("Field name = " + field.DbColumnName);
 					//console.log("value = " + value);
 					//console.log("typeof value = " + typeof value);
-					
+
 					// The value can be blank.  If present, value must be a 4-digit year.
 					if ((typeof value !== 'undefined') && (value !== null) && (value.length > 0))
 					{
@@ -4073,7 +4303,7 @@ function validateField(field, row, key, scope, row_errors)
 						var strValue = value.toString();
 						var strDecimalPart = "";
 						var intDecimalLoc = strValue.indexOf(".");
-						
+
 						if (intDecimalLoc > -1)
 						{
 							strDecimalPart = strValue.substring(intDecimalLoc + 1);
@@ -4139,6 +4369,7 @@ if(field.DbColumnName == "FinClip")
 
 }
 
+
 function stringIsNumber(s) {
     return !isNaN(parseFloat(s)) && isFinite(s);
 }
@@ -4150,7 +4381,7 @@ function stringIsTime(s) {
 
     if(typeof s != 'string')
         return false;
-	
+
 	s = s.trim();
 
     //return s.match(/^\s*([01]?\d|2[0-3]):([0-5]\d)\s*$/);
@@ -4270,10 +4501,10 @@ function capitalizeFirstLetter (someText)
 	var firstLetter = someText.toUpperCase(someText.charAt(0));
 	var remainingLetters = someText.toLowerCase(someText.substring(1));
 	var newNext = firstLetter + remainingLetters;
-	
+
 	return newText;
 }
-	
+
 //convert a F to C
 function convertFtoC(fahr){
     if(fahr != null)
@@ -4412,7 +4643,7 @@ function getMatchingByFieldArray(data, search, field)
 {
     var newlist = [];
 	var theSearch = "";
-	
+
 	for (var key2 in search)
 	{
 		//console.log("key2 " + key2);
@@ -4437,7 +4668,7 @@ function getMatchingByFieldArray(data, search, field)
 	console.dir(newlist);   // the result is an array.
 	//newList = sortLocations(sortLocations);
     //console.dir(newlist);   // the result is an array.
-	
+
     return newlist;
 }
 
@@ -4448,14 +4679,14 @@ function sortLocations(a,b)
 	{
 		var l1 = a[8];
 		var l2 = b[8];
-		
+
 		if ((l1 !== "undefined") && (l1 !== null))
 			l1.toLowerCase();
 		if ((l2 !== "undefined") && (l2 !== null))
 			l2.toLowerCase();
-		
-		
-		
+
+
+
 		if (l1 < l2) return -1;
 		if (l1 > l2) return 1;
 		return 0;
@@ -4590,8 +4821,41 @@ function fireRules(type, row, field, value, headers, errors, scope)
 
 }
 
+function extractYearFromString(strDateTime)
+{
+	// This function takes an incomving date as string (YYYY-MM-DDTHH:mm:SS format), and extracts the year (YYYY) from it.
+	var theString = strDateTime;
+	var hyphenLocation = theString.indexOf("-");
+	if (hyphenLocation < 0)
+		return hyphenLocation;
+	
+	theString = theString.substr(0, hyphenLocation); //(start where, how many)
+	
+	// Some fields may have double quotes on the time fields.
+	// To determine if they do, we remove (via replace) the double quotes.
+	// Then we compare the string length from before and after the replace action.
+	var stringLength = theString.length;
+	var tmpString = theString.replace("\"", "");
+	var tmpStringLength = tmpString.length;
+	//console.log("hyphenLocation = " + hyphenLocation + ", stringLength = " + stringLength);
+	
+	if (stringLength !== tmpStringLength)
+	{
+		//console.log("The string includes double quotes..");
+		// The string includes "" (coming from a CSV file) so we must allow for them.
+		theString = theString.substr(1, 4);
+	}
+	else
+	{
+		//console.log("The string DOES NOT have double quotes...");
+		theString = theString.substr(0, 4);
+	}
+	return theString;
+}
+
+
 /* Regarding the following functions (checkInteger, checkSixFloat, checkSevenFloat),
-the ..._REGEXP is also found in the directives.js file.  According to my research, 
+the ..._REGEXP is also found in the directives.js file.  According to my research,
 we cannot call a directive from a service.  Therefore, we had to copy the content
 of the directives having ..._REGEXP and implement it/them here.
 */
@@ -4601,10 +4865,10 @@ function checkInteger(aNumber)
 	var INTEGER_REGEXP = /^\-?\d+$/;
 	var n = "" + aNumber;
 	n = n.replace(',', '.');
-	
+
 	if (INTEGER_REGEXP.test(n))
 	{
-		return parseFloat(n.replace(',', '.'));	
+		return parseFloat(n.replace(',', '.'));
 	}
 	else
 	{
@@ -4617,10 +4881,26 @@ function check4Digits(aNumber)
 	var INTEGER_REGEXP = /^\d{4}$/;
 	var n = "" + aNumber;
 	n = n.replace(',', '.');
-	
+
 	if (INTEGER_REGEXP.test(n))
 	{
-		return n; //parseFloat(n.replace(',', '.'));	
+		return n; //parseFloat(n.replace(',', '.'));
+	}
+	else
+	{
+		return undefined;
+	}
+}
+
+function check2Digits(aNumber)
+{
+	var INTEGER_REGEXP = /^\d{2}$/;
+	var n = "" + aNumber;
+	//n = n.replace(',', '.');
+
+	if (INTEGER_REGEXP.test(n))
+	{
+		return n; //parseFloat(n.replace(',', '.'));
 	}
 	else
 	{
@@ -4650,10 +4930,10 @@ function checkSixFloat(aNumber)
 	var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
 	var n = "" + aNumber;
 	n = n.replace(',', '.');
-	
+
 	if (FLOAT_REGEXP6.test(n))
 	{
-		return parseFloat(n.replace(',', '.'));	
+		return parseFloat(n.replace(',', '.'));
 	}
 	else
 	{
@@ -4667,10 +4947,10 @@ function checkSevenFloat(aNumber)
 	var FLOAT_REGEXP7 = /^\-?\d{7}((\.)\d+)?$/;
 	var n = "" + aNumber;
 	n = n.replace(',', '.');
-	
+
 	if (FLOAT_REGEXP7.test(n))
 	{
-		return parseFloat(n.replace(',', '.'));	
+		return parseFloat(n.replace(',', '.'));
 	}
 	else
 	{
@@ -4683,16 +4963,161 @@ function checkTime(aTime)
 	var FLOAT_REGEXPTIME = /^\d{2}((\:)\d{2})$/;
 	var t = "" + aTime;
 	//t = t.replace(',', '.');
-	
+
 	if (FLOAT_REGEXPTIME.test(t))
 	{
-		//return parseFloat(t.replace(/\D+/,""));	
-		return t;	
+		//return parseFloat(t.replace(/\D+/,""));
+		return t;
 	}
 	else
 	{
 		return undefined;
 	}
+}
+
+function checkDateTimeFormat1(strDateTime)
+{
+	//var DateTime_REGEXP = /^\d{4}(\-)\d{2}(\-)\d{2}(\ )\d{2}(\:)\d{2}$/;
+	//var dt = strDateTime
+
+	//if (DateTime_REGEXP.test(dt))
+	//{
+	//	return dt;
+	//}
+	//else
+	//{
+	//	return undefined;
+	//}
+	
+	var strYear = strDateTime.substr(0, 4);
+	//console.log("strYear = " + strYear);
+	var intYear = parseInt(strYear);
+	//console.log("intYear = " + intYear);
+	//console.log("typeof intYear = " + typeof intYear);
+	
+	if (typeof intYear !== 'number')
+		return false;
+	else
+		strDateTime = strDateTime.slice(4);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var isLeapYear = (intYear % 100 === 0) ? (intYear % 400 === 0) : (intYear % 4 === 0);
+	//console.log("isLeapYear = " + isLeapYear);
+	
+	if (strDateTime.charAt(0) !== '-')
+		return false;
+	else
+		strDateTime = strDateTime.slice(1);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var strMonth = strDateTime.substr(0, 2);
+	//console.log("strMonth = " + strMonth);
+	var intMonth = parseInt(strMonth);
+	
+	if (typeof intMonth !== 'number')
+		return false;
+	else if (intMonth > 12)
+		return false;
+	else
+		strDateTime = strDateTime.slice(2);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	if (strDateTime.charAt(0) !== '-')
+		return false;
+	else
+		strDateTime = strDateTime.slice(1);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var strDay = strDateTime.substr(0, 2);
+	//console.log("strDay = " + strDay);
+	var intDay = parseInt(strDay);
+	
+	if (typeof intDay !== 'number')
+		return false;
+	
+	switch (intMonth)
+	{
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12:
+			if (intDay > 31)
+			{
+				return false;
+			}
+			break;
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			if (intDay > 30)
+			{
+				return false;
+			}
+			break;
+		case 2:
+			if ((isLeapYear) && (intDay > 29))
+			{
+				return false;
+			}
+			else if (intDay > 28)
+			{
+				return false;
+			}
+			break;
+	}
+	strDateTime = strDateTime.slice(2);
+	//console.log("strDateTime = " + strDateTime);
+	
+	if (strDateTime.charAt(0) !== ' ')
+		return false;
+	else
+		strDateTime = strDateTime.slice(1);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var strHours = strDateTime.substr(0, 2);
+	//console.log("strHours = " + strHours);
+	var intHours = parseInt(strHours);
+	
+	if (typeof intHours !== 'number')
+		return false;
+	else if (intHours > 23)
+		return false;
+	else
+		strDateTime = strDateTime.slice(2);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	if (strDateTime.charAt(0) !== ':')
+		return false;
+	else
+		strDateTime = strDateTime.slice(1);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var strMinutes = strDateTime.substr(0, 2);
+	//console.log("strMinutes = " + strMinutes);
+	var intMinutes = parseInt(strMinutes);
+	
+	if (typeof intMinutes !== 'number')
+		return false;
+	else if (intMinutes > 59)
+		return false;
+
+	//console.log("strDateTime = " + strDateTime);
+	
+	if (strDateTime.length === 2)
+		return true;
+	else 
+		return false;
 }
 
 //give me a date and I will convert it to a UTC date.
@@ -4721,10 +5146,13 @@ function pad(number) {
 
 function toExactISOString(a_date)
 {
-    //TODO: better way to fix this? 
-    if(a_date.getFullYear() < 1950)
-        a_date.setFullYear(a_date.getFullYear() + 100);
-
+	// If an 2-digit year comes in, let's say 17 for 2017, the system will default 17 to 1917 instead.
+	// Therefore, the idea was to just add 100 years to the number, to put it into the correct century.
+    // TODO: better way to fix this?
+    //if(a_date.getFullYear() < 1950)
+    //    a_date.setFullYear(a_date.getFullYear() + 100);
+	
+	// We decided to put the onus on the user to enter the correct data.
     var s_utc = a_date.getFullYear() +
         '-' + pad(a_date.getMonth() + 1) +
         '-' + pad(a_date.getDate()) +
@@ -4741,7 +5169,7 @@ function setDateTo0000(a_date)
 	console.log("a_date = " + a_date);
 	console.log("type of a_date = " + typeof a_date);
 	var inDate = a_date;
-	
+
 	var theYear = inDate.getFullYear();
 	console.log("theYear = " + theYear);
 	var theMonth = inDate.getMonth();
@@ -4752,10 +5180,10 @@ function setDateTo0000(a_date)
 	var theMinutes = 0;
 	var theSeconds = 0;
 	var theMilliseconds = 0;
-	
+
 	var newDate = new Date(theYear, theMonth, theDay, theHour, theMinutes, theSeconds, theMilliseconds);
 	console.log("newDate = " + newDate);
-	
+
 	return newDate;
 }
 
@@ -4778,27 +5206,27 @@ function getTimeFromDate(a_date)
 
 	var separatorLocation = d.indexOf("-");
 	d = d.substring(separatorLocation + 1);
-	//console.log("d = " + d);	
+	//console.log("d = " + d);
 	var theMonth = d.substring(0,2);
 	//console.log("theMonth = " + theMonth);
-	
+
 	separatorLocation = d.indexOf("-");
 	d = d.substring(separatorLocation + 1);
 	//console.log("d = " + d);
 	var theDay = d.substring(0,2);
 	//console.log("theDay = " + theDay);
-	
+
 	d = d.substring(3);
 	//console.log("d = " + d);
 	var theHour = d.substring(0,2);
 	//console.log("theHour = " + theHour);
-	
+
 	separatorLocation = d.indexOf(":");
 	d = d.substring(separatorLocation + 1);
 	//console.log("d = " + d);
 	var theMinutes = d.substring(0,2);
 	//console.log("theMinutes = " + theMinutes);
-	
+
 	return theHour + ":" + theMinutes;
 }
 
@@ -4837,46 +5265,46 @@ function formatDateFromUtcToFriendly(d)
 
 	var separatorLocation = d.indexOf("-");
 	d = d.substring(separatorLocation + 1);
-	console.log("d = " + d);	
+	console.log("d = " + d);
 	var theMonth = d.substring(0,2);
 	console.log("theMonth = " + theMonth);
-	
+
 	separatorLocation = d.indexOf("-");
 	d = d.substring(separatorLocation + 1);
 	console.log("d = " + d);
 	var theDay = d.substring(0,2);
 	console.log("theDay = " + theDay);
-	
+
 	d = d.substring(3);
 	console.log("d = " + d);
 	var theHour = d.substring(0,2);
 	console.log("theHour = " + theHour);
-	
+
 	separatorLocation = d.indexOf(":");
 	d = d.substring(separatorLocation + 1);
 	console.log("d = " + d);
 	var theMinutes = d.substring(0,2);
 	console.log("theMinutes = " + theMinutes);
-	
+
 	separatorLocation = d.indexOf(":");
 	d = d.substring(separatorLocation + 1);
 	console.log("d = " + d);
 	var theSeconds = d.substring(0,2);
 	console.log("theSeconds = " + theSeconds);
-	
+
 	separatorLocation = d.indexOf(".");
 	d = d.substring(separatorLocation + 1);
 	console.log("d = " + d);
 	var theMilli = d.substring(0);
 	console.log("theMilli = " + theMilli);
-	
+
 	var friendlyDate = theMonth + "/" + theDay + "/" + theYear + " " + theHour + ":" + theMinutes;
-	
+
 	return friendlyDate
 }
 
-// The date may come in different formats:  
-//		1/1/2015 8:00:00 or 
+// The date may come in different formats:
+//		1/1/2015 8:00:00 or
 //		01/01/2015 08:00:00
 // Therefore, we must allow for either format and convert.
 function formatDateFromFriendlyToUtc(d)
@@ -4898,9 +5326,9 @@ function formatDateFromFriendlyToUtc(d)
 		console.log("theMonth = " + theMonth);
 		d = d.substring(3);
 	}
-	
+
 	console.log("d = " + d);
-	
+
 	separatorLocation = d.indexOf("/");
 	if (separatorLocation < 2)
 	{
@@ -4918,12 +5346,12 @@ function formatDateFromFriendlyToUtc(d)
 	}
 
 	console.log("d = " + d);
-	
+
 	var theYear = d.substring(0,4);
 	//console.log("theYear = " + theYear);
 	d = d.substring(5);
 	console.log("d = " + d);
-	
+
 	separatorLocation = d.indexOf(":");
 	if (separatorLocation < 2)
 	{
@@ -4939,9 +5367,9 @@ function formatDateFromFriendlyToUtc(d)
 		console.log("theHour = " + theHour);
 		d = d.substring(3);
 	}
-	
+
 	console.log("d = " + d);
-	
+
 	var theMinutes = d.substring(0,2);
 	//console.log("theMinutes = " + theMinutes);
 	d = d.substring(3);
@@ -4952,17 +5380,17 @@ function formatDateFromFriendlyToUtc(d)
 		var theSeconds = pad(d);
 	else
 		var theSeconds = "00";
-	
+
 	//console.log("theSeconds = " + theSeconds);
-	
-	var utc = theYear + 
+
+	var utc = theYear +
 		"-" + theMonth +
 		"-" + theDay +
 		" " + theHour +
 		":" + theMinutes +
 		":" + theSeconds +
 		"." + "000";
-	
+
 	console.log("utc = " + utc);
 	return utc;
 }
@@ -4982,8 +5410,8 @@ if(!Array.prototype.contains)
 
         // This was probably a good idea, but it caused problems, so I commented it out.  ~GC
 		//if(this.indexOf(searchElement) == -1)
-        //    return false;	
-		
+        //    return false;
+
         for (var i = this.length - 1; i >= 0; i--) {
             if(this[i].toLowerCase() == searchElement)
                 return true;
