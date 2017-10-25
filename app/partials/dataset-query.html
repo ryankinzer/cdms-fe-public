@@ -1,0 +1,106 @@
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li ng-show="project.Name"><a href="#/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li ng-show="datastore.Name">{{datastore.Name}} (All) <span class="divider"></span></li>
+    <li ng-show="dataset.Name"><a href="#/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
+    
+    <li class="active">Query</li>
+</ul>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span6">
+        <div class="right" ng-show="dataset.Name"><a href="#/query/{{dataset.Datastore.Id}}">Query all {{dataset.Datastore.Name}}</a></div>
+        <h4 ng-show="dataset.Name">Dataset Query Tool for {{dataset.Name}}</h4>
+        <h4 ng-show="datastore.Name">Dataset Query Tool for {{datastore.Name}} (All)</h4>
+        
+        <tabset justified="true">
+            <tab class="hidden" heading="New query">
+                <div class="header-box" style="border: 1px;">
+                
+                    <div class="panel" style="margin: 20px;background-color: #f2f2f2;padding: 4px 10px 35px 10px;">
+                           <ng-include src="'app/partials/query/activities-where.html'"></ng-include>
+                    </div>
+
+                    <div class="panel"  style="margin: 20px 20px 45px 20px; background-color: #FBFBEF; padding: 4px 10px 45px 10px;">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Activies where</th>
+                                <th>field</th>
+                                <th>matches criteria</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-show="!criteriaList.length">
+                                <td>&nbsp;</td>
+                                <td><i>No field criteria selected.</i></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr ng-repeat="criteria in criteriaList">
+                                <td>SELECT</td>
+                                <td>{{criteria.DbColumnName }}</td>
+                                <td>{{criteria.Value }}</td>
+                                <td><button class="btn-xs btn-red" ng-click="removeCriteria($index)">Remove</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="top-divider"></div>
+                        <br/><div class="right" style="margin-top: 5px; margin-bottom: 10px;">Auto execute query? <input type="checkbox" ng-model="AutoExecuteQuery"></input></div><br/><br/>
+                        <button class="btn right" ng-click="executeQuery()" style="margin-top: 5px; margin-left: 5px;">Execute query</button>
+                        <button class="btn right hidden" ng-click="saveQuery()" style="margin-top: 5px;">Save query</button>
+
+                    </div>
+
+
+                </div>
+            </tab>
+            <tab heading="Saved queries" class="hidden">
+                <div class="header-box" style="border: 1px; ">
+                    <div class="panel" style="margin: 20px;background-color: #F5FBEF;padding: 0px;">
+
+                        <table class="table table-striped">
+                            <thead>
+                            <tr style="background-color: #E0F8E6;">
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="query in queryList">
+                                <td>{{query.Title}}</td>
+                                <td>{{query.Description }}</td>
+                                <td><button class="btn" ng-click="executeQuery($index)">Execute</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    
+                </div>
+
+            </tab>
+        </tabset>
+        
+        <hr/>
+        <!--<div >Rows: {{query.results.length}}<img ng-show="query.loading" src="assets/images/FishLoading.gif"/></div>-->
+        <div >Rows: {{dataSheetDataset.length}}<img ng-show="query.loading" src="assets/images/FishLoading.gif"/></div>
+        <div class="gridStyle" ng-style="gridWidth" ng-grid="gridDatasheetOptions"></div>
+        
+        <div ng-include="'app/partials/dataentry/bottom-bar.html'"></div>
+
+        <button class="btn" ng-click="openExportView()">Export data</button>
+        <button class="btn right" ng-disabled="!onRow" ng-click="openActivity()">View Activity</button>
+
+        <div class="large-graph-box" id="chart-div">
+            <ng-include src="'app/partials/graphs/view-inset-' + dataset.Datastore.TablePrefix + '.html'"></ng-include>
+        </div>
+
+
+    </div>
+</div>
+
+
+

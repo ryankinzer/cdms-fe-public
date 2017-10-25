@@ -1,0 +1,134 @@
+
+<div class="query-box">
+	<div class="row">
+		<div class="col-md-4">
+			<div class="activities-where-box">
+				<p class="text-center query-header-text">Activities where</p>
+
+				<div class="row">
+					<div class="col-md-6" ng-show="showActivitiesWhereAll">
+						<p class="text-left"><b>Activity Date:</b></p>
+						<input type="radio" ng-model="Criteria.paramActivityDateType" value="all">All</input>
+					</div>
+				</div>
+
+				
+				<div class="row">
+					<div class="col-md-12" ng-show="showActivitiesWhereAll">
+						<input type="radio" ng-model="Criteria.paramActivityDateType" value="between">Between</input>
+						<br/>
+						<!--<input class="query-date-control" type="text" datepicker-popup="shortDate" ng-model="Criteria.BetweenFromActivityDate" is-open="copened" datepicker-options="dateOptions" ng-required="false" close-text="Close" ng-change="Criteria.paramActivityDateType = 'between'"/>-->
+						<input class="query-date-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="Criteria.BetweenFromActivityDate" is-open="copened" datepicker-options="dateOptions" ng-required="false" close-text="Close" ng-change="Criteria.paramActivityDateType = 'between'"/>
+						and
+						<!--<input class="query-date-control" type="text" datepicker-popup="shortDate" ng-model="Criteria.BetweenToActivityDate" is-open="dopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
+						<input class="query-date-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="Criteria.BetweenToActivityDate" is-open="dopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+					</div>
+				</div>
+				<div class="row">					
+					<div class="col-md-6" ng-show="showActivitiesWhereMigrationYear">
+						<b>Migration Year:</b>
+					</div>
+					<div ng-show="showActivitiesWhereMigrationYear">
+						<select ng-model="Criteria.paramActivityWhereMigrationYear" size="1" ng-options="Id as Year for (Id, Year) in MigrationYearOptions"></select>
+					</div>
+				</div>
+				<div class="row">					
+					<div class="col-md-6" ng-show="showActivitiesWhereRunYear">
+						<b>Run Year:</b>
+					</div>
+					<div ng-show="showActivitiesWhereRunYear">
+						<select ng-model="Criteria.paramActivityWhereRunYear" size="1" ng-options="Id as Year for (Id, Year) in RunYearOptions"></select>
+					</div>
+				</div>
+				<div class="row">					
+					<div class="col-md-6" ng-show="showActivitiesWhereReportYear">
+						<b>Report Year:</b>
+					</div>
+					<div ng-show="showActivitiesWhereReportYear">
+						<select ng-model="Criteria.paramActivityWhereReportYear" size="1" ng-options="Id as Year for (Id, Year) in ReportYearOptions"></select>
+					</div>
+				</div>
+				<div class="row">					
+					<div class="col-md-6" ng-show="showActivitiesWhereSpawningYear">
+						<b>Spawning Year:</b>
+					</div>
+					<div ng-show="showActivitiesWhereSpawningYear">
+						<select ng-model="Criteria.paramActivityWhereSpawningYear" size="1" ng-options="Id as Year for (Id, Year) in SpawningYearOptions"></select>
+					</div>
+				</div>
+				<div class="row">					
+					<div class="col-md-6" ng-show="showActivitiesWhereBroodYear">
+						<b>Brood Year:</b>
+					</div>
+					<div ng-show="showActivitiesWhereBroodYear">
+						<select ng-model="Criteria.paramActivityWhereBroodYear" size="1" ng-options="Id as Year for (Id, Year) in BroodYearOptions"></select>
+					</div>
+				</div>
+				<div class="row">					
+					<div class="col-md-6" ng-show="showActivitiesWhereOutmigrationYear">
+						<b>Outmigration Year:</b>
+					</div>
+					<div ng-show="showActivitiesWhereOutmigrationYear">
+						<select ng-model="Criteria.paramActivityWhereOutmigrationYear" size="1" ng-options="Id as Year for (Id, Year) in OutmigrationYearOptions"></select>
+					</div>
+				</div>
+				
+				<div class="row top-divider">
+					<div class="col-md-4">
+						QA Status:
+					</div>
+					<div class="col-md-8">
+						<select ng-model="Criteria.ParamQAStatusId" ng-options="id as name for (id, name) in QAStatusOptions">
+						</select>
+					</div>
+				</div>
+
+				<div class="row top-divider" ng-show="RowQAStatuses">
+					<div class="col-md-4">
+						Row QA:
+					</div>
+					<div class="col-md-8">
+						<select ng-model="Criteria.ParamRowQAStatusId" multiple ng-multiple="true" size="4" ng-options="id as name for (id, name) in RowQAStatuses">
+						</select>
+					</div>
+				</div>
+
+				<div class="row top-divider">
+					<div class="col-md-4">
+						Location: <!--<a href="#" title="Select locations using a map" ><img src="assets/images/selectmap.jpg"/></a>-->
+					</div>
+					<div class="col-md-8">
+						<select class="query-form-control" ng-model="Criteria.LocationIds" multiple ng-multiple="true" size="8" ng-options="id as name for (id, name) in locationOptions">
+						</select>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<div class="col-md-5 field-list-box">
+			<p class="text-center query-header-text">selected field</p>
+
+			<div class="row">
+				<div class="col-md-7">
+					<select multiple ng-multiple="false" size="18" ng-model="Criteria.ParamFieldSelect" ng-change="clearValue()" ng-options="Value.Label for Value in dataFields"/>
+				</div>
+				<div class="col-md-5 selected-field-description">
+					{{Criteria.ParamFieldSelect[0].Field.Description}}
+					{{Criteria.ParamFieldSelect[0].Description}}<br/>
+				</div>
+			</div>
+
+		</div>
+		<div class="col-md-3 criteria-list-box">
+			<p class="text-center query-header-text">matches criteria</p>
+			<div class="row">
+				<div class="col-md-12" style="height: 250px;">
+					<ng-include src="'app/partials/query/field-' + Criteria.ParamFieldSelect[0].ControlType + '.html'"></ng-include>
+				</div>
+			</div>
+			<button class="btn right" ng-click="addCriteria()">Add criteria</button>
+
+		</div>
+	</div>
+</div>
+
