@@ -16,8 +16,8 @@ define([
 	 [
 										// All files, unless otherwise noted, are in js/controllers.
 	  'ngRoute',						// assets/js/angular/angular-route.js (referred to in js/controllers/login-controller.js)
-	  'ngGrid',							// assets/js/ng-grid-2.0.7.ken.js (referred to in js/main.js)
-	  'DatasetControllers',				// mod_ds, controllers.js
+      'ngGrid',							// assets/js/ng-grid-2.0.7.ken.js (referred to in js/main.js)
+      'ProjectModule',
 	  'DatasetFilters', 				// js/filters.js
 	  'DataViewControllers',			// mod_dv, dataview-controller.js
 	  'DataEditControllers',			// mod_edit, dataedit-controllers.js
@@ -42,8 +42,8 @@ define([
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 
-	        $routeProvider.when('/projects', {templateUrl: 'app/partials/projects.html', controller: 'ProjectsCtrl'});
-	        $routeProvider.when('/projects/:Id', {templateUrl: 'app/partials/project-datasets.html', controller: 'ProjectDatasetsCtrl'});
+            $routeProvider.when('/projects', { templateUrl: 'app/partials/projects.html', controller: 'project-list-ctrl'});
+	        $routeProvider.when('/projects/:Id', {templateUrl: 'app/partials/project-datasets.html', controller: 'project-detail-ctrl'});
 
 	        //this one is a little special -- loads up the arcgis mapping stuff.
 	        $routeProvider.when('/mydata', {templateUrl: 'app/partials/mydatasets.html', controller: 'MyDatasetsCtrl'});

@@ -11,8 +11,8 @@ require([
   'app/directives/Map',
   'app/directives/FeatureLayer',
   'app/directives/AppraisalMap',
-  'app/directives/CrppContractsMap'
-
+  'app/directives/CrppContractsMap',
+  'app/core/projects/projects-module'
 
 ], function(angular,parser) {
   angular.element(document).ready(function(){
