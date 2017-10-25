@@ -8,6 +8,7 @@ var projects_module = angular.module('ProjectModule', ['ui.bootstrap', 'angularF
 require([
     'app/core/projects/components/project-detail/project-detail',
     'app/core/projects/components/project-detail/modal-new-file',
+    'app/core/projects/components/project-detail/modal-edit-file',
     'app/core/projects/components/project-detail/modal-edit-project',
     'app/core/projects/components/project-detail/modal-delete-file',
 
@@ -19,7 +20,8 @@ require([
     
     //controllers from the project-detail component
     projects_module.controller('project-detail-ctrl', project_detail);
-    projects_module.controller('ModalEditFileCtrl', modal_new_file);
+    projects_module.controller('ModalEditFileCtrl', modal_edit_file);
+    projects_module.controller('ModalNewFileCtrl', modal_new_file);
     projects_module.controller('ModalProjectEditorCtrl', modal_edit_project);
     projects_module.controller('ModalDeleteFileCtrl', modal_delete_file);
 
