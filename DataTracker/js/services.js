@@ -430,7 +430,6 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
                 service.datastoreId = id;
                 return GetAllPossibleDatastoreLocations.query({id: id});
             },
-
             getFields: function(id)
             {
                 return GetAllDatastoreFields.query({id: id});
@@ -442,22 +441,18 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
             {
                 return GetDatastore.query({id: id});
             },
-
             getProjects: function(id)
             {
                 return GetDatastoreProjects.query({id: id});
             },
-
             getDatastores: function()
             {
                 return GetAllDatastores.query();
             },
-
             getWaterBodies: function()
             {
                 return GetWaterBodies.query();
             },
-
             getDatasets: function(id)
             {
                 return GetDatastoreDatasets.query({id: id});
@@ -984,7 +979,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
         getProjects: function() {
             return Projects.query();
         },
-
+		
 		getSubprojects: function()
 		{
 			return GetSubprojects.query();
@@ -2226,8 +2221,9 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                 scope.updateCell = function(row, field) { service.updateCell(row,field,scope)};
                 //scope.updateHeaderField = function(field) { service.updateHeaderField(field, scope)};
 				scope.updateHeaderField = function(row, field) { service.updateHeaderField(row,field,scope)};
+                //scope.validateGrid = function() { service.validateGrid(scope)};
                 scope.validateGrid = function() { service.validateGrid(scope)};
-                scope.validate = function(row) { service.validate(row, scope)};
+                scope.validate = function(row) { service.validate(scope, row)};
                 scope.removeRow = function() { service.removeOnRow(scope)};
                 scope.undoRemoveRow = function() {service.undoRemoveOnRow(scope)};
                 scope.getFieldStats = function() {return service.getFieldStats(scope)};
@@ -2675,6 +2671,8 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
             {
                 if(row)
                 {
+					console.log("Inside validate...");
+					console.log("scope.callingPage = " + scope.callingPage);
 					//console.log("scope is next...");
 					//console.dir(scope);
 					//console.log("row is next...");
@@ -2791,8 +2789,11 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                 {
                     scope.headerFieldErrors[field_name] = errors;
 					row.isValid = false;
-					scope.onRow.errors = errors;
-                    scope.gridHasErrors = true;
+					//if (typeof scope.onRow !== 'undefined')
+					//{
+						scope.onRow.errors = errors;
+						scope.gridHasErrors = true;
+					//}
                 }
                 else
                 {
@@ -2989,7 +2990,10 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
 
             //spin through all of the rows and re-validate.
             validateGrid: function(scope){
-
+				console.log("Inside validateGrid...");
+				console.log("scope.callingPage = " + scope.callingPage);
+				console.dir(scope);
+				
                 if(!scope.gridDatasheetOptions.enableCellEdit)
                     return;
 
@@ -3129,43 +3133,68 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 
         var service = {
 
-            dateTimeNowToStrYYYYMMDD_HHmmSS: function () {
-                // This function gets a date/time hack (now), and returns it in the format of YYYYMMDD_HHmmSS
-                var dtNow = new Date();
-                var intYear = dtNow.getFullYear();
-                var intMonth = dtNow.getMonth();
-                var strMonth = this.padNumber(intMonth);
-                var intDate = dtNow.getDate();
-                var strDate = this.padNumber(intDate);
-                var intHours = dtNow.getHours();
-                var strHours = this.padNumber(intHours);
-                var intMinutes = dtNow.getMinutes();
-                var strMinutes = this.padNumber(intMinutes);
-                var intSeconds = dtNow.getSeconds();
-                var strSeconds = this.padNumber(intSeconds);
-                var strNow = intYear + strMonth + strDate + "_" + strHours + strMinutes + strSeconds;
-                return strNow;
-            },
+			// ***** Date and Time functions start *****
+			checkDateTimeFormat1: function(strDateTime)
+			{//var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
+				var DateTime_REGEXP = /^\d{4}(-)\d{2}(-)\d{2}( )\d{2}(:)\d{2}$/;
 
-            dateTimeNowToStrYYYYMMDD_HHmmSS2: function () {
-                // This function gets a date/time hack (now), and returns it in the format of YYYY-MM-DD HH:mm:SS.nnn
-                var dtNow = new Date();
-                var intYear = dtNow.getFullYear();
-                var intMonth = dtNow.getMonth();
-                var strMonth = this.padNumber(intMonth);
-                var intDate = dtNow.getDate();
-                var strDate = this.padNumber(intDate);
-                var intHours = dtNow.getHours();
-                var strHours = this.padNumber(intHours);
-                var intMinutes = dtNow.getMinutes();
-                var strMinutes = this.padNumber(intMinutes);
-                var intSeconds = dtNow.getSeconds();
-                var strSeconds = this.padNumber(intSeconds);
-                var intMilliseconds = dtNow.getMilliseconds();
-                var strMilliseconds = this.padNumber(intMilliseconds);
-                var strNow = intYear + "-" + strMonth + "-" + strDate + " " + strHours + ":" + strMinutes + ":" + strSeconds + "." + strMilliseconds;
-                return strNow;
-            },
+				if (DateTime_REGEXP.test(strDateTime))
+				{
+					return true;
+				}
+				else
+				{
+					return undefined;
+				}
+			},
+			
+			dateTimeNowToStrYYYYMMDD_HHmmSS:  function(){
+				// This function gets a date/time hack (now), and returns it in the format of YYYYMMDD_HHmmSS
+				var dtNow = new Date();
+				var intYear = dtNow.getFullYear();
+				var intMonth = dtNow.getMonth();
+				var	strMonth = this.padNumber(intMonth);
+				var intDate = dtNow.getDate();
+				var	strDate = this.padNumber(intDate);
+				var intHours = dtNow.getHours();
+				var	strHours = this.padNumber(intHours);
+				var intMinutes = dtNow.getMinutes();
+				var	strMinutes = this.padNumber(intMinutes);
+				var intSeconds = dtNow.getSeconds();
+				var	strSeconds = this.padNumber(intSeconds);
+				var strNow = intYear + strMonth + strDate + "_" + strHours + strMinutes + strSeconds;
+				return strNow;
+			},
+
+			dateTimeNowToStrYYYYMMDD_HHmmSS2:  function(){
+				// This function takes a date/time hack (now), and returns it in the format of YYYY-MM-DD HH:mm:SS.nnn
+				var dtNow = new Date();
+				var intYear = dtNow.getFullYear();
+				var intMonth = dtNow.getMonth();
+				var	strMonth = this.padNumber(intMonth);
+				var intDate = dtNow.getDate();
+				var	strDate = this.padNumber(intDate);
+				var intHours = dtNow.getHours();
+				var	strHours = this.padNumber(intHours);
+				var intMinutes = dtNow.getMinutes();
+				var	strMinutes = this.padNumber(intMinutes);
+				var intSeconds = dtNow.getSeconds();
+				var	strSeconds = this.padNumber(intSeconds);
+				var intMilliseconds = dtNow.getMilliseconds();
+				var strMilliseconds = this.padNumber(intMilliseconds);
+				var strNow = intYear + "-" + strMonth + "-" + strDate + " " + strHours + ":" + strMinutes + ":" + strSeconds + "." + strMilliseconds;
+				return strNow;
+			},
+			
+			removeTSfromDateTimeString:  function(strDate)
+			{
+				// This function takes a date/time string like this:  2015-08-14T00:00:00
+				// and make it look like this:  2015-08-14 00:00
+				console.log("strDate = " + strDate);
+				strDate = strDate.replace("T", " ");
+				strDate = strDate.substring(0, (strDate.length - 3));
+				return strDate;
+			},
 
             extractDateFromString: function (strDate) {
                 // This function takes an incoming date in this format:  2015-08-14T00:00:00
@@ -3188,11 +3217,84 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
                 var newTime = strDateTime.substring(11, 16);
                 console.log("newTime = " + newTime);
 
-                return newTime;
-            },
+				return newTime;
+			},
+			
+			extractTimeFromString2:  function(strDateTime)
+			{
+				// This function takes an incoming date as string, in one of these formats,
+				/*	(HH:MM),
+				*	(HH:MM:SS),
+				*	(YYYY-MM-DDTHH:mm:SS format)
+				*/
+				// and extracts the time (HH:MM) from the string.
+				
+				//console.log("strDateTime = " + strDateTime);
+				var theString = strDateTime;
+				//var theLength = theString.length;
+				var colonLocation = theString.indexOf(":");
+				
+				// Some fields may have double quotes on the time fields.
+				// To determine if they do, we remove (via replace) the double quotes.
+				// Then we compare the string length from before and after the replace action.
+				var stringLength = theString.length;
+				var tmpString = theString.replace("\"", "");
+				var tmpStringLength = tmpString.length;
+				//console.log("colonLocation = " + colonLocation + ", stringLength = " + stringLength);
+				
+				if (stringLength !== tmpStringLength)
+				{
+					//console.log("The string includes double quotes..");
+					// The string includes "" (coming from a CSV file) so we must allow for them.
+					if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
+						theString = theString.substring(colonLocation - 2, stringLength - 4);
+				}
+				else
+				{
+					//console.log("The string DOES NOT have double quotes...");
+					if (stringLength > 5)	// "HH:MM:SS"  Note the "", or YYYY-MM-DDTHH:mm:SS
+						theString = theString.substring(colonLocation - 2, stringLength - 3);
+				}
+				return theString;
+			},
+			
+			extractYearFromString:  function(strDateTime)
+			{
+				// This function takes an incomving date as string (YYYY-MM-DDTHH:mm:SS format), and extracts the year (YYYY) from it.
+				var theString = strDateTime;
+				var hyphenLocation = theString.indexOf("-");
+				if (hyphenLocation < 0)
+					return hyphenLocation;
+				
+				theString = theString.substr(0, hyphenLocation); //(start where, how many)
+				
+				// Some fields may have double quotes on the time fields.
+				// To determine if they do, we remove (via replace) the double quotes.
+				// Then we compare the string length from before and after the replace action.
+				var stringLength = theString.length;
+				var tmpString = theString.replace("\"", "");
+				var tmpStringLength = tmpString.length;
+				//console.log("hyphenLocation = " + hyphenLocation + ", stringLength = " + stringLength);
+				
+				if (stringLength !== tmpStringLength)
+				{
+					//console.log("The string includes double quotes..");
+					// The string includes "" (coming from a CSV file) so we must allow for them.
+					theString = theString.substr(1, 4);
+				}
+				else
+				{
+					//console.log("The string DOES NOT have double quotes...");
+					theString = theString.substr(0, 4);
+				}
+				return theString;
+			},
 
-            padNumber: function (number) {
-                console.log("Inside padNumber...");
+            padNumber: function(number){
+				// This function take a number (< 10) as string, and adds a leading zero do it.
+				// Changes this:  "2"
+				// To this:  "02"
+				console.log("Inside padNumber...");
 
                 if (number < 10) {
                     return '0' + number;
@@ -3200,89 +3302,133 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
                 return number;
             },
 
-            toExactISOString: function (a_date) {
-                console.log("Inside toExactISOString...");
-                console.log("a_date is next...");
-                console.dir(a_date);
+			toExactISOString: function(a_date){
+				// This function takes a date as DateTime, and converts is to a string
+				// that looks like this:  2017-02-04T08:05:04.123Z
+				console.log("Inside toExactISOString...");
+				console.log("a_date is next...");
+				console.dir(a_date);
 
-                if (a_date.getFullYear() < 1950)
-                    a_date.setFullYear(a_date.getFullYear() + 100);
+				if(a_date.getFullYear() < 1950)
+					a_date.setFullYear(a_date.getFullYear() + 100);
 
-                var s_utc = a_date.getFullYear() +
-                    '-' + this.padNumber(a_date.getMonth() + 1) +
-                    '-' + this.padNumber(a_date.getDate()) +
-                    'T' + this.padNumber(a_date.getHours()) +
-                    ':' + this.padNumber(a_date.getMinutes()) +
-                    ':' + this.padNumber(a_date.getSeconds()) +
-                    // '.' + (a_date.getMilliseconds() / 1000).toFixed(3).slice(2, 5); // original line
-                    '.' + (a_date.getMilliseconds() / 1000).toFixed(3).slice(2, 5) +
-                    'Z';
+				var s_utc = a_date.getFullYear() +
+					'-' + this.padNumber(a_date.getMonth() + 1) +
+					'-' + this.padNumber(a_date.getDate()) +
+					'T' + this.padNumber(a_date.getHours()) +
+					':' + this.padNumber(a_date.getMinutes()) +
+					':' + this.padNumber(a_date.getSeconds()) +
+					// '.' + (a_date.getMilliseconds() / 1000).toFixed(3).slice(2, 5); // original line
+					'.' + (a_date.getMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+					'Z';
 
-                return s_utc;
-            },
+				return s_utc;
+			},
 
-            //date to friendly format: "3/05/2014 04:35:44"
-            formatDate: function (d) {
-
-                var d_str =
-                    [d.getMonth() + 1, d.getDate(), d.getFullYear()].join('/') + " " +
-                    [("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
-
-                return d_str;
-            },
-
-            //date to friendly format: "03/05/2014 04:35:44"  Note the 2-digit month.
-            formatDate2: function (d) {
-
-                var d_str =
-                    [this.padNumber(d.getMonth() + 1), this.padNumber(d.getDate()), d.getFullYear()].join('/') + " " +
-                    [("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
+			formatDate: function(d){
+				//date to friendly format: "3/05/2014 04:35:44"
+				
+				var d_str =
+					[d.getMonth()+1,d.getDate(), d.getFullYear()].join('/') + " " +
+					[("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
 
                 return d_str;
             },
 
-            // Given a float type number, this function verifies that it has six digits before the decimal.
-            checkSixFloat: function (aNumber) {
-                // Regular Expression explanation.  Also see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-                // Enclosing characters:  / ... /
-                // At the beginning:  ^
-                // Escape character for special characters:  \  , in this case the - has special meaning
-                // Match the preceding character 0 or 1 time; in other words, like -123.  The - sign in front may or may not be present:  ?
-                // A sequence of 6 digits:  \d{6}
-                // Start a section to be remembered:  (       and another section   (
-                // Look for a decimal, but the decimal needs escaping, because the . is special:  \.
-                // Close the decimal section:  )
-                // Look for a digit:  \d
-                // Match the preceding character 1 or more times:  +
-                // Closed this section for the fractional value:  )
-                // The decimal followed by 1 or more numbers may or may not be present (the whole .123 section):  ?
-                // The fractional part (.123) is treated as the end of the number, and we want to see if the number has a fractional part:  $
-                // Basically, the $ matches the whole () section before the ?, so the decimal section must be at the end of the number.
-                // Example:  For example, /t$/ does not match the 't' in "eater", but does match it in "eat".
-                var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
-                var n = "" + aNumber;
-                n = n.replace(',', '.');
+			formatDate2: function(d){
+				//date to friendly format: "03/05/2014 04:35:44"  Note the 2-digit month.
+			
+				var d_str =
+					[this.padNumber(d.getMonth()+1),this.padNumber(d.getDate()), d.getFullYear()].join('/') + " " +
+					[("00" + d.getHours()).slice(-2), ("00" + d.getMinutes()).slice(-2), ("00" + d.getSeconds()).slice(-2)].join(':');
 
-                if (FLOAT_REGEXP6.test(n)) {
-                    return parseFloat(n.replace(',', '.'));
-                }
-                else {
-                    return undefined;
-                }
-            },
-            // Given text that could be an integer, this function verifies that it is an integer.
-            checkInteger: function (aNumber) {
-                var INTEGER_REGEXP = /^\-?\d+$/;
-                var n = "" + aNumber;
-                n = n.replace(',', '.');
+				return d_str;
+			},
+			
+			convertHhMmToMinutes: function(aTime)
+			{
+				// This function expects a time duration like this:  01:15 (an hour and 15 minutes), and converts it to minutes.
+				console.log("typeof aTime = " + typeof aTime);
+					
+				
+				var numberMinutes = 0;
+				
+				var theHours = parseInt(aTime.substr(0,2)); // (start at, get this many)
+				//console.log("theHours = " + theHours);
+				var theMinutes = parseInt(aTime.substr(3,2));
+				//console.log("theMinutes = " + theMinutes);
+				numberMinutes = theHours * 60 + theMinutes;
+				//console.log("TotalTimeFished (in min) = " + TotalTimeFished);
+				return  numberMinutes;
+			},
+			
+			convertMinutesToHhMm: function(numberMinutes)
+			{
+				// This function expects a number of minutes, and converts it to a time duration (as a string) formatted like this:  hh:mm
+				
+				var NumMinutes = numberMinutes;
+				//console.log("NumMinutes = " + NumMinutes);
+				var theHours = parseInt(NumMinutes / 60, 10);
+				//console.log("theHours = " + theHours);
+				var theMinutes = NumMinutes - (theHours * 60);
+				//console.log("theMinutes = " + theMinutes);
+				var strTime = "";
+				
+				if (theHours < 10)
+					var strHours = "0" + theHours;
+				else
+					var strHours = "" + theHours;
+				
+				if (theMinutes < 10)
+					var strMinutes = "0" + theMinutes;
+				else
+					var strMinutes = "" + theMinutes;
+				
+				strTime = strHours + ":" + strMinutes;
+				
+				return strTime;
+			},
+			// ***** Date and Time functions end *****
 
-                if (INTEGER_REGEXP.test(n)) {
-                    return parseFloat(n.replace(',', '.'));
-                }
-                else {
-                    return undefined;
-                }
-            },
+			// ***** Number-related (how many digits, etc.) functions start *****
+			// Given a float type number, this function verifies that it has six digits before the decimal.
+			checkSixFloat: function(aNumber)
+			{
+				// Regular Expression explanation.  Also see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+				// Enclosing characters:  / ... /
+				// At the beginning:  ^
+				// Escape character for special characters:  \  , in this case the - has special meaning
+				// Match the preceding character 0 or 1 time; in other words, like -123.  The - sign in front may or may not be present:  ?
+				// A sequence of 6 digits:  \d{6}
+				// Start a section to be remembered:  (       and another section   (
+				// Look for a decimal, but the decimal needs escaping, because the . is special:  \.
+				// Close the decimal section:  )
+				// Look for a digit:  \d
+				// Match the preceding character 1 or more times:  +
+				// Closed this section for the fractional value:  )
+				// The decimal followed by 1 or more numbers may or may not be present (the whole .123 section):  ?
+				// The fractional part (.123) is treated as the end of the number, and we want to see if the number has a fractional part:  $
+				// Basically, the $ matches the whole () section before the ?, so the decimal section must be at the end of the number.
+				// Example:  For example, /t$/ does not match the 't' in "eater", but does match it in "eat".
+				var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
+				var n = "" + aNumber;
+				n = n.replace(',', '.');
+
+				if (FLOAT_REGEXP6.test(n))
+				{
+					return parseFloat(n.replace(',', '.'));
+				}
+				else
+				{
+					return undefined;
+				}
+			},
+			// Given text that could be an integer, this function verifies that it is an integer.
+			checkInteger: function(aNumber)
+			{
+				var INTEGER_REGEXP = /^\-?\d+$/;
+				var n = "" + aNumber;
+				n = n.replace(',', '.');
 
             check4Digits: function (aNumber) {
                 console.log("Inside check4Digits...")
@@ -3297,11 +3443,13 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
                     return undefined;
                 }
             },
+			// ***** Number-related (how many digits, etc.) functions end *****
 
-            setFileName: function (aFileName, scope) {
-                scope.FieldSheetFile = aFileName;
-            }
-        };		
+			setFileName: function(aFileName, scope)
+			{
+				scope.FieldSheetFile = aFileName;
+			}
+		}
 
 		return service;
 
@@ -3833,11 +3981,13 @@ function checkNumber(row, field, value, range, row_errors) {
 }
 
 
+//function validateField(field, row, key, scope, row_errors)
 function validateField(field, row, key, scope, row_errors)
 {
 	//console.log("Inside services, validateField...");
 	//console.log("field is next...");
 	//console.dir(field);
+	//console.log("scope.callingPage = " + scope.callingPage);
 
     var value = row[key];
 
@@ -3881,11 +4031,26 @@ function validateField(field, row, key, scope, row_errors)
                 row_errors.push("["+field.DbColumnName+"] Value is not a date (mm/dd/yyyy).");
             break;
         case 'datetime':
+			console.log("Inside datetime...");
+			console.log("value = " + value);
             if(isNaN(Date.parse(value)))
                 row_errors.push("["+field.DbColumnName+"] Value is not a date-time (mm/dd/yyyy hh:mm).");
+			else // Valid date value.
+			{
+				var theDate = new Date(value);
+				var theYear = theDate.getFullYear();
+				console.log("theYear = " + theYear);
+				if (theYear < 1901)
+					row_errors.push("["+field.DbColumnName+"] Value has a default year (from Excel?); user must set year.");
+			}
+			
             break;
 
         case 'time':
+			var theTime = value;
+			var strTime = theTime.toString();
+			console.log("strTime = " + strTime);
+			
 			var timeContentValid = true;
             if(!stringIsTime(value) && !is_empty(value))
 				timeContentValid = false;
@@ -3898,6 +4063,7 @@ function validateField(field, row, key, scope, row_errors)
                 row_errors.push("["+field.DbColumnName+"] Value is not a time (hh:mm).");
 
             break;
+			
         case 'text':
 			if(field.Field.Validation && (field.Field.Validation !== 'null'))
 			{
@@ -3908,24 +4074,70 @@ function validateField(field, row, key, scope, row_errors)
 					if ((field.Field.Units === "00:00") || (field.Field.Units === "HH:MM")) // This looks for time fields (better).
 					{
 						//console.log("In services, validateField, found time field...");
+						//console.log("scope.callingPage = " + scope.callingPage);
 						//if(!stringIsNumber(value) && !is_empty(value))
 
-						// value may contain a time (HH:MM) or the time may be in a datetime string (YYYY-MM-DDTHH:mm:SS format).
-						//console.log("value (before extracting time)= " + value);
-						var colonLocation = value.indexOf(":");
-						value = value.substr(colonLocation - 2);
-						if (value.length > 5)
-							value = value.substr(0,6);
+						// 
+						
 
-						//console.log("value (after extracting time)= " + value);
-						var validTime = checkTime(value);
-						//console.log("validTime (time is valid)= " + validTime)
-						if ((typeof validTime === 'undefined') || (value.length < 5))
+						if ((field.DbColumnName === "InterviewTime") ||
+							(field.DbColumnName === "TimeStart") ||
+							(field.DbColumnName === "TimeEnd"))
 						{
-							console.log("Error: Invalid time entry in " + field.DbColumnName + "." );
-							row_errors.push("["+field.DbColumnName+"] Invalid entry.  The entry must use the 24-hr military time format.  Example:  8:00 a.m. = 08:00 and 5:15 p.m. = 17:15");
-						}
+							if ((typeof scope.callingPage !== 'undefined') && (scope.callingPage === "Import"))
+							{
+								if (!checkDateTimeFormat1(value))
+									row_errors.push("["+field.DbColumnName+"] Value is not a date-time format (YYYY-MM-DD hh:mm)");
+								
+								var theYear = extractYearFromString(value);
+								if (parseInt(theYear) < 1901)
+								{
+									strErrorMessage = "["+field.DbColumnName+"] has a less than 1901 (Excel default year); user must enter a valid year (YYYY)";
+									console.log(strErrorMessage);
+									row_errors.push(strErrorMessage);
+								}
+							}
+							else
+							{
+								// value may contain a time (HH:MM) or the time may be in a datetime string (YYYY-MM-DDTHH:mm:SS format).
+								//console.log("value (before extracting time)= " + value);
+								if (value !== null)
+								{
+									var colonLocation = value.indexOf(":");
+									value = value.substr(colonLocation - 2);
+									if (value.length > 5)
+										value = value.substr(0,6);
 
+									//console.log("value (after extracting time)= " + value);
+									var validTime = checkTime(value);
+									//console.log("validTime (time is valid)= " + validTime)
+									if ((typeof validTime === 'undefined') || (value.length < 5))
+									{
+										console.log("Error: Invalid time entry in " + field.DbColumnName + "." );
+										row_errors.push("["+field.DbColumnName+"] Invalid entry.  The entry must use the 24-hr military time format.  Example:  8:00 a.m. = 08:00 and 5:15 p.m. = 17:15");
+									}
+								}
+							}
+						}
+						else
+						{
+							// value may contain a time (HH:MM) or the time may be in a datetime string (YYYY-MM-DDTHH:mm:SS format).
+							console.log("value (before extracting time)= " + value);
+							var colonLocation = value.indexOf(":");
+							value = value.substr(colonLocation - 2);
+							if (value.length > 5)
+								value = value.substr(0,6);
+
+							//console.log("value (after extracting time)= " + value);
+							var validTime = checkTime(value);
+							//console.log("validTime (time is valid)= " + validTime)
+							
+							if ((typeof validTime === 'undefined') || (value.length < 5))
+							{
+								console.log("Error: Invalid time entry in " + field.DbColumnName + "." );
+								row_errors.push("["+field.DbColumnName+"] Invalid entry.  The entry must use the 24-hr military time format.  Example:  8:00 a.m. = 08:00 and 5:15 p.m. = 17:15");
+							}
+						}
 						/* Before import change
 						console.log("Found time field...");
 						//if(!stringIsNumber(value) && !is_empty(value))
@@ -4606,6 +4818,39 @@ function fireRules(type, row, field, value, headers, errors, scope)
 
 }
 
+function extractYearFromString(strDateTime)
+{
+	// This function takes an incomving date as string (YYYY-MM-DDTHH:mm:SS format), and extracts the year (YYYY) from it.
+	var theString = strDateTime;
+	var hyphenLocation = theString.indexOf("-");
+	if (hyphenLocation < 0)
+		return hyphenLocation;
+	
+	theString = theString.substr(0, hyphenLocation); //(start where, how many)
+	
+	// Some fields may have double quotes on the time fields.
+	// To determine if they do, we remove (via replace) the double quotes.
+	// Then we compare the string length from before and after the replace action.
+	var stringLength = theString.length;
+	var tmpString = theString.replace("\"", "");
+	var tmpStringLength = tmpString.length;
+	//console.log("hyphenLocation = " + hyphenLocation + ", stringLength = " + stringLength);
+	
+	if (stringLength !== tmpStringLength)
+	{
+		//console.log("The string includes double quotes..");
+		// The string includes "" (coming from a CSV file) so we must allow for them.
+		theString = theString.substr(1, 4);
+	}
+	else
+	{
+		//console.log("The string DOES NOT have double quotes...");
+		theString = theString.substr(0, 4);
+	}
+	return theString;
+}
+
+
 /* Regarding the following functions (checkInteger, checkSixFloat, checkSevenFloat),
 the ..._REGEXP is also found in the directives.js file.  According to my research,
 we cannot call a directive from a service.  Therefore, we had to copy the content
@@ -4633,6 +4878,22 @@ function check4Digits(aNumber)
 	var INTEGER_REGEXP = /^\d{4}$/;
 	var n = "" + aNumber;
 	n = n.replace(',', '.');
+
+	if (INTEGER_REGEXP.test(n))
+	{
+		return n; //parseFloat(n.replace(',', '.'));
+	}
+	else
+	{
+		return undefined;
+	}
+}
+
+function check2Digits(aNumber)
+{
+	var INTEGER_REGEXP = /^\d{2}$/;
+	var n = "" + aNumber;
+	//n = n.replace(',', '.');
 
 	if (INTEGER_REGEXP.test(n))
 	{
@@ -4711,6 +4972,151 @@ function checkTime(aTime)
 	}
 }
 
+function checkDateTimeFormat1(strDateTime)
+{
+	//var DateTime_REGEXP = /^\d{4}(\-)\d{2}(\-)\d{2}(\ )\d{2}(\:)\d{2}$/;
+	//var dt = strDateTime
+
+	//if (DateTime_REGEXP.test(dt))
+	//{
+	//	return dt;
+	//}
+	//else
+	//{
+	//	return undefined;
+	//}
+	
+	var strYear = strDateTime.substr(0, 4);
+	//console.log("strYear = " + strYear);
+	var intYear = parseInt(strYear);
+	//console.log("intYear = " + intYear);
+	//console.log("typeof intYear = " + typeof intYear);
+	
+	if (typeof intYear !== 'number')
+		return false;
+	else
+		strDateTime = strDateTime.slice(4);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var isLeapYear = (intYear % 100 === 0) ? (intYear % 400 === 0) : (intYear % 4 === 0);
+	//console.log("isLeapYear = " + isLeapYear);
+	
+	if (strDateTime.charAt(0) !== '-')
+		return false;
+	else
+		strDateTime = strDateTime.slice(1);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var strMonth = strDateTime.substr(0, 2);
+	//console.log("strMonth = " + strMonth);
+	var intMonth = parseInt(strMonth);
+	
+	if (typeof intMonth !== 'number')
+		return false;
+	else if (intMonth > 12)
+		return false;
+	else
+		strDateTime = strDateTime.slice(2);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	if (strDateTime.charAt(0) !== '-')
+		return false;
+	else
+		strDateTime = strDateTime.slice(1);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var strDay = strDateTime.substr(0, 2);
+	//console.log("strDay = " + strDay);
+	var intDay = parseInt(strDay);
+	
+	if (typeof intDay !== 'number')
+		return false;
+	
+	switch (intMonth)
+	{
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12:
+			if (intDay > 31)
+			{
+				return false;
+			}
+			break;
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			if (intDay > 30)
+			{
+				return false;
+			}
+			break;
+		case 2:
+			if ((isLeapYear) && (intDay > 29))
+			{
+				return false;
+			}
+			else if (intDay > 28)
+			{
+				return false;
+			}
+			break;
+	}
+	strDateTime = strDateTime.slice(2);
+	//console.log("strDateTime = " + strDateTime);
+	
+	if (strDateTime.charAt(0) !== ' ')
+		return false;
+	else
+		strDateTime = strDateTime.slice(1);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var strHours = strDateTime.substr(0, 2);
+	//console.log("strHours = " + strHours);
+	var intHours = parseInt(strHours);
+	
+	if (typeof intHours !== 'number')
+		return false;
+	else if (intHours > 23)
+		return false;
+	else
+		strDateTime = strDateTime.slice(2);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	if (strDateTime.charAt(0) !== ':')
+		return false;
+	else
+		strDateTime = strDateTime.slice(1);
+	
+	//console.log("strDateTime = " + strDateTime);
+	
+	var strMinutes = strDateTime.substr(0, 2);
+	//console.log("strMinutes = " + strMinutes);
+	var intMinutes = parseInt(strMinutes);
+	
+	if (typeof intMinutes !== 'number')
+		return false;
+	else if (intMinutes > 59)
+		return false;
+
+	//console.log("strDateTime = " + strDateTime);
+	
+	if (strDateTime.length === 2)
+		return true;
+	else 
+		return false;
+}
+
 //give me a date and I will convert it to a UTC date.
 //  used in rules.
 function dateToUTC(a_date)
@@ -4737,10 +5143,13 @@ function pad(number) {
 
 function toExactISOString(a_date)
 {
-    //TODO: better way to fix this?
-    if(a_date.getFullYear() < 1950)
-        a_date.setFullYear(a_date.getFullYear() + 100);
-
+	// If an 2-digit year comes in, let's say 17 for 2017, the system will default 17 to 1917 instead.
+	// Therefore, the idea was to just add 100 years to the number, to put it into the correct century.
+    // TODO: better way to fix this?
+    //if(a_date.getFullYear() < 1950)
+    //    a_date.setFullYear(a_date.getFullYear() + 100);
+	
+	// We decided to put the onus on the user to enter the correct data.
     var s_utc = a_date.getFullYear() +
         '-' + pad(a_date.getMonth() + 1) +
         '-' + pad(a_date.getDate()) +
