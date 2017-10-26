@@ -3429,6 +3429,7 @@ mod.service('ServiceUtilities',[ 'Logger', '$window', '$route',
 				var INTEGER_REGEXP = /^\-?\d+$/;
 				var n = "" + aNumber;
 				n = n.replace(',', '.');
+			},
 
             check4Digits: function (aNumber) {
                 console.log("Inside check4Digits...")
