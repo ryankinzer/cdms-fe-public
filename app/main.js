@@ -42,8 +42,8 @@ define([
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 
-            $routeProvider.when('/projects', { templateUrl: 'app/partials/projects.html', controller: 'project-list-ctrl'});
-	        $routeProvider.when('/projects/:Id', {templateUrl: 'app/partials/project-datasets.html', controller: 'project-detail-ctrl'});
+            $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'project-list-ctrl'});
+            $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets.html', controller: 'project-detail-ctrl'});
 
 	        //this one is a little special -- loads up the arcgis mapping stuff.
 	        $routeProvider.when('/mydata', {templateUrl: 'app/partials/mydatasets.html', controller: 'MyDatasetsCtrl'});

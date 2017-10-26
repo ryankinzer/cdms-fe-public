@@ -2,29 +2,80 @@
 
 var mod = angular.module('DatasetServices', ['ngResource']);
 
-//Note: typically you won't want to use these factories directly in your
-// controllers, but rather use the DataService below.
-mod.factory('Projects',['$resource', function(resource){
-        return resource(serviceUrl+'/api/v1/project/getprojects',{}, {
-            query: {method: 'GET', params: {}, isArray: true}
-        });
+/*
+moving these to projects soon
+*/
+
+
+mod.factory('Projects', ['$resource', function (resource) {
+    return resource(serviceUrl + '/api/v1/project/getprojects', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
 }]);
+
+mod.factory('Project', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/project/getproject', {}, {
+        query: { method: 'GET', params: { id: 'id' }, isArray: false }
+    });
+}]);
+
+mod.factory('ProjectDatasets', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/project/getprojectdatasets', {}, {
+        query: { method: 'GET', params: { id: 'projectId' }, isArray: true }
+    });
+}]);
+
+mod.factory('SetProjectEditors', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/project/setprojecteditors');
+}]);
+
+mod.factory('SaveProject', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/project/saveproject');
+}]);
+
+
+mod.factory('SaveProjectLocation', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/location/saveprojectlocation');
+}]);
+
+mod.factory('GetAllInstruments', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/instrument/getinstruments');
+}]);
+
+mod.factory('SaveProjectInstrument', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/instrument/saveprojectinstrument');
+}]);
+
+mod.factory('SaveProjectFisherman', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/fishermen/saveprojectfishermen');
+}]);
+
+mod.factory('SaveInstrument', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/instrument/saveinstrument');
+}]);
+
+mod.factory('SaveInstrumentAccuracyCheck', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/instrument/saveinstrumentaccuracycheck');
+}]);
+
+mod.factory('SaveFisherman', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/fishermen/savefishermen');
+}]);
+
+mod.factory('UpdateFile', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/file/updatefile');
+}]);
+
+mod.factory('DeleteFile', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/file/deletefile');
+}]);
+
+
+//////
 
 mod.factory('Users',['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/user/getusers', {}, {
             query: {method: 'GET', params: {}, isArray: true}
-        });
-}]);
-
-mod.factory('Project',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/project/getproject', {}, {
-            query: {method: 'GET', params: {id:'id'}, isArray: false}
-        });
-}]);
-
-mod.factory('ProjectDatasets',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/project/getprojectdatasets', {}, {
-            query: {method: 'GET', params: {id:'projectId'}, isArray: true}
         });
 }]);
 
@@ -151,10 +202,6 @@ mod.factory('ExportActivitiesAction',  ['$resource', function($resource){
         });
 }]);
 
-mod.factory('SetProjectEditors', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/project/setprojecteditors');
-}]);
-
 mod.factory('DeleteActivitiesAction', ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/activity/deletedatasetactivities');
 }]);
@@ -250,30 +297,6 @@ mod.factory('AddMasterFieldToDataset', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/datastore/addmasterfieldtodataset');
 }]);
 
-mod.factory('SaveProjectLocation', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/location/saveprojectlocation');
-}]);
-
-mod.factory('GetAllInstruments', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/instrument/getinstruments');
-}]);
-
-mod.factory('SaveProjectInstrument', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/instrument/saveprojectinstrument');
-}]);
-
-mod.factory('SaveProjectFisherman', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/fishermen/saveprojectfishermen');
-}]);
-
-mod.factory('SaveInstrument', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/instrument/saveinstrument');
-}]);
-
-mod.factory('SaveInstrumentAccuracyCheck', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/instrument/saveinstrumentaccuracycheck');
-}]);
-
 mod.factory('SaveCorrespondenceEvent', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/crppsubproject/savecorrespondenceevent');
 }]);
@@ -301,21 +324,8 @@ mod.factory('GetWaterBodies', ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/list/getwaterbodies');
 }]);
 
-mod.factory('SaveProject', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/project/saveproject');
-}]);
-
-
 mod.factory('GetHeadersDataForDataset', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/dataset/getheadersdatafordataset');
-}]);
-
-mod.factory('UpdateFile', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/file/updatefile');
-}]);
-
-mod.factory('DeleteFile', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/file/deletefile');
 }]);
 
 mod.factory('DeleteDatasetFile', ['$resource', function($resource){
@@ -341,11 +351,6 @@ mod.factory('GetTimeZones', ['$resource', function($resource){
 //TODO: needs an id -- probably we don't use this one
 mod.factory('GetDepartments', ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/department/getdepartment');
-}]);
-
-
-mod.factory('SaveFisherman', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/fishermen/savefishermen');
 }]);
 
 mod.factory('SaveSubproject', ['$resource', function($resource){

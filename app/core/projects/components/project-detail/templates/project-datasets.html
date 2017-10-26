@@ -31,16 +31,16 @@
 
 <tabset justified="true">
 	<tab heading="Summary">
-		<div ng-include="'app/partials/project-summary.html'"></div>
+		<div ng-include="'app/core/projects/components/project-detail/templates/project-summary.html'"></div>
 	</tab>
 	<tab heading="Details" ng-show="AuthorizedToViewProject">
-		<div ng-include="'app/partials/project-details.html'"></div>
+		<div ng-include="'app/core/projects/components/project-detail/templates/project-details.html'"></div>
 	</tab>
 	<tab heading="Gallery" ng-show="AuthorizedToViewProject">
-		<div ng-include="'app/partials/project-gallery.html'"></div>
+		<div ng-include="'app/core/projects/components/project-detail/templates/project-gallery.html'"></div>
 	</tab>
 	<tab heading="Documents" ng-show="AuthorizedToViewProject">
-		<div ng-include="'app/partials/project-files.html'"></div>
+		<div ng-include="'app/core/projects/components/project-detail/templates/project-files.html'"></div>
 	</tab>
 	<tab heading="Data" ng-show="AuthorizedToViewProject">
 		<div class="container-fluid">

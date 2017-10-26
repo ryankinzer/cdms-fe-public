@@ -1065,7 +1065,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
         {
             scope.row = selection;
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/project/modal-delete-file.html',
+              templateUrl: 'app/core/projects/components/project-detail/templates/modal-delete-file.html',
               controller: 'ModalDeleteFileCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -1075,7 +1075,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
         {
             scope.row = selection;
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/project/modal-edit-file.html',
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-file.html',
               controller: 'ModalEditFileCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -1084,7 +1084,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
         scope.openNewFileModal = function(selection)
         {
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/project/modal-upload-files.html',
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-upload-files.html',
               controller: 'ModalNewFileCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -1093,17 +1093,13 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
         scope.openProjectEditor = function(){
             scope.row = scope.project; //
             var modalInstance = $modal.open({
-				templateUrl: 'app/partials/project/modal-edit-project.html',
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
 				controller: 'ModalProjectEditorCtrl',
 				scope: scope, //very important to pass the scope along...
 
             });
         };
 		 
-		/*cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc*/
-		/* The controllers specified above are located in the file controllers.js
-		/*cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc*/
-
         scope.syncToStreamnet = function(){
             $.ajax({
                 url: serviceUrl + '/api/v1/streamnet/synctostreamnet',
