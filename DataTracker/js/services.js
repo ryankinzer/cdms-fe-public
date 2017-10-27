@@ -345,7 +345,7 @@ mod.factory('GetDepartments', ['$resource', function($resource){
 
 
 mod.factory('SaveFisherman', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/fishermen/savefishermen');
+    return $resource(serviceUrl +'/api/v1/fishermen/savefisherman');
 }]);
 
 mod.factory('SaveSubproject', ['$resource', function($resource){
