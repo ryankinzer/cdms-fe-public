@@ -1552,7 +1552,8 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			*  The selected instrument is not already associated to the project.
 			*/
             //if(!scope.selectedInstrument || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
-            if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)	
+            //if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
+            if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length < 1)
                 return;
 
             var Instruments = getMatchingByField(scope.allInstruments, scope.selectedInstrument, 'Id');
@@ -1571,7 +1572,8 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			console.log("scope.selectedFisherman is next...");
 			console.dir(scope.selectedFisherman);
 			
-            if(!scope.selectedFisherman || scope.selectedFisherman === null || getMatchingByField(scope.project.Fishermen, scope.selectedFisherman, 'Id').length > 0)
+            //if(!scope.selectedFisherman || scope.selectedFisherman === null || getMatchingByField(scope.project.Fishermen, scope.selectedFisherman, 'Id').length > 0)
+            if(!scope.selectedFisherman || scope.selectedFisherman === null || getMatchingByField(scope.project.Fishermen, scope.selectedFisherman, 'Id').length < 1)
                 return;
 	
             var theFishermen = getMatchingByField(scope.fishermenList, scope.selectedFisherman, 'Id');
@@ -1590,7 +1592,8 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			console.log("scope.selectedSubproject is next...");
 			console.dir(scope.selectedSubproject);
 			
-            if(!scope.selectedSubproject || scope.selectedSubproject === null || getMatchingByField(scope.project.CrppSubProjects, scope.selectedSubproject, 'Id').length > 0)
+            //if(!scope.selectedSubproject || scope.selectedSubproject === null || getMatchingByField(scope.project.CrppSubProjects, scope.selectedSubproject, 'Id').length > 0)
+            if(!scope.selectedSubproject || scope.selectedSubproject === null || getMatchingByField(scope.project.CrppSubProjects, scope.selectedSubproject, 'Id').length < 1)
                 return;
 	
             var theSubproject = getMatchingByField(scope.correspondenceProjectList, scope.selectedSubproject, 'Id');

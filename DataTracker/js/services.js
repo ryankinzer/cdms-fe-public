@@ -263,7 +263,7 @@ mod.factory('SaveProjectInstrument', ['$resource', function($resource){
 }]);
 
 mod.factory('SaveProjectFisherman', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/fishermen/saveprojectfishermen');
+    return $resource(serviceUrl +'/api/v1/fishermen/saveprojectfisherman');
 }]);
 
 mod.factory('SaveInstrument', ['$resource', function($resource){
@@ -378,7 +378,7 @@ mod.factory('GetProjectFishermen', ['$resource', function($resource){
 }]);
 
 mod.factory('RemoveProjectFisherman', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/fishermen/removeprojectfishermen');
+    return $resource(serviceUrl +'/api/v1/fishermen/removeprojectfisherman');
 }]);
 
 mod.factory('RemoveSubproject', ['$resource', function($resource){
