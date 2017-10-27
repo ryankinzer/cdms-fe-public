@@ -1126,13 +1126,15 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 										}
 										else if ($scope.DatastoreTablePrefix === "CreelSurvey")
 										{
-											// Guess what?  If the value is 0, on Test CDMS treats it as an empty value.  We have to handle that...
+											// Guess what?  If the value is 0, on Test, CDMS treats it as an empty value.  We have to handle that...
 											if ((field.DbColumnName === "FishCount") && (data_row[col] !== null))
 											{
 												console.log("Found FishCount.  Value = " + data_row[col]);
 												var strFishCount = data_row[col].toString();
 												if (strFishCount === "0")
 													new_row.FishCount = 0;
+												else
+													new_row.FishCount = data_row[col];
 												
 											}
 											else if ((field.DbColumnName === "NumberAnglersObserved") && (data_row[col] !== null))
