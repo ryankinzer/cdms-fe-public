@@ -519,7 +519,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
 
                         // This pops the Save Success modal after Add Section.
                         var modalInstance = $modal.open({
-                            templateUrl: 'app/core/common/modals/templates/modal-save-success.html',
+                            templateUrl: 'app/core/common/components/modals/templates/modal-save-success.html',
                             controller: 'ModalSaveSuccess',
                             scope: $scope, //very important to pass the scope along...
                         });
@@ -679,7 +679,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             $rootScope.FieldSheetFile = "";
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/file-modal.html',
+                templateUrl: 'app/core/common/components/file/templates/modal-file.html',
                 controller: 'FileModalCtrl',
                 scope: $scope, //scope to make a child of
             });
@@ -695,7 +695,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             $scope.file_field = field;
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/file-add-modal.html',
+                templateUrl: 'app/core/common/components/file/templates/modal-file-add.html',
                 controller: 'FileAddModalCtrl',
                 scope: $scope, //scope to make a child of
             });
@@ -711,7 +711,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             $scope.file_field = field;
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/file-delete-modal.html',
+                templateUrl: 'app/core/common/components/file/templates/modal-file-delete.html',
                 controller: 'FileDeleteModalCtrl',
                 scope: $scope, //scope to make a child of
             });
@@ -722,7 +722,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             $scope.file_field = field;
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/waypoint-file-modal.html',
+                templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
                 controller: 'FileModalCtrl',
                 scope: $scope, //scope to make a child of
             });

@@ -17,6 +17,8 @@ define([
 										// All files, unless otherwise noted, are in js/controllers.
 	  'ngRoute',						// assets/js/angular/angular-route.js (referred to in js/controllers/login-controller.js)
       'ngGrid',							// assets/js/ng-grid-2.0.7.ken.js (referred to in js/main.js)
+      'CommonModule',
+      'AdminModule',
       'ProjectModule',
       'DatasetModule',
 	  'DatasetFilters', 				// js/filters.js
@@ -29,11 +31,11 @@ define([
 	  'ChartServices',					// cmod, js/chartservices.js
 	  'DatasetServices',				// mod.factory, mod.service, js/services.js
 	  'angularFileUpload',				// assets/js/angular-file-upload/angular-file-upload.js (referred to in controllers.js)
-	  'DatasetDirectives',				// mod.directive, js/directives/directives.js
-	  'AdminController',				// mod_ac, admin-controller.js
+	  //'DatasetDirectives',				// mod.directive, js/directives/directives.js
+	  //'AdminController',				// mod_ac, admin-controller.js
 	  'angularCharts',					// assets/js/angular-charts.ken.js
-	  'checklist-model',				// js/directives/checklists.js
-	  'ScriptControllers'				// mod_script, script-controllers.js
+	  'checklist-model'				// js/directives/checklists.js
+	  //'ScriptControllers'				// mod_script, script-controllers.js
 
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
@@ -47,24 +49,24 @@ define([
 	        $routeProvider.when('/mypreferences', {templateUrl: 'app/partials/mypreferences.html', controller: 'MyPreferencesCtrl'});
             $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit'});
 	        $routeProvider.when('/dataview/:Id', {templateUrl: 'app/partials/dataset-view.html', controller: 'DatasetViewCtrl'});
-	        $routeProvider.when('/dataentry/:Id',{templateUrl: 'app/partials/dataset-entry.html', controller: 'DataEntryDatasheetCtrl', permission: 'Edit'});
-	        $routeProvider.when('/dataentryform/:Id',{templateUrl: 'app/partials/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});
+	        $routeProvider.when('/dataentry/:Id',{templateUrl: 'app/core/datasets/components/dataset-entry-sheet/dataset-entry-sheet.html', controller: 'DataEntryDatasheetCtrl', permission: 'Edit'});
+            $routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-form/templates/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});
             $routeProvider.when('/edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-editor/templates/dataset-edit-form.html', controller: 'DataEditCtrl', permission: 'Edit'});
 	        $routeProvider.when('/datasetquery/:Id',{templateUrl: 'app/partials/dataset-query.html', controller: 'DataQueryCtrl'});
-	        $routeProvider.when('/dataset-details/:Id',{templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details.html', controller: 'DatasetDetailsCtrl'});
+	        $routeProvider.when('/dataset-details/:Id',{templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-view.html', controller: 'DatasetDetailsCtrl'});
 	        $routeProvider.when('/datasetimport/:Id',{templateUrl: 'app/partials/dataset-import.html', controller: 'DatasetImportCtrl', permission: 'Edit'});
-	        $routeProvider.when('/dataset-edit/:Id',{templateUrl: 'app/partials/edit-dataset.html', controller: 'DatasetDetailsCtrl', permission: 'Edit'});
+            $routeProvider.when('/dataset-edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-edit.html', controller: 'DatasetDetailsCtrl', permission: 'Edit'});
 
 	        $routeProvider.when('/query/:Id', {templateUrl: 'app/partials/dataset-query.html', controller: 'DatastoreQueryCtrl'});
-	        $routeProvider.when('/admin', {templateUrl: 'app/partials/admin.html', controller: 'AdminCtrl'});
-	        $routeProvider.when('/admin-dataset/:Id', {templateUrl: 'app/partials/admin/admin-dataset.html', controller: 'AdminEditDatasetCtrl'});
+            $routeProvider.when('/admin', { templateUrl: 'app/core/admin/components/admin-page/templates/admin.html', controller: 'AdminCtrl'});
+            $routeProvider.when('/admin-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-dataset.html', controller: 'AdminEditDatasetCtrl'});
 
-	        $routeProvider.when('/admin-master/:Id', {templateUrl: 'app/partials/admin/admin-master.html', controller: 'AdminEditMasterCtrl'});
+            $routeProvider.when('/admin-master/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-master.html', controller: 'AdminEditMasterCtrl'});
 
 	        //custom routes for datasets that require custom controller+pages
 	        $routeProvider.when('/appraisals/:Id', {templateUrl: 'app/partials/appraisals/Appraisal-activities.html', controller: 'AppraisalCtrl'});
 	        $routeProvider.when('/crpp/:Id', {templateUrl: 'app/partials/crppContracts/Crpp-contracts.html', controller: 'CrppContractsCtrl'});
-	        $routeProvider.when('/unauthorized', {templateUrl: 'app/partials/errors/unauthorized.html',controller: 'ErrorCtrl'});
+	        $routeProvider.when('/unauthorized', {templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
 
 	        $routeProvider.when('/script', {templateUrl: 'app/partials/scripts/index.html', controller: 'ScriptletController'});
 

@@ -19,7 +19,7 @@
         <tr ng-repeat="md in metadataList">
             <td width="160"><b>{{ md.field }}</b></td>
             <td>
-                <ng-include src="'app/core/common/templates/metadata-fields/field-' + md.controlType + '.html'"></ng-include>
+                <ng-include src="'app/core/datasets/components/dataset-detail/templates/metadata-fields/field-' + md.controlType + '.html'"></ng-include>
                 <div ng-show="md.locked">{{metadataList[md.field].value}}</div>
             </td>
         </tr>

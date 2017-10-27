@@ -12,6 +12,7 @@ require([
   'app/directives/FeatureLayer',
   'app/directives/AppraisalMap',
   'app/directives/CrppContractsMap',
+  'app/core/admin/admin-module',
   'app/core/common/common-module',
   'app/core/projects/projects-module',
   'app/core/datasets/datasets-module'

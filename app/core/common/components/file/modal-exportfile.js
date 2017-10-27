@@ -1,4 +1,4 @@
-﻿modal_exportfile = ['$scope','DataService','$modalInstance','$window',
+﻿var modal_exportfile = ['$scope','DataService','$modalInstance','$window',
 	function($scope, DataService,$modalInstance, $window) {
 
 		//$scope.alerts 

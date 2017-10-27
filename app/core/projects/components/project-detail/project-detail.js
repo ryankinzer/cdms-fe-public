@@ -1385,7 +1385,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 					scope.verifyingCaller = "CrppSubproject";
 					console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " +  scope.viewSubproject.Id);
 					var modalInstance = $modal.open({
-					  templateUrl: 'app/partials/verifyAction/modal-verifyAction.html',
+					  templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
 					  controller: 'ModalVerifyActionCtrl',
 					  scope: scope, //very important to pass the scope along...
 					});
@@ -1404,7 +1404,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 					scope.verifyingCaller = "HabSubproject";
 					console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " +  scope.viewSubproject.Id);
 					var modalInstance = $modal.open({
-					  templateUrl: 'app/partials/verifyAction/modal-verifyAction.html',
+					  templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
 					  controller: 'ModalVerifyActionCtrl',
 					  scope: scope, //very important to pass the scope along...
 					});

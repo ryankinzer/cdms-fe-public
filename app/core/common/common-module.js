@@ -1,10 +1,12 @@
-﻿// defines cross-module components that we can use in anywhere (like modals)
+﻿// defines cross-module components that we can use in anywhere (like modals) - controllers and services
 
-//dataset module and its dependencies
 var common_module = angular.module('CommonModule', ['ui.bootstrap', 'ngResource']);
 
-//load the components for this module
 require([
+    //loads the common directives
+    'app/core/common/common-directives',
+
+    //loads the common controllers
     'app/core/common/components/modals/modal-quick-add-accuracycheck',
     'app/core/common/components/modals/modal-quick-add-characteristic',
     'app/core/common/components/modals/modal-add-location',
@@ -13,6 +15,14 @@ require([
     'app/core/common/components/modals/modal-create-fisherman',
     'app/core/common/components/modals/modal-exportfile',
     'app/core/common/components/modals/modal-link-field',
+    'app/core/common/components/modals/modal-verify-action',
+
+    'app/core/common/components/file/modal-file-add',
+    'app/core/common/components/file/modal-file-delete',
+    'app/core/common/components/file/modal-files',
+
+        
+
 
 
 ], function () {
@@ -27,6 +37,12 @@ require([
     common_module.controller('ModalCreateFishermanCtrl', modal_create_fisherman);
     common_module.controller('ModalExportController', modal_exportfile);
     common_module.controller('LinkModalCtrl', modal_link_field);
+    common_module.controller('ModalVerifyActionCtrl', modal_verify_action);
+
+    common_module.controller('FileAddModalCtrl', modal_file_add);
+    common_module.controller('FileDeleteModalCtrl', modal_file_delete);
+    common_module.controller('FileModalCtrl', modal_files); 
+
 
     //load services
 

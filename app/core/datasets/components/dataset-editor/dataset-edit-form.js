@@ -1,14 +1,12 @@
 ﻿/**
-*  This component provides the data entry sheet/grid view so that users can enter data
-*  directly from a fieldsheet with many activities. All of the header and detail fields
-*  are "flattened" together in the grid.
-*  http://localhost/cdms/index.html#/dataentry/1004
+*  This component provides the data edit page (form + grid).
+*  http://localhost/cdms/index.html#/edit/1004
 */
 
 
 //Fieldsheet / form version of the dataentry page
 //was "DataEditCtrl" from DataEditControllers
-var dataset_editor = ['$scope', '$q', '$sce', '$routeParams', 'DataService', '$modal', '$location', '$rootScope', 'ActivityParser', 'DataSheet',
+var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DataService', '$modal', '$location', '$rootScope', 'ActivityParser', 'DataSheet',
     'FileUploadService', 'DatastoreService', '$upload',
     function ($scope, $q, $sce, $routeParams, DataService, $modal, $location, $rootScope, ActivityParser, DataSheet, UploadService, DatastoreService, $upload) {
 
@@ -765,7 +763,7 @@ var dataset_editor = ['$scope', '$q', '$sce', '$routeParams', 'DataService', '$m
             $rootScope.FieldSheetFile = "";
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/file-modal.html',
+                templateUrl: 'app/core/common/components/file/templates/modal-file.html',
                 controller: 'FileModalCtrl',
                 scope: $scope, //scope to make a child of
             });
@@ -781,7 +779,7 @@ var dataset_editor = ['$scope', '$q', '$sce', '$routeParams', 'DataService', '$m
             $scope.file_field = field;
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/file-add-modal.html',
+                templateUrl: 'app/core/common/components/file/templates/modal-file-add.html',
                 controller: 'FileAddModalCtrl',
                 scope: $scope, //scope to make a child of
             });
@@ -797,7 +795,7 @@ var dataset_editor = ['$scope', '$q', '$sce', '$routeParams', 'DataService', '$m
             $scope.file_field = field;
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/file-delete-modal.html',
+                templateUrl: 'app/core/common/components/file/templates/modal-file-delete.html',
                 controller: 'FileDeleteModalCtrl',
                 scope: $scope, //scope to make a child of
             });
@@ -808,7 +806,7 @@ var dataset_editor = ['$scope', '$q', '$sce', '$routeParams', 'DataService', '$m
             $scope.file_field = field;
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/waypoint-file-modal.html',
+                templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
                 controller: 'FileModalCtrl',
                 scope: $scope, //scope to make a child of
             });

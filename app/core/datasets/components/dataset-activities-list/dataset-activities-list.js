@@ -381,7 +381,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
 
         $scope.addLocation = function () {
             var modalInstance = $modal.open({
-                templateUrl: 'app/core/modals/components/templates/modal-addlocation.html',
+                templateUrl: 'app/core/common/components/modals/templates/modal-addlocation.html',
                 controller: 'ModalAddLocationCtrl',
                 scope: $scope, //very important to pass the scope along...
             });
@@ -419,7 +419,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
         $scope.editLocation = function () {
             $scope.row = $scope.selectedLocation;
             var modalInstance = $modal.open({
-                templateUrl: 'app/core/modals/components/templates/modal-addlocation.html',
+                templateUrl: 'app/core/common/components/modals/templates/modal-addlocation.html',
                 controller: 'ModalAddLocationCtrl',
                 scope: $scope, //very important to pass the scope along...
             });

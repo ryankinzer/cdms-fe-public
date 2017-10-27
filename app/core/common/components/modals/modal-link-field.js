@@ -1,5 +1,5 @@
 ﻿
-modal_link_field = ['$scope', '$modalInstance', 'DataService', 'DatastoreService', '$rootScope',
+var modal_link_field = ['$scope', '$modalInstance', 'DataService', 'DatastoreService', '$rootScope',
     function ($scope, $modalInstance, DataService, DatastoreService, $rootScope) {
         console.log("Inside modals-controller.js, LinkModalCtrl...");
         console.log("$scope is next...");

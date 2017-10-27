@@ -1,6 +1,6 @@
 ﻿
 //handles managing file controltypes
-mod_fmc.controller('FileModalCtrl', ['$scope','$modalInstance', 'DataService','DatastoreService','ServiceUtilities','$rootScope',
+var modal_files = ['$scope','$modalInstance', 'DataService','DatastoreService','ServiceUtilities','$rootScope',
     function($scope, $modalInstance, DataService, DatastoreService, ServiceUtilities, $rootScope){
 		// This controller is for the Dataset Activity / Subproject File modal.
 		console.log("Inside modals-controller.js, FileModalCtrl");
@@ -409,4 +409,4 @@ mod_fmc.controller('FileModalCtrl', ['$scope','$modalInstance', 'DataService','D
         };
 
     }
-]);
+];
