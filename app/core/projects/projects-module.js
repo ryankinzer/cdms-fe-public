@@ -3,8 +3,7 @@
 //project module and its dependencies
 var projects_module = angular.module('ProjectModule', ['ui.bootstrap', 'angularFileUpload', 'ui.select2', 'ngResource']);
 
-//load the controllers for this module
-
+//load the components for this module
 require([
     'app/core/projects/components/project-detail/project-detail',
     'app/core/projects/components/project-detail/modal-new-file',
@@ -16,7 +15,7 @@ require([
     'app/core/projects/components/project-list/modal-add-accuracy-check',
 
 ], function () {
-    //add the controllers to the module once the files are loaded!
+    //add the controllers and services to the module once the files are loaded!
     
     //controllers from the project-detail component
     projects_module.controller('project-detail-ctrl', project_detail);
@@ -29,14 +28,10 @@ require([
     projects_module.controller('project-list-ctrl', project_list);
     projects_module.controller('ModalAddAccuracyCheckCtrl', module_add_accuracy_check);
 
+    //load services
+
+    //define routes
 });
-
-
-
-//define routes?
-
-//define controllers? (or maybe these will be defined in the controller file = better...)
-
 
 
 

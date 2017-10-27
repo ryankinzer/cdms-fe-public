@@ -658,7 +658,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 			$scope.createInstrument = function(){
 	            $scope.viewInstrument = null;
 	            var modalInstance = $modal.open({
-	              templateUrl: 'app/partials/instruments/modal-create-instrument.html',
+                    templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
 	              controller: 'ModalCreateInstrumentCtrl',
 	              scope: $scope, //very important to pass the scope along...
 	            });
@@ -666,7 +666,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 
 			$scope.openBulkQAChange = function(){
 	            var modalInstance = $modal.open({
-	              templateUrl: 'app/partials/dataentry/modal-rowqaupdate.html',
+                    templateUrl: 'app/core/common/components/modals/templates/modal-rowqaupdate.html',
 	              controller: 'ModalBulkRowQAChangeCtrl',
 	              scope: $scope, //very important to pass the scope along...
 
@@ -677,7 +677,7 @@ mod_di.controller("DatasetImportCtrl", ['$scope','$routeParams','DatastoreServic
 			$scope.openAccuracyCheckModal = function(){
 
 	            var modalInstance = $modal.open({
-	              templateUrl: 'app/partials/instruments/modal-new-accuracycheck.html',
+                    templateUrl: 'app/core/common/components/modals/templates/modal-new-accuracycheck.html',
 	              controller: 'ModalQuickAddAccuracyCheckCtrl',
 	              scope: $scope, //very important to pass the scope along...
 

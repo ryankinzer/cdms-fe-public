@@ -12,7 +12,9 @@ require([
   'app/directives/FeatureLayer',
   'app/directives/AppraisalMap',
   'app/directives/CrppContractsMap',
-  'app/core/projects/projects-module'
+  'app/core/common/common-module',
+  'app/core/projects/projects-module',
+  'app/core/datasets/datasets-module'
 
 ], function(angular,parser) {
   angular.element(document).ready(function(){

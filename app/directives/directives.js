@@ -474,7 +474,7 @@ mod.directive('ctuirLinkField',
                     $scope.link_field = field;
                     
                     var modalInstance = $modal.open({
-                        templateUrl: 'app/partials/modals/link-modal.html',
+                        templateUrl: 'app/core/common/components/modals/templates/modal-link-field.html',
                         controller: 'LinkModalCtrl',
                         scope: $scope, //scope to make a child of
                     });

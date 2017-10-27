@@ -886,7 +886,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
         scope.openChooseMapImage = function(){
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/modals/choosemap-modal.html',
+              templateUrl: 'app/core/projects/components/project-detail/templates/modal-choosemap.html',
               controller: 'ModalChooseMapCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -894,19 +894,16 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
         scope.openChooseSummaryImages = function(){
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/modals/choosesummaryimages-modal.html',
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-choosesummaryimages.html',
               controller: 'ModalChooseSummaryImagesCtrl',
               scope: scope, //very important to pass the scope along...
             });
         };
 
-		/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
-		/* The controllers specified below are located in the file modals-controller.js
-		/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
         scope.createInstrument = function(){
             scope.viewInstrument = null;
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/instruments/modal-create-instrument.html',
+                templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
               controller: 'ModalCreateInstrumentCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -915,7 +912,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		scope.createFisherman = function(){
             scope.viewFisherman = null;
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/fishermen/modal-create-fisherman.html',
+              templateUrl: 'app/core/common/components/modals/templates/modal-create-fisherman.html',
               controller: 'ModalCreateFishermanCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -949,7 +946,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		 
         scope.editViewInstrument = function(){
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/instruments/modal-create-instrument.html',
+                templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
               controller: 'ModalCreateInstrumentCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -957,7 +954,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		 
         scope.editViewFisherman = function(){
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/fishermen/modal-create-fisherman.html',
+              templateUrl: 'app/core/common/components/modals/templates/modal-create-fisherman.html',
               controller: 'ModalCreateFishermanCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -998,13 +995,6 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			}
         };
 		
-		/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
-		/* The controllers specified above are located in the file modals-controller.js
-		/*mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm*/
-
-		/*cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc*/
-		/* The controllers specified below are located in the file controllers.js
-		/*cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc*/
         scope.openAccuracyCheckForm = function(ac_row){
             if(ac_row)
               scope.ac_row = ac_row;
@@ -1012,7 +1002,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
               scope.ac_row = {};
 
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/instruments/modal-new-accuracycheck.html',
+                templateUrl: 'app/core/common/components/modals/templates/modal-new-accuracycheck.html',
               controller: 'ModalAddAccuracyCheckCtrl',
               scope: scope, //very important to pass the scope along...
             });

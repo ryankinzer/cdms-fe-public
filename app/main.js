@@ -18,17 +18,13 @@ define([
 	  'ngRoute',						// assets/js/angular/angular-route.js (referred to in js/controllers/login-controller.js)
       'ngGrid',							// assets/js/ng-grid-2.0.7.ken.js (referred to in js/main.js)
       'ProjectModule',
+      'DatasetModule',
 	  'DatasetFilters', 				// js/filters.js
-	  'DataViewControllers',			// mod_dv, dataview-controller.js
-	  'DataEditControllers',			// mod_edit, dataedit-controllers.js
 	  'DataQueryControllers',			// mod_dq, dataquery-controllers.js
-	  'DataEntryControllers',			// mod_de, dataentry-controllers.js
 	  'DataImportControllers',			// mod_di, import-controllers.js
-	  'DatasetDetailsControllers',		// mod_edc, dataset-details-controller.js
 	  'AppraisalControllers',			// mod_apr, Appraisal-controllers.s
 	  'CrppContractsControllers',		// mod_crpp, CrppContracts-controller.js
 	  'MyPreferencesControllers',		// mod_mydata, MyPreferencesController.js
-	  'ActivitiesController',			// mod_dac, activities-controller.js
 	  'ModalsController',				// mod_fmc, modals-controller.js
 	  'ChartServices',					// cmod, js/chartservices.js
 	  'DatasetServices',				// mod.factory, mod.service, js/services.js
@@ -49,13 +45,13 @@ define([
 	        $routeProvider.when('/mydata', {templateUrl: 'app/partials/mydatasets.html', controller: 'MyDatasetsCtrl'});
 	        $routeProvider.when('/myprojects', {templateUrl: 'app/partials/myprojects.html', controller: 'MyProjectsCtrl'});
 	        $routeProvider.when('/mypreferences', {templateUrl: 'app/partials/mypreferences.html', controller: 'MyPreferencesCtrl'});
-	        $routeProvider.when('/activities/:Id', {templateUrl: 'app/partials/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit'});
+            $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit'});
 	        $routeProvider.when('/dataview/:Id', {templateUrl: 'app/partials/dataset-view.html', controller: 'DatasetViewCtrl'});
 	        $routeProvider.when('/dataentry/:Id',{templateUrl: 'app/partials/dataset-entry.html', controller: 'DataEntryDatasheetCtrl', permission: 'Edit'});
 	        $routeProvider.when('/dataentryform/:Id',{templateUrl: 'app/partials/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});
-	        $routeProvider.when('/edit/:Id',{templateUrl: 'app/partials/dataset-edit-form.html', controller: 'DataEditCtrl', permission: 'Edit'});
+            $routeProvider.when('/edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-editor/templates/dataset-edit-form.html', controller: 'DataEditCtrl', permission: 'Edit'});
 	        $routeProvider.when('/datasetquery/:Id',{templateUrl: 'app/partials/dataset-query.html', controller: 'DataQueryCtrl'});
-	        $routeProvider.when('/dataset-details/:Id',{templateUrl: 'app/partials/dataset-details.html', controller: 'DatasetDetailsCtrl'});
+	        $routeProvider.when('/dataset-details/:Id',{templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details.html', controller: 'DatasetDetailsCtrl'});
 	        $routeProvider.when('/datasetimport/:Id',{templateUrl: 'app/partials/dataset-import.html', controller: 'DatasetImportCtrl', permission: 'Edit'});
 	        $routeProvider.when('/dataset-edit/:Id',{templateUrl: 'app/partials/edit-dataset.html', controller: 'DatasetDetailsCtrl', permission: 'Edit'});
 

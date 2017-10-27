@@ -3,25 +3,7 @@
 
 var mod_dq = angular.module('DataQueryControllers', ['ui.bootstrap']);
 
-mod_dq.controller('ModalExportController',['$scope','DataService','$modalInstance','$window',
-	function($scope, DataService,$modalInstance, $window) {
 
-		//$scope.alerts 
-		$scope.Export = { Filename: "Export.csv" };
-
-		$scope.ok = function(){
-			$scope.downloadQuery = $scope.buildQuery(); 
-			$scope.downloadQuery.criteria.Filename = $scope.Export.Filename;
-			DataService.exportActivities($scope.downloadQuery);
-
-			//$modalInstance.dismiss();
-		};
-
-		$scope.cancel = function(){
-			$modalInstance.dismiss();
-		};
-	}
-]);
 
 mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$location', '$modal','DataSheet', '$rootScope','ChartService','DatastoreService',
     	function($scope, $routeParams, DataService, $location, $modal, DataSheet, $rootScope, ChartService, DatastoreService) {
@@ -875,7 +857,7 @@ mod_dq.controller('DataQueryCtrl', ['$scope','$routeParams','DataService','$loca
 
     		$scope.openExportView = function() {
 				var modalInstance = $modal.open({
-					templateUrl: 'app/partials/modals/exportfile-modal.html',
+                    templateUrl: 'app/core/common/components/modals/templates/modal-exportfile.html',
 					controller: 'ModalExportController',
 					scope: $scope, //very important to pass the scope along... -- TODO: but we don't want to pass in the whole $scope...
 					//resolve: { files: function() { return $scope.files; } }
