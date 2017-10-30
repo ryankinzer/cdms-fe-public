@@ -1,5 +1,5 @@
 ﻿
-mod_fmc.controller('ModalCreateHabSubprojectCtrl', ['$scope', '$rootScope','$modalInstance','$modal','DataService','DatastoreService', 'ServiceUtilities', 
+var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','$modal','DataService','DatastoreService', 'ServiceUtilities', 
 	'$timeout', '$location', '$anchorScroll', '$document', '$upload', 
   function($scope, $rootScope, $modalInstance, $modal, DataService, DatastoreService, ServiceUtilities, 
 	$timeout, $location, $anchorScroll, $document, $upload){
@@ -1412,4 +1412,4 @@ mod_fmc.controller('ModalCreateHabSubprojectCtrl', ['$scope', '$rootScope','$mod
 
     };
   }
-]);
+];

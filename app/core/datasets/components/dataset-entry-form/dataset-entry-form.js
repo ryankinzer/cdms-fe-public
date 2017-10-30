@@ -663,7 +663,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             $scope.relationgrid_field = field;
             $scope.isEditable = true;
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/relationgrid-edit-modal.html',
+                templateUrl: 'app/core/datasets/components/dataset-relationgrid/templates/relationgrid-edit-modal.html',
                 controller: 'RelationGridModalCtrl',
                 scope: $scope,
             });

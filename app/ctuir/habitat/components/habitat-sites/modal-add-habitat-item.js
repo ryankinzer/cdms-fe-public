@@ -1,5 +1,5 @@
 ﻿
-mod_fmc.controller('ModalAddHabitatItemCtrl', ['$scope', '$rootScope','$modalInstance', '$modal', 'DataService','DatastoreService','ServiceUtilities',
+var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'DataService','DatastoreService','ServiceUtilities',
 	'$filter', 'FileUploadService','$upload','$location', '$anchorScroll',
   function($scope, $rootScope, $modalInstance, $modal, DataService, DatastoreService, ServiceUtilities, 
 	$filter, FileUploadService, $upload, $location, $anchorScroll){
@@ -456,4 +456,4 @@ mod_fmc.controller('ModalAddHabitatItemCtrl', ['$scope', '$rootScope','$modalIns
 	};
 
   }
-]);
+];

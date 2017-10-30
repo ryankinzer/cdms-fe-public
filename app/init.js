@@ -12,7 +12,10 @@ require([
   'app/core/projects/projects-module',
   'app/core/datasets/datasets-module',
   'app/core/admin/admin-module',
-  'app/core/preferences/preferences-module'
+  'app/core/preferences/preferences-module',
+  'app/ctuir/appraisals/appraisals-module',
+  'app/ctuir/crpp/crpp-module',
+
 
 ], function (angular, parser) {
    

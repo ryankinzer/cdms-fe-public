@@ -60,7 +60,6 @@ var project_list = ['$scope', 'DataService', '$modal',
 
         scope.openAddProject = function(){
             var modalInstance = $modal.open({
-              //templateUrl: 'app/partials/project/modal-create-project.html',
               templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
               controller: 'ModalProjectEditorCtrl',
               scope: scope, //very important to pass the scope along...

@@ -626,7 +626,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DataService', 
             $scope.invalidOperationTitle = "Add Section is an Invalid Operation";
             $scope.invalidOperationMessage = "The Add Section button can only be used on a Data Entry page.";
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/invalidOperation/modal-invalid-operation.html',
+                templateUrl: 'app/core/common/components/modals/templates/modal-invalid-operation.html',
                 controller: 'ModalInvalidOperation',
                 scope: $scope, //very important to pass the scope along...
             });
@@ -745,7 +745,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DataService', 
             $scope.relationgrid_field = field;
             $scope.isEditable = true;
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/relationgrid-edit-modal.html',
+                templateUrl: 'app/core/datasets/components/dataset-relationgrid/templates/relationgrid-edit-modal.html',
                 controller: 'RelationGridModalCtrl',
                 scope: $scope,
             });

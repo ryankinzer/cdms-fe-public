@@ -293,7 +293,7 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
             $scope.isEditable = false;
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/partials/modals/relationgrid-modal.html',
+                templateUrl: 'app/core/datasets/components/dataset-relationgrid/templates/relationgrid-modal.html',
                 controller: 'RelationGridModalCtrl',
                 scope: $scope,
             });

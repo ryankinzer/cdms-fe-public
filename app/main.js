@@ -14,19 +14,25 @@ define([
   // define our app as an angular module - with our dependencies and our routes
   var app = angular.module("app",
 	 [
-										// All files, unless otherwise noted, are in js/controllers.
 	  'ngRoute',						// assets/js/angular/angular-route.js (referred to in js/controllers/login-controller.js)
       'ngGrid',							// assets/js/ng-grid-2.0.7.ken.js (referred to in js/main.js)
+      'angularFileUpload',				// assets/js/angular-file-upload/angular-file-upload.js (referred to in controllers.js)
+      'angularCharts',					// assets/js/angular-charts.ken.js
+
+
+      //these are the cdms modules
       'CommonModule',
       'ProjectModule',
       'DatasetModule',
       'AdminModule',
       'PreferencesModule',
 
-      'AppraisalControllers',			// mod_apr, Appraisal-controllers.s
-	  'CrppContractsControllers',		// mod_crpp, CrppContracts-controller.js
-	  'angularFileUpload',				// assets/js/angular-file-upload/angular-file-upload.js (referred to in controllers.js)
-	  'angularCharts',					// assets/js/angular-charts.ken.js
+      //these are ctuir specific
+      'AppraisalsModule',
+      'CrppModule',
+      'HabitatModule',
+      
+
 
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
@@ -57,8 +63,6 @@ define([
 	        $routeProvider.when('/appraisals/:Id', {templateUrl: 'app/ctuir/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
             $routeProvider.when('/crpp/:Id', { templateUrl: 'app/ctuir/crpp/components/crpp-contracts/templates/Crpp-contracts.html', controller: 'CrppContractsCtrl'});
 	        $routeProvider.when('/unauthorized', {templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
-
-	        //$routeProvider.when('/script', {templateUrl: 'app/partials/scripts/index.html', controller: 'ScriptletController'});
 
 	        //when all else fails...
 	        $routeProvider.otherwise({redirectTo: '/projects'});
