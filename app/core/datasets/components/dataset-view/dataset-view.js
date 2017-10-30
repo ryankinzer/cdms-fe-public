@@ -21,8 +21,8 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
 
         $scope.fishermenList = null;
         //$scope.fishermenList = DatastoreService.getFishermen();
-        console.log("$scope is next...");
-        console.dir($scope);
+        //console.log("$scope is next...");
+        //console.dir($scope);
         //if ($scope.this.DatastoreTablePrefix === "CreelSurvey")
         //	$scope.fishermenList = DatastoreService.getFishermen();
 
@@ -131,7 +131,7 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
                 }
             }
             console.log("$scope at end of watch dataset.ProjectId is next...");
-            console.dir($scope);
+            //console.dir($scope);
         });
 
         //setup a listener to populate column headers on the grid
@@ -256,7 +256,7 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
             $scope.row = { ActivityQAStatus: {} }; //modal selections
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/core/components/datasets/dataset-view/templates/changeqa-modal.html',
+                templateUrl: 'app/core/datasets/components/dataset-view/templates/changeqa-modal.html',
                 controller: 'ModalQaUpdateCtrl',
                 scope: $scope, //very important to pass the scope along... -- TODO: but we don't want to pass in the whole $scope...
                 //resolve: { files: function() { return $scope.files; } }
@@ -280,7 +280,7 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
         //copy and paste alert -- this should be in a common thing!
         $scope.openDataEntryModal = function () {
             var modalInstance = $modal.open({
-                templateUrl: 'app/core/components/datasets/dataset-view/templates/dataentry-modal.html',
+                templateUrl: 'app/core/datasets/components/dataset-view/templates/dataentry-modal.html',
                 controller: 'ModalDataEntryCtrl',
                 scope: $scope, //very important to pass the scope along... -- TODO: but we don't want to pass in the whole $scope...
                 //resolve: { files: function() { return $scope.files; } }

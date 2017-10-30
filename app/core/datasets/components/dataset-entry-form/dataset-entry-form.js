@@ -186,7 +186,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             console.log("headerFieldErrors.length = " + $scope.headerFieldErrors.length);
 
             console.log("$scope at end of dataset.Fields watcher...");
-            console.dir($scope);
+            //console.dir($scope);
         });
 
         //update our location options as soon as our project is loaded.
@@ -303,7 +303,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             }
 
             console.log("$scope at end of watch project.Name is next...");
-            console.dir($scope);
+            //console.dir($scope);
         });
 
         $scope.selectProjectLocationsByLocationType = function () {
@@ -490,7 +490,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
         $scope.addSection = function () {
             console.log("Inside addSection...");
             console.log("$scope in addSection is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             $scope.addNewSection = true;
             console.log("$scope.addNewSection = " + $scope.addNewSection);
@@ -529,7 +529,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             });
 
             console.log("At end of addNewSection; $scope is next...");
-            console.dir($scope);
+            //console.dir($scope);
         };
 
         // For Creel Survey only. 
@@ -570,7 +570,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
         $scope.addAnotherFish = function () {
             console.log("Inside addAnotherFish...");
             console.log("$scope before copy is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             var listLength = $scope.dataSheetDataset.length;
             var theFisherman = $scope.dataSheetDataset[listLength - 1].FishermanId
@@ -616,7 +616,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             }
 
             console.log("$scope after copy is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             //$scope.reloadProject();
 
@@ -751,7 +751,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
 
         $scope.saveData = function () {
             console.log("Inside saveData, $scope is next...");
-            console.dir($scope);
+            //console.dir($scope);
             console.log("$rootScope is next...");
             console.dir($rootScope);
 
@@ -955,7 +955,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
 
         $scope.saveDatasheetData = function () {
             console.log("Inside saveDatasheetData, $scope is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             var strYear = null;
             var strMonth = null;

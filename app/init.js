@@ -15,6 +15,7 @@ require([
   'app/core/preferences/preferences-module',
   'app/ctuir/appraisals/appraisals-module',
   'app/ctuir/crpp/crpp-module',
+  'app/ctuir/habitat/habitat-module'
 
 
 ], function (angular, parser) {

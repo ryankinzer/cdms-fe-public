@@ -24,7 +24,7 @@ var project_list = ['$scope', 'DataService', '$modal',
                                '</div>';
 							  
 		console.log("In controllers.js, projectsController, scope is next...");
-		console.dir(scope);
+		//console.dir(scope);
 
 		// This just makes the "box" for the Projects list; it is empty.
         scope.gridOptionsFilter = {};
@@ -132,8 +132,8 @@ var project_list = ['$scope', 'DataService', '$modal',
 			var matchingProjects = [];
 			var html = "";
 
-			console.log("scope is next...");
-			console.dir(scope);
+			//console.log("scope is next...");
+			//console.dir(scope);
 			console.log("scope.projects is next...");
 			console.dir(scope.projects);
 
@@ -187,12 +187,12 @@ var project_list = ['$scope', 'DataService', '$modal',
         scope.$watch('projects',function(){
             if(scope.projects)
             {
-				console.log("Inside controllers.js, watch projects...");
-				console.log("scope is next...");
-				console.dir(scope);
+				//console.log("Inside controllers.js, watch projects...");
+				////console.log("scope is next...");
+				////console.dir(scope);
 				
-				console.log("scope.projects is next...");
-				console.dir(scope.projects);
+				//console.log("scope.projects is next...");
+				//console.dir(scope.projects);
 				
 				if (!scope.allProjects)
 					scope.allProjects = scope.projects;

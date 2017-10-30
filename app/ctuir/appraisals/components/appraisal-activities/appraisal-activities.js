@@ -141,7 +141,7 @@ var appraisal_activities = ['$scope','$route','$routeParams', 'DataService', '$m
                     });
                 });
 				console.log("$scope at end of activities.$promise...");
-				console.dir($scope);
+				//console.dir($scope);
             });
 			
 			// Someone clicks on an item in the grid.

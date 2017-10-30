@@ -2,8 +2,8 @@
 var modal_link_field = ['$scope', '$modalInstance', 'DataService', 'DatastoreService', '$rootScope',
     function ($scope, $modalInstance, DataService, DatastoreService, $rootScope) {
         console.log("Inside modals-controller.js, LinkModalCtrl...");
-        console.log("$scope is next...");
-        console.dir($scope);
+        //console.log("$scope is next...");
+        //console.dir($scope);
 
         if (typeof $scope.onRow !== 'undefined')
             $scope.onRow.errors = [];
@@ -76,8 +76,8 @@ var modal_link_field = ['$scope', '$modalInstance', 'DataService', 'DatastoreSer
         $scope.save = function () {
             console.log("Inside modals-controller, LinkModalCtrl, save...");
             console.log("Adding link name(s) to the list.");
-            console.log("$scope is next...");
-            console.dir($scope);
+            //console.log("$scope is next...");
+            //console.dir($scope);
             $rootScope.viewSubproject = $scope.viewSubproject; // Add this to the $rootScope, so that the filters can see it.
             //var errors = [];
 

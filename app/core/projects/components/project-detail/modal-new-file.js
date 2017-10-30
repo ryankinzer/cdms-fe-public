@@ -15,8 +15,8 @@ modal_new_file = ['$scope','$modalInstance', 'DataService','DatastoreService', '
 
 		$scope.save = function(){
 			console.log("Inside controllers.js, ModalNewFileCtrl, save...");
-			console.log("$scope is next...");
-			console.dir($scope);
+			//console.log("$scope is next...");
+			//console.dir($scope);
 			// Just in case they clicked the Upload button, without selecting a file first.
 			if (!$scope.uploadFiles)
 			{

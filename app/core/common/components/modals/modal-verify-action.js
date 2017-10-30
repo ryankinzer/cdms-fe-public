@@ -2,8 +2,8 @@
 var modal_verify_action = ['$scope', '$rootScope','$modalInstance', 'DataService','DatastoreService', 'ServiceUtilities',
   function($scope, $rootScope, $modalInstance, DataService, DatastoreService, ServiceUtilities){
 	console.log("Inside ModalVerifyActionCtrl...");
-	console.log("$scope is next...");
-	console.dir($scope);
+	//console.log("$scope is next...");
+	//console.dir($scope);
 	console.log("$scope.verifyAction = " + $scope.verifyAction);
 	console.log("$scope.verifyingCaller = " + $scope.verifyingCaller);
 	
@@ -53,7 +53,7 @@ var modal_verify_action = ['$scope', '$rootScope','$modalInstance', 'DataService
 		
 		console.log("$scope.subprojectOptions is next...");
 		console.dir($scope.subprojectOptions);
-		//console.dir(scope);
+		////console.dir(scope);
 		//subprojectListwatcher(); // Turn off this watcher.
 		//$modalInstance.dismiss();
 	});
@@ -65,8 +65,8 @@ var modal_verify_action = ['$scope', '$rootScope','$modalInstance', 'DataService
 	
 	$scope.continueAction = function(){
 		console.log("Inside continueAction...");
-		console.log("$scope is next...");
-		console.dir($scope);
+		//console.log("$scope is next...");
+		//console.dir($scope);
 		//$scope.continueAction = true;
 		//$scope.verifyAction = 'undefined';
 		

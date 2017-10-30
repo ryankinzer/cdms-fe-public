@@ -4,8 +4,8 @@ var modal_file_delete = ['$scope','$modalInstance', 'DataService','DatastoreServ
     function($scope, $modalInstance, DataService, DatastoreService, ServiceUtilities, $rootScope){
 		// This controller is for the Dataset Activity / Subproject File modal.
 		console.log("Inside modals-controller.js, FileDeleteModalCtrl");
-		console.log("$scope is next...");
-		console.dir($scope);
+		//console.log("$scope is next...");
+		//console.dir($scope);
 		
 		$scope.verifyBeforeDelete = false;
 		$scope.readyToClose = false;
@@ -45,13 +45,13 @@ var modal_file_delete = ['$scope','$modalInstance', 'DataService','DatastoreServ
 			$scope.verifyBeforeDelete = true;
 			console.dir($scope.currentFiles);
 			$rootScope.currentFiles = $scope.currentFiles;
-			console.dir($scope);
+			//console.dir($scope);
 		}
 	
     	$scope.removeFiles = function()
     	{
 			console.log("Inside FileDeleteModalCtrl, removeFiles...");
-			console.log("$scope is next...");
+			//console.log("$scope is next...");
 			console.log($scope);
 			
 			var tmpFiles = [];
@@ -286,7 +286,7 @@ var modal_file_delete = ['$scope','$modalInstance', 'DataService','DatastoreServ
 			});
 //	    	console.dir($scope.filesToUpload);
 
-			console.dir($scope);
+			//console.dir($scope);
             //$modalInstance.dismiss();
 			$scope.readyToClose = true;
     	}

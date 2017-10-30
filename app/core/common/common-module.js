@@ -24,15 +24,15 @@ require([
     'app/core/common/components/file/modal-exportfile',
 
     //loads common services
-    'app/core/common/components/adultweir-chartservice',
-    'app/core/common/components/artificialproduction-chartservice',
-    'app/core/common/components/bsample-chartservice',
-    'app/core/common/components/creelsurvey-chartservice',
-    'app/core/common/components/electrofishing-chartservice',
-    'app/core/common/components/snorkelfish-chartservice',
-    'app/core/common/components/waterquality-chartservice',
-    'app/core/common/components/watertemp-chartservice',
-    'app/core/common/components/chart-services',                    //the wrapper for them all...
+    'app/core/common/components/chart/adultweir-chartservice',
+    'app/core/common/components/chart/artificialproduction-chartservice',
+    'app/core/common/components/chart/bsample-chartservice',
+    'app/core/common/components/chart/creelsurvey-chartservice',
+    'app/core/common/components/chart/electrofishing-chartservice',
+    'app/core/common/components/chart/snorkelfish-chartservice',
+    'app/core/common/components/chart/waterquality-chartservice',
+    'app/core/common/components/chart/watertemp-chartservice',
+    'app/core/common/components/chart/chart-services',                    //the wrapper for them all...
 
     //load other common directives
     'app/core/common/directives/checklists',

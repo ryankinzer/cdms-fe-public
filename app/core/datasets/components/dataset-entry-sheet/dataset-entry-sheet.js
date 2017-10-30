@@ -169,7 +169,7 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DataService', '$modal', '$
             }
 
             console.log("$scope at end of Project watch is next...");
-            console.dir($scope);
+            //console.dir($scope);
         });
 
         //setup a listener to populate column headers on the grid
@@ -352,7 +352,7 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DataService', '$modal', '$
         $scope.addAnotherFish = function () {
             console.log("Inside addAnotherFish...");
             console.log("$scope before copy is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             var listLength = $scope.dataSheetDataset.length;
             // Header items:  Needed in datasheet form
@@ -420,7 +420,7 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DataService', '$modal', '$
             }
 
             console.log("$scope after copy is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             //$scope.reloadProject();
 

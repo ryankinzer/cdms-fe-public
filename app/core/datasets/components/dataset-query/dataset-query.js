@@ -345,7 +345,7 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 				}
 				
 				console.log("$scope at end of watch dataset.Id is next...");
-				console.dir($scope);
+				//console.dir($scope);
 	    	});
 								
     		$scope.$watch('project.Name', function(){
@@ -358,7 +358,7 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
     				//$scope.Criteria.LocationIds = ["all"]; //set the default				
 
 					console.log("scope in watch project.Name is next...");
-					console.dir($scope);
+					//console.dir($scope);
 					
 					//$scope.subprojectType = DatastoreService.getProjectType($scope.project.Id);
 					console.log("$scope.subprojectType = " + $scope.subprojectType);
@@ -832,7 +832,7 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 					}
 					
 					//console.log("$scope in watch query.loading is next...");
-					//console.dir($scope);
+					////console.dir($scope);
 					//ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {height: 360, width: 800});
 					ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {height: 360, width: 800});
 				}
@@ -843,8 +843,8 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 	    	$scope.openActivity = function()
 	    	{
 				console.log("Inside $scope.openActivity...");
-				console.log("$scope is next...");
-				console.dir($scope);
+				//console.log("$scope is next...");
+				//console.dir($scope);
 	    		$location.path("/dataview/"+$scope.onRow.entity.ActivityId);
 	    	};
 

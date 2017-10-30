@@ -9,7 +9,7 @@ require([
 
     'app/core/datasets/components/dataset-activities-list/dataset-activities-list',
     'app/core/datasets/components/dataset-detail/dataset-detail',
-    'app/core/datasets/components/dataset-editor/dataset-editor',
+    'app/core/datasets/components/dataset-editor/dataset-edit-form',
     'app/core/datasets/components/dataset-entry-form/dataset-entry-form',
     'app/core/datasets/components/dataset-entry-sheet/dataset-entry-sheet',
     'app/core/datasets/components/dataset-view/dataset-view',

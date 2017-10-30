@@ -1,5 +1,5 @@
 ﻿
-var projects_module.controller('ModalChooseMapCtrl', modal_choose_map = ['$scope','$modalInstance', 'DataService','DatastoreService',
+var modal_choose_map = ['$scope','$modalInstance', 'DataService','DatastoreService',
   function($scope,  $modalInstance, DataService, DatastoreService){
 
      var galleryLinkTemplate = '<a href="{{row.getProperty(\'Link\')}}" target="_blank" title="{{row.getProperty(\'Link\')}}">' +

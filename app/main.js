@@ -31,6 +31,8 @@ define([
       'AppraisalsModule',
       'CrppModule',
       'HabitatModule',
+
+      'DatasetServices',
       
 
 

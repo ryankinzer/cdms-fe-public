@@ -2,7 +2,7 @@
     function ($scope, DataService, DatastoreService, ServiceUtilities, ConvertStatus) {
         console.log("Inside MyPreferencesCtrl...");
         //console.log("$scope is next");
-        //console.dir($scope);
+        ////console.dir($scope);
 
         $scope.savePreferences = function () {
             console.log("Inside savePreferences...");

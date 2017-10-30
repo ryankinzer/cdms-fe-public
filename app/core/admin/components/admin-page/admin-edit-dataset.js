@@ -86,8 +86,8 @@ var admin_edit_dataset = ['$scope','DatastoreService','$modal', 'DataService', '
 		$scope.addMasterField = function()
 		{
 			console.log("Inside admin-controller.js, addMasterField...");
-			console.log("$scope is next...");
-			console.dir($scope);
+			//console.log("$scope is next...");
+			//console.dir($scope);
 			//console.log("$scope.newField (coming in) = " + $scope.newField);
 			$scope.saveResults = {};
 			

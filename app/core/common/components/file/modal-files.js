@@ -4,8 +4,8 @@ var modal_files = ['$scope','$modalInstance', 'DataService','DatastoreService','
     function($scope, $modalInstance, DataService, DatastoreService, ServiceUtilities, $rootScope){
 		// This controller is for the Dataset Activity / Subproject File modal.
 		console.log("Inside modals-controller.js, FileModalCtrl");
-		console.log("$scope is next...");
-		console.dir($scope);
+		//console.log("$scope is next...");
+		//console.dir($scope);
 		
 		if (typeof $scope.onRow !== 'undefined')
 			$scope.onRow.errors = [];
@@ -244,8 +244,8 @@ var modal_files = ['$scope','$modalInstance', 'DataService','DatastoreService','
         $scope.save = function(){
 			console.log("Inside modals-controller, FileModalCtrl, save...");
 			console.log("Adding file name(s) to the list.");
-			console.log("$scope is next...");
-			console.dir($scope);
+			//console.log("$scope is next...");
+			//console.dir($scope);
 			$rootScope.viewSubproject = $scope.viewSubproject; // Add this to the $rootScope, so that the filters can see it.
 			var errors = [];
 			
@@ -356,7 +356,7 @@ var modal_files = ['$scope','$modalInstance', 'DataService','DatastoreService','
 				$scope.filesToUpload[$scope.file_field.DbColumnName] = undefined;
 			}
 			
-			console.dir($scope);
+			//console.dir($scope);
             $modalInstance.dismiss();
 			
 			// Inform the user immediately, if there are duplicate files.

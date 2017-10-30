@@ -160,7 +160,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		
         scope.$watch('datasets', function(){
 			//console.log("scope.datasets in datasets watch is next...");
-            //console.dir(scope);
+            ////console.dir(scope);
 
             if(!scope.datasets.$resolved)
               return;
@@ -344,8 +344,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 				return;
 			else
 			{
-				console.log("scope.project.Locations is next...");
-				console.dir(scope.project.Locations);
+				//console.log("scope.project.Locations is next...");
+				//console.dir(scope.project.Locations);
 				
 				// Check if this watch has completed already.  If so, clean out the text Loc before appending; otherwise, the string gets really long.
 				//if (scope.FileLocationSubprojectFundersWatchVariable.indexOf("Loc") > -1)
@@ -367,8 +367,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 					return;
 				else
 				{
-					console.log("scope.funderList is next...");
-					console.dir(scope.funderList);
+					//console.log("scope.funderList is next...");
+					//console.dir(scope.funderList);
 					
 					// Check if this watch has completed already.  If so, clean out the text Fund before appending; otherwise, the string gets really long.
 					//if (scope.FileLocationSubprojectFundersWatchVariable.indexOf("Fund") > -1)
@@ -395,8 +395,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 					return;
 				else
 				{
-					console.log("scope.collaboratorList is next...");
-					console.dir(scope.collaboratorList);
+					//console.log("scope.collaboratorList is next...");
+					//console.dir(scope.collaboratorList);
 					
 					// Check if this watch has completed already.  If so, clean out the text Coll before appending; otherwise, the string gets really long.
 					//if (scope.FileLocationSubprojectFundersWatchVariable.indexOf("Coll") > -1)
@@ -416,7 +416,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		
 		scope.$watch('FileLocationSubprojectFundersWatchVariable', function(){
 			console.log("Inside watch FileLocationSubprojectFundersWatchVariable, scope.FileLocationSubprojectFundersWatchVariable = " + scope.FileLocationSubprojectFundersWatchVariable);
-			console.dir(scope);
+			//console.dir(scope);
 
 			if ((scope.FileLocationSubprojectFundersWatchVariable.indexOf("Sdone") > -1) &&
 				(scope.FileLocationSubprojectFundersWatchVariable.indexOf("Loc") > -1))
@@ -449,8 +449,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		scope.$watch('project.Files.length', function(){
 			
 			console.log("Inside watch project.Files.length...");
-			console.log("project.Files is next...");
-			console.dir(scope.project.Files);
+			//console.log("project.Files is next...");
+			//console.dir(scope.project.Files);
 			
 			//if ((typeof scope.project.Files === 'undefined') || (scope.project.Files === null))
 			//{
@@ -604,7 +604,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
                 scope.project.Instruments = scope.project.Instruments.sort(orderByAlphaName);
 				
 				console.log("scope at end of controllers.js, project watch is next...");
-				console.dir(scope);
+				//console.dir(scope);
             }
 
         });
@@ -745,8 +745,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		{
 			console.log("Inside controllers.js, scope.matchLocationsToSubprojects...");	
 
-			console.log("scope is next...");
-			console.dir(scope);
+			//console.log("scope is next...");
+			//console.dir(scope);
 			console.log("scope.subprojectList is next...");
 			console.dir(scope.subprojectList);
 			console.log("scope.project.Locations is next...");
@@ -783,8 +783,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		{
 			console.log("Inside controllers.js, scope.matchFilesToSubproject...");	
 
-			console.log("scope is next...");
-			console.dir(scope);
+			//console.log("scope is next...");
+			//console.dir(scope);
 			console.log("scope.subprojectList is next...");
 			console.dir(scope.subprojectList);
 			console.log("scope.subprojectFileList is next...");
@@ -824,8 +824,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		{
 			console.log("Inside controllers.js, scope.matchFundersToSubproject...");
 			
-			console.log("scope is next...");
-			console.dir(scope);
+			//console.log("scope is next...");
+			//console.dir(scope);
 			console.log("scope.subprojectList is next...");
 			console.dir(scope.subprojectList);
 			console.log("scope.funderList is next...");
@@ -848,8 +848,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		{
 			console.log("Inside controllers.js, scope.matchCollaboratorToSubproject...");
 			
-			console.log("scope is next...");
-			console.dir(scope);
+			//console.log("scope is next...");
+			//console.dir(scope);
 			console.log("scope.subprojectList is next...");
 			console.dir(scope.subprojectList);
 			console.log("scope.collaboratorList is next...");
@@ -1010,7 +1010,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
         scope.openCorrespondenceEventForm = function(ce_row){
 			console.log("Inside openCorrespondenceEventForm...")
-			console.dir(scope);
+			//console.dir(scope);
 			
             if(ce_row)
               scope.ce_row = ce_row;
@@ -1027,7 +1027,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		
         scope.openHabitatItemForm = function(hi_row){
 			console.log("Inside openHabitatItemForm...")
-			console.dir(scope);
+			//console.dir(scope);
 			
             if(hi_row)
               scope.hi_row = hi_row;
@@ -1305,8 +1305,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
         scope.addFisherman = function(){
 			console.log("Inside controllers.addFisherman.");
-			console.log("scope is next...");
-			console.dir(scope);
+			//console.log("scope is next...");
+			//console.dir(scope);
 			console.log("scope.selectedFisherman is next...");
 			console.dir(scope.selectedFisherman);
 			
@@ -1324,8 +1324,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		 
         scope.addSubproject = function(){
 			console.log("Inside controllers.addSubproject.");
-			console.log("scope is next...");
-			console.dir(scope);
+			//console.log("scope is next...");
+			//console.dir(scope);
 			console.log("scope.selectedSubproject is next...");
 			console.dir(scope.selectedSubproject);
 			
@@ -1353,8 +1353,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
         };
 		 
         scope.removeViewFisherman = function(){
-			console.log("scope is next...");
-			console.dir(scope);
+			//console.log("scope is next...");
+			//console.dir(scope);
             if(!scope.viewFisherman)
                 return;
 
@@ -1367,7 +1367,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		 
         scope.removeViewSubproject = function(){
 			console.log("Inside removeViewSubproject, scope is next...");
-			console.dir(scope);
+			//console.dir(scope);
             if(!scope.viewSubproject)
                 return;
 			
@@ -1443,8 +1443,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 				delete scope.viewFisherman;
 			
 			scope.viewFisherman = fisherman;
-			console.log("scope is next...");
-			console.dir(scope);			
+			//console.log("scope is next...");
+			//console.dir(scope);			
 			console.log("scope.viewFisherman is next...");
 			console.dir(scope.viewFisherman);
 			console.log("scope.viewFisherman.DateAdded = " +  scope.viewFisherman.DateAdded);			
@@ -1465,8 +1465,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			console.log("Inside controllers.js, scope.viewSelectedSubproject");
 			console.log("subproject is next...");
 			console.dir(subproject);
-			//console.log("scope is next...");
-			//console.dir(scope);
+			////console.log("scope is next...");
+			////console.dir(scope);
 			if (scope.viewSubproject)
 			{
 				console.log("scope.viewSubproject exists...");
@@ -1482,7 +1482,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 				$rootScope.viewSubproject = scope.viewSubproject = angular.copy(subproject);
 				
 				console.log("scope (in scope.viewSelectedSubproject) is next...");
-				console.dir(scope);			
+				//console.dir(scope);			
 				console.log("scope.viewSubproject (in scope.viewSelectedSubproject) is next...");
 				console.dir(scope.viewSubproject);
 				console.log("scope.viewSubproject.ProjectName (in scope.viewSelectedSubproject) = " +  scope.viewSubproject.ProjectName);

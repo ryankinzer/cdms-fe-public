@@ -69,8 +69,8 @@ var crpp_contracts = ['$scope','$route','$routeParams', 'DataService', '$modal',
 
             };
 			
-			console.log("$scope is next...");
-			console.dir($scope);
+			//console.log("$scope is next...");
+			//console.dir($scope);
 
             //someone clicks search on the 
             $scope.parcelSearch = function()

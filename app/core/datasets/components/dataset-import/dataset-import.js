@@ -468,7 +468,7 @@
 				console.dir($scope.fishermenOptions);
 				$scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
 				console.log("$scope (at end of watch project.name) is next...");
-				console.dir($scope);
+				//console.dir($scope);
 
 	        });
 
@@ -583,7 +583,7 @@
 	    		});
 
 				console.log("$scope (at the end of $scope.finishLocationProcessing) is next...");
-				console.dir($scope);
+				//console.dir($scope);
 			};	
 			
 			$scope.setMappableFields = function()
@@ -764,8 +764,8 @@
 			// it calls this function.
 			$scope.updateSpecialFields = function(field_name){
 				console.log("Inside $scope.updateSpecialFields...");
-				console.log("$scope is next...");
-				console.dir($scope);
+				//console.log("$scope is next...");
+				//console.dir($scope);
 				//console.log("Picked and mapped " + field_name);
 				//angular.forEach($scope.mappableFields, function(mappableField){
 				//	console.log("mappableField.Label = " + mappableField.Label);
@@ -863,7 +863,7 @@
 					}
 				}
 				console.log("$scope at end of updateSpecialFields is next...");
-				console.dir($scope);
+				//console.dir($scope);
 			};
 
 			$scope.previewUpload = function()
@@ -876,7 +876,7 @@
 				console.log("Set $scope.importing = true...");
 				
 				//console.log("$scope in previewUpload is next...");
-				//console.dir($scope);
+				////console.dir($scope);
 
 				/****************************************************/
 				/* 	This section needs a review.
@@ -945,8 +945,8 @@
 			$scope.displayImportPreview = function()
 			{
 				console.log("Inside displayImportPreview");
-				//console.log("$scope is next...");
-				//console.dir($scope);
+				////console.log("$scope is next...");
+				////console.dir($scope);
 				//console.log("$scope.datasheetColDefs is next...");
 				//console.dir($scope.datasheetColDefs);
 				//console.log("$scope.RowQAColDef is next...");
@@ -1592,7 +1592,7 @@
 		 		});
 				
 				//console.log("$scope is next");
-				//console.dir($scope);
+				////console.dir($scope);
 
 				$scope.UploadResults.showPreview = true;
 
@@ -1603,8 +1603,8 @@
             	$scope.validateGrid($scope);
         		$scope.floatErrorsToTop();
 
-				console.log("$scope is next...");
-				console.dir($scope);
+				//console.log("$scope is next...");
+				//console.dir($scope);
 				console.log("The following are...$scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix");
 				console.dir($scope.dataSheetDataset);
 				console.log($scope.dataset.Datastore.TablePrefix);
@@ -1613,7 +1613,7 @@
 
 				$scope.importing = false;
 				console.log("Set $scope.importing = false...");
-				//console.dir($scope);
+				////console.dir($scope);
 			};
 
 			$scope.getFishermanId = function(fishermanName)

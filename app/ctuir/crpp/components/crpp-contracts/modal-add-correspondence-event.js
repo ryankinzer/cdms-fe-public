@@ -233,8 +233,8 @@ var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '
 		DbColumnName: "EventFiles"
 	};
 	
-	console.log("$scope is next...");
-	console.dir($scope);
+	//console.log("$scope is next...");
+	//console.dir($scope);
 	
 	/*$scope.ceEvents = function(items, key) {
 		element.all(by.repeater(key + ' in $scope.viewSubproject.CorrespondenceEvents').column(key + '.EventComments')).then(function(arr) {
@@ -467,8 +467,8 @@ var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '
 	
     $scope.save = function(){
 		console.log("Inside ModalAddCorrespondenceEventCtrl, save...");
-		console.log("$scope is next...");
-		console.dir($scope);
+		//console.log("$scope is next...");
+		//console.dir($scope);
 		
 		$scope.saving = true; // Used in $scope.$watch('fileProgress'
 		$scope.loading = true; // Start the fish spinner.
@@ -571,7 +571,7 @@ var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '
 				for(var i = 0; i < files.length; i++)
 				{
 					console.log("$scope is next...")
-					console.dir($scope);
+					//console.dir($scope);
 				  
 					var file = files[i];
 					console.log("Reviewing results on file " + file.Name);
@@ -595,14 +595,14 @@ var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '
 						//console.log("no file id.");
 						$scope.foundDuplicate = true;
 						$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-						console.log("$scope is next...");
-						console.dir($scope);
+						//console.log("$scope is next...");
+						//console.dir($scope);
 						throw "Problem saving file: " + file.Name;
 					}
 				}
 
-				console.log("$scope is next...");
-				console.dir($scope);
+				//console.log("$scope is next...");
+				//console.dir($scope);
 				console.log("$scope.file_row is next...");
 				console.dir($scope.file_row);
 				console.log("field = " + field);
@@ -700,8 +700,8 @@ var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '
 		}
 		*/
 		
-		console.log("$scope is next...");
-		console.dir($scope);
+		//console.log("$scope is next...");
+		//console.dir($scope);
 		
 		/*	If the user chooses to create a Correspondence Event (CE), at the same time that they are creating a new Subproject,
 		*   $scope.viewSubproject is not available yet, so we cannot pass the Id from there.  When we create the new Subproject,

@@ -228,7 +228,9 @@ mod.factory('GetMyProjectsAction', ['$resource', function($resource){
 }]);
 
 mod.factory('SaveUserPreferenceAction', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/user/saveuserpreference');
+    return $resource(serviceUrl + '/api/v1/user/saveuserpreference', {}, {
+        save: { method: 'POST', isArray: false }
+    });
 }]);
 
 mod.factory('GetMetadataProperties', ['$resource', function($resource){
@@ -865,8 +867,8 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 
         getProject: function(id) {
 			console.log("Inside services.js, getProject; id = " + id);
-			console.log("service is next...");
-			console.dir(service);
+			//console.log("service is next...");
+			//console.dir(service);
             //if(service.project && service.project.Id == id)
             if(service.project && service.project.Id == id && service.subprojectType !== "Habitat") // Not Habitat
 			{
@@ -1160,15 +1162,15 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
         //this should give you the possible QA Statuses for this dataset's rows
         getPossibleRowQAStatuses: function(id){
             //for now we fake it:
-            return
-            [{
+            return [{
                 id: 1,
                 name: "ok",
             },
-            {   id: 2,
+            {
+                id: 2,
                 name: "error",
             }
-            ]
+            ];
 
         },
 
@@ -1888,8 +1890,8 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 	var service = {
 		uploadFiles: function(filesToUpload, $scope){
 			console.log("Inside FileUploadService, uploadFiles...");
-			console.log("$scope is next...");
-			console.dir($scope);
+			//console.log("$scope is next...");
+			//console.dir($scope);
 
 			$scope.uploadErrorMessage = undefined;
 
@@ -2053,8 +2055,8 @@ mod.service('FileUploadService',['$q','$upload',function($q, $upload){
 
 		uploadSubprojectFiles: function(filesToUpload, $scope){
 			console.log("Inside FileUploadService, uploadSubprojectFiles...");
-			console.log("$scope is next...");
-			console.dir($scope);
+			//console.log("$scope is next...");
+			//console.dir($scope);
 
 			$scope.uploadErrorMessage = undefined;
 
@@ -2678,8 +2680,8 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
                 {
 					console.log("Inside validate...");
 					console.log("scope.callingPage = " + scope.callingPage);
-					//console.log("scope is next...");
-					//console.dir(scope);
+					////console.log("scope is next...");
+					////console.dir(scope);
 					//console.log("row is next...");
 					//console.dir(row);
 
@@ -2997,7 +2999,7 @@ mod.service('DataSheet',[ 'Logger', '$window', '$route',
             validateGrid: function(scope){
 				console.log("Inside validateGrid...");
 				console.log("scope.callingPage = " + scope.callingPage);
-				console.dir(scope);
+				//console.dir(scope);
 				
                 if(!scope.gridDatasheetOptions.enableCellEdit)
                     return;
@@ -4249,8 +4251,8 @@ function validateField(field, row, key, scope, row_errors)
 						if (field.DbColumnName === "NumberAnglersInterviewed")
 						{
 							//console.log("Found NumberAnglersInterviewed...");
-							//console.log("scope is next...");
-							console.dir(scope);
+							////console.log("scope is next...");
+							//console.dir(scope);
 							if (row.NumberAnglersInterviewed > row.NumberAnglersObserved)
 							{
 								row_errors.push("["+field.DbColumnName+"] cannot be more than [NumberAnglersObserved]");

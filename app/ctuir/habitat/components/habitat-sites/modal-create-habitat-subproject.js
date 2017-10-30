@@ -292,7 +292,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
     }
 	
 	console.log("$scope inside ModalCreateHabSubprojectCtrl, after initializing, is next...");
-	console.dir($scope);
+	//console.dir($scope);
 
     //var uploadWatch = $scope.$watch('uploadComplete', function(){
     $scope.$watch('uploadComplete', function(){
@@ -310,7 +310,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 			for(var i = 0; i < files.length; i++)
 			{
 				console.log("$scope is next...")
-				console.dir($scope);
+				//console.dir($scope);
 			  
 				var file = files[i];
 				console.log("Reviewing results on file " + file.Name);
@@ -334,8 +334,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 					//console.log("no file id.");
 					$scope.foundDuplicate = true;
 					$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-					console.log("$scope is next...");
-					console.dir($scope);
+					//console.log("$scope is next...");
+					//console.dir($scope);
 					throw "Problem saving file: " + file.Name;
 				}
 			}
@@ -434,7 +434,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 					// Normally, scope.SdeObjectId is set to 0; if it is > 0, then we just saved a new location and need to handle it.
 					console.log("promise in $scope.$watch('subproject_row.LocationId' is next...");
 					console.dir(promise);
-					console.dir($scope);
+					//console.dir($scope);
 					$scope.subprojectId = $rootScope.subprojectId = promise.Id;
 					console.log("$scope.subprojectId = " + $scope.subprojectId);
 					$scope.locationId = promise.LocationId;
@@ -571,7 +571,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 						for(var i = 0; i < files.length; i++)
 						{
 							console.log("$scope is next...")
-							console.dir($scope);
+							//console.dir($scope);
 						  
 							var file = files[i];
 							console.log("Reviewing results on file " + file.Name);
@@ -595,8 +595,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 								//console.log("no file id.");
 								$scope.foundDuplicate = true;
 								$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-								console.log("$scope is next...");
-								console.dir($scope);
+								//console.log("$scope is next...");
+								//console.dir($scope);
 								throw "Problem saving file: " + file.Name;
 							}
 						}
@@ -680,7 +680,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 			
 			var local_files = [];
 			console.log("$scope is next...")
-			console.dir($scope);
+			//console.dir($scope);
 			
 			for(var i = 0; i < files.length; i++)
 			{ 
@@ -706,8 +706,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 					//console.log("no file id.");
 					$scope.foundDuplicate = true;
 					$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-					console.log("$scope is next...");
-					console.dir($scope);
+					//console.log("$scope is next...");
+					//console.dir($scope);
 					throw "Problem saving file: " + file.Name;
 				}
 			}
@@ -786,7 +786,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 
 	$scope.selectFunder = function () {
 		console.log("Inside selectFunder...");
-		console.dir($scope);
+		//console.dir($scope);
 		console.log("$scope.subproject_row is next...");
 		console.dir($scope.subproject_row);
 				
@@ -806,7 +806,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 
 	$scope.selectCollaborator = function () {
 		console.log("Inside selectCollaborator...");
-		console.dir($scope);
+		//console.dir($scope);
 		console.log("$scope.subproject_row is next...");
 		console.dir($scope.subproject_row);
 						
@@ -1162,8 +1162,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 			$scope.subprojectSave.errorMessage += "Easting and Northing cannot be blank!  ";
 		}
 		
-		console.log("$scope is next...");
-		console.dir($scope);
+		//console.log("$scope is next...");
+		//console.dir($scope);
 		
 		if (!$scope.subprojectSave.error)
 		{
@@ -1204,8 +1204,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 			console.dir($scope.subproject_row);			
 			
 			$scope.saveResults = {};
-			console.log("$scope is next...");
-			console.dir($scope);
+			//console.log("$scope is next...");
+			//console.dir($scope);
 			
 			// First, a little cleanup.
 			$scope.subprojectSave.error = false;

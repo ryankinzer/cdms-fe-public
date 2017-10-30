@@ -9,7 +9,7 @@
     };
 	
 	console.log("$scope in ModalCreateFishermanCtrl is next...");
-	console.dir($scope);	
+	//console.dir($scope);	
 
     if($scope.viewFisherman)
     {
@@ -43,7 +43,7 @@
 	
     $scope.saveFisherman = function(){
         console.log("$scope in saveFisherman is next...");
-		console.dir($scope);
+		//console.dir($scope);
 		
 		$scope.fishermanSave = [];		
 

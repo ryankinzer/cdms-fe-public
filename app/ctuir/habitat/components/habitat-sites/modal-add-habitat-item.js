@@ -49,7 +49,7 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 	console.dir($scope.hi_row);
 	
 	console.log("$scope (after initialization) is next...");
-	console.dir($scope);
+	//console.dir($scope);
 	
 	$scope.openFileModal = function(row, field)
 	{
@@ -152,8 +152,8 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 	
     $scope.save = function(){
 		console.log("Inside ModalAddHabitatItemCtrl, save...");
-		console.log("$scope is next...");
-		console.dir($scope);
+		//console.log("$scope is next...");
+		//console.dir($scope);
 		
 		$scope.saving = true; // Used in $scope.$watch('fileProgress'
 		$scope.loading = true; // Start the fish spinner.
@@ -273,7 +273,7 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 				for(var i = 0; i < files.length; i++)
 				{
 					console.log("$scope is next...")
-					console.dir($scope);
+					//console.dir($scope);
 				  
 					var file = files[i];
 					console.log("Reviewing results on file " + file.Name);
@@ -297,8 +297,8 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 						//console.log("no file id.");
 						$scope.foundDuplicate = true;
 						$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-						console.log("$scope is next...");
-						console.dir($scope);
+						//console.log("$scope is next...");
+						//console.dir($scope);
 						throw "Problem saving file: " + file.Name;
 					}
 				}
@@ -363,8 +363,8 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 		*/
 		
 		// Now let's handle the other fields on the form.		
-		console.log("$scope is next...");
-		console.dir($scope);
+		//console.log("$scope is next...");
+		//console.dir($scope);
 		
 		/*	If the user chooses to create a Habitat Item (HI), at the same time that they are creating a new Subproject,
 		*   $scope.viewSubproject is not available yet, so we cannot pass the Id from there.  When we create the new Subproject,

@@ -305,8 +305,8 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DataService', 
             if (!$scope.project.Name) return;
 
             console.log("Inside watcher, project.Name...");
-            console.log("$scope is next...");
-            console.dir($scope);
+            //console.log("$scope is next...");
+            //console.dir($scope);
             console.log("$scope.project is next...");
             console.dir($scope.project);
 
@@ -471,7 +471,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DataService', 
 			$scope.selectInstrument();
 			*/
             console.log("$scope at end of watch project.Name is next...");
-            console.dir($scope);
+            //console.dir($scope);
         });
 
         $scope.$watch('dataSheetDataset', function () {
@@ -670,7 +670,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DataService', 
         $scope.addAnotherFish = function () {
             console.log("Inside addAnotherFish...");
             console.log("$scope before copy is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             var listLength = $scope.dataSheetDataset.length;
             var theFisherman = $scope.dataSheetDataset[listLength - 1].FishermanId
@@ -716,7 +716,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DataService', 
             }
 
             console.log("$scope after copy is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             //$scope.reloadProject();
 
@@ -966,7 +966,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DataService', 
 
         $scope.saveDatasheetData = function () {
             console.log("Inside saveDatasheetData, $scope is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             var strYear = null;
             var strMonth = null;

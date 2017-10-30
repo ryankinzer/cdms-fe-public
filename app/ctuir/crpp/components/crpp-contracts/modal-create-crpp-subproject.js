@@ -456,11 +456,11 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
         }
 
         console.log("$scope inside ModalCreateSubprojectCtrl, after initializing, is next...");
-        console.dir($scope);
+        //console.dir($scope);
 
         $scope.selectAgency = function () {
             console.log("Inside selectAgency...");
-            console.dir($scope);
+            //console.dir($scope);
             console.log("$scope.subproject_row is next...");
             console.dir($scope.subproject_row);
 
@@ -622,7 +622,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 console.log("Project name is empty...");
                 $scope.subprojectSave.error = true;
             }
-            console.dir($scope);
+            //console.dir($scope);
 
             if (!$scope.subprojectSave.error) {
                 // Capture the AddDocument flag, before discarding it.
@@ -720,8 +720,8 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 console.dir(saveRow);
 
                 $scope.saveResults = {};
-                console.log("$scope is next...");
-                console.dir($scope);
+                //console.log("$scope is next...");
+                //console.dir($scope);
                 //var promise = DatastoreService.saveCorrespondence($scope.project.Id, saveRow, $scope.saveResults);
                 var promise = DatastoreService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
                 if (typeof promise !== 'undefined') {

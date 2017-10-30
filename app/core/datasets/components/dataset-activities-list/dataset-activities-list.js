@@ -100,15 +100,15 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
                 });
             });
             console.log("$scope at end of $scope.activities.$promise is next...");
-            console.dir($scope);
+            //console.dir($scope);
         });
 
         $scope.$watch('dataset.Fields', function () {
             if (!$scope.dataset.Fields) return;
 
             console.log("Inside dataset.Fields watcher...");
-            console.log("$scope is next...");
-            console.dir($scope);
+            //console.log("$scope is next...");
+            //console.dir($scope);
 
             $rootScope.datasetId = $scope.dataset.Id;
             //load our project based on the projectid we get back from the dataset
@@ -223,7 +223,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
             }
 
             console.log("$scope at end of watch, dataset.Fields is next...");
-            console.dir($scope);
+            //console.dir($scope);
         });
 
         $scope.$watch('project.Name', function () {
@@ -281,7 +281,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
             $scope.loading = true;
             if ($scope.activities && $scope.activities.$resolved) {
                 console.log("Inside watch activities.$resolved...");
-                console.log("$scope is next...");
+                //console.log("$scope is next...");
                 console.log($scope);
 
                 if (!$scope.allActivities)
@@ -327,8 +327,8 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
         $scope.reloadDatasetLocations = function (datasetName, locationType) {
             console.log("Inside activities-controllers.js, scope.reloadDatasetLocations...");
 
-            console.log("$scope is next...");
-            console.dir($scope);
+            //console.log("$scope is next...");
+            //console.dir($scope);
             //console.log("$scope.project.Locations is next...");
             //console.dir($scope.project.Locations);
 
@@ -567,7 +567,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
         $scope.reloadProjectLocations = function () {
             console.log("Inside $scope.reloadProjectLocations...");
             //console.log("$scope is next...")
-            //console.dir($scope);
+            ////console.dir($scope);
             //console.log("$scope.project.Locations is next...");
             //console.dir($scope.project.Locations);
             $scope.subprojectList = angular.copy($scope.subprojectList);
