@@ -35,7 +35,7 @@
             </tbody>
         </table>
     
-        <div ng-include="'app/partials/grid-validation-error-box.html'"></div>
+        <div ng-include="'app/core/datasets/templates/grid-validation-error-box.html'"></div>
     </div>
     <div class="header-box" style="margin-top: 20px; width: 550px;">
             <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
@@ -124,9 +124,9 @@
 	<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>
 </div>
 
-<div ng-include="'app/partials/dataentry/bottom-bar.html'"/>
+<div ng-include="'app/core/datasets/templates/bottom-bar.html'"/>
 
-<div ng-include="'app/partials/dataentry/buttons.html'"/>
+<div ng-include="'app/core/datasets/templates/buttons.html'"/>
 
 </div>
 

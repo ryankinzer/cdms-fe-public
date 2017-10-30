@@ -16,7 +16,7 @@
 {{uploadErrorMessage}}
 </div>
 
-<div ng-include="'app/partials/dataentry/messages.html'"/><!--Need the closing "/" here; otherwise services.js has a problem with it.-->
+<div ng-include="'app/core/datasets/templates/messages.html'"/><!--Need the closing "/" here; otherwise services.js has a problem with it.-->
 
 	<div class="row" style="min-height: fill-available;" ng-show="!activities.success">
 
@@ -146,7 +146,7 @@
 					</table>
 				</div>
 				
-				<div style="height: 100px; width: 400px; float: right; margin-top: -120px;" ng-include="'app/partials/grid-validation-error-box.html'"></div>
+				<div style="height: 100px; width: 400px; float: right; margin-top: -120px;" ng-include="'app/core/datasets/templates/grid-validation-error-box.html'"></div>
 
 
 
@@ -252,7 +252,7 @@
 				</div>
 
 				<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>
-				<div ng-include="'app/partials/dataentry/bottom-bar.html'"/><!--Note the closing "/" here!-->
+				<div ng-include="'app/core/datasets/templates/bottom-bar.html'"/><!--Note the closing "/" here!-->
 					<div style="margin-top: 15px; padding-bottom: 30px;">
 						<button class="btn" ng-disabled="!onRow" ng-click="removeRow()">Remove Row</button>
 						<button ng-show="deletedRows.length" class="btn" ng-click="undoRemoveRow()">Undo</button>

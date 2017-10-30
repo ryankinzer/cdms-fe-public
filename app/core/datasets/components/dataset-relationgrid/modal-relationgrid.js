@@ -1,5 +1,5 @@
 ﻿//when you click the "View" button on a relation table field, it opens this modal
-mod_fmc.controller('RelationGridModalCtrl', ['$scope','$modalInstance', 'DataService','DatastoreService',
+var modal_relationgrid = ['$scope','$modalInstance', 'DataService','DatastoreService',
     function($scope,  $modalInstance, DataService, DatastoreService){
 
         //incoming scope variable
@@ -70,4 +70,4 @@ mod_fmc.controller('RelationGridModalCtrl', ['$scope','$modalInstance', 'DataSer
         }
 
     }
-]);
+];

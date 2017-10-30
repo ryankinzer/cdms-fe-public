@@ -19,7 +19,7 @@
                 <div class="header-box" style="border: 1px;">
                 
                     <div class="panel" style="margin: 20px;background-color: #f2f2f2;padding: 4px 10px 35px 10px;">
-                           <ng-include src="'app/partials/query/activities-where.html'"></ng-include>
+                           <ng-include src="'app/core/datasets/components/dataset-query/templates/activities-where.html'"></ng-include>
                     </div>
 
                     <div class="panel"  style="margin: 20px 20px 45px 20px; background-color: #FBFBEF; padding: 4px 10px 45px 10px;">
@@ -89,7 +89,7 @@
         <div >Rows: {{dataSheetDataset.length}}<img ng-show="query.loading" src="assets/images/FishLoading.gif"/></div>
         <div class="gridStyle" ng-style="gridWidth" ng-grid="gridDatasheetOptions"></div>
         
-        <div ng-include="'app/partials/dataentry/bottom-bar.html'"></div>
+        <div ng-include="'app/core/datasets/templates/bottom-bar.html'"></div>
 
         <button class="btn" ng-click="openExportView()">Export data</button>
         <button class="btn right" ng-disabled="!onRow" ng-click="openActivity()">View Activity</button>

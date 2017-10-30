@@ -34,7 +34,7 @@
             </tbody>
         </table>
     
-        <div style="margin-top: 10px;" ng-include="'app/partials/grid-validation-error-box.html'"></div>
+        <div style="margin-top: 10px;" ng-include="'app/core/datasets/templates/grid-validation-error-box.html'"></div>
     </div>
 
     <div ng-show="dataset" class="header-box" style="margin-top: 20px; width: 550px;">
@@ -154,8 +154,8 @@
 	<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>
 </div>
 
-<div ng-include="'app/partials/dataentry/bottom-bar.html'"/>
+<div ng-include="'app/core/datasets/templates/bottom-bar.html'"/>
 
-<div ng-include="'app/partials/dataentry/buttons.html'">&nbsp;</div>
+<div ng-include="'app/core/datasets/templates/buttons.html'">&nbsp;</div>
 
 </div>

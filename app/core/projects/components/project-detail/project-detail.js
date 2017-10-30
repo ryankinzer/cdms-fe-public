@@ -925,7 +925,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			scope.subprojectOptions = null;
 			console.log("scope.createNewSubproject = " + scope.createNewSubproject);
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/subproject/modal-create-subproject.html',
+                templateUrl: 'app/ctuir/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
               controller: 'ModalCreateSubprojectCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -978,7 +978,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			{
 				console.log("viewing a CRPP subproject");
 				var modalInstance = $modal.open({
-				  templateUrl: 'app/partials/subproject/modal-create-subproject.html',
+                    templateUrl: 'app/ctuir/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
 				  controller: 'ModalCreateSubprojectCtrl',
 				  scope: scope, //very important to pass the scope along...
 				});
@@ -1019,7 +1019,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
 
             var modalInstance = $modal.open({
-              templateUrl: 'app/partials/subproject/modal-new-correspondenceEvent.html',
+                templateUrl: 'app/ctuir/crpp/components/crpp-contracts/templates/modal-new-correspondenceEvent.html',
               controller: 'ModalAddCorrespondenceEventCtrl',
               scope: scope, //very important to pass the scope along...
             });

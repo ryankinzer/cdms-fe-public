@@ -95,7 +95,7 @@
 			<div ng-hide="dataset.Config && (dataset.Config.DataEntryPage.HiddenFields.indexOf('theDetails') > -1)">
 				<div class="gridStyle" ng-grid="gridDatasheetOptions" ng-style="gridWidth" ng-show="!query.loading"></div>
 			</div>
-            <div ng-include="'app/partials/dataentry/bottom-bar.html'"/> 
+            <div ng-include="'app/core/datasets/templates/bottom-bar.html'"/> 
             Total Records: {{grid.Details.length}} <img ng-show="query.loading" src="assets/images/FishLoading.gif"/></div>           
             <button project-role="editor" class="btn" ng-click="openEdit()">Edit</button>
 
