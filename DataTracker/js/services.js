@@ -4621,13 +4621,22 @@ function getByField(list, search, field)
 
 //returns array with matching field value
 function getMatchingByField(data, search, field)
-{
+{	
+	//console.log("data is next...");
+	console.dir(data);
+	//console.log("search is next...");
+	console.dir(search);
     var newlist = [];
 
     for(var key in data)
     {
-        if(data[key][field] == search)
+		//console.log("key = " + key + ", field = " + field);
+		//console.dir(key);
+        if(data[key][field] === search)
+		{
+			//console.log("Found it...");
             newlist.push(data[key]);
+		}
     }
 
     //console.log("did a search on " + search + " for " + field);

@@ -1546,15 +1546,25 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 		};
 
         scope.addInstrument = function(){
+			console.log("Inside controllers.addInstrument.");
+			console.log("scope is next...");
+			console.dir(scope);
+			console.log("scope.selectedInstrument is next...");
+			console.dir(scope.selectedInstrument);
+			
 			/* Verify that all three situations are true:
 			*  scope.selectedInstrument exists				This is important because IE will not actually select something, when you select it the first time.
 			*  scope.selectedInstrument is not null			Important for the same reason just mentioned.
 			*  The selected instrument is not already associated to the project.
 			*/
+			console.log("That length = " + getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length);
             //if(!scope.selectedInstrument || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
             //if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
             if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length < 1)
+			{
+				//console.log("Returning...");
                 return;
+			}
 
             var Instruments = getMatchingByField(scope.allInstruments, scope.selectedInstrument, 'Id');
 
