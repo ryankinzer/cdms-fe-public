@@ -4,8 +4,8 @@ var habitat_module = angular.module('HabitatModule', ['ui.bootstrap', 'ngResourc
 
 require([
     //controllers
-    'app/ctuir/habitat/components/habitat-sites/modal-add-habitat-item',
-    'app/ctuir/habitat/components/habitat-sites/modal-create-habitat-subproject',
+    'app/private/habitat/components/habitat-sites/modal-add-habitat-item',
+    'app/private/habitat/components/habitat-sites/modal-create-habitat-subproject',
    
 
 ], function () {

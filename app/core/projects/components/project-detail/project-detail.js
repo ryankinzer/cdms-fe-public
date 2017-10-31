@@ -925,7 +925,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			scope.subprojectOptions = null;
 			console.log("scope.createNewSubproject = " + scope.createNewSubproject);
             var modalInstance = $modal.open({
-                templateUrl: 'app/ctuir/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
+                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
               controller: 'ModalCreateSubprojectCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -938,7 +938,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			scope.subprojectOptions = null;
 			console.log("scope.createNewSubproject = " + scope.createNewSubproject);
             var modalInstance = $modal.open({
-                templateUrl: 'app/ctuir/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
+                templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
               controller: 'ModalCreateHabSubprojectCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -978,7 +978,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			{
 				console.log("viewing a CRPP subproject");
 				var modalInstance = $modal.open({
-                    templateUrl: 'app/ctuir/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
+                    templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
 				  controller: 'ModalCreateSubprojectCtrl',
 				  scope: scope, //very important to pass the scope along...
 				});
@@ -988,7 +988,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 				console.log("viewing a Habitat subproject");
 				//scope.subprojectFileList = DataService.getSubprojectFiles(scope.projectId, subproject.Id);
 				var modalInstance = $modal.open({
-                    templateUrl: 'app/ctuir/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
+                    templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
 				  controller: 'ModalCreateHabSubprojectCtrl',
 				  scope: scope, //very important to pass the scope along...
 				});
@@ -1019,7 +1019,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/ctuir/crpp/components/crpp-contracts/templates/modal-new-correspondenceEvent.html',
+                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-new-correspondenceEvent.html',
               controller: 'ModalAddCorrespondenceEventCtrl',
               scope: scope, //very important to pass the scope along...
             });
@@ -1036,7 +1036,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/ctuir/habitat/components/habitat-sites/templates/modal-new-habitatItem.html',
+                templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-new-habitatItem.html',
               controller: 'ModalAddHabitatItemCtrl',
               scope: scope, //very important to pass the scope along...
             });

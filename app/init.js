@@ -13,9 +13,9 @@ require([
   'app/core/datasets/datasets-module',
   'app/core/admin/admin-module',
   'app/core/preferences/preferences-module',
-  'app/ctuir/appraisals/appraisals-module',
-  'app/ctuir/crpp/crpp-module',
-  'app/ctuir/habitat/habitat-module'
+  'app/private/appraisals/appraisals-module',
+  'app/private/crpp/crpp-module',
+  'app/private/habitat/habitat-module'
 
 
 ], function (angular, parser) {
