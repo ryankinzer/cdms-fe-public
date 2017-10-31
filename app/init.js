@@ -1,4 +1,23 @@
 // CDMS Application bootstrapper
+/*global angular:true  <-- delete this line if commenting it out doesn't break anything... */
+
+(function (angular) {
+
+    var root = location.pathname.replace(new RegExp(/\/[^\/]+$/), '');
+
+    define('angular', function () {
+        return angular;
+    });
+
+    require({
+        async: true,
+        packages: [{
+            name: 'app',
+            location: root + '/app'
+        }]
+    });
+
+}(angular));
 
 // require loads each of the javascript files referenced below, which can in turn load other files.
 require([
