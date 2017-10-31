@@ -2,6 +2,8 @@
 
 var common_module = angular.module('CommonModule', ['ui.bootstrap', 'ngResource']);
 
+//I wish you could just specify a directory and it would find the files and load them, but
+// require doesn't work that way so we have to reference each one by hand.
 require([
     //just for now: TODO: we want to break this services file up
     'app/core/common/common-services',

@@ -63,7 +63,7 @@ define([
 
 	        //custom routes for datasets that require custom controller+pages
 	        $routeProvider.when('/appraisals/:Id', {templateUrl: 'app/ctuir/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
-            $routeProvider.when('/crpp/:Id', { templateUrl: 'app/ctuir/crpp/components/crpp-contracts/templates/Crpp-contracts.html', controller: 'CrppContractsCtrl'});
+            //$routeProvider.when('/crpp/:Id', { templateUrl: 'app/ctuir/crpp/components/crpp-contracts/templates/Crpp-contracts.html', controller: 'CrppContractsCtrl'});
 	        $routeProvider.when('/unauthorized', {templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
 
 	        //when all else fails...

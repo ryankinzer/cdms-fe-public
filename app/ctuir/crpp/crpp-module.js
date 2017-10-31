@@ -4,7 +4,7 @@ var crpp_module = angular.module('CrppModule', ['ui.bootstrap', 'ngResource']);
 
 require([
     //controllers
-    'app/ctuir/crpp/components/crpp-contracts/crpp-contracts',
+    //'app/ctuir/crpp/components/crpp-contracts/crpp-contracts',
     'app/ctuir/crpp/components/crpp-contracts/modal-add-correspondence-event',
     'app/ctuir/crpp/components/crpp-contracts/modal-create-crpp-subproject',
 
