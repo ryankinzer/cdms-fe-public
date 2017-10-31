@@ -47,7 +47,7 @@ mod.factory('ReportYears',['$resource', function($resource){
 }]);
 
 mod.factory('SpawningYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/getspawningyears', {}, {
+        return $resource(serviceUrl+'/api/v1/list/getspawningyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
