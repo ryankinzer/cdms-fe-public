@@ -15,7 +15,7 @@ var admin_view = ['$scope', 'DatastoreService', '$modal', 'DataService',
                 watcher();	//removes watch since we're about to do some updates that would cause multiple firings...!
 
                 angular.forEach($scope.datastores, function (datastore, key) {
-                    //datastore.Projects = DatastoreService.getProjects(datastore.Id);
+                    //datastore.Projects = DatastoreService.getDatastoreProjects(datastore.Id);
                     datastore.Datasets = DatastoreService.getDatasets(datastore.Id);
                 });
 

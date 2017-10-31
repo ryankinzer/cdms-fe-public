@@ -1,77 +1,5 @@
-'use strict';
+//only the common services are here, ones used in different modules
 
-var mod = angular.module('DatasetServices', ['ngResource']);
-
-/*
-moving these to projects soon
-*/
-
-
-mod.factory('Projects', ['$resource', function (resource) {
-    return resource(serviceUrl + '/api/v1/project/getprojects', {}, {
-        query: { method: 'GET', params: {}, isArray: true }
-    });
-}]);
-
-mod.factory('Project', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/project/getproject', {}, {
-        query: { method: 'GET', params: { id: 'id' }, isArray: false }
-    });
-}]);
-
-mod.factory('ProjectDatasets', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/project/getprojectdatasets', {}, {
-        query: { method: 'GET', params: { id: 'projectId' }, isArray: true }
-    });
-}]);
-
-mod.factory('SetProjectEditors', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/project/setprojecteditors');
-}]);
-
-mod.factory('SaveProject', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/project/saveproject');
-}]);
-
-
-mod.factory('SaveProjectLocation', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/location/saveprojectlocation');
-}]);
-
-mod.factory('GetAllInstruments', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/instrument/getinstruments');
-}]);
-
-mod.factory('SaveProjectInstrument', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/instrument/saveprojectinstrument');
-}]);
-
-mod.factory('SaveProjectFisherman', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/fishermen/saveprojectfishermen');
-}]);
-
-mod.factory('SaveInstrument', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/instrument/saveinstrument');
-}]);
-
-mod.factory('SaveInstrumentAccuracyCheck', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/instrument/saveinstrumentaccuracycheck');
-}]);
-
-mod.factory('SaveFisherman', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/fishermen/savefishermen');
-}]);
-
-mod.factory('UpdateFile', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/file/updatefile');
-}]);
-
-mod.factory('DeleteFile', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/file/deletefile');
-}]);
-
-
-//////
 
 mod.factory('Users',['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/user/getusers', {}, {
@@ -79,241 +7,16 @@ mod.factory('Users',['$resource', function($resource){
         });
 }]);
 
-mod.factory('MigrationYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/list/getmigrationyears', {}, {
-            query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
-        });
-}]);
 
-mod.factory('RunYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/list/getrunyears', {}, {
-            query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
-        });
-}]);
-
-mod.factory('ReportYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/list/getreportyears', {}, {
-            query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
-        });
-}]);
-
-mod.factory('SpawningYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/getspawningyears', {}, {
-            query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
-        });
-}]);
-
-mod.factory('BroodYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/list/getbroodyears', {}, {
-            query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
-        });
-}]);
-
-mod.factory('OutmigrationYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/getoutmigrationyears', {}, {
-            query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
-        });
-}]);
-
-mod.factory('ProjectSubprojects',['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/habsubproject/gethabsubprojects', {}, {
-           save: {method: 'POST', isArray: true}
-        });
-}]);
-
-mod.factory('SubprojectFiles', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/crppsubproject/getcrppsubprojectfiles', {}, {
-        query: { method: 'GET', params: { id: 'projectId' }, isArray: true }
-    });
-}]);
-
-mod.factory('ProjectFunders',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/habsubproject/getprojectfunders', {}, {
-            query: {method: 'GET', params: {id:'projectId'}, isArray: true}
-        });
-}]);
-
-mod.factory('ProjectCollaborators',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/habsubproject/getprojectcollaborators', {}, {
-            query: {method: 'GET', params: {id:'projectId'}, isArray: true}
-        });
-}]);
-
-mod.factory('ProjectFiles',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/file/getprojectfiles', {}, {
-            query: {method: 'GET', params: {id:'projectId'}, isArray: true}
-        });
-}]);
-
-mod.factory('DatasetFiles',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/file/getdatasetfiles', {}, {
-            query: {method: 'GET', params: {id:'datasetId'}, isArray: true}
-        });
-}]);
-
-mod.factory('Activities',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/activity/getdatasetactivities', {}, {
-            query: {method: 'GET', params: {id:'datasetId'}, isArray: true}
-        });
-}]);
-
-mod.factory('ActivitiesForView',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/activity/getdatasetactivitiesview', {}, {
-            query: {method: 'GET', params: {id:'datasetId'}, isArray: true}
-        });
-}]);
-
-mod.factory('Dataset', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/dataset/getdataset', {}, {
-        query: { method: 'GET', params: { id: 'datasetId' }, isArray: false }
-    });
-}]);
-
-
-mod.factory('Datasets',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/dataset/getdatasets', {}, {
-            query: {method: 'GET', params: {}, isArray: true}
-        });
-}]);
-
-mod.factory('Data',['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/activity/getdatasetactivitydata', {}, {
-            query: {method: 'GET', params: {id:'activityId'}, isArray: false}
-        });
-}]);
-
-mod.factory('SaveActivitiesAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/activity/savedatasetactivities');
-}]);
-
-mod.factory('UpdateActivitiesAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/activity/updatedatasetactivities');
-}]);
-
-mod.factory('QueryActivitiesAction',  ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/query/querydatasetactivities', {}, {
-           save: {method: 'POST', isArray: true}
-        });
-}]);
-
-mod.factory('ExportActivitiesAction',  ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/export/exportdatasetactivities', {}, {
-           save: {method: 'POST', isArray: false}
-        });
-}]);
-
-mod.factory('DeleteActivitiesAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/activity/deletedatasetactivities');
-}]);
-
-mod.factory('DeleteLocationAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/location/deletelocation');
-}]);
-
-
-mod.factory('SetQaStatusAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/activity/setqastatus');
-}]);
-
-mod.factory('GetMyDatasetsAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/user/getmydatasets', {}, {
-            query: {method: 'GET', params: {}, isArray: true}
-        });
-}]);
-
-mod.factory('GetMyProjectsAction', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/user/getmyprojects', {}, {
-            query: {method: 'GET', params: {}, isArray: true}
-        });
-}]);
-
-mod.factory('SaveUserPreferenceAction', ['$resource', function($resource){
-    return $resource(serviceUrl + '/api/v1/user/saveuserpreference', {}, {
-        save: { method: 'POST', isArray: false }
-    });
-}]);
 
 mod.factory('GetMetadataProperties', ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/metadata/getmetadataproperties');
 }]);
 
-mod.factory('GetAllPossibleDatastoreLocations', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/datastore/getdatastorelocations');
-}]);
-
-mod.factory('GetAllDatastoreFields', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/datastore/getdatastorefields');
-}]);
-
-//shouldn't this have an ID parameter? my guess is we don't actually use this anywhere...
-mod.factory('GetDatastore', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/datastore/getdatastore', {}, { query: {method: 'GET', params: {}, isArray: false}});
-}]);
-
-mod.factory('GetDatastoreProjects', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/datastore/getdatastoreprojects');
-}]);
-
-mod.factory('GetAllDatastores', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/datastore/getdatastores');
-}]);
-
-mod.factory('GetDatastoreDatasets', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/datastore/getdatastoredatasets');
-}]);
-
-
 mod.factory('SaveDatasetMetadata', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/metadata/setdatasetmetadata');
 }]);
 
-mod.factory('GetSources', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/list/getsources');
-}]);
-
-mod.factory('GetInstruments', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/instrument/getinstruments');
-}]);
-
-mod.factory('SaveDatasetField', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/dataset/savedatasetfield');
-}]);
-
-mod.factory('SaveMasterField', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/datastore/savemasterfield');
-}]);
-
-mod.factory('DeleteDatasetField', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/dataset/deletedatasetfield');
-}]);
-
-mod.factory('GetAllFields', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/datastore/getfieldcategoryfields');
-}]);
-
-mod.factory('GetLocationTypes', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/location/getlocationtypes');
-}]);
-
-mod.factory('AddMasterFieldToDataset', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/datastore/addmasterfieldtodataset');
-}]);
-
-mod.factory('SaveCorrespondenceEvent', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/crppsubproject/savecorrespondenceevent');
-}]);
-
-mod.factory('SaveHabitatItem', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/habsubproject/savehabitatitem');
-}]);
-
-mod.factory('GetInstrumentTypes', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/instrument/getinstrumenttypes');
-}]);
-
-mod.factory('RemoveProjectInstrument', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/instrument/removeprojectinstrument');
-}]);
 
 // TODO: why a POST?
 mod.factory('GetMetadataFor',['$resource', function($resource){
@@ -326,25 +29,6 @@ mod.factory('GetWaterBodies', ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/list/getwaterbodies');
 }]);
 
-mod.factory('GetHeadersDataForDataset', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/dataset/getheadersdatafordataset');
-}]);
-
-mod.factory('DeleteDatasetFile', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/file/deletedatasetfile');
-}]);
-
-mod.factory('DeleteCorresEventFile', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/crppsubproject/deletecorreseventfile');
-}]);
-
-mod.factory('DeleteHabitatItemFile', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/habsubproject/deletehabitatitemfile');
-}]);
-
-mod.factory('DeleteHabSubprojectFile', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/habsubproject/deletehabsubprojectfile');
-}]);
 
 mod.factory('GetTimeZones', ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/list/gettimezones');
@@ -355,76 +39,17 @@ mod.factory('GetDepartments', ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/department/getdepartment');
 }]);
 
-mod.factory('SaveSubproject', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/crppsubproject/savecrppsubproject');
-}]);
+//TODO: KB 10/31 ok make a service for this and delete everything else.
 
-mod.factory('SaveHabSubproject', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/habsubproject/savehabsubproject');
-}]);
-
-mod.factory('GetFishermen', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/fishermen/getfishermen');
-}]);
-
-mod.factory('GetSubprojects', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/crppsubproject/getcrppsubprojects');
-}]);
-
-//TODO: does this need an ID parameter?
-mod.factory('GetHabSubproject', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/habsubproject/gethabsubproject');
-}]);
-
-mod.factory('GetHabSubprojects', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/habsubproject/gethabsubprojects');
-}]);
-
-mod.factory('GetProjectFishermen', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/fishermen/getprojectfishermen');
-}]);
-
-mod.factory('RemoveProjectFisherman', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/fishermen/removeprojectfishermen');
-}]);
-
-mod.factory('RemoveSubproject', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/crppsubproject/removecrppsubproject');
-}]);
-
-mod.factory('RemoveHabSubproject', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/habsubproject/removehabsubproject');
-}]);
-
-mod.factory('RemoveCorrespondenceEvent', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/crppsubproject/removecorrespondenceevent');
-}]);
-
-mod.factory('RemoveHabitatItem', ['$resource', function($resource){
-    return $resource(serviceUrl +'/api/v1/habsubproject/removehabitatitem');
-}]);
-
-mod.factory('GetRelationData', ['$resource', function ($resource) {
-    return $resource(serviceUrl +'/api/v1/dataset/getrelationdata',{},{
-                       save: {method: 'POST', isArray: true}
-        });
-}])
-
-mod.factory('SaveUserInfo', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/user/saveuserinfo');
-}]);
-
-mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAllDatastoreFields','GetDatastore','GetDatastoreProjects','GetAllDatastores',
-		'GetDatastoreDatasets','GetSources','GetInstruments','SaveDatasetField','SaveMasterField','DeleteDatasetField','GetAllFields',
-		'AddMasterFieldToDataset','GetLocationTypes','SaveProjectLocation','GetAllInstruments','SaveProjectInstrument','SaveInstrument','SaveInstrumentAccuracyCheck',
-		'GetInstrumentTypes','RemoveProjectInstrument', 'GetWaterBodies','UpdateFile','DeleteFile','GetTimeZones','DeleteLocationAction','SaveFisherman','GetFishermen',
-		'SaveProjectFisherman','GetProjectFishermen','RemoveProjectFisherman','SaveSubproject','GetSubprojects','RemoveSubproject','SaveCorrespondenceEvent',
+mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAllDatastoreFields','GetDatastore','GetAllDatastores',
+		'GetDatastoreDatasets','GetSources','SaveDatasetField','SaveMasterField','DeleteDatasetField','GetAllFields',
+		'AddMasterFieldToDataset','GetLocationTypes', 'GetWaterBodies','GetTimeZones','DeleteLocationAction',
+		'RemoveProjectFisherman','SaveSubproject','GetSubprojects','RemoveSubproject','SaveCorrespondenceEvent',
 		'RemoveCorrespondenceEvent','DeleteCorresEventFile','SaveHabSubproject','RemoveHabSubproject','SaveHabitatItem','RemoveHabitatItem','DeleteHabitatItemFile',
 		'DeleteHabSubprojectFile','DeleteDatasetFile','GetHabSubproject',
-    function($q, GetAllPossibleDatastoreLocations, GetAllDatastoreFields, GetDatastore, GetDatastoreProjects, GetAllDatastores, GetDatastoreDatasets, GetSources,
-		GetInstruments, SaveDatasetField, SaveMasterField, DeleteDatasetField, GetAllFields, AddMasterFieldToDataset, GetLocationTypes, SaveProjectLocation,
-		GetAllInstruments, SaveProjectInstrument, SaveInstrument, SaveInstrumentAccuracyCheck, GetInstrumentTypes, RemoveProjectInstrument, GetWaterBodies, UpdateFile,
-		DeleteFile, GetTimeZones, DeleteLocationAction, SaveFisherman, GetFishermen, SaveProjectFisherman, GetProjectFishermen, RemoveProjectFisherman, SaveSubproject,
+    function($q, GetAllPossibleDatastoreLocations, GetAllDatastoreFields, GetDatastore,  GetAllDatastores, GetDatastoreDatasets, GetSources,
+        SaveDatasetField, SaveMasterField, DeleteDatasetField, GetAllFields, AddMasterFieldToDataset, GetLocationTypes, GetWaterBodies,
+        GetTimeZones, DeleteLocationAction, SaveSubproject,
 		GetSubprojects, RemoveSubproject, SaveCorrespondenceEvent, RemoveCorrespondenceEvent, DeleteCorresEventFile, SaveHabSubproject, RemoveHabSubproject,
 		SaveHabitatItem, RemoveHabitatItem, DeleteHabitatItemFile, DeleteHabSubprojectFile, DeleteDatasetFile, GetHabSubproject){
 
@@ -448,10 +73,6 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
             {
                 return GetDatastore.query({id: id});
             },
-            getProjects: function(id)
-            {
-                return GetDatastoreProjects.query({id: id});
-            },
             getDatastores: function()
             {
                 return GetAllDatastores.query();
@@ -468,29 +89,7 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
             {
                 return GetSources.query();
             },
-            getInstruments: function()
-            {
-                return GetInstruments.query();
-            },
-            getInstrumentTypes: function()
-            {
-                return GetInstrumentTypes.query();
-            },
-			getFishermen: function()
-            {
-				console.log("Inside getFishermen...");
-                return GetFishermen.query();
-            },
-			getSubprojects: function()
-            {
-				console.log("Inside getSubprojects...");
-                return GetSubprojects.query();
-            },
-			getHabSubproject: function(id)
-            {
-				console.log("Inside getHabSubproject...");
-                return GetHabSubproject.query({id: id});
-            },
+            
             getLocationTypes: function()
             {
                 return GetLocationTypes.query();
@@ -600,35 +199,6 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
 
 				return theLocationType;
 			},
-			// We don't really like to set things this way...  Is there a better way?
-			//getSubprojectType: function(aProjectId)
-			getProjectType: function(aProjectId)
-			{
-				var theType = null;
-
-				if (aProjectId === 2247) 			// CRPP
-				{
-					theType = "CRPP";
-				}
-				else if ((aProjectId === 1202) || // Walla Walla
-					(aProjectId === 1223) || 		// First HabSubproject, Umatilla
-					(aProjectId === 2223) || 		// NF John Day
-					(aProjectId === 2226) ||		// Rainwater
-					(aProjectId === 2228) ||		// Grande Ronde
-					(aProjectId === 2229) ||		// Tucannon
-					(aProjectId === 10029) ||		// Touchet
-					(aProjectId === 2249)			// Biomonitoring of Fish Enhancement
-					)
-				{
-					theType = "Habitat";
-				}
-				else if (aProjectId === 1217)
-					theType = "Harvest";
-				else if (aProjectId === 2246)
-					theType = "DECD";
-
-				return theType;
-			},
             saveDatasetField: function(field, saveResults)
             {
                 saveResults.saving = true;
@@ -655,117 +225,7 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
                 });
 
             },
-            saveNewProjectLocation: function(projectId, location)
-            {
-                return SaveProjectLocation.save({ProjectId: projectId, Location: location});
-            },
-            addMasterFieldToDataset: function(datasetId, fieldId)
-            {
-                return AddMasterFieldToDataset.save({DatasetId: datasetId, FieldId: fieldId});
-            },
-            removeField: function(datasetId, fieldId)
-            {
-				console.log("Trying to delete... datasetId = " + datasetId + ", fieldId = " + fieldId);
-                return DeleteDatasetField.save({DatasetId: datasetId, FieldId: fieldId});
-            },
-            getAllInstruments: function()
-            {
-                return GetAllInstruments.query();
-            },
-            saveInstrument: function(projectId, instrument){
-                return SaveInstrument.save({ProjectId: projectId, Instrument: instrument}); //will connect to this project if creating instrument
-            },
-            saveFisherman: function(projectId, fisherman, saveResults){
-				console.log("Inside saveFisherman...");
-				saveResults.saving = true;
-				console.log("saveResults.saving = " + saveResults.saving);
-
-				return SaveFisherman.save({ProjectId: projectId, Fisherman:  fisherman});
-            },
-            saveSubproject: function(projectId, subproject, saveResults){
-				console.log("Inside saveSubproject...");
-				saveResults.saving = true;
-				console.log("saveResults.saving = " + saveResults.saving);
-
-				return SaveSubproject.save({ProjectId: projectId, Subproject:  subproject});
-            },
-            saveHabSubproject: function(projectId, subproject, saveResults){
-				console.log("Inside services.js, saveHabSubproject...");
-				saveResults.saving = true;
-				console.log("saveResults.saving = " + saveResults.saving);
-
-				return SaveHabSubproject.save({ProjectId: projectId, Subproject:  subproject});
-            },
-            saveProjectInstrument: function(projectId, instrument){
-                return SaveProjectInstrument.save({ProjectId: projectId, Instrument: instrument});
-            },
-            saveProjectFisherman: function(projectId, fisherman){
-                return SaveProjectFisherman.save({ProjectId: projectId, Fisherman: fisherman});
-            },
-		    removeProjectFisherman: function(projectId, fishermanId){
-                return RemoveProjectFisherman.save({ProjectId: projectId, FishermanId: fishermanId});
-            },
-		    removeProjectInstrument: function(projectId, instrumentId){
-                return RemoveProjectInstrument.save({ProjectId: projectId, InstrumentId: instrumentId});
-            },
-		    removeSubproject: function(projectId, subprojectId){
-                return RemoveSubproject.save({ProjectId: projectId, SubprojectId: subprojectId});
-            },
-		    //removeHabSubproject: function(projectId, subprojectId){
-		    removeHabSubproject: function(projectId, subprojectId, locationId){
-                //return RemoveHabSubproject.save({ProjectId: projectId, SubprojectId: subprojectId});
-                return RemoveHabSubproject.save({ProjectId: projectId, SubprojectId: subprojectId, LocationId: locationId});
-            },
-		    //removeCorrespondenceEvent: function(projectId, subprojectId, correspondenceEventId){
-		    removeCorrespondenceEvent: function(projectId, subprojectId, correspondenceEventId, datastoreTablePrefix){
-				console.log("Inside removeCorrespondenceEvent...");
-				console.log("projectId = " + projectId + ", subprojectId = " + subprojectId + ", correspondenceEventId = " + correspondenceEventId + ", datastoreTablePrefix = " + datastoreTablePrefix);
-                //return RemoveCorrespondenceEvent.save({ProjectId: projectId, SubprojectId: subprojectId, CorrespondenceEventId: correspondenceEventId});
-                return RemoveCorrespondenceEvent.save({ProjectId: projectId, SubprojectId: subprojectId, CorrespondenceEventId: correspondenceEventId, DatastoreTablePrefix: datastoreTablePrefix});
-            },
-		    removeHabitatItem: function(projectId, subprojectId, habitatItemId, datastoreTablePrefix){
-				console.log("Inside removeHabitatItem...");
-				console.log("projectId = " + projectId + ", subprojectId = " + subprojectId + ", habitatItemId = " + habitatItemId + ", datastoreTablePrefix = " + datastoreTablePrefix);
-                return RemoveHabitatItem.save({ProjectId: projectId, SubprojectId: subprojectId, HabitatItemId: habitatItemId, DatastoreTablePrefix: datastoreTablePrefix});
-            },
-            getProjectFishermen: function(projectId)
-			{
-				console.log("Inside getProjectFishermen, projectId = " + projectId);
-                return GetProjectFishermen.query({id: projectId});
-            },
-            saveCorrespondenceEvent: function(projectId, subprojectId, ce)
-            {
-				console.log("Inside saveCorrespondenceEvent...")
-				console.log("projectId = " + projectId);
-				console.log("subprojectId = " + subprojectId);
-				console.log("ce is next...");
-				console.dir(ce);
-                return SaveCorrespondenceEvent.save({ProjectId: projectId, SubprojectId: subprojectId, CorrespondenceEvent: ce});
-            },
-            saveHabitatItem: function(projectId, subprojectId, hi)
-            {
-				console.log("Inside saveHabitatItem...")
-				console.log("projectId = " + projectId);
-				console.log("subprojectId = " + subprojectId);
-				console.log("hi is next...");
-				console.dir(hi);
-                return SaveHabitatItem.save({ProjectId: projectId, SubprojectId: subprojectId, HabitatItem: hi});
-            },
-            saveInstrumentAccuracyCheck: function(instrumentId, ac)
-            {
-                return SaveInstrumentAccuracyCheck.save({InstrumentId: instrumentId, AccuracyCheck: ac});
-            },
-            updateFile: function(projectId, file)
-            {
-                return UpdateFile.save({ProjectId: projectId, File: file});
-            },
-            deleteFile: function(projectId, file)
-            {
-				console.log("Inside DatastoreService, deleteFile");
-				console.log("ProjectId = " + projectId + ", attempting to delete file...");
-				console.dir(file);
-                return DeleteFile.save({ProjectId: projectId, File: file});
-            },
+            
             deleteDatasetFile: function(projectId, datasetId, file)
             {
 				console.log("Inside DatastoreService, deleteDatasetFile");
@@ -773,29 +233,7 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
 				console.dir(file);
                 return DeleteDatasetFile.save({ProjectId: projectId, DatasetId: datasetId, File: file});
             },
-            deleteCorresEventFile: function(projectId, subprojectId, ceId, file)
-            {
-				console.log("Inside DatastoreService, deleteCorresEventFile");
-				console.log("SubprojectId = " + subprojectId + ", ceId = " + ceId + " attempting to delete file...");
-				console.dir(file);
-                //return DeleteFile.save({ProjectId: projectId, File: file});
-                return DeleteCorresEventFile.save({ProjectId: projectId, SubprojectId: subprojectId, CeId: ceId, File: file});
-            },
-            deleteHabitatItemFile: function(projectId, subprojectId, hiId, file)
-            {
-				console.log("Inside DatastoreService, deleteHabitatItemFile");
-				console.log("ProjectId = " + projectId + ", SubprojectId = " + subprojectId + ", hiId = " + hiId + " attempting to delete file...");
-				console.dir(file);
-                //return DeleteFile.save({ProjectId: projectId, File: file});
-                return DeleteHabitatItemFile.save({ProjectId: projectId, SubprojectId: subprojectId, HiId: hiId, File: file});
-            },
-            deleteHabSubprojectFile: function(projectId, subprojectId, file)
-            {
-				console.log("Inside DatastoreService, deleteHabSubprojectFile");
-				console.log("SubprojectId = " + subprojectId + ", attempting to delete file...");
-				console.dir(file);
-                return DeleteHabSubprojectFile.save({ProjectId: projectId, SubprojectId: subprojectId, File: file});
-            },
+            
             deleteLocation: function(locationId)
             {
                 return DeleteLocationAction.save({LocationId: locationId});
@@ -810,94 +248,33 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
     }
 ]);
 
-mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','ProjectDatasets', 'Activities', 'ActivitiesForView', 'Datasets', 'Dataset', 'Data', 'SaveActivitiesAction',
-		'UpdateActivitiesAction','QueryActivitiesAction','SetProjectEditors', 'DeleteActivitiesAction', 'SetQaStatusAction', 'GetMyDatasetsAction',
+mod.service('DataService', ['$q','$resource',  'Users', 'Activities', 'ActivitiesForView', 'Datasets', 'Dataset', 'Data', 'SaveActivitiesAction',
+		'UpdateActivitiesAction','QueryActivitiesAction', 'DeleteActivitiesAction', 'SetQaStatusAction', 'GetMyDatasetsAction',
 		'GetMyProjectsAction','SaveUserPreferenceAction','ExportActivitiesAction','GetMetadataProperties','SaveDatasetMetadata','GetMetadataFor',
-		'SaveProject','GetHeadersDataForDataset','GetDepartments','GetRelationData','SaveUserInfo', 'GetSubprojects','GetHabSubprojects','ProjectSubprojects',
-		'ProjectFunders','SubprojectFiles','ProjectCollaborators','DatasetFiles','ProjectFiles','MigrationYears','RunYears','ReportYears','SpawningYears','BroodYears',
+		'GetHeadersDataForDataset','GetDepartments','GetRelationData','SaveUserInfo', 'GetSubprojects','GetHabSubprojects','ProjectSubprojects',
+		'SubprojectFiles','DatasetFiles','MigrationYears','RunYears','ReportYears','SpawningYears','BroodYears',
 		'OutmigrationYears',
-    function($q, resource, Projects, Users, Project, ProjectDatasets, Activities, ActivitiesForView, Datasets, Dataset, Data, SaveActivitiesAction, UpdateActivitiesAction, QueryActivitiesAction,
-		SetProjectEditors, DeleteActivitiesAction, SetQaStatusAction, GetMyDatasetsAction, GetMyProjectsAction, SaveUserPreferenceAction, ExportActivitiesAction,
-		GetMetadataProperties, SaveDatasetMetadata, GetMetadataFor, SaveProject,GetHeadersDataForDataset, GetDepartments, GetRelationData, SaveUserInfo,
-		GetSubprojects, GetHabSubprojects, ProjectSubprojects, ProjectFunders, SubprojectFiles, ProjectCollaborators, DatasetFiles, ProjectFiles, MigrationYears,
+    function($q, resource, Users, Activities, ActivitiesForView, Datasets, Dataset, Data, SaveActivitiesAction, UpdateActivitiesAction, QueryActivitiesAction,
+		DeleteActivitiesAction, SetQaStatusAction, GetMyDatasetsAction, GetMyProjectsAction, SaveUserPreferenceAction, ExportActivitiesAction,
+		GetMetadataProperties, SaveDatasetMetadata, GetMetadataFor, GetHeadersDataForDataset, GetDepartments, GetRelationData, SaveUserInfo,
+		GetSubprojects, GetHabSubprojects, SubprojectFiles, DatasetFiles,  MigrationYears,
 		RunYears, ReportYears, SpawningYears, BroodYears, OutmigrationYears){
     var service = {
 
         //our "singleton cache" kinda thing
-        project: null,
         dataset: null,
         metadataProperties: null,
-		subproject:  null,
-		subprojects: null,
-		subprojectType: null,
 
-        setServiceSubprojectType: function(spType)
-		{
-			console.log("Inside setServiceSubprojectType, spType = " + spType);
-			service.subprojectType = spType;
-			console.log("service.subprojectType = " + service.subprojectType);
-		},
 
+        
         clearDataset: function()
         {
             service.dataset = null;
         },
 
-        clearProject: function()
-        {
-            service.project = null;
-        },
+        
+        
 
-		clearSubproject: function()
-		{
-			service.subproject = null;
-		},
-
-		clearSubprojects: function()
-		{
-			service.subprojects = null;
-		},
-
-		getSubproject: function(id)
-		{
-			console.log("Inside services.js, getSubproject...");
-			if (service.subproject && service.subproject.Id == id)
-				return service.subproject;
-		},
-
-        getProject: function(id) {
-			console.log("Inside services.js, getProject; id = " + id);
-			//console.log("service is next...");
-			//console.dir(service);
-            //if(service.project && service.project.Id == id)
-            if(service.project && service.project.Id == id && service.subprojectType !== "Habitat") // Not Habitat
-			{
-				console.log("service.project.Id = " + service.project.Id);
-                return service.project;
-			}
-
-            service.project = Project.query({id: id});
-
-            service.project.$promise.then(function(){
-                //console.log("after-project-load!");
-                //do some sorting after we load for instruments
-                if(service.project.Instruments && service.project.Instruments.length > 0)
-                    service.project.Instruments = service.project.Instruments.sort(orderByAlphaName);
-
-                //and also for locations
-                //service.project.Locations = service.project.Locations.sort(orderByAlpha);
-            });
-
-            return service.project;
-        },
-
-        getMyDatasets: function() {
-            return GetMyDatasetsAction.query();
-        },
-
-        getMyProjects: function() {
-            return GetMyProjectsAction.query();
-        },
 
         getDataset: function(datasetId) {
             if(service.dataset && service.dataset.Id == datasetId)
@@ -983,60 +360,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
             return ActivitiesForView.query({id: id});
         },
 
-        getProjects: function() {
-            return Projects.query();
-        },
 		
-		getSubprojects: function()
-		{
-			return GetSubprojects.query();
-		},
-
-		getHabSubprojects: function()
-		//getHabSubprojects: function(id)
-		{
-			console.log("Inside services, getHabSubprojects");
-			//console.log("id = " + id);
-			return GetHabSubprojects.query();
-			//return GetHabSubprojects.query({id: id});
-		},
-
-		getMigrationYears: function(datasetId)
-		{
-			console.log("Inside services, getMigrationYears");
-			return MigrationYears.query({id: datasetId});
-		},
-
-		getRunYears: function(datasetId)
-		{
-			console.log("Inside services, getRunYears");
-			return RunYears.query({id: datasetId});
-		},
-
-		getReportYears: function(datasetId)
-		{
-			console.log("Inside services, getReportYears");
-			return ReportYears.query({id: datasetId});
-		},
-
-		getSpawningYears: function(datasetId)
-		{
-			console.log("Inside services, getSpawningYears");
-			return SpawningYears.query({id: datasetId});
-		},
-
-		getBroodYears: function(datasetId)
-		{
-			console.log("Inside services, getBroodYears");
-			return BroodYears.query({id: datasetId});
-		},
-
-		getOutmigrationYears: function(datasetId)
-		{
-			console.log("Inside services, getOutmigrationYears");
-			return OutmigrationYears.query({id: datasetId});
-		},
-
         getUsers: function() {
             return Users.query();
         },
@@ -1045,41 +369,6 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
             return GetDepartments.query();
         },
 
-        getProjectDatasets: function(projectId){
-            this.getProject(projectId); //set our local project to the one selected
-            return ProjectDatasets.query({id: projectId});
-        },
-
-        /*getProjectSubprojects: function(projectId){
-			console.log("Inside getProjectSubprojects...");
-            //this.getProject(projectId); //set our local project to the one selected
-            return ProjectSubprojects.query({id: projectId});
-        },*/
-
-        //TODO: why is this .save()? -- to get a POST instead of a GET?
-        getProjectSubprojects: function(projectId){
-			console.log("Inside getProjectSubprojects, projectId = " + projectId);
-            //this.getProject(projectId); //set our local project to the one selected
-            return ProjectSubprojects.save({ProjectId: projectId});
-        },
-
-        getProjectFunders: function(projectId){
-			console.log("Inside getProjectFunders, projectId = " + projectId);
-            this.getProject(projectId); //set our local project to the one selected
-            return ProjectFunders.query({id: projectId});
-        },
-
-        getProjectCollaborators: function(projectId){
-			console.log("Inside getProjectCollaborators...");
-            this.getProject(projectId); //set our local project to the one selected
-            return ProjectCollaborators.query({id: projectId});
-        },
-
-        getProjectFiles: function(projectId){
-			console.log("Inside getProjectFiles...");
-			console.log("projectId = " + projectId);
-            return ProjectFiles.query({id: projectId});
-        },
 
         getDatasetFiles: function(datasetId){
 			console.log("Inside getDatasetFiles...");
@@ -1088,12 +377,6 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
             return DatasetFiles.query({id: datasetId});
         },
 
-        getSubprojectFiles: function(projectId){
-			console.log("Inside getSubprojectFiles...");
-			console.log("projectId = " + projectId);
-            this.getProject(projectId); //set our local project to the one selected
-            return SubprojectFiles.query({id: projectId});
-        },
 
         getMetadataProperty: function(propertyId){
 
@@ -1154,11 +437,7 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 
         },
 
-        saveProject: function(project)
-        {
-            return SaveProject.save({Project: project});
-        },
-
+        
         //this should give you the possible QA Statuses for this dataset's rows
         getPossibleRowQAStatuses: function(id){
             //for now we fake it:
@@ -1229,54 +508,9 @@ mod.service('DataService', ['$q','$resource', 'Projects', 'Users','Project','Pro
 
         },
 
-        saveEditors: function(userId, projectId, editors, saveResults)
-        {
-            saveResults.saving = true;
-            var payload = {
-                ProjectId: projectId,
-                Editors: editors,
-            };
 
-            SetProjectEditors.save(payload, function(data){
-                saveResults.saving = false;
-                saveResults.success = true;
-            }, function(data){
-                saveResults.saving = false;
-                saveResults.failure = true;
-            });
 
-        },
-
-        saveUserPreference: function(name, value, results)
-        {
-            var payload = {UserPreference: {Name: name, Value: value}};
-
-            SaveUserPreferenceAction.save(payload, function(data){
-                results.done = true;
-                results.success = true;
-            }, function(data){
-                results.done = true;
-                results.failure = true;
-            });
-
-        },
-
-        saveUserInfo: function(user, scope)
-        {
-			console.log("Inside services, Dataservice.saveUserInfo...");
-            var payload = {User: user};
-
-            SaveUserInfo.save(payload, function(data){
-                //scope.savePreferencesResults.done = true;
-                scope.savePreferencesResults.success = true;
-				console.log("scope.savePreferencesResults.success = " + scope.savePreferencesResults.success);
-            }, function(data){
-                //scope.savePreferencesResults.done = true;
-                scope.savePreferencesResults.failure = true;
-				console.log("scope.savePreferencesResults.failure = " + scope.savePreferencesResults.failure);
-            });
-
-        },
+        
 
         saveActivities: function(userId, datasetId, activities)
         {

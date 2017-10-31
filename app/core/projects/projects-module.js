@@ -16,7 +16,8 @@ require([
     'app/core/projects/components/project-list/project-list',
     'app/core/projects/components/project-list/modal-add-accuracy-check',
 
-    
+    //load services
+    'app/core/projects/projects-services',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!
