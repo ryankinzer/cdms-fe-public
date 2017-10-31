@@ -59,7 +59,7 @@ mod.factory('BroodYears',['$resource', function($resource){
 }]);
 
 mod.factory('OutmigrationYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/getoutmigrationyears', {}, {
+        return $resource(serviceUrl+'/api/v1/list/getoutmigrationyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
