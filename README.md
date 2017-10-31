@@ -1,5 +1,5 @@
-cdms-dev
-========
+## cdms ##
+---
 
 Centralized Data Management System (Project Tracker) JS App
 
@@ -11,144 +11,144 @@ THE CDMS AND COVERED CODE IS PROVIDED UNDER THIS LICENSE ON AN "AS IS" BASIS, WI
 
 
 ## tree of folders ##
-========
+---
 Here is a list of the folders (and some files) in this application.
 
-|   .gitignore													(tells git files to ignore)
-|   bower.json													(javascript dependency file)
-|   index.html													(main entry point to the app)
-|   LICENSE														(license you use this app with)
-|   login.html													(login page)
-|   README.md													(explanation of app/this file!)
-|   Web.config													(IIS webapp configuration)
-|  
-+--app															(main cdms app directory)
-|   |   config.js												(config of app)
-|   |   init.js													(bootstraps the angular app)
-|   |   main.js													(config routes and modules)
-|   |   setup.js												(loads dojo for esri-map)
-|   |  
-|   +---core													(core cdms app)
-|   |   +---admin												(administration module)
-|   |   |   |   
-|   |   |   \---components										(components of the admin app)
-|   |   |       \---admin-page									(the admin-page component)
-|   |   |           \---templates
-|   |   |                   
-|   |   +---common												(code shared by modules)
-|   |   |   +---components											
-|   |   |   |   +---chart										(chart services component)
-|   |   |   |   |   \---templates
-|   |   |   |   |           
-|   |   |   |   +---file										(file-related modals)
-|   |   |   |   |   \---templates
-|   |   |   |   |           
-|   |   |   |   \---modals										(shared modals)
-|   |   |   |       \---templates
-|   |   |   |               
-|   |   |   +---directives										(shared directives)
-|   |   |   |       
-|   |   |   \---templates										(shared templates)
-|   |   |       \---grid-fields									(field templates for the grid)
-|   |   |              
-|   |   +---datasets											(datasets component)
-|   |   |   |   datasets-module.js								(loads module components)
-|   |   |   |   
-|   |   |   +---components
-|   |   |   |   +---dataset-activities-list						(activities list page)
-|   |   |   |   |   \---templates
-|   |   |   |   |           
-|   |   |   |   +---dataset-detail								(when you click 'metadata')
-|   |   |   |   |   \---template
-|   |   |   |   |       \---metadata-fields						(detail field templates)
-|   |   |   |   |               
-|   |   |   |   +---dataset-editor								(edit dataset metadata details)
-|   |   |   |   |   \---templates
-|   |   |   |   |           
-|   |   |   |   +---dataset-entry-form							(data entry via form + sheet)
-|   |   |   |   |   \---templates
-|   |   |   |   |           
-|   |   |   |   +---dataset-entry-sheet							(data entry via only sheet)
-|   |   |   |   |   \---templates
-|   |   |   |   |           
-|   |   |   |   +---dataset-import								(data import page)
-|   |   |   |   |   \---templates
-|   |   |   |   |           
-|   |   |   |   +---dataset-query								(data query page)
-|   |   |   |   |   \---templates
-|   |   |   |   |           
-|   |   |   |   +---dataset-relationgrid						(unused feature)
-|   |   |   |   |   \---templates
-|   |   |   |   |           
-|   |   |   |   \---dataset-view								(dataset activity view page)
-|   |   |   |       \---templates
-|   |   |   |               
-|   |   |   \---templates										(templates shared by components)
-|   |   |           
-|   |   +---login												(login mini-application)
-|   |   |   \---templates
-|   |   |           
-|   |   +---preferences											(preferences module)
-|   |   |   \---components
-|   |   |       +---dataset-preferences
-|   |   |       |   \---templates
-|   |   |       |           
-|   |   |       +---my-preferences
-|   |   |       |   \---templates
-|   |   |       |           
-|   |   |       \---project-preferences
-|   |   |           \---templates
-|   |   |                   
-|   |   \---projects											(projects module)
-|   |       \---components
-|   |           +---project-detail								(projects detail page - tabs)
-|   |           |   \---templates
-|   |           |           
-|   |           \---project-list								(project list page - home page)
-|   |               \---templates
-|   |                       
-|   \---private													(modules used only by ctuir)
-|       +---appraisals
-|       |   \---components
-|       |       +---appraisal-activities
-|       |       |   \---templates
-|       |       |           
-|       |       \---appraisal-import-script
-|       |               
-|       +---crpp
-|       |   \---components
-|       |       \---crpp-contracts
-|       |           \---templates
-|       |                   
-|       \---habitat
-|           \---components
-|               \---habitat-sites
-|                   \---templates
-|                           
-+---assets														(assets for the application)
-|   +---css														(all css goes here)
-|   |       app.css												(our app's css rules)
-|   |       bootstrap-cdms.css									(bootstrap css)
-|   |       dialogs.css											(fix for bootstrap3 + angular ui)
-|   |       dialogs.min.css										(bootstrap angular dialogs)
-|   |       ng-grid.min.css										(ng-grid css)
-|   |       normalize.css										(css tool)
-|   |       
-|   +---fonts
-|   +---images
-|   |       
-|   \---js
-|           angular-charts.ken.js								(ken's customized angular-charts)
-|           ng-grid-2.0.7.ken.js								(ken's customized ng-grid)
-|           ng-grid-csv-export.js								(for exporting csv files)
-|           
-\---bower_components											(cached js libraries we depend on)
+	|   .gitignore													(tells git files to ignore)
+	|   bower.json													(javascript dependency file)
+	|   index.html													(main entry point to the app)
+	|   LICENSE														(license you use this app with)
+	|   login.html													(login page)
+	|   README.md													(explanation of app/this file!)
+	|   Web.config													(IIS webapp configuration)
+	|  
+	+--app															(main cdms app directory)
+	|   |   config.js												(config of app)
+	|   |   init.js													(bootstraps the angular app)
+	|   |   main.js													(config routes and modules)
+	|   |   setup.js												(loads dojo for esri-map)
+	|   |  
+	|   +---core													(core cdms app)
+	|   |   +---admin												(administration module)
+	|   |   |   |   
+	|   |   |   \---components										(components of the admin app)
+	|   |   |       \---admin-page									(the admin-page component)
+	|   |   |           \---templates
+	|   |   |                   
+	|   |   +---common												(code shared by modules)
+	|   |   |   +---components											
+	|   |   |   |   +---chart										(chart services component)
+	|   |   |   |   |   \---templates
+	|   |   |   |   |           
+	|   |   |   |   +---file										(file-related modals)
+	|   |   |   |   |   \---templates
+	|   |   |   |   |           
+	|   |   |   |   \---modals										(shared modals)
+	|   |   |   |       \---templates
+	|   |   |   |               
+	|   |   |   +---directives										(shared directives)
+	|   |   |   |       
+	|   |   |   \---templates										(shared templates)
+	|   |   |       \---grid-fields									(field templates for the grid)
+	|   |   |              
+	|   |   +---datasets											(datasets component)
+	|   |   |   |   datasets-module.js								(loads module components)
+	|   |   |   |   
+	|   |   |   +---components
+	|   |   |   |   +---dataset-activities-list						(activities list page)
+	|   |   |   |   |   \---templates
+	|   |   |   |   |           
+	|   |   |   |   +---dataset-detail								(when you click 'metadata')
+	|   |   |   |   |   \---template
+	|   |   |   |   |       \---metadata-fields						(detail field templates)
+	|   |   |   |   |               
+	|   |   |   |   +---dataset-editor								(edit dataset metadata details)
+	|   |   |   |   |   \---templates
+	|   |   |   |   |           
+	|   |   |   |   +---dataset-entry-form							(data entry via form + sheet)
+	|   |   |   |   |   \---templates
+	|   |   |   |   |           
+	|   |   |   |   +---dataset-entry-sheet							(data entry via only sheet)
+	|   |   |   |   |   \---templates
+	|   |   |   |   |           
+	|   |   |   |   +---dataset-import								(data import page)
+	|   |   |   |   |   \---templates
+	|   |   |   |   |           
+	|   |   |   |   +---dataset-query								(data query page)
+	|   |   |   |   |   \---templates
+	|   |   |   |   |           
+	|   |   |   |   +---dataset-relationgrid						(unused feature)
+	|   |   |   |   |   \---templates
+	|   |   |   |   |           
+	|   |   |   |   \---dataset-view								(dataset activity view page)
+	|   |   |   |       \---templates
+	|   |   |   |               
+	|   |   |   \---templates										(templates shared by components)
+	|   |   |           
+	|   |   +---login												(login mini-application)
+	|   |   |   \---templates
+	|   |   |           
+	|   |   +---preferences											(preferences module)
+	|   |   |   \---components
+	|   |   |       +---dataset-preferences
+	|   |   |       |   \---templates
+	|   |   |       |           
+	|   |   |       +---my-preferences
+	|   |   |       |   \---templates
+	|   |   |       |           
+	|   |   |       \---project-preferences
+	|   |   |           \---templates
+	|   |   |                   
+	|   |   \---projects											(projects module)
+	|   |       \---components
+	|   |           +---project-detail								(projects detail page - tabs)
+	|   |           |   \---templates
+	|   |           |           
+	|   |           \---project-list								(project list page - home page)
+	|   |               \---templates
+	|   |                       
+	|   \---private													(modules used only by ctuir)
+	|       +---appraisals
+	|       |   \---components
+	|       |       +---appraisal-activities
+	|       |       |   \---templates
+	|       |       |           
+	|       |       \---appraisal-import-script
+	|       |               
+	|       +---crpp
+	|       |   \---components
+	|       |       \---crpp-contracts
+	|       |           \---templates
+	|       |                   
+	|       \---habitat
+	|           \---components
+	|               \---habitat-sites
+	|                   \---templates
+	|                           
+	+---assets														(assets for the application)
+	|   +---css														(all css goes here)
+	|   |       app.css												(our app's css rules)
+	|   |       bootstrap-cdms.css									(bootstrap css)
+	|   |       dialogs.css											(fix for bootstrap3 + angular ui)
+	|   |       dialogs.min.css										(bootstrap angular dialogs)
+	|   |       ng-grid.min.css										(ng-grid css)
+	|   |       normalize.css										(css tool)
+	|   |       
+	|   +---fonts
+	|   +---images
+	|   |       
+	|   \---js
+	|           angular-charts.ken.js								(ken's customized angular-charts)
+	|           ng-grid-2.0.7.ken.js								(ken's customized ng-grid)
+	|           ng-grid-csv-export.js								(for exporting csv files)
+	|           
+	\---bower_components											(cached js libraries we depend on)
 
             
 
 
-========
-README
+
+## README ##
 
 We'll collect some documentation in here to help folks who might want to use CDMS code in the future.
 
