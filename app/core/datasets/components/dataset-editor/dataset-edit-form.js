@@ -6,9 +6,10 @@
 
 //Fieldsheet / form version of the dataentry page
 //was "DataEditCtrl" from DataEditControllers
-var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService', '$modal', '$location', '$rootScope', 'ActivityParser', 'DataSheet',
-    'FileUploadService', 'DatastoreService', '$upload',
-    function ($scope, $q, $sce, $routeParams, DatasetService, $modal, $location, $rootScope, ActivityParser, DataSheet, UploadService, DatastoreService, $upload) {
+var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$modal', '$location', '$rootScope',
+    'ActivityParser', 'DataSheet', 'FileUploadService', '$upload',
+    function ($scope, $q, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
+        ActivityParser, DataSheet, UploadService, $upload) {
 
         initEdit(); // stop backspace from ditching in the wrong place.
 

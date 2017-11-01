@@ -991,7 +991,7 @@ if (!Array.prototype.contains) {
 }
 
 //might be a list of metadata values from project.Metadata or a list of actual properties.
-function addMetadataProperties(metadata_list, all_metadata, scope, DatasetService) {
+function addMetadataProperties(metadata_list, all_metadata, scope, CommonService) {
     angular.forEach(metadata_list, function (i_property, key) {
 
         var property = i_property;

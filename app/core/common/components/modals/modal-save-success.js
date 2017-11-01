@@ -1,5 +1,5 @@
-﻿var modal_save_success = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
-  function($scope,  $modalInstance, DatasetService, DatastoreService){
+﻿var modal_save_success = ['$scope','$modalInstance',
+  function($scope,  $modalInstance){
 
     $scope.header_message = "Save Successful!";
 

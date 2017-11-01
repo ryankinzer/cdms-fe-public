@@ -1,6 +1,6 @@
 ﻿
-var modal_verify_action = ['$scope', '$rootScope','$modalInstance', 'DatasetService','DatastoreService', 'ServiceUtilities',
-  function($scope, $rootScope, $modalInstance, DatasetService, DatastoreService, ServiceUtilities){
+var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'SubprojectService',
+    function ($scope, $rootScope, $modalInstance, SubprojectService, ){
 	console.log("Inside ModalVerifyActionCtrl...");
 	//console.log("$scope is next...");
 	//console.dir($scope);

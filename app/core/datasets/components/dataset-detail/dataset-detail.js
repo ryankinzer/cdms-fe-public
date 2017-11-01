@@ -4,8 +4,8 @@
 *    e.g.:  http://localhost/cdms/index.html#/dataset-details/1004
 */
 
-var dataset_detail = ['$scope', '$routeParams', 'DatasetService', '$location', '$filter',
-    function(scope, routeParams, DatasetService, $location, $filter){
+var dataset_detail = ['$scope', '$routeParams', 'DatasetService', 'ProjectService', 'CommonService', '$location', '$filter',
+    function (scope, routeParams, DatasetService,  ProjectService, CommonService, $location, $filter){
         scope.dataset = DatasetService.getDataset(routeParams.Id);
 
         //common fields we show for all datasets

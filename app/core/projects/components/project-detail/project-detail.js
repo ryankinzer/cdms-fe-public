@@ -1,7 +1,7 @@
 ﻿
 
-var project_detail = ['$scope', '$routeParams', 'DatasetService','DatastoreService', '$rootScope','$modal','$sce','$window','$http','ServiceUtilities','ConvertStatus','$location','$anchorScroll',
-	function(scope, routeParams, DatasetService, DatastoreService, $rootScope, $modal,$sce, $window, $http, ServiceUtilities, ConvertStatus, $location, $anchorScroll){
+var project_detail = ['$scope', '$routeParams', 'DatasetService','CommonService', '$rootScope','$modal','$sce','$window','$http','ServiceUtilities','ConvertStatus','$location','$anchorScroll',
+    function (scope, routeParams, DatasetService, CommonService, $rootScope, $modal,$sce, $window, $http, ServiceUtilities, ConvertStatus, $location, $anchorScroll){
 		console.log("Inside controllers.js, projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
 		
@@ -589,7 +589,7 @@ var project_detail = ['$scope', '$routeParams', 'DatasetService','DatastoreServi
                 }
 				
                 //add in the metadata to our metadataList that came with this dataset
-                addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, DatasetService);
+                addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService);
 
                 scope.mapHtml = $sce.trustAsHtml(scope.project.MetadataValue[25]);
                 scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
@@ -598,7 +598,7 @@ var project_detail = ['$scope', '$routeParams', 'DatasetService','DatastoreServi
                 //get habitat (and possibly other?) metadata values for this project.  they don't come with project metadata as they are their own category.
                 var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID);
                 habitatProjectMetadataPromise.$promise.then(function(list){
-                    addMetadataProperties(list, scope.metadataList, scope, DatasetService);
+                    addMetadataProperties(list, scope.metadataList, scope, CommonService);
                 });
 
                 scope.project.Instruments = scope.project.Instruments.sort(orderByAlphaName);
@@ -876,11 +876,11 @@ var project_detail = ['$scope', '$routeParams', 'DatasetService','DatastoreServi
 
 
         scope.metadataPropertiesPromise.promise.then(function(list){
-            addMetadataProperties(list, scope.metadataList, scope, DatasetService);
+            addMetadataProperties(list, scope.metadataList, scope, CommonService);
         });
 
         scope.habitatPropertiesPromise.promise.then(function(list){
-            addMetadataProperties(list, scope.metadataList, scope, DatasetService);
+            addMetadataProperties(list, scope.metadataList, scope, CommonService);
         });
 
 

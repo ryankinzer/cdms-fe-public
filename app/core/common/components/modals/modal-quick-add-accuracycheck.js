@@ -1,5 +1,5 @@
-﻿var modal_quick_add_accuracycheck = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
-  function($scope,  $modalInstance, DatasetService, DatastoreService){
+﻿var modal_quick_add_accuracycheck = ['$scope', '$modalInstance', 'ProjectService',
+    function ($scope, $modalInstance, ProjectService){
 
     $scope.ac_row = {};
 

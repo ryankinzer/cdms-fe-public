@@ -1,6 +1,10 @@
 ﻿
-var dataset_activities_list = ['$scope', '$routeParams', 'DatasetService', 'DatastoreService', '$modal', '$location', '$window', '$rootScope',
-    function ($scope, $routeParams, DatasetService, DatastoreService, $modal, $location, $window, $rootScope) {
+var dataset_activities_list = ['$scope', '$routeParams',
+    'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'PreferencesService',
+    '$modal', '$location', '$window', '$rootScope',
+    function ($scope, $routeParams, 
+        DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
+        $modal, $location, $window, $rootScope) {
         console.log("Inside datasetActivitiesController...");
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 

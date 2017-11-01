@@ -12,11 +12,11 @@ var project_list = ['$scope', 'DatasetService', '$modal',
     scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID);
 
     scope.metadataPropertiesPromise.promise.then(function(list){
-        addMetadataProperties(list, scope.metadataList, scope, DatasetService);
+        addMetadataProperties(list, scope.metadataList, scope, CommonService);
     });
 
     scope.habitatPropertiesPromise.promise.then(function(list){
-        addMetadataProperties(list, scope.metadataList, scope, DatasetService);
+        addMetadataProperties(list, scope.metadataList, scope, CommonService);
     });
 
         var linkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
