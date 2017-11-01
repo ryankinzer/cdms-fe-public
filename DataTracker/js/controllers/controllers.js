@@ -213,7 +213,7 @@ mod_ds.controller('ModalNewFileCtrl', ['$scope','$modalInstance', 'DataService',
 					{
 						console.log("file.success does not exist yet...");
 						$scope.upload = $upload.upload({
-							url: serviceUrl + '/data/UploadProjectFile',
+                            url: serviceUrl + '/api/v1/file/uploadprojectfile',
 							method: "POST",
 							// headers: {'headerKey': 'headerValue'},
 							// withCredential: true,
@@ -1353,7 +1353,7 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 
         scope.syncToStreamnet = function(){
             $.ajax({
-                url: serviceUrl + '/action/SyncToStreamnet',
+                url: serviceUrl + '/api/v1/streamnet/synctostreamnet',
                 type : 'GET',
                 // data : formData,
                 // processData: false,  // tell jQuery not to process the data
@@ -1546,14 +1546,25 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 		};
 
         scope.addInstrument = function(){
+			console.log("Inside controllers.addInstrument.");
+			console.log("scope is next...");
+			console.dir(scope);
+			console.log("scope.selectedInstrument is next...");
+			console.dir(scope.selectedInstrument);
+			
 			/* Verify that all three situations are true:
 			*  scope.selectedInstrument exists				This is important because IE will not actually select something, when you select it the first time.
 			*  scope.selectedInstrument is not null			Important for the same reason just mentioned.
 			*  The selected instrument is not already associated to the project.
 			*/
+			console.log("That length = " + getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length);
             //if(!scope.selectedInstrument || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
-            if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)	
+            //if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
+            if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length < 1)
+			{
+				//console.log("Returning...");
                 return;
+			}
 
             var Instruments = getMatchingByField(scope.allInstruments, scope.selectedInstrument, 'Id');
 
@@ -1571,7 +1582,8 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			console.log("scope.selectedFisherman is next...");
 			console.dir(scope.selectedFisherman);
 			
-            if(!scope.selectedFisherman || scope.selectedFisherman === null || getMatchingByField(scope.project.Fishermen, scope.selectedFisherman, 'Id').length > 0)
+            //if(!scope.selectedFisherman || scope.selectedFisherman === null || getMatchingByField(scope.project.Fishermen, scope.selectedFisherman, 'Id').length > 0)
+            if(!scope.selectedFisherman || scope.selectedFisherman === null || getMatchingByField(scope.project.Fishermen, scope.selectedFisherman, 'Id').length < 1)
                 return;
 	
             var theFishermen = getMatchingByField(scope.fishermenList, scope.selectedFisherman, 'Id');
@@ -1590,7 +1602,8 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			console.log("scope.selectedSubproject is next...");
 			console.dir(scope.selectedSubproject);
 			
-            if(!scope.selectedSubproject || scope.selectedSubproject === null || getMatchingByField(scope.project.CrppSubProjects, scope.selectedSubproject, 'Id').length > 0)
+            //if(!scope.selectedSubproject || scope.selectedSubproject === null || getMatchingByField(scope.project.CrppSubProjects, scope.selectedSubproject, 'Id').length > 0)
+            if(!scope.selectedSubproject || scope.selectedSubproject === null || getMatchingByField(scope.project.CrppSubProjects, scope.selectedSubproject, 'Id').length < 1)
                 return;
 	
             var theSubproject = getMatchingByField(scope.correspondenceProjectList, scope.selectedSubproject, 'Id');
