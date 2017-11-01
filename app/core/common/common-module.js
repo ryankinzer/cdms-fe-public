@@ -1,12 +1,21 @@
-﻿// defines cross-module components that we can use in anywhere (like modals) - controllers and services
+﻿// defines cross-module functions, components and services that we can use in anywhere
 
 var common_module = angular.module('CommonModule', ['ui.bootstrap', 'ngResource']);
 
 //I wish you could just specify a directory and it would find the files and load them, but
-// require doesn't work that way so we have to reference each one by hand.
+// requirejs doesn't work that way so we have to reference each one by hand. -kb
 require([
-    //just for now: TODO: we want to break this services file up
-    'app/core/common/common-services',
+
+    //loads a variety of common functions
+    'app/core/common/common-functions',
+
+    //loads services used by other modules
+    'app/core/common/services/common-service',
+    'app/core/common/services/logger',
+    'app/core/common/services/service-utilities',
+    'app/core/common/services/wish',
+    'app/core/common/services/event-timer',
+
 
     //loads the common controllers
     'app/core/common/components/modals/modal-quick-add-accuracycheck',
@@ -67,11 +76,9 @@ require([
     common_module.controller('FileModalCtrl', modal_files); 
 
     
-    //load services
-
+    //services
     //there is a chartservice for each dataset.
     // NOTE: If you are creating a new dataset, you'll want to make a chartservice for it.
-    // TODO: it would be great to move this into a configuration or something of datasets...
     common_module.service('AdultWeir_ChartService', adultweir_chartservice);
     common_module.service('ArtificialProduction_ChartService', artificialproduction_chartservice);
     common_module.service('BSample_ChartService', bsample_chartservice);
@@ -84,6 +91,5 @@ require([
     //the master chartservice that exposes all of the other dataset-specific chart services
     common_module.service('ChartService', chart_services);
 
-    //define routes
 });
 

@@ -16,7 +16,7 @@ var admin_view = ['$scope', 'DatastoreService', '$modal', 'DataService',
 
                 angular.forEach($scope.datastores, function (datastore, key) {
                     //datastore.Projects = DatastoreService.getDatastoreProjects(datastore.Id);
-                    datastore.Datasets = DatastoreService.getDatasets(datastore.Id);
+                    datastore.Datasets = DatastoreService.getDatastoreDatasets(datastore.Id);
                 });
 
             }

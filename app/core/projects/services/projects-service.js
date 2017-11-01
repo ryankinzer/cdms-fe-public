@@ -47,10 +47,6 @@ projects_module.factory('SaveProject', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/project/saveproject');
 }]);
 
-projects_module.factory('SaveProjectLocation', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/location/saveprojectlocation');
-}]);
-
 projects_module.factory('GetAllInstruments', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/instrument/getinstruments');
 }]);
@@ -115,45 +111,75 @@ projects_module.factory('RemoveProjectFisherman', ['$resource', function ($resou
 /*
 * define the service that can be used by any module in our application to work with projects.
 */
-projects_module.service('ProjectService', ['$q', 'GetInstruments', 'SaveProjectLocation', 'GetAllInstruments',
-    'SaveProjectInstrument', 'SaveInstrument', 'SaveInstrumentAccuracyCheck', 'GetInstrumentTypes',
-    'RemoveProjectInstrument', 'SaveFisherman', 'GetFishermen', 'SaveProjectFisherman', 'GetProjectFishermen',
-    'RemoveProjectFisherman', 'UpdateFile', 'DeleteFile', 'GetDatastoreProjects',
-    'Project',
+projects_module.service('ProjectService', ['$q', 
+    'ProjectFunders',
+    'ProjectCollaborators',
     'Projects',
+    'Project',
+    'ProjectFiles',
     'ProjectDatasets',
     'SetProjectEditors',
     'SaveProject',
-    'ProjectFunders',
-    'ProjectCollaborators',
-    'ProjectFiles',
-
-    function ($q, GetInstruments, SaveProjectLocation, GetAllInstruments, SaveProjectInstrument, SaveInstrument, SaveInstrumentAccuracyCheck,
-        GetInstrumentTypes, RemoveProjectInstrument, SaveFisherman, GetFishermen, SaveProjectFisherman, GetProjectFishermen, 
-        RemoveProjectFisherman, UpdateFile, DeleteFile, GetDatastoreProjects, Project, Projects,
-    ProjectDatasets, SetProjectEditors, SaveProject, ProjectFunders, ProjectCollaborators, ProjectFiles) {
+    'GetAllInstruments',
+    'SaveProjectInstrument',
+    'SaveProjectFisherman',
+    'SaveInstrument',
+    'SaveInstrumentAccuracyCheck',
+    'SaveFisherman',
+    'UpdateFile',
+    'DeleteFile',
+    'GetDatastoreProjects',
+    'GetInstruments',
+    'GetInstrumentTypes',
+    'RemoveProjectInstrument',
+    'GetFishermen',
+    'GetProjectFishermen',
+    'RemoveProjectFisherman',
+    function ($q,
+        ProjectFunders,
+        ProjectCollaborators,
+        Projects,
+        Project,
+        ProjectFiles,
+        ProjectDatasets,
+        SetProjectEditors,
+        SaveProject,
+        GetAllInstruments,
+        SaveProjectInstrument,
+        SaveProjectFisherman,
+        SaveInstrument,
+        SaveInstrumentAccuracyCheck,
+        SaveFisherman,
+        UpdateFile,
+        DeleteFile,
+        GetDatastoreProjects,
+        GetInstruments,
+        GetInstrumentTypes,
+        RemoveProjectInstrument,
+        GetFishermen,
+        GetProjectFishermen,
+        RemoveProjectFisherman) {
 
         var service = {
             project: null,
 
-            //we'd like to move this subproject stuff all out soon
-            subproject: null,
-            subprojects: null,
-            subprojectType: null,
-
             clearProject: function () {
                 service.project = null;
             },
+
             getDatastoreProjects: function (id) {
                 return GetDatastoreProjects.query({ id: id });
             },
+
             getProjects: function () {
                 return Projects.query();
             },
+
             getProjectDatasets: function (projectId) {
                 this.getProject(projectId); //set our local project to the one selected
                 return ProjectDatasets.query({ id: projectId });
             },
+
             getProjectFunders: function (projectId) {
                 console.log("Inside getProjectFunders, projectId = " + projectId);
                 this.getProject(projectId); //set our local project to the one selected
@@ -258,10 +284,6 @@ projects_module.service('ProjectService', ['$q', 'GetInstruments', 'SaveProjectL
 
             },
 
-            saveNewProjectLocation: function (projectId, location) {
-                return SaveProjectLocation.save({ ProjectId: projectId, Location: location });
-            },
-
             getAllInstruments: function () {
                 return GetAllInstruments.query();
             },
@@ -314,14 +336,6 @@ projects_module.service('ProjectService', ['$q', 'GetInstruments', 'SaveProjectL
                 return DeleteFile.save({ ProjectId: projectId, File: file });
             },
 
-            //these are subproject functions we'd like to move out
-            setServiceSubprojectType: function (spType) {
-                console.log("Inside setServiceSubprojectType, spType = " + spType);
-                service.subprojectType = spType;
-                console.log("service.subprojectType = " + service.subprojectType);
-            },
-
-            
         };
 
         return service;

@@ -5,8 +5,11 @@ var datasets_module = angular.module('DatasetModule', ['ui.bootstrap','ngResourc
 
 //load the components for this module
 require([
+
+    //loads the dataset filters
     'app/core/datasets/datasets-filters',
 
+    //load all components for the dataset module
     'app/core/datasets/components/dataset-activities-list/dataset-activities-list',
     'app/core/datasets/components/dataset-detail/dataset-detail',
     'app/core/datasets/components/dataset-editor/dataset-edit-form',
@@ -21,7 +24,13 @@ require([
     'app/core/datasets/components/dataset-query/big-bucket-query',
     //'app/core/datasets/components/dataset-relationgrid/modal-relationgrid',
 
-    
+    //load the various dataset services
+    'app/core/datasets/services/dataset-service',
+    'app/core/datasets/services/activity-parser',
+    'app/core/datasets/services/convert-status',
+    'app/core/datasets/services/datasheet',
+    'app/core/datasets/services/file-upload',
+
 ], function () {
     //add the controllers and services to the module once the files are loaded!
 

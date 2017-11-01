@@ -1,64 +1,162 @@
-﻿//crpp factories and service
+﻿//subproject (crpp + habitat) factories and service
 
-
-
-
-crpp_module.factory('MigrationYears', ['$resource', function ($resource) {
+project_module.factory('MigrationYears', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/list/getmigrationyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
     });
 }]);
 
-mod.factory('RunYears', ['$resource', function ($resource) {
+project_module.factory('RunYears', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/list/getrunyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
     });
 }]);
 
-mod.factory('ReportYears', ['$resource', function ($resource) {
+project_module.factory('ReportYears', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/list/getreportyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
     });
 }]);
 
-mod.factory('SpawningYears', ['$resource', function ($resource) {
+project_module.factory('SpawningYears', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/getspawningyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
     });
 }]);
 
-mod.factory('BroodYears', ['$resource', function ($resource) {
+project_module.factory('BroodYears', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/list/getbroodyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
     });
 }]);
 
-mod.factory('OutmigrationYears', ['$resource', function ($resource) {
+project_module.factory('OutmigrationYears', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/getoutmigrationyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
     });
 }]);
 
-mod.factory('ProjectSubprojects', ['$resource', function ($resource) {
+project_module.factory('ProjectSubprojects', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/habsubproject/gethabsubprojects', {}, {
         save: { method: 'POST', isArray: true }
     });
 }]);
 
-mod.factory('SubprojectFiles', ['$resource', function ($resource) {
+project_module.factory('SubprojectFiles', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/crppsubproject/getcrppsubprojectfiles', {}, {
         query: { method: 'GET', params: { id: 'projectId' }, isArray: true }
     });
 }]);
 
+project_module.factory('SaveCorrespondenceEvent', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/savecorrespondenceevent');
+}]);
 
+project_module.factory('SaveHabitatItem', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/habsubproject/savehabitatitem');
+}]);
+
+project_module.factory('DeleteCorresEventFile', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/deletecorreseventfile');
+}]);
+
+project_module.factory('DeleteHabitatItemFile', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/habsubproject/deletehabitatitemfile');
+}]);
+
+project_module.factory('DeleteHabSubprojectFile', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/habsubproject/deletehabsubprojectfile');
+}]);
+
+project_module.factory('SaveSubproject', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/savecrppsubproject');
+}]);
+
+project_module.factory('SaveHabSubproject', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/habsubproject/savehabsubproject');
+}]);
+
+project_module.factory('GetSubprojects', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/getcrppsubprojects');
+}]);
+
+//NB: does this need an ID parameter? -- actually it isn't used anywhere...
+project_module.factory('GetHabSubproject', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/habsubproject/gethabsubproject');
+}]);
+
+project_module.factory('GetHabSubprojects', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/habsubproject/gethabsubprojects');
+}]);
+
+project_module.factory('RemoveSubproject', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/removecrppsubproject');
+}]);
+
+project_module.factory('RemoveHabSubproject', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/habsubproject/removehabsubproject');
+}]);
+
+project_module.factory('RemoveCorrespondenceEvent', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/removecorrespondenceevent');
+}]);
+
+project_module.factory('RemoveHabitatItem', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/habsubproject/removehabitatitem');
+}]);
 
 /*
-* define the service that can be used by any module in our application to work with projects.
+* subprojects service (includes Project factory which is defined in projects-service.js)
 */
-crpp_module.service('CRPPService', ['$q', 'GetInstruments', 
+projects_module.service('SubProjectService', ['$q', 
+    'MigrationYears',
+    'RunYears',
+    'ReportYears',
+    'SpawningYears',
+    'BroodYears',
+    'OutmigrationYears',
+    'ProjectSubprojects',
+    'SubprojectFiles',
+    'SaveCorrespondenceEvent',
+    'SaveHabitatItem',
+    'DeleteCorresEventFile',
+    'DeleteHabitatItemFile',
+    'DeleteHabSubprojectFile',
+    'SaveSubproject',
+    'SaveHabSubproject',
+    'GetSubprojects',
+    'GetHabSubproject',
+    'GetHabSubprojects',
+    'RemoveSubproject',
+    'RemoveHabSubproject',
+    'RemoveCorrespondenceEvent',
+    'RemoveHabitatItem',
+    'Project',                      //from projects-service factory definition
 
-    function ($q, GetInstruments, ) {
+    function ($q,
+        MigrationYears,
+        RunYears,
+        ReportYears,
+        SpawningYears,
+        BroodYears,
+        OutmigrationYears,
+        ProjectSubprojects,
+        SubprojectFiles,
+        SaveCorrespondenceEvent,
+        SaveHabitatItem,
+        DeleteCorresEventFile,
+        DeleteHabitatItemFile,
+        DeleteHabSubprojectFile,
+        SaveSubproject,
+        SaveHabSubproject,
+        GetSubprojects,
+        GetHabSubproject,
+        GetHabSubprojects,
+        RemoveSubproject,
+        RemoveHabSubproject,
+        RemoveCorrespondenceEvent,
+        RemoveHabitatItem,
+        Project) {
 
         var service = {
             project: null,
@@ -86,8 +184,7 @@ crpp_module.service('CRPPService', ['$q', 'GetInstruments',
                     return service.subproject;
             },
 
-            //KEN: renamed from getProject to getSubProject -- need to change all calls...
-            getSubProject: function (id) {
+            getProject: function (id) {
                 console.log("Inside services.js, getProject; id = " + id);
                 //console.log("service is next...");
                 //console.dir(service);
@@ -268,7 +365,7 @@ crpp_module.service('CRPPService', ['$q', 'GetInstruments',
             },
 
 
-            //TODO: why is this .save()? -- to get a POST instead of a GET?
+            //NB: why is this .save()? -- to get a POST instead of a GET?
             getProjectSubprojects: function (projectId) {
                 console.log("Inside getProjectSubprojects, projectId = " + projectId);
                 //this.getProject(projectId); //set our local project to the one selected

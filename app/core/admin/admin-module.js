@@ -9,8 +9,8 @@ require([
     'app/core/admin/components/admin-page/admin-edit-dataset',
     'app/core/admin/components/admin-page/admin-edit-master',
 
-
-
+    //service
+    'app/core/admin/admin-service',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!

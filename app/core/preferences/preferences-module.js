@@ -2,11 +2,14 @@
 
 var preferences_module = angular.module('PreferencesModule', ['ui.bootstrap', 'ngResource']);
 
-//load the components for this module
 require([
+    //load components
     'app/core/preferences/components/dataset-preferences/dataset-preferences',
     'app/core/preferences/components/my-preferences/my-preferences',
     'app/core/preferences/components/project-preferences/project-preferences',
+
+    //load preference service
+    'app/core/preferences/preference-service',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!
@@ -16,9 +19,7 @@ require([
     preferences_module.controller('MyDatasetsCtrl', dataset_preferences);
     preferences_module.controller('MyProjectsCtrl', project_preferences);
 
-    //load services
-
-    //define routes
+    
 });
 
 

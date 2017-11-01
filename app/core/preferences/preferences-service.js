@@ -1,30 +1,42 @@
 ﻿
 // preferences factories and service
 
-mod.factory('SaveUserInfo', ['$resource', function ($resource) {
+preferences_module.factory('SaveUserInfo', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/user/saveuserinfo');
 }]);
 
-
-mod.factory('GetMyProjectsAction', ['$resource', function ($resource) {
+preferences_module.factory('GetMyProjectsAction', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/user/getmyprojects', {}, {
         query: { method: 'GET', params: {}, isArray: true }
     });
 }]);
 
-mod.factory('SaveUserPreferenceAction', ['$resource', function ($resource) {
+preferences_module.factory('SaveUserPreferenceAction', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/user/saveuserpreference', {}, {
         save: { method: 'POST', isArray: false }
     });
 }]);
 
+preferences_module.factory('GetMyDatasetsAction', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/getmydatasets', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
 
 /*
 * define the service that can be used by any module in our application to work with projects.
 */
-projects_module.service('PreferencesService', ['$q', 'GetInstruments', 
+preferences_module.service('PreferencesService', ['$q',
+    'SaveUserInfo',
+    'GetMyProjectsAction',
+    'SaveUserPreferenceAction',
+    'GetMyDatasetsAction', 
 
-    function ($q, GetInstruments, ) {
+    function ($q,
+        SaveUserInfo,
+        GetMyProjectsAction,
+        SaveUserPreferenceAction,
+        GetMyDatasetsAction) {
 
         var service = {
 
