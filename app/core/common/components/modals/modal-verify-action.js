@@ -1,6 +1,6 @@
 ﻿
-var modal_verify_action = ['$scope', '$rootScope','$modalInstance', 'DataService','DatastoreService', 'ServiceUtilities',
-  function($scope, $rootScope, $modalInstance, DataService, DatastoreService, ServiceUtilities){
+var modal_verify_action = ['$scope', '$rootScope','$modalInstance', 'DatasetService','DatastoreService', 'ServiceUtilities',
+  function($scope, $rootScope, $modalInstance, DatasetService, DatastoreService, ServiceUtilities){
 	console.log("Inside ModalVerifyActionCtrl...");
 	//console.log("$scope is next...");
 	//console.dir($scope);
@@ -76,13 +76,13 @@ var modal_verify_action = ['$scope', '$rootScope','$modalInstance', 'DataService
 		if (($scope.verifyAction === "Delete") && ($scope.verifyingCaller === "CrppSubproject"))
 		{
 			console.log("$scope.project.Id = " + $scope.project.Id + ", $scope.viewSubproject.Id = " + $scope.viewSubproject.Id);
-			promise = DatastoreService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
+			promise = SubprojectService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
 		}
 		else if (($scope.verifyAction === "Delete") && ($scope.verifyingCaller === "CorrespondenceEvent"))
 		{
 			console.log("$scope.project.Id = " + $scope.project.Id + ", $scope.viewSubproject.Id = " + $scope.viewSubproject.Id + ", $scope.ce_RowId = " + $scope.ce_rowId);
-			//var promise = DatastoreService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
-			promise = DatastoreService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
+			//var promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
+			promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
 		}
 		else if (($scope.verifyAction === "Delete") && ($scope.verifyingCaller === "HabSubproject"))
 		{
@@ -128,9 +128,9 @@ var modal_verify_action = ['$scope', '$rootScope','$modalInstance', 'DataService
 			});
 			*/
 			
-			//promise = DatastoreService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id);
-			//promise = DatastoreService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id, theSdeObjectId);
-			promise = DatastoreService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id, $scope.viewSubproject.LocationId);
+			//promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id);
+			//promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id, theSdeObjectId);
+			promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id, $scope.viewSubproject.LocationId);
 		}
 		
 		// This works fine for removing subprojects.

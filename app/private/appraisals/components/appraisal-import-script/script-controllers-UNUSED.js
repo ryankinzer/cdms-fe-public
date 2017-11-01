@@ -3,11 +3,11 @@
 
 var mod_script = angular.module('ScriptControllers', ['ui.bootstrap']);
 
-mod_script.controller('ScriptletController', ['$scope','$upload', 'DataService','DatastoreService','ActivityParser',
-  function($scope, $upload,  DataService, DatastoreService,ActivityParser){
+mod_script.controller('ScriptletController', ['$scope','$upload', 'DatasetService','DatastoreService','ActivityParser',
+  function($scope, $upload,  DatasetService, DatastoreService,ActivityParser){
 
   		$scope.project = { Id: "2246" }; // default to the DECD project id 
-  		$scope.dataset = DataService.getDataset(1193); 
+  		$scope.dataset = DatasetService.getDataset(1193); 
   		$scope.startOnLine = 1;
   		$scope.uploadResults = {};
   		$scope.loading = false;
@@ -17,7 +17,7 @@ mod_script.controller('ScriptletController', ['$scope','$upload', 'DataService',
 		$scope.$watch('dataset.Fields', function() { 
 			if(!$scope.dataset.Fields ) return;
 			//load our project based on the projectid we get back from the dataset
-        	$scope.project = DataService.getProject($scope.dataset.ProjectId);
+        	$scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 			
         	$scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id','Name');
 
@@ -92,7 +92,7 @@ mod_script.controller('ScriptletController', ['$scope','$upload', 'DataService',
 			$scope.query = { criteria: {DatasetId: $scope.dataset.Id, Fields: [], Locations: "[\"all\"]", QAStatusId: "all"} } ;
 
 			//fetch current records via query
-			DataService.queryActivities($scope.query);
+			DatasetService.queryActivities($scope.query);
 
 			$scope.$watch('query.results', function(){
 				if(!$scope.query.results)
@@ -182,7 +182,7 @@ mod_script.controller('ScriptletController', ['$scope','$upload', 'DataService',
 	            /*
 	            if(!$scope.activities.errors)
 	            {
-	                var promise = DataService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
+	                var promise = DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
 	                promise.$promise.then(function(){
 	                	$scope.new_activity = $scope.activities.new_records;
 	                });
@@ -200,7 +200,7 @@ mod_script.controller('ScriptletController', ['$scope','$upload', 'DataService',
 			$scope.query = { criteria: {DatasetId: $scope.dataset.Id, Fields: [], Locations: "[\"all\"]", QAStatusId: "all"} } ;
 
 			//fetch current records via query
-			DataService.queryActivities($scope.query);
+			DatasetService.queryActivities($scope.query);
 
 			$scope.$watch('query.results', function(){
 				if(!$scope.query.results)

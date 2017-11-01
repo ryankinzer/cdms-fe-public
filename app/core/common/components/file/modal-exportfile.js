@@ -1,5 +1,5 @@
-﻿var modal_exportfile = ['$scope','DataService','$modalInstance','$window',
-	function($scope, DataService,$modalInstance, $window) {
+﻿var modal_exportfile = ['$scope','DatasetService','$modalInstance','$window',
+	function($scope, DatasetService,$modalInstance, $window) {
 
 		//$scope.alerts 
 		$scope.Export = { Filename: "Export.csv" };
@@ -7,7 +7,7 @@
 		$scope.ok = function(){
 			$scope.downloadQuery = $scope.buildQuery(); 
 			$scope.downloadQuery.criteria.Filename = $scope.Export.Filename;
-			DataService.exportActivities($scope.downloadQuery);
+			DatasetService.exportActivities($scope.downloadQuery);
 
 			//$modalInstance.dismiss();
 		};

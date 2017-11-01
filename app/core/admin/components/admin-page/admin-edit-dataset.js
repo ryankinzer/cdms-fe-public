@@ -1,14 +1,13 @@
 ﻿
-var admin_edit_dataset = ['$scope','DatastoreService','$modal', 'DataService', '$routeParams',
-	function($scope, DatastoreService, $modal, DataService, $routeParams){
+var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 'CommonService','ProjectService','AdminService',
+    function ($scope, $modal, $routeParams, DatasetService, CommonService, ProjectService, AdminService ){
 
-		$scope.dataset = DataService.getDataset($routeParams.Id);
+		$scope.dataset = DatasetService.getDataset($routeParams.Id);
 		$scope.FieldLookup = {};
 		$scope.SelectedField = null;
 		
-		$scope.Sources = DatastoreService.getSources();
-		$scope.Instruments = DatastoreService.getInstruments();
-		//$scope.Laboratories = DatastoreService.getLaboratories();
+		$scope.Sources = CommonService.getSources();
+		$scope.Instruments = ProjectService.getInstruments();
 
 		$scope.$watch('dataset.Id', function(){
 			
@@ -19,7 +18,7 @@ var admin_edit_dataset = ['$scope','DatastoreService','$modal', 'DataService', '
 			console.dir($scope.dataset);
 		
 			if(!$scope.MasterFields)
-				$scope.MasterFields = DatastoreService.getMasterFields($scope.dataset.Datastore.FieldCategoryId);
+				$scope.MasterFields = AdminService.getMasterFields($scope.dataset.Datastore.FieldCategoryId);
 
 			angular.forEach($scope.dataset.Fields.sort(orderByAlpha), function(field){
 				//parseField(field, $scope);
@@ -45,11 +44,6 @@ var admin_edit_dataset = ['$scope','DatastoreService','$modal', 'DataService', '
 			$scope.InstrumentsLookup = makeObjects($scope.Instruments, 'Id','Name');
 		},true);
 
-		$scope.$watch('Laboratories',function(){
-			if($scope.Laboratories.length > 0)
-			$scope.LaboratoriesLookup = makeObjects($scope.Laboratories, 'Id','Name');
-		},true);
-		
 		$scope.$watch('saveResults.DatasetId', function(){
 			if (!$scope.saveResults.DatasetId)
 				return;
@@ -58,8 +52,8 @@ var admin_edit_dataset = ['$scope','DatastoreService','$modal', 'DataService', '
 			console.log("$scope.saveResults.DatasetId is next...");
 			console.dir($scope.saveResults.DatasetId);
 			
-			DataService.clearDataset();
-			$scope.dataset = DataService.getDataset($routeParams.Id); //reload
+			DatasetService.clearDataset();
+			$scope.dataset = DatasetService.getDataset($routeParams.Id); //reload
 			$scope.SelectedField = null;
 
 		},true);
@@ -70,13 +64,13 @@ var admin_edit_dataset = ['$scope','DatastoreService','$modal', 'DataService', '
                 return;
 
 			$scope.saveResults = {};
-			DatastoreService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
-			//$scope.saveResults = DatastoreService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
+			AdminService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
+			//$scope.saveResults = AdminService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
             setTimeout(function(){
 			// JavaScript might run the next lines too fast, so I (GC) put them into watch saveResults.DatasetId up above.
-            //	DataService.clearDataset();
+            //	DatasetService.clearDataset();
 			//	console.log("Dumped dataset...");
-            //	$scope.dataset = DataService.getDataset($routeParams.Id); //reload
+            //	$scope.dataset = DatasetService.getDataset($routeParams.Id); //reload
 			//	console.log("Reloading dataset...");
             //	$scope.SelectedField = null;
 			//	console.log("Cleared selected field...");
@@ -100,19 +94,19 @@ var admin_edit_dataset = ['$scope','DatastoreService','$modal', 'DataService', '
 				$scope.newField = $scope.MasterFields[0].Id;
 			
 			console.log("$scope.newField (after checking) = " + $scope.newField);
-			DatastoreService.addMasterFieldToDataset($scope.dataset.Id, $scope.newField, $scope.saveResults);
-			//$scope.saveResults = DatastoreService.addMasterFieldToDataset($scope.dataset.Id, $scope.newField, $scope.saveResults);
+			AdminService.addMasterFieldToDataset($scope.dataset.Id, $scope.newField, $scope.saveResults);
+			//$scope.saveResults = AdminService.addMasterFieldToDataset($scope.dataset.Id, $scope.newField, $scope.saveResults);
 			// JavaScript might run the next lines too fast, so I (GC) put them into watch saveResults.DatasetId up above.
 			//setTimeout(function(){
-			//	DataService.clearDataset();
-            //	$scope.dataset = DataService.getDataset($routeParams.Id); //reload
+			//	DatasetService.clearDataset();
+            //	$scope.dataset = DatasetService.getDataset($routeParams.Id); //reload
             //},400);
 		};
 
 		$scope.saveField = function()
 		{
 			$scope.saveResults = {};
-			DatastoreService.saveDatasetField($scope.SelectedField, $scope.saveResults);
+			AdminService.saveDatasetField($scope.SelectedField, $scope.saveResults);
 		};
 
 		$scope.selectField = function(field){

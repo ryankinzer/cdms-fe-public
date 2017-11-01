@@ -167,6 +167,7 @@ projects_module.service('ProjectService', ['$q',
                 service.project = null;
             },
 
+            //NB: Not used anywhere
             getDatastoreProjects: function (id) {
                 return GetDatastoreProjects.query({ id: id });
             },

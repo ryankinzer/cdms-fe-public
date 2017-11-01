@@ -1,5 +1,5 @@
-﻿var my_preferences = ['$scope', 'DataService', 'DatastoreService', 'ServiceUtilities', 'ConvertStatus',
-    function ($scope, DataService, DatastoreService, ServiceUtilities, ConvertStatus) {
+﻿var my_preferences = ['$scope', 'DatasetService', 'DatastoreService', 'ServiceUtilities', 'ConvertStatus',
+    function ($scope, DatasetService, DatastoreService, ServiceUtilities, ConvertStatus) {
         console.log("Inside MyPreferencesCtrl...");
         //console.log("$scope is next");
         ////console.dir($scope);
@@ -20,7 +20,7 @@
             $scope.savePreferencesResults = [];
             console.log("$scope.savePreferencesResults = " + $scope.savePreferencesResults);
 
-            DataService.saveUserInfo($scope.User, $scope);
+            PreferencesService.saveUserInfo($scope.User, $scope);
         };
 
         $scope.cancel = function () {

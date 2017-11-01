@@ -1,14 +1,14 @@
-﻿var modal_qa_update = ['$scope', 'DataService', '$modalInstance',
-    function ($scope, DataService, $modalInstance) {
+﻿var modal_qa_update = ['$scope', 'DatasetService', '$modalInstance',
+    function ($scope, DatasetService, $modalInstance) {
         $scope.save = function () {
 
-            DataService.updateQaStatus(
+            DatasetService.updateQaStatus(
                 $scope.grid.Header.ActivityId,
                 $scope.row.ActivityQAStatus.QAStatusId,
                 $scope.row.ActivityQAStatus.Comments,
                 $scope.QaSaveResults);
 
-            DataService.clearProject();
+            ProjectService.clearProject();
 
             $scope.fields = { header: [], detail: [], relation: [] };
             $scope.datasheetColDefs = [];

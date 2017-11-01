@@ -1,7 +1,7 @@
 ﻿
-var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','$modal','DataService','DatastoreService', 'ServiceUtilities', 
+var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','$modal','DatasetService','DatastoreService', 'ServiceUtilities', 
 	'$timeout', '$location', '$anchorScroll', '$document', '$upload', 
-  function($scope, $rootScope, $modalInstance, $modal, DataService, DatastoreService, ServiceUtilities, 
+  function($scope, $rootScope, $modalInstance, $modal, DatasetService, DatastoreService, ServiceUtilities, 
 	$timeout, $location, $anchorScroll, $document, $upload){
 	console.log("Inside ModalCreateHabSubprojectCtrl...");
 
@@ -56,7 +56,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 	
     $scope.header_message = "Create new Habitat project";
 	$rootScope.newSubproject = $scope.newSubproject = true;
-    $scope.waterbodies = DatastoreService.getWaterBodies();
+    $scope.waterbodies = CommonService.getWaterBodies();
 	$rootScope.habProjectName = $scope.habProjectName = "";
 	$scope.showAddDocument = true;
 	$scope.savingHabSubproject = false;
@@ -365,12 +365,12 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 				//$scope.reloadSubproject(promise.Id);
 				//var promise2 = $scope.reloadSubproject(promise.Id);
 				//console.log("Inside reloadSubproject...");
-				//DataService.clearSubproject();
-				//DataService.clearHabSubproject(); // Commented out in services.js
+				//SubprojectService.clearSubproject();
+				//DatasetService.clearHabSubproject(); // Commented out in services.js
 				//$scope.reloadSubproject($scope.subprojectId);
 				//$modalInstance.dismiss();	
 				$scope.openHabitatItemForm();
-				//$scope.subproject = DataService.getSubproject(id);
+				//$scope.subproject = SubprojectService.getSubproject(id);
 			}
 			else
 			{
@@ -381,7 +381,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 				//$modalInstance.dismiss();
 			}
 			
-			DataService.clearSubproject();
+			SubprojectService.clearSubproject();
 			if (($scope.filesToUpload.ItemFiles) || ($scope.NewPoint)) // No new files to upload, and using an existing point.
 			{
 				console.log("Reloading the whole project, because we have a new location or file...");
@@ -421,7 +421,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 		console.dir(saveRow);
 		
 		var promise = null;		
-		promise = DatastoreService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
+		promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
 		
 		if (typeof promise !== 'undefined')
 		{
@@ -457,7 +457,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 					console.log("newLocation is next...");
 					console.dir(newLocation);
 					
-					promise = DatastoreService.saveNewProjectLocation($scope.project.Id, newLocation);
+					promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
 					promise.$promise.then(function(){
 						//$scope.subproject_row = 'undefined';
 						$scope.habProjectName = saveRow.ProjectName;
@@ -526,7 +526,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 										
 										console.log("file is next...");
 										console.dir(file);
-										//var promise = DatastoreService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
+										//var promise = SubprojectService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
 										//promise.$promise.then(function(){
 											console.log("done and success!");
 											//reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
@@ -639,12 +639,12 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 					//$scope.reloadSubproject(promise.Id);
 					//var promise2 = $scope.reloadSubproject(promise.Id);
 					//console.log("Inside reloadSubproject...");
-					//DataService.clearSubproject();
-					//DataService.clearHabSubproject(); // Commented out in services.js
+					//SubprojectService.clearSubproject();
+					//DatasetService.clearHabSubproject(); // Commented out in services.js
 					//$scope.reloadSubproject($scope.subprojectId);
 					$modalInstance.dismiss();	
 					$scope.openHabitatItemForm();
-					//$scope.subproject = DataService.getSubproject(id);
+					//$scope.subproject = SubprojectService.getSubproject(id);
 				}
 				else
 				{
@@ -655,7 +655,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 					$modalInstance.dismiss();
 				}
 				
-				DataService.clearSubproject();
+				SubprojectService.clearSubproject();
 				if (($scope.filesToUpload.ItemFiles) || ($scope.NewPoint)) // No new files to upload, and using an existing point.
 				{
 					console.log("Reloading the whole project, because we have a new location or file...");
@@ -743,12 +743,12 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 			//$scope.reloadSubproject(promise.Id);
 			//var promise2 = $scope.reloadSubproject(promise.Id);
 			//console.log("Inside reloadSubproject...");
-			//DataService.clearSubproject();
-			//DataService.clearHabSubproject(); // Commented out in services.js
+			//SubprojectService.clearSubproject();
+			//DatasetService.clearHabSubproject(); // Commented out in services.js
 			//$scope.reloadSubproject($scope.subprojectId);
 			$modalInstance.dismiss();	
 			$scope.openHabitatItemForm();
-			//$scope.subproject = DataService.getSubproject(id);
+			//$scope.subproject = SubprojectService.getSubproject(id);
 		}
 		else
 		{
@@ -764,7 +764,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 			$modalInstance.dismiss();
 		}
 		
-		DataService.clearSubproject();
+		SubprojectService.clearSubproject();
 
 		console.log("Reload the whole project; this is the easiest way to capture the updates.");
 		// If we use services.js, service.getSubproject, it only reloads what we already had, before the changes.
@@ -1362,7 +1362,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','
 							console.log("Created a new point! "+ newLocation.SdeObjectId);
 							$scope.NewPoint = true;
 
-							var promise = DatastoreService.saveNewProjectLocation($scope.project.Id, newLocation);
+							var promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
 							promise.$promise.then(function(result){
 								console.log("done and success!");
 								console.log("result is next...");

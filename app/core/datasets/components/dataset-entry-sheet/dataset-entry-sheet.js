@@ -1,7 +1,7 @@
 ﻿// was DataEntryDatasheetCtrl from DataEntryControllers
 //datasheet version of the data entrypage
-var dataset_entry_sheet = ['$scope', '$routeParams', 'DataService', '$modal', '$location', '$rootScope', 'ActivityParser', 'DataSheet', '$route', 'DatastoreService',
-    function ($scope, $routeParams, DataService, $modal, $location, $rootScope, ActivityParser, DataSheet, $route, DatastoreService) {
+var dataset_entry_sheet = ['$scope', '$routeParams', 'DatasetService', '$modal', '$location', '$rootScope', 'ActivityParser', 'DataSheet', '$route', 'DatastoreService',
+    function ($scope, $routeParams, DatasetService, $modal, $location, $rootScope, ActivityParser, DataSheet, $route, DatastoreService) {
 
         initEdit(); // stop backspace from ditching in the wrong place.
 
@@ -18,7 +18,7 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DataService', '$modal', '$
         $scope.sortedLocations = [];
         $scope.errors = { heading: [] };
 
-        $scope.fishermenList = DatastoreService.getFishermen();
+        $scope.fishermenList = ProjectService.getFishermen();
         $scope.dataEntryPage = true;  // This is s flag, telling the app that we are on the Data Entry Page, to make the Add Section button show only on the Data Entry page.
 
         //datasheet grid definition
@@ -37,7 +37,7 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DataService', '$modal', '$
         DataSheet.initScope($scope);
 
         //fire up our dataset
-        $scope.dataset = DataService.getDataset($routeParams.Id);
+        $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
         // Note:  Need to watch for the length below, because fishermanList itself does not change, even if it is updated.
         $scope.$watch('fishermenList.length', function () {
@@ -79,19 +79,19 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DataService', '$modal', '$
 
             $rootScope.projectId = $scope.project.Id;
             $scope.project.Files = null;
-            $scope.project.Files = DataService.getProjectFiles($scope.project.Id);
+            $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
 
             if ($scope.subprojectType === "Harvest") {
                 console.log("Loading Harvest...");
                 $scope.ShowFishermen = true;
-                //$scope.theFishermen = DatastoreService.getProjectFishermen($scope.project.Id);
-                $scope.fishermenList = DatastoreService.getFishermen();
+                //$scope.theFishermen = ProjectService.getProjectFishermen($scope.project.Id);
+                $scope.fishermenList = ProjectService.getFishermen();
             }
 
             //$scope.locationOptions = $rootScope.locationOptions = makeObjects(getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId"), 'Id','Label') ; // Original line
 
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-            $scope.datasetLocationType = DatastoreService.getDatasetLocationType($scope.DatastoreTablePrefix);
+            $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
             console.log("LocationType = " + $scope.datasetLocationType);
 
             console.log("ProjectLocations is next...");
@@ -180,14 +180,14 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DataService', '$modal', '$
 
             $rootScope.datasetId = $scope.datasetId = $scope.dataset.Id;
             console.log("$rootScope.datasetId = " + $rootScope.datasetId);
-            $scope.dataset.Files = DataService.getDatasetFiles($scope.dataset.Id);
+            $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
 
             $scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             $scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix);  // Pass the TablePrefix (name of the dataset), because it will never change.			
 
             //load our project based on the projectid we get back from the dataset
-            $scope.project = DataService.getProject($scope.dataset.ProjectId);
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 
             $scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
 
@@ -296,7 +296,7 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DataService', '$modal', '$
             $scope.activities = ActivityParser.parseActivitySheet(sheetCopy, $scope.fields, $scope.DatastoreTablePrefix, "DataEntrySheet", $scope.dataset.QAStatuses);
 
             if (!$scope.activities.errors) {
-                var promise = DataService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
+                var promise = DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
                 promise.$promise.then(function () {
                     $scope.new_activity = $scope.activities.new_records;
                 });

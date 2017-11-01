@@ -1,7 +1,7 @@
 ﻿
-var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'DataService','DatastoreService','ServiceUtilities',
+var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'DatasetService','DatastoreService','ServiceUtilities',
 	'$filter', 'FileUploadService','$upload','$location', '$anchorScroll',
-  function($scope, $rootScope, $modalInstance, $modal, DataService, DatastoreService, ServiceUtilities, 
+  function($scope, $rootScope, $modalInstance, $modal, DatasetService, DatastoreService, ServiceUtilities, 
 	$filter, FileUploadService, $upload, $location, $anchorScroll){
 	console.log("Inside ModalAddHabitatItemCtrl...");
 	
@@ -114,11 +114,11 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 		
 		if (confirm('Are you sure that you want to delete this Habitat Item?'))
 		{
-			//DatastoreService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
+			//SubprojectService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
 			
-			//var promise = DatastoreService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
-			//var promise = DatastoreService.removeHabitatItem($scope.project.Id, $scope.viewSubproject.Id, $scope.hi_rowId, $scope.DatastoreTablePrefix);
-			var promise = DatastoreService.removeHabitatItem($scope.project.Id, $scope.viewSubproject.Id, $scope.hi_rowId);
+			//var promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
+			//var promise = SubprojectService.removeHabitatItem($scope.project.Id, $scope.viewSubproject.Id, $scope.hi_rowId, $scope.DatastoreTablePrefix);
+			var promise = SubprojectService.removeHabitatItem($scope.project.Id, $scope.viewSubproject.Id, $scope.hi_rowId);
 			
 			promise.$promise.then(function(){
 				$scope.subprojects = null;
@@ -236,7 +236,7 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 								
 								//console.log("file is next...");
 								//console.dir(file);
-								//var promise = DatastoreService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
+								//var promise = SubprojectService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
 								//promise.$promise.then(function(){
 									console.log("done and success!");
 									//reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
@@ -347,7 +347,7 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 					
 					console.log("file is next...");
 					console.dir(file);
-					//var promise = DatastoreService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
+					//var promise = SubprojectService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
 					//promise.$promise.then(function(){
 						console.log("done and success!");
 						//reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
@@ -377,7 +377,7 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 		{
 			console.log("$scope.viewSubproject is present, using that...");
 			console.log("$scope.viewSubproject.Id = " + $scope.viewSubproject.Id);
-			var promise = DatastoreService.saveHabitatItem($scope.projectId, $scope.viewSubproject.Id, saveRow);
+			var promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.viewSubproject.Id, saveRow);
 			if (typeof promise !== 'undefined')
 			{
 				promise.$promise.then(function(){
@@ -400,7 +400,7 @@ var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'Da
 		else if ((typeof $scope.habProjectName !== 'undefined' ) && ($scope.habProjectName !== null))
 		{
 			console.log("$scope.viewSubproject missing, using $scope.subprojectId:  " + $scope.subprojectId);
-			var promise = DatastoreService.saveHabitatItem($scope.projectId, $scope.subprojectId, saveRow);
+			var promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.subprojectId, saveRow);
 			if (typeof promise !== 'undefined')
 			{
 				promise.$promise.then(function(){

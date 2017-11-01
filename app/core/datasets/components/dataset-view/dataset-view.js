@@ -3,11 +3,11 @@
 *  e.g.: http://localhost/cdms/index.html#/dataview/89433
 */
 
-var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$location', 'DataSheet', '$route', '$rootScope', 'ChartService', 'DatastoreService',
-    function ($scope, $routeParams, DataService, $modal, $location, DataSheet, $route, $rootScope, ChartService, DatastoreService) {
+var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$location', 'DataSheet', '$route', '$rootScope', 'ChartService', 'DatastoreService',
+    function ($scope, $routeParams, DatasetService, $modal, $location, DataSheet, $route, $rootScope, ChartService, DatastoreService) {
         console.log("Inside dataview-controller.js, controller DatasetViewCtrl...");
         console.log("$routeParams.Id = " + $routeParams.Id);
-        $scope.grid = DataService.getActivityData($routeParams.Id); //activity data for a particular activityId
+        $scope.grid = DatasetService.getActivityData($routeParams.Id); //activity data for a particular activityId
 
         $scope.fields = { header: [], detail: [], relation: [] };
         $scope.datasheetColDefs = [];
@@ -20,15 +20,15 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
         $scope.fieldsloaded = false;
 
         $scope.fishermenList = null;
-        //$scope.fishermenList = DatastoreService.getFishermen();
+        //$scope.fishermenList = ProjectService.getFishermen();
         //console.log("$scope is next...");
         //console.dir($scope);
         //if ($scope.this.DatastoreTablePrefix === "CreelSurvey")
-        //	$scope.fishermenList = DatastoreService.getFishermen();
+        //	$scope.fishermenList = ProjectService.getFishermen();
 
         $scope.$watch('QaSaveResults', function () {
             if ($scope.QaSaveResults && $scope.QaSaveResults.success) {
-                $scope.grid = DataService.getActivityData($routeParams.Id); //activity data for a particular activityId
+                $scope.grid = DatasetService.getActivityData($routeParams.Id); //activity data for a particular activityId
             }
         }, true);
 
@@ -74,7 +74,7 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
                 console.log("ProjectId = " + $scope.dataset.ProjectId);
                 $rootScope.projectId = $scope.dataset.ProjectId;
 
-                $scope.project = DataService.getProject($scope.dataset.ProjectId);
+                $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
                 $scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
 
                 ChartService.buildChart($scope, $scope.grid.Details, $scope.dataset.Datastore.TablePrefix);
@@ -142,7 +142,7 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
             console.log("$scope.grid is next...");
             console.dir($scope.grid);
 
-            $scope.dataset = $scope.grid.Dataset;//DataService.getDataset($scope.grid.Dataset.Id);
+            $scope.dataset = $scope.grid.Dataset;//DatasetService.getDataset($scope.grid.Dataset.Id);
             console.log("Dataset ID = " + $scope.grid.Dataset.Id);
             $rootScope.datasetId = $scope.datasetId = $scope.grid.Dataset.Id
             console.log("$rootScope.datasetId = " + $rootScope.datasetId);
@@ -151,10 +151,10 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             $scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix, "form");  // Pass the TablePrefix (name of the dataset), because it will never change.									
 
-            DataService.configureDataset($scope.dataset);
+            DatasetService.configureDataset($scope.dataset);
 
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
-                $scope.fishermenList = DatastoreService.getFishermen();
+                $scope.fishermenList = ProjectService.getFishermen();
 
                 console.log("Extracting times from strings...");
                 var strTimeStart = $scope.grid.Header.TimeStart;
@@ -229,7 +229,7 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
             //kick off the loading of relation data (we do this for UI performance rather than returning with the data...)
             angular.forEach($scope.dataSheetDataset, function (datarow) {
                 angular.forEach($scope.gridFields, function (gridfield) {
-                    datarow[gridfield.DbColumnName] = DataService.getRelationData(gridfield.FieldId, datarow.ActivityId, datarow.RowId);
+                    datarow[gridfield.DbColumnName] = DatasetService.getRelationData(gridfield.FieldId, datarow.ActivityId, datarow.RowId);
                     console.log("kicking off loading of " + datarow.ActivityId + ' ' + datarow.RowId);
                 })
             })
@@ -239,8 +239,8 @@ var dataset_view = ['$scope', '$routeParams', 'DataService', '$modal', '$locatio
         $scope.reloadProject = function () {
             //reload project instruments -- this will reload the instruments, too
             console.log("Inside reloadProject...");
-            DataService.clearProject();
-            $scope.project = DataService.getProject($scope.dataset.ProjectId);
+            ProjectService.clearProject();
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
             var watcher = $scope.$watch('project.Id', function () {
                 //$scope.selectInstrument();
                 $rootScope.projectId = $scope.project.Id;

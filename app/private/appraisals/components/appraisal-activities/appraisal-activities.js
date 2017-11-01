@@ -1,15 +1,15 @@
-var appraisal_activities = ['$scope','$route','$routeParams', 'DataService', '$modal', '$location','$window', '$rootScope','DatastoreService',
-    	function ($scope, $route, $routeParams, DataService, $modal, $location, $window, $rootScope, DatastoreService) {
+var appraisal_activities = ['$scope','$route','$routeParams', 'DatasetService', '$modal', '$location','$window', '$rootScope','DatastoreService',
+    	function ($scope, $route, $routeParams, DatasetService, $modal, $location, $window, $rootScope, DatastoreService) {
 			console.log("Inside appraisalController...");
 			console.log("$routeParams.Id = " + $routeParams.Id);
-            $scope.dataset = DataService.getDataset($routeParams.Id);
-            $scope.activities = DataService.getActivities($routeParams.Id);
+            $scope.dataset = DatasetService.getDataset($routeParams.Id);
+            $scope.activities = DatasetService.getActivities($routeParams.Id);
             $scope.loading = true;
             $scope.project = null;
             $scope.saveResults = null;
             $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
             $scope.allActivities = null;
-            $scope.headerdata = DataService.getHeadersDataForDataset($routeParams.Id);
+            $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
             $scope.filteringActivities = false;
 			$scope.startAppraisalDisabled = true;
 
@@ -86,8 +86,8 @@ var appraisal_activities = ['$scope','$route','$routeParams', 'DataService', '$m
 				$rootScope.datasetId = $scope.dataset.Id;
 				
                 //load our project based on the projectid we get back from the dataset
-                $scope.project = DataService.getProject($scope.dataset.ProjectId);
-				$scope.dataset.Files = DataService.getDatasetFiles($scope.dataset.Id);
+                $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
+				$scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
                 $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id','Name');
 
 				$rootScope.DatastoreTablePrefix = $scope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
@@ -315,7 +315,7 @@ var appraisal_activities = ['$scope','$route','$routeParams', 'DataService', '$m
                 };
                 
 
-                var promise = DatastoreService.saveNewProjectLocation($scope.project.Id, new_location);
+                var promise = CommonService.saveNewProjectLocation($scope.project.Id, new_location);
                 promise.$promise.then(function(){ 
                    console.log("done and success!");
 
@@ -342,7 +342,7 @@ var appraisal_activities = ['$scope','$route','$routeParams', 'DataService', '$m
 
                 $rootScope.Profile.toggleDatasetFavorite($scope.dataset);
                 
-                DataService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
+                PreferencesService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
 
                 var watcher = $scope.$watch('results', function(){
                     if($scope.results.done)
@@ -361,9 +361,9 @@ var appraisal_activities = ['$scope','$route','$routeParams', 'DataService', '$m
             };    
 
             $scope.refreshProjectLocations = function(){
-                DataService.clearProject();
+                ProjectService.clearProject();
                 $scope.project = null;
-                $scope.project = DataService.getProject($scope.dataset.ProjectId);
+                $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
             };
 
             $scope.reloadProjectLocations = function(){
@@ -387,7 +387,7 @@ var appraisal_activities = ['$scope','$route','$routeParams', 'DataService', '$m
             };      
 
             $scope.reloadActivities = function(){
-                $scope.activities = DataService.getActivities($routeParams.Id);
+                $scope.activities = DatasetService.getActivities($routeParams.Id);
             };
 
             $scope.openQueryWindow = function(p) {
@@ -403,7 +403,7 @@ var appraisal_activities = ['$scope','$route','$routeParams', 'DataService', '$m
                 if(!confirm("Are you sure you want to delete this allotment?  There is no undo for this operation."))
                     return;
 
-                DataService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.gridOptions, $scope.saveResults);
+                DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.gridOptions, $scope.saveResults);
                 var deleteWatcher = $scope.$watch('saveResults', function(){
                     if($scope.saveResults.success)
                     {

@@ -1,6 +1,6 @@
 ﻿
-var modal_link_field = ['$scope', '$modalInstance', 'DataService', 'DatastoreService', '$rootScope',
-    function ($scope, $modalInstance, DataService, DatastoreService, $rootScope) {
+var modal_link_field = ['$scope', '$modalInstance', 'DatasetService', 'DatastoreService', '$rootScope',
+    function ($scope, $modalInstance, DatasetService, DatastoreService, $rootScope) {
         console.log("Inside modals-controller.js, LinkModalCtrl...");
         //console.log("$scope is next...");
         //console.dir($scope);
@@ -57,7 +57,8 @@ var modal_link_field = ['$scope', '$modalInstance', 'DataService', 'DatastoreSer
                         console.log("Link matches...");
                         if ($scope.subprojectType === "Habitat") {
                             console.log("Habitat file...");
-                            DatastoreService.deleteHabitatItemLink($scope.projectId, $scope.subprojectId, $scope.hi_row.Id, file);
+                            //kb - 11/1: the following function doesn't actually exist anywhere...
+                            //DatastoreService.deleteHabitatItemLink($scope.projectId, $scope.subprojectId, $scope.hi_row.Id, file);
                         }
 
                         $scope.currentLinks.splice(key, 1);

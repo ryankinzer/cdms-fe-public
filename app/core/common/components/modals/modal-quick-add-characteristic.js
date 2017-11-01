@@ -1,7 +1,8 @@
 ﻿
+//kb 11/1 - I don't see this anywhere used in the system
 
-var modal_quick_add_characteristic = ['$scope','$modalInstance', 'DataService','DatastoreService',
-  function($scope,  $modalInstance, DataService, DatastoreService){
+var modal_quick_add_characteristic = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
+  function($scope,  $modalInstance, DatasetService, DatastoreService){
 
     $scope.char_row = {};
 

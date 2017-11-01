@@ -1,7 +1,7 @@
 ﻿
-var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'DataService', 'DatastoreService', 'ServiceUtilities',
+var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'DatasetService', 'DatastoreService', 'ServiceUtilities',
     '$timeout', '$location', '$anchorScroll', '$document',
-    function ($scope, $rootScope, $modalInstance, DataService, DatastoreService, ServiceUtilities,
+    function ($scope, $rootScope, $modalInstance, DatasetService, DatastoreService, ServiceUtilities,
         $timeout, $location, $anchorScroll, $document) {
         console.log("Inside ModalCreateSubprojectCtrl...");
 
@@ -723,7 +723,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 //console.log("$scope is next...");
                 //console.dir($scope);
                 //var promise = DatastoreService.saveCorrespondence($scope.project.Id, saveRow, $scope.saveResults);
-                var promise = DatastoreService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
+                var promise = SubprojectService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
                 if (typeof promise !== 'undefined') {
                     promise.$promise.then(function () {
                         //window.location.reload();
@@ -744,11 +744,11 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                             //$scope.reloadSubproject(promise.Id);
                             //var promise2 = $scope.reloadSubproject(promise.Id);
                             //console.log("Inside reloadSubproject...");
-                            DataService.clearSubproject();
+                            SubprojectService.clearSubproject();
                             $scope.reloadSubproject($scope.subprojectId);
                             $modalInstance.dismiss();
                             $scope.openCorrespondenceEventForm();
-                            //$scope.subproject = DataService.getSubproject(id);
+                            //$scope.subproject = SubprojectService.getSubproject(id);
                         }
                         else {
                             console.log("addDocument != Yes");

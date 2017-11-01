@@ -1,7 +1,8 @@
 ﻿
 //handles managing file controltypes
-var modal_file_delete = ['$scope','$modalInstance', 'DataService','DatastoreService','ServiceUtilities','$rootScope',
-    function($scope, $modalInstance, DataService, DatastoreService, ServiceUtilities, $rootScope){
+var modal_file_delete = ['$scope', '$modalInstance', 'DatasetService','SubprojectService','$rootScope',
+    function ($scope, $modalInstance, DatasetService, SubprojectService, $rootScope) {
+
 		// This controller is for the Dataset Activity / Subproject File modal.
 		console.log("Inside modals-controller.js, FileDeleteModalCtrl");
 		//console.log("$scope is next...");
@@ -72,11 +73,11 @@ var modal_file_delete = ['$scope','$modalInstance', 'DataService','DatastoreServ
 					if ($scope.DatastoreTablePrefix === "CrppContracts")
 					{
 						console.log("CRPP file...");
-						DatastoreService.deleteCorresEventFile($scope.projectId, $scope.subprojectId, $scope.ce_row.Id, file);
+						SubprojectService.deleteCorresEventFile($scope.projectId, $scope.subprojectId, $scope.ce_row.Id, file);
 					}
 					//else if ($scope.project.Id === 1223)
 					//else if ($scope.project.Id === HAB_PROJECTID)
-					//else if (DatastoreService.getProjectType($scope.project.Id) === "Habitat")
+					//else if (ProjectService.getProjectType($scope.project.Id) === "Habitat")
 					else if ($scope.DatastoreTablePrefix === "Metrics")
 					{
 						console.log("Habitat file...");
@@ -84,12 +85,12 @@ var modal_file_delete = ['$scope','$modalInstance', 'DataService','DatastoreServ
 						if ((typeof $scope.hi_row !== 'undefined') && ($scope.hi_row.Id !== null))
 						{
 							console.log("We want to delete a Habitat Item file...");
-							DatastoreService.deleteHabitatItemFile($scope.projectId, $scope.subprojectId, $scope.hi_row.Id, file);
+							SubprojectService.deleteHabitatItemFile($scope.projectId, $scope.subprojectId, $scope.hi_row.Id, file);
 						}
 						else
 						{
 							console.log("We want to delete a Subproject file...");
-							DatastoreService.deleteHabSubprojectFile($scope.projectId, $scope.subprojectId, file);								
+							SubprojectService.deleteHabSubprojectFile($scope.projectId, $scope.subprojectId, file);								
 						}
 					}
 					//else if ($scope.subprojectId)
@@ -99,7 +100,7 @@ var modal_file_delete = ['$scope','$modalInstance', 'DataService','DatastoreServ
 					else if ($scope.datasetId)
 					{
 						console.log("Dataset file...");
-						DatastoreService.deleteDatasetFile($scope.projectId, $scope.datasetId, existing_file);
+						DatasetService.deleteDatasetFile($scope.projectId, $scope.datasetId, existing_file);
 					}
 					// *** Backend end					
 

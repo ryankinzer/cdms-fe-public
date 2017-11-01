@@ -1,6 +1,6 @@
 ﻿
-var modal_edit_project =['$scope', '$modalInstance', 'DataService', 'DatastoreService',
-    function ($scope, $modalInstance, DataService, DatastoreService) {
+var modal_edit_project =['$scope', '$modalInstance', 'DatasetService', 'DatastoreService',
+    function ($scope, $modalInstance, DatasetService, DatastoreService) {
 
         if ($scope.row && $scope.row.Id) {
             $scope.header_message = "Edit project: " + $scope.project.Name;
@@ -34,7 +34,7 @@ var modal_edit_project =['$scope', '$modalInstance', 'DataService', 'DatastoreSe
             });
 
             console.log("About to save...");
-            var promise = DataService.saveProject($scope.row);
+            var promise = ProjectService.saveProject($scope.row);
             console.log("Just saved...");
             promise.$promise.then(function () {
                 console.log("About to reload project...");

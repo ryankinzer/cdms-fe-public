@@ -62,7 +62,7 @@ preferences_module.service('PreferencesService', ['$q',
             },
 
             saveUserInfo: function (user, scope) {
-                console.log("Inside services, Dataservice.saveUserInfo...");
+                console.log("Inside services, DatasetService.saveUserInfo...");
                 var payload = { User: user };
 
                 SaveUserInfo.save(payload, function (data) {

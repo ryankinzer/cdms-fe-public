@@ -1,15 +1,15 @@
-var crpp_contracts = ['$scope','$route','$routeParams', 'DataService', '$modal', '$location','$window', '$rootScope','DatastoreService',
-    	function ($scope, $route, $routeParams, DataService, $modal, $location, $window, $rootScope, DatastoreService) {
+var crpp_contracts = ['$scope','$route','$routeParams', 'DatasetService', '$modal', '$location','$window', '$rootScope','DatastoreService',
+    	function ($scope, $route, $routeParams, DatasetService, $modal, $location, $window, $rootScope, DatastoreService) {
 			console.log("Inside crppContractsController...");
 		
-            $scope.dataset = DataService.getDataset($routeParams.Id);
-            $scope.activities = DataService.getActivities($routeParams.Id);
+            $scope.dataset = DatasetService.getDataset($routeParams.Id);
+            $scope.activities = DatasetService.getActivities($routeParams.Id);
             $scope.loading = true;
             $scope.project = null;
             $scope.saveResults = null;
             $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
             $scope.allActivities = null;
-            $scope.headerdata = DataService.getHeadersDataForDataset($routeParams.Id);
+            $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
             $scope.filteringActivities = false;
 
             //console.log("Profile = ");
@@ -238,7 +238,7 @@ var crpp_contracts = ['$scope','$route','$routeParams', 'DataService', '$modal',
                 };
                 */
 
-                //var promise = DatastoreService.saveNewProjectLocation($scope.project.Id, new_location);
+                //var promise = CommonService.saveNewProjectLocation($scope.project.Id, new_location);
                 //promise.$promise.then(function(){ 
                 //   console.log("done and success!");
 
@@ -266,7 +266,7 @@ var crpp_contracts = ['$scope','$route','$routeParams', 'DataService', '$modal',
 
                 $rootScope.Profile.toggleDatasetFavorite($scope.dataset);
                 
-                DataService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
+                PreferencesService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
 
                 var watcher = $scope.$watch('results', function(){
                     if($scope.results.done)
@@ -291,9 +291,9 @@ var crpp_contracts = ['$scope','$route','$routeParams', 'DataService', '$modal',
             });      
 
             $scope.refreshProjectLocations = function(){
-                DataService.clearProject();
+                ProjectService.clearProject();
                 $scope.project = null;
-                $scope.project = DataService.getProject($scope.dataset.ProjectId);
+                $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
             };
 
             $scope.reloadProjectLocations = function(){
@@ -317,13 +317,13 @@ var crpp_contracts = ['$scope','$route','$routeParams', 'DataService', '$modal',
             };      
 
             $scope.reloadActivities = function(){
-                $scope.activities = DataService.getActivities($routeParams.Id);
+                $scope.activities = DatasetService.getActivities($routeParams.Id);
             };
 
             $scope.$watch('dataset.Fields', function() { 
                 if(!$scope.dataset.Fields ) return;
                 //load our project based on the projectid we get back from the dataset
-                $scope.project = DataService.getProject($scope.dataset.ProjectId);
+                $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
                 $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id','Name');
 
             });
@@ -376,7 +376,7 @@ var crpp_contracts = ['$scope','$route','$routeParams', 'DataService', '$modal',
                 if(!confirm("Are you sure you want to delete this allotment?  There is no undo for this operation."))
                     return;
 
-                DataService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.gridOptions, $scope.saveResults);
+                DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.gridOptions, $scope.saveResults);
                 var deleteWatcher = $scope.$watch('saveResults', function(){
                     if($scope.saveResults.success)
                     {

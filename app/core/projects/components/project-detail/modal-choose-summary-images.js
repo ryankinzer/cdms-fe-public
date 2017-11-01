@@ -1,5 +1,5 @@
-﻿var modal_choose_summary_images = ['$scope','$modalInstance', 'DataService','DatastoreService',
-  function($scope,  $modalInstance, DataService, DatastoreService){
+﻿var modal_choose_summary_images = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
+  function($scope,  $modalInstance, DatasetService, DatastoreService){
 
      var galleryLinkTemplate = '<a href="{{row.getProperty(\'Link\')}}" target="_blank" title="{{row.getProperty(\'Link\')}}">' +
                                 '<img ng-src="{{row.getProperty(\'Link\')}}" width="150px"/><br/><div class="ngCellText" ng-class="col.colIndex()">' +
@@ -68,7 +68,7 @@
 
         //console.dir($scope.project.Metadata);
 
-        var promise = DataService.saveProject($scope.project);
+        var promise = ProjectService.saveProject($scope.project);
             promise.$promise.then(function(){
                 $scope.reloadProject();
                 $modalInstance.dismiss();

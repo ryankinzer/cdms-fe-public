@@ -1,5 +1,5 @@
-﻿var modal_create_fisherman = ['$scope','$modalInstance','DataService','DatastoreService','ServiceUtilities','ConvertStatus',
-  function($scope, $modalInstance, DataService, DatastoreService, ServiceUtilities, ConvertStatus){
+﻿var modal_create_fisherman = ['$scope', '$modalInstance','ProjectService','ServiceUtilities','ConvertStatus',
+    function ($scope, $modalInstance, ProjectService,  ServiceUtilities, ConvertStatus){
 
     $scope.header_message = "Create new fisherman";
 	$scope.saveResults = null;
@@ -100,7 +100,7 @@
 			console.log("$scope.saveResults is next...");
 			console.dir($scope.saveResults);
 			
-			var promise = DatastoreService.saveFisherman($scope.project.Id, saveRow, $scope.saveResults);
+			var promise = ProjectService.saveFisherman($scope.project.Id, saveRow, $scope.saveResults);
 			if (typeof promise !== 'undefined')
 			{
 				console.log("promise is next...");

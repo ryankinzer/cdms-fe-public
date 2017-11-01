@@ -991,12 +991,12 @@ if (!Array.prototype.contains) {
 }
 
 //might be a list of metadata values from project.Metadata or a list of actual properties.
-function addMetadataProperties(metadata_list, all_metadata, scope, DataService) {
+function addMetadataProperties(metadata_list, all_metadata, scope, DatasetService) {
     angular.forEach(metadata_list, function (i_property, key) {
 
         var property = i_property;
         if (i_property.MetadataPropertyId) //is it a value from project.Metadata? if so then grab the property.
-            property = DataService.getMetadataProperty(i_property.MetadataPropertyId);
+            property = CommonService.getMetadataProperty(i_property.MetadataPropertyId);
 
         //property var is a "metadataProperty" (not a metadata value)
 

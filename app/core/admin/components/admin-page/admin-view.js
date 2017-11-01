@@ -1,13 +1,13 @@
 ﻿
-var admin_view = ['$scope', 'DatastoreService', '$modal', 'DataService',
-    function ($scope, DatastoreService, $modal, DataService) {
+var admin_view = ['$scope', 'DatastoreService', '$modal', 'DatasetService','ProjectService',
+    function ($scope, DatastoreService, $modal, DatasetService, ProjectService) {
 
         //TODO: a nicer global route authorization scheme...
         if (!$scope.Profile.isAdmin())
             angular.rootScope.go("/unauthorized");
 
-        $scope.datastores = DatastoreService.getDatastores();
-        $scope.projects = DataService.getProjects();
+        $scope.datastores = DatasetService.getDatastores();
+        $scope.projects = ProjectService.getProjects();
 
         var watcher = $scope.$watch('datastores', function () {
 
@@ -15,8 +15,7 @@ var admin_view = ['$scope', 'DatastoreService', '$modal', 'DataService',
                 watcher();	//removes watch since we're about to do some updates that would cause multiple firings...!
 
                 angular.forEach($scope.datastores, function (datastore, key) {
-                    //datastore.Projects = DatastoreService.getDatastoreProjects(datastore.Id);
-                    datastore.Datasets = DatastoreService.getDatastoreDatasets(datastore.Id);
+                    datastore.Datasets = DatasetService.getDatastoreDatasets(datastore.Id);
                 });
 
             }

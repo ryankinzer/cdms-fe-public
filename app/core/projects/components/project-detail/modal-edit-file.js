@@ -1,11 +1,11 @@
 ﻿
-var modal_edit_file = ['$scope','$modalInstance', 'DataService','DatastoreService',
-	function($scope,  $modalInstance, DataService, DatastoreService){
+var modal_edit_file = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
+	function($scope,  $modalInstance, DatasetService, DatastoreService){
 
 		$scope.header_message = "Edit file";
 
 		$scope.save = function(){
-			var promise = DatastoreService.updateFile($scope.project.Id, $scope.row);
+			var promise = ProjectService.updateFile($scope.project.Id, $scope.row);
 			promise.$promise.then(function(){
 				$scope.reloadProject();
 				$modalInstance.dismiss();

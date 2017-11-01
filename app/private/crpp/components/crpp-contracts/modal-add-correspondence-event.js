@@ -1,7 +1,7 @@
 ﻿
-var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '$modal', 'DataService','DatastoreService','ServiceUtilities',
+var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '$modal', 'DatasetService','DatastoreService','ServiceUtilities',
 	'$filter', 'FileUploadService','$upload','$location', '$anchorScroll',
-  function($scope, $rootScope, $modalInstance, $modal, DataService, DatastoreService, ServiceUtilities, 
+  function($scope, $rootScope, $modalInstance, $modal, DatasetService, DatastoreService, ServiceUtilities, 
 	$filter, FileUploadService, $upload, $location, $anchorScroll){
 	console.log("Inside ModalAddCorrespondenceEventCtrl...");
 	
@@ -433,10 +433,10 @@ var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '
 		
 		if (confirm('Are you sure that you want to delete this Correspondence Event?'))
 		{
-			//DatastoreService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
+			//SubprojectService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
 			
-			//var promise = DatastoreService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
-			var promise = DatastoreService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId, $scope.DatastoreTablePrefix);
+			//var promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
+			var promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId, $scope.DatastoreTablePrefix);
 			
 			promise.$promise.then(function(){
 				$scope.subprojects = null;
@@ -688,7 +688,7 @@ var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '
 			saveRow.OtherResponseType = 'undefined'; // Throw this away, because we do not want to save it; no database field or it.
 		}
 
-		/*var promise = DatastoreService.saveCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, saveRow);
+		/*var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, saveRow);
 		if (typeof promise !== 'undefined')
 		{
 			promise.$promise.then(function(){
@@ -714,7 +714,7 @@ var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '
 		{
 			console.log("$scope.viewSubproject is present, using that...");
 			console.log("$scope.viewSubproject.Id = " + $scope.viewSubproject.Id);
-			var promise = DatastoreService.saveCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, saveRow);
+			var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, saveRow);
 			if (typeof promise !== 'undefined')
 			{
 				promise.$promise.then(function(){
@@ -738,7 +738,7 @@ var modal_add_correspondence_event = ['$scope', '$rootScope','$modalInstance', '
 		else if ((typeof $scope.crppProjectName !== 'undefined' ) && ($scope.crppProjectName !== null))
 		{
 			console.log("$scope.viewSubproject missing, using $scope.subprojectId:  " + $scope.subprojectId);
-			var promise = DatastoreService.saveCorrespondenceEvent($scope.project.Id, $scope.subprojectId, saveRow);
+			var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.subprojectId, saveRow);
 			if (typeof promise !== 'undefined')
 			{
 				promise.$promise.then(function(){

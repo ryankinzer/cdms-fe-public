@@ -1,6 +1,6 @@
 ﻿//handles managing file controltypes
-var modal_file_add = ['$scope','$modalInstance', 'DataService','DatastoreService','ServiceUtilities','$rootScope',
-    function($scope, $modalInstance, DataService, DatastoreService, ServiceUtilities, $rootScope){
+var modal_file_add = ['$scope','$modalInstance', 'DatasetService','ServiceUtilities','$rootScope',
+    function($scope, $modalInstance, DatasetService, ServiceUtilities, $rootScope){
 		// This controller is for the Dataset Activity / Subproject File modal.
 		console.log("Inside modals-controller.js, FileAddModalCtrl");
 		//console.log("$scope is next...");
@@ -157,6 +157,7 @@ var modal_file_add = ['$scope','$modalInstance', 'DataService','DatastoreService
                 formData.append('file', incoming_file);
             });
 
+            //TODO: we probably want to refactor this into our usual pattern (factory + service)
             $.ajax({
                 url: serviceUrl + '/api/v1/file/handlewaypoints',
                 type : 'POST',

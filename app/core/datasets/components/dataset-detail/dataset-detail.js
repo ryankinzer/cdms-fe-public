@@ -4,9 +4,9 @@
 *    e.g.:  http://localhost/cdms/index.html#/dataset-details/1004
 */
 
-var dataset_detail = ['$scope', '$routeParams', 'DataService', '$location', '$filter',
-    function(scope, routeParams, DataService, $location, $filter){
-        scope.dataset = DataService.getDataset(routeParams.Id);
+var dataset_detail = ['$scope', '$routeParams', 'DatasetService', '$location', '$filter',
+    function(scope, routeParams, DatasetService, $location, $filter){
+        scope.dataset = DatasetService.getDataset(routeParams.Id);
 
         //common fields we show for all datasets
         scope.metadataList = {};
@@ -15,7 +15,7 @@ var dataset_detail = ['$scope', '$routeParams', 'DataService', '$location', '$fi
         scope.CellOptions = {};
         
         //if we only want to show in edit mode, use some if statement here...
-        scope.metadataProperties = DataService.getMetadataProperties(METADATA_ENTITY_DATASETTYPEID); //sets scope.metadataProperties
+        scope.metadataProperties = CommonService.getMetadataProperties(METADATA_ENTITY_DATASETTYPEID); //sets scope.metadataProperties
 
         scope.$watch('project.OwnerId', function() {
             if(scope.project && scope.project.OwnerId)
@@ -32,7 +32,7 @@ var dataset_detail = ['$scope', '$routeParams', 'DataService', '$location', '$fi
         scope.$watch('dataset.ProjectId', function(){
             if(scope.dataset && scope.dataset.ProjectId)
             {
-                scope.project = DataService.getProject(scope.dataset.ProjectId);
+                scope.project = ProjectService.getProject(scope.dataset.ProjectId);
 
                 //prepopulate the dataset fields that are included in the dataset's details (not strictly "metadata" -- but interfaced the same way)
                 scope.metadataList = angular.extend(scope.metadataList, {
@@ -61,7 +61,7 @@ var dataset_detail = ['$scope', '$routeParams', 'DataService', '$location', '$fi
 				//add in the metadata that came with this dataset
                 angular.forEach(scope.dataset.Metadata, function(value, key){
                     try{
-                    		var property = DataService.getMetadataProperty(value.MetadataPropertyId);
+                    		var property = CommonService.getMetadataProperty(value.MetadataPropertyId);
 
 							populateMetadataDropdowns(scope,property); //setup any dropdown
 
@@ -118,13 +118,13 @@ var dataset_detail = ['$scope', '$routeParams', 'DataService', '$location', '$fi
                 metadata.push({ MetadataPropertyId: item.propertyId, Values: item.value});
             });
 
-            var promise = DataService.saveDatasetMetadata(scope.dataset.Id, metadata, scope.saveResults);
+            var promise = CommonService.saveDatasetMetadata(scope.dataset.Id, metadata, scope.saveResults);
 
             promise.$promise.then(function(){
-                DataService.clearDataset();
+                DatasetService.clearDataset();
                 setTimeout(function(){
                     console.log("boom ready to move on.");
-                    scope.dataset = DataService.getDataset(routeParams.Id);
+                    scope.dataset = DatasetService.getDataset(routeParams.Id);
                     $location.path("/dataset-details/"+routeParams.Id);    
                     console.log("moving on.");
                 },250);

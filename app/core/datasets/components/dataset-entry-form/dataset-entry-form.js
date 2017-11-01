@@ -1,7 +1,7 @@
 ﻿// was DataEntryFormCtrl from DataEntryControllers
 //Fieldsheet / form version of the dataentry page
-var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$location', '$rootScope', 'ActivityParser', 'DataSheet', '$route', 'FileUploadService', 'DatastoreService', '$upload',
-    function ($scope, $routeParams, DataService, $modal, $location, $rootScope, ActivityParser, DataSheet, $route, UploadService, DatastoreService, $upload) {
+var dataset_entry_form = ['$scope', '$routeParams', 'DatasetService', '$modal', '$location', '$rootScope', 'ActivityParser', 'DataSheet', '$route', 'FileUploadService', 'DatastoreService', '$upload',
+    function ($scope, $routeParams, DatasetService, $modal, $location, $rootScope, ActivityParser, DataSheet, $route, UploadService, DatastoreService, $upload) {
 
         initEdit(); // stop backspace from ditching in the wrong place.
 
@@ -14,8 +14,8 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
         $scope.dataSheetDataset = [];
         // $scope.row = {ActivityQAStatus: {}, activityDate: new Date()}; //header field values get attached here by dbcolumnname
 
-        $scope.datastoreLocations = DatastoreService.getLocations($routeParams.Id);
-        //$scope.fishermenList = DatastoreService.getFishermen();
+        $scope.datastoreLocations = CommonService.getLocations($routeParams.Id);
+        //$scope.fishermenList = ProjectService.getFishermen();
         $scope.fishermenList = null;  // Set this to null first, so that we can monitor it later.
         $scope.subprojectList = null;  // Set this to null first, so that we can monitor it later.
         $scope.datasetLocations = [[]];
@@ -49,7 +49,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
 
         //fire up our dataset
         console.log("routeParams.Id = " + $routeParams.Id);
-        $scope.dataset = DataService.getDataset($routeParams.Id);
+        $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
         // Note:  Need to watch for the length below, because fishermanList itself does not change, even if it is updated.
         $scope.$watch('fishermenList.length', function () {
@@ -91,7 +91,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             //$rootScope.datasetId = $scope.dataset.Id;
             $rootScope.datasetId = $scope.datasetId = $scope.dataset.Id;
             console.log("$rootScope.datasetId = " + $rootScope.datasetId);
-            $scope.dataset.Files = DataService.getDatasetFiles($scope.dataset.Id);
+            $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
 
             $scope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
@@ -100,13 +100,13 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 console.log("Loading Harvest...");
                 $scope.ShowFishermen = true;
-                $scope.fishermenList = DatastoreService.getFishermen(); // Get all fishermen.
-                $scope.theFishermen = DatastoreService.getProjectFishermen($scope.dataset.ProjectId); // Get just the fishermen for this project.
+                $scope.fishermenList = ProjectService.getFishermen(); // Get all fishermen.
+                $scope.theFishermen = ProjectService.getProjectFishermen($scope.dataset.ProjectId); // Get just the fishermen for this project.
             }
             else if ($scope.DatastoreTablePrefix === "CrppContracts") {
                 console.log("Loading CRPP subprojects...");
                 $scope.ShowSubproject = true;
-                $scope.subprojectList = DataService.getSubprojects();
+                $scope.subprojectList = SubprojectService.getSubprojects();
             }
             else if ($scope.DatastoreTablePrefix === "Appraisal") {
                 console.log("Loading DECD ...");
@@ -114,7 +114,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             }
 
             //load our project based on the projectid we get back from the dataset
-            $scope.project = DataService.getProject($scope.dataset.ProjectId); // We will wait until this loads, before doing anything more with it.  See $scope.$watch('project.Name...
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId); // We will wait until this loads, before doing anything more with it.  See $scope.$watch('project.Name...
 
             if ($scope.DatastoreTablePrefix === "CreelSurvey" ||
                 $scope.DatastoreTablePrefix === "SpawningGroundSurvey"
@@ -200,15 +200,15 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
 
             $rootScope.projectId = $scope.project.Id;
             $scope.project.Files = null;
-            $scope.project.Files = DataService.getProjectFiles($scope.project.Id);
+            $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
 
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-            $scope.datasetLocationType = DatastoreService.getDatasetLocationType($scope.DatastoreTablePrefix);
+            $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
             console.log("LocationType = " + $scope.datasetLocationType);
 
-            $scope.subprojectType = DatastoreService.getProjectType($scope.project.Id);
+            $scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
             console.log("$scope.subprojectType = " + $scope.subprojectType);
-            DataService.setServiceSubprojectType($scope.subprojectType);
+            SubprojectService.setServiceSubprojectType($scope.subprojectType);
 
             //if ($scope.subprojectType === "Harvest")
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
@@ -219,7 +219,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             else if ($scope.DatastoreTablePrefix === "CrppContracts") {
                 console.log("Loading CRPP subprojects...");
                 $scope.ShowSubproject = true;
-                $scope.subprojectList = DataService.getSubprojects();
+                $scope.subprojectList = SubprojectService.getSubprojects();
             }
             //else if ($scope.subprojectType === "Habitat")
             //else if ($scope.DatastoreTablePrefix === "Metrics")
@@ -229,7 +229,7 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
             ) {
                 console.log("Loading Habitat subprojects...");
 
-                $scope.subprojectList = DataService.getProjectSubprojects($scope.project.Id);
+                $scope.subprojectList = SubprojectService.getProjectSubprojects($scope.project.Id);
                 var watcher = $scope.$watch('subprojectList.length', function () {
                     console.log("Inside watcher for subprojectList.length...");
                     // We wait until subprojects gets loaded and then turn this watch off.
@@ -425,8 +425,8 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
 
         $scope.reloadProject = function () {
             //reload project instruments -- this will reload the instruments, too
-            DataService.clearProject();
-            $scope.project = DataService.getProject($scope.dataset.ProjectId);
+            ProjectService.clearProject();
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
             var watcher = $scope.$watch('project.Id', function () {
                 $scope.selectInstrument();
                 watcher();
@@ -1031,9 +1031,9 @@ var dataset_entry_form = ['$scope', '$routeParams', 'DataService', '$modal', '$l
                     console.log("$scope.addNewSection is true, so setting $scope.activities.addNewSection to true also.");
                     $scope.activities.addNewSection = true;
                 }
-                console.log("$scope.activities in saveData, just before calling DataService.saveActivities is next...");
+                console.log("$scope.activities in saveData, just before calling DatasetService.saveActivities is next...");
                 console.dir($scope.activities);
-                DataService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
+                DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
             }
             else {
                 console.log("We have errors...");

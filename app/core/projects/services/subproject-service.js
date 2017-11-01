@@ -1,5 +1,8 @@
 ﻿//subproject (crpp + habitat) factories and service
 
+//NB: this is not the final form - we want to create an actual
+//    subproject feature in the system and refactor this
+
 project_module.factory('MigrationYears', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/list/getmigrationyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
@@ -108,7 +111,7 @@ project_module.factory('RemoveHabitatItem', ['$resource', function ($resource) {
 /*
 * subprojects service (includes Project factory which is defined in projects-service.js)
 */
-projects_module.service('SubProjectService', ['$q', 
+projects_module.service('SubprojectService', ['$q', 
     'MigrationYears',
     'RunYears',
     'ReportYears',
@@ -131,7 +134,6 @@ projects_module.service('SubProjectService', ['$q',
     'RemoveHabSubproject',
     'RemoveCorrespondenceEvent',
     'RemoveHabitatItem',
-    'Project',                      //from projects-service factory definition
 
     function ($q,
         MigrationYears,
@@ -155,20 +157,14 @@ projects_module.service('SubProjectService', ['$q',
         RemoveSubproject,
         RemoveHabSubproject,
         RemoveCorrespondenceEvent,
-        RemoveHabitatItem,
-        Project) {
+        RemoveHabitatItem) {
 
         var service = {
-            project: null,
 
             //we'd like to move this subproject stuff all out soon
             subproject: null,
             subprojects: null,
             subprojectType: null,
-
-            clearProject: function () {
-                service.project = null;
-            },
 
             clearSubproject: function () {
                 service.subproject = null;
@@ -184,59 +180,6 @@ projects_module.service('SubProjectService', ['$q',
                     return service.subproject;
             },
 
-            getProject: function (id) {
-                console.log("Inside services.js, getProject; id = " + id);
-                //console.log("service is next...");
-                //console.dir(service);
-                //if(service.project && service.project.Id == id)
-                if (service.project && service.project.Id == id && service.subprojectType !== "Habitat") // Not Habitat
-                {
-                    console.log("service.project.Id = " + service.project.Id);
-                    return service.project;
-                }
-
-                service.project = Project.query({ id: id });
-
-                service.project.$promise.then(function () {
-                    //console.log("after-project-load!");
-                    //do some sorting after we load for instruments
-                    if (service.project.Instruments && service.project.Instruments.length > 0)
-                        service.project.Instruments = service.project.Instruments.sort(orderByAlphaName);
-
-                    //and also for locations
-                    //service.project.Locations = service.project.Locations.sort(orderByAlpha);
-                });
-
-                return service.project;
-            },
-
-            // We don't really like to set things this way...  Is there a better way?
-            getProjectType: function (aProjectId) {
-                var theType = null;
-
-                if (aProjectId === 2247) 			// CRPP
-                {
-                    theType = "CRPP";
-                }
-                else if ((aProjectId === 1202) || // Walla Walla
-                    (aProjectId === 1223) || 		// First HabSubproject, Umatilla
-                    (aProjectId === 2223) || 		// NF John Day
-                    (aProjectId === 2226) ||		// Rainwater
-                    (aProjectId === 2228) ||		// Grande Ronde
-                    (aProjectId === 2229) ||		// Tucannon
-                    (aProjectId === 10029) ||		// Touchet
-                    (aProjectId === 2249)			// Biomonitoring of Fish Enhancement
-                ) {
-                    theType = "Habitat";
-                }
-                else if (aProjectId === 1217)
-                    theType = "Harvest";
-                else if (aProjectId === 2246)
-                    theType = "DECD";
-
-                return theType;
-            },
-            
             setServiceSubprojectType: function (spType) {
                 console.log("Inside setServiceSubprojectType, spType = " + spType);
                 service.subprojectType = spType;
@@ -246,7 +189,10 @@ projects_module.service('SubProjectService', ['$q',
             getSubprojects: function () {
                 return GetSubprojects.query();
             },
-
+            getHabSubproject: function (id) {
+                console.log("Inside getHabSubproject...");
+                return GetHabSubproject.query({ id: id });
+            },
             getHabSubprojects: function ()
             //getHabSubprojects: function(id)
             {

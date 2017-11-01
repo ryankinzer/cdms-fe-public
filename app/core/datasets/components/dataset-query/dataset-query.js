@@ -1,8 +1,8 @@
 ﻿
-var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$modal', 'DataSheet', '$rootScope', 'ChartService', 'DatastoreService',
-    	function($scope, $routeParams, DataService, $location, $modal, DataSheet, $rootScope, ChartService, DatastoreService) {
+var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$modal', 'DataSheet', '$rootScope', 'ChartService', 'DatastoreService',
+    	function($scope, $routeParams, DatasetService, $location, $modal, DataSheet, $rootScope, ChartService, DatastoreService) {
 
-			$scope.dataset = DataService.getDataset($routeParams.Id);
+			$scope.dataset = DatasetService.getDataset($routeParams.Id);
 			
     		$scope.headerFields = [];
     		$scope.detailFields = [];
@@ -136,10 +136,10 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 
 				$scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
 				console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-				$scope.datasetLocationType = DatastoreService.getDatasetLocationType($scope.DatastoreTablePrefix);					
+				$scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);					
 				console.log("LocationType = " + $scope.datasetLocationType);				
 
-				$scope.project = DataService.getProject($scope.dataset.ProjectId);
+				$scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 	        	$scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id','Name');
 	        	$scope.QAStatusOptions["all"] = "- All -";
 	        	$scope.Criteria.ParamQAStatusId = "all";
@@ -219,14 +219,14 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 					$scope.showActivitiesWhereAll = true;
 					$scope.showActivitiesWhereRunYear = true;
 					//$scope.Criteria.paramActivityDateType = "singleYear"; // We set this in BuildQuery instead.
-					$scope.runYearsList = DataService.getRunYears($scope.dataset.Id);
+					$scope.runYearsList = SubprojectService.getRunYears($scope.dataset.Id);
 				}
 				else if ($scope.DatastoreTablePrefix === "ScrewTrap") 
 				{
 					$scope.showActivitiesWhereAll = false;
 					$scope.showActivitiesWhereMigrationYear = true;
 					$scope.Criteria.paramActivityDateType = "singleYear";
-					$scope.migrationYearsList = DataService.getMigrationYears($scope.dataset.Id);
+					$scope.migrationYearsList = SubprojectService.getMigrationYears($scope.dataset.Id);
 				}
 				//else if ($scope.DatastoreTablePrefix === "Metrics")
 				else if (($scope.DatastoreTablePrefix === "Metrics") || 
@@ -237,7 +237,7 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 					$scope.showActivitiesWhereAll = false;
 					$scope.showActivitiesWhereReportYear = true;
 					$scope.Criteria.paramActivityDateType = "singleYear";
-					$scope.reportYearsList = DataService.getReportYears($scope.dataset.Id);
+					$scope.reportYearsList = SubprojectService.getReportYears($scope.dataset.Id);
 					
 					$scope.datasheetColDefs = [];
 					$scope.datasheetColDefs = [{   
@@ -257,7 +257,7 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 					$scope.showActivitiesWhereAll = false;
 					$scope.showActivitiesWhereSpawningYear = true;
 					$scope.Criteria.paramActivityDateType = "singleYear";
-					$scope.spawningYearsList = DataService.getSpawningYears($scope.dataset.Id);
+					$scope.spawningYearsList = SubprojectService.getSpawningYears($scope.dataset.Id);
 					
 					$scope.datasheetColDefs = [];
 					$scope.datasheetColDefs = [
@@ -273,7 +273,7 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 					$scope.showActivitiesWhereAll = false;
 					$scope.showActivitiesWhereBroodYear = true;
 					$scope.Criteria.paramActivityDateType = "singleYear";
-					$scope.broodYearsList = DataService.getBroodYears($scope.dataset.Id);
+					$scope.broodYearsList = SubprojectService.getBroodYears($scope.dataset.Id);
 					
 					$scope.datasheetColDefs = [];
 					$scope.datasheetColDefs = [
@@ -289,7 +289,7 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 					$scope.showActivitiesWhereAll = false;
 					$scope.showActivitiesWhereOutmigrationYear = true;
 					$scope.Criteria.paramActivityDateType = "singleYear";
-					$scope.outmigrationYearsList = DataService.getOutmigrationYears($scope.dataset.Id);
+					$scope.outmigrationYearsList = SubprojectService.getOutmigrationYears($scope.dataset.Id);
 					
 					$scope.datasheetColDefs = [];
 					$scope.datasheetColDefs = [
@@ -360,16 +360,16 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
 					console.log("scope in watch project.Name is next...");
 					//console.dir($scope);
 					
-					//$scope.subprojectType = DatastoreService.getProjectType($scope.project.Id);
+					//$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
 					console.log("$scope.subprojectType = " + $scope.subprojectType);
-					DataService.setServiceSubprojectType($scope.subprojectType);
+					SubprojectService.setServiceSubprojectType($scope.subprojectType);
 
 					//if ($scope.subprojectType === "Harvest")
 					if ($scope.DatastoreTablePrefix === "CreelSurvey")
 					{
 						console.log("Loading Harvest...");
 						$scope.ShowFishermen = true;
-						$scope.theFishermen = DatastoreService.getProjectFishermen($scope.project.Id);
+						$scope.theFishermen = ProjectService.getProjectFishermen($scope.project.Id);
 					}
 					
 					console.log("ProjectLocations is next...");
@@ -767,7 +767,7 @@ var dataset_query = ['$scope', '$routeParams', 'DataService', '$location', '$mod
    			
     			$scope.query = $scope.buildQuery();
 
-    			DataService.queryActivities($scope.query);
+    			DatasetService.queryActivities($scope.query);
     			//service will run query and then update:
 	    			//query.results
 	    			//query.errors

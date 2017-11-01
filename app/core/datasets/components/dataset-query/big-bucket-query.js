@@ -1,10 +1,10 @@
 ﻿//Global / full query across all projects with this dataset.
-var big_bucket_query = ['$scope','$routeParams','DatastoreService','DataService','$location', '$modal','DataSheet', '$rootScope',
-    	function($scope, $routeParams, DatastoreService, DataService, $location, $modal, DataSheet, $rootScope) {
+var big_bucket_query = ['$scope','$routeParams','DatastoreService','DatasetService','$location', '$modal','DataSheet', '$rootScope',
+    	function($scope, $routeParams, DatastoreService, DatasetService, $location, $modal, DataSheet, $rootScope) {
 
-    		$scope.datastoreLocations = DatastoreService.getLocations($routeParams.Id);
-    		$scope.dataFields = DatastoreService.getFields($routeParams.Id);
-    		$scope.datastore = DatastoreService.getDatastore($routeParams.Id);
+    		$scope.datastoreLocations = CommonService.getLocations($routeParams.Id);
+    		$scope.dataFields = AdminService.getFields($routeParams.Id);
+    		$scope.datastore = DatasetService.getDatastore($routeParams.Id);
 
 			$scope.headerFields = [];
     		$scope.detailFields = [];
@@ -165,7 +165,7 @@ var big_bucket_query = ['$scope','$routeParams','DatastoreService','DataService'
 				console.log("$scope.query is next...");
 				console.dir($scope.query);
 
-    			DataService.queryActivities($scope.query);
+    			DatasetService.queryActivities($scope.query);
     			//service will run query and then update:
 	    			//query.results
 	    			//query.errors

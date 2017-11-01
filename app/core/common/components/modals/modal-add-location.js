@@ -1,7 +1,7 @@
 ﻿
 //modal that handles both saving and editing locations on a project
-var modal_add_location = ['$scope', '$modalInstance', 'DataService', 'DatastoreService',
-    function ($scope, $modalInstance, DataService, DatastoreService) {
+var modal_add_location = ['$scope', '$modalInstance', 'DatasetService', 'ProjectService', 'CommonService',
+    function ($scope, $modalInstance, DatasetService, ProjectService, CommonService) {
 
         //if $scope.selectedLocation is set then we are EDITING, otherwise CREATING
         if ($scope.selectedLocation) {
@@ -14,9 +14,9 @@ var modal_add_location = ['$scope', '$modalInstance', 'DataService', 'DatastoreS
         }
 
 
-        $scope.project = DataService.getProject($scope.dataset.ProjectId);
-        $scope.locationTypes = DatastoreService.getLocationTypes();
-        $scope.waterbodies = DatastoreService.getWaterBodies();
+        $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
+        $scope.locationTypes = CommonService.getLocationTypes();
+        $scope.waterbodies = CommonService.getWaterBodies();
 
         $scope.save = function () {
             console.log("Inside ModalAddLocationCtrl, save...");
@@ -66,7 +66,7 @@ var modal_add_location = ['$scope', '$modalInstance', 'DataService', 'DatastoreS
                             $scope.row.SdeObjectId = results[0].objectId;
                             console.log("Created a new point! " + $scope.row.SdeObjectId);
 
-                            var promise = DatastoreService.saveNewProjectLocation($scope.project.Id, $scope.row);
+                            var promise = CommonService.saveNewProjectLocation($scope.project.Id, $scope.row);
                             promise.$promise.then(function () {
                                 console.log("done and success!");
                                 //reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
@@ -89,7 +89,7 @@ var modal_add_location = ['$scope', '$modalInstance', 'DataService', 'DatastoreS
                 save_row.LocationType = undefined;
                 save_row.WaterBody = undefined;
 
-                var promise = DatastoreService.saveNewProjectLocation($scope.project.Id, save_row);
+                var promise = CommonService.saveNewProjectLocation($scope.project.Id, save_row);
                 promise.$promise.then(function () {
                     //success
                     $scope.reloadActivities();

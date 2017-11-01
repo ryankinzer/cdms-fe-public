@@ -1,20 +1,20 @@
 ﻿
-var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'DatastoreService', '$modal', '$location', '$window', '$rootScope',
-    function ($scope, $routeParams, DataService, DatastoreService, $modal, $location, $window, $rootScope) {
+var dataset_activities_list = ['$scope', '$routeParams', 'DatasetService', 'DatastoreService', '$modal', '$location', '$window', '$rootScope',
+    function ($scope, $routeParams, DatasetService, DatastoreService, $modal, $location, $window, $rootScope) {
         console.log("Inside datasetActivitiesController...");
-        $scope.dataset = DataService.getDataset($routeParams.Id);
+        $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
         if ((typeof $scope.activities !== 'undefined') && ($scope.activites !== null)) {
             $scope.activities = null;
             console.log("Set $scope.activities to null for project page...");
         }
-        $scope.activities = DataService.getActivitiesForView($routeParams.Id);
+        $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
         $scope.loading = true;
         $scope.project = null;
         $scope.saveResults = null;
         $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
         $scope.allActivities = null;
-        $scope.headerdata = DataService.getHeadersDataForDataset($routeParams.Id);
+        $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
         $scope.thisDatasetLocationObjects = [];
 
         //console.log("Profile = ");
@@ -112,7 +112,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
 
             $rootScope.datasetId = $scope.dataset.Id;
             //load our project based on the projectid we get back from the dataset
-            $scope.project = DataService.getProject($scope.dataset.ProjectId);
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
             $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
 
             $scope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
@@ -232,14 +232,14 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
 
                 console.log("$scope.project.Id = " + $scope.project.Id);
                 //$scope.subprojectType = DatastoreService.getSubprojectType($scope.project.Id);
-                //$scope.subprojectType = DatastoreService.getProjectType($scope.project.Id);
+                //$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
                 console.log("$scope.subprojectType = " + $scope.subprojectType);
-                DataService.setServiceSubprojectType($scope.subprojectType);
+                SubprojectService.setServiceSubprojectType($scope.subprojectType);
 
                 //if ($scope.subprojectType === "Habitat")
                 if ($scope.DatastoreTablePrefix === "Metrics") {
                     console.log("x")
-                    $scope.subprojectList = DataService.getProjectSubprojects($scope.project.Id);
+                    $scope.subprojectList = SubprojectService.getProjectSubprojects($scope.project.Id);
                     var watcher = $scope.$watch('subprojectList.length', function () {
                         // We wait until subprojects gets loaded and then turn this watch off.
                         if ($scope.subprojectList === null) {
@@ -405,7 +405,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
 
         $scope.removeLocation = function () {
             if (confirm("Are you sure you want to delete this location?")) {
-                var deleting = DatastoreService.deleteLocation($scope.selectedLocation.Id);
+                var deleting = CommonService.deleteLocation($scope.selectedLocation.Id);
                 $scope.removeFilter();
 
                 deleting.$promise.then(function () {
@@ -542,7 +542,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
 
             $rootScope.Profile.toggleDatasetFavorite($scope.dataset);
 
-            DataService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
+            PreferencesService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
 
             var watcher = $scope.$watch('results', function () {
                 if ($scope.results.done) {
@@ -559,9 +559,9 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
         }
 
         $scope.refreshProjectLocations = function () {
-            DataService.clearProject();
+            ProjectService.clearProject();
             $scope.project = null;
-            $scope.project = DataService.getProject($scope.dataset.ProjectId);
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
         };
 
         $scope.reloadProjectLocations = function () {
@@ -574,7 +574,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
             //console.log("$scope.subprojectList is next...");
             //console.dir($scope.subprojectList);
 
-            $scope.datasetLocationType = DatastoreService.getDatasetLocationType($scope.DatastoreTablePrefix);
+            $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
             console.log("LocationType = " + $scope.datasetLocationType);
 
             //$scope.locationsArray = getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId");
@@ -616,7 +616,7 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
         };
 
         $scope.reloadActivities = function () {
-            $scope.activities = DataService.getActivities($routeParams.Id);
+            $scope.activities = DatasetService.getActivities($routeParams.Id);
         }
 
         $scope.openQueryWindow = function (p) {
@@ -637,12 +637,12 @@ var dataset_activities_list = ['$scope', '$routeParams', 'DataService', 'Datasto
             if (!confirm("Are you sure you want to delete " + $scope.gridOptions.selectedItems.length + " activities?  There is no undo for this operation."))
                 return;
 
-            DataService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.gridOptions, $scope.saveResults);
+            DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.gridOptions, $scope.saveResults);
             var deleteWatcher = $scope.$watch('saveResults', function () {
                 if ($scope.saveResults.success) {
                     //clear selection
                     $scope.gridOptions.selectAll(false);
-                    $scope.activities = DataService.getActivities($routeParams.Id); //reload from the db.
+                    $scope.activities = DatasetService.getActivities($routeParams.Id); //reload from the db.
                     deleteWatcher();
                     console.log("success!");
                 }

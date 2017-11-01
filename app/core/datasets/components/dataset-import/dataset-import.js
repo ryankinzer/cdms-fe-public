@@ -1,9 +1,9 @@
-﻿var dataset_import = ['$scope','$routeParams','DatastoreService','DataService','$location','$upload','ActivityParser','DataSheet','$rootScope',
+﻿var dataset_import = ['$scope','$routeParams','DatastoreService','DatasetService','$location','$upload','ActivityParser','DataSheet','$rootScope',
 		'Logger','$route','$modal','ChartService','ServiceUtilities',
-    	function($scope, $routeParams, DatastoreService, DataService, $location, $upload, ActivityParser, DataSheet, $rootScope, Logger, $route, $modal, ChartService,
+    	function($scope, $routeParams, DatastoreService, DatasetService, $location, $upload, ActivityParser, DataSheet, $rootScope, Logger, $route, $modal, ChartService,
 			ServiceUtilities) {
 //    		$scope.QAActivityStatuses = QAActivityStatuses;
-    	$scope.dataset = DataService.getDataset($routeParams.Id);
+    	$scope.dataset = DatasetService.getDataset($routeParams.Id);
 		
 			if ((typeof $scope.activities !== 'undefined') && ($scope.activites !== null))
 			{
@@ -25,7 +25,7 @@
 
 			// Q:  Why are we loading the activities, on the import page?
 			// A:  Is a user entering a set of duplicate records?  We need the dataset activities to answer that question.
-			//$scope.existingActivitiesLoad = DataService.getActivities($routeParams.Id);
+			//$scope.existingActivitiesLoad = DatasetService.getActivities($routeParams.Id);
 			//$scope.existingActivities = []; // These are for checking for duplicates.
 			$scope.sortedLocations = [];
 			$scope.datasetLocationType=0;
@@ -171,7 +171,7 @@
 						console.log("Found instrument");
 				
 				$scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
-				$scope.datasetLocationType = DatastoreService.getDatasetLocationType($scope.DatastoreTablePrefix);				
+				$scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);				
 				console.log("LocationType = " + $scope.datasetLocationType);				
 				$scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix);  // Pass the TablePrefix (name of the dataset), because it will never change.
 				$scope.mappableFields = $scope.setMappableFields($scope.DatastoreTablePrefix);				
@@ -207,7 +207,7 @@
 					$scope.ShowInstrument = true;
 				else if ($scope.DatastoreTablePrefix === "CreelSurvey")
 				{
-					$scope.fishermenList = DatastoreService.getFishermen();
+					$scope.fishermenList = ProjectService.getFishermen();
 					$scope.datasheetColDefs2 = [ 
 							{
 								field: 'FishermanId',
@@ -217,7 +217,7 @@
 						];
 				}
 				
-				$scope.datasetLocationType = DatastoreService.getDatasetLocationType($scope.DatastoreTablePrefix);				
+				$scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);				
 				console.log("LocationType = " + $scope.datasetLocationType);	
 				
 				$scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix);  // Pass the TablePrefix (name of the dataset), because it will never change.
@@ -226,9 +226,9 @@
 				
 				$scope.mappableFields = $scope.setMappableFields($scope.DatastoreTablePrefix);
 									
-				//DataService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
+				//DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
-				$scope.project = DataService.getProject($scope.dataset.ProjectId);
+				$scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 
 				$scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id','Name');
 				$scope.RowQAStatuses =  $rootScope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  //Row qa status ids
@@ -303,16 +303,16 @@
 				console.log("Inside DatasetImportCtrl, project.Name watcher...");
 	        	//Logger.debug($scope.project);
 				
-				//$scope.subprojectType = DatastoreService.getProjectType($scope.project.Id);
+				//$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
 				console.log("$scope.subprojectType = " + $scope.subprojectType);
-				DataService.setServiceSubprojectType($scope.subprojectType);
+				SubprojectService.setServiceSubprojectType($scope.subprojectType);
 
 				//if ($scope.subprojectType === "Habitat")
 				if ($scope.DatastoreTablePrefix === "Metrics")
 				{
 					console.log("Loading Habitat subprojects...");				
 
-					$scope.subprojectList = DataService.getProjectSubprojects($scope.project.Id);
+					$scope.subprojectList = SubprojectService.getProjectSubprojects($scope.project.Id);
 					var watcher = $scope.$watch('subprojectList.length', function(){
 						console.log("Inside watcher for subprojectList.length...");
 						// We wait until subprojects gets loaded and then turn this watch off.
@@ -624,8 +624,8 @@
 
 			$scope.reloadProject = function(){
                 //reload project instruments -- this will reload the instruments, too
-                DataService.clearProject();
-                $scope.project = DataService.getProject($scope.dataset.ProjectId);
+                ProjectService.clearProject();
+                $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
                 var watcher = $scope.$watch('project.Id', function(){
                 	$scope.selectInstrument();
                 	watcher();
@@ -1902,7 +1902,7 @@
 	            
 	            if(!$scope.activities.errors)
 	            {				
-	                DataService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
+	                DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
 	            }
 
 			};
@@ -1971,7 +1971,7 @@
 		                    Label: features[0].attributes['PARCELID'],
 		                };
 
-		                var promise = DatastoreService.saveNewProjectLocation($scope.project.Id, new_location);
+		                var promise = CommonService.saveNewProjectLocation($scope.project.Id, new_location);
 		                promise.$promise.then(function(location_data){
 		                   //console.log("done and success!");
 		                   //console.dir(location_data);

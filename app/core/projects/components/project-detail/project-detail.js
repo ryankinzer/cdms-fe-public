@@ -1,7 +1,7 @@
 ﻿
 
-var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService', '$rootScope','$modal','$sce','$window','$http','ServiceUtilities','ConvertStatus','$location','$anchorScroll',
-	function(scope, routeParams, DataService, DatastoreService, $rootScope, $modal,$sce, $window, $http, ServiceUtilities, ConvertStatus, $location, $anchorScroll){
+var project_detail = ['$scope', '$routeParams', 'DatasetService','DatastoreService', '$rootScope','$modal','$sce','$window','$http','ServiceUtilities','ConvertStatus','$location','$anchorScroll',
+	function(scope, routeParams, DatasetService, DatastoreService, $rootScope, $modal,$sce, $window, $http, ServiceUtilities, ConvertStatus, $location, $anchorScroll){
 		console.log("Inside controllers.js, projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
 		
@@ -11,16 +11,16 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			console.log("Set scope.activities to null for project page...");
 		}
 		
-		scope.datasets = DataService.getProjectDatasets(routeParams.Id);
-		scope.project = DataService.getProject(routeParams.Id);
+		scope.datasets = ProjectService.getProjectDatasets(routeParams.Id);
+		scope.project = ProjectService.getProject(routeParams.Id);
 		scope.currentUserId = $rootScope.Profile.Id;
 		scope.filteredUsers = false;
-		scope.allInstruments = DatastoreService.getAllInstruments();
+		scope.allInstruments = ProjectService.getAllInstruments();
 	
 		scope.fishermanList = null;
-		//scope.fishermenList = DatastoreService.getFishermen();
+		//scope.fishermenList = ProjectService.getFishermen();
 		scope.subprojectList = null;  // Set this to null first, so that we can monitor it later.
-		//scope.subprojectList = DataService.getSubprojects();
+		//scope.subprojectList = SubprojectService.getSubprojects();
 		scope.uploadFileType = "";
 		scope.projectName = "";
 		scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = "";
@@ -49,15 +49,15 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		scope.theServiceUrl = serviceUrl;
 		
 		// Get the fishermen associated to the project.
-		//scope.theFishermen = DatastoreService.getProjectFishermen(scope.projectId);
+		//scope.theFishermen = ProjectService.getProjectFishermen(scope.projectId);
 		scope.theFishermen = null;
 	
 		scope.CellOptions = {}; //for metadata dropdown options
 		scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
 
 		scope.metadataList = {};
-		scope.metadataPropertiesPromise = DataService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID);
-		scope.habitatPropertiesPromise = DataService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID);
+		scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID);
+		scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID);
 
 		var linkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
             				   '<a href="#/{{row.getProperty(\'activitiesRoute\')}}/{{row.getProperty(\'Id\')}}">{{row.getProperty("Name")}}</a>' +
@@ -184,9 +184,9 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 				
 				for (var i = 0; i < scope.datasets.length; i++)
 				{
-					//DataService.configureDataset(dataset);
-					//DataService.configureDataset(dataset, scope);  // We must pass the scope along on this call.
-					DataService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
+					//DatasetService.configureDataset(dataset);
+					//DatasetService.configureDataset(dataset, scope);  // We must pass the scope along on this call.
+					DatasetService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
 					console.log("Found dataset for..." + scope.datasets[i].Datastore.TablePrefix);
 					
 					if (scope.datasets[i].Datastore.TablePrefix === "WaterTemp")
@@ -202,8 +202,8 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 						// Note:  Fishermen follows the logic/flow of instruments.
 						// Example:  There are more instruments than what are assigned to just one project.
 						// Therefore, we allowed that more fishermen could exist, besides what is in only the Harvest project -- just following the logic.
-						scope.fishermenList = DatastoreService.getFishermen(); // All fishermen, but only CreelSurvey has fishermen.//
-						scope.theFishermen = DatastoreService.getProjectFishermen(scope.datasets[i].ProjectId);
+						scope.fishermenList = ProjectService.getFishermen(); // All fishermen, but only CreelSurvey has fishermen.//
+						scope.theFishermen = ProjectService.getProjectFishermen(scope.datasets[i].ProjectId);
 						// Note:  If we are on Harvest, it has only one dataset.
 						scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
 					}
@@ -211,7 +211,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 					{
 						console.log("Adding Correspondence to tab bar...");
 						scope.ShowSubproject = true;
-						scope.subprojectList = DataService.getSubprojects();
+						scope.subprojectList = SubprojectService.getSubprojects();
 						console.log("Fetching CRPP subproject...");
 						// Note:  If we are on CRPP, it has only one dataset.
 						// We must set the scope.DatastoreTablePrefix, in order for the Edit Subproject to work.
@@ -231,13 +231,13 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 						// We call the functions that will build the list of funders, and list of files related to the project.
 						// We add the items from these lists to the project later, after we have the data.
 						scope.subprojectFileList = null;
-						scope.subprojectFileList = DataService.getSubprojectFiles(scope.datasets[i].ProjectId);
+						scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.datasets[i].ProjectId);
 						scope.funderList = null;
-						scope.funderList = DataService.getProjectFunders(scope.datasets[i].ProjectId);
+						scope.funderList = ProjectService.getProjectFunders(scope.datasets[i].ProjectId);
 						scope.collaboratorList = null;
-						scope.collaboratorList = DataService.getProjectCollaborators(scope.datasets[i].ProjectId);
+						scope.collaboratorList = ProjectService.getProjectCollaborators(scope.datasets[i].ProjectId);
 						
-						scope.subprojectList = DataService.getProjectSubprojects(scope.datasets[i].ProjectId);
+						scope.subprojectList = SubprojectService.getProjectSubprojects(scope.datasets[i].ProjectId);
 						var watcher = scope.$watch('subprojectList.length', function(){
 							console.log("Inside watcher for subprojectList.length...");
 							// We wait until subprojects gets loaded and then turn this watch off.
@@ -513,20 +513,20 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 				$rootScope.projectId = scope.project.Id;
 				
 				scope.project.Files = null;
-				scope.project.Files = DataService.getProjectFiles(scope.project.Id);
+				scope.project.Files = ProjectService.getProjectFiles(scope.project.Id);
 				
 				/*************************************************************/				
 				// Need this section for the subprojects in Habitat and CRPP to work properly.
-				scope.subprojectType = DatastoreService.getProjectType(scope.project.Id);
-				$rootScope.subprojectType = scope.subprojectType = DatastoreService.getProjectType(scope.project.Id);
+				scope.subprojectType = ProjectService.getProjectType(scope.project.Id);
+				$rootScope.subprojectType = scope.subprojectType = ProjectService.getProjectType(scope.project.Id);
 				console.log("scope.subprojectType = " + scope.subprojectType);
-				DataService.setServiceSubprojectType(scope.subprojectType);
+				SubprojectService.setServiceSubprojectType(scope.subprojectType);
 				/*************************************************************/
 				
                 scope.editors = scope.project.Editors;
-                scope.users = DataService.getUsers();
+                scope.users = CommonService.getUsers();
 				
-				//var theFishermen = DatastoreService.getProjectFishermen(scope.project.Id);
+				//var theFishermen = ProjectService.getProjectFishermen(scope.project.Id);
 
                 //split out the images and other files.
                 scope.project.MetadataValue = {};
@@ -589,16 +589,16 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
                 }
 				
                 //add in the metadata to our metadataList that came with this dataset
-                addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, DataService);
+                addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, DatasetService);
 
                 scope.mapHtml = $sce.trustAsHtml(scope.project.MetadataValue[25]);
                 scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
 
 
                 //get habitat (and possibly other?) metadata values for this project.  they don't come with project metadata as they are their own category.
-                var habitatProjectMetadataPromise = DataService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID);
+                var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID);
                 habitatProjectMetadataPromise.$promise.then(function(list){
-                    addMetadataProperties(list, scope.metadataList, scope, DataService);
+                    addMetadataProperties(list, scope.metadataList, scope, DatasetService);
                 });
 
                 scope.project.Instruments = scope.project.Instruments.sort(orderByAlphaName);
@@ -687,7 +687,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
             $rootScope.Profile.toggleProjectFavorite(scope.project);
 
-            DataService.saveUserPreference("Projects", $rootScope.Profile.favoriteProjects.join(), scope.results);
+            PreferencesService.saveUserPreference("Projects", $rootScope.Profile.favoriteProjects.join(), scope.results);
 
             var watcher = scope.$watch('results', function(){
                 if(scope.results.done)
@@ -876,11 +876,11 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
 
         scope.metadataPropertiesPromise.promise.then(function(list){
-            addMetadataProperties(list, scope.metadataList, scope, DataService);
+            addMetadataProperties(list, scope.metadataList, scope, DatasetService);
         });
 
         scope.habitatPropertiesPromise.promise.then(function(list){
-            addMetadataProperties(list, scope.metadataList, scope, DataService);
+            addMetadataProperties(list, scope.metadataList, scope, DatasetService);
         });
 
 
@@ -986,7 +986,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			else if (scope.subprojectType === "Habitat")
 			{
 				console.log("viewing a Habitat subproject");
-				//scope.subprojectFileList = DataService.getSubprojectFiles(scope.projectId, subproject.Id);
+				//scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.projectId, subproject.Id);
 				var modalInstance = $modal.open({
                     templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
 				  controller: 'ModalCreateHabSubprojectCtrl',
@@ -1124,25 +1124,25 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
         scope.reloadProject = function(){
             //reload project -- this will reload the instruments & laboratories
-            DataService.clearProject();
-            scope.project = DataService.getProject(routeParams.Id);
+            ProjectService.clearProject();
+            scope.project = ProjectService.getProject(routeParams.Id);
         };
 		 
 		scope.reloadSubproject = function(id){
 			console.log("Inside controllers.js, projectDatasetsController, scope.reloadSubproject, id = " + id);
-			DataService.clearSubproject();
-			//scope.subproject = DataService.getSubproject(id);
+			SubprojectService.clearSubproject();
+			//scope.subproject = SubprojectService.getSubproject(id);
 			
 			if (scope.DatastoreTablePrefix === "CrppContracts")
 			{
 				console.log("Reloading Crpp...");
-				scope.subproject = DataService.getSubproject(id);
+				scope.subproject = SubprojectService.getSubproject(id);
 			}
 			else if (scope.subprojectType === "Habitat")
 			{
 				console.log("Reloading Habitat, Id = " + id);
 				scope.subproject = null;
-				scope.subproject = DataService.getSubproject(id);
+				scope.subproject = SubprojectService.getSubproject(id);
 			}
 			
 			var watcher = scope.$watch('subproject.Id', function(){
@@ -1209,17 +1209,17 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 			
 			// Right now, we still now what the project and subproject type are, so reload the extra items for these specific projects.
 			if (scope.subprojectType === "CRPP") // CRPP
-				scope.subprojectList = DataService.getSubprojects();
+				scope.subprojectList = SubprojectService.getSubprojects();
 			else if (scope.subprojectType === "Habitat")
 			{
 				console.log("scope.projectId = " + scope.projectId);
-				scope.project = DataService.getProject(scope.projectId);
-				//scope.subprojectList = DataService.getHabSubprojects();
-				scope.subprojectList = DataService.getProjectSubprojects(scope.projectId);
-				scope.funderList = DataService.getProjectFunders(scope.projectId);
+				scope.project = ProjectService.getProject(scope.projectId);
+				//scope.subprojectList = SubprojectService.getHabSubprojects();
+				scope.subprojectList = SubprojectService.getProjectSubprojects(scope.projectId);
+				scope.funderList = ProjectService.getProjectFunders(scope.projectId);
 			}
 			
-			scope.project = DataService.getProject(parseInt(scope.projectId));
+			scope.project = ProjectService.getProject(parseInt(scope.projectId));
         };
 		
         scope.reloadThisHabSubproject = function(subprojectId)
@@ -1241,17 +1241,17 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		scope.reloadSubprojects = function()
 		{
 			console.log("Inside controllers.js, projectDatasetsController, scope.reloadSubprojects...");
-			DataService.clearSubprojects();
+			SubprojectService.clearSubprojects();
 
 			if (scope.subprojectType === "CRPP") // CRPP
-				scope.subprojectList = DataService.getSubprojects();
+				scope.subprojectList = SubprojectService.getSubprojects();
 			else if (scope.subprojectType === "Habitat")
 			{
 				console.log("scope.projectId = " + scope.projectId);
-				scope.project = DataService.getProject(scope.projectId);
-				//scope.subprojectList = DataService.getHabSubprojects();
-				scope.subprojectList = DataService.getProjectSubprojects(scope.projectId);
-				scope.funderList = DataService.getProjectFunders(scope.projectId);
+				scope.project = ProjectService.getProject(scope.projectId);
+				//scope.subprojectList = SubprojectService.getHabSubprojects();
+				scope.subprojectList = SubprojectService.getProjectSubprojects(scope.projectId);
+				scope.funderList = ProjectService.getProjectFunders(scope.projectId);
 			}
 			
 			var watcher = scope.$watch('subprojectList.length', function(){
@@ -1296,7 +1296,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 
             var Instruments = getMatchingByField(scope.allInstruments, scope.selectedInstrument, 'Id');
 
-            var promise = DatastoreService.saveProjectInstrument(scope.project.Id, Instruments[0]);
+            var promise = ProjectService.saveProjectInstrument(scope.project.Id, Instruments[0]);
 
             promise.$promise.then(function(){
                 scope.reloadProject();
@@ -1315,7 +1315,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 	
             var theFishermen = getMatchingByField(scope.fishermenList, scope.selectedFisherman, 'Id');
 
-			var promise = DatastoreService.saveProjectFisherman(scope.project.Id, theFishermen[0]);
+			var promise = ProjectService.saveProjectFisherman(scope.project.Id, theFishermen[0]);
 
             promise.$promise.then(function(){
                 scope.reloadProject();
@@ -1334,7 +1334,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 	
             var theSubproject = getMatchingByField(scope.correspondenceProjectList, scope.selectedSubproject, 'Id');
 
-			var promise = DatastoreService.saveSubproject(scope.project.Id, theSubproject[0]);
+			var promise = SubprojectService.saveSubproject(scope.project.Id, theSubproject[0]);
 
             promise.$promise.then(function(){
                 scope.reloadProject();
@@ -1345,7 +1345,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
             if(!scope.viewInstrument)
                 return;
 
-            var promise = DatastoreService.removeProjectInstrument(scope.project.Id, scope.viewInstrument.Id);
+            var promise = ProjectService.removeProjectInstrument(scope.project.Id, scope.viewInstrument.Id);
 
             promise.$promise.then(function(){
                 scope.reloadProject();
@@ -1358,7 +1358,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
             if(!scope.viewFisherman)
                 return;
 
-            var promise = DatastoreService.removeProjectFisherman(scope.project.Id, scope.viewFisherman.Id);
+            var promise = ProjectService.removeProjectFisherman(scope.project.Id, scope.viewFisherman.Id);
 
             promise.$promise.then(function(){
                 scope.reloadProject();
@@ -1414,9 +1414,9 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
 		
 		scope.refreshProjectLocations = function(){
 			console.log("Inside controllers.js, refreshProjectLocations...");
-			DataService.clearProject();
+			ProjectService.clearProject();
 			scope.project = null;
-			scope.project = DataService.getProject(parseInt(scope.projectId));
+			scope.project = ProjectService.getProject(parseInt(scope.projectId));
 		};
 
         scope.clearUsersWatch = scope.$watch('users', function(){
@@ -1551,7 +1551,7 @@ var project_detail = ['$scope', '$routeParams', 'DataService','DatastoreService'
         scope.saveEditors = function()
         {
             scope.saveResults = {};
-            DataService.saveEditors(scope.currentUserId, scope.project.Id, scope.editors, scope.saveResults);
+            ProjectService.saveEditors(scope.currentUserId, scope.project.Id, scope.editors, scope.saveResults);
         };
 		 	  
 		scope.gotoSubprojectsTop = function (){

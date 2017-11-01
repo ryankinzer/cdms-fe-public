@@ -2,21 +2,21 @@
 
 
 
-var project_list = ['$scope', 'DataService', '$modal',
-  function(scope, DataService, $modal){
-    scope.projects = DataService.getProjects();
+var project_list = ['$scope', 'DatasetService', '$modal',
+  function(scope, DatasetService, $modal){
+    scope.projects = ProjectService.getProjects();
 
     scope.CellOptions = {}; //for metadata dropdown options
     scope.metadataList = {};
-    scope.metadataPropertiesPromise = DataService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID);
-    scope.habitatPropertiesPromise = DataService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID);
+    scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID);
+    scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID);
 
     scope.metadataPropertiesPromise.promise.then(function(list){
-        addMetadataProperties(list, scope.metadataList, scope, DataService);
+        addMetadataProperties(list, scope.metadataList, scope, DatasetService);
     });
 
     scope.habitatPropertiesPromise.promise.then(function(list){
-        addMetadataProperties(list, scope.metadataList, scope, DataService);
+        addMetadataProperties(list, scope.metadataList, scope, DatasetService);
     });
 
         var linkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
@@ -48,12 +48,12 @@ var project_list = ['$scope', 'DataService', '$modal',
 
         scope.reloadProject = function()
         {
-            scope.projects = DataService.getProjects();
+            scope.projects = ProjectService.getProjects();
         };
 		
 		//scope.reloadSubprojects = function()
 		//{
-		//	scope.subprojects = DataService.getSubprojects();
+		//	scope.subprojects = SubprojectService.getSubprojects();
 		//};
 
       //not sure this is actually used? kb 10/26/17

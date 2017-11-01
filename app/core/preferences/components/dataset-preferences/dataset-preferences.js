@@ -1,9 +1,9 @@
 ﻿
-var dataset_preferences = ['$scope','$rootScope','$location','DataService','$window',
-	function($scope, $rootScope,$location, DataService, $window){
+var dataset_preferences = ['$scope','$rootScope','$location','DatasetService','$window',
+	function($scope, $rootScope,$location, DatasetService, $window){
 
 		//var mydatasets = getByName($rootScope.Profile.UserPreferences, 'Datasets');
-		$scope.mydatasets = DataService.getMyDatasets();
+		$scope.mydatasets = PreferencesService.getMyDatasets();
 		$scope.favoriteDatasetStores = {};
 
 		$scope.$watch('mydatasets',function(){
@@ -12,7 +12,7 @@ var dataset_preferences = ['$scope','$rootScope','$location','DataService','$win
 				angular.forEach($scope.mydatasets, function(dataset, key){
 
 		            //need to bump this since we are looking at a LIST of datasets...
-	                DataService.configureDataset(dataset);    
+	                DatasetService.configureDataset(dataset);    
 
 					if(!$scope.favoriteDatasetStores[dataset.Datastore.Name])
 						$scope.favoriteDatasetStores[dataset.Datastore.Name] = { Datastore: dataset.Datastore, favoriteDatasets: []};

@@ -1,6 +1,6 @@
 ﻿//when you click the "View" button on a relation table field, it opens this modal
-var modal_relationgrid = ['$scope','$modalInstance', 'DataService','DatastoreService',
-    function($scope,  $modalInstance, DataService, DatastoreService){
+var modal_relationgrid = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
+    function($scope,  $modalInstance, DatasetService, DatastoreService){
 
         //incoming scope variable
         // $scope.relationgrid_row, $scope.relationgrid_field
@@ -11,7 +11,7 @@ var modal_relationgrid = ['$scope','$modalInstance', 'DataService','DatastoreSer
         }
         else
         {
-            $scope.relation_dataset = DataService.getDataset($scope.relationgrid_field.Field.DataSource);
+            $scope.relation_dataset = DatasetService.getDataset($scope.relationgrid_field.Field.DataSource);
         }
 
         //get the relationdata out of the row -- use it if it exists, otherwise fetch it from the db.
@@ -19,7 +19,7 @@ var modal_relationgrid = ['$scope','$modalInstance', 'DataService','DatastoreSer
             $scope.relationgrid_data = $scope.relationgrid_row[$scope.relationgrid_field.DbColumnName];
         else
         {
-            $scope.relationgrid_data = DataService.getRelationData($scope.relationgrid_field.FieldId, $scope.relationgrid_row.ActivityId, $scope.relationgrid_row.RowId);
+            $scope.relationgrid_data = DatasetService.getRelationData($scope.relationgrid_field.FieldId, $scope.relationgrid_row.ActivityId, $scope.relationgrid_row.RowId);
             $scope.relationgrid_row[$scope.relationgrid_field.DbColumnName] = $scope.relationgrid_data;
         }
 

@@ -1,14 +1,14 @@
 ﻿
-var admin_edit_master = ['$scope','DatastoreService','$modal', 'DataService', '$routeParams',
-	function($scope, DatastoreService, $modal, DataService, $routeParams){
+var admin_edit_master = ['$scope', 'DatastoreService', '$modal', 'DatasetService', 'AdminService', '$routeParams',
+	function($scope, DatastoreService, $modal, DatasetService, AdminService, $routeParams){
 
-		$scope.datastore = DatastoreService.getDatastore($routeParams.Id);
+		$scope.datastore = DatasetService.getDatastore($routeParams.Id);
 		
 		$scope.SelectedField = null;
 
 		$scope.$watch('datastore.Id', function(){
 			if($scope.datastore.Id > 0)
-				$scope.datastoreFields = DatastoreService.getMasterFields($scope.datastore.FieldCategoryId); //DatastoreService.getFields($routeParams.Id);
+				$scope.datastoreFields = AdminService.getMasterFields($scope.datastore.FieldCategoryId); //AdminService.getFields($routeParams.Id);
 		});
 
 		$scope.$watch('datastoreFields', function(){
@@ -28,7 +28,7 @@ var admin_edit_master = ['$scope','DatastoreService','$modal', 'DataService', '$
 		$scope.saveField = function()
 		{
 			$scope.saveResults = {};
-			DatastoreService.saveMasterField($scope.SelectedField, $scope.saveResults);
+			AdminService.saveMasterField($scope.SelectedField, $scope.saveResults);
 		}
 		
 		$scope.selectField = function(field){

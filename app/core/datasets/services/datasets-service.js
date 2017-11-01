@@ -242,7 +242,7 @@ datasets_module.service('DatasetService', ['$q',
                 return DeleteDatasetFile.save({ ProjectId: projectId, DatasetId: datasetId, File: file });
             },
 
-
+            //NB: looks like this isn't used.
             //this should give you the possible QA Statuses for this dataset's rows
             getPossibleRowQAStatuses: function (id) {
                 //for now we fake it:

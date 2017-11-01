@@ -1,5 +1,5 @@
-﻿var modal_create_instrument = ['$scope','$modalInstance', 'DataService','DatastoreService',
-  function($scope,  $modalInstance, DataService, DatastoreService){
+﻿var modal_create_instrument = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
+  function($scope,  $modalInstance, DatasetService, DatastoreService){
 
     $scope.header_message = "Create new instrument";
 
@@ -15,9 +15,9 @@
     }
 
 
-    $scope.InstrumentTypes = DatastoreService.getInstrumentTypes();
-    $scope.Departments = DataService.getDepartments();
-    $scope.RawProjects = DataService.getProjects();
+    $scope.InstrumentTypes = ProjectService.getInstrumentTypes();
+    $scope.Departments = CommonService.getDepartments();
+    $scope.RawProjects = ProjectService.getProjects();
 
 
     $scope.save = function(){
@@ -35,7 +35,7 @@
         saveRow.AccuracyChecks = undefined;
         //saveRow.InstrumentType = undefined; // We have an InstrumentTypeId, but no InstrumentType.  Why is this here?
         saveRow.OwningDepartment = undefined;
-        var promise = DatastoreService.saveInstrument($scope.project.Id, saveRow);
+        var promise = ProjectService.saveInstrument($scope.project.Id, saveRow);
         promise.$promise.then(function(){
             $scope.reloadProject();
             $modalInstance.dismiss();
