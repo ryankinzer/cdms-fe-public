@@ -4,7 +4,8 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
 
 		$scope.dataset = DatasetService.getDataset($routeParams.Id);
 		$scope.FieldLookup = {};
-		$scope.SelectedField = null;
+        $scope.SelectedField = null;
+        $scope.saveResults = {};
 		
 		$scope.Sources = CommonService.getSources();
 		$scope.Instruments = ProjectService.getInstruments();
@@ -44,13 +45,12 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
 			$scope.InstrumentsLookup = makeObjects($scope.Instruments, 'Id','Name');
 		},true);
 
-		$scope.$watch('saveResults.DatasetId', function(){
-			if (!$scope.saveResults.DatasetId)
+		$scope.$watch('saveResults.success', function(){
+			if (!$scope.saveResults.success)
 				return;
 
-			console.log("Inside watch saveResults.DatasetId...");
-			console.log("$scope.saveResults.DatasetId is next...");
-			console.dir($scope.saveResults.DatasetId);
+            console.log("The result of saveResults: " + $scope.saveResults.success);
+            console.log(" - so now we'll reload the dataset: " + $routeParams.Id);
 			
 			DatasetService.clearDataset();
 			$scope.dataset = DatasetService.getDataset($routeParams.Id); //reload
@@ -65,24 +65,11 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
 
 			$scope.saveResults = {};
 			AdminService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
-			//$scope.saveResults = AdminService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
-            setTimeout(function(){
-			// JavaScript might run the next lines too fast, so I (GC) put them into watch saveResults.DatasetId up above.
-            //	DatasetService.clearDataset();
-			//	console.log("Dumped dataset...");
-            //	$scope.dataset = DatasetService.getDataset($routeParams.Id); //reload
-			//	console.log("Reloading dataset...");
-            //	$scope.SelectedField = null;
-			//	console.log("Cleared selected field...");
-            },400);
 		}
 
 		$scope.addMasterField = function()
 		{
 			console.log("Inside admin-controller.js, addMasterField...");
-			//console.log("$scope is next...");
-			//console.dir($scope);
-			//console.log("$scope.newField (coming in) = " + $scope.newField);
 			$scope.saveResults = {};
 			
 			// Note:  Given a list with zero-based index (0, 1, 2, 3, etc.), like we have here.

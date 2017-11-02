@@ -233,11 +233,13 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
 
         $scope.reloadProject = function () {
             //reload project instruments -- this will reload the instruments, too
-            console.log("Inside reloadProject...");
+            console.log("Inside reloadProject... we will fetch ProjectId: " + $scope.dataset.ProjectId);
             ProjectService.clearProject();
+            $scope.fieldsloaded = false; //triggers reload of grid and form after project reloads
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
             var watcher = $scope.$watch('project.Id', function () {
                 //$scope.selectInstrument();
+                console.log("We're back with: " + $scope.project.Id);
                 $rootScope.projectId = $scope.project.Id;
                 watcher();
             });

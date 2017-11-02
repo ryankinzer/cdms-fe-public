@@ -376,10 +376,10 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
 				console.log("$scope.locationObjectIds is next...");
 				console.dir($scope.locationObjectIds);
 
-				console.log("$scope.map is next...");
-				console.dir($scope.map);
-				console.log("$scope.map.locationLayer is next...");
-				console.dir($scope.map.locationLayer);
+				//console.log("$scope.map is next...");
+				//console.dir($scope.map);
+				//console.log("$scope.map.locationLayer is next...");
+				//console.dir($scope.map.locationLayer);
                 if($scope.map && $scope.map.locationLayer && $scope.map.locationLayer.hasOwnProperty('showLocationsById'))
                     $scope.map.locationLayer.showLocationsById($scope.locationObjectIds); //bump and reload the locations.
 

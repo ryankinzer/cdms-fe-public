@@ -32,10 +32,6 @@ define([
       'CrppModule',
       'HabitatModule',
 
-      'DatasetServices',
-      
-
-
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 

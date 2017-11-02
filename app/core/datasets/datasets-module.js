@@ -6,6 +6,9 @@ var datasets_module = angular.module('DatasetModule', ['ui.bootstrap','ngResourc
 //load the components for this module
 require([
 
+    //loads the dataset functions
+    'app/core/datasets/datasets-functions',
+
     //loads the dataset filters
     'app/core/datasets/datasets-filters',
 

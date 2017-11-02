@@ -9,7 +9,7 @@ require([
     'app/core/preferences/components/project-preferences/project-preferences',
 
     //load preference service
-    'app/core/preferences/preference-service',
+    'app/core/preferences/preferences-service',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!

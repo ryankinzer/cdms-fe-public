@@ -1,5 +1,5 @@
-﻿var modal_qa_update = ['$scope', 'DatasetService', '$modalInstance',
-    function ($scope, DatasetService, $modalInstance) {
+﻿var modal_qa_update = ['$scope', 'DatasetService', 'ProjectService', '$modalInstance',
+    function ($scope, DatasetService, ProjectService, $modalInstance) {
         $scope.save = function () {
 
             DatasetService.updateQaStatus(

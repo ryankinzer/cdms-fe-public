@@ -49,10 +49,14 @@ admin_module.service('AdminService', ['$q',
                 return AddMasterFieldToDataset.save({DatasetId: datasetId, FieldId: fieldId});
             },
 
-            removeField: function(datasetId, fieldId)
+            removeField: function(datasetId, fieldId, saveResults)
             {
-				console.log("Trying to delete... datasetId = " + datasetId + ", fieldId = " + fieldId);
-                return DeleteDatasetField.save({DatasetId: datasetId, FieldId: fieldId});
+				console.log("Trying to remove a field... datasetId = " + datasetId + ", fieldId = " + fieldId);
+                DeleteDatasetField.save({ DatasetId: datasetId, FieldId: fieldId }, function(data){
+                    saveResults.success = true;
+                }, function (data) {
+                    saveResults.success = false;
+                });
             },
 
             getFields: function (id) {

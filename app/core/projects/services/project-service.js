@@ -216,7 +216,7 @@ projects_module.service('ProjectService', ['$q',
             },
 
             getProject: function (id) {
-                console.log("Inside services.js, getProject; id = " + id);
+                console.log("Inside getProject; id = " + id);
                 //console.log("service is next...");
                 //console.dir(service);
                 //if(service.project && service.project.Id == id)
@@ -229,7 +229,7 @@ projects_module.service('ProjectService', ['$q',
                 service.project = Project.query({ id: id });
 
                 service.project.$promise.then(function () {
-                    //console.log("after-project-load!");
+                    console.log("after-project-load!");
                     //do some sorting after we load for instruments
                     if (service.project.Instruments && service.project.Instruments.length > 0)
                         service.project.Instruments = service.project.Instruments.sort(orderByAlphaName);

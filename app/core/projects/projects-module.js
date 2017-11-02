@@ -17,7 +17,7 @@ require([
     'app/core/projects/components/project-list/modal-add-accuracy-check',
 
     //load project service
-    'app/core/projects/services/projects-service',
+    'app/core/projects/services/project-service',
     'app/core/projects/services/subproject-service',
 
 ], function () {

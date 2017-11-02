@@ -174,6 +174,7 @@ datasets_module.service('DatasetService', ['$q',
 
             //configureDataset: function(dataset)
             configureDataset: function (dataset, scope) {
+                console.log("Hi ken");
                 console.log("configuring dataset!" + dataset.Id);
                 console.log("dataset.Name = " + dataset.Name);
                 //default page routes
@@ -191,24 +192,30 @@ datasets_module.service('DatasetService', ['$q',
                     if (dataset.Config.ActivitiesPage)
                         dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
 
-                    //part of configuration is authorization.  If the user isn't authorized
-                    //  for this dataset, bump them to error
-                    if (dataset.Config.RestrictRoles) {
-                        var authorized = false;
-                        for (var i = dataset.Config.RestrictRoles.length - 1; i >= 0; i--) {
-                            if (angular.rootScope.Profile.hasRole(dataset.Config.RestrictRoles[i]))
-                                authorized = true;
-                        };
-
-                        if (!authorized) {
-                            //angular.rootScope.go('/unauthorized');
-                            scope.AuthorizedToViewProject = false;
-                        }
-
-                        //console.dir(angular.rootScope.Profile);
-                        //console.dir(dataset.Config.RestrictRoles);
+                    //if the scope isn't defined, we can't configure so bail out
+                    console.dir(scope);
+                    if (typeof scope == 'undefined') {
+                        console.log("SKIPPING dataset config - no scope is set!");
                     }
+                    else {
+                        //part of configuration is authorization.  If the user isn't authorized
+                        //  for this dataset, bump them to error
+                        if (dataset.Config.RestrictRoles) {
+                            var authorized = false;
+                            for (var i = dataset.Config.RestrictRoles.length - 1; i >= 0; i--) {
+                                if (angular.rootScope.Profile.hasRole(dataset.Config.RestrictRoles[i]))
+                                    authorized = true;
+                            };
 
+                            if (!authorized) {
+                                //angular.rootScope.go('/unauthorized');
+                                scope.AuthorizedToViewProject = false;
+                            }
+
+                            //console.dir(angular.rootScope.Profile);
+                            //console.dir(dataset.Config.RestrictRoles);
+                        }
+                    }
                 }
             },
 
