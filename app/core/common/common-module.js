@@ -14,8 +14,6 @@ require([
     'app/core/common/services/logger',
     'app/core/common/services/service-utilities',
     'app/core/common/services/wish',
-    'app/core/common/services/event-timer',
-
 
     //loads the common controllers
     'app/core/common/components/modals/modal-quick-add-accuracycheck',
