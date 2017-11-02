@@ -44,9 +44,15 @@ admin_module.service('AdminService', ['$q',
 
         var service = {
 
-           addMasterFieldToDataset: function(datasetId, fieldId)
+           addMasterFieldToDataset: function(datasetId, fieldId, saveResults)
             {
-                return AddMasterFieldToDataset.save({DatasetId: datasetId, FieldId: fieldId});
+               AddMasterFieldToDataset.save({ DatasetId: datasetId, FieldId: fieldId },
+                   function (data) {
+                       saveResults.success = true;
+                   },
+                   function (data) {
+                       saveResults.success = false;
+                   });
             },
 
             removeField: function(datasetId, fieldId, saveResults)
