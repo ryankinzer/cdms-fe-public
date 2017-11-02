@@ -1,6 +1,6 @@
 ﻿
-modal_new_file = ['$scope','$modalInstance', 'DatasetService','DatastoreService', '$upload',
-	function($scope,  $modalInstance, DatasetService, DatastoreService, $upload){
+modal_new_file = ['$scope','$modalInstance', '$upload',
+	function($scope,  $modalInstance, $upload){
 		// This controller is for the Project File (Documents tab) modal.
 		// note: file selected for upload in this controller are managed by onFileSelect in this controller (see below).
 

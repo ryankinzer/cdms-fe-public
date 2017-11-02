@@ -1,6 +1,6 @@
 ﻿
-var admin_view = ['$scope', 'DatastoreService', '$modal', 'DatasetService','ProjectService',
-    function ($scope, DatastoreService, $modal, DatasetService, ProjectService) {
+var admin_view = ['$scope', '$modal', 'DatasetService','ProjectService',
+    function ($scope, $modal, DatasetService, ProjectService) {
 
         //TODO: a nicer global route authorization scheme...
         if (!$scope.Profile.isAdmin())

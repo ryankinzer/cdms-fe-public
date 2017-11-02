@@ -331,7 +331,6 @@ projects_module.service('ProjectService', ['$q',
             },
 
             deleteFile: function (projectId, file) {
-                console.log("Inside DatastoreService, deleteFile");
                 console.log("ProjectId = " + projectId + ", attempting to delete file...");
                 console.dir(file);
                 return DeleteFile.save({ ProjectId: projectId, File: file });

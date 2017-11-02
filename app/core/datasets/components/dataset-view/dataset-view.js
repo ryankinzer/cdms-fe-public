@@ -3,8 +3,8 @@
 *  e.g.: http://localhost/cdms/index.html#/dataview/89433
 */
 
-var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$location', 'DataSheet', '$route', '$rootScope', 'ChartService', 'DatastoreService',
-    function ($scope, $routeParams, DatasetService, $modal, $location, DataSheet, $route, $rootScope, ChartService, DatastoreService) {
+var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$location', 'DataSheet', '$route', '$rootScope', 'ChartService', 'ProjectService',
+    function ($scope, $routeParams, DatasetService, $modal, $location, DataSheet, $route, $rootScope, ChartService, ProjectService) {
         console.log("Inside dataview-controller.js, controller DatasetViewCtrl...");
         console.log("$routeParams.Id = " + $routeParams.Id);
         $scope.grid = DatasetService.getActivityData($routeParams.Id); //activity data for a particular activityId
@@ -20,11 +20,6 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
         $scope.fieldsloaded = false;
 
         $scope.fishermenList = null;
-        //$scope.fishermenList = ProjectService.getFishermen();
-        //console.log("$scope is next...");
-        //console.dir($scope);
-        //if ($scope.this.DatastoreTablePrefix === "CreelSurvey")
-        //	$scope.fishermenList = ProjectService.getFishermen();
 
         $scope.$watch('QaSaveResults', function () {
             if ($scope.QaSaveResults && $scope.QaSaveResults.success) {

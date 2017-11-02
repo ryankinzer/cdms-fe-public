@@ -1,6 +1,6 @@
 ﻿//Global / full query across all projects with this dataset.
-var big_bucket_query = ['$scope','$routeParams','DatastoreService','DatasetService','$location', '$modal','DataSheet', '$rootScope',
-    	function($scope, $routeParams, DatastoreService, DatasetService, $location, $modal, DataSheet, $rootScope) {
+var big_bucket_query = ['$scope','$routeParams','CommonService','AdminService','DatasetService','$location', '$modal','DataSheet', '$rootScope',
+    	function($scope, $routeParams, CommonService, AdminService, DatasetService, $location, $modal, DataSheet, $rootScope) {
 
     		$scope.datastoreLocations = CommonService.getLocations($routeParams.Id);
     		$scope.dataFields = AdminService.getFields($routeParams.Id);

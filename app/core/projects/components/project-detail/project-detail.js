@@ -1,7 +1,10 @@
 ﻿
 
-var project_detail = ['$scope', '$routeParams', 'DatasetService','CommonService', '$rootScope','$modal','$sce','$window','$http','ServiceUtilities','ConvertStatus','$location','$anchorScroll',
-    function (scope, routeParams, DatasetService, CommonService, $rootScope, $modal,$sce, $window, $http, ServiceUtilities, ConvertStatus, $location, $anchorScroll){
+var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService',
+    '$rootScope', '$modal', '$sce', '$window', '$http',
+    'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
+    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, $rootScope, $modal, $sce, $window, $http,
+        ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 		console.log("Inside controllers.js, projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
 		
@@ -1227,7 +1230,7 @@ var project_detail = ['$scope', '$routeParams', 'DatasetService','CommonService'
 			//scope.project = [];
 			console.log("Inside controllers.js, projectDatasetsController, scope.reloadThisHabSubproject...");
 			console.log("scope.projectId = " + scope.projectId + ", scope.SdeObjectId = " + scope.SdeObjectId + ", subprojectId = " + subprojectId);
-			scope.project = DatastoreService.getHabSubproject(parseInt(subprojectId));		
+			scope.project = SubprojectService.getHabSubproject(parseInt(subprojectId));		
         };
 		
 		scope.setSdeObjectId = function(sdeObjectId)

@@ -235,8 +235,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 console.log("Inside watch project.Name...");
 
                 console.log("$scope.project.Id = " + $scope.project.Id);
-                //$scope.subprojectType = DatastoreService.getSubprojectType($scope.project.Id);
-                //$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
                 console.log("$scope.subprojectType = " + $scope.subprojectType);
                 SubprojectService.setServiceSubprojectType($scope.subprojectType);
 

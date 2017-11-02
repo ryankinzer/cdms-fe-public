@@ -1,7 +1,7 @@
 ﻿
-var modal_create_habitat_subproject = ['$scope', '$rootScope','$modalInstance','$modal','DatasetService','DatastoreService', 'ServiceUtilities', 
+var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','SubprojectService', 'ServiceUtilities', 
 	'$timeout', '$location', '$anchorScroll', '$document', '$upload', 
-  function($scope, $rootScope, $modalInstance, $modal, DatasetService, DatastoreService, ServiceUtilities, 
+    function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
 	$timeout, $location, $anchorScroll, $document, $upload){
 	console.log("Inside ModalCreateHabSubprojectCtrl...");
 

@@ -1,7 +1,10 @@
-﻿// was DataEntryDatasheetCtrl from DataEntryControllers
+﻿
+
+
+// was DataEntryDatasheetCtrl from DataEntryControllers
 //datasheet version of the data entrypage
-var dataset_entry_sheet = ['$scope', '$routeParams', 'DatasetService', '$modal', '$location', '$rootScope', 'ActivityParser', 'DataSheet', '$route', 'DatastoreService',
-    function ($scope, $routeParams, DatasetService, $modal, $location, $rootScope, ActivityParser, DataSheet, $route, DatastoreService) {
+var dataset_entry_sheet = ['$scope', '$routeParams', 'DatasetService', '$modal', '$location', '$rootScope', 'ActivityParser', 'DataSheet', '$route', 'ProjectService', 'CommonService',
+    function ($scope, $routeParams, DatasetService, $modal, $location, $rootScope, ActivityParser, DataSheet, $route, ProjectService, CommonService) {
 
         initEdit(); // stop backspace from ditching in the wrong place.
 

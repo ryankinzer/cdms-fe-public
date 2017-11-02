@@ -1,5 +1,5 @@
-﻿var my_preferences = ['$scope', 'DatasetService', 'DatastoreService', 'ServiceUtilities', 'ConvertStatus',
-    function ($scope, DatasetService, DatastoreService, ServiceUtilities, ConvertStatus) {
+﻿var my_preferences = ['$scope', 'PreferencesService', 'ConvertStatus',
+    function ($scope, PreferencesService, ConvertStatus) {
         console.log("Inside MyPreferencesCtrl...");
         //console.log("$scope is next");
         ////console.dir($scope);

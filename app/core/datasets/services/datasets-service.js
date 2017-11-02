@@ -236,7 +236,7 @@ datasets_module.service('DatasetService', ['$q',
             },
 
             deleteDatasetFile: function (projectId, datasetId, file) {
-                console.log("Inside DatastoreService, deleteDatasetFile");
+                console.log("Inside deleteDatasetFile");
                 console.log("ProjectId = " + projectId + ", DatasetId = " + datasetId + ", attempting to delete file...");
                 console.dir(file);
                 return DeleteDatasetFile.save({ ProjectId: projectId, DatasetId: datasetId, File: file });

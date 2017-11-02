@@ -1,6 +1,6 @@
 ﻿//when you click the "View" button on a relation table field, it opens this modal
-var modal_relationgrid = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
-    function($scope,  $modalInstance, DatasetService, DatastoreService){
+var modal_relationgrid = ['$scope','$modalInstance', 'DatasetService',
+    function($scope,  $modalInstance, DatasetService){
 
         //incoming scope variable
         // $scope.relationgrid_row, $scope.relationgrid_field

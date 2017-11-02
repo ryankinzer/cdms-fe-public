@@ -253,21 +253,21 @@ projects_module.service('SubprojectService', ['$q',
                 return SaveHabitatItem.save({ ProjectId: projectId, SubprojectId: subprojectId, HabitatItem: hi });
             },
             deleteCorresEventFile: function (projectId, subprojectId, ceId, file) {
-                console.log("Inside DatastoreService, deleteCorresEventFile");
+                console.log("Inside deleteCorresEventFile");
                 console.log("SubprojectId = " + subprojectId + ", ceId = " + ceId + " attempting to delete file...");
                 console.dir(file);
                 //return DeleteFile.save({ProjectId: projectId, File: file});
                 return DeleteCorresEventFile.save({ ProjectId: projectId, SubprojectId: subprojectId, CeId: ceId, File: file });
             },
             deleteHabitatItemFile: function (projectId, subprojectId, hiId, file) {
-                console.log("Inside DatastoreService, deleteHabitatItemFile");
+                console.log("Inside deleteHabitatItemFile");
                 console.log("ProjectId = " + projectId + ", SubprojectId = " + subprojectId + ", hiId = " + hiId + " attempting to delete file...");
                 console.dir(file);
                 //return DeleteFile.save({ProjectId: projectId, File: file});
                 return DeleteHabitatItemFile.save({ ProjectId: projectId, SubprojectId: subprojectId, HiId: hiId, File: file });
             },
             deleteHabSubprojectFile: function (projectId, subprojectId, file) {
-                console.log("Inside DatastoreService, deleteHabSubprojectFile");
+                console.log("Inside deleteHabSubprojectFile");
                 console.log("SubprojectId = " + subprojectId + ", attempting to delete file...");
                 console.dir(file);
                 return DeleteHabSubprojectFile.save({ ProjectId: projectId, SubprojectId: subprojectId, File: file });

@@ -1,7 +1,7 @@
 ﻿
-var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'DatasetService', 'DatastoreService', 'ServiceUtilities',
+var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'DatasetService', 'SubprojectService', 'ServiceUtilities',
     '$timeout', '$location', '$anchorScroll', '$document',
-    function ($scope, $rootScope, $modalInstance, DatasetService, DatastoreService, ServiceUtilities,
+    function ($scope, $rootScope, $modalInstance, DatasetService, SubprojectService, ServiceUtilities,
         $timeout, $location, $anchorScroll, $document) {
         console.log("Inside ModalCreateSubprojectCtrl...");
 
@@ -722,7 +722,6 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 $scope.saveResults = {};
                 //console.log("$scope is next...");
                 //console.dir($scope);
-                //var promise = DatastoreService.saveCorrespondence($scope.project.Id, saveRow, $scope.saveResults);
                 var promise = SubprojectService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
                 if (typeof promise !== 'undefined') {
                     promise.$promise.then(function () {

@@ -1,6 +1,6 @@
 ﻿
-var dataset_preferences = ['$scope','$rootScope','$location','DatasetService','$window',
-	function($scope, $rootScope,$location, DatasetService, $window){
+var dataset_preferences = ['$scope', '$rootScope', '$location', 'DatasetService','PreferencesService','$window',
+    function ($scope, $rootScope, $location, DatasetService, PreferencesService, $window){
 
 		//var mydatasets = getByName($rootScope.Profile.UserPreferences, 'Datasets');
 		$scope.mydatasets = PreferencesService.getMyDatasets();
@@ -18,14 +18,9 @@ var dataset_preferences = ['$scope','$rootScope','$location','DatasetService','$
 						$scope.favoriteDatasetStores[dataset.Datastore.Name] = { Datastore: dataset.Datastore, favoriteDatasets: []};
 
 					$scope.favoriteDatasetStores[dataset.Datastore.Name].favoriteDatasets.push(dataset);					
-
-
 				});
 			}
 		},true);
-
-
-
 		
 		$scope.openReportWindow = function( target ){
 			$window.open( REPORTSERVER_URL + target,'_blank');

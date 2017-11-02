@@ -1,5 +1,5 @@
-﻿var modal_delete_file = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
-	function($scope,  $modalInstance, DatasetService, DatastoreService){
+﻿var modal_delete_file = ['$scope', '$modalInstance', 'ProjectService',
+    function ($scope, $modalInstance, ProjectService){
 
 		$scope.header_message = "Delete file";
 

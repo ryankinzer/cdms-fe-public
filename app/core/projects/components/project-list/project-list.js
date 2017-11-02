@@ -2,8 +2,8 @@
 
 
 
-var project_list = ['$scope', 'DatasetService', '$modal',
-  function(scope, DatasetService, $modal){
+var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService','$modal',
+    function (scope, DatasetService, ProjectService, CommonService, $modal){
     scope.projects = ProjectService.getProjects();
 
     scope.CellOptions = {}; //for metadata dropdown options

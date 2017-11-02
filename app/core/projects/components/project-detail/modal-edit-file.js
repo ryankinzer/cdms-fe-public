@@ -1,6 +1,6 @@
 ﻿
-var modal_edit_file = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
-	function($scope,  $modalInstance, DatasetService, DatastoreService){
+var modal_edit_file = ['$scope', '$modalInstance', 'ProjectService',
+    function ($scope, $modalInstance, ProjectService){
 
 		$scope.header_message = "Edit file";
 

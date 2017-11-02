@@ -1,7 +1,7 @@
 ﻿
-var modal_add_habitat =  ['$scope', '$rootScope','$modalInstance', '$modal', 'DatasetService','DatastoreService','ServiceUtilities',
+var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','SubprojectService','ServiceUtilities',
 	'$filter', 'FileUploadService','$upload','$location', '$anchorScroll',
-  function($scope, $rootScope, $modalInstance, $modal, DatasetService, DatastoreService, ServiceUtilities, 
+    function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
 	$filter, FileUploadService, $upload, $location, $anchorScroll){
 	console.log("Inside ModalAddHabitatItemCtrl...");
 	

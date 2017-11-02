@@ -1,6 +1,6 @@
 ﻿
-var modal_edit_project =['$scope', '$modalInstance', 'DatasetService', 'DatastoreService',
-    function ($scope, $modalInstance, DatasetService, DatastoreService) {
+var modal_edit_project = ['$scope', '$modalInstance', 'ProjectService', 
+    function ($scope, $modalInstance, ProjectService) {
 
         if ($scope.row && $scope.row.Id) {
             $scope.header_message = "Edit project: " + $scope.project.Name;

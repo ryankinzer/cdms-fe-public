@@ -1,6 +1,8 @@
-﻿var dataset_import = ['$scope','$routeParams','DatastoreService','DatasetService','$location','$upload','ActivityParser','DataSheet','$rootScope',
+﻿var dataset_import = ['$scope', '$routeParams', 'ProjectService', 'CommonService', 'SubprojectService', 'DatasetService',
+        '$location', '$upload', 'ActivityParser', 'DataSheet', '$rootScope',
 		'Logger','$route','$modal','ChartService','ServiceUtilities',
-    	function($scope, $routeParams, DatastoreService, DatasetService, $location, $upload, ActivityParser, DataSheet, $rootScope, Logger, $route, $modal, ChartService,
+        function ($scope, $routeParams, ProjectService, CommonService, SubprojectService, DatasetService, $location, $upload, ActivityParser, DataSheet,
+            $rootScope, Logger, $route, $modal, ChartService,
 			ServiceUtilities) {
 //    		$scope.QAActivityStatuses = QAActivityStatuses;
     	$scope.dataset = DatasetService.getDataset($routeParams.Id);

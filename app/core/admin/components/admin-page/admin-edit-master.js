@@ -1,6 +1,6 @@
 ﻿
-var admin_edit_master = ['$scope', 'DatastoreService', '$modal', 'DatasetService', 'AdminService', '$routeParams',
-	function($scope, DatastoreService, $modal, DatasetService, AdminService, $routeParams){
+var admin_edit_master = ['$scope', '$modal', 'DatasetService', 'AdminService', '$routeParams',
+	function($scope, $modal, DatasetService, AdminService, $routeParams){
 
 		$scope.datastore = DatasetService.getDatastore($routeParams.Id);
 		

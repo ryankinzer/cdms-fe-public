@@ -1,6 +1,7 @@
 ﻿
-var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$modal', 'DataSheet', '$rootScope', 'ChartService', 'DatastoreService',
-    	function($scope, $routeParams, DatasetService, $location, $modal, DataSheet, $rootScope, ChartService, DatastoreService) {
+var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$modal', 'DataSheet', '$rootScope', 'ChartService',
+    'ProjectService', 'CommonService', 'SubprojectService', 
+    	function($scope, $routeParams, DatasetService, $location, $modal, DataSheet, $rootScope, ChartService, ProjectService, CommonService, SubprojectService) {
 
 			$scope.dataset = DatasetService.getDataset($routeParams.Id);
 			

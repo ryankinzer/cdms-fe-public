@@ -1,4 +1,6 @@
-var crpp_contracts = ['$scope','$route','$routeParams', 'DatasetService', '$modal', '$location','$window', '$rootScope','DatastoreService',
+//this is unused - it was the original way GC implemented crpp
+
+var crpp_contracts = ['$scope', '$route', '$routeParams', 'DatasetService', '$modal', '$location', '$window', '$rootScope', 'DatastoreService',
     	function ($scope, $route, $routeParams, DatasetService, $modal, $location, $window, $rootScope, DatastoreService) {
 			console.log("Inside crppContractsController...");
 		

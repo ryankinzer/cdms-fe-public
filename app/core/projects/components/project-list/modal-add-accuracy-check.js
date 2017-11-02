@@ -1,6 +1,6 @@
 ﻿
-module_add_accuracy_check = ['$scope', '$modalInstance', 'DatasetService', 'DatastoreService',
-    function ($scope, $modalInstance, DatasetService, DatastoreService) {
+module_add_accuracy_check = ['$scope', '$modalInstance', 'ProjectService',
+    function ($scope, $modalInstance, ProjectService) {
 
         $scope.ac_row = angular.copy($scope.ac_row);
 
