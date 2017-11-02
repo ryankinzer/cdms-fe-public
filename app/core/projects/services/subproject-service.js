@@ -306,7 +306,6 @@ projects_module.service('SubprojectService', ['$q',
             getSubprojectFiles: function (projectId) {
                 console.log("Inside getSubprojectFiles...");
                 console.log("projectId = " + projectId);
-                this.getProject(projectId); //set our local project to the one selected
                 return SubprojectFiles.query({ id: projectId });
             },
 

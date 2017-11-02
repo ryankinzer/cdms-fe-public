@@ -234,7 +234,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 						// We call the functions that will build the list of funders, and list of files related to the project.
 						// We add the items from these lists to the project later, after we have the data.
 						scope.subprojectFileList = null;
-						scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.datasets[i].ProjectId);
+                        scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.datasets[i].ProjectId);
+                        //KB - call reloadproejct if we need to (moved out of service)
 						scope.funderList = null;
 						scope.funderList = ProjectService.getProjectFunders(scope.datasets[i].ProjectId);
 						scope.collaboratorList = null;
@@ -268,7 +269,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 							}
 							console.log("scope.subprojectList.length = " + scope.subprojectList.length);
 							console.log("subprojects is loaded...");
-							console.dir(scope.subprojectList);
+							//console.dir(scope.subprojectList);
 							
 							scope.cleanGateKeeper("Sdone");
 							scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
@@ -750,10 +751,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
 			//console.log("scope is next...");
 			//console.dir(scope);
-			console.log("scope.subprojectList is next...");
-			console.dir(scope.subprojectList);
-			console.log("scope.project.Locations is next...");
-			console.dir(scope.project.Locations);
+			//console.log("scope.subprojectList is next...");
+			//console.dir(scope.subprojectList);
+			//console.log("scope.project.Locations is next...");
+			//console.dir(scope.project.Locations);
 
 			scope.thisProjectsLocationObjects = []; // Dump this list, before refilling it.
 			angular.forEach(scope.subprojectList, function(subproject){
@@ -788,10 +789,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
 			//console.log("scope is next...");
 			//console.dir(scope);
-			console.log("scope.subprojectList is next...");
-			console.dir(scope.subprojectList);
-			console.log("scope.subprojectFileList is next...");
-			console.dir(scope.subprojectFileList);
+			//console.log("scope.subprojectList is next...");
+			//console.dir(scope.subprojectList);
+			//console.log("scope.subprojectFileList is next...");
+			//console.dir(scope.subprojectFileList);
 			//console.log("scope.project.Files is next...");
 			//console.dir(scope.project.Files);			
 			
@@ -829,10 +830,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			
 			//console.log("scope is next...");
 			//console.dir(scope);
-			console.log("scope.subprojectList is next...");
-			console.dir(scope.subprojectList);
-			console.log("scope.funderList is next...");
-			console.dir(scope.funderList);	
+			//console.log("scope.subprojectList is next...");
+			//console.dir(scope.subprojectList);
+			//console.log("scope.funderList is next...");
+			//console.dir(scope.funderList);	
 
 			var strFunders = "";
 			angular.forEach(scope.subprojectList, function(subproject){
@@ -853,10 +854,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			
 			//console.log("scope is next...");
 			//console.dir(scope);
-			console.log("scope.subprojectList is next...");
-			console.dir(scope.subprojectList);
-			console.log("scope.collaboratorList is next...");
-			console.dir(scope.collaboratorList);
+			//console.log("scope.subprojectList is next...");
+			//console.dir(scope.subprojectList);
+			//console.log("scope.collaboratorList is next...");
+			//console.dir(scope.collaboratorList);
 			
 			var strCollaborators = "";
 			angular.forEach(scope.subprojectList, function(subproject){
@@ -1261,8 +1262,9 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 				// We wait until subprojects gets loaded and then turn this watch off.
 				if (scope.subprojectList === null)
 					return;
-				else if (scope.subprojectList.length === 0)
-					return
+
+                //else if (scope.subprojectList.length === 0) //watcher() below turns off the watch.
+				//	return
 				
 				/*angular.forEach(scope.subprojectList, function(subproject){
 					subproject.searchField = "";
@@ -1466,9 +1468,11 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		 
 		scope.viewSelectedSubproject = function(subproject){
 			console.log("Inside controllers.js, scope.viewSelectedSubproject");
-			console.log("subproject is next...");
-			console.dir(subproject);
-			////console.log("scope is next...");
+
+            //console.log("subproject is next...");
+			//console.dir(subproject);
+
+            ////console.log("scope is next...");
 			////console.dir(scope);
 			if (scope.viewSubproject)
 			{
@@ -1484,10 +1488,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 				//$rootScope.DatastoreTablePrefix = scope.DatastoreTablePrefix;
 				$rootScope.viewSubproject = scope.viewSubproject = angular.copy(subproject);
 				
-				console.log("scope (in scope.viewSelectedSubproject) is next...");
+				//console.log("scope (in scope.viewSelectedSubproject) is next...");
 				//console.dir(scope);			
 				console.log("scope.viewSubproject (in scope.viewSelectedSubproject) is next...");
-				console.dir(scope.viewSubproject);
+				//console.dir(scope.viewSubproject);
 				console.log("scope.viewSubproject.ProjectName (in scope.viewSelectedSubproject) = " +  scope.viewSubproject.ProjectName);
 				$rootScope.subprojectId = scope.viewSubproject.Id;
 			}

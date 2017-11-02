@@ -192,8 +192,6 @@ datasets_module.service('DatasetService', ['$q',
                     if (dataset.Config.ActivitiesPage)
                         dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
 
-                    //if the scope isn't defined, we can't configure so bail out
-                    console.dir(scope);
                     if (typeof scope == 'undefined') {
                         console.log("SKIPPING dataset config - no scope is set!");
                     }

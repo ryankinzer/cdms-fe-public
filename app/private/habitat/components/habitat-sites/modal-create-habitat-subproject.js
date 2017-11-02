@@ -1,7 +1,7 @@
 ﻿
-var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','SubprojectService', 'ServiceUtilities', 
+var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','CommonService','SubprojectService', 'ServiceUtilities', 
 	'$timeout', '$location', '$anchorScroll', '$document', '$upload', 
-    function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
+    function ($scope, $rootScope, $modalInstance, $modal, DatasetService, CommonService, SubprojectService, ServiceUtilities, 
 	$timeout, $location, $anchorScroll, $document, $upload){
 	console.log("Inside ModalCreateHabSubprojectCtrl...");
 
@@ -147,8 +147,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 		$scope.collaboratorList.push("Wallowa Whitman National Forest");
 		$scope.collaboratorList.push("Washington Department of Fish and Wildlife");
 	
-	console.log("$scope.collaboratorList is next...");
-	console.dir($scope.collaboratorList);
+	//console.log("$scope.collaboratorList is next...");
+	//console.dir($scope.collaboratorList);
 	
 	$scope.showCollaboratorOptions = false;
 	$scope.showOtherCollaborators = false;
@@ -160,8 +160,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	$scope.uploadComplete = false;
 	var values = null;
 	
-	console.log("$scope.subproject_row (after initialization) is next...");
-	console.dir($scope.subproject_row);
+	//console.log("$scope.subproject_row (after initialization) is next...");
+	//console.dir($scope.subproject_row);
 	
 	// $scope.viewSubproject gets set when the user clicks on a subproject.
     if($scope.viewSubproject)
@@ -172,15 +172,15 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 		
         $scope.subproject_row = angular.copy($scope.viewSubproject);
 		
-		console.log("$scope.subproject_row (in viewSubproject) is next...");
-		console.dir($scope.subproject_row);
+		//console.log("$scope.subproject_row (in viewSubproject) is next...");
+		//console.dir($scope.subproject_row);
 		
 		$scope.showAddDocument = false;
 		
 		if ((typeof $scope.subproject_row.Collaborators !== 'undefined') && ($scope.subproject_row.Collaborators !== null))
 		{
-			console.log("$scope.subproject_row.Collaborators is next...");
-			console.dir($scope.subproject_row.Collaborators);
+			//console.log("$scope.subproject_row.Collaborators is next...");
+			//console.dir($scope.subproject_row.Collaborators);
 			
 			var strCollaborators = $scope.subproject_row.Collaborators;
 			strCollaborators = strCollaborators.replace(/(\r\n|\r|\n)/gm, ""); // Remove any newlines
@@ -190,7 +190,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 			
 			//$scope.subproject_row.strCollaborators = null; // dump the previous contents.
 			$scope.subproject_row.strCollaborators = strCollaborators; // reset its value
-			console.log("$scope.subproject_row.strCollaborators = " + $scope.subproject_row.strCollaborators);
+			//console.log("$scope.subproject_row.strCollaborators = " + $scope.subproject_row.strCollaborators);
 			if ($scope.subproject_row.strCollaborators.indexOf("Other") > -1)
 				$scope.showOtherCollaborators = true;
 			
