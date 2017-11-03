@@ -47,7 +47,7 @@ mod.factory('ReportYears',['$resource', function($resource){
 }]);
 
 mod.factory('SpawningYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/getspawningyears', {}, {
+        return $resource(serviceUrl+'/api/v1/list/getspawningyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
@@ -59,7 +59,7 @@ mod.factory('BroodYears',['$resource', function($resource){
 }]);
 
 mod.factory('OutmigrationYears',['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/getoutmigrationyears', {}, {
+        return $resource(serviceUrl+'/api/v1/list/getoutmigrationyears', {}, {
             query: {method: 'GET', params: {id: 'datasetId'}, isArray: true}
         });
 }]);
@@ -352,6 +352,10 @@ mod.factory('SaveSubproject', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/crppsubproject/savecrppsubproject');
 }]);
 
+mod.factory('SaveCrppSubproject', ['$resource', function($resource){
+    return $resource(serviceUrl +'/api/v1/crppsubproject/savecrppsubproject');
+}]);
+
 mod.factory('SaveHabSubproject', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/habsubproject/savehabsubproject');
 }]);
@@ -411,13 +415,13 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
 		'GetDatastoreDatasets','GetSources','GetInstruments','SaveDatasetField','SaveMasterField','DeleteDatasetField','GetAllFields',
 		'AddMasterFieldToDataset','GetLocationTypes','SaveProjectLocation','GetAllInstruments','SaveProjectInstrument','SaveInstrument','SaveInstrumentAccuracyCheck',
 		'GetInstrumentTypes','RemoveProjectInstrument', 'GetWaterBodies','UpdateFile','DeleteFile','GetTimeZones','DeleteLocationAction','SaveFisherman','GetFishermen',
-		'SaveProjectFisherman','GetProjectFishermen','RemoveProjectFisherman','SaveSubproject','GetSubprojects','RemoveSubproject','SaveCorrespondenceEvent',
+		'SaveProjectFisherman','GetProjectFishermen','RemoveProjectFisherman','SaveCrppSubproject','GetSubprojects','RemoveSubproject','SaveCorrespondenceEvent',
 		'RemoveCorrespondenceEvent','DeleteCorresEventFile','SaveHabSubproject','RemoveHabSubproject','SaveHabitatItem','RemoveHabitatItem','DeleteHabitatItemFile',
 		'DeleteHabSubprojectFile','DeleteDatasetFile','GetHabSubproject',
     function($q, GetAllPossibleDatastoreLocations, GetAllDatastoreFields, GetDatastore, GetDatastoreProjects, GetAllDatastores, GetDatastoreDatasets, GetSources,
 		GetInstruments, SaveDatasetField, SaveMasterField, DeleteDatasetField, GetAllFields, AddMasterFieldToDataset, GetLocationTypes, SaveProjectLocation,
 		GetAllInstruments, SaveProjectInstrument, SaveInstrument, SaveInstrumentAccuracyCheck, GetInstrumentTypes, RemoveProjectInstrument, GetWaterBodies, UpdateFile,
-		DeleteFile, GetTimeZones, DeleteLocationAction, SaveFisherman, GetFishermen, SaveProjectFisherman, GetProjectFishermen, RemoveProjectFisherman, SaveSubproject,
+		DeleteFile, GetTimeZones, DeleteLocationAction, SaveFisherman, GetFishermen, SaveProjectFisherman, GetProjectFishermen, RemoveProjectFisherman, SaveCrppSubproject,
 		GetSubprojects, RemoveSubproject, SaveCorrespondenceEvent, RemoveCorrespondenceEvent, DeleteCorresEventFile, SaveHabSubproject, RemoveHabSubproject,
 		SaveHabitatItem, RemoveHabitatItem, DeleteHabitatItemFile, DeleteHabSubprojectFile, DeleteDatasetFile, GetHabSubproject){
 
@@ -681,6 +685,13 @@ mod.service('DatastoreService', ['$q','GetAllPossibleDatastoreLocations','GetAll
 				console.log("saveResults.saving = " + saveResults.saving);
 
 				return SaveSubproject.save({ProjectId: projectId, Subproject:  subproject});
+            },
+            saveCrppSubproject: function(projectId, subproject, saveResults){
+				console.log("Inside saveCrppSubproject...");
+				saveResults.saving = true;
+				console.log("saveResults.saving = " + saveResults.saving);
+
+				return SaveCrppSubproject.save({ProjectId: projectId, Subproject:  subproject});
             },
             saveHabSubproject: function(projectId, subproject, saveResults){
 				console.log("Inside services.js, saveHabSubproject...");

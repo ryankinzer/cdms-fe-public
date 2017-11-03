@@ -1144,7 +1144,8 @@ mod_fmc.controller('ModalCreateSubprojectCtrl', ['$scope', '$rootScope','$modalI
 			console.log("$scope is next...");
 			console.dir($scope);
 			//var promise = DatastoreService.saveCorrespondence($scope.project.Id, saveRow, $scope.saveResults);
-			var promise = DatastoreService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
+			//var promise = DatastoreService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
+			var promise = DatastoreService.saveCrppSubproject($scope.project.Id, saveRow, $scope.saveResults);
 			if (typeof promise !== 'undefined')
 			{
 				promise.$promise.then(function(){
@@ -3102,6 +3103,7 @@ mod_fmc.controller('ModalAddCorrespondenceEventCtrl', ['$scope', '$rootScope','$
 				//$scope.viewSelectedSubproject();
 				$scope.viewSelectedSubproject($scope.viewSubproject);
 				$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
+				//$("#correspondenceEvents").load("partials/subproject/correspondenceEvents.html #correspondenceEvents");
 				$modalInstance.dismiss();
 
 			});

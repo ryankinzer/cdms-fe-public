@@ -191,6 +191,8 @@ mod_ac.controller('AdminEditDatasetCtrl', ['$scope','DatastoreService','$modal',
 
 		$scope.saveField = function()
 		{
+			console.log("Inside AdminEditDatasetCtrl, saveField...");
+			
 			$scope.saveResults = {};
 			DatastoreService.saveDatasetField($scope.SelectedField, $scope.saveResults);
 		};

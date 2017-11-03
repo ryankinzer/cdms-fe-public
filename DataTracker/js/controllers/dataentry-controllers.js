@@ -285,6 +285,8 @@ mod_de.controller('DataEntryDatasheetCtrl', ['$scope','$routeParams','DataServic
 				var filteredColDefs = [];
 
 				angular.forEach($scope.datasheetColDefs, function(coldef){
+					console.log("coldef is next...");
+					console.dir(coldef);
 					if($scope.dataset.Config.DataEntryPage &&
 						!$scope.dataset.Config.DataEntryPage.HiddenFields.contains(coldef.field))
 					{
