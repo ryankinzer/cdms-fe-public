@@ -44,8 +44,7 @@ body { background-color: transparent !important; height: 100%;}
 
 .gridStyle-small {
     border: 1px solid rgb(212,212,212);
-    width: 900px;
-    height: 400px;
+    height: 500px;
 }
 
 .datasheet-grid

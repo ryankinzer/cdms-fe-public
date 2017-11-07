@@ -86,13 +86,14 @@ define([
 	  $rootScope.DataGradeMethods = DataGradeMethods; //ditto
 
     //Fire analytics call on location change in URL for SPA.
-    $rootScope.$on('$locationChangeSuccess', function () {
-      console.log("Sending "+ $location.url() +" to: "+ANALYTICS_CODE);
-      $window.ga('send', {
-        'hitType': 'screenview',
-        'appName' : 'CDMS',
-        'screenName' : $location.url()
-      });
+      $rootScope.$on('$locationChangeSuccess', function () {
+          if(ENVIRONMENT != "prod") return; 
+          console.log("Sending "+ $location.url() +" to: "+ANALYTICS_CODE);
+          $window.ga('send', {
+            'hitType': 'screenview',
+            'appName' : 'CDMS',
+            'screenName' : $location.url()
+          });
     });
   });
 

@@ -14,10 +14,13 @@
                 <input class="form-control" ng-model="gridOptionsFilter.filterText" placeholder="Filter By" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>
             </div>
 
-            <div style="height: 400px; margin-top: 10px;">
-                <div class="gridStyle-small" ng-grid="gridOptions"></div>
+            <div style="height: 400px; width: 100%; margin-top: 10px;">
+                <div id="project-list-grid" class="ag-fresh gridStyle-small"></div>    
             </div>
             Total projects: {{projects.length}} 
+            <hr/>
+            <button class="btn" ng-click="reloadRows()">Reload Rows</button>
+            
         </div>
     </div>
 </div>

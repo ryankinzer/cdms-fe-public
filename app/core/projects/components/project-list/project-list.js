@@ -229,11 +229,71 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 				//console.dir(scope.map.locationLayer);
 
 				if(scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
-					scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
+                    scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
+
+                //PROTOTYPE - try out the ag-grid
+                if (scope.agGridOptions === undefined) {
+                    console.log(" ----------- ok we are defining our grid...");
+
+                    //define the cell renderer (template) for our "Project Name" column.
+                    var agCellRendererProjectName = function (params) {
+                        //console.dir(params.node.data);
+                        return '<div>' +
+                            '<a title="' + params.node.data.Description
+                            + '" href="#/projects/' + params.node.data.Id + '">'
+                                + params.node.data.Name + '</a>' +
+                            '</div>';
+                    }
+
+                    var agColumnDefs = [
+                        { field: 'Program', headerName: 'Program', suppressSizeToFit: true, minWidth: 240, width: 250 },
+                        { field: 'ProjectType.Name', headerName: 'Type', width: 100, maxWidth: 150, minWidth: 80 },
+                        { field: 'Name', headerName: 'Project Name', cellRenderer: agCellRendererProjectName, minWidth: 500 },
+                    ];
+
+                    scope.agGridOptions = {
+                        animateRows: true,
+                        enableSorting: true,
+                        enableFilter: true,
+                        enableColResize: true,
+                        showToolPanel: false,
+                        columnDefs: agColumnDefs,
+                        rowData: scope.projects,
+                        debug: true,
+                        onGridReady: function (params) {
+                            params.api.sizeColumnsToFit();
+                        }
+                    };
+
+                    console.log("number of projects: " + scope.projects.length);
+
+                    console.log("starting ag-grid");
+                    var ag_grid_div = document.querySelector('#project-list-grid');    //get the container id...
+                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
+
+                    scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+
+
+                } else { 
+                    //we didn't need to redefine but do need to redraw
+                    console.log("----- ok we have projects and are defined -- setting new rowdata  ----");
+
+                    console.log("setting number of projects: " + scope.projects.length);
+                    scope.agGridOptions.api.setRowData(scope.projects);
+                    //scope.agGridOptions.api.autoSizeColumns()
+                    
+                    console.log('done');
+                    
+                }
+                
             }
         },true);
 
-
+        scope.reloadRows = function () {
+            console.log("clicked reload rows");
+            scope.agGridOptions.api.setRowData(scope.projects);
+            console.log("tried to reload rows!");
+        };
   }
 ];
 
