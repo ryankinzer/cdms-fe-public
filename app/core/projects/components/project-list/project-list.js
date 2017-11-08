@@ -19,29 +19,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
         addMetadataProperties(list, scope.metadataList, scope, CommonService);
     });
 
-        var linkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
-                               '<a title="{{row.getProperty(\'Description\')}}" href="#/projects/{{row.getProperty(\'Id\')}}">{{row.getProperty("Name")}}</a>' +
-                               '</div>';
-							  
-		console.log("In controllers.js, projectsController, scope is next...");
-		//console.dir(scope);
-
-		// This just makes the "box" for the Projects list; it is empty.
-        scope.gridOptionsFilter = {};
-		scope.correspondenceEventsFilter = {};
-        scope.gridOptions = {
-            data: 'projects',
-            columnDefs:
-            [
-                {field: 'Program', displayName:'Program', width:'230'},
-                {field: 'ProjectType.Name',displayName:'Type', width: '100'},
-                {field: 'Name', displayName: 'Project Name', cellTemplate: linkTemplate},
-            ],
-            showColumnMenu: true,
-            filterOptions: scope.gridOptionsFilter,
-            multiSelect: false,
-        };
-
+      
         scope.locationObjectArray = [];
         scope.locationObjectIdArray = [];
         scope.locationObjectIds = "";
@@ -55,8 +33,6 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 		//{
 		//	scope.subprojects = SubprojectService.getSubprojects();
 		//};
-
-      //not sure this is actually used? kb 10/26/17
 
         scope.openAddProject = function(){
             var modalInstance = $modal.open({
@@ -241,9 +217,9 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                         return '<div>' +
                             '<a title="' + params.node.data.Description
                             + '" href="#/projects/' + params.node.data.Id + '">'
-                                + params.node.data.Name + '</a>' +
+                            + params.node.data.Name + '</a>' +
                             '</div>';
-                    }
+                    };
 
                     var agColumnDefs = [
                         { field: 'Program', headerName: 'Program', suppressSizeToFit: true, minWidth: 240, width: 250 },

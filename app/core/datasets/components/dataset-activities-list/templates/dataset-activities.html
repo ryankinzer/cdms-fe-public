@@ -62,12 +62,15 @@
                 <button project-role="editor" class="btn right" ng-show="gridOptions.selectedItems.length > 0" ng-click="deleteActivities()">Delete {{gridOptions.selectedItems.length}} Activities</button>
                 
             </div>
-
+            <!--
             <div ng-show="showFilter" style="padding: 8px; width: 260px;">
                 <input class="form-control" ng-model="gridOptionsFilter.filterText" placeholder="Filter By" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>
             </div>
+            -->
 
-            <div class="gridActivities" ng-grid="gridOptions" style="margin-top: 10px;"></div>
+            <!-- div class="gridActivities" ng-grid="gridOptions" style="margin-top: 10px;"></!--div -->
+            <div id="activity-list-grid" class="ag-blue gridStyle-small"></div>
+
             Total Activities: {{activities.length}} <img ng-show="loading" src="assets/images/FishLoading.gif"/>
 
 

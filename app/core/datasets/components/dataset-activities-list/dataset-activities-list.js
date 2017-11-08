@@ -6,13 +6,13 @@ var dataset_activities_list = ['$scope', '$routeParams',
         DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
         $modal, $location, $window, $rootScope) {
 
-        console.log("Inside datasetActivitiesController...");
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
-        if ((typeof $scope.activities !== 'undefined') && ($scope.activites !== null)) {
+        //if ((typeof $scope.activities !== 'undefined') && ($scope.activities !== null)) {
             $scope.activities = null;
-            console.log("Set $scope.activities to null for project page...");
-        }
+        //    console.log("Set $scope.activities to null for project page...");
+        //}
+
         $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
         $scope.loading = true;
         $scope.project = null;
@@ -25,63 +25,96 @@ var dataset_activities_list = ['$scope', '$routeParams',
         //console.log("Profile = ");
         //console.dir($rootScope.Profile);
 
-        var linkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
-            '<a href="#/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("ActivityDate") | date:\'MM/dd/yyyy\'}}</a>' +
-            '</div>';
+        var activityDateTemplate = function (params) {
+            return '<div class="ngCellText">' +
+                '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.ActivityDate).format('L') + '</a>' +
+                '</div>';
+        };
 
-        var yearReportedTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
-            '<a href="#/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("headerdata.YearReported") }}</a>' +
-            '</div>';
+        var yearReportedTemplate = function (params) {
+            if (params.node.data.headerdata.YearReported === undefined)
+                return;
+            else
+                return '<div class="ngCellText">' +
+                '<a href="#/dataview/' + params.node.data.Id
+                + '">' + params.node.data.headerdata.YearReported + '</a>' +
+                '</div>';
+        };
 
-        var desclinkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
-            '<a href="#/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("Description") }}</a>' +
-            '</div>';
+        var desclinkTemplate = function (params) {
+            return '<div class="ngCellText">' +
+                '<a href="#/dataview/' + params.node.data.Id
+                + '">' + params.node.data.Description + '</a>' +
+                '</div>';
+        };
 
-        var allotmentTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
-            '<a href="#/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("headerdata.Allotment") }}</a>' +
-            '</div>';
+        var allotmentTemplate = function (params) {
+            return '<div class="ngCellText" ' +
+                '<a href="#/dataview/' + params.node.data.Id
+                + '">' + params.node.data.headerdata.Allotment + '"</a>' +
+                '</div>';
+        };
 
-        var locationLabelTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' +
-            '<span>{{row.getProperty("Location.Label") }}</span>' +
-            '<span ng-if="row.getProperty(\'Location.OtherAgencyId\')"> ({{row.getProperty(\'Location.OtherAgencyId\')}})</span>' +
-            '</div>';
+        var locationLabelTemplate = function (params) {
+            return '<div class="ngCellText">' +
+                '<span>' + params.node.data.Location.Label + '</span>'
+                +
+                ((params.node.data.Location.OtherAgencyId) ? ('<span> (' + params.node.data.Location.OtherAgencyId + ')</span>' ) : '')
+                +
+                '</div>';
+        };
 
-        var QATemplate = '<div class="ngCellText" ng-class="col.colIndex()">{{QAStatusList[row.getProperty("ActivityQAStatus.QAStatusId")]}}</div>';
+        var QATemplate = function (params) {
+            return '<div class="ngCellText">' + $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId] + '</div>';
+        };
 
-        //performance idea: if project-role evaluation ends up being slow, you can conditionally include here...
-        var editButtonTemplate = '<div project-role="editor" class="ngCellText" ng-class="col.colIndex()">' +
-            '<a href="#/edit/{{row.getProperty(\'Id\')}}">Edit</a>' +
-            '</div>';
+        var editButtonTemplate = function (params) {
+            return '<div project-role="editor" class="ngCellText">' +
+                '<a href="#/edit/' + params.node.data.Id + '">Edit</a>' +
+                '</div>';
+        };
 
-        $scope.columnDefs = []; // the one we'll bind to the grid.
+        $scope.columnDefs = []; // the one we'll bind to the grid; starts out empty...
 
         //the way we want this to be:
 
-        //create list of candidate columndefs.
-        // if no dataset configuration that sets the SHOWFIELDS then just add the default fields. that's what they'll get
-        // but if there is a config, spin through the list and add all the dataset config's SHOWFIELDS that are configured.
+        //create list of candidate columndefs (possibleColumnDefs below).
+        // have a list of default ShowFields - the fields we will show if the dataset doesn't have a different set configured.
+        // but if there is a config, spin through the list and add all the dataset config's SHOWFIELDS and display those.
 
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
 
-            { field: 'ActivityDate', displayName: 'Activity Date', cellTemplate: linkTemplate, width: '100px' },
-            { field: 'headerdata.YearReported', displayName: 'Year Reported', cellTemplate: yearReportedTemplate, width: '120px' },
-            { field: 'headerdata.TimeStart', displayName: 'Time Start', width: '80px' },
+            { field: 'ActivityDate', headerName: 'Activity Date', filter: 'date', cellRenderer: activityDateTemplate, width: 100 },
+            { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120 },
+            {
+                field: 'headerdata.TimeStart',
+                headerName: 'Time Start',
+                width: 80,
+                valueFormatter: function (params) {
+                    if (params.node.data.headerdata.TimeStart !== undefined)
+                        return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
+                }
+            },
 
             //for appraisal
-            { field: 'headerdata.Allotment', displayName: 'Allotment', cellTemplate: allotmentTemplate, width: '100px' },
-            { field: 'headerdata.AllotmentStatus', displayName: 'Status', width: '120px' },
+            { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, width: 100 },
+            { field: 'headerdata.AllotmentStatus', headerName: 'Status', width: 120 },
 
-            // {field:'Location.Id',displayName: 'LocId', width: '55px'}, // We do not want to show this column.
-            { field: 'Location.Label', displayName: 'Location', cellTemplate: locationLabelTemplate },
-            { field: 'Location.WaterBody.Name', displayName: 'Waterbody', },
-            { field: 'headerdata.FieldActivityType', displayName: 'Field Activity Type', width: '120px' },
-            { field: 'headerdata.DataType', displayName: 'Data Type', width: '120px' },
-            { field: 'Description', displayName: 'Date Range', cellTemplate: desclinkTemplate, },
+            // {field:'Location.Id',headerName: 'LocId', width: '55px'}, // We do not want to show this column.
+            { field: 'Location.Label', headerName: 'Location', cellRenderer: locationLabelTemplate, width: 400},
+            { field: 'Location.WaterBody.Name', headerName: 'Waterbody', },
+            { field: 'headerdata.FieldActivityType', headerName: 'Field Activity Type', width: 120 },
+            { field: 'headerdata.DataType', headerName: 'Data Type', width: 120 },
+            { field: 'Description', headerName: 'Date Range', cellRenderer: desclinkTemplate, },
 
             //all datasets get these
-            { field: 'User.Fullname', displayName: 'By User', width: '120px', alwaysShowField: true },  //note: alwaysShowField is true.
-            { field: 'QAStatus', displayName: 'QA Status', cellTemplate: QATemplate, width: '100px', alwaysShowField: true },
-            { field: 'Actions', displayName: '', cellTemplate: editButtonTemplate, width: '40px', alwaysShowField: true },
+            { field: 'User.Fullname', headerName: 'By User', width: 120, alwaysShowField: true },  //note: alwaysShowField is true.
+            {
+                field: 'QAStatus', headerName: 'QA Status', cellRenderer: QATemplate, width: 100,
+                alwaysShowField: true,
+                valueGetter: function (params) { return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId]; }
+            },
+            { field: 'Actions', headerName: '', cellRenderer: editButtonTemplate, width: 40, alwaysShowField: true },
 
         ];
 
@@ -91,24 +124,55 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.newGraphic = null;
         $scope.showDataEntrySheetButton = true; //get from config???
 
+        /*
         $scope.gridOptions = {
             data: 'activities',
             selectedItems: [],
             //sortInfo: { fields: ['ActivityDate'], directions: ['desc'] }, //start with activity date DESC
             columnDefs: 'columnDefs'
         };
+        */
 
+        $scope.agGridOptions = {
+            animateRows: true,
+            enableSorting: true,
+            enableFilter: true,
+            enableColResize: true,
+            showToolPanel: false,
+            columnDefs: [],
+            rowData: [],
+            debug: true,
+            onGridReady: function (params) {
+                params.api.sizeColumnsToFit();
+            }
+        };
 
-        //Maybe there is a better way?!
+        var ag_grid_div = document.querySelector('#activity-list-grid');    //get the container id...
+        $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.agGridOptions); //bind the grid to it.
+
+        $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+
+        //activity-list-grid
+
+        //Maybe there is a better way?! - YES: create an api function that returns exactly what this view needs...
         $scope.activities.$promise.then(function () {
             console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
+
+            $scope.loading = true;
+
             $scope.headerdata.$promise.then(function () {
                 angular.forEach($scope.activities, function (activity, key) {
                     activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
                 });
+
+                //now that the activities are loaded, tell the grid so that it can refresh.
+                $scope.agGridOptions.api.setRowData($scope.activities);
+                $scope.loading = false;
             });
             console.log("$scope at end of $scope.activities.$promise is next...");
             //console.dir($scope);
+
+            
         });
 
         $scope.$watch('dataset.Fields', function () {
@@ -156,10 +220,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
             //  but it will be overridden if there is one configured in the dataset.
             var ShowFields = [
                 "ActivityDate",                 // ActivityDate
-                "headerdata.YearReported",      // YearReported
                 "Location.Label",               // Location
-                "headerdata.FieldActivityType", // FieldActivityType
-                "Description"];                 // Date Range
+                ];                
 
             console.log("config!");
             console.dir($scope.dataset.Config);
@@ -171,7 +233,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 console.log("Hey config has a showfields configured!");
                 ShowFields = $scope.dataset.Config.ActivitiesPage.ShowFields; //set
             } else
-                console.log("aww no showfields in config...");
+                console.log("aww no showfields in config... we'll just use the ShowFields defaults...");
 
             var showColDefs = [];
 
@@ -183,7 +245,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 }
             });
 
-            $scope.columnDefs = showColDefs;
+            $scope.columnDefs = showColDefs; 
+            $scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
             
             /*
 
@@ -329,6 +392,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             }
         });
 
+        /*
         $scope.$watch('activities.$resolved', function () {
             $scope.loading = true;
             if ($scope.activities && $scope.activities.$resolved) {
@@ -375,6 +439,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 $scope.loading = false;
 
         });
+        */
 
         $scope.reloadDatasetLocations = function (datasetName, locationType) {
             console.log("Inside activities-controllers.js, scope.reloadDatasetLocations...");
@@ -668,6 +733,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         };
 
         $scope.reloadActivities = function () {
+            $scope.loading = true;
             $scope.activities = DatasetService.getActivities($routeParams.Id);
         }
 
