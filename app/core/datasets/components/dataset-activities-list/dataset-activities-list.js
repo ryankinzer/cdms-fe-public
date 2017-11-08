@@ -5,6 +5,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
     function ($scope, $routeParams, 
         DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
         $modal, $location, $window, $rootScope) {
+
         console.log("Inside datasetActivitiesController...");
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
@@ -52,48 +53,51 @@ var dataset_activities_list = ['$scope', '$routeParams',
             '<a href="#/edit/{{row.getProperty(\'Id\')}}">Edit</a>' +
             '</div>';
 
-        $scope.columnDefs = [
+        $scope.columnDefs = []; // the one we'll bind to the grid.
+
+        //the way we want this to be:
+
+        //create list of candidate columndefs.
+        // if no dataset configuration that sets the SHOWFIELDS then just add the default fields. that's what they'll get
+        // but if there is a config, spin through the list and add all the dataset config's SHOWFIELDS that are configured.
+
+        $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
+
             { field: 'ActivityDate', displayName: 'Activity Date', cellTemplate: linkTemplate, width: '100px' },
-            //{field:'YearReported', displayName:'Year Reported', cellTemplate: linkTemplate, width:'120px'},
             { field: 'headerdata.YearReported', displayName: 'Year Reported', cellTemplate: yearReportedTemplate, width: '120px' },
+            { field: 'headerdata.TimeStart', displayName: 'Time Start', width: '80px' },
 
-            { field: 'headerdata.TimeStart', displayName: 'Time Start', visible: false, width: '80px' },
+            //for appraisal
+            { field: 'headerdata.Allotment', displayName: 'Allotment', cellTemplate: allotmentTemplate, width: '100px' },
+            { field: 'headerdata.AllotmentStatus', displayName: 'Status', width: '120px' },
 
-            //for demo
-            { field: 'headerdata.Allotment', displayName: 'Allotment', cellTemplate: allotmentTemplate, visible: false, width: '100px' },
-            { field: 'headerdata.AllotmentStatus', displayName: 'Status', visible: false, width: '120px' },
-
-            // {field:'Location.Id',displayName: 'LocId', visible: false, width: '55px'}, // We do not want to show this column.
+            // {field:'Location.Id',displayName: 'LocId', width: '55px'}, // We do not want to show this column.
             { field: 'Location.Label', displayName: 'Location', cellTemplate: locationLabelTemplate },
-            { field: 'Location.WaterBody.Name', displayName: 'Waterbody', visible: false },
-            { field: 'headerdata.FieldActivityType', displayName: 'Field Activity Type', visible: false, width: '120px' },
-            { field: 'headerdata.DataType', displayName: 'Data Type', visible: false, width: '120px' },
-            { field: 'Description', displayName: 'Date Range', cellTemplate: desclinkTemplate, visible: false },
+            { field: 'Location.WaterBody.Name', displayName: 'Waterbody', },
+            { field: 'headerdata.FieldActivityType', displayName: 'Field Activity Type', width: '120px' },
+            { field: 'headerdata.DataType', displayName: 'Data Type', width: '120px' },
+            { field: 'Description', displayName: 'Date Range', cellTemplate: desclinkTemplate, },
 
-
-            { field: 'User.Fullname', displayName: 'By User', width: '120px' },
-            { field: 'QAStatus', displayName: 'QA Status', cellTemplate: QATemplate, width: '100px' },
-            { field: 'Actions', displayName: '', cellTemplate: editButtonTemplate, width: '40px' },
+            //all datasets get these
+            { field: 'User.Fullname', displayName: 'By User', width: '120px', alwaysShowField: true },  //note: alwaysShowField is true.
+            { field: 'QAStatus', displayName: 'QA Status', cellTemplate: QATemplate, width: '100px', alwaysShowField: true },
+            { field: 'Actions', displayName: '', cellTemplate: editButtonTemplate, width: '40px', alwaysShowField: true },
 
         ];
 
-        $scope.showFilter = false;
+
         $scope.selectedLocation = null;
         $scope.newPoint = null;
         $scope.newGraphic = null;
-        $scope.showDataEntrySheetButton = true;
+        $scope.showDataEntrySheetButton = true; //get from config???
 
-        $scope.gridOptionsFilter = {};
         $scope.gridOptions = {
             data: 'activities',
             selectedItems: [],
-            showColumnMenu: true,
-            sortInfo: { fields: ['ActivityDate'], directions: ['desc'] },
-            columnDefs: 'columnDefs',
-            filterOptions: $scope.gridOptionsFilter,
-
-
+            //sortInfo: { fields: ['ActivityDate'], directions: ['desc'] }, //start with activity date DESC
+            columnDefs: 'columnDefs'
         };
+
 
         //Maybe there is a better way?!
         $scope.activities.$promise.then(function () {
@@ -110,6 +114,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.$watch('dataset.Fields', function () {
             if (!$scope.dataset.Fields) return;
 
+            //run config on the dataset.
+            //DatasetService.configureDataset($scope.dataset);
+
             console.log("Inside dataset.Fields watcher...");
             //console.log("$scope is next...");
             //console.dir($scope);
@@ -123,6 +130,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             //console.log("$scope.columnDefs is next...");
             //console.dir($scope.columnDefs);
+
+
+            //OK this is going away...
 
             //hide irrelevant fields TODO -- code smell pretty ripe here...  genericize
             // $scope.columnDefs[0] = ActivityDate
@@ -138,7 +148,46 @@ var dataset_activities_list = ['$scope', '$routeParams',
             // $scope.columnDefs[10] = By User
             // $scope.columnDefs[11] = QAStatus
 
+
+            //TODO: base this on config.
             $scope.showDataEntrySheetButton = true;
+
+            //this is the default columns (fields) to show in the activities grid, 
+            //  but it will be overridden if there is one configured in the dataset.
+            var ShowFields = [
+                "ActivityDate",                 // ActivityDate
+                "headerdata.YearReported",      // YearReported
+                "Location.Label",               // Location
+                "headerdata.FieldActivityType", // FieldActivityType
+                "Description"];                 // Date Range
+
+            console.log("config!");
+            console.dir($scope.dataset.Config);
+
+            //if the dataset has a config and the ActivityPage.ShowFields is set, use it
+            if ($scope.dataset.Config != undefined
+                && $scope.dataset.Config.ActivitiesPage != undefined
+                && $scope.dataset.Config.ActivitiesPage.ShowFields != undefined) {
+                console.log("Hey config has a showfields configured!");
+                ShowFields = $scope.dataset.Config.ActivitiesPage.ShowFields; //set
+            } else
+                console.log("aww no showfields in config...");
+
+            var showColDefs = [];
+
+            angular.forEach($scope.possibleColumnDefs, function (coldef) {
+                //console.log("coldef is next...");
+                //console.dir(coldef);
+                if (coldef.alwaysShowField || ShowFields.contains(coldef.field)) {
+                    showColDefs.push(coldef);
+                }
+            });
+
+            $scope.columnDefs = showColDefs;
+            
+            /*
+
+            //
             if ($scope.DatastoreTablePrefix === "WaterTemp") {
                 console.log("showing fields for " + $scope.DatastoreTablePrefix);
                 $scope.columnDefs[0].visible = false; // ActivityDate
@@ -228,6 +277,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             console.log("$scope at end of watch, dataset.Fields is next...");
             //console.dir($scope);
+            */
         });
 
         $scope.$watch('project.Name', function () {
