@@ -966,7 +966,7 @@ function formatDateFromFriendlyToUtc(d) {
     return utc;
 }
 
-//if(somearray.contains("a"))... (case insensitive)
+//if(somearray.contains("a"))... (case insensitive) -- can't be used with ints
 if (!Array.prototype.contains) {
     Array.prototype.contains = function (searchElement) {
         searchElement = searchElement.toLowerCase();
@@ -977,12 +977,26 @@ if (!Array.prototype.contains) {
         if (this.length == 0)
             return false;
 
-        // This was probably a good idea, but it caused problems, so I commented it out.  ~GC
-        //if(this.indexOf(searchElement) == -1)
-        //    return false;
-
         for (var i = this.length - 1; i >= 0; i--) {
             if (this[i].toLowerCase() == searchElement)
+                return true;
+        };
+
+        return false;
+    }
+}
+
+//if(somearray.contains(17))...  -- use with ints
+if (!Array.prototype.containsInt) {
+    Array.prototype.containsInt = function (searchElement) {
+        if (this == null)
+            throw new TypeError('Array.contains: "this" is null or not defined');
+
+        if (this.length == 0)
+            return false;
+
+        for (let i = 0; i < this.length; i++) {
+            if (this[i] === searchElement)
                 return true;
         };
 

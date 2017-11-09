@@ -72,7 +72,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
 
-            { field: 'ActivityDate', headerName: 'Activity Date', filter: 'date', cellRenderer: activityDateTemplate, width: 100 },
+            { field: 'ActivityDate', headerName: 'Activity Date', filter: 'date', cellRenderer: activityDateTemplate, width: 120 },
             { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120 },
             {
                 field: 'headerdata.TimeStart',
@@ -85,24 +85,24 @@ var dataset_activities_list = ['$scope', '$routeParams',
             },
 
             //for appraisal
-            { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, width: 100 },
-            { field: 'headerdata.AllotmentStatus', headerName: 'Status', width: 120 },
+            { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, minWidth: 100 },
+            { field: 'headerdata.AllotmentStatus', headerName: 'Status', minWidth: 120 },
 
             // {field:'Location.Id',headerName: 'LocId', width: '55px'}, // We do not want to show this column.
-            { field: 'Location.Label', headerName: 'Location', cellRenderer: locationLabelTemplate, width: 360},
-            { field: 'Location.WaterBody.Name', headerName: 'Waterbody', },
-            { field: 'headerdata.FieldActivityType', headerName: 'Field Activity Type', width: 120 },
-            { field: 'headerdata.DataType', headerName: 'Data Type', width: 120 },
-            { field: 'Description', headerName: 'Date Range', cellRenderer: desclinkTemplate, },
+            { field: 'Location.Label', headerName: 'Location', cellRenderer: locationLabelTemplate, minWidth: 360},
+            { field: 'Location.WaterBody.Name', headerName: 'Waterbody' },
+            { field: 'headerdata.FieldActivityType', headerName: 'Field Activity Type', minWidth: 120 },
+            { field: 'headerdata.DataType', headerName: 'Data Type', minWidth: 120 },
+            { field: 'Description', headerName: 'Date Range', cellRenderer: desclinkTemplate, minWidth:300 },
 
             //all datasets get these
-            { field: 'User.Fullname', headerName: 'By User', width: 120, alwaysShowField: true },  //note: alwaysShowField is true.
+            { field: 'User.Fullname', headerName: 'By User', minWidth: 120, alwaysShowField: true },  //note: alwaysShowField is true.
             {
-                field: 'QAStatus', headerName: 'QA Status', cellRenderer: QATemplate, width: 100,
+                field: 'QAStatus', headerName: 'QA Status', cellRenderer: QATemplate, minWidth: 100,
                 alwaysShowField: true,
                 valueGetter: function (params) { return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId]; }
             },
-            { field: 'Actions', headerName: '', cellRenderer: editButtonTemplate, width: 40, alwaysShowField: true },
+            { field: 'Actions', headerName: '', cellRenderer: editButtonTemplate, minWidth: 50, alwaysShowField: true },
 
         ];
 
@@ -121,9 +121,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
             columnDefs: [],
             rowData: [],
             debug: true,
-            onGridReady: function (params) {
-                params.api.sizeColumnsToFit();
-            },
             rowSelection: 'multiple',
             onSelectionChanged: function (params) {
                 $scope.agGridOptions.selectedItems = $scope.agGridOptions.api.getSelectedRows();
@@ -131,8 +128,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
             },
             selectedItems: []
         };
-
-
 
         //setup the grid
         var ag_grid_div = document.querySelector('#activity-list-grid');    //get the container id...
@@ -154,13 +149,20 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
                 //now that the activities are loaded, tell the grid so that it can refresh.
                 $scope.agGridOptions.api.setRowData($scope.activities);
-                $scope.loading = false;
+
+                console.log("autosizing columns");
+                var allColumnIds = [];
+                $scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
+                    allColumnIds.push(column.colId);
+                });
+                $scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
+                
             });
             console.log("$scope at end of $scope.activities.$promise is next...");
             //console.dir($scope);
 
             $scope.allActivities = $scope.activities; //set allActivities so we can reset our filters
-
+            $scope.loading = false;
             
         });
 
@@ -768,17 +770,58 @@ var dataset_activities_list = ['$scope', '$routeParams',
             DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.agGridOptions, $scope.saveResults);
             var deleteWatcher = $scope.$watch('saveResults', function () {
                 if ($scope.saveResults.success) {
-                    $scope.agGridOptions.api.deselectAll();  //clear selection
-//                    $scope.agGridOptions.api.setRowData([]); //clear the grid and reload.
-                    $scope.allActivities = null; //so you can't get the old ones back through filtering
-                    $scope.activities = DatasetService.getActivitiesForView($routeParams.Id); //reload from the db.
-                    $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
-                    deleteWatcher();
-                    console.log("success!");
+                    //great! so remove those from the grid; no sense reloading
+
+                    //console.log("Ok - let's delete from the activities array. Starting with: " + $scope.activities.length);
+
+                    //make an array of the ActivityIds to remove from our grid...
+                    var SelectedActivityIds = [];
+                    var activitiesProcessed = 0;
+                    var activitiesToProcess = $scope.activities.length;
+
+                    $scope.agGridOptions.selectedItems.forEach(function (item) {
+                        SelectedActivityIds.push(item.Id);
+                    });
+
+                    //console.log("Ok these are the ones we'll remove from the grid");
+                    console.dir(SelectedActivityIds);
+
+                    $scope.allActivities = []; //this will be our activities to keep (skipping the ones to delete) 
+
+                    //spin through allActivities and remove the selected activities from our activities
+                    // remember: we can't splice items out of arrays we are foreaching or else unexpected results occur.
+                    $scope.activities.forEach(function (activity, index) {
+
+                        //////console.log(" -- checking == " + activity.Id + " at index: " + index);
+
+                        if (!SelectedActivityIds.containsInt(activity.Id)) {
+                            $scope.allActivities.push(activity);
+
+                        } else {
+
+                            //console.log("Ok we are deleting this one...");
+                            console.dir(activity);
+                            //$scope.activities.splice(index, 1); //note: we remove this from activities not allActivities
+                        } 
+
+                        activitiesProcessed++;
+                        if (activitiesProcessed === activitiesToProcess) //wait for all the foreaches to come back...
+                        {
+                            //all done, so now refresh the view.
+                            //console.log("done! refreshing view");
+                            $scope.agGridOptions.api.deselectAll();  //clear selection
+                            //console.log("after selection");
+                            $scope.activities = $scope.allActivities; //update our activities with the new set of activities
+                            //console.log("ready for grid update");
+                            $scope.agGridOptions.api.setRowData($scope.activities); //update the grid.
+                            //console.log("all done.");
+                            deleteWatcher();
+                        }
+                    });
                 }
                 else if ($scope.saveResults.failure) {
                     deleteWatcher();
-                    console.log("failure!");
+                    //console.log("delete failure!");
                 }
             }, true);
         };
@@ -826,28 +869,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         };
 
-        //this gets called after the activities are loaded
-        $scope.after_activities_loaded = function () {
-
-            console.log("Inside after_activities_loaded");
-
-            $scope.loading = true;
-
-            $scope.headerdata.$promise.then(function () {
-                angular.forEach($scope.activities, function (activity, key) {
-                    activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
-                });
-
-                //now that the activities are loaded, tell the grid so that it can refresh.
-                $scope.agGridOptions.api.setRowData($scope.activities);
-                $scope.loading = false;
-            });
-
-            console.log("$scope at end of $scope.activities.$promise is next...");
-            //console.dir($scope);
-
-            $scope.allActivities = $scope.activities; //set allActivities so we can reset our filters
-        };
     }
 
    
