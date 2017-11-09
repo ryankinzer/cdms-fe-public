@@ -26,50 +26,38 @@ var dataset_activities_list = ['$scope', '$routeParams',
         //console.dir($rootScope.Profile);
 
         var activityDateTemplate = function (params) {
-            return '<div class="ngCellText">' +
-                '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.ActivityDate).format('L') + '</a>' +
-                '</div>';
+            return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.ActivityDate).format('L') + '</a>';
         };
 
         var yearReportedTemplate = function (params) {
             if (params.node.data.headerdata.YearReported === undefined)
                 return;
             else
-                return '<div class="ngCellText">' +
-                '<a href="#/dataview/' + params.node.data.Id
-                + '">' + params.node.data.headerdata.YearReported + '</a>' +
-                '</div>';
+                return '<a href="#/dataview/' + params.node.data.Id
+                + '">' + params.node.data.headerdata.YearReported + '</a>';
         };
 
         var desclinkTemplate = function (params) {
-            return '<div class="ngCellText">' +
-                '<a href="#/dataview/' + params.node.data.Id
-                + '">' + params.node.data.Description + '</a>' +
-                '</div>';
+            return '<a href="#/dataview/' + params.node.data.Id
+                + '">' + params.node.data.Description + '</a>';
         };
 
         var allotmentTemplate = function (params) {
-            return '<div class="ngCellText" ' +
-                '<a href="#/dataview/' + params.node.data.Id
-                + '">' + params.node.data.headerdata.Allotment + '"</a>' +
-                '</div>';
+            return '<a href="#/dataview/' + params.node.data.Id
+                + '">' + params.node.data.headerdata.Allotment + '"</a>';
         };
 
         var locationLabelTemplate = function (params) {
-            return '<div class="ngCellText">' +
-                '<span>' + params.node.data.Location.Label + '</span>'
-                +
-                ((params.node.data.Location.OtherAgencyId) ? ('<span> (' + params.node.data.Location.OtherAgencyId + ')</span>' ) : '')
-                +
-                '</div>';
+            return '<span>' + params.node.data.Location.Label + '</span>'
+                + ((params.node.data.Location.OtherAgencyId) ? ('<span> (' + params.node.data.Location.OtherAgencyId + ')</span>' ) : ''); //ternery: if otheragencyid then show it
         };
 
         var QATemplate = function (params) {
-            return '<div class="ngCellText">' + $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId] + '</div>';
+            return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId];
         };
 
         var editButtonTemplate = function (params) {
-            return '<div project-role="editor" class="ngCellText">' +
+            return '<div project-role="editor">' +
                 '<a href="#/edit/' + params.node.data.Id + '">Edit</a>' +
                 '</div>';
         };
@@ -101,7 +89,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             { field: 'headerdata.AllotmentStatus', headerName: 'Status', width: 120 },
 
             // {field:'Location.Id',headerName: 'LocId', width: '55px'}, // We do not want to show this column.
-            { field: 'Location.Label', headerName: 'Location', cellRenderer: locationLabelTemplate, width: 400},
+            { field: 'Location.Label', headerName: 'Location', cellRenderer: locationLabelTemplate, width: 360},
             { field: 'Location.WaterBody.Name', headerName: 'Waterbody', },
             { field: 'headerdata.FieldActivityType', headerName: 'Field Activity Type', width: 120 },
             { field: 'headerdata.DataType', headerName: 'Data Type', width: 120 },
@@ -122,16 +110,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.selectedLocation = null;
         $scope.newPoint = null;
         $scope.newGraphic = null;
-        $scope.showDataEntrySheetButton = true; //get from config???
-
-        /*
-        $scope.gridOptions = {
-            data: 'activities',
-            selectedItems: [],
-            //sortInfo: { fields: ['ActivityDate'], directions: ['desc'] }, //start with activity date DESC
-            columnDefs: 'columnDefs'
-        };
-        */
+        $scope.showDataEntrySheetButton = true; //TODO: get from config???
 
         $scope.agGridOptions = {
             animateRows: true,
@@ -144,18 +123,26 @@ var dataset_activities_list = ['$scope', '$routeParams',
             debug: true,
             onGridReady: function (params) {
                 params.api.sizeColumnsToFit();
-            }
+            },
+            rowSelection: 'multiple',
+            onSelectionChanged: function (params) {
+                $scope.agGridOptions.selectedItems = $scope.agGridOptions.api.getSelectedRows();
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+            selectedItems: []
         };
 
+
+
+        //setup the grid
         var ag_grid_div = document.querySelector('#activity-list-grid');    //get the container id...
         $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.agGridOptions); //bind the grid to it.
-
         $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
 
-        //activity-list-grid
 
-        //Maybe there is a better way?! - YES: create an api function that returns exactly what this view needs...
-        $scope.activities.$promise.then(function () {
+        //Maybe there is a better way?! 
+        $scope.activities.$promise.then( function () {
+
             console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
 
             $scope.loading = true;
@@ -171,6 +158,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
             });
             console.log("$scope at end of $scope.activities.$promise is next...");
             //console.dir($scope);
+
+            $scope.allActivities = $scope.activities; //set allActivities so we can reset our filters
 
             
         });
@@ -247,7 +236,16 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             $scope.columnDefs = showColDefs; 
             $scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
-            
+
+            //some specific dataset things... TODO: i'll bet we can move this out to config, too...
+            if ($scope.DatastoreTablePrefix === "WaterTemp") {
+                $scope.reloadDatasetLocations("WaterTemp", LOCATION_TYPE_WaterTemp);
+            } else if ($scope.DatastoreTablePrefix === "Metrics") {
+                $scope.showDataEntrySheetButton = false;
+                $scope.reloadDatasetLocations("Metrics", LOCATION_TYPE_Hab);
+            }
+
+
             /*
 
             //
@@ -506,6 +504,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.removeFilter = function () {
             $scope.activities = $scope.allActivities;
+            $scope.agGridOptions.api.setRowData($scope.activities);
             $scope.clearLocation();
         }
 
@@ -581,14 +580,25 @@ var dataset_activities_list = ['$scope', '$routeParams',
                     var filterActivities = [];
                     var location = getByField($scope.locationsArray, e.graphic.attributes.OBJECTID, "SdeObjectId");
 
+                    //console.log("Filtering --- looking for location: "+location.Id); 
+                    //console.dir(location);
+
                     angular.forEach($scope.allActivities, function (item, key) {
-                        if (item.LocationId == location.Id)
+                        if (item.LocationId == location.Id) {
+                            //console.log("Found: item with location id");
                             filterActivities.push(item);
+                        }
                     });
 
+                    console.log("number of filteractivities: " + filterActivities.length);
+                    //set the filtered activities
                     $scope.activities = filterActivities;
-                    console.log("$scope.activities is next...");
-                    console.dir($scope.activities);
+                    $scope.agGridOptions.api.setRowData($scope.activities);
+
+
+                    
+                    //console.log("$scope.activities is next...");
+                    //console.dir($scope.activities);
 
                     $scope.selectedLocation = location;
                     if ($scope.newGraphic) {
@@ -734,7 +744,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.reloadActivities = function () {
             $scope.loading = true;
-            $scope.activities = DatasetService.getActivities($routeParams.Id);
+            $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
         }
 
         $scope.openQueryWindow = function (p) {
@@ -752,15 +762,17 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.deleteActivities = function () {
             $scope.saveResults = {};
-            if (!confirm("Are you sure you want to delete " + $scope.gridOptions.selectedItems.length + " activities?  There is no undo for this operation."))
+            if (!confirm("Are you sure you want to delete " + $scope.agGridOptions.selectedItems.length + " activities?  There is no undo for this operation."))
                 return;
 
-            DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.gridOptions, $scope.saveResults);
+            DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.agGridOptions, $scope.saveResults);
             var deleteWatcher = $scope.$watch('saveResults', function () {
                 if ($scope.saveResults.success) {
-                    //clear selection
-                    $scope.gridOptions.selectAll(false);
-                    $scope.activities = DatasetService.getActivities($routeParams.Id); //reload from the db.
+                    $scope.agGridOptions.api.deselectAll();  //clear selection
+//                    $scope.agGridOptions.api.setRowData([]); //clear the grid and reload.
+                    $scope.allActivities = null; //so you can't get the old ones back through filtering
+                    $scope.activities = DatasetService.getActivitiesForView($routeParams.Id); //reload from the db.
+                    $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
                     deleteWatcher();
                     console.log("success!");
                 }
@@ -814,7 +826,29 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         };
 
+        //this gets called after the activities are loaded
+        $scope.after_activities_loaded = function () {
+
+            console.log("Inside after_activities_loaded");
+
+            $scope.loading = true;
+
+            $scope.headerdata.$promise.then(function () {
+                angular.forEach($scope.activities, function (activity, key) {
+                    activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
+                });
+
+                //now that the activities are loaded, tell the grid so that it can refresh.
+                $scope.agGridOptions.api.setRowData($scope.activities);
+                $scope.loading = false;
+            });
+
+            console.log("$scope at end of $scope.activities.$promise is next...");
+            //console.dir($scope);
+
+            $scope.allActivities = $scope.activities; //set allActivities so we can reset our filters
+        };
     }
 
-
+   
 ];

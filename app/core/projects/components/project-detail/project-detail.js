@@ -8,11 +8,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		console.log("Inside controllers.js, projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
 		
-		if ((typeof scope.activities !== 'undefined') && (scope.activites !== null))
-		{
-			scope.activities = null;
-			console.log("Set scope.activities to null for project page...");
-		}
+		scope.activities = null;
 		
 		scope.datasets = ProjectService.getProjectDatasets(routeParams.Id);
 		scope.project = ProjectService.getProject(routeParams.Id);

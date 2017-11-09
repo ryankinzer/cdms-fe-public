@@ -4,14 +4,9 @@
         function ($scope, $routeParams, ProjectService, CommonService, SubprojectService, DatasetService, $location, $upload, ActivityParser, DataSheet,
             $rootScope, Logger, $route, $modal, ChartService,
 			ServiceUtilities) {
-//    		$scope.QAActivityStatuses = QAActivityStatuses;
-    	$scope.dataset = DatasetService.getDataset($routeParams.Id);
+        	$scope.dataset = DatasetService.getDataset($routeParams.Id);
 		
-			if ((typeof $scope.activities !== 'undefined') && ($scope.activites !== null))
-			{
-				$scope.activities = null;
-				console.log("Set $scope.activities to null for project page...");
-			}
+			$scope.activities = null;
 		
 			$scope.mappedActivityFields = {};
 			$scope.userId = $rootScope.Profile.Id;

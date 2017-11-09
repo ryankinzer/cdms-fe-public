@@ -174,9 +174,7 @@ datasets_module.service('DatasetService', ['$q',
 
             //configureDataset: function(dataset)
             configureDataset: function (dataset, scope) {
-                console.log("Hi ken");
-                console.log("configuring dataset!" + dataset.Id);
-                console.log("dataset.Name = " + dataset.Name);
+                console.log("configuring dataset.Name = " + dataset.Name);
                 //default page routes
                 dataset.activitiesRoute = "activities"; //default route -- when they click to go to "activities" this is the route they should use.
 
@@ -189,7 +187,7 @@ datasets_module.service('DatasetService', ['$q',
                     dataset.Config = angular.fromJson(dataset.Config);
 
                     //if there are page routes in configuration, set them in our dataset
-                    if (dataset.Config.ActivitiesPage)
+                    if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)
                         dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
 
                     if (typeof scope == 'undefined') {
