@@ -2028,7 +2028,8 @@ table.metadata td
 
 .edit-project-modal textarea.form-control { width: 400px;}
 
-.edit-project-modal { width: 700px;}
+/*.edit-project-modal { width: 700px;}*/
+.edit-project-modal { width: 750px;}
 
 .edit-project-modal .checkbox-itemlist
 {
