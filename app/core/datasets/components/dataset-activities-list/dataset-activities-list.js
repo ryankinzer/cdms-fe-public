@@ -72,7 +72,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
 
-            { field: 'ActivityDate', headerName: 'Activity Date', filter: 'date', cellRenderer: activityDateTemplate, width: 120 },
+            { field: 'ActivityDate', headerName: 'Activity Date', filter: 'date', cellRenderer: activityDateTemplate, width: 150 },
             { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120 },
             {
                 field: 'headerdata.TimeStart',
@@ -120,11 +120,15 @@ var dataset_activities_list = ['$scope', '$routeParams',
             showToolPanel: false,
             columnDefs: [],
             rowData: [],
+            filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             debug: true,
             rowSelection: 'multiple',
             onSelectionChanged: function (params) {
                 $scope.agGridOptions.selectedItems = $scope.agGridOptions.api.getSelectedRows();
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+            onFilterModified: function () {
+                $scope.agGridOptions.api.deselectAll();
             },
             selectedItems: []
         };
@@ -511,6 +515,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         }
 
         $scope.clearLocation = function () {
+            $scope.agGridOptions.api.deselectAll();
             $scope.map.infoWindow.hide();
             $scope.selectedLocation = null;
 
@@ -550,6 +555,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         // expose a method for handling clicks ON THE MAP - this is linked to from the Map.js directive
         $scope.click = function (e) {
+
+            //clear the delete selection if they click on the map somewhere...
+            $scope.agGridOptions.api.deselectAll();
 
             try {
 
