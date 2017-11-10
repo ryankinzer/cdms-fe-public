@@ -48,14 +48,16 @@
 					
 					<div class="header-label">Copy of the Document</div>
 					<!--<div class="header-value" style="margin-left: 198px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">-->
-					<div class="header-value" style="margin-left: 250px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">
+					<!--<div class="header-value" style="margin-left: 250px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">-->
+					<div class="header-value" style="margin-left: 300px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">
 						<!--<button class="right btn btn-xs" ng-click="openFileModal(hi_row, field)">Add</button>-->
 						<button class="right btn btn-xs" ng-click="openFileModal(hi_row, field)">Add/Remove</button>
 						<div ng-bind-html="hi_row['ItemFiles'] | fileNamesFromString">&nbsp;</div>
 					</div>
 					
 					<div class="header-label">External Links</div>
-					<div class="header-value" style="margin-left: 250px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">
+					<!--<div class="header-value" style="margin-left: 250px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">-->
+					<div class="header-value" style="margin-left: 300px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">
 						<!--<input class="form-control" type="text" ng-model="hi_row.ExternalLinks" />-->
 						<button class="right btn btn-xs" ng-click="openLinkModal(hi_row, field)">Add/Remove</button>
 						<div ng-bind-html="hi_row['ExternalLinks'] | urlsFromString">&nbsp;</div>

@@ -1451,87 +1451,109 @@ mod_fmc.controller('ModalCreateHabSubprojectCtrl', ['$scope', '$rootScope','$mod
 		}
 				
 		values = null; // Set/reuse this variable.
-		try
+		if ((typeof $scope.subproject_row.FirstFoods !== 'undefined') && ($scope.subproject_row.FirstFoods !== null))
 		{
-			values = angular.fromJson($scope.subproject_row.FirstFoods);
-			//console.log("First Foods was an object.");
-			//console.log("First Foods = " + values);
-			var strFirstFoods = values.toString();
-			//console.log("strFirstFoods = " + strFirstFoods);
+			try
+			{
+				values = angular.fromJson($scope.subproject_row.FirstFoods);
+				//console.log("First Foods was an object.");
+				//console.log("First Foods = " + values);
+				var strFirstFoods = values.toString();
+				//console.log("strFirstFoods = " + strFirstFoods);
+			}
+			catch(e)
+			{
+				values = $scope.subproject_row.FirstFoods.split(",");
+				//console.log("First Foods was a string.");
+				var strFirstFoods = $scope.subproject_row.FirstFoods.toString();
+				//console.log(strFirstFoods);
+			}
+			$scope.subproject_row.FirstFoods = values;
 		}
-		catch(e)
+		else
 		{
-			values = $scope.subproject_row.FirstFoods.split(",");
-			//console.log("First Foods was a string.");
-			var strFirstFoods = $scope.subproject_row.FirstFoods.toString();
-			//console.log(strFirstFoods);
+			console.log("FirstFoods missing, skipping...");
 		}
-		$scope.subproject_row.FirstFoods = values;
-		
-		values = null; // Set/reuse this variable.		
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.RiverVisionTouchstone);
-			//console.log("It was an object.");
-		}
-		catch(e)
-		{
-			values = $scope.subproject_row.RiverVisionTouchstone.split(",");
-			//console.log("It was a string.");
-		}
-		$scope.subproject_row.RiverVisionTouchstone = values;
 		
 		values = null; // Set/reuse this variable.
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.HabitatObjectives);
-			//console.log("It was an object.");
+		if ((typeof $scope.subproject_row.RiverVisionTouchstone !== 'undefined') && ($scope.subproject_row.RiverVisionTouchstone !== null))
+		{		
+			try
+			{
+				values = angular.fromJson($scope.subproject_row.RiverVisionTouchstone);
+				//console.log("It was an object.");
+			}
+			catch(e)
+			{
+				values = $scope.subproject_row.RiverVisionTouchstone.split(",");
+				//console.log("It was a string.");
+			}
+			$scope.subproject_row.RiverVisionTouchstone = values;
 		}
-		catch(e)
-		{
-			values = $scope.subproject_row.HabitatObjectives.split(",");
-			//console.log("It was a string.");
-		}
-		$scope.subproject_row.HabitatObjectives = values;
 		
 		values = null; // Set/reuse this variable.
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcerns);
-			//console.log("It was an object.");
+		if ((typeof $scope.subproject_row.HabitatObjectives !== 'undefined') && ($scope.subproject_row.HabitatObjectives !== null))
+		{	
+			try
+			{
+				values = angular.fromJson($scope.subproject_row.HabitatObjectives);
+				//console.log("It was an object.");
+			}
+			catch(e)
+			{
+				values = $scope.subproject_row.HabitatObjectives.split(",");
+				//console.log("It was a string.");
+			}
+			$scope.subproject_row.HabitatObjectives = values;
 		}
-		catch(e)
-		{
-			values = $scope.subproject_row.NoaaEcologicalConcerns.split(",");
-			//console.log("It was a string.");
-		}
-		$scope.subproject_row.NoaaEcologicalConcerns = values;
 		
 		values = null; // Set/reuse this variable.
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcernsSubcategories);
-			//console.log("It was an object.");
+		if ((typeof $scope.subproject_row.NoaaEcologicalConcerns !== 'undefined') && ($scope.subproject_row.NoaaEcologicalConcerns !== null))
+		{	
+			try
+			{
+				values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcerns);
+				//console.log("It was an object.");
+			}
+			catch(e)
+			{
+				values = $scope.subproject_row.NoaaEcologicalConcerns.split(",");
+				//console.log("It was a string.");
+			}
+			$scope.subproject_row.NoaaEcologicalConcerns = values;
 		}
-		catch(e)
-		{
-			values = $scope.subproject_row.NoaaEcologicalConcernsSubcategories.split(",");
-			//console.log("It was a string.");
+		
+		values = null; // Set/reuse this variable.
+		if ((typeof $scope.subproject_row.NoaaEcologicalConcernsSubcategories !== 'undefined') && ($scope.subproject_row.NoaaEcologicalConcernsSubcategories !== null))
+		{	
+			try
+			{
+				values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcernsSubcategories);
+				//console.log("It was an object.");
+			}
+			catch(e)
+			{
+				values = $scope.subproject_row.NoaaEcologicalConcernsSubcategories.split(",");
+				//console.log("It was a string.");
+			}
+			$scope.subproject_row.NoaaEcologicalConcernsSubcategories = values;
 		}
-		$scope.subproject_row.NoaaEcologicalConcernsSubcategories = values;
 
 		values = null; // Set/reuse this variable.
-		try
+		if ((typeof $scope.subproject_row.LimitingFactors !== 'undefined') && ($scope.subproject_row.LimitingFactors !== null))
 		{
-			values = angular.fromJson($scope.subproject_row.LimitingFactors);
-			//console.log("It was an object.");
+			try
+			{
+				values = angular.fromJson($scope.subproject_row.LimitingFactors);
+				//console.log("It was an object.");
+			}
+			catch(e)
+			{
+				values = $scope.subproject_row.LimitingFactors.split(",");
+				//console.log("It was a string.");
+			}
+			$scope.subproject_row.LimitingFactors = values;
 		}
-		catch(e)
-		{
-			values = $scope.subproject_row.LimitingFactors.split(",");
-			//console.log("It was a string.");
-		}
-		$scope.subproject_row.LimitingFactors = values;
 		
     }
 	

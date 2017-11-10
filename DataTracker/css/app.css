@@ -2028,12 +2028,14 @@ table.metadata td
 
 .edit-project-modal textarea.form-control { width: 400px;}
 
-.edit-project-modal { width: 700px;}
+/*.edit-project-modal { width: 700px;}*/
+.edit-project-modal { width: 750px;}
 
 .edit-project-modal .checkbox-itemlist
 {
 	width: 400px;
-	margin-left: 250px;
+	/*margin-left: 250px;*/
+	margin-left: 300px;
 	border: lightgrey 1px solid;
 	border-radius:6px;
 	padding: 8px;
