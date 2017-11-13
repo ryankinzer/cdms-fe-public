@@ -207,7 +207,6 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 				if(scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
                     scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
 
-                //PROTOTYPE - try out the ag-grid
                 if (scope.agGridOptions === undefined) {
                     console.log(" ----------- ok we are defining our grid...");
 
@@ -222,7 +221,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                     };
 
                     var agColumnDefs = [
-                        { field: 'Program', headerName: 'Program', suppressSizeToFit: true, minWidth: 240, width: 250 },
+                        { field: 'Program', headerName: 'Program', suppressSizeToFit: true, minWidth: 240, width: 250, sort: 'asc' },
                         { field: 'ProjectType.Name', headerName: 'Type', width: 100, maxWidth: 150, minWidth: 80 },
                         { field: 'Name', headerName: 'Project Name', cellRenderer: agCellRendererProjectName, minWidth: 500 },
                     ];
@@ -264,12 +263,6 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                 
             }
         },true);
-
-        scope.reloadRows = function () {
-            console.log("clicked reload rows");
-            scope.agGridOptions.api.setRowData(scope.projects);
-            console.log("tried to reload rows!");
-        };
   }
 ];
 
