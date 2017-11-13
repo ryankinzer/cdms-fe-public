@@ -21,6 +21,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.allActivities = null;
         $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
         $scope.thisDatasetLocationObjects = [];
+        $scope.showDataEntrySheetButton = true; //by default - can change in config
+
+        //this is the default columns (fields) to show in the activities grid, 
+        //  but it will be overridden if there is one configured in the dataset.
+        var ShowFields = [
+            "ActivityDate",                 // ActivityDate
+            "Location.Label",               // Location
+        ];                
 
         //console.log("Profile = ");
         //console.dir($rootScope.Profile);
@@ -37,6 +45,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 + '">' + params.node.data.headerdata.YearReported + '</a>';
         };
 
+        var runYearTemplate = function (params) {
+            if (params.node.data.headerdata.RunYear === undefined)
+                return;
+            else
+                return '<a href="#/dataview/' + params.node.data.Id
+                    + '">' + params.node.data.headerdata.RunYear + '</a>';
+        };
+
         var desclinkTemplate = function (params) {
             return '<a href="#/dataview/' + params.node.data.Id
                 + '">' + params.node.data.Description + '</a>';
@@ -44,7 +60,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         var allotmentTemplate = function (params) {
             return '<a href="#/dataview/' + params.node.data.Id
-                + '">' + params.node.data.headerdata.Allotment + '"</a>';
+                + '">' + params.node.data.headerdata.Allotment + '</a>';
         };
 
         var locationLabelTemplate = function (params) {
@@ -74,6 +90,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             { field: 'ActivityDate', headerName: 'Activity Date', filter: 'date', cellRenderer: activityDateTemplate, width: 150 },
             { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120 },
+            { field: 'headerdata.RunYear', headerName: 'Run Year', cellRenderer: runYearTemplate, width: 120 },
             {
                 field: 'headerdata.TimeStart',
                 headerName: 'Time Start',
@@ -83,17 +100,13 @@ var dataset_activities_list = ['$scope', '$routeParams',
                         return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
                 }
             },
-
-            //for appraisal
-            { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, minWidth: 100 },
+            { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, minWidth: 100 }, //appraisal
             { field: 'headerdata.AllotmentStatus', headerName: 'Status', minWidth: 120 },
-
-            // {field:'Location.Id',headerName: 'LocId', width: '55px'}, // We do not want to show this column.
-            { field: 'Location.Label', headerName: 'Location', cellRenderer: locationLabelTemplate, minWidth: 360},
+            { field: 'Description', headerName: 'Date Range', cellRenderer: desclinkTemplate, minWidth: 200, width:250 },
+            { field: 'Location.Label', headerName: 'Location', cellRenderer: locationLabelTemplate, minWidth: 360 },
             { field: 'Location.WaterBody.Name', headerName: 'Waterbody' },
             { field: 'headerdata.FieldActivityType', headerName: 'Field Activity Type', minWidth: 120 },
             { field: 'headerdata.DataType', headerName: 'Data Type', minWidth: 120 },
-            { field: 'Description', headerName: 'Date Range', cellRenderer: desclinkTemplate, minWidth:300 },
 
             //all datasets get these
             { field: 'User.Fullname', headerName: 'By User', minWidth: 120, alwaysShowField: true },  //note: alwaysShowField is true.
@@ -110,7 +123,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.selectedLocation = null;
         $scope.newPoint = null;
         $scope.newGraphic = null;
-        $scope.showDataEntrySheetButton = true; //TODO: get from config???
 
         $scope.agGridOptions = {
             animateRows: true,
@@ -207,17 +219,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
             // $scope.columnDefs[10] = By User
             // $scope.columnDefs[11] = QAStatus
 
-
-            //TODO: base this on config.
-            $scope.showDataEntrySheetButton = true;
-
-            //this is the default columns (fields) to show in the activities grid, 
-            //  but it will be overridden if there is one configured in the dataset.
-            var ShowFields = [
-                "ActivityDate",                 // ActivityDate
-                "Location.Label",               // Location
-                ];                
-
             console.log("config!");
             console.dir($scope.dataset.Config);
 
@@ -239,6 +240,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
                     showColDefs.push(coldef);
                 }
             });
+
+            //set the first column to be the sort column:
+            showColDefs[0].sort = "desc";
 
             $scope.columnDefs = showColDefs; 
             $scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
