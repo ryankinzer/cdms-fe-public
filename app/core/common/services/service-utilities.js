@@ -153,7 +153,7 @@ common_module.service('ServiceUtilities', ['Logger', '$window', '$route',
             },
 
             padNumber: function (number) {
-                // This function takes a number (< 10) as string, and adds a leading zero do it.
+                // This function takes a number (< 10) as string, and adds a leading zero to it.
                 // Changes this:  "2"
                 // To this:  "02"
                 console.log("Inside padNumber...");
