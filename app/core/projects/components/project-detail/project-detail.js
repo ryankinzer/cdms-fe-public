@@ -34,7 +34,97 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		scope.viewSubproject = null;
 		scope.SdeObjectId = 0;
 		scope.FileLocationSubprojectFundersWatchVariable = "";
-		
+
+
+        var otherAgencyTemplate = function (params) {
+            return '<span>' + params.node.data.Agency + '</span>'
+                + ((params.node.data.OtherAgency) ? ('<span> (' + params.node.data.OtherAgency + ')</span>') : ''); //ternery: if otheragency then show it
+        };
+
+        scope.agColumnDefs = [  //in order the columns will display, by the way...
+            {
+                field: 'EffDt',
+                headerName: 'Updated',
+                width: 100,
+                valueFormatter: function (params) {
+                    if (params.node.data.EffDt !== undefined)
+                        return moment(params.node.data.EffDt).format('L');
+                },
+                sort: 'desc',
+                cellRenderer: 'group',
+                cellRendererParams: { suppressCount: true }
+            },
+            { field: 'ProjectName', headerName: 'Name', width: 300 },
+            { field: 'ProjectLead', headerName: 'Project Lead', width: 150 },
+            { field: 'Closed', headerName: 'Closed?', width: 80 },
+            {
+                field: 'Comments', headerName: 'Comments', width: 300, cellStyle: {
+                    'white-space': 'normal'
+                }
+            },
+            { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150 },
+            { field: 'County', headerName: 'County', width: 150 },
+            { field: 'ProjectProponent', headerName: 'Project Proponent', width: 150 },
+            
+
+        ];
+        
+        scope.agGridOptions = {
+            animateRows: true,
+            enableSorting: true,
+            enableFilter: false, //turning it off because: https://github.com/ag-grid/ag-grid/issues/1324
+            enableColResize: true,
+            showToolPanel: false,
+            columnDefs: scope.agColumnDefs,
+            rowData: [],
+            //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
+            //debug: true,
+            //rowSelection: 'single',
+            //onSelectionChanged: function (params) {
+            //    scope.agGridOptions.selectedItems = $scope.agGridOptions.api.getSelectedRows();
+            //    scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            //},
+            //onFilterModified: function () {
+            //    scope.agGridOptions.api.deselectAll();
+            //},
+            //selectedItems: []
+            isFullWidthCell: function (rowNode) {
+                return rowNode.level === 1;
+            },
+            onGridReady: function (params) {
+                params.api.sizeColumnsToFit();
+            },
+            fullWidthCellRenderer: CorrespondenceDetailCellRenderer,
+            getRowHeight: function (params) {
+                var rowIsDetailRow = params.node.level === 1;
+                // return dynamic height when detail row, otherwise return 25
+                if (rowIsDetailRow) {
+                    return 200;
+                } else {
+                    var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
+                    return 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+                }
+                //return rowIsDetailRow ? 200 : 25;
+            },
+            getNodeChildDetails: function (record) {
+                //console.dir(record);
+                if (record.CorrespondenceEvents) {
+                    //console.log("yep we have events!");
+                    return {
+                        group: true,
+                        // the key is used by the default group cellRenderer
+                        key: record.CorrespondenceDate,
+                        // provide ag-Grid with the children of this group
+                        children: [record.CorrespondenceEvents],
+                    };
+                } else {
+                    //console.log("didn't find any correspondence events for that record.");
+                    return null;
+                }
+            }
+        };
+
+       
 		// Get the project ID from the url.
 		var theUrl = window.location.href;
 		console.log("theUrl = " + theUrl);
@@ -165,7 +255,15 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
               return;
 			
 			console.log("Inside watch datasets...");
-			console.log("OK.  The datasets are loaded...");
+            console.log("OK.  The datasets are loaded...");
+
+            //load ag-grid but only once.
+            if (typeof scope.ag_grid === 'undefined') {
+                var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
+                scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
+                scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+            }
+
 
             //need to bump this since we are looking at a LIST of datasets...
             //angular.forEach(scope.datasets, function(dataset){
@@ -215,7 +313,24 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 						// Note:  If we are on CRPP, it has only one dataset.
 						// We must set the scope.DatastoreTablePrefix, in order for the Edit Subproject to work.
 						// The Correspondence Event also needs scope.DatastoreTablePrefix, in order to save documents properly.
-						scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
+                        scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
+
+                        //since there is a watch defined below for habitat subprojects and we need our own for crpp:
+                        // TODO: but in the future we'd like to break all of this up somehow into:
+                        //  - an all-standard-datasets
+                        //  - crpp
+                        //  - habitat
+                        //  so as to not have special flags and difficult to maintain if/else/else, etc.
+                        var watcher = scope.$watch('subprojectList.length', function () {
+                            if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
+                                return;
+
+                            console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
+                            scope.agGridOptions.api.setRowData(scope.subprojectList);
+
+                            watcher();
+                        });
+
 					}
 					//else if (scope.datasets[i].Datastore.TablePrefix === "Metrics")
 					else if ((scope.datasets[i].Datastore.TablePrefix === "Metrics") || 
@@ -231,7 +346,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 						// We add the items from these lists to the project later, after we have the data.
 						scope.subprojectFileList = null;
                         scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.datasets[i].ProjectId);
-                        //KB - call reloadproejct if we need to (moved out of service)
+                        //KB - call reloadproject if we need to (it doesn't happen in the service anymore)
 						scope.funderList = null;
 						scope.funderList = ProjectService.getProjectFunders(scope.datasets[i].ProjectId);
 						scope.collaboratorList = null;
@@ -239,7 +354,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 						
 						scope.subprojectList = SubprojectService.getProjectSubprojects(scope.datasets[i].ProjectId);
 						var watcher = scope.$watch('subprojectList.length', function(){
-							console.log("Inside watcher for subprojectList.length...");
+							console.log("Inside watcher for subprojectList.length... NOTE: this only happens for habitat...");
 							// We wait until subprojects gets loaded and then turn this watch off.
 							if (scope.subprojectList === null)
 							{
@@ -268,7 +383,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 							//console.dir(scope.subprojectList);
 							
 							scope.cleanGateKeeper("Sdone");
-							scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
+                            scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
+
+                            //scope.agGridOptions.api.setRowData(scope.subprojectList); //update the habitat grid with the loaded items.
+
 							watcher();
 						});
 					}
@@ -1279,7 +1397,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 				scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
 				
 				console.log("subprojects is loaded...");
-				console.dir(scope.subprojectList);
+                console.dir(scope.subprojectList);
+
 				watcher();
 			});
 			
