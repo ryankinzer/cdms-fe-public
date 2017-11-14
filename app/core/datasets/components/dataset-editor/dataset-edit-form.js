@@ -303,7 +303,13 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
         //update our location options as soon as our project is loaded.
         $scope.$watch('project.Name', function () {
-            if (!$scope.project.Name) return;
+            //if (!$scope.project.Name) return;
+			if ((typeof $scope.project === 'undefined') || ($scope.project === null))  
+				return;
+			else if ((typeof $scope.project.Name === 'undefined') || ($scope.project.Name === null))  
+				return;  
+			else if ((typeof $scope.project.Id === 'undefined') || ($scope.project.Id === null))  
+				return; 
 
             console.log("Inside watcher, project.Name...");
             //console.log("$scope is next...");

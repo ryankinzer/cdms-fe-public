@@ -6,7 +6,7 @@ common_module.service('ServiceUtilities', ['Logger', '$window', '$route',
         var service = {
 
             // ***** Date and Time functions start *****
-            checkDateTimeFormat1: function (strDateTime) {//var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
+            checkDateTimeFormat1: function (strDateTime) {
                 var DateTime_REGEXP = /^\d{4}(-)\d{2}(-)\d{2}( )\d{2}(:)\d{2}$/;
 
                 if (DateTime_REGEXP.test(strDateTime)) {
@@ -153,7 +153,7 @@ common_module.service('ServiceUtilities', ['Logger', '$window', '$route',
             },
 
             padNumber: function (number) {
-                // This function take a number (< 10) as string, and adds a leading zero do it.
+                // This function takes a number (< 10) as string, and adds a leading zero to it.
                 // Changes this:  "2"
                 // To this:  "02"
                 console.log("Inside padNumber...");
