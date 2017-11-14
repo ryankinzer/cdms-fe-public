@@ -225,6 +225,8 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DatasetService', '$modal',
                 var filteredColDefs = [];
 
                 angular.forEach($scope.datasheetColDefs, function (coldef) {
+					//console.log("coldef is next...");
+					//console.dir(coldef);
                     if ($scope.dataset.Config.DataEntryPage &&
                         !$scope.dataset.Config.DataEntryPage.HiddenFields.contains(coldef.field)) {
                         filteredColDefs.push(coldef);
