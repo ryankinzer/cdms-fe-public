@@ -6,7 +6,7 @@ common_module.service('ServiceUtilities', ['Logger', '$window', '$route',
         var service = {
 
             // ***** Date and Time functions start *****
-            checkDateTimeFormat1: function (strDateTime) {//var FLOAT_REGEXP6 = /^\-?\d{6}((\.)\d+)?$/;
+            checkDateTimeFormat1: function (strDateTime) {
                 var DateTime_REGEXP = /^\d{4}(-)\d{2}(-)\d{2}( )\d{2}(:)\d{2}$/;
 
                 if (DateTime_REGEXP.test(strDateTime)) {
