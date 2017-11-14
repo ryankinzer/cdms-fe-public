@@ -68,7 +68,7 @@ projects_module.factory('SaveInstrumentAccuracyCheck', ['$resource', function ($
 }]);
 
 projects_module.factory('SaveFisherman', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/fishermen/savefishermen');
+    return $resource(serviceUrl + '/api/v1/fishermen/savefisherman');
 }]);
 
 projects_module.factory('UpdateFile', ['$resource', function ($resource) {
