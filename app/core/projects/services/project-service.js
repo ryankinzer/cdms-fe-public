@@ -104,7 +104,7 @@ projects_module.factory('GetProjectFishermen', ['$resource', function ($resource
 }]);
 
 projects_module.factory('RemoveProjectFisherman', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/fishermen/removeprojectfishermen');
+    return $resource(serviceUrl + '/api/v1/fishermen/removeprojectfisherman');
 }]);
 
 
