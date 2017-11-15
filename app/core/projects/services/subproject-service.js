@@ -22,7 +22,7 @@ projects_module.factory('ReportYears', ['$resource', function ($resource) {
 }]);
 
 projects_module.factory('SpawningYears', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/getspawningyears', {}, {
+    return $resource(serviceUrl + '/api/v1/list/getspawningyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
     });
 }]);
@@ -34,7 +34,7 @@ projects_module.factory('BroodYears', ['$resource', function ($resource) {
 }]);
 
 projects_module.factory('OutmigrationYears', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/getoutmigrationyears', {}, {
+    return $resource(serviceUrl + '/api/v1/list/getoutmigrationyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
     });
 }]);
