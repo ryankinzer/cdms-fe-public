@@ -615,13 +615,33 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
 
         $scope.save = function () {
             console.log("Inside ModalCreateSubprojectCtrl, save...");
+			//console.log("$scope.subproject_row is next...");
+			//console.dir($scope.subproject_row);
+			
             $scope.subprojectSave = undefined;
             $scope.subprojectSave = [];
             $scope.createNewSubproject = false;
-            if ((typeof $scope.subproject_row.ProjectName === 'undefined') || ($scope.subproject_row.ProjectName === null)) {
-                console.log("Project name is empty...");
-                $scope.subprojectSave.error = true;
+			$scope.errorMessage = "";
+			
+            if ((typeof $scope.subproject_row.ProjectName === 'undefined') || 
+				($scope.subproject_row.ProjectName === null) ||
+				($scope.subproject_row.ProjectName.length < 1)
+				)
+				{
+					console.log("Project name is empty...");
+					$scope.errorMessage += "Project Name cannot be blank!  ";
+					$scope.subprojectSave.error = true;
+				}
             }
+			
+			
+			if ((typeof $scope.subproject_row.ProjectLead === 'undefined') || ($scope.subproject_row.ProjectLead === null)) 
+			{
+				console.log("Project Lead is empty...");
+				$scope.errorMessage += "Project Lead cannot be blank!  "; 
+				$scope.subprojectSave.error = true;
+			}
+			
             //console.dir($scope);
 
             if (!$scope.subprojectSave.error) {

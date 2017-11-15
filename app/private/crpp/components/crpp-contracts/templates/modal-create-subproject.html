@@ -8,7 +8,8 @@
 		
 		<div class="import-has-errors"  ng-show="subprojectSave.error">		
 			<div class="alert alert-danger" ng-show="subprojectSave.error">
-				Project Name cannot be blank!
+				<!--Project Name cannot be blank!-->
+				{{errorMessage}}
 			</div>
 			<!--<div class="alert alert-info" ng-show="!subprojectSave.error" >
 				Fisherman does not exist.
