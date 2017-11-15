@@ -5963,7 +5963,8 @@ button.close {
 /*@media screen and (min-width:768px){.modal-dialog{width:700px;margin:30px auto} */
 @media screen and (min-width:768px) {
     .modal-dialog {
-        width: 600px;
+        /*width: 600px;*/
+        width: 700px;
         margin: 30px auto
     }
 
