@@ -72,6 +72,14 @@
 						<select ng-model="Criteria.paramActivityWhereOutmigrationYear" size="1" ng-options="Id as Year for (Id, Year) in OutmigrationYearOptions"></select>
 					</div>
 				</div>
+				<div class="row">					
+					<div class="col-md-6" ng-show="showActivitiesWhereSampleYear">
+						<b>Sample Year:</b>
+					</div>
+					<div ng-show="showActivitiesWhereSampleYear">
+						<select ng-model="Criteria.paramActivityWhereSampleYear" size="1" ng-options="Id as Year for (Id, Year) in SampleYearOptions"></select>
+					</div>
+				</div>
 				
 				<div class="row top-divider">
 					<div class="col-md-4">

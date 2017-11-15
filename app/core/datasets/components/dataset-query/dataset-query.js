@@ -39,6 +39,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 			$scope.showActivitiesWhereSpawningYear = false;
 			$scope.showActivitiesWhereBroodYear = false;
 			$scope.showActivitiesWhereOutmigrationYear = false;
+			$scope.showActivitiesWhereSampleYear = false;
 
 			$scope.fishermenList = null;
 			//$scope.fishermenOptions = $rootScope.fishermenOptions = null;		
@@ -236,9 +237,19 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 					)
 				{
 					$scope.showActivitiesWhereAll = false;
-					$scope.showActivitiesWhereReportYear = true;
 					$scope.Criteria.paramActivityDateType = "singleYear";
-					$scope.reportYearsList = DatasetService.getReportYears($scope.dataset.Id);
+					
+					//$scope.showActivitiesWhereReportYear = true;
+					if ($scope.DatastoreTablePrefix === "Metrics")
+					{
+						$scope.showActivitiesWhereReportYear = true;
+						$scope.reportYearsList = DatasetService.getReportYears($scope.dataset.Id);
+					}
+					else
+					{
+						$scope.showActivitiesWhereSampleYear = true;
+						$scope.sampleYearsList = DatasetService.getSampleYears($scope.dataset.Id);
+					}
 					
 					$scope.datasheetColDefs = [];
 					$scope.datasheetColDefs = [{   
