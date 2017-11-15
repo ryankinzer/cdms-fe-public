@@ -627,12 +627,11 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
 				($scope.subproject_row.ProjectName === null) ||
 				($scope.subproject_row.ProjectName.length < 1)
 				)
-				{
-					console.log("Project name is empty...");
-					$scope.errorMessage += "Project Name cannot be blank!  ";
-					$scope.subprojectSave.error = true;
-				}
-            }
+			{
+				console.log("Project name is empty...");
+				$scope.errorMessage += "Project Name cannot be blank!  ";
+				$scope.subprojectSave.error = true;
+			}
 			
 			
 			if ((typeof $scope.subproject_row.ProjectLead === 'undefined') || ($scope.subproject_row.ProjectLead === null)) 
