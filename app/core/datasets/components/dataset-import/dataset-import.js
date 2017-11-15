@@ -987,10 +987,17 @@
 
 						//set default Row QA StatusId
 						//if (($scope.dataset.Datastore.TablePrefix === "WaterTemp") && ($scope.dataset.RowQAStatuses.length > 1))
+							console.log("Before new_row...");
 							var new_row = {
 								RowQAStatusId: $scope.dataset.DefaultRowQAStatusId
 							};
-							//new_row.errors = [];
+							new_row.errors = [];
+							//new_row['errors'].push("A");
+							//new_row.errors.push("B");
+							//console.log("new_row is next...");
+							//console.dir(new_row);
+							//console.log("new_row.errors is next...");
+							//console.dir(new_row.errors);
 						
 						// Start Activities fields********************************************************
 						// ActivityFields first.  These come from the import form.
@@ -1039,9 +1046,9 @@
 							//console.log("field is next...");
 							//console.dir(field);
 							// field is the column, and col is actually the value.
-							console.log("-----");
-							console.log("field.DbColumnName = " + field.DbColumnName + ", field.Label = " + field.Label + ", col = " + col);
-							console.log("**data_row[col] = " + data_row[col] + ", typeof = " + typeof data_row[col]);
+							//console.log("-----");
+							//console.log("field.DbColumnName = " + field.DbColumnName + ", field.Label = " + field.Label + ", col = " + col);
+							//console.log("**data_row[col] = " + data_row[col] + ", typeof = " + typeof data_row[col]);
 							
 							try{
 								//console.log("field/col are next...");
@@ -1573,8 +1580,27 @@
 						//last validation before we add row:
 						// -- nothing so far.
 						
+						/*if ($scope.DatastoreTablePrefix === "CreelSurvey")
+						{
+							console.log("Working with CreelSurvey");
+							console.log("typeof new_row.Species = " + typeof new_row.Species + ", value = " + new_row.Species + ", new_row.FishCount = X" + new_row.FishCount + "X");
+							if ((typeof new_row.Species !== 'undefined') && (new_row.Species !== null) && 
+								((typeof new_row.FishCount === 'undefined') || (new_row.FishCount === null) || (new_row.FishCount === "0") || (new_row.FishCount < 1))
+								)
+							{
+								var strErrorMessage = "Error:  We have fish species, without FishCount.";
+								console.log(strErrorMessage);
+								new_row.errors.push(strErrorMessage);
+								//console.log("Pushed error onto new_row.errors...");
+							}
+						}*/
+						
+						new_row.errors = angular.copy(new_row.errors);
+						
 						console.log("new_row is next...");
 						console.dir(new_row);
+						console.log("new_row.errors is next...");
+						console.dir(new_row.errors);
 						//add imported row to datasheet.
 						if(new_row.activityDate)
 							$scope.dataSheetDataset.push(new_row);

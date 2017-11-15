@@ -563,6 +563,16 @@ function validateField(field, row, key, scope, row_errors) {
                             }
 
                         }
+						
+                        if (field.DbColumnName === "NumberAnglersObserved") {
+                            //console.log("Found NumberAnglersObserved...");
+                            ////console.log("scope is next...");
+                            //console.dir(scope);
+                            if (row.NumberAnglersObserved < row.NumberAnglersInterviewed) {
+                                row_errors.push("[" + field.DbColumnName + "] cannot be less than [NumberAnglersInterviewed]");
+                            }
+
+                        }
 
                     }
                 }

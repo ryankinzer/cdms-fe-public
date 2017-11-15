@@ -58,7 +58,7 @@ common_module.service('ServiceUtilities', ['Logger', '$window', '$route',
             removeTSfromDateTimeString: function (strDate) {
                 // This function takes a date/time string like this:  2015-08-14T00:00:00
                 // and make it look like this:  2015-08-14 00:00
-                console.log("strDate = " + strDate);
+                //console.log("strDate = " + strDate);
                 strDate = strDate.replace("T", " ");
                 strDate = strDate.substring(0, (strDate.length - 3));
                 return strDate;
