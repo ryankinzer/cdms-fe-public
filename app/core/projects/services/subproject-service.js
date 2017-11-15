@@ -80,12 +80,6 @@ projects_module.factory('RemoveHabitatItem', ['$resource', function ($resource) 
 * subprojects service (includes Project factory which is defined in projects-service.js)
 */
 projects_module.service('SubprojectService', ['$q', 
-    'MigrationYears',
-    'RunYears',
-    'ReportYears',
-    'SpawningYears',
-    'BroodYears',
-    'OutmigrationYears',
     'ProjectSubprojects',
     'SubprojectFiles',
     'SaveCorrespondenceEvent',
