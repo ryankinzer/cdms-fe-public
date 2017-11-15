@@ -109,6 +109,18 @@ datasets_module.factory('ReportYears', ['$resource', function ($resource) {
     });
 }]);
 
+datasets_module.factory('BenthicSampleYears', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/list/getbenthicsampleyears', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
+
+datasets_module.factory('DriftSampleYears', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/list/getdriftsampleyears', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
+
 datasets_module.factory('SpawningYears', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/list/getspawningyears', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
@@ -146,6 +158,14 @@ datasets_module.service('DatasetService', ['$q',
     'GetHeadersDataForDataset',
     'DeleteDatasetFile',
     'GetRelationData',
+	'MigrationYears',
+	'RunYears',
+	'ReportYears',
+	'BenthicSampleYears',
+	'DriftSampleYears',
+	'SpawningYears',
+	'BroodYears',
+	'OutmigrationYears',
     function ($q,
         DatasetFiles,
         Activities,
@@ -168,6 +188,8 @@ datasets_module.service('DatasetService', ['$q',
         MigrationYears,
         RunYears,
         ReportYears,
+		BenthicSampleYears,
+		DriftSampleYears,
         SpawningYears,
         BroodYears,
         OutmigrationYears
@@ -482,6 +504,16 @@ datasets_module.service('DatasetService', ['$q',
             getReportYears: function (datasetId) {
                 console.log("Inside services, getReportYears");
                 return ReportYears.query({ id: datasetId });
+            },
+
+            getBenthicSampleYears: function (datasetId) {
+                console.log("Inside services, getBenthicSampleYears");
+                return BenthicSampleYears.query({ id: datasetId });
+            },
+			
+            getDriftSampleYears: function (datasetId) {
+                console.log("Inside services, getDriftSampleYears");
+                return DriftSampleYears.query({ id: datasetId });
             },
 			
             getSpawningYears: function (datasetId) {

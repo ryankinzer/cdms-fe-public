@@ -245,10 +245,15 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 						$scope.showActivitiesWhereReportYear = true;
 						$scope.reportYearsList = DatasetService.getReportYears($scope.dataset.Id);
 					}
-					else
+					else if ($scope.DatastoreTablePrefix === "Benthic")
 					{
 						$scope.showActivitiesWhereSampleYear = true;
-						$scope.sampleYearsList = DatasetService.getSampleYears($scope.dataset.Id);
+						$scope.sampleYearsList = DatasetService.getBenthicSampleYears($scope.dataset.Id);
+					}
+					else if ($scope.DatastoreTablePrefix === "Drift")
+					{
+						$scope.showActivitiesWhereSampleYear = true;
+						$scope.sampleYearsList = DatasetService.getDriftSampleYears($scope.dataset.Id);
 					}
 					
 					$scope.datasheetColDefs = [];
@@ -361,144 +366,151 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 	    	});
 								
     		$scope.$watch('project.Name', function(){
-    			if($scope.project.Name){	
-					console.log("Inside DataQueryCtrl, project.Name watcher...");
-					
-					// Original code
-    				//$scope.locationOptions = $rootScope.locationOptions = makeObjects(getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId"), 'Id','Label') ;
-    				//$scope.locationOptions["all"] = "- All -";
-    				//$scope.Criteria.LocationIds = ["all"]; //set the default				
+    			//if($scope.project.Name){	
+				if ((typeof $scope.project === 'undefined') || ($scope.project === null))  
+					return;
+				else if ((typeof $scope.project.Name === 'undefined') || ($scope.project.Name === null))  
+					return;  
+				else if ((typeof $scope.project.Id === 'undefined') || ($scope.project.Id === null))  
+					return; 
+				
+				console.log("Inside DataQueryCtrl, project.Name watcher...");
+				
+				// Original code
+				//$scope.locationOptions = $rootScope.locationOptions = makeObjects(getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId"), 'Id','Label') ;
+				//$scope.locationOptions["all"] = "- All -";
+				//$scope.Criteria.LocationIds = ["all"]; //set the default				
 
-					console.log("scope in watch project.Name is next...");
-					//console.dir($scope);
-					
-					//$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
-					console.log("$scope.subprojectType = " + $scope.subprojectType);
-					SubprojectService.setServiceSubprojectType($scope.subprojectType);
+				console.log("scope in watch project.Name is next...");
+				//console.dir($scope);
+				
+				//$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
+				console.log("$scope.subprojectType = " + $scope.subprojectType);
+				SubprojectService.setServiceSubprojectType($scope.subprojectType);
 
-					//if ($scope.subprojectType === "Harvest")
-					if ($scope.DatastoreTablePrefix === "CreelSurvey")
+				//if ($scope.subprojectType === "Harvest")
+				if ($scope.DatastoreTablePrefix === "CreelSurvey")
+				{
+					console.log("Loading Harvest...");
+					$scope.ShowFishermen = true;
+					$scope.theFishermen = ProjectService.getProjectFishermen($scope.project.Id);
+				}
+				
+				console.log("ProjectLocations is next...");
+				console.dir($scope.project.Locations);
+				//var locInd = 0;
+				//for (var i = 0; i < $scope.project.Locations.length; i++ )
+				//{
+					//console.log($scope.project.Locations[i].Id + "  " + $scope.project.Locations[i].Label);
+				//	if ($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType)
+					//if (($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType) || ($scope.project.Locations[i].LocationTypeId === LOCATION_TYPE_Hab))
+				//	{
+						//console.log("Found one");
+				//		$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
+						//console.log("datasetLocations length = " + $scope.datasetLocations.length);
+						//locInd++;
+				//	}
+				//}
+				
+				if ($scope.project.Locations)
+				{
+					for (var i = 0; i < $scope.project.Locations.length; i++ )
 					{
-						console.log("Loading Harvest...");
-						$scope.ShowFishermen = true;
-						$scope.theFishermen = ProjectService.getProjectFishermen($scope.project.Id);
+						//console.log("projectLocations Index = " + $scope.project.Locations[i].Label);
+						//console.log($scope.project.Locations[i].LocationTypeId + "  " + $scope.datasetLocationType); //$scope.project.Locations[i]);
+						if (($scope.DatastoreTablePrefix === "Metrics") ||
+							($scope.DatastoreTablePrefix === "Benthic") ||
+							($scope.DatastoreTablePrefix === "Drift")
+							)
+						{
+							if (($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType) || ($scope.project.Locations[i].LocationTypeId === LOCATION_TYPE_Hab))
+							{
+								//console.log("Found Habitat-related location");
+								$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
+							}
+						}
+						else
+						{
+							if ($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType)
+							{
+								//console.log("Found non-Habitat-related location");
+								$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
+							}
+						}
+
+						//{
+						//	//console.log("Found one");
+						//	$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
+						//	//console.log("datasetLocations length = " + $scope.datasetLocations.length);
+						//	//locInd++;
+						//}
+					}
+					console.log("datasetLocations is next...");
+					console.dir($scope.datasetLocations);
+				}
+				
+				// When we built the array, it started adding at location 1 for some reason, skipping 0.
+				// Therefore, row 0 is blank.  The simple solution is to just delete row 0.
+				//$scope.datasetLocations.shift();
+				
+				// During the original development, the blank row was always at row 0.  Months later, I noticed that 
+				// the blank row was not at row 0.  Therefore, it needed a different solution.
+				var index = 0;
+				angular.forEach($scope.datasetLocations, function(dsLoc)
+				{
+					if (dsLoc.length === 0)
+					{
+						$scope.datasetLocations.splice(index, 1);
 					}
 					
-					console.log("ProjectLocations is next...");
-					console.dir($scope.project.Locations);
-					//var locInd = 0;
-					//for (var i = 0; i < $scope.project.Locations.length; i++ )
-					//{
-						//console.log($scope.project.Locations[i].Id + "  " + $scope.project.Locations[i].Label);
-					//	if ($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType)
-						//if (($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType) || ($scope.project.Locations[i].LocationTypeId === LOCATION_TYPE_Hab))
-					//	{
-							//console.log("Found one");
-					//		$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
-							//console.log("datasetLocations length = " + $scope.datasetLocations.length);
-							//locInd++;
-					//	}
-					//}
-					
-					if ($scope.project.Locations)
-					{
-						for (var i = 0; i < $scope.project.Locations.length; i++ )
-						{
-							//console.log("projectLocations Index = " + $scope.project.Locations[i].Label);
-							//console.log($scope.project.Locations[i].LocationTypeId + "  " + $scope.datasetLocationType); //$scope.project.Locations[i]);
-							if (($scope.DatastoreTablePrefix === "Metrics") ||
-								($scope.DatastoreTablePrefix === "Benthic") ||
-								($scope.DatastoreTablePrefix === "Drift")
-								)
-							{
-								if (($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType) || ($scope.project.Locations[i].LocationTypeId === LOCATION_TYPE_Hab))
-								{
-									//console.log("Found Habitat-related location");
-									$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
-								}
-							}
-							else
-							{
-								if ($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType)
-								{
-									//console.log("Found non-Habitat-related location");
-									$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
-								}
-							}
+					index++;
+				});
+				
+				console.log("datasetLocations after splice is next...");
+				console.dir($scope.datasetLocations);
 
-							//{
-							//	//console.log("Found one");
-							//	$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
-							//	//console.log("datasetLocations length = " + $scope.datasetLocations.length);
-							//	//locInd++;
-							//}
-						}
-						console.log("datasetLocations is next...");
-						console.dir($scope.datasetLocations);
-					}
-					
-					// When we built the array, it started adding at location 1 for some reason, skipping 0.
-					// Therefore, row 0 is blank.  The simple solution is to just delete row 0.
-					//$scope.datasetLocations.shift();
-					
-					// During the original development, the blank row was always at row 0.  Months later, I noticed that 
-					// the blank row was not at row 0.  Therefore, it needed a different solution.
-					var index = 0;
-					angular.forEach($scope.datasetLocations, function(dsLoc)
-					{
-						if (dsLoc.length === 0)
+				$scope.datasetLocations.sort(order2dArrayByAlpha);
+				console.log("datasetLocations sorted...");
+				console.dir($scope.datasetLocations);
+		
+				// Convert our 2D array into an array of objects.
+				for (var i = 0; i < $scope.datasetLocations.length; i++)
+				{
+					$scope.sortedLocations.push({Id: $scope.datasetLocations[i][0], Label: $scope.datasetLocations[i][1]});
+				}
+				$scope.datasetLocations = [[]]; // Clean up		
+				
+				// Convert our array of objects into a list of objects, and put it in the select box.
+				$scope.locationOptions = $rootScope.locationOptions = makeObjects($scope.sortedLocations, 'Id','Label') ;
+				$scope.locationOptions["all"] = "- All -";
+				$scope.Criteria.LocationIds = ["all"]; //set the default
+				
+				console.log("locationOptions is next...");
+				console.dir($scope.locationOptions);
+
+				// Keeping this code in, because we want to get it working properly.
+				// Why it does not work correctly?
+				// Even if $scope.locationOptions has only one, the array still has 2 (the one location, and a blank).
+				// Therefore, we must check for a size of 2, in order to auto-select the one location.
+				// We must turn this on, test it, and shake out the bugs.
+				if(array_count($scope.locationOptions) === 2)
+				{
+					var count = 0;
+					//there will only be one.
+					angular.forEach(Object.keys($scope.locationOptions), function(key){
+						console.log("key = " + key);
+						//if (key !== "undefined")
+						if ((count = 1) && (key !== "undefined"))
 						{
-							$scope.datasetLocations.splice(index, 1);
+							$scope.row['locationId'] = key;	
+							console.log("row is next...");
+							console.dir($scope.row['locationId']);
 						}
-						
-						index++;
+						count++;
 					});
 					
-					console.log("datasetLocations after splice is next...");
-					console.dir($scope.datasetLocations);
-
-					$scope.datasetLocations.sort(order2dArrayByAlpha);
-					console.log("datasetLocations sorted...");
-					console.dir($scope.datasetLocations);
-			
-					// Convert our 2D array into an array of objects.
-					for (var i = 0; i < $scope.datasetLocations.length; i++)
-					{
-						$scope.sortedLocations.push({Id: $scope.datasetLocations[i][0], Label: $scope.datasetLocations[i][1]});
-					}
-					$scope.datasetLocations = [[]]; // Clean up		
-					
-					// Convert our array of objects into a list of objects, and put it in the select box.
-					$scope.locationOptions = $rootScope.locationOptions = makeObjects($scope.sortedLocations, 'Id','Label') ;
-    				$scope.locationOptions["all"] = "- All -";
-    				$scope.Criteria.LocationIds = ["all"]; //set the default
-					
-					console.log("locationOptions is next...");
-					console.dir($scope.locationOptions);
-
-					// Keeping this code in, because we want to get it working properly.
-					// Why it does not work correctly?
-					// Even if $scope.locationOptions has only one, the array still has 2 (the one location, and a blank).
-					// Therefore, we must check for a size of 2, in order to auto-select the one location.
-					// We must turn this on, test it, and shake out the bugs.
-					if(array_count($scope.locationOptions) === 2)
-					{
-						var count = 0;
-						//there will only be one.
-						angular.forEach(Object.keys($scope.locationOptions), function(key){
-							console.log("key = " + key);
-							//if (key !== "undefined")
-							if ((count = 1) && (key !== "undefined"))
-							{
-								$scope.row['locationId'] = key;	
-								console.log("row is next...");
-								console.dir($scope.row['locationId']);
-							}
-							count++;
-						});
-						
-					}			
-				}
+				}		
+				//}
     		});
 
 			$scope.$watch('migrationYearsList.length', function() { 
@@ -586,6 +598,36 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 				
 				console.log("$scope.ReportYearOptions is next...");
 				console.dir($scope.ReportYearOptions);
+			});
+			
+			$scope.$watch('sampleYearsList.length', function() { 
+				if ((typeof $scope.sampleYearsList === 'undefined') || ($scope.sampleYearsList === null))
+					return;
+				else if ($scope.sampleYearsList.length === 0)
+				{
+					console.log("$scope.sampleYearsList.length is 0");
+					return;
+				}
+				
+				console.log("Inside watch sampleYearsList.length...");
+				console.log("$scope.sampleYearsList is next...");
+				console.dir($scope.sampleYearsList);
+				
+				$scope.SampleYearOptions = [];
+				$scope.RowSampleYears = [];
+				
+				angular.forEach($scope.sampleYearsList, function(yearRec){
+					$scope.RowSampleYears.push({
+						Id:		yearRec["SampleYear"],
+						Year:	yearRec["SampleYear"]
+					});
+				});
+				console.log("$scope.RowSampleYears is next...");
+				console.dir($scope.RowSampleYears);
+				$scope.SampleYearOptions = makeObjects($scope.RowSampleYears, 'Id', 'Year');
+				
+				console.log("$scope.SampleYearOptions is next...");
+				console.dir($scope.SampleYearOptions);
 			});
 			
 			$scope.$watch('spawningYearsList.length', function() { 
