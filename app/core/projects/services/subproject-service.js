@@ -162,6 +162,13 @@ projects_module.service('SubprojectService', ['$q',
 
                 return SaveSubproject.save({ ProjectId: projectId, Subproject: subproject });
             },
+            saveCrppSubproject: function (projectId, subproject, saveResults) {
+                console.log("Inside saveCrppSubproject...");
+                saveResults.saving = true;
+                console.log("saveResults.saving = " + saveResults.saving);
+
+                return SaveSubproject.save({ ProjectId: projectId, Subproject: subproject });
+            },
             saveHabSubproject: function (projectId, subproject, saveResults) {
                 console.log("Inside services.js, saveHabSubproject...");
                 saveResults.saving = true;
