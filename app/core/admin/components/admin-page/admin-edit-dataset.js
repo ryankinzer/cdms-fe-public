@@ -92,6 +92,8 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
 
 		$scope.saveField = function()
 		{
+			console.log("Inside admin_edit_dataset, saveField...");
+			
 			$scope.saveResults = {};
 			AdminService.saveDatasetField($scope.SelectedField, $scope.saveResults);
 		};
