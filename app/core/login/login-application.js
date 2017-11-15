@@ -100,6 +100,7 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 							{
 								$scope.loggingIn = false;
 								$scope.error = data.Message;
+								$scope.Password = "";
 							}
 						});
 					}
