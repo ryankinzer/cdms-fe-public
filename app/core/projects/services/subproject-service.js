@@ -75,6 +75,10 @@ projects_module.factory('SaveSubproject', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/crppsubproject/savecrppsubproject');
 }]);
 
+projects_module.factory('SaveCrppSubproject', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/savecrppsubproject');
+}]);
+
 projects_module.factory('SaveHabSubproject', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/habsubproject/savehabsubproject');
 }]);
@@ -126,6 +130,7 @@ projects_module.service('SubprojectService', ['$q',
     'DeleteHabitatItemFile',
     'DeleteHabSubprojectFile',
     'SaveSubproject',
+    'SaveCrppSubproject',
     'SaveHabSubproject',
     'GetSubprojects',
     'GetHabSubproject',
@@ -150,6 +155,7 @@ projects_module.service('SubprojectService', ['$q',
         DeleteHabitatItemFile,
         DeleteHabSubprojectFile,
         SaveSubproject,
+        SaveCrppSubproject,
         SaveHabSubproject,
         GetSubprojects,
         GetHabSubproject,
@@ -169,23 +175,19 @@ projects_module.service('SubprojectService', ['$q',
             clearSubproject: function () {
                 service.subproject = null;
             },
-
             clearSubprojects: function () {
                 service.subprojects = null;
             },
-
             getSubproject: function (id) {
                 console.log("Inside services.js, getSubproject...");
                 if (service.subproject && service.subproject.Id == id)
                     return service.subproject;
             },
-
             setServiceSubprojectType: function (spType) {
                 console.log("Inside setServiceSubprojectType, spType = " + spType);
                 service.subprojectType = spType;
                 console.log("service.subprojectType = " + service.subprojectType);
             },
-
             getSubprojects: function () {
                 return GetSubprojects.query();
             },
@@ -201,7 +203,6 @@ projects_module.service('SubprojectService', ['$q',
                 return GetHabSubprojects.query();
                 //return GetHabSubprojects.query({id: id});
             },
-
             saveSubproject: function (projectId, subproject, saveResults) {
                 console.log("Inside saveSubproject...");
                 saveResults.saving = true;
@@ -276,39 +277,31 @@ projects_module.service('SubprojectService', ['$q',
                 console.log("Inside services, getMigrationYears");
                 return MigrationYears.query({ id: datasetId });
             },
-
             getRunYears: function (datasetId) {
                 console.log("Inside services, getRunYears");
                 return RunYears.query({ id: datasetId });
             },
-
             getReportYears: function (datasetId) {
                 console.log("Inside services, getReportYears");
                 return ReportYears.query({ id: datasetId });
             },
-
             getSpawningYears: function (datasetId) {
                 console.log("Inside services, getSpawningYears");
                 return SpawningYears.query({ id: datasetId });
             },
-
             getBroodYears: function (datasetId) {
                 console.log("Inside services, getBroodYears");
                 return BroodYears.query({ id: datasetId });
             },
-
             getOutmigrationYears: function (datasetId) {
                 console.log("Inside services, getOutmigrationYears");
                 return OutmigrationYears.query({ id: datasetId });
             },
-
-
             getSubprojectFiles: function (projectId) {
                 console.log("Inside getSubprojectFiles...");
                 console.log("projectId = " + projectId);
                 return SubprojectFiles.query({ id: projectId });
             },
-
 
             //NB: why is this .save()? -- to get a POST instead of a GET?
             getProjectSubprojects: function (projectId) {

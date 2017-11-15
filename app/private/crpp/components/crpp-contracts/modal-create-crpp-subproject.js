@@ -722,7 +722,8 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 $scope.saveResults = {};
                 //console.log("$scope is next...");
                 //console.dir($scope);
-                var promise = SubprojectService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
+                //var promise = SubprojectService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
+                var promise = SubprojectService.saveCrppSubproject($scope.project.Id, saveRow, $scope.saveResults);
                 if (typeof promise !== 'undefined') {
                     promise.$promise.then(function () {
                         //window.location.reload();
