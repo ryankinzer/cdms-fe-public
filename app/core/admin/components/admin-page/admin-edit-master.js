@@ -27,6 +27,8 @@ var admin_edit_master = ['$scope', '$modal', 'DatasetService', 'AdminService', '
 
 		$scope.saveField = function()
 		{
+			console.log("console.log("Inside admin_edit_master, saveField...");
+			
 			$scope.saveResults = {};
 			AdminService.saveMasterField($scope.SelectedField, $scope.saveResults);
 		}
