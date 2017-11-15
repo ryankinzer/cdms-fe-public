@@ -91,6 +91,41 @@ datasets_module.factory('GetRelationData', ['$resource', function ($resource) {
     });
 }])
 
+datasets_module.factory('MigrationYears', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/list/getmigrationyears', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
+
+datasets_module.factory('RunYears', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/list/getrunyears', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
+
+datasets_module.factory('ReportYears', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/list/getreportyears', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
+
+datasets_module.factory('SpawningYears', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/list/getspawningyears', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
+
+datasets_module.factory('BroodYears', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/list/getbroodyears', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
+
+datasets_module.factory('OutmigrationYears', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/list/getoutmigrationyears', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
 
 datasets_module.service('DatasetService', ['$q',
     'DatasetFiles',
@@ -129,29 +164,36 @@ datasets_module.service('DatasetService', ['$q',
         GetDatastoreDatasets,
         GetHeadersDataForDataset,
         DeleteDatasetFile,
-        GetRelationData) {
+        GetRelationData,
+        MigrationYears,
+        RunYears,
+        ReportYears,
+        SpawningYears,
+        BroodYears,
+        OutmigrationYears
+		) {
 
         var service = {
-
+			
             datastoreId: null,
             dataset: null,
-
+			
             clearDataset: function () {
                 service.dataset = null;
             },
-
+			
             getDatastore: function (id) {
                 return GetDatastore.query({ id: id });
             },
-
+			
             getDatastores: function () {
                 return GetAllDatastores.query();
             },
-
+			
             getDatastoreDatasets: function (id) {
                 return GetDatastoreDatasets.query({ id: id });
             },
-
+			
             getDataset: function (datasetId) {
                 if (service.dataset && service.dataset.Id == datasetId)
                     return service.dataset;
@@ -167,11 +209,11 @@ datasets_module.service('DatasetService', ['$q',
 
                 return service.dataset;
             },
-
+			
             getDatasets: function () {
                 return Datasets.query();
             },
-
+			
             //configureDataset: function(dataset)
             configureDataset: function (dataset, scope) {
                 console.log("configuring dataset.Name = " + dataset.Name);
@@ -214,37 +256,37 @@ datasets_module.service('DatasetService', ['$q',
                     }
                 }
             },
-
+			
             getHeadersDataForDataset: function (datasetId) {
                 return GetHeadersDataForDataset.query({ id: datasetId });
             },
-
+			
             getActivityData: function (id) {
                 return Data.query({ id: id });
             },
-
+			
             getActivities: function (id) {
                 return Activities.query({ id: id });
             },
-
+			
             getActivitiesForView: function (id) {
                 return ActivitiesForView.query({ id: id });
             },
-
+			
             getDatasetFiles: function (datasetId) {
                 console.log("Inside getDatasetFiles...");
                 console.log("datasetId = " + datasetId);
                 //this.getProject(projectId); //set our local project to the one selected
                 return DatasetFiles.query({ id: datasetId });
             },
-
+			
             deleteDatasetFile: function (projectId, datasetId, file) {
                 console.log("Inside deleteDatasetFile");
                 console.log("ProjectId = " + projectId + ", DatasetId = " + datasetId + ", attempting to delete file...");
                 console.dir(file);
                 return DeleteDatasetFile.save({ ProjectId: projectId, DatasetId: datasetId, File: file });
             },
-
+			
             //NB: looks like this isn't used.
             //this should give you the possible QA Statuses for this dataset's rows
             getPossibleRowQAStatuses: function (id) {
@@ -260,7 +302,7 @@ datasets_module.service('DatasetService', ['$q',
                 ];
 
             },
-
+			
             queryActivities: function (query) {
                 //using "save" here because we need to POST our query criteria object
                 QueryActivitiesAction.save(query.criteria, function (data) {
@@ -277,7 +319,7 @@ datasets_module.service('DatasetService', ['$q',
                 });
 
             },
-
+			
             exportActivities: function (query) {
                 ExportActivitiesAction.save(query.criteria, function (data) {
                     console.log("success!");
@@ -291,7 +333,7 @@ datasets_module.service('DatasetService', ['$q',
                     query.loading = false;
                 });
             },
-
+			
             //updateActivities: function(userId, datasetId, activities)
             updateActivities: function (userId, datasetId, activities, datastoreTablePrefix) {
                 activities.saving = true; //tell everyone we are saving
@@ -312,11 +354,7 @@ datasets_module.service('DatasetService', ['$q',
                 });
 
             },
-
-
-
-
-
+			
             saveActivities: function (userId, datasetId, activities) {
                 console.log("Inside saveActivities...starting save...");
                 console.log("activities is next...");
@@ -381,7 +419,7 @@ datasets_module.service('DatasetService', ['$q',
                     activities.saving = false; //and... we're done.
                 });
             },
-
+			
             //delete selectedItems activities
             deleteActivities: function (userId, datasetId, grid, saveResults) {
 
@@ -406,7 +444,7 @@ datasets_module.service('DatasetService', ['$q',
                 });
 
             },
-
+			
             updateQaStatus: function (ActivityId, QAStatusId, Comments, saveResults) {
                 saveResults.saving = true;
                 var payload = {
@@ -426,9 +464,39 @@ datasets_module.service('DatasetService', ['$q',
                         saveResults.failure = true;
                     });
             },
-
+			
             getRelationData: function (relationFieldId, activityId, rowId) {
                 return GetRelationData.save({ FieldId: relationFieldId, ActivityId: activityId, ParentRowId: rowId });
+            },
+			
+            getMigrationYears: function (datasetId) {
+                console.log("Inside services, getMigrationYears");
+                return MigrationYears.query({ id: datasetId });
+            },
+			
+            getRunYears: function (datasetId) {
+                console.log("Inside services, getRunYears");
+                return RunYears.query({ id: datasetId });
+            },
+			
+            getReportYears: function (datasetId) {
+                console.log("Inside services, getReportYears");
+                return ReportYears.query({ id: datasetId });
+            },
+			
+            getSpawningYears: function (datasetId) {
+                console.log("Inside services, getSpawningYears");
+                return SpawningYears.query({ id: datasetId });
+            },
+			
+            getBroodYears: function (datasetId) {
+                console.log("Inside services, getBroodYears");
+                return BroodYears.query({ id: datasetId });
+            },
+			
+            getOutmigrationYears: function (datasetId) {
+                console.log("Inside services, getOutmigrationYears");
+                return OutmigrationYears.query({ id: datasetId });
             },
         };
 

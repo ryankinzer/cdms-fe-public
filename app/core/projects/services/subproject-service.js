@@ -3,42 +3,6 @@
 //NB: this is not the final form - we want to create an actual
 //    subproject feature in the system and refactor this
 
-projects_module.factory('MigrationYears', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/list/getmigrationyears', {}, {
-        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
-    });
-}]);
-
-projects_module.factory('RunYears', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/list/getrunyears', {}, {
-        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
-    });
-}]);
-
-projects_module.factory('ReportYears', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/list/getreportyears', {}, {
-        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
-    });
-}]);
-
-projects_module.factory('SpawningYears', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/list/getspawningyears', {}, {
-        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
-    });
-}]);
-
-projects_module.factory('BroodYears', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/list/getbroodyears', {}, {
-        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
-    });
-}]);
-
-projects_module.factory('OutmigrationYears', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/list/getoutmigrationyears', {}, {
-        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
-    });
-}]);
-
 projects_module.factory('ProjectSubprojects', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/habsubproject/gethabsubprojects', {}, {
         save: { method: 'POST', isArray: true }
@@ -141,12 +105,6 @@ projects_module.service('SubprojectService', ['$q',
     'RemoveHabitatItem',
 
     function ($q,
-        MigrationYears,
-        RunYears,
-        ReportYears,
-        SpawningYears,
-        BroodYears,
-        OutmigrationYears,
         ProjectSubprojects,
         SubprojectFiles,
         SaveCorrespondenceEvent,
@@ -273,30 +231,7 @@ projects_module.service('SubprojectService', ['$q',
                 console.dir(file);
                 return DeleteHabSubprojectFile.save({ ProjectId: projectId, SubprojectId: subprojectId, File: file });
             },
-            getMigrationYears: function (datasetId) {
-                console.log("Inside services, getMigrationYears");
-                return MigrationYears.query({ id: datasetId });
-            },
-            getRunYears: function (datasetId) {
-                console.log("Inside services, getRunYears");
-                return RunYears.query({ id: datasetId });
-            },
-            getReportYears: function (datasetId) {
-                console.log("Inside services, getReportYears");
-                return ReportYears.query({ id: datasetId });
-            },
-            getSpawningYears: function (datasetId) {
-                console.log("Inside services, getSpawningYears");
-                return SpawningYears.query({ id: datasetId });
-            },
-            getBroodYears: function (datasetId) {
-                console.log("Inside services, getBroodYears");
-                return BroodYears.query({ id: datasetId });
-            },
-            getOutmigrationYears: function (datasetId) {
-                console.log("Inside services, getOutmigrationYears");
-                return OutmigrationYears.query({ id: datasetId });
-            },
+
             getSubprojectFiles: function (projectId) {
                 console.log("Inside getSubprojectFiles...");
                 console.log("projectId = " + projectId);
@@ -308,8 +243,7 @@ projects_module.service('SubprojectService', ['$q',
                 console.log("Inside getProjectSubprojects, projectId = " + projectId);
                 //this.getProject(projectId); //set our local project to the one selected
                 return ProjectSubprojects.save({ ProjectId: projectId });
-            },
-
+            }
 
         };
 
