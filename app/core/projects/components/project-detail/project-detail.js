@@ -50,16 +50,25 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         };
 
         var EditViewSubprojectLinkTemplate = function (param) {
-            var editBtn = document.createElement('a');
-            editBtn.href = '#';
-            editBtn.innerHTML = 'edit';
-            //console.dir(param.data);
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
             editBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 scope.editViewSubproject(param.data);
-
             });
-            return editBtn;
+            div.appendChild(editBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
+            delBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.removeViewSubproject(param.data);
+            });
+            div.appendChild(delBtn);
+
+            return div;
             /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
             return '<div project-role="editor">' +
                         '<a ng-click="editViewSubproject();">Edit</a>|' +
@@ -75,6 +84,13 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                 headerName: '', width: 100, cellRenderer: EditViewSubprojectLinkTemplate
             },
             {
+                headerName: 'ID',
+                field: 'Id',
+                width: 80,
+                cellRenderer: 'group',
+                cellRendererParams: { suppressCount: true }
+            },
+            {
                 field: 'EffDt',
                 headerName: 'Updated',
                 width: 150,
@@ -83,8 +99,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                         return moment(params.node.data.EffDt).format('L');
                 },
                 sort: 'desc',
-                cellRenderer: 'group',
-                cellRendererParams: { suppressCount: true }
             },
             { headerName: 'Events', width: 80, cellRenderer: EventCount },
             { field: 'ProjectName', headerName: 'Name', width: 275 },
@@ -1157,6 +1171,22 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			}
         };
 
+        scope.postRemoveSubprojectUpdateGrid = function () {
+            //the scope.subproject is the one we removed.
+            console.log("ok - we removed one so update the grid...");
+            
+            Array.forEach(scope.subprojectList, function (item, index) {
+                if (item.Id === scope.viewSubproject.Id) {
+                    scope.subprojectList.splice(index, 1);
+                    console.log("ok we removed :" + index);
+                    console.dir(scope.subprojectList[index]);
+                    scope.agGridOptions.api.setRowData(scope.subprojectList);
+                    //scope.agGridOptions.api.redrawRows();
+                    console.log("done reloading grid.");
+                }
+            });
+        };
+
         //fired after a user saves a new or edited project.
         // we update the item in the main subproject array and then refresh the grid.
         scope.postSaveSubprojectUpdateGrid = function (the_promise) {
@@ -1176,22 +1206,44 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
                     console.log("ok we found a match! -- updating! after:");
                     console.dir(scope.subprojectList[index]);
-                    setTimeout(function () { scope.agGridOptions.api.redrawRows(); }, 2500);
+                    scope.agGridOptions.api.redrawRows();
                     console.log("done reloading grid.");
                 }
                 count++;
                 if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
                 {
                     console.log("ok we found never a match! -- adding!");
-                    scope.subprojectList.push(the_promise); //replace that item
+                    the_promise.CorrespondenceEvents = [];
+                    the_promise.Files = [];
+                    scope.subprojectList.push(the_promise); //add that item
+                    scope.agGridOptions.api.setRowData([]);
                     scope.agGridOptions.api.setRowData(scope.subprojectList);
                     
-                    setTimeout(function () { scope.agGridOptions.api.redrawRows(); }, 2500);
-
                     console.log("done reloading grid.");
                 }
             });
         };
+
+
+
+        scope.redrawRows = function () {
+            scope.agGridOptions.api.setRowData([]);
+            setTimeout(function () { scope.agGridOptions.api.setRowData(scope.subprojectList); }, 4000);
+
+            
+            console.log("redrawrows!");
+        };
+
+        scope.refreshCells = function () {
+            scope.agGridOptions.api.refreshCells();
+            console.log("refreshcells!");
+        };
+
+        scope.refreshMemory = function () {
+            scope.agGridOptions.api.refreshInMemoryRowModel('group');
+            console.log("redrawgroupmodel!");
+        };
+
 		
         scope.openAccuracyCheckForm = function(ac_row){
             if(ac_row)
@@ -1565,12 +1617,14 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 		 
-        scope.removeViewSubproject = function(){
+        scope.removeViewSubproject = function(subproject){
 			console.log("Inside removeViewSubproject, scope is next...");
-			//console.dir(scope);
-            if(!scope.viewSubproject)
+
+            if (!subproject)
                 return;
-			
+
+            scope.viewSubproject = subproject;
+            
 			console.log("scope.projectId = " + scope.projectId);
 			if (scope.subprojectType === "CRPP")
 			{

@@ -93,7 +93,9 @@ projects_module.factory('GetHabSubprojects', ['$resource', function ($resource) 
 }]);
 
 projects_module.factory('RemoveSubproject', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/crppsubproject/removecrppsubproject');
+    return $resource(serviceUrl + '/api/v1/crppsubproject/removecrppsubproject', {}, {
+        save: { method: 'POST', isArray: false }
+    });
 }]);
 
 projects_module.factory('RemoveHabSubproject', ['$resource', function ($resource) {
