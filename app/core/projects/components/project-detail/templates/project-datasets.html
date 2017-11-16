@@ -237,6 +237,7 @@
 						<div class="panel-body">
 					  		<h3>{{project.Name}} > Manage Correspondence</h3>
 
+                            <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createSubproject()">Create Project</button>
 					  		<p><i>Manage CRPP correspondence with agencies</i></p>
 					  		<hr/>
 
@@ -244,6 +245,8 @@
                                 <div id="crpp-correspondence-grid" class="ag-blue gridStyle-small"></div>
                                 <div class="crpp-correspondence-grid-footer">Total correspondence events: {{subprojectList.length}}</div>
                             </div>
+
+                            <hr/>
 
 							<div project-role="editor" class="panel-body" style="width: 600px;">
 								<!--<h3>Add a CRPP Project:</h3>

@@ -1,0 +1,39 @@
+{
+  "name": "ag-grid-enterprise",
+  "version": "14.1.1",
+  "homepage": "http://www.ag-grid.com/",
+  "authors": [
+    "Niall Crosby <niall.crosby@ag-grid.com>"
+  ],
+  "description": "Enterprise features for ag-Grid",
+  "main": [
+    "./main.js"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "grid",
+    "data",
+    "table"
+  ],
+  "license": "Commercial",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {},
+  "dependencies": {},
+  "_release": "14.1.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "14.1.1",
+    "commit": "8b470a07377dfc63a78e67c49cf99b2cc20810b9"
+  },
+  "_source": "https://github.com/ceolter/ag-grid-enterprise.git",
+  "_target": "^14.1.1",
+  "_originalSource": "ag-grid-enterprise",
+  "_direct": true
+}

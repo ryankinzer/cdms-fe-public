@@ -1,9 +1,9 @@
 ﻿
 
-var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService',
+var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 		console.log("Inside controllers.js, projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
@@ -36,16 +36,48 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		scope.FileLocationSubprojectFundersWatchVariable = "";
 
 
+        //this is for the crpp/subproject correspondence tab below - might can move this all out sometime...
         var otherAgencyTemplate = function (params) {
             return '<span>' + params.node.data.Agency + '</span>'
                 + ((params.node.data.OtherAgency) ? ('<span> (' + params.node.data.OtherAgency + ')</span>') : ''); //ternery: if otheragency then show it
         };
 
+        var EventCount = function (params) {
+            if (params.node.data.CorrespondenceEvents === undefined || params.node.data.CorrespondenceEvents === null)
+                return '<span>0</span>';
+
+            return '<span>' + params.node.data.CorrespondenceEvents.length + '</span>';
+        };
+
+        var EditViewSubprojectLinkTemplate = function (param) {
+            var editBtn = document.createElement('a');
+            editBtn.href = '#';
+            editBtn.innerHTML = 'edit';
+            //console.dir(param.data);
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.editViewSubproject(param.data);
+
+            });
+            return editBtn;
+            /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
+            return '<div project-role="editor">' +
+                        '<a ng-click="editViewSubproject();">Edit</a>|' +
+                        '<a ng-click="removeViewSubproject();">Delete</div>|' + 
+                        '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
+                '</div>';
+                */
+        };
+
+        //grid columns for crpp correspondence tab
         scope.agColumnDefs = [  //in order the columns will display, by the way...
+            {
+                headerName: '', width: 100, cellRenderer: EditViewSubprojectLinkTemplate
+            },
             {
                 field: 'EffDt',
                 headerName: 'Updated',
-                width: 100,
+                width: 150,
                 valueFormatter: function (params) {
                     if (params.node.data.EffDt !== undefined)
                         return moment(params.node.data.EffDt).format('L');
@@ -54,7 +86,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                 cellRenderer: 'group',
                 cellRendererParams: { suppressCount: true }
             },
-            { field: 'ProjectName', headerName: 'Name', width: 300 },
+            { headerName: 'Events', width: 80, cellRenderer: EventCount },
+            { field: 'ProjectName', headerName: 'Name', width: 275 },
             { field: 'ProjectLead', headerName: 'Project Lead', width: 150 },
             { field: 'Closed', headerName: 'Closed?', width: 80 },
             {
@@ -76,30 +109,33 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             enableColResize: true,
             showToolPanel: false,
             columnDefs: scope.agColumnDefs,
-            rowData: [],
+            rowData: null,
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             //debug: true,
-            //rowSelection: 'single',
-            //onSelectionChanged: function (params) {
-            //    scope.agGridOptions.selectedItems = $scope.agGridOptions.api.getSelectedRows();
-            //    scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-            //},
+            rowSelection: 'single',
+            onSelectionChanged: function (params) {
+                console.log("selection changed!");
+                scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
+                console.dir(scope.agGridOptions.selectedItems);
+                //scope.agGridOptions.api.redrawRows();
+                //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
             //onFilterModified: function () {
             //    scope.agGridOptions.api.deselectAll();
             //},
-            //selectedItems: []
+            selectedItems: [],
             isFullWidthCell: function (rowNode) {
                 return rowNode.level === 1;
             },
             onGridReady: function (params) {
-                params.api.sizeColumnsToFit();
+                //params.api.sizeColumnsToFit();
             },
             fullWidthCellRenderer: CorrespondenceDetailCellRenderer,
             getRowHeight: function (params) {
                 var rowIsDetailRow = params.node.level === 1;
                 // return dynamic height when detail row, otherwise return 25
                 if (rowIsDetailRow) {
-                    return 200;
+                    return 300;
                 } else {
                     var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
                     return 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
@@ -121,7 +157,15 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     //console.log("didn't find any correspondence events for that record.");
                     return null;
                 }
-            }
+            },
+            onRowDoubleClicked: function (row) {
+                scope.agGridOptions.api.collapseAll();
+                row.node.setSelected(true);
+                row.node.setExpanded(true);
+            },
+            onRowClicked: function (row) {
+                row.node.setSelected(true);
+            },
         };
 
        
@@ -1039,7 +1083,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         scope.createSubproject = function(){
             scope.viewSubproject = null;
 			scope.createNewSubproject = true;
-			scope.subprojectList = null;
+			//scope.subprojectList = null;
 			scope.subprojectOptions = null;
 			console.log("scope.createNewSubproject = " + scope.createNewSubproject);
             var modalInstance = $modal.open({
@@ -1111,6 +1155,42 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 				  scope: scope, //very important to pass the scope along...
 				});
 			}
+        };
+
+        //fired after a user saves a new or edited project.
+        // we update the item in the main subproject array and then refresh the grid.
+        scope.postSaveSubprojectUpdateGrid = function (the_promise) {
+            console.log("ok - we saved so update the grid...");
+            var total = scope.subprojectList.length;
+            var count = 0;
+            var updated = false;
+            Array.forEach(scope.subprojectList, function (item, index) {
+                if (item.Id === the_promise.Id) {
+                    updated = true;
+                    //console.log("ok we found a match! -- updating! before:");
+                    //console.dir(scope.subprojectList[index]);
+
+                    if (the_promise.CorrespondenceEvents !== undefined)
+                        delete the_promise.CorrespondenceEvents; //remove this before the copy.
+
+                    angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
+                    console.log("ok we found a match! -- updating! after:");
+                    console.dir(scope.subprojectList[index]);
+                    setTimeout(function () { scope.agGridOptions.api.redrawRows(); }, 2500);
+                    console.log("done reloading grid.");
+                }
+                count++;
+                if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
+                {
+                    console.log("ok we found never a match! -- adding!");
+                    scope.subprojectList.push(the_promise); //replace that item
+                    scope.agGridOptions.api.setRowData(scope.subprojectList);
+                    
+                    setTimeout(function () { scope.agGridOptions.api.redrawRows(); }, 2500);
+
+                    console.log("done reloading grid.");
+                }
+            });
         };
 		
         scope.openAccuracyCheckForm = function(ac_row){

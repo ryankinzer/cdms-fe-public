@@ -734,7 +734,8 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                         $scope.subproject_row = 'undefined';
                         $scope.crppProjectName = saveRow.ProjectName;
 
-                        $scope.reloadSubprojects();
+                        //$scope.reloadSubprojects();
+                        $scope.postSaveSubprojectUpdateGrid(promise);
 
                         if (addDocument === "Yes") {
                             console.log("addDocument = Yes...");

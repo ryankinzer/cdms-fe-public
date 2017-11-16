@@ -2,12 +2,7 @@
 //  each event can expand and show its items. this renderer provides that detail grid view.
 
 var FileListCellTemplate = function (params) {
-    if (params.node.data.EventFiles === undefined || params.node.data.EventFiles === null)
-        return;
-
-    var files = angular.fromJson(params.node.data.EventFiles);    
-    files = (files === null || !Array.isArray(files)) ? [] : files; //if it isn't an array, make it an empty array
-    
+    var files = getEventFilesArray(params.node.data.EventFiles);  
     var list = '<div class="event-file-list"><ul>';
 
     files.forEach(function (file) {
@@ -22,38 +17,47 @@ var FileListCellTemplate = function (params) {
 
 var detailColumnDefs = [
     {
-        headerName: 'Contact Date', field: 'CorrespondenceDate', width: 120, cellClass: 'event-record-cell',
+        headerName: '', width: 100, cellRenderer: function (param) {
+            return '<a href="edit#id=123">Edit</a>|' +
+                '<a href="edit#id=123">Delete</a>|' +
+                '<a href="edit#id=123">Add</a><br/>';
+        },
+    },
+    {
+        headerName: 'Notice Date', field: 'CorrespondenceDate', width: 120, cellClass: 'event-record-cell',
         valueFormatter: function (params) {
             if (params.node.data.CorrespondenceDate !== undefined)
                 return moment(params.node.data.CorrespondenceDate).format('L');
         }
     },
+    { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150 },
+    { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 150 },
+    { headerName: 'Days to Respond', field: 'NumberOfDays', cellClass: 'event-record-cell', width: 100 },
+
     {
         field: 'ResponseDate',
-        headerName: 'Response Date',
+        headerName: 'Date of Response',
         width: 120,
         valueFormatter: function (params) {
             if (params.node.data.ResponseDate !== undefined)
                 return moment(params.node.data.ResponseDate).format('L');
         }
     },
-    { headerName: 'Staff Member', field: 'StaffMember', cellClass: 'event-record-cell', width: 150 },
+    { headerName: 'Technician', field: 'StaffMember', cellClass: 'event-record-cell', width: 150 },
     {
         headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 300, cellStyle: {
             'white-space': 'normal'
         }
     },
-    { headerName: 'Correspondence Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150 },
-    { headerName: 'Response Type', field: 'ResponseType', cellClass: 'event-record-cell', width: 150 },
-    { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate},
-    //{ headerName: 'Number Of Days', field: 'NumberOfDays', cellClass: 'event-record-cell' },
+    { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate },
+    
     //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
 ];
 
 function CorrespondenceDetailCellRenderer() { }
 
 CorrespondenceDetailCellRenderer.prototype.init = function (params) {
-    console.log("init on detail renderer! ----------------------------------");
+    //console.log("init on detail renderer! ----------------------------------");
     // trick to convert string of html into dom object
     var eTemp = document.createElement('div');
     eTemp.innerHTML = this.getTemplate(params);
@@ -66,34 +70,56 @@ CorrespondenceDetailCellRenderer.prototype.init = function (params) {
 };
 
 CorrespondenceDetailCellRenderer.prototype.setupDetailGrid = function (eventRecords) {
-    console.log("setting up the detail grid... ------------- incoming params.data");
-    console.dir(eventRecords);
+    //console.log("setting up the detail grid... ------------- incoming params.data");
+    //console.dir(eventRecords);
 
     this.detailGridOptions = {
         enableSorting: true,
         enableFilter: true,
         enableColResize: true,
+        rowSelection: 'single',
+        onSelectionChanged: function (params) {
+            console.log("selection changed!");
+            //scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
+            //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+        },
+        //onFilterModified: function () {
+        //    scope.agGridOptions.api.deselectAll();
+        //},
+        selectedItems: [],
         rowData: eventRecords,
         columnDefs: detailColumnDefs,
         onGridReady: function (params) {
-            setTimeout(function () { params.api.sizeColumnsToFit(); }, 0);
+            //setTimeout(function () { params.api.sizeColumnsToFit(); }, 0);
         },
         getRowHeight: function (params) {
-            console.dir(params);
-            var rowIsDetailRow = params.node.level === 1;
-            // return dynamic height when detail row, otherwise return 25
             var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
-            return 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-            //return rowIsDetailRow ? 200 : 25;
+            var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+            var file_height = 25 * (getEventFilesArray(params.data.EventFiles).length); //count up the number of file lines we will have.
+            return (comment_height > file_height) ? comment_height : file_height;
+        },
+        onRowClicked: function (row) {
+            //console.dir(row);
+
+            row.node.setSelected(true);
+            console.log("detail selected!");
         },
         //defaultColDef: {
         //    editable: true
         //},
         //enableRangeSelection: true
     };
+/*
+    this.detailGridOptions.api.addEventListener('rowDoubleClicked', function (row) {
+        console.log("double clicked!");
+        console.dir(row);
+        alert("Do you want to edit this row?");
+
+    });
+    */
 
     var eDetailGrid = this.eGui.querySelector('.full-width-grid');
-    console.log("did we find the element?");
+    //.log("did we find the element?");
     //console.dir(eDetailGrid);
     new agGrid.Grid(eDetailGrid, this.detailGridOptions);
     //console.dir(eDetailGrid);
@@ -160,3 +186,14 @@ CorrespondenceDetailCellRenderer.prototype.consumeMouseWheelOnDetailGrid = funct
     // event is 'DOMMouseScroll' Firefox
     eDetailGrid.addEventListener('DOMMouseScroll', mouseWheelListener);
 };
+
+//return an array from the eventfiles.
+function getEventFilesArray(EventFiles)
+{
+    if (EventFiles === undefined || EventFiles === null)
+        return [];
+
+    var files = angular.fromJson(EventFiles);
+    return (files === null || !Array.isArray(files)) ? [] : files; //if it isn't an array, make an empty array
+    
+}
