@@ -417,7 +417,8 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', 
 			//$scope.ce_row.ResponseDate = null;
 		}
 	};
-	
+
+    /* now handled with delete link on ag-grid 
 	$scope.remove = function(){
 		console.log("Inside ModalAddCorrespondenceEventCtrl, remove...");
 		console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
@@ -449,6 +450,7 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', 
 			});
 		}
 	};
+        */
 	
 	$scope.$watch('fileProgress', function(){
 		console.log("Inside watch fileProgress...");

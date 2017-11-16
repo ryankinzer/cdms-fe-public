@@ -24,8 +24,9 @@ var EditDetailLinksTemplate = function (detailparam) {
     var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
     editBtn.addEventListener('click', function (event) {
         event.preventDefault();
-        
-        scope.openCorrespondenceEventForm(scope.viewSubproject, detailparam.data); //parent subproject, detail line.
+        console.log("detail param: ");
+        console.dir(detailparam);
+        //scope.openCorrespondenceEventForm(scope.viewSubproject, detailparam.data); //parent subproject, detail line.
     });
     div.appendChild(editBtn);
     div.appendChild(document.createTextNode("|"));

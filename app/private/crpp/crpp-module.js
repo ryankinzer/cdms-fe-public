@@ -12,7 +12,7 @@ require([
     'app/private/crpp/contracts-map-directive',
 
     //renderer for master/detail in grid - used on project-details page (until it gets consolidated to this module)
-    'app/private/crpp/components/crpp-contracts/renderer-correspondence-detail',
+    //'app/private/crpp/components/crpp-contracts/renderer-correspondence-detail',
 
 ], function () {
     //crpp_module.controller('CrppContractsCtrl', crpp_contracts);
