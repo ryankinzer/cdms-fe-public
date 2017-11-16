@@ -35,6 +35,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		scope.SdeObjectId = 0;
 		scope.FileLocationSubprojectFundersWatchVariable = "";
 
+        angular.rootScope.scope = scope; //our render templates need to use this to get the scope.
 
         //this is for the crpp/subproject correspondence tab below - might can move this all out sometime...
         var otherAgencyTemplate = function (params) {
@@ -44,12 +45,12 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
         var EventCount = function (params) {
             if (params.node.data.CorrespondenceEvents === undefined || params.node.data.CorrespondenceEvents === null)
-                return '<span>0</span>';
+                return '0';
 
-            return '<span>' + params.node.data.CorrespondenceEvents.length + '</span>';
+            return ''+ params.node.data.CorrespondenceEvents.length;
         };
 
-        var EditViewSubprojectLinkTemplate = function (param) {
+        var EditMasterLinksTemplate = function (param) {
 
             var div = document.createElement('div');
 
@@ -67,6 +68,14 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                 scope.removeViewSubproject(param.data);
             });
             div.appendChild(delBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+            addBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.openCorrespondenceEventForm(param.data);
+            });
+            div.appendChild(addBtn);
 
             return div;
             /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
@@ -81,7 +90,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         //grid columns for crpp correspondence tab
         scope.agColumnDefs = [  //in order the columns will display, by the way...
             {
-                headerName: '', width: 100, cellRenderer: EditViewSubprojectLinkTemplate
+                headerName: '', width: 100, cellRenderer: EditMasterLinksTemplate
             },
             {
                 headerName: 'ID',
@@ -95,12 +104,18 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                 headerName: 'Updated',
                 width: 150,
                 valueFormatter: function (params) {
-                    if (params.node.data.EffDt !== undefined)
+                    if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
                         return moment(params.node.data.EffDt).format('L');
                 },
                 sort: 'desc',
             },
-            { headerName: 'Events', width: 80, cellRenderer: EventCount },
+            {
+                headerName: 'Events', width: 80,
+                cellRenderer: EventCount,
+                valueGetter: function (params) {
+                    return (params.data.CorrespondenceEvents !== undefined && params.data.CorrespondenceEvents.length > 0) ? params.data.CorrespondenceEvents.length : 0;
+                },
+            },
             { field: 'ProjectName', headerName: 'Name', width: 275 },
             { field: 'ProjectLead', headerName: 'Project Lead', width: 150 },
             { field: 'Closed', headerName: 'Closed?', width: 80 },
@@ -128,11 +143,24 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             //debug: true,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
-                console.log("selection changed!");
-                scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
-                console.dir(scope.agGridOptions.selectedItems);
-                //scope.agGridOptions.api.redrawRows();
-                //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+                console.log("selection changed fired!");
+                /*
+                var rows = scope.agGridOptions.api.getSelectedRows();
+                if (Array.isArray(rows) && rows[0] != null)
+                {
+                    console.log("rows:");
+                    console.dir(rows);
+                    if (!Array.isArray(rows[0]) && !rows[0].hasOwnProperty('SubprojectId')) //only change the selection if they clicked a header row.
+                    {
+                        scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
+                        //scope.agGridOptions.api.redrawRows();
+                        //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+                        console.log("selected a header row so selection actually changed");
+                        scope.viewSubproject = rows[0];
+                        console.dir(scope.viewSubproject);
+                    }
+                }
+                */
             },
             //onFilterModified: function () {
             //    scope.agGridOptions.api.deselectAll();
@@ -165,6 +193,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                         // the key is used by the default group cellRenderer
                         key: record.CorrespondenceDate,
                         // provide ag-Grid with the children of this group
+                        parentData: record,
                         children: [record.CorrespondenceEvents],
                     };
                 } else {
@@ -1258,15 +1287,13 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 
-        scope.openCorrespondenceEventForm = function(ce_row){
+        //if you are creating a new one for the project, the ce_row will be empty
+        // if you are editing an existing one, send in the project and the ce_row.
+        scope.openCorrespondenceEventForm = function (subproject, ce_row = {}){
 			console.log("Inside openCorrespondenceEventForm...")
-			//console.dir(scope);
-			
-            if(ce_row)
-              scope.ce_row = ce_row;
-            else
-              scope.ce_row = {};
 
+            scope.viewSubproject = subproject;
+            scope.ce_row = ce_row;
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-new-correspondenceEvent.html',
@@ -1274,7 +1301,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
               scope: scope, //very important to pass the scope along...
             });
         };
-		
+
         scope.openHabitatItemForm = function(hi_row){
 			console.log("Inside openHabitatItemForm...")
 			//console.dir(scope);

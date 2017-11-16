@@ -15,20 +15,58 @@ var FileListCellTemplate = function (params) {
 };
 
 
+//this template gives the Edit|Delete|Add for the detail.
+var EditDetailLinksTemplate = function (detailparam) {
+    var scope = angular.rootScope.scope;
+
+    var div = document.createElement('div');
+
+    var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+    editBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        
+        scope.openCorrespondenceEventForm(scope.viewSubproject, detailparam.data); //parent subproject, detail line.
+    });
+    div.appendChild(editBtn);
+    div.appendChild(document.createTextNode("|"));
+
+    var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
+    delBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        //scope.removeViewSubproject(param.data);
+    });
+    div.appendChild(delBtn);
+    div.appendChild(document.createTextNode("|"));
+
+    var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+    addBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        //scope.openCorrespondenceEventForm(param.data);
+    });
+    div.appendChild(addBtn);
+
+    return div;
+    /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
+    return '<div project-role="editor">' +
+                '<a ng-click="editViewSubproject();">Edit</a>|' +
+                '<a ng-click="removeViewSubproject();">Delete</div>|' + 
+                '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
+        '</div>';
+        */
+};
+
+
 var detailColumnDefs = [
     {
-        headerName: '', width: 100, cellRenderer: function (param) {
-            return '<a href="edit#id=123">Edit</a>|' +
-                '<a href="edit#id=123">Delete</a>|' +
-                '<a href="edit#id=123">Add</a><br/>';
-        },
+        headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate
     },
     {
         headerName: 'Notice Date', field: 'CorrespondenceDate', width: 120, cellClass: 'event-record-cell',
         valueFormatter: function (params) {
-            if (params.node.data.CorrespondenceDate !== undefined)
+            if (params.node.data.CorrespondenceDate !== undefined && params.data.CorrespondenceDate !== null)
                 return moment(params.node.data.CorrespondenceDate).format('L');
-        }
+        },
+        sort: 'desc'
     },
     { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150 },
     { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 150 },
@@ -39,7 +77,7 @@ var detailColumnDefs = [
         headerName: 'Date of Response',
         width: 120,
         valueFormatter: function (params) {
-            if (params.node.data.ResponseDate !== undefined)
+            if (params.data.ResponseDate !== undefined && params.data.ResponseDate !== null)
                 return moment(params.node.data.ResponseDate).format('L');
         }
     },
@@ -77,16 +115,16 @@ CorrespondenceDetailCellRenderer.prototype.setupDetailGrid = function (eventReco
         enableSorting: true,
         enableFilter: true,
         enableColResize: true,
-        rowSelection: 'single',
-        onSelectionChanged: function (params) {
-            console.log("selection changed!");
+        //rowSelection: 'single',
+        //onSelectionChanged: function (params) {
+        //    console.log("selection changed!");
             //scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
             //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-        },
+        //},
         //onFilterModified: function () {
         //    scope.agGridOptions.api.deselectAll();
         //},
-        selectedItems: [],
+        //selectedItems: [],
         rowData: eventRecords,
         columnDefs: detailColumnDefs,
         onGridReady: function (params) {
@@ -98,12 +136,12 @@ CorrespondenceDetailCellRenderer.prototype.setupDetailGrid = function (eventReco
             var file_height = 25 * (getEventFilesArray(params.data.EventFiles).length); //count up the number of file lines we will have.
             return (comment_height > file_height) ? comment_height : file_height;
         },
-        onRowClicked: function (row) {
+        //onRowClicked: function (row) {
             //console.dir(row);
 
-            row.node.setSelected(true);
-            console.log("detail selected!");
-        },
+        //    row.node.setSelected(true);
+        //    console.log("detail selected!");
+        //},
         //defaultColDef: {
         //    editable: true
         //},
