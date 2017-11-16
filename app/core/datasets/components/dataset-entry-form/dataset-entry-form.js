@@ -755,7 +755,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
         $scope.saveData = function () {
             console.log("Inside saveData, $scope is next...");
-            //console.dir($scope);
+            console.dir($scope);
             console.log("$rootScope is next...");
             console.dir($rootScope);
 

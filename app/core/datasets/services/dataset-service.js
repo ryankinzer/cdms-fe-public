@@ -139,6 +139,14 @@ datasets_module.factory('OutmigrationYears', ['$resource', function ($resource) 
     });
 }]);
 
+/*datasets_module.factory('SpecificActivities', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/list/getspecificactivities', {}, {
+        //query: { method: 'GET', params: { id: 'datasetId', locationId: 'locationId',  readingDateTime: readingDateTime}, isArray: true }
+        query: { method: 'GET', params: { id: 'datasetId', locationId: 'locationId',  readingDateTime: readingDateTime}, isArray: true }
+    });
+}]);
+*/
+
 datasets_module.service('DatasetService', ['$q',
     'DatasetFiles',
     'Activities',
@@ -166,6 +174,7 @@ datasets_module.service('DatasetService', ['$q',
 	'SpawningYears',
 	'BroodYears',
 	'OutmigrationYears',
+	//'SpecificActivities',
     function ($q,
         DatasetFiles,
         Activities,
@@ -193,6 +202,7 @@ datasets_module.service('DatasetService', ['$q',
         SpawningYears,
         BroodYears,
         OutmigrationYears
+		//SpecificActivities
 		) {
 
         var service = {
@@ -220,7 +230,7 @@ datasets_module.service('DatasetService', ['$q',
                 if (service.dataset && service.dataset.Id == datasetId)
                     return service.dataset;
 
-                console.log("Inside services.js, getDataset...");
+                console.log("Inside dataset-service.js, getDataset...");
 
                 service.dataset = Dataset.query({ id: datasetId });
 
@@ -492,44 +502,51 @@ datasets_module.service('DatasetService', ['$q',
             },
 			
             getMigrationYears: function (datasetId) {
-                console.log("Inside services, getMigrationYears");
+                console.log("Inside dataset-service, getMigrationYears");
                 return MigrationYears.query({ id: datasetId });
             },
 			
             getRunYears: function (datasetId) {
-                console.log("Inside services, getRunYears");
+                console.log("Inside dataset-service, getRunYears");
                 return RunYears.query({ id: datasetId });
             },
 			
             getReportYears: function (datasetId) {
-                console.log("Inside services, getReportYears");
+                console.log("Inside dataset-service, getReportYears");
                 return ReportYears.query({ id: datasetId });
             },
 
             getBenthicSampleYears: function (datasetId) {
-                console.log("Inside services, getBenthicSampleYears");
+                console.log("Inside dataset-service, getBenthicSampleYears");
                 return BenthicSampleYears.query({ id: datasetId });
             },
 			
             getDriftSampleYears: function (datasetId) {
-                console.log("Inside services, getDriftSampleYears");
+                console.log("Inside dataset-service, getDriftSampleYears");
                 return DriftSampleYears.query({ id: datasetId });
             },
 			
             getSpawningYears: function (datasetId) {
-                console.log("Inside services, getSpawningYears");
+                console.log("Inside dataset-service, getSpawningYears");
                 return SpawningYears.query({ id: datasetId });
             },
 			
             getBroodYears: function (datasetId) {
-                console.log("Inside services, getBroodYears");
+                console.log("Inside dataset-service, getBroodYears");
                 return BroodYears.query({ id: datasetId });
             },
 			
             getOutmigrationYears: function (datasetId) {
-                console.log("Inside services, getOutmigrationYears");
+                console.log("Inside dataset-service, getOutmigrationYears");
                 return OutmigrationYears.query({ id: datasetId });
             },
+			
+			/*getSpecificActivities: function (datasetId, locationId, readingDateTime) {
+				console.log("Inside dataset-service, getSpecificActivities");
+				//return SpecificActivities.query({ id: datasetId, locationId: locationId, readingDateTime: readingDateTime});
+				return SpecificActivities.query({ id: datasetId});
+			},
+			*/
         };
 
         return service;
