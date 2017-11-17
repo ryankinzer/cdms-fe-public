@@ -417,40 +417,6 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', 
 			//$scope.ce_row.ResponseDate = null;
 		}
 	};
-
-    /* now handled with delete link on ag-grid 
-	$scope.remove = function(){
-		console.log("Inside ModalAddCorrespondenceEventCtrl, remove...");
-		console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-		console.log("$scope.ce_row is next...");
-		console.dir($scope.ce_row);
-		$scope.ce_rowId = $scope.ce_row.Id;
-		
-		$scope.verifyAction = "Delete";
-		$scope.verifyingCaller = "CorrespondenceEvent";
-		//console.log("scope.verifyAction = " + scope.verifyAction);
-			
-		$scope.verifyActionFormOpen = "Yes";
-		
-		if (confirm('Are you sure that you want to delete this Correspondence Event?'))
-		{
-			//SubprojectService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
-			
-			//var promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
-			var promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId, $scope.DatastoreTablePrefix);
-			
-			promise.$promise.then(function(){
-				$scope.subprojects = null;
-				$scope.reloadSubprojects();
-				//$scope.viewSelectedSubproject();
-				$scope.viewSelectedSubproject($scope.viewSubproject);
-				$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
-				$modalInstance.dismiss();
-
-			});
-		}
-	};
-        */
 	
 	$scope.$watch('fileProgress', function(){
 		console.log("Inside watch fileProgress...");
