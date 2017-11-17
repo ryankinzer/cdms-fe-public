@@ -95,7 +95,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
             //$rootScope.datasetId = $scope.dataset.Id;
             $rootScope.datasetId = $scope.datasetId = $scope.dataset.Id;
             console.log("$rootScope.datasetId = " + $rootScope.datasetId);
-            $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
+            $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id); // This will be used for checking for duplicate files, in the dataset files.
 
             $scope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
@@ -204,7 +204,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
             $rootScope.projectId = $scope.project.Id;
             $scope.project.Files = null;
-            $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
+            $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id); // This is used to check for a duplicate file.
 
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
