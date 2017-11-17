@@ -35,6 +35,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 		//};
 
         scope.openAddProject = function(){
+			console.log("Inside project-list.js, openAddProject...");
             var modalInstance = $modal.open({
               templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
               controller: 'ModalProjectEditorCtrl',
