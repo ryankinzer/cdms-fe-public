@@ -713,28 +713,33 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', 
 			$scope.crppProjectName = $rootScope.crppProjectName;
 		
 		if ($scope.viewSubproject !== null)
-		{
-			console.log("$scope.viewSubproject is present, using that...");
+        {
+            console.log("$scope.viewSubproject is present, using that...");
 			console.log("$scope.viewSubproject.Id = " + $scope.viewSubproject.Id);
 			var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, saveRow);
 			if (typeof promise !== 'undefined')
 			{
-				promise.$promise.then(function(){
-					$scope.reloadSubprojects();
-					//$scope.viewSelectedSubproject();
-					$scope.viewSelectedSubproject($scope.viewSubproject);
-					$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
-					//$modalInstance.dismiss();
-					})
-					
-				console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
-				if ($scope.fileCount === 0)
-				{
-					$scope.loading = false; // Stop the fish spinner.
-					$scope.showCloseButton = true;
-					$scope.showCancelButton = false;
-					$scope.showFormItems = false;
-				}
+                promise.$promise.then(function () {
+                    //$scope.reloadSubprojects();
+                    //$scope.viewSelectedSubproject();
+                    //$scope.viewSelectedSubproject($scope.viewSubproject);
+                    //$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
+                    //$modalInstance.dismiss();
+                    if (saveRow.Id === 0) //we saved a new one!
+                        $scope.postAddCorrespondenceEventUpdateGrid(promise);
+                    else //we edited one!
+                        $scope.postEditCorrespondenceEventUpdateGrid(promise);
+
+                    console.log("all done saving correspondence event!");
+
+                    console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
+                    if ($scope.fileCount === 0) {
+                        $scope.loading = false; // Stop the fish spinner.
+                        $scope.showCloseButton = true;
+                        $scope.showCancelButton = false;
+                        $scope.showFormItems = false;
+                    }
+                });
 			}	
 		}
 		else if ((typeof $scope.crppProjectName !== 'undefined' ) && ($scope.crppProjectName !== null))

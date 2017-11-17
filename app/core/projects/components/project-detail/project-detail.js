@@ -83,7 +83,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                scope.openCorrespondenceEventForm(param.data);
+                scope.openCorrespondenceEventForm(param.data, {});
             });
             div.appendChild(addBtn);
 
@@ -139,7 +139,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                //scope.openCorrespondenceEventForm(param.data);
+                scope.openCorrespondenceEventForm(subproject, {});
             });
             div.appendChild(addBtn);
 
@@ -1368,6 +1368,62 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     console.log("done reloading grid.");
                 }
             });
+        };
+
+        //called by the modal once the correspondence event is successfully saved.
+        scope.postEditCorrespondenceEventUpdateGrid = function (edited_event) {
+            console.log("editCrppCorrespondenceEvent..." + edited_event.Id + " for subproject " + edited_event.SubprojectId);
+
+            //edit our correspondence item and then reload the grid.
+            Array.forEach(scope.subprojectList, function (item, index) {
+                if (item.Id === edited_event.SubprojectId) {
+                    item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort. - this was already updated in the be
+                    Array.forEach(item.CorrespondenceEvents, function (event_item, event_item_index) {
+                        if (event_item.Id === edited_event.Id) {
+                            angular.extend(event_item, edited_event); //replace the data for that item
+                            console.log("OK!! we edited that correspondence event");
+                        }
+                    });
+                }
+            });
+
+            scope.agGridOptions.api.setRowData(scope.subprojectList);
+
+            //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
+            var the_node = scope.expandSubProjectById(edited_event.SubprojectId);
+            if (the_node != null)
+                scope.agGridOptions.api.ensureNodeVisible(the_node);
+
+            console.log("done reloading grid after removing item.");
+
+        };
+           
+        //called by the modal once a correspondence event (edit) is saved
+        scope.postAddCorrespondenceEventUpdateGrid = function (new_event) {
+            //console.dir(new_event);
+            console.log("saving correspondence event for " + new_event.SubprojectId);
+
+            var subproject = scope.getSubprojectById(new_event.SubprojectId);
+            
+            if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
+                console.log("no subproject... hmm ... i guess we should reload everything...");
+            }else{
+                Array.forEach(scope.subprojectList, function (item, index) {
+                    if (item.Id === subproject.Id) {
+                        item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort - this was already updated in the be
+                        item.CorrespondenceEvents.push(new_event);
+                        console.log("Added event " + new_event.Id + " to " + subproject.Id);
+                    }
+                });
+                scope.agGridOptions.api.setRowData(scope.subprojectList);
+
+                //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
+                var the_node = scope.expandSubProjectById(subproject.Id);
+                if (the_node != null)
+                    scope.agGridOptions.api.ensureNodeVisible(the_node);
+
+                console.log("done reloading grid after removing item.");
+            }
         };
 
         //fired after a user saves a new or edited project.
