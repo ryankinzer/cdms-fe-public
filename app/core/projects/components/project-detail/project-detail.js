@@ -480,9 +480,9 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			scope.fishermenOptions = $rootScope.fishermenOptions = makeObjects(scope.fishermenList, 'Id','FullName');
 			
 			// Debug output ... wanted to verify the contents of scope.fishermenOptions
-			angular.forEach(scope.fishermenOptions, function(fisherman){
-				console.dir(fisherman);
-			});
+			//angular.forEach(scope.fishermenOptions, function(fisherman){
+			//	console.dir(fisherman);
+			//});
 			
 			console.log("scope.fishermenOptions is next...");
 			console.dir(scope.fishermenOptions);
@@ -1358,7 +1358,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             //the scope.subproject is the one we removed.
             console.log("ok - we removed one so update the grid...");
             
-            Array.forEach(scope.subprojectList, function (item, index) {
+            scope.subprojectList.forEach(function (item, index) {
                 if (item.Id === scope.viewSubproject.Id) {
                     scope.subprojectList.splice(index, 1);
                     console.log("ok we removed :" + index);
@@ -1375,10 +1375,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             console.log("editCrppCorrespondenceEvent..." + edited_event.Id + " for subproject " + edited_event.SubprojectId);
 
             //edit our correspondence item and then reload the grid.
-            Array.forEach(scope.subprojectList, function (item, index) {
+            scope.subprojectList.forEach(function (item, index) {
                 if (item.Id === edited_event.SubprojectId) {
                     item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort. - this was already updated in the be
-                    Array.forEach(item.CorrespondenceEvents, function (event_item, event_item_index) {
+                    item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
                         if (event_item.Id === edited_event.Id) {
                             angular.extend(event_item, edited_event); //replace the data for that item
                             console.log("OK!! we edited that correspondence event");
@@ -1408,7 +1408,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
                 console.log("no subproject... hmm ... i guess we should reload everything...");
             }else{
-                Array.forEach(scope.subprojectList, function (item, index) {
+                scope.subprojectList.forEach( function (item, index) {
                     if (item.Id === subproject.Id) {
                         item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort - this was already updated in the be
                         item.CorrespondenceEvents.push(new_event);
@@ -1433,7 +1433,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             var total = scope.subprojectList.length;
             var count = 0;
             var updated = false;
-            Array.forEach(scope.subprojectList, function (item, index) {
+            scope.subprojectList.forEach(function (item, index) {
                 if (item.Id === the_promise.Id) {
                     updated = true;
                     //console.log("ok we found a match! -- updating! before:");
@@ -1497,14 +1497,15 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 
-        //if you are creating a new one for the project, the ce_row will be empty
+        //if you are creating a new one for the project, the ce_row should be empty {}
         // if you are editing an existing one, send in the project and the ce_row.
-        scope.openCorrespondenceEventForm = function (subproject, ce_row = {}){
+        scope.openCorrespondenceEventForm = function (subproject, ce_row){
 			console.log("Inside openCorrespondenceEventForm...")
 
             scope.viewSubproject = subproject;
             console.log("ok subproject set: ");
             console.dir(scope.viewSubproject);
+
             scope.ce_row = ce_row;
 
             var modalInstance = $modal.open({
@@ -1621,7 +1622,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         scope.getSubprojectById = function (id_in)
         {
             var result = null;
-            Array.forEach(scope.subprojectList, function (item) {
+            scope.subprojectList.forEach( function (item) {
                 if (item.Id === id_in) {
                     result = item; //can't just return here -- see Array.foreach docs
                 }
@@ -1891,9 +1892,9 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                 
                 promise.$promise.then(function () {
                     //remove from our subprojectList and then reload the grid.
-                    Array.forEach(scope.subprojectList, function (item, index) {
+                    scope.subprojectList.forEach(function (item, index) {
                         if (item.Id === subproject.Id) {
-                            Array.forEach(item.CorrespondenceEvents, function (event_item, event_item_index) {
+                            item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
                                 if (event_item.Id === event.Id) {
                                     item.CorrespondenceEvents.splice(event_item_index, 1);
                                     console.log("OK!! we removed that correspondence event");
