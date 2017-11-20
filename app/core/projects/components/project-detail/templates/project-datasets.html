@@ -243,7 +243,7 @@
 
                             <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
                                 <div id="crpp-correspondence-grid" class="ag-blue gridStyle-small"></div>
-                                <div class="crpp-correspondence-grid-footer">Total correspondence events: {{subprojectList.length}}</div>
+                                <div class="crpp-correspondence-grid-footer">Total correspondence projects: {{subprojectList.length}}</div>
                             </div>
 
 					
@@ -257,7 +257,7 @@
 		</div>
 		</div>
 	</tab>
-	<tab heading="Sites" ng-show="AuthorizedToViewProject && ShowHabitat">
+	<tab heading="Sites" ng-show="AuthorizedToViewProject && ShowHabitat" ng-controller="TabSitesController">
 		<div class="container-fluid">
 		    <div class="row-fluid">
 		        <div class="span10">
@@ -267,18 +267,25 @@
 						
 					  		<h3>{{project.Name}} > Manage Sites</h3>
 
+                            <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createHabSubproject()">Create Site</button>
 					  		<p><i>Manage Habitat Site Items</i></p>
 					  		<hr/>
-							<div project-role="editor" class="panel-body" style="width: 600px;">
-								<!--<h3>Add a CRPP Project:</h3>
-								
-								<select ui-select2="select2Options" data-placeholder="Add a Project" ng-model="selectedCorrespondence" style="width: 300px;">
-									    <option ng-repeat="correspondence in correspondenceProjectList" value="{{correspondence.Id}}">{{correspondence.ProjectName}}</option>
-								</select>-->
-							</div>
 							
+                            <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                                <div id="hab-sites-grid" class="ag-blue gridStyle-small"></div>
+                                <div class="hab-sites-grid-footer">Total sites: {{subprojectList.length}}</div>
+                            </div>
+
 					  		<div ng-show="subprojectList.length==0">No Habitat items are associated with this project.</div>
-							<!--<div id="correspondenceEventsScrollArea">
+							
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <!--<div id="correspondenceEventsScrollArea">
 								<a id="ceTop"></a>-->
 								<div ng-show="viewSubproject" class="col-md-6 admin-criteria-list-box">
 									<div class="row">

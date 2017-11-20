@@ -5,6 +5,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	$timeout, $location, $anchorScroll, $document, $upload){
 	console.log("Inside ModalCreateHabSubprojectCtrl...");
 
+    //what is this accomplishing?
+
     $document.on('keydown', function(e) {
 		//console.log("Inside document.on keydown...");
 		//console.log("e is next...");
@@ -427,13 +429,14 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 		{
 			promise.$promise.then(function(){
 				//window.location.reload();
-				
+
+                
 				// Are we working with a new point, or an existing one?
 				if ($scope.NewPoint)
 				{
 					// Normally, scope.SdeObjectId is set to 0; if it is > 0, then we just saved a new location and need to handle it.
-					console.log("promise in $scope.$watch('subproject_row.LocationId' is next...");
-					console.dir(promise);
+					//console.log("promise in $scope.$watch('subproject_row.LocationId' is next...");
+					//console.dir(promise);
 					//console.dir($scope);
 					$scope.subprojectId = $rootScope.subprojectId = promise.Id;
 					console.log("$scope.subprojectId = " + $scope.subprojectId);
@@ -457,11 +460,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 					console.log("newLocation is next...");
 					console.dir(newLocation);
 					
-					promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
-					promise.$promise.then(function(){
-						//$scope.subproject_row = 'undefined';
-						$scope.habProjectName = saveRow.ProjectName;
-					});
+                    var loc_promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
+
+                    //TODO: what when the location returns?
+
 				}
 				else
 				{
@@ -666,6 +668,33 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 					console.log("Just reloading the subproject...");
 					$scope.reloadSubproject($scope.subprojectId);
 				}*/
+
+                console.log("----------------------- ***************** ------------ PROMISE return from hab");
+                console.log("promise");
+                console.dir(promise);
+
+                console.log("and the saverow");
+                console.dir(saveRow);
+
+                promise.Collaborators = saveRow.Collaborators;
+                promise.FirstFoods = saveRow.FirstFoods;
+                promise.HabitatItems = [];
+                promise.LimitingFactors = saveRow.LimitingFactors;
+                promise.Funding = saveRow.Funding;
+                
+
+                console.log("and here is our final:");
+
+                $scope.subproject_edited = promise;
+
+                console.dir($scope.subproject_edited);
+
+
+                console.log("and if we do the extends thing:")
+                var extended = angular.extend({}, promise, saveRow);
+                console.dir(extended);
+
+
 			});
 		}		
 	});
@@ -734,7 +763,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	};
 	
 	$scope.finalPart = function(){
-		console.log("Inside $scope.finalPart...");
+        console.log("Inside $scope.finalPart...");
+
+        $scope.postSaveSubprojectUpdateGrid($scope.subproject_edited);
+
 		if ($scope.addDocument === "Yes")
 		{
 			console.log("$scope.addDocument = Yes...");
@@ -764,12 +796,12 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 			$modalInstance.dismiss();
 		}
 		
-		SubprojectService.clearSubproject();
+		//SubprojectService.clearSubproject();
 
-		console.log("Reload the whole project; this is the easiest way to capture the updates.");
+		//console.log("Reload the whole project; this is the easiest way to capture the updates.");
 		// If we use services.js, service.getSubproject, it only reloads what we already had, before the changes.
 		// The save action puts the updates in the database, so we must pull the updates (and update our variables in the process) from the database.
-		$scope.reloadThisProject();
+		//$scope.reloadThisProject();
 	};
 	
 	//$scope.showStartDate = function(){
@@ -1408,7 +1440,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
     $scope.cancel = function(){	
 		$scope.subproject_row = 'undefined';
         $modalInstance.dismiss();
-		$scope.reloadSubprojects();
+		//$scope.reloadSubprojects();
 
     };
   }

@@ -67,6 +67,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 								   'PLACEHOLDER' +
 								   '</div>';
 
+        //datasets tab grid
 		scope.gridOptions = {
             	data: 'datasets',
             	columnDefs:
@@ -88,6 +89,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
         scope.fileSelection = [];
         scope.FileFilterOptions = {};
+
+        //docs tab grid
         scope.gridFiles = {
             data: 'project.Docs',
             columnDefs:
@@ -112,6 +115,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                                '</div>';
         scope.galleryFileSelection = [];
         scope.GalleryFilterOptions = {};
+
+        //gallery tab grid
         scope.gridGallery = {
             data: 'project.Images',
             columnDefs:
@@ -127,7 +132,26 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             selectedItems: scope.galleryFileSelection
 
         };
-			
+
+
+
+        //returns null if none found...
+        scope.getSubprojectById = function (subprojectList_in, id_in) {
+            
+            if (subprojectList_in == null || id_in == null)
+                return null;
+
+            var result = null;
+
+            subprojectList_in.forEach(function (item) {
+                if (item.Id === id_in) {
+                    result = item; //can't just return here -- see Array.foreach docs
+                }
+            });
+
+            return result;
+        };
+
 		scope.$watch('fishermenList', function(){
 			console.log("Inside watch, fishermenList");
 			//if (typeof scope.fishermenList.$resolved === 'undefined')
@@ -210,65 +234,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 						scope.theFishermen = ProjectService.getProjectFishermen(scope.datasets[i].ProjectId);
 						// Note:  If we are on Harvest, it has only one dataset.
 						scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
-					}
-					
-					//else if (scope.datasets[i].Datastore.TablePrefix === "Metrics")
-					else if ((scope.datasets[i].Datastore.TablePrefix === "Metrics") || 
-						(scope.datasets[i].Datastore.TablePrefix === "Benthic") ||
-						(scope.datasets[i].Datastore.TablePrefix === "Drift")
-						)
-					{
-						console.log("Adding Sites to tab bar...");
-						scope.ShowHabitat = true;
-						//scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
-						
-						// We call the functions that will build the list of funders, and list of files related to the project.
-						// We add the items from these lists to the project later, after we have the data.
-						scope.subprojectFileList = null;
-                        scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.datasets[i].ProjectId);
-                        //KB - call reloadproject if we need to (it doesn't happen in the service anymore)
-						scope.funderList = null;
-						scope.funderList = ProjectService.getProjectFunders(scope.datasets[i].ProjectId);
-						scope.collaboratorList = null;
-						scope.collaboratorList = ProjectService.getProjectCollaborators(scope.datasets[i].ProjectId);
-						
-						scope.subprojectList = SubprojectService.getProjectSubprojects(scope.datasets[i].ProjectId);
-						var watcher = scope.$watch('subprojectList.length', function(){
-							console.log("Inside watcher for subprojectList.length... NOTE: this only happens for habitat...");
-							// We wait until subprojects gets loaded and then turn this watch off.
-							if (scope.subprojectList === null)
-							{
-								console.log("scope.subprojectList is null");
-								return;
-							}
-							else if (typeof scope.subprojectList.length === 'undefined')
-							{
-								console.log("scope.subprojectList.length is undefined.");
-								return;
-							}
-							else if (scope.subprojectList.length === 0)
-							{
-								console.log("scope.subprojectList.length is 0");
-								if(scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
-								{
-									//scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
-									// Note:  If we sent an empty list, it pulls all the locations.
-									// If we supply an Id that we know does not exist (0), we get no locations, which is what we expect.
-									scope.map.locationLayer.showLocationsById(0); //bump and reload the locations.
-								}
-								return;
-							}
-							console.log("scope.subprojectList.length = " + scope.subprojectList.length);
-							console.log("subprojects is loaded...");
-							//console.dir(scope.subprojectList);
-							
-							scope.cleanGateKeeper("Sdone");
-                            scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
-
-                            //scope.agGridOptions.api.setRowData(scope.subprojectList); //update the habitat grid with the loaded items.
-
-							watcher();
-						});
 					}
 				}
 				//console.log("scope.DatastoreTablePrefix = " + scope.DatastoreTablePrefix);
@@ -515,8 +480,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 				
 				/*************************************************************/				
 				// Need this section for the subprojects in Habitat and CRPP to work properly.
-				scope.subprojectType = ProjectService.getProjectType(scope.project.Id);
-				$rootScope.subprojectType = scope.subprojectType = ProjectService.getProjectType(scope.project.Id);
+                scope.subprojectType = $rootScope.subprojectType = ProjectService.getProjectType(scope.project.Id);
+				//$rootScope.subprojectType = scope.subprojectType = ProjectService.getProjectType(scope.project.Id);
 				console.log("scope.subprojectType = " + scope.subprojectType);
 				SubprojectService.setServiceSubprojectType(scope.subprojectType);
 				/*************************************************************/
@@ -606,7 +571,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             }
 
         });
-		
+
+        /* 
 		scope.$watch('subproject.Id', function(){
 			if ((typeof scope.subproject === 'undefined') || (scope.subproject === null))
 			{
@@ -617,6 +583,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			console.log("Inside controllers.js, watch subproject.Id...");
 			console.log("scope.subproject.Id = " + scope.subproject.Id);
 		});
+        */
 		
 		scope.cleanGateKeeper = function(theText)
 		{
@@ -918,19 +885,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		 
 
 		
-        scope.createHabSubproject = function(){
-            scope.viewSubproject = null;
-			scope.createNewSubproject = true;
-			scope.subprojectList = null;
-			scope.subprojectOptions = null;
-			console.log("scope.createNewSubproject = " + scope.createNewSubproject);
-            var modalInstance = $modal.open({
-                templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
-              controller: 'ModalCreateHabSubprojectCtrl',
-              scope: scope, //very important to pass the scope along...
-            });
-        };
-		 
         scope.editViewInstrument = function(){
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
@@ -949,31 +903,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
 
 
-        //this is now just habitat.
-        scope.editViewSubproject = function (subproject) {
-			console.log("Inside editViewSubproject...");
-			
-			/* Note:  Let's say we just added or edited a subproject, and then clicked on the Edit button to review it.
-			* If you simply click on the edit, it will not contain the most recent info (that you just updated),
-			* and that will leave you wondering what just happened.
-			* However, if you click on the subproject first (runs viewSelectedSubproject, in this file), and then click the Edit button,
-			* the form WILL have the most recent info (that you just updated).
-			* So, what we must do is run viewSelectedSubproject first, and then open the form, which is what we do just below.
-			*/
-			scope.viewSelectedSubproject(subproject);
-			
-			console.log("scope.DatastoreTablePrefix = " + scope.DatastoreTablePrefix + ", scope.project.Id = " + scope.projectId);
-			if (scope.subprojectType === "Habitat")
-			{
-				console.log("viewing a Habitat subproject");
-				//scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.projectId, subproject.Id);
-				var modalInstance = $modal.open({
-                    templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
-				  controller: 'ModalCreateHabSubprojectCtrl',
-				  scope: scope, //very important to pass the scope along...
-				});
-			}
-        };
 
         scope.openAccuracyCheckForm = function(ac_row){
             if(ac_row)
@@ -1043,15 +972,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 		
-        scope.openProjectEditor = function(){
-            scope.row = scope.project; //
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
-				controller: 'ModalProjectEditorCtrl',
-				scope: scope, //very important to pass the scope along...
-
-            });
-        };
 		 
         scope.syncToStreamnet = function(){
             $.ajax({
@@ -1165,6 +1085,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		
         scope.reloadThisProject = function()
         {
+            console.log('0000000000000000000000000------------------------------------------');
+            return;
+
+
 			//scope.project = [];
 			console.log("Inside controllers.js, projectDatasetsController, scope.reloadThisProject...");
 			console.log("scope.projectId = " + scope.projectId + ", scope.SdeObjectId = " + scope.SdeObjectId);
@@ -1188,6 +1112,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		
         scope.reloadThisHabSubproject = function(subprojectId)
         {
+            console.log('00022222222222220000000000000000000000------------------------------------------');
+            return;
 			//scope.project = [];
 			console.log("Inside controllers.js, projectDatasetsController, scope.reloadThisHabSubproject...");
 			console.log("scope.projectId = " + scope.projectId + ", scope.SdeObjectId = " + scope.SdeObjectId + ", subprojectId = " + subprojectId);
@@ -1203,7 +1129,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		};
 		 
 		scope.reloadSubprojects = function()
-		{
+        {
+            console.log('000000044444444444444000000000000000000------------------------------------------');
+            return;
+
 			console.log("Inside controllers.js, projectDatasetsController, scope.reloadSubprojects...");
 			SubprojectService.clearSubprojects();
 
@@ -1288,24 +1217,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 		 
-        scope.addSubproject = function(){
-			console.log("Inside controllers.addSubproject.");
-			//console.log("scope is next...");
-			//console.dir(scope);
-			console.log("scope.selectedSubproject is next...");
-			console.dir(scope.selectedSubproject);
-			
-            if(!scope.selectedSubproject || scope.selectedSubproject === null || getMatchingByField(scope.project.CrppSubProjects, scope.selectedSubproject, 'Id').length > 0)
-                return;
-	
-            var theSubproject = getMatchingByField(scope.correspondenceProjectList, scope.selectedSubproject, 'Id');
 
-			var promise = SubprojectService.saveSubproject(scope.project.Id, theSubproject[0]);
-
-            promise.$promise.then(function(){
-                scope.reloadProject();
-            });
-        };
 
         scope.removeViewInstrument = function(){
             if(!scope.viewInstrument)
@@ -1331,37 +1243,15 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 
-        
-		//now just habitat 
-        scope.removeViewSubproject = function(subproject){
-			console.log("Inside removeViewSubproject, scope is next...");
+        //return an array from the eventfiles.
+        scope.getFilesArrayAsList = function (theFiles) {
+            if (theFiles === undefined || theFiles === null)
+                return [];
 
-            if (!subproject)
-                return;
+            var files = angular.fromJson(theFiles);
+            return (files === null || !Array.isArray(files)) ? [] : files; //if it isn't an array, make an empty array
 
-            scope.viewSubproject = subproject;
-            
-			console.log("scope.projectId = " + scope.projectId);
-			if (scope.subprojectType === "Habitat")
-			{
-				console.log("Habitate-related...")
-				if (scope.viewSubproject.HabitatItems.length > 0)
-				{
-					alert("This project has associated Habitat items.  Those must be deleted first.");
-				}
-				else
-				{
-					scope.verifyAction = "Delete";
-					scope.verifyingCaller = "HabSubproject";
-					console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " +  scope.viewSubproject.Id);
-					var modalInstance = $modal.open({
-					  templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
-					  controller: 'ModalVerifyActionCtrl',
-					  scope: scope, //very important to pass the scope along...
-					});
-				}
-			}
-        };
+        }
 		
 		scope.refreshProjectLocations = function(){
 			console.log("Inside controllers.js, refreshProjectLocations...");
@@ -1412,36 +1302,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			console.log("scope.viewFisherman.OkToCall = " + scope.viewFisherman.OkToCall);			
         };
 		 
-		scope.viewSelectedSubproject = function(subproject){
-			console.log("Inside controllers.js, scope.viewSelectedSubproject");
-
-            //console.log("subproject is next...");
-			//console.dir(subproject);
-
-            ////console.log("scope is next...");
-			////console.dir(scope);
-			if (scope.viewSubproject)
-			{
-				console.log("scope.viewSubproject exists...");
-				delete scope.viewSubproject;
-			}
-			
-			//console.log("subproject is next...");
-			//console.dir(subproject);
-			if ((typeof subproject !== 'undefined') && (subproject !== null))
-			{
-				// Need to verify that these two $rootScope variables are set.
-				//$rootScope.DatastoreTablePrefix = scope.DatastoreTablePrefix;
-				$rootScope.viewSubproject = scope.viewSubproject = angular.copy(subproject);
-				
-				//console.log("scope (in scope.viewSelectedSubproject) is next...");
-				//console.dir(scope);			
-				console.log("scope.viewSubproject (in scope.viewSelectedSubproject) is next...");
-				//console.dir(scope.viewSubproject);
-				console.log("scope.viewSubproject.ProjectName (in scope.viewSelectedSubproject) = " +  scope.viewSubproject.ProjectName);
-				$rootScope.subprojectId = scope.viewSubproject.Id;
-			}
-        };
 
         //remove this editor from the users dropdown.
         scope.filterUsers = function()

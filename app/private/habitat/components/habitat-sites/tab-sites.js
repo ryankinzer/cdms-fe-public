@@ -1,25 +1,28 @@
 ﻿//this is a nested controller used on the project-details page to load
-// the correspondence tab grid. It only appears for projects that are CRPP Correspondence.
+// the sites tab grid. It only appears for projects that are Habitat type projects.
 
-var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+//hab-sites-grid
+
+var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
     function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
-        console.log("Inside tab correspondence controller...");
+        console.log("Inside tab sites controller...");
 
-       
-        //this is for the crpp/subproject correspondence tab below - might can move this all out sometime...
-        var otherAgencyTemplate = function (params) {
-            return '<span>' + params.node.data.Agency + '</span>'
-                + ((params.node.data.OtherAgency) ? ('<span> (' + params.node.data.OtherAgency + ')</span>') : ''); //ternery: if otheragency then show it
-        };
+//        console.log("I wonder what I have access to here?!");
+//        console.dir(scope);
 
-        var EventCount = function (params) {
-            if (params.node.data.CorrespondenceEvents === undefined || params.node.data.CorrespondenceEvents === null)
+
+        scope.subprojectFileList = null;
+        scope.funderList = null;
+        scope.collaboratorList = null;
+
+        var ItemCount = function (params) {
+            if (params.node.data.HabitatItems === undefined || params.node.data.HabitatItems === null)
                 return '0';
 
-            return '' + params.node.data.CorrespondenceEvents.length;
+            return '' + params.node.data.HabitatItems.length;
         };
 
         var EditMasterLinksTemplate = function (param) {
@@ -29,7 +32,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
             editBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                scope.editCrppSubproject(param.data);
+                scope.editHabitatSubproject(param.data);
             });
             div.appendChild(editBtn);
             div.appendChild(document.createTextNode("|"));
@@ -37,7 +40,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                scope.removeCrppSubproject(param.data);
+                scope.removeHabitatSubproject(param.data);
             });
             div.appendChild(delBtn);
             div.appendChild(document.createTextNode("|"));
@@ -45,23 +48,16 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                scope.openCorrespondenceEventForm(param.data, {});
+                scope.openHabitatItemForm(param.data, {});
             });
             div.appendChild(addBtn);
 
             return div;
-            /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
-            return '<div project-role="editor">' +
-                        '<a ng-click="editViewSubproject();">Edit</a>|' +
-                        '<a ng-click="removeViewSubproject();">Delete</div>|' + 
-                        '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
-                '</div>';
-                */
         };
 
 
         var FileListCellTemplate = function (params) {
-            var files = scope.getFilesArrayAsList(params.node.data.EventFiles);
+            var files = scope.getFilesArrayAsList(params.node.data.ItemFiles); //notsure
             var list = '<div class="event-file-list"><ul>';
 
             files.forEach(function (file) {
@@ -85,7 +81,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 event.preventDefault();
                 console.log("detail param: ");
                 console.dir(detailparam);
-                scope.openCorrespondenceEventForm(subproject, detailparam.data); //parent subproject, detail line.
+                scope.openHabitatItemForm(subproject, detailparam.data); //parent subproject, detail line.
             });
             div.appendChild(editBtn);
             div.appendChild(document.createTextNode("|"));
@@ -93,7 +89,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                scope.removeCrppCorrespondenceEvent(subproject, detailparam.data);
+                scope.removeHabitatFileItem(subproject, detailparam.data);
             });
             div.appendChild(delBtn);
             div.appendChild(document.createTextNode("|"));
@@ -101,7 +97,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                scope.openCorrespondenceEventForm(subproject, {});
+                scope.openHabitatItemForm(subproject, {});
             });
             div.appendChild(addBtn);
 
@@ -116,18 +112,14 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
         };
 
 
-        //grid columns for crpp correspondence tab (master/subprojects)
+        //grid columns for sites tab (master/subprojects)
         scope.agColumnDefs = [  //in order the columns will display, by the way...
             {
                 headerName: '', width: 100, cellRenderer: EditMasterLinksTemplate
             },
             {
-                headerName: 'ID',
-                field: 'Id',
-                width: 80,
-                cellRenderer: 'group',
-                cellRendererParams: { suppressCount: true }
-            },
+                field: 'ProjectName', headerName: 'Name', width: 325, cellRenderer: 'group',
+                cellRendererParams: { suppressCount: true } },
             {
                 field: 'EffDt',
                 headerName: 'Updated',
@@ -139,25 +131,26 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 sort: 'desc',
             },
             {
-                headerName: 'Events', width: 80,
-                cellRenderer: EventCount,
+                headerName: 'Items', width: 80,
+                cellRenderer: ItemCount,
                 valueGetter: function (params) {
-                    return (params.data.CorrespondenceEvents !== undefined && params.data.CorrespondenceEvents.length > 0) ? params.data.CorrespondenceEvents.length : 0;
+                    return (params.data.HabitatItems !== undefined && params.data.HabitatItems.length > 0) ? params.data.HabitatItems.length : 0;
                 },
             },
-            { field: 'ProjectName', headerName: 'Name', width: 275 },
-            { field: 'ProjectLead', headerName: 'Project Lead', width: 150 },
-            { field: 'Closed', headerName: 'Closed?', width: 80 },
             {
-                field: 'Comments', headerName: 'Comments', width: 300, cellStyle: {
-                    'white-space': 'normal'
-                }
+                field: 'ProjectStartDate', headerName: 'Start Date', width: 150,
+                valueFormatter: function (params) {
+                    if (params.node.data.ProjectStartDate !== undefined && params.node.data.ProjectStartDate !== null)
+                        return moment(params.node.data.ProjectStartDate).format('L');
+                },
             },
-            { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150 },
-            { field: 'County', headerName: 'County', width: 150 },
-            { field: 'ProjectProponent', headerName: 'Project Proponent', width: 150 },
-
-
+            {
+                field: 'ProjectEndDate', headerName: 'End Date', width: 150,
+                valueFormatter: function (params) {
+                    if (params.node.data.ProjectEndDate !== undefined && params.node.data.ProjectEndDate !== null)
+                        return moment(params.node.data.ProjectEndDate).format('L');
+                },
+            },
         ];
 
         //details for the correspondence
@@ -165,36 +158,20 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             {
                 headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate
             },
+            
+            { headerName: 'Item Type', field: 'ItemType', cellClass: 'item-record-cell', width: 100 },
+            { headerName: 'Item Name', field: 'ItemName', cellClass: 'item-record-cell', width: 150 },
+            { headerName: 'Documents', field: 'ItemFiles', width: 300, cellRenderer: FileListCellTemplate },
+            { headerName: 'External Links', field: 'ExternalLinks', cellClass: 'item-record-cell', width: 250 },
             {
-                headerName: 'Notice Date', field: 'CorrespondenceDate', width: 120, cellClass: 'event-record-cell',
+                field: 'EffDt',
+                headerName: 'Updated',
+                width: 150,
                 valueFormatter: function (params) {
-                    if (params.node.data.CorrespondenceDate !== undefined && params.data.CorrespondenceDate !== null)
-                        return moment(params.node.data.CorrespondenceDate).format('L');
+                    if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
+                        return moment(params.node.data.EffDt).format('L');
                 },
-                sort: 'desc'
             },
-            { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150 },
-            { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 150 },
-            { headerName: 'Days to Respond', field: 'NumberOfDays', cellClass: 'event-record-cell', width: 100 },
-
-            {
-                field: 'ResponseDate',
-                headerName: 'Date of Response',
-                width: 120,
-                valueFormatter: function (params) {
-                    if (params.data.ResponseDate !== undefined && params.data.ResponseDate !== null)
-                        return moment(params.node.data.ResponseDate).format('L');
-                }
-            },
-            { headerName: 'Technician', field: 'StaffMember', cellClass: 'event-record-cell', width: 150 },
-            {
-                headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 300, cellStyle: {
-                    'white-space': 'normal'
-                }
-            },
-            { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate },
-
-            //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
         ];
 
         //detail grid options correspondence events
@@ -214,15 +191,17 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             //selectedItems: [],
             //rowData: eventRecords,
             columnDefs: detailColumnDefs,
-            onGridReady: function (params) {
+            //onGridReady: function (params) {
                 //setTimeout(function () { params.api.sizeColumnsToFit(); }, 0);
-            },
+            //},
+            /*
             getRowHeight: function (params) {
                 var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
                 var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                var file_height = 25 * (scope.getFilesArrayAsList(params.data.EventFiles).length); //count up the number of file lines we will have.
+                var file_height = 25 * (getEventFilesArray(params.data.EventFiles).length); //count up the number of file lines we will have.
                 return (comment_height > file_height) ? comment_height : file_height;
             },
+            */
             //onRowClicked: function (row) {
             //console.dir(row);
 
@@ -243,7 +222,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             detailCellRendererParams: {
                 detailGridOptions: scope.detailGridOptions,
                 getDetailRowData: function (params) {
-                    params.successCallback(params.data.CorrespondenceEvents);
+                    params.successCallback(params.data.HabitatItems);
                 },
             },
 
@@ -259,12 +238,15 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             rowSelection: 'single',
             onSelectionChanged: function (params) {
                 console.log("selection changed fired!");
-                /*
+                
                 var rows = scope.agGridOptions.api.getSelectedRows();
+
                 if (Array.isArray(rows) && rows[0] != null)
                 {
                     console.log("rows:");
                     console.dir(rows);
+
+                    /*
                     if (!Array.isArray(rows[0]) && !rows[0].hasOwnProperty('SubprojectId')) //only change the selection if they clicked a header row.
                     {
                         scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
@@ -273,9 +255,9 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                         console.log("selected a header row so selection actually changed");
                         scope.viewSubproject = rows[0];
                         console.dir(scope.viewSubproject);
-                    }
+                    }*/
                 }
-                */
+                
             },
             //onFilterModified: function () {
             //    scope.agGridOptions.api.deselectAll();
@@ -288,6 +270,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 //params.api.sizeColumnsToFit();
             },
             //fullWidthCellRenderer: CorrespondenceDetailCellRenderer,
+            /*
             getRowHeight: function (params) {
                 var rowIsDetailRow = params.node.level === 1;
                 // return dynamic height when detail row, otherwise return 25
@@ -299,10 +282,11 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 }
                 //return rowIsDetailRow ? 200 : 25;
             },
+            */
             /*
             getNodeChildDetails: function (record) {
                 //console.dir(record);
-                if (record.CorrespondenceEvents) {
+                if (record.HabitatItems) {
                     //console.log("yep we have events!");
                     return {
                         group: true,
@@ -310,7 +294,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                         key: record.CorrespondenceDate,
                         // provide ag-Grid with the children of this group
                         parentData: record,
-                        children: [record.CorrespondenceEvents],
+                        children: [record.HabitatItems],
                     };
                 } else {
                     //console.log("didn't find any correspondence events for that record.");
@@ -329,7 +313,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
 
 
         scope.$parent.$watch('datasets', function () {
-            console.log("Inside TAB CORRESPONDENCE watch datasets... --------------------------");
+            console.log("Inside TAB SITES watch datasets... --------------------------");
 
             console.log("parent datasets");
             console.dir(scope.$parent.datasets);
@@ -339,36 +323,64 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             if (scope.datasets === undefined || scope.datasets.length === 0)
                 return;
 
-            console.log("OK TAB CORRESPONDNEC .  The datasets are loaded...");
+            console.log("OK TAB SITES .  The datasets are loaded...");
 
             scope.datasets = scope.$parent.datasets; //but i dont' want to do this.'
 
             //load ag-grid but only once.
             if (typeof scope.ag_grid === 'undefined') {
-                var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
+                var ag_grid_div = document.querySelector('#hab-sites-grid');    //get the container id...
                 //console.dir(ag_grid_div);
                 scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
                 scope.agGridOptions.api.showLoadingOverlay(); //show loading...
             }
 
             for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
-                
-                if (scope.datasets[i].Datastore.TablePrefix === "CrppContracts") {
-                    console.log("Adding Correspondence to tab bar...");
-                    scope.ShowSubproject = true;
-                    scope.subprojectList = SubprojectService.getSubprojects();
-                    console.log("Fetching CRPP subproject...");
-                    // Note:  If we are on CRPP, it has only one dataset.
-                    // We must set the scope.DatastoreTablePrefix, in order for the Edit Subproject to work.
-                    // The Correspondence Event also needs scope.DatastoreTablePrefix, in order to save documents properly.
+
+                //TODO: check to see if we are a habitat type project ---------------------------<<<<<<<<<<<<<<<<<<<<<< TODO
+                console.log("Woohoo! are we habitat project?");
+                console.dir(scope.project);
+
+                if ((scope.datasets[i].Datastore.TablePrefix === "Metrics") ||
+                    (scope.datasets[i].Datastore.TablePrefix === "Benthic") ||
+                    (scope.datasets[i].Datastore.TablePrefix === "Drift")
+                ) {
+                    console.log("Adding Sites to tab bar...");
+                    scope.$parent.ShowHabitat = true; //need to update parent scope for the map to show.
+                    
+                    scope.subprojectList = SubprojectService.getProjectSubprojects(scope.datasets[i].ProjectId); //the habitat subprojects
+                    console.log("Fetching Habitat subproject...");
+
+                    //kick off loading of other habitat file things
+                    // We call the functions that will build the list of funders, and list of files related to the project.
+                    // We add the items from these lists to the project later, after we have the data.
+                    scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.datasets[i].ProjectId);
+                    scope.funderList = ProjectService.getProjectFunders(scope.datasets[i].ProjectId);
+                    scope.collaboratorList = ProjectService.getProjectCollaborators(scope.datasets[i].ProjectId);
+
                     scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
+
+                    /* not sure if we need this. was condition of "if scope.subprojectList.length === 0"
+
+                                    if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById')) {
+                                        //scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
+                                        // Note:  If we sent an empty list, it pulls all the locations.
+                                        // If we supply an Id that we know does not exist (0), we get no locations, which is what we expect.
+                                        scope.map.locationLayer.showLocationsById(0); //bump and reload the locations.
+                                    }
+                    */
+
 
                     var watcher = scope.$watch('subprojectList.length', function () {
                         if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
                             return;
 
-                        console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
+                        console.log("our subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
                         scope.agGridOptions.api.setRowData(scope.subprojectList);
+
+                        //maybe we can clean these up?
+                        scope.cleanGateKeeper("Sdone");
+                        scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
 
                         watcher();
                     });
@@ -376,7 +388,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 }
             }
 
-        },true);
+        }, true);
 
 
 
@@ -406,7 +418,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
 
             scope.viewSubproject = subproject;
 
-            if (scope.viewSubproject.CorrespondenceEvents.length > 0) {
+            if (scope.viewSubproject.HabitatItems.length > 0) {
                 alert("This project has associated correspondence events.  Those must be deleted first.");
             } else {
                 scope.verifyAction = "Delete";
@@ -444,7 +456,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             scope.subprojectList.forEach(function (item, index) {
                 if (item.Id === edited_event.SubprojectId) {
                     item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort. - this was already updated in the be
-                    item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
+                    item.HabitatItems.forEach(function (event_item, event_item_index) {
                         if (event_item.Id === edited_event.Id) {
                             angular.extend(event_item, edited_event); //replace the data for that item
                             console.log("OK!! we edited that correspondence event");
@@ -464,7 +476,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
 
         };
 
-        //called by the modal once a correspondence event (edit) is saved
+        //called by the modal once a correspondence event is saved
         scope.postAddCorrespondenceEventUpdateGrid = function (new_event) {
             //console.dir(new_event);
             console.log("saving correspondence event for " + new_event.SubprojectId);
@@ -477,7 +489,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 scope.subprojectList.forEach(function (item, index) {
                     if (item.Id === subproject.Id) {
                         item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort - this was already updated in the be
-                        item.CorrespondenceEvents.push(new_event);
+                        item.HabitatItems.push(new_event);
                         console.log("Added event " + new_event.Id + " to " + subproject.Id);
                     }
                 });
@@ -516,9 +528,9 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                     //remove from our subprojectList and then reload the grid.
                     scope.subprojectList.forEach(function (item, index) {
                         if (item.Id === subproject.Id) {
-                            item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
+                            item.HabitatItems.forEach(function (event_item, event_item_index) {
                                 if (event_item.Id === event.Id) {
-                                    item.CorrespondenceEvents.splice(event_item_index, 1);
+                                    item.HabitatItems.splice(event_item_index, 1);
                                     console.log("OK!! we removed that correspondence event");
                                 }
                             });
@@ -535,6 +547,50 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 });
             }
         };
+
+
+
+        scope.removeHabitatSubproject = function (subproject) {
+            console.log("Inside removeHabitatSubproject, scope is next...");
+
+            if (!subproject)
+                return;
+
+            scope.viewSubproject = subproject;
+
+            console.log("scope.projectId = " + scope.projectId);
+            if (scope.subprojectType === "Habitat") {
+                console.log("Habitate-related...")
+                if (scope.viewSubproject.HabitatItems.length > 0) {
+                    alert("This project has associated Habitat items.  Those must be deleted first.");
+                }
+                else {
+                    scope.verifyAction = "Delete";
+                    scope.verifyingCaller = "HabSubproject";
+                    console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " + scope.viewSubproject.Id);
+                    var modalInstance = $modal.open({
+                        templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
+                        controller: 'ModalVerifyActionCtrl',
+                        scope: scope, //very important to pass the scope along...
+                    });
+                }
+            }
+        };
+
+        scope.createHabSubproject = function () {
+            scope.viewSubproject = null;
+            scope.createNewSubproject = true;
+            //scope.subprojectList = null;
+            scope.subprojectOptions = null;
+            console.log("scope.createNewSubproject = " + scope.createNewSubproject);
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
+                controller: 'ModalCreateHabSubprojectCtrl',
+                scope: scope, //very important to pass the scope along...
+            });
+        };
+
+
 
 
         //opens create crpp subproject modal
@@ -565,8 +621,8 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                     //console.log("ok we found a match! -- updating! before:");
                     //console.dir(scope.subprojectList[index]);
 
-                    if (the_promise.CorrespondenceEvents !== undefined)
-                        delete the_promise.CorrespondenceEvents; //remove this before the copy.
+                    if (the_promise.HabitatItems !== undefined)
+                        delete the_promise.HabitatItems; //remove this before the copy.
 
                     angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
                     console.log("ok we found a match! -- updating! after:");
@@ -578,7 +634,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
                 {
                     console.log("ok we found never a match! -- adding!");
-                    the_promise.CorrespondenceEvents = [];
+                    the_promise.HabitatItems = [];
                     the_promise.Files = [];
                     scope.subprojectList.push(the_promise); //add that item
                     scope.agGridOptions.api.setRowData([]);
@@ -589,17 +645,80 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             });
         };
 
-        scope.editCrppSubproject = function (subproject) {
-            console.log("editCrppSubproject...");
 
-            scope.viewSubproject = subproject;
+        scope.viewSelectedSubproject = function (subproject) {
+            console.log("Inside controllers.js, scope.viewSelectedSubproject");
 
-            var modalInstance = $modal.open({
-                    templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
-                    controller: 'ModalCreateSubprojectCtrl',
-                    scope: scope, //very important to pass the scope along...
+            //console.log("subproject is next...");
+            //console.dir(subproject);
+
+            ////console.log("scope is next...");
+            ////console.dir(scope);
+            if (scope.viewSubproject) {
+                console.log("scope.viewSubproject exists...");
+                delete scope.viewSubproject;
+            }
+
+            //console.log("subproject is next...");
+            //console.dir(subproject);
+            if ((typeof subproject !== 'undefined') && (subproject !== null)) {
+                // Need to verify that these two $rootScope variables are set.
+                //$rootScope.DatastoreTablePrefix = scope.DatastoreTablePrefix;
+                $rootScope.viewSubproject = scope.viewSubproject = angular.copy(subproject);
+
+                //console.log("scope (in scope.viewSelectedSubproject) is next...");
+                //console.dir(scope);			
+                console.log("scope.viewSubproject (in scope.viewSelectedSubproject) is next...");
+                //console.dir(scope.viewSubproject);
+                console.log("scope.viewSubproject.ProjectName (in scope.viewSelectedSubproject) = " + scope.viewSubproject.ProjectName);
+                $rootScope.subprojectId = scope.viewSubproject.Id;
+            }
+        };
+
+
+        scope.addSubproject = function () {
+            console.log("Inside controllers.addSubproject.");
+            //console.log("scope is next...");
+            //console.dir(scope);
+            console.log("scope.selectedSubproject is next...");
+            console.dir(scope.selectedSubproject);
+
+            if (!scope.selectedSubproject || scope.selectedSubproject === null || getMatchingByField(scope.project.CrppSubProjects, scope.selectedSubproject, 'Id').length > 0)
+                return;
+
+            var theSubproject = getMatchingByField(scope.correspondenceProjectList, scope.selectedSubproject, 'Id');
+
+            var promise = SubprojectService.saveSubproject(scope.project.Id, theSubproject[0]);
+
+            promise.$promise.then(function () {
+                scope.reloadProject();
             });
         };
+
+
+        scope.openProjectEditor = function () {
+            scope.row = scope.project; //
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
+                controller: 'ModalProjectEditorCtrl',
+                scope: scope, //very important to pass the scope along...
+
+            });
+        };
+
+        scope.editHabitatSubproject = function (subproject) {
+
+            console.log("Inside editHabitatSubproject...");
+
+            scope.viewSubproject = subproject; //set this var for the modal controller.
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
+                controller: 'ModalCreateHabSubprojectCtrl',
+                scope: scope, //very important to pass the scope along...
+            });
+        };
+
 
         scope.redrawRows = function () {
             scope.agGridOptions.api.setRowData([]);
