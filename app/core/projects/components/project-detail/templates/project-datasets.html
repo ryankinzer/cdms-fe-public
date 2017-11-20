@@ -229,7 +229,7 @@
 		<!--</div>-->
 	</tab>
 	<!--<tab heading="Correspondence">-->
-	<tab heading="Correspondence" ng-show="AuthorizedToViewProject && ShowSubproject">
+	<tab heading="Correspondence" ng-show="AuthorizedToViewProject && ShowSubproject" ng-controller="TabCorrespondenceController">
 		<div class="container-fluid">
 		    <div class="row-fluid">
 		        <div class="span10">
@@ -237,96 +237,23 @@
 						<div class="panel-body">
 					  		<h3>{{project.Name}} > Manage Correspondence</h3>
 
+                            <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createCrppSubproject()">Create Project</button>
 					  		<p><i>Manage CRPP correspondence with agencies</i></p>
 					  		<hr/>
-							<div project-role="editor" class="panel-body" style="width: 600px;">
-								<!--<h3>Add a CRPP Project:</h3>
-								
-								<select ui-select2="select2Options" data-placeholder="Add a Project" ng-model="selectedCorrespondence" style="width: 300px;">
-									    <option ng-repeat="correspondence in correspondenceProjectList" value="{{correspondence.Id}}">{{correspondence.ProjectName}}</option>
-								</select>-->
-							</div>
-							
+
+                            <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                                <div id="crpp-correspondence-grid" class="ag-blue gridStyle-small"></div>
+                                <div class="crpp-correspondence-grid-footer">Total correspondence events: {{subprojectList.length}}</div>
+                            </div>
+
+					
 					  		<div ng-show="subprojectList.length==0">No correspondence projects are associated with this project.</div>
-							<!--<div id="correspondenceEventsScrollArea">
-								<a id="ceTop"></a>-->
-								<div ng-show="viewSubproject" class="col-md-6 admin-criteria-list-box">
-									<div class="row">
-										<div class="col-md-12">
-											<div project-role="editor" class="right" style="margin-top: 50px;">
-												<button class="btn" ng-click="openCorrespondenceEventForm()">Add a Document</button>
-												<!--<button class="btn" ng-click="openRemoveCorrespondenceEventForm()">Remove</button>-->
-											</div>
-											<div ng-include="'app/private/crpp/components/crpp-contracts/templates/correspondenceEvents.html'"></div>
-
-
-										</div>
-									</div>
-								</div>
-							<!--</div>-->
-							
-					  		<!--<div class="col-md-6 admin-field-list-box" ng-show="subprojectList.length>0">-->
-					  		<div class="col-md-6 admin-field-list-box">
-								<h4>CRPP Projects</h4>
-								<div id="subprojectScrollArea" >
-									<a id="spTop"></a>
-
-									<div style="padding: 8px; width: 260; display: table">
-										<!--<input class="form-control" ng-model="gridOptionsFilter.filterText" placeholder="Filter By" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>-->
-										<!--<input class="form-control" ng-model="gridOptionsFilter.$" placeholder="Filter By" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>-->
-										<table>
-											<tr>
-												<td>
-													<div style="display: table-cell"><input class="form-control" ng-model="gridOptionsFilter.ProjectName" placeholder="Filter By Project Name" type="text"/></div>
-													<div style="display: table-cell"><input class="form-control" ng-model="gridOptionsFilter.Agency" placeholder="Filter By Agency" type="text"/></div>
-													<div style="display: table-cell"><input class="form-control" ng-model="gridOptionsFilter.OtherAgency" placeholder="Filter By Other Agency" type="text"/></div>	
-													<div style="display: table-cell"><input class="form-control" ng-model="gridOptionsFilter.ProjectLead" placeholder="Filter By Project Lead" type="text"/></div>
-													<div style="display: table-cell"><input class="form-control" ng-model="gridOptionsFilter.TrackingNumber" placeholder="Filter By Tracking Number" type="text"/></div>
-													<div><button ng-click="gridOptionsFilter = undefined" class="btn btn-xs">Clear Filters</button></div>
-												</td>
-											</tr>
-										</table>
-										<!--<img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>-->
-									</div>
-									<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createSubproject()">Create New</button>
-									<!--<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addCorrespondence()">Add to Project</button>-->
-									<hr>
-									<div class="row">
-										<!--<div ng-click="viewSelectedSubproject(subproject)" class="admin-field" ng-class="{'admin-field-selected': subproject.Id == viewSubproject.Id}" ng-repeat="subproject in subprojectList">-->
-										
-										<!--<div ng-click="viewSelectedSubproject(subproject)" class="admin-field" ng-class="{'admin-field-selected': subproject.Id == viewSubproject.Id}" ng-repeat="subproject in subprojectList | filter: gridOptionsFilter:strict">-->
-										<div ng-click="viewSelectedSubproject(subproject)" class="admin-field" ng-class="{'admin-field-selected': subproject.Id == viewSubproject.Id}" ng-repeat="subproject in subprojectList | filter: gridOptionsFilter:strict">
-											<!--<a ng-click="gotoSubprojectsTop()">P</a>-->
-											<span class="admin-field-name" >{{subproject.ProjectName}}</span><br/>
-											<!--<span class="admin-field-desc">{{subproject.Agency}}, {{subproject.ProjectProponent}}, Action Needed: {{subproject.ActionNeeded}}, Closed: {{subproject.Closed}}, Project Lead: {{subproject.ProjectLead}}</span>-->
-											<span class="admin-field-desc">{{subproject.Agency}} {{subproject.OtherAgency}}, {{subproject.ProjectProponent}}, Action Expected: {{subproject.Closed}}, Project Lead: {{subproject.ProjectLead}}
-												<div style="display: none;">{{subproject.searchField}}</div>
-											</span>
-											<div project-role="editor" ng-class="{'hidden': subproject.Id != viewSubproject.Id}" class="right">
-												<button ng-click="gotoSubprojectsTop()" class="btn btn-xs">Go to Top of Projects</button>
-												<button ng-click="removeViewSubproject()" class="btn btn-xs">Remove</button>
-												<!--<button ng-click="editViewSubproject()" class="btn btn-xs">Edit</button>-->
-												<button ng-click="editViewSubproject(subproject)" class="btn btn-xs">Edit</button>
-											</div>
-										</div>
-
-												<!--<span class="admin-field-name">{{subproject.ProjectName}}</span><br/>
-												<span class="admin-field-desc">{{subproject.Agency}}, {{subproject.ProjectProponent}}, Closed: {{subproject.Closed}}, Project Lead: {{subproject.ProjectLead}}</span>
-												<div project-role="editor" ng-class="{'hidden': subproject.Id != viewSubproject.Id}" class="right">
-													<button ng-click="removeViewSubproject()" class="btn btn-xs">Remove</button>
-													<button ng-click="editViewSubproject(subproject)" class="btn btn-xs">Edit</button>
-												</div>
-												-->
-
-									</div>
-								</div>
-							</div>
-							
-					  </div>
-					  <!--<div class="gridStyle-small" ng-grid="gridOptions"></div>-->
-		        </div>
-		    </div>
-		</div>
+														
+						</div>
+						<!--<div class="gridStyle-small" ng-grid="gridOptions"></div>-->
+					</div>
+				</div>
+			</div>
 		</div>
 	</tab>
 	<tab heading="Sites" ng-show="AuthorizedToViewProject && ShowHabitat">

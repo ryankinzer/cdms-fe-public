@@ -1,9 +1,9 @@
 ﻿
 
-var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService',
+var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 		console.log("Inside controllers.js, projectDatasetsController...");
 		console.log("routeParams.Id = " + routeParams.Id);
@@ -34,18 +34,19 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		scope.viewSubproject = null;
 		scope.SdeObjectId = 0;
 		scope.FileLocationSubprojectFundersWatchVariable = "";
-		
+        
 		// Get the project ID from the url.
 		var theUrl = window.location.href;
 		console.log("theUrl = " + theUrl);
 		var theLastSlashLoc = theUrl.lastIndexOf("/");
 		scope.projectId = theUrl.substring(theLastSlashLoc + 1);
 		console.log("scope.projectId = " + scope.projectId);
-		
+
+
 		// On the CorrespondenceEvents html page, the app was getting confused with serviceUrl somehow (only gave the domain name...).
 		// When I manually set here like this, and use theServiceUrl instead, the links worked properly.
-		console.log("serviceUrl = " + serviceUrl);
-		scope.theServiceUrl = serviceUrl;
+		//console.log("serviceUrl = " + serviceUrl);
+		//scope.theServiceUrl = serviceUrl;
 		
 		// Get the fishermen associated to the project.
 		//scope.theFishermen = ProjectService.getProjectFishermen(scope.projectId);
@@ -149,15 +150,19 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			scope.fishermenOptions = $rootScope.fishermenOptions = makeObjects(scope.fishermenList, 'Id','FullName');
 			
 			// Debug output ... wanted to verify the contents of scope.fishermenOptions
-			angular.forEach(scope.fishermenOptions, function(fisherman){
-				console.dir(fisherman);
-			});
+			//angular.forEach(scope.fishermenOptions, function(fisherman){
+			//	console.dir(fisherman);
+			//});
 			
 			console.log("scope.fishermenOptions is next...");
 			console.dir(scope.fishermenOptions);
 		});	
 		
-        scope.$watch('datasets', function(){
+        scope.$watch('datasets', function () {
+
+            console.log("---------- our datasets");
+            console.dir(scope.datasets);
+
 			//console.log("scope.datasets in datasets watch is next...");
             ////console.dir(scope);
 
@@ -165,7 +170,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
               return;
 			
 			console.log("Inside watch datasets...");
-			console.log("OK.  The datasets are loaded...");
+            console.log("OK.  The datasets are loaded...");
 
             //need to bump this since we are looking at a LIST of datasets...
             //angular.forEach(scope.datasets, function(dataset){
@@ -206,17 +211,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 						// Note:  If we are on Harvest, it has only one dataset.
 						scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
 					}
-					else if (scope.datasets[i].Datastore.TablePrefix === "CrppContracts")
-					{
-						console.log("Adding Correspondence to tab bar...");
-						scope.ShowSubproject = true;
-						scope.subprojectList = SubprojectService.getSubprojects();
-						console.log("Fetching CRPP subproject...");
-						// Note:  If we are on CRPP, it has only one dataset.
-						// We must set the scope.DatastoreTablePrefix, in order for the Edit Subproject to work.
-						// The Correspondence Event also needs scope.DatastoreTablePrefix, in order to save documents properly.
-						scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
-					}
+					
 					//else if (scope.datasets[i].Datastore.TablePrefix === "Metrics")
 					else if ((scope.datasets[i].Datastore.TablePrefix === "Metrics") || 
 						(scope.datasets[i].Datastore.TablePrefix === "Benthic") ||
@@ -231,7 +226,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 						// We add the items from these lists to the project later, after we have the data.
 						scope.subprojectFileList = null;
                         scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.datasets[i].ProjectId);
-                        //KB - call reloadproejct if we need to (moved out of service)
+                        //KB - call reloadproject if we need to (it doesn't happen in the service anymore)
 						scope.funderList = null;
 						scope.funderList = ProjectService.getProjectFunders(scope.datasets[i].ProjectId);
 						scope.collaboratorList = null;
@@ -239,7 +234,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 						
 						scope.subprojectList = SubprojectService.getProjectSubprojects(scope.datasets[i].ProjectId);
 						var watcher = scope.$watch('subprojectList.length', function(){
-							console.log("Inside watcher for subprojectList.length...");
+							console.log("Inside watcher for subprojectList.length... NOTE: this only happens for habitat...");
 							// We wait until subprojects gets loaded and then turn this watch off.
 							if (scope.subprojectList === null)
 							{
@@ -268,7 +263,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 							//console.dir(scope.subprojectList);
 							
 							scope.cleanGateKeeper("Sdone");
-							scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
+                            scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
+
+                            //scope.agGridOptions.api.setRowData(scope.subprojectList); //update the habitat grid with the loaded items.
+
 							watcher();
 						});
 					}
@@ -918,18 +916,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 		 
-        scope.createSubproject = function(){
-            scope.viewSubproject = null;
-			scope.createNewSubproject = true;
-			scope.subprojectList = null;
-			scope.subprojectOptions = null;
-			console.log("scope.createNewSubproject = " + scope.createNewSubproject);
-            var modalInstance = $modal.open({
-                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
-              controller: 'ModalCreateSubprojectCtrl',
-              scope: scope, //very important to pass the scope along...
-            });
-        };
+
 		
         scope.createHabSubproject = function(){
             scope.viewSubproject = null;
@@ -959,9 +946,11 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
               scope: scope, //very important to pass the scope along...
             });
         };
-		 
-        //scope.editViewSubproject = function(){
-        scope.editViewSubproject = function(subproject){
+
+
+
+        //this is now just habitat.
+        scope.editViewSubproject = function (subproject) {
 			console.log("Inside editViewSubproject...");
 			
 			/* Note:  Let's say we just added or edited a subproject, and then clicked on the Edit button to review it.
@@ -974,16 +963,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			scope.viewSelectedSubproject(subproject);
 			
 			console.log("scope.DatastoreTablePrefix = " + scope.DatastoreTablePrefix + ", scope.project.Id = " + scope.projectId);
-			if (scope.DatastoreTablePrefix === "CrppContracts")
-			{
-				console.log("viewing a CRPP subproject");
-				var modalInstance = $modal.open({
-                    templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
-				  controller: 'ModalCreateSubprojectCtrl',
-				  scope: scope, //very important to pass the scope along...
-				});
-			}
-			else if (scope.subprojectType === "Habitat")
+			if (scope.subprojectType === "Habitat")
 			{
 				console.log("viewing a Habitat subproject");
 				//scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.projectId, subproject.Id);
@@ -994,7 +974,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 				});
 			}
         };
-		
+
         scope.openAccuracyCheckForm = function(ac_row){
             if(ac_row)
               scope.ac_row = ac_row;
@@ -1008,23 +988,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 
-        scope.openCorrespondenceEventForm = function(ce_row){
-			console.log("Inside openCorrespondenceEventForm...")
-			//console.dir(scope);
-			
-            if(ce_row)
-              scope.ce_row = ce_row;
-            else
-              scope.ce_row = {};
-
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-new-correspondenceEvent.html',
-              controller: 'ModalAddCorrespondenceEventCtrl',
-              scope: scope, //very important to pass the scope along...
-            });
-        };
-		
         scope.openHabitatItemForm = function(hi_row){
 			console.log("Inside openHabitatItemForm...")
 			//console.dir(scope);
@@ -1127,7 +1090,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             ProjectService.clearProject();
             scope.project = ProjectService.getProject(routeParams.Id);
         };
-		 
+
+        
 		scope.reloadSubproject = function(id){
 			console.log("Inside controllers.js, projectDatasetsController, scope.reloadSubproject, id = " + id);
 			SubprojectService.clearSubproject();
@@ -1279,7 +1243,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 				scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
 				
 				console.log("subprojects is loaded...");
-				console.dir(scope.subprojectList);
+                console.dir(scope.subprojectList);
+
 				watcher();
 			});
 			
@@ -1365,34 +1330,19 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                 scope.reloadProject();
             });
         };
-		 
-        scope.removeViewSubproject = function(){
+
+        
+		//now just habitat 
+        scope.removeViewSubproject = function(subproject){
 			console.log("Inside removeViewSubproject, scope is next...");
-			//console.dir(scope);
-            if(!scope.viewSubproject)
+
+            if (!subproject)
                 return;
-			
+
+            scope.viewSubproject = subproject;
+            
 			console.log("scope.projectId = " + scope.projectId);
-			if (scope.subprojectType === "CRPP")
-			{
-				console.log("CRPP-related...")
-				if (scope.viewSubproject.CorrespondenceEvents.length > 0)
-				{
-					alert("This project has associated correspondence events.  Those must be deleted first.");
-				}
-				else
-				{
-					scope.verifyAction = "Delete";
-					scope.verifyingCaller = "CrppSubproject";
-					console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " +  scope.viewSubproject.Id);
-					var modalInstance = $modal.open({
-					  templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
-					  controller: 'ModalVerifyActionCtrl',
-					  scope: scope, //very important to pass the scope along...
-					});
-				}
-			}
-			else if (scope.subprojectType === "Habitat")
+			if (scope.subprojectType === "Habitat")
 			{
 				console.log("Habitate-related...")
 				if (scope.viewSubproject.HabitatItems.length > 0)

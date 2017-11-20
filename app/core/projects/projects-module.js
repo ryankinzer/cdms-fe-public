@@ -12,9 +12,9 @@ require([
     'app/core/projects/components/project-detail/modal-delete-file',
     'app/core/projects/components/project-detail/modal-choose-summary-images',
     'app/core/projects/components/project-detail/modal-choose-map',
+    'app/core/projects/components/project-detail/modal-add-accuracy-check',
 
     'app/core/projects/components/project-list/project-list',
-    'app/core/projects/components/project-list/modal-add-accuracy-check',
 
     //load project service
     'app/core/projects/services/project-service',

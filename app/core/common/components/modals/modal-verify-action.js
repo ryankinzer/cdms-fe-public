@@ -31,7 +31,9 @@ var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'Subproject
 	}
 
     //$scope.header_message = $scope.verifyAction.toLowerCase() + " this CRPP project";
-	
+
+
+        /* kb - commenting out to see if we can do without now
 	var subprojectListwatcher = $scope.$watch('subprojectList.length', function(){
 		console.log("Inside ModalVerifyActionCtrl watch, subprojectList");
 
@@ -57,7 +59,9 @@ var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'Subproject
 		//subprojectListwatcher(); // Turn off this watcher.
 		//$modalInstance.dismiss();
 	});
-	
+	*/
+
+
     $scope.cancel = function(){
         $modalInstance.dismiss();
 		$scope.verifyAction = 'undefined';
@@ -135,12 +139,16 @@ var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'Subproject
 		
 		// This works fine for removing subprojects.
 		// For removing Correspondence events, it has problems.
-		promise.$promise.then(function(){
-			$scope.subprojects = null;
-			$scope.reloadSubprojects();
-			$scope.reloadSubprojectLocations();
-			$modalInstance.dismiss();
-			});
+        promise.$promise.then(function () {
+
+            $scope.postRemoveSubprojectUpdateGrid();
+
+			//$scope.subprojects = null;
+			//$scope.reloadSubprojects();
+			//$scope.reloadSubprojectLocations();
+            $modalInstance.dismiss();
+
+		});
 			
 			/*.then(function(){
 				$scope.viewSelectedSubproject();
