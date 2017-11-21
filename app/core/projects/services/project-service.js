@@ -228,7 +228,7 @@ projects_module.service('ProjectService', ['$q',
 
                 service.project = Project.query({ id: id });
 
-                service.project.$promise.then(function () {
+                /*service.project.$promise.then(function () {
                     console.log("after-project-load!");
                     //do some sorting after we load for instruments
                     if (service.project.Instruments && service.project.Instruments.length > 0)
@@ -237,6 +237,7 @@ projects_module.service('ProjectService', ['$q',
                     //and also for locations
                     //service.project.Locations = service.project.Locations.sort(orderByAlpha);
                 });
+                */
 
                 return service.project;
             },

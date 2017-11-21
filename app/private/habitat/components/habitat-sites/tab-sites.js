@@ -14,6 +14,14 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
 //        console.dir(scope);
 
 
+        // On the CorrespondenceEvents html page, the app was getting confused with serviceUrl somehow (only gave the domain name...).
+		// When I manually set here like this, and use theServiceUrl instead, the links worked properly.
+		//console.log("serviceUrl = " + serviceUrl);
+		//scope.theServiceUrl = serviceUrl;
+
+
+
+
         scope.subprojectFileList = null;
         scope.funderList = null;
         scope.collaboratorList = null;
@@ -72,7 +80,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
 
         //this template gives the Edit|Delete|Add for the detail.
         var EditDetailLinksTemplate = function (detailparam) {
-            var subproject = scope.getSubprojectById(scope.subprojectList, detailparam.data.SubprojectId);
+            var subproject = getById(scope.subprojectList, detailparam.data.SubprojectId);
 
             var div = document.createElement('div');
 
@@ -312,28 +320,36 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         };
 
 
-        scope.$parent.$watch('datasets', function () {
+
+
+        //do we need this? was set when the project was loaded
+        /*************************************************************/
+        // Need this section for the subprojects in Habitat and CRPP to work properly.
+        //scope.subprojectType = $rootScope.subprojectType = ProjectService.getProjectType(scope.project.Id);
+        //console.log("scope.subprojectType = " + scope.subprojectType);
+        //SubprojectService.setServiceSubprojectType(scope.subprojectType);
+				/*************************************************************/
+
+
+
+
+        //watch the datasets on the parent-detail page to load... once they do, check to see if we should show our tab
+        var sites_ds_watcher = scope.$parent.$watch('datasets', function () {
             console.log("Inside TAB SITES watch datasets... --------------------------");
 
-            console.log("parent datasets");
-            console.dir(scope.$parent.datasets);
-            console.log("our datasets");
-            console.dir(scope.datasets);
+            //console.log("parent datasets");
+            //console.dir(scope.$parent.datasets);
+            //console.log("our datasets");
+            //console.dir(scope.datasets);
 
             if (scope.datasets === undefined || scope.datasets.length === 0)
                 return;
 
+            sites_ds_watcher(); //turn off the watcher.
+
             console.log("OK TAB SITES .  The datasets are loaded...");
 
-            scope.datasets = scope.$parent.datasets; //but i dont' want to do this.'
-
-            //load ag-grid but only once.
-            if (typeof scope.ag_grid === 'undefined') {
-                var ag_grid_div = document.querySelector('#hab-sites-grid');    //get the container id...
-                //console.dir(ag_grid_div);
-                scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
-                scope.agGridOptions.api.showLoadingOverlay(); //show loading...
-            }
+            //scope.datasets = scope.$parent.datasets; //but i dont' want to do this.'
 
             for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
 
@@ -347,40 +363,66 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                 ) {
                     console.log("Adding Sites to tab bar...");
                     scope.$parent.ShowHabitat = true; //need to update parent scope for the map to show.
-                    
+
+                    //load ag-grid but only once.
+                    if (typeof scope.ag_grid === 'undefined') {
+                        var ag_grid_div = document.querySelector('#hab-sites-grid');    //get the container id...
+                        //console.dir(ag_grid_div);
+                        scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
+                        scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+                    }
+
                     scope.subprojectList = SubprojectService.getProjectSubprojects(scope.datasets[i].ProjectId); //the habitat subprojects
                     console.log("Fetching Habitat subproject...");
 
-                    //kick off loading of other habitat file things
-                    // We call the functions that will build the list of funders, and list of files related to the project.
-                    // We add the items from these lists to the project later, after we have the data.
-                    scope.subprojectFileList = SubprojectService.getSubprojectFiles(scope.datasets[i].ProjectId);
-                    scope.funderList = ProjectService.getProjectFunders(scope.datasets[i].ProjectId);
-                    scope.collaboratorList = ProjectService.getProjectCollaborators(scope.datasets[i].ProjectId);
-
                     scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
 
-                    /* not sure if we need this. was condition of "if scope.subprojectList.length === 0"
-
-                                    if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById')) {
-                                        //scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
-                                        // Note:  If we sent an empty list, it pulls all the locations.
-                                        // If we supply an Id that we know does not exist (0), we get no locations, which is what we expect.
-                                        scope.map.locationLayer.showLocationsById(0); //bump and reload the locations.
-                                    }
-                    */
-
-
+                    //ok let's watch for when the subprojects come back and we can load the other things we need.
                     var watcher = scope.$watch('subprojectList.length', function () {
-                        if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
+                        if (scope.subprojectList === undefined || scope.subprojectList == null)
                             return;
 
-                        console.log("our subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
+                        console.log("our subproject list is back! we have " + scope.subprojectList.length + " of them.");
+
+                        //if there are no subprojects then don't show any points on the map.
+                        if (scope.subprojectList.length === 0) {
+                            if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById')) {
+                                //scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
+                                // Note:  If we sent an empty list, it pulls all the locations.
+                                // If we supply an Id that we know does not exist (0), we get no locations, which is what we want.
+                                scope.map.locationLayer.showLocationsById(0); //
+                            }
+                            return;
+                        }
+
+                        //build the grid based on our subprojects
                         scope.agGridOptions.api.setRowData(scope.subprojectList);
 
-                        //maybe we can clean these up?
-                        scope.cleanGateKeeper("Sdone");
-                        scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
+                        console.log("ok now firing off the habitat subproject parts loading...");
+                        // Call the functions that will build the list of funders, and list of files related to the project.
+                        // We add the items from these lists to the subproject -- as the data comes in.
+                        scope.project.SubprojectFileList = SubprojectService.getSubprojectFiles(scope.projectId);
+                        scope.project.FunderList = ProjectService.getProjectFunders(scope.projectId);
+                        scope.project.CollaboratorList = ProjectService.getProjectCollaborators(scope.projectId);
+
+                        //this one we can start right away since project locations are loaded with the project.
+                        scope.matchLocationsToSubprojects();
+
+                        //do each match as the list finishes loading...
+                        scope.project.SubprojectFileList.$promise.then(function () {
+                            //console.log(" -- ok done loading now matching SubprojectFileList for " + scope.project.SubprojectFileList.length);
+                            scope.matchFilesToSubproject();
+                        });
+
+                        scope.project.FunderList.$promise.then(function () {
+                            //console.log(" -- ok done loading now matching FunderList for " + scope.project.FunderList.length);
+                            scope.matchFundersToSubproject();
+                        });
+
+                        scope.project.CollaboratorList.$promise.then(function () {
+                            //console.log(" -- ok done loading now matching CollaboratorList for " + scope.project.CollaboratorList.length);
+                            scope.matchCollaboratorToSubproject();
+                        });
 
                         watcher();
                     });
@@ -389,6 +431,127 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             }
 
         }, true);
+
+
+        scope.matchLocationsToSubprojects = function () {
+
+            scope.thisProjectsLocationObjects = []; // Dump this list, before refilling it.
+            angular.forEach(scope.subprojectList, function (subproject) {
+
+                angular.forEach(scope.project.Locations, function (location, key) {
+                    //console.log("location key = " + key);
+                    //console.log("location is next...");
+                    //console.dir(location);
+
+                    // We will show the Primary Project Location, and the locations of the subprojects.
+                    //if ((location.LocationTypeId === 3) || (subproject.Id === location.SubprojectId))
+                    //console.log("location.LocationTypeId = " +  location.LocationTypeId + ", subproject.LocationId = " + subproject.LocationId + ", location.Id = " + location.Id);
+                    if (subproject.LocationId === location.Id) {
+                        console.log("Found a subproject location")
+                        //console.dir(location);
+                        scope.thisProjectsLocationObjects.push(location.SdeObjectId);
+                        subproject.GPSEasting = location.GPSEasting;
+                        subproject.GPSNorthing = location.GPSNorthing;
+                        subproject.UTMZone = location.UTMZone;
+                        subproject.Projection = location.Projection;
+                        subproject.WaterBodyId = location.WaterBodyId;
+                    }
+                });
+            });
+            scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
+        };
+
+        //looks like we will need a version of this over on the crpp correspondence tab. TODO:kb 11/21/17
+        scope.matchFilesToSubproject = function () {
+
+            console.log("ok matching files: ");
+            //console.dir(scope.project.SubprojectFileList);
+
+            angular.forEach(scope.subprojectList, function (subproject) {
+
+                angular.forEach(scope.project.SubprojectFileList, function (spFile) {
+                    //if (subproject.Id === spFile.SubprojectId)
+                    //if (subproject.Id === spFile.Subproject_CrppId)
+                    if ((subproject.Id === spFile.Subproject_CrppId) && (spFile.FeatureImage === 1)) {
+                        //angular.forEach(scope.project.Files, function(pFile){
+                        //	if (pFile.Id === spFile.FileId)
+                        //		subproject.ItemFiles = angular.copy(pFile);
+                        //});
+                        if (!subproject.ItemFiles) {
+                            subproject.ItemFiles = [];
+                            subproject.ItemFiles.push(spFile);
+                        }
+                        else
+                            subproject.ItemFiles = angular.copy(spFile);
+
+                        //scope.viewSubproject.ItemFiles = subproject.ItemFiles;
+                        console.log("Matched subproject file...");
+                    }
+                });
+            });
+
+            $rootScope.SubprojectFileList = scope.project.SubprojectFileList; //??
+        };
+
+        scope.matchFundersToSubproject = function () {
+            console.log("Inside controllers.js, scope.matchFundersToSubproject...");
+            //console.dir(scope.project.FunderList);
+
+            var strFunders = "";
+            angular.forEach(scope.subprojectList, function (subproject) {
+                strFunders = "";
+                angular.forEach(scope.project.FunderList, function (funder) {
+                    if (funder.SubprojectId === subproject.Id) {
+                        strFunders += funder.Name + ", " + funder.Amount + ";\n";
+                    }
+                });
+                subproject.strFunders = strFunders;
+            });
+        };
+
+        scope.matchCollaboratorToSubproject = function () {
+            console.log("Inside controllers.js, scope.matchCollaboratorToSubproject...");
+            //console.dir(scope.project.CollaboratorList);
+
+            var strCollaborators = "";
+            angular.forEach(scope.subprojectList, function (subproject) {
+                strCollaborators = "";
+                angular.forEach(scope.project.CollaboratorList, function (collaborator) {
+                    if (collaborator.SubprojectId === subproject.Id) {
+                        strCollaborators += collaborator.Name + ";\n";
+                    }
+                });
+                subproject.strCollaborators = strCollaborators;
+            });
+        };
+
+
+
+        scope.openHabitatItemForm = function (hi_row) {
+            console.log("Inside openHabitatItemForm...")
+            //console.dir(scope);
+
+            if (hi_row)
+                scope.hi_row = hi_row;
+            else
+                scope.hi_row = {};
+
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-new-habitatItem.html',
+                controller: 'ModalAddHabitatItemCtrl',
+                scope: scope, //very important to pass the scope along...
+            });
+        };
+
+        scope.openGeospatialDataPage = function () {
+            console.log("Inside openGeospatialDataPage...");
+
+            var strUrl = "http://ctuirgis.maps.arcgis.com/apps/webappviewer/index.html?id=1669df9b26874c9eb49cc41ec4d57ec5";
+            //var strWindowFeatures = "location=yes,height=570,width=520,scrollbars=yes,status=yes";			
+            var strWindowFeatures = "location=yes,scrollbars=yes,status=yes";
+            $window.open(strUrl, "_blank", strWindowFeatures);
+        };
 
 
 
@@ -481,7 +644,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             //console.dir(new_event);
             console.log("saving correspondence event for " + new_event.SubprojectId);
 
-            var subproject = scope.getSubprojectById(scope.subprojectList, new_event.SubprojectId);
+            var subproject = getById(scope.subprojectList, new_event.SubprojectId);
 
             if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
                 console.log("no subproject... hmm ... i guess we should reload everything...");
@@ -719,6 +882,36 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             });
         };
 
+        //spin through subprojects and make a list of the locations that belong to one
+        // then refresh the map.
+        scope.reloadSubprojectLocations = function () {
+            console.log("maybe not used?");
+            console.log("Inside controllers.js, projectDatasetsController, scope.reloadSubprojectLocations...");
+
+            scope.thisProjectsLocationObjects = []; // Dump this list, before refilling it.
+            angular.forEach(scope.subprojectList, function (subproject) {
+                angular.forEach(scope.project.Locations, function (location, key) {
+                    //console.log("location key = " + key);
+                    //console.log("location is next...");
+                    //console.dir(location);
+
+                    if (subproject.LocationId === location.Id)
+                        scope.thisProjectsLocationObjects.push(location.SdeObjectId);
+
+                });
+            });
+            console.log("scope.thisProjectsLocationObjects is next...");
+            console.dir(scope.thisProjectsLocationObjects);
+
+            if (scope.thisProjectsLocationObjects.length > 0) {
+                if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
+                    scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
+            }
+            //else
+            //{
+            //	scope.map.locationLayer.showLocationsById(0);
+            //}
+        };
 
         scope.redrawRows = function () {
             scope.agGridOptions.api.setRowData([]);

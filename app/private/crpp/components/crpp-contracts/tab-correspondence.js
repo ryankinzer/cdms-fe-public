@@ -76,7 +76,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
 
         //this template gives the Edit|Delete|Add for the detail.
         var EditDetailLinksTemplate = function (detailparam) {
-            var subproject = scope.getSubprojectById(scope.subprojectList, detailparam.data.SubprojectId);
+            var subproject = getById(scope.subprojectList, detailparam.data.SubprojectId);
 
             var div = document.createElement('div');
 
@@ -327,35 +327,39 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             },
         };
 
-
-        scope.$parent.$watch('datasets', function () {
+        //watch the datasets on the parent-detail page to load... once they do, check to see if we should show our tab
+        var crpp_ds_watcher = scope.$parent.$watch('datasets', function () {
             console.log("Inside TAB CORRESPONDENCE watch datasets... --------------------------");
 
-            console.log("parent datasets");
-            console.dir(scope.$parent.datasets);
-            console.log("our datasets");
-            console.dir(scope.datasets);
+            //console.log("parent datasets");
+            //console.dir(scope.$parent.datasets);
+            //console.log("our datasets");
+            //console.dir(scope.datasets);
 
             if (scope.datasets === undefined || scope.datasets.length === 0)
                 return;
 
             console.log("OK TAB CORRESPONDNEC .  The datasets are loaded...");
 
-            scope.datasets = scope.$parent.datasets; //but i dont' want to do this.'
+            //scope.datasets = scope.$parent.datasets; //but i dont' want to do this.'
+            crpp_ds_watcher(); //turn off watcher
 
-            //load ag-grid but only once.
-            if (typeof scope.ag_grid === 'undefined') {
-                var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
-                //console.dir(ag_grid_div);
-                scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
-                scope.agGridOptions.api.showLoadingOverlay(); //show loading...
-            }
 
             for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
                 
                 if (scope.datasets[i].Datastore.TablePrefix === "CrppContracts") {
                     console.log("Adding Correspondence to tab bar...");
                     scope.ShowSubproject = true;
+
+
+                    //load ag-grid but only once.
+                    if (typeof scope.ag_grid === 'undefined') {
+                        var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
+                        //console.dir(ag_grid_div);
+                        scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
+                        scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+                    }
+
                     scope.subprojectList = SubprojectService.getSubprojects();
                     console.log("Fetching CRPP subproject...");
                     // Note:  If we are on CRPP, it has only one dataset.
@@ -469,7 +473,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             //console.dir(new_event);
             console.log("saving correspondence event for " + new_event.SubprojectId);
 
-            var subproject = scope.getSubprojectById(scope.subprojectList, new_event.SubprojectId);
+            var subproject = getById(scope.subprojectList, new_event.SubprojectId);
 
             if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
                 console.log("no subproject... hmm ... i guess we should reload everything...");

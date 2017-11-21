@@ -96,32 +96,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	console.dir($scope.subproject_row.Funding);
 	*/
 	
-	/*$scope.collaboratorList = [];
-		$scope.collaboratorList.push({Id: 0, Label: "Blue Mountain Habitat Restoration Council"});
-		$scope.collaboratorList.push({Id: 1, Label: "Bureau of Reclamation"});
-		$scope.collaboratorList.push({Id: 2, Label: "Bonneville Power Authority"});
-		$scope.collaboratorList.push({Id: 3, Label: "Columbia Conservation District"});
-		$scope.collaboratorList.push({Id: 4, Label: "CTUIR"});
-		$scope.collaboratorList.push({Id: 5, Label: "Eco Trust"});
-		$scope.collaboratorList.push({Id: 7, Label: "Grande Ronde Model Watershed"});
-		$scope.collaboratorList.push({Id: 8, Label: "Landowners"});
-		$scope.collaboratorList.push({Id: 9, Label: "Nez Perce Tribe"});
-		$scope.collaboratorList.push({Id: 10, Label: "NF John Day Watershed Council"});
-		$scope.collaboratorList.push({Id: 11, Label: "Natural Resource Conservation Service"});
-		$scope.collaboratorList.push({Id: 12, Label: "Oregon Department of Fish and Wildlife"});
-		$scope.collaboratorList.push({Id: 13, Label: "Oregon Department of Transportation"});
-		$scope.collaboratorList.push({Id: 14, Label: "Oregon Watershed Enhancement Board"});
-		$scope.collaboratorList.push({Id: 15, Label: "Other"});
-		$scope.collaboratorList.push({Id: 16, Label: "Pacific Coastal Salmon Recovery Fund"});
-		$scope.collaboratorList.push({Id: 17, Label: "Pomeroy Conservation District"});
-		$scope.collaboratorList.push({Id: 18, Label: "Salmon Recovery Funding Board"});
-		$scope.collaboratorList.push({Id: 19, Label: "Snake River Salmon Recovery Board"});
-		$scope.collaboratorList.push({Id: 20, Label: "Umatilla County Soil and Water Conservation District"});
-		$scope.collaboratorList.push({Id: 21, Label: "Umatilla National Forest"});
-		$scope.collaboratorList.push({Id: 22, Label: "US Forest Service"});
-		$scope.collaboratorList.push({Id: 23, Label: "Wallowa Whitman National Forest"});
-		$scope.collaboratorList.push({Id: 24, Label: "Washington Department of Fish and Wildlife"});
-		*/
+	
 		
 	$scope.collaboratorList = [];
 		$scope.collaboratorList.push("Blue Mountain Habitat Restoration Council");
