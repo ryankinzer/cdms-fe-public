@@ -37,13 +37,20 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
 
             for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
 
-                console.log("Woohoo! are we water tempproject?");
+                console.log("Woohoo! are we water tempproject?"); //TODO!! don't look at the dataset, look at the project type
                 console.dir(scope.project);
 
                 if (scope.datasets[i].Datastore.TablePrefix === "WaterTemp") {
                     console.log("Adding instruments to tab bar...");
                     scope.ShowInstruments = true;
-                    ProjectService.getAllInstruments();
+
+                    //these are the ones that show up in the dropdown list to select from -- ALL the instruments in the world.
+                    scope.allInstruments = ProjectService.getAllInstruments();
+
+                    scope.allInstruments.$promise.then(function () {
+                        scope.allInstruments.sort(orderByAlphaName);
+                    });
+
                 }
             }
         }, true);
@@ -55,10 +62,9 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
 
             //reload if it is already selected -- this is what allows you to see the new accuracycheck/characteristic immediately after it is added
             if (scope.viewInstrument)
+            {
                 scope.viewInstrument = getMatchingByField(scope.project.Instruments, scope.viewInstrument.Id, 'Id')[0];
-
-            scope.project.Instruments = scope.project.Instruments.sort(orderByAlphaName);
-
+            }
         });
 
         scope.createInstrument = function () {
@@ -85,7 +91,7 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
             if (!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
                 return;
 
-            var Instruments = getMatchingByField(scope.allInstruments, scope.selectedInstrument, 'Id');
+            var Instruments = getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id');
 
             var promise = ProjectService.saveProjectInstrument(scope.project.Id, Instruments[0]);
 

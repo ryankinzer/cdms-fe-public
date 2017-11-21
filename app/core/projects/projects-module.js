@@ -29,8 +29,8 @@ require([
     //add the controllers and services to the module once the files are loaded!
     
     projects_module.controller('project-detail-ctrl', project_detail);
-    projects_module.controller('TabInstrumentsCtrl', project_detail);
-    projects_module.controller('TabFishermenCtrl', project_detail);
+    projects_module.controller('TabInstrumentsCtrl', tab_instruments);
+    projects_module.controller('TabFishermenCtrl', tab_fishermen);
     
     projects_module.controller('ModalEditFileCtrl', modal_edit_file);
     projects_module.controller('ModalNewFileCtrl', modal_new_file);

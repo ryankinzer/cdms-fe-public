@@ -110,7 +110,7 @@
 
 	<!--<tab heading="Instruments">-->
 	<!--<tab heading="Instruments" ng-show="AuthorizedToViewProject && project.Instruments">-->
-	<tab heading="Instruments" ng-show="AuthorizedToViewProject && ShowInstruments">
+	<tab heading="Instruments" ng-show="AuthorizedToViewProject && ShowInstruments" ng-controller="TabInstrumentsCtrl">
 		<div class="container-fluid">
 		    <div class="row-fluid">
 		        <div class="span10">
@@ -172,7 +172,7 @@
 	</tab>
 
 	<!--<tab heading="Fishermen">-->
-	<tab heading="Fishermen" ng-show="AuthorizedToViewProject && ShowFishermen">
+	<tab heading="Fishermen" ng-show="AuthorizedToViewProject && ShowFishermen" ng-controller="TabFishermenCtrl">
 		<div class="container-fluid">
 		    <div class="row-fluid">
 		        <div class="span10">
