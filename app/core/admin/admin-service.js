@@ -6,6 +6,12 @@ admin_module.factory('SaveDatasetField', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/dataset/savedatasetfield');
 }]);
 
+admin_module.factory('SaveDataset', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/dataset/dataset', {}, {
+        save: { method: 'PUT' }
+    });
+}]);
+
 admin_module.factory('SaveMasterField', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/datastore/savemasterfield');
 }]);
@@ -34,13 +40,15 @@ admin_module.service('AdminService', ['$q',
     'GetAllFields',
     'AddMasterFieldToDataset',
     'GetAllDatastoreFields',
+    'SaveDataset',
     function ($q,
         SaveDatasetField,
         SaveMasterField,
         DeleteDatasetField,
         GetAllFields,
         AddMasterFieldToDataset,
-        GetAllDatastoreFields) {
+        GetAllDatastoreFields,
+        SaveDataset) {
 
         var service = {
 
@@ -71,6 +79,18 @@ admin_module.service('AdminService', ['$q',
 
             getMasterFields: function (categoryId) {
                 return GetAllFields.query({ id: categoryId });
+            },
+
+            saveDataset: function (dataset, saveResults) {
+                saveResults.saving = true;
+
+                SaveDataset.save({id: dataset.id, dataset: dataset}, function (data) {
+                    saveResults.saving = false;
+                    saveResults.success = true;
+                }, function (data) {
+                    saveResults.saving = false;
+                    saveResults.failure = true;
+                });
             },
 
             saveDatasetField: function (field, saveResults) {
