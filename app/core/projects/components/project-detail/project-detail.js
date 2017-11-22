@@ -732,6 +732,17 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
            // scope.users =
         };
 
+
+        scope.openProjectEditor = function () {
+            scope.row = scope.project; //
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
+                controller: 'ModalProjectEditorCtrl',
+                scope: scope, //very important to pass the scope along...
+
+            });
+        };
+
 	}
 ];
 

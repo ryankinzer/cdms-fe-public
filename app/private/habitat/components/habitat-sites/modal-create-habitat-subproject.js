@@ -5,56 +5,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	$timeout, $location, $anchorScroll, $document, $upload){
 	console.log("Inside ModalCreateHabSubprojectCtrl...");
 
-    //what is this accomplishing?
-
-    $document.on('keydown', function(e) {
-		//console.log("Inside document.on keydown...");
-		//console.log("e is next...");
-		//console.dir(e);
-		//console.log("e.target.nodeName = " + e.target.nodeName);
-		
-		// Note:  keyCode 8 = Backspace; the nodeName value is in uppercase, so we must check for that here.
-		if ((e.keyCode === 8) && (e.target.nodeName === "TEXTAREA"))
-		{
-			//console.log("  Backspace pressed...and we are in a TEXTAREA");
-			//e.preventDefault();
-			
-			var keyboardEvent = $document[0].createEvent("KeyboardEvent");
-			var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
-			
-			keyboardEvent[initMethod](
-				"keydown", // event type : keydown, keyup, keypress
-                true, // bubbles
-                true, // cancelable
-                window, // viewArg: should be window
-                false, // ctrlKeyArg
-                false, // altKeyArg
-                false, // shiftKeyArg
-                false, // metaKeyArg
-                37, // keyCodeArg : unsigned long the virtual key code, else 0.  37 = Left Arrow key
-                0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0				
-			);
-			//console.log("Just did left arrow...");
-			
-			document.dispatchEvent(keyboardEvent);
-			
-			keyboardEvent[initMethod](
-				"keydown", // event type : keydown, keyup, keypress
-                true, // bubbles
-                true, // cancelable
-                window, // viewArg: should be window
-                false, // ctrlKeyArg
-                false, // altKeyArg
-                false, // shiftKeyArg
-                false, // metaKeyArg
-                46, // keyCodeArg : unsigned long the virtual key code, else 0.  46 = Delete key
-                0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0				
-			);
-
-			//console.log("Doing delete...");			
-			return document.dispatchEvent(keyboardEvent);
-		}
-    });
+    initEdit(); //prevent backspace
 	
     $scope.header_message = "Create new Habitat project";
 	$rootScope.newSubproject = $scope.newSubproject = true;
@@ -140,7 +91,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	//console.log("$scope.subproject_row (after initialization) is next...");
 	//console.dir($scope.subproject_row);
 	
-	// $scope.viewSubproject gets set when the user clicks on a subproject.
+	//if we are editing, this will be set.
     if($scope.viewSubproject)
     {
         $scope.header_message = "Edit Habitat project: " + $scope.viewSubproject.ProjectName;
@@ -153,7 +104,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 		//console.dir($scope.subproject_row);
 		
 		$scope.showAddDocument = false;
-		
+
+        /* kb commented out 11/21 - not used?
 		if ((typeof $scope.subproject_row.Collaborators !== 'undefined') && ($scope.subproject_row.Collaborators !== null))
 		{
 			//console.log("$scope.subproject_row.Collaborators is next...");
@@ -174,6 +126,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 			$scope.subproject_row.strCollaborators = strCollaborators;
 			
 		}
+        */
 		
 		//if ((typeof $scope.subproject_row.OtherCollaborators !== 'undefined') && ($scope.subproject_row.OtherCollaborators !== null))
 		//	$scope.showOtherCollaborators = true;
@@ -437,7 +390,13 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 					
                     var loc_promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
 
-                    //TODO: what when the location returns?
+                    loc_promise.$promise.then(function () {
+                        console.log("Adding this to the project locations: ");
+                        console.dir(loc_promise);
+                        console.log(" -- locations after");
+                        console.dir(scope.project.Locations);
+                        scope.project.Locations.push(loc_promise); //add to our list of locations.
+                    });
 
 				}
 				else
@@ -652,12 +611,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
                 console.dir(saveRow);
 
                 promise.Collaborators = saveRow.Collaborators;
-                promise.FirstFoods = saveRow.FirstFoods;
-                promise.HabitatItems = [];
-                promise.LimitingFactors = saveRow.LimitingFactors;
                 promise.Funding = saveRow.Funding;
                 
-
                 console.log("and here is our final:");
 
                 $scope.subproject_edited = promise;
@@ -666,7 +621,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 
 
                 console.log("and if we do the extends thing:")
-                var extended = angular.extend({}, promise, saveRow);
+                var extended = angular.extend({}, saveRow, promise); //empty + saveRow + promise -- in that order
                 console.dir(extended);
 
 
@@ -740,7 +695,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	$scope.finalPart = function(){
         console.log("Inside $scope.finalPart...");
 
-        $scope.postSaveSubprojectUpdateGrid($scope.subproject_edited);
+        $scope.postSaveHabitatSubprojectUpdateGrid($scope.subproject_edited);
 
 		if ($scope.addDocument === "Yes")
 		{
