@@ -107,7 +107,6 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                 event.preventDefault();
                 scope.openHabitatItemForm(subproject, {});
             });
-            div.appendChild(addBtn);
 
             return div;
             /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
@@ -202,14 +201,12 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             //onGridReady: function (params) {
                 //setTimeout(function () { params.api.sizeColumnsToFit(); }, 0);
             //},
-            /*
+            
             getRowHeight: function (params) {
-                var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
-                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                var file_height = 25 * (getEventFilesArray(params.data.EventFiles).length); //count up the number of file lines we will have.
-                return (comment_height > file_height) ? comment_height : file_height;
+                var file_height = 25 * (scope.getFilesArrayAsList(params.node.data.ItemFiles).length); //count up the number of file lines we will have.
+                return (file_height > 25) ? file_height : 25;
             },
-            */
+            
             //onRowClicked: function (row) {
             //console.dir(row);
 
@@ -435,7 +432,8 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                     }
                 });
             });
-            scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
+            if(scope.map !== undefined)
+                scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
         };
 
         //looks like we will need a version of this over on the crpp correspondence tab. TODO:kb 11/21/17
@@ -503,18 +501,13 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         };
 
 
-
+        //open the habitat item form for creating (if hi_row is {}) or editing (if hi_row is the habitat item)
         scope.openHabitatItemForm = function (subproject, hi_row) {
             console.log("Inside openHabitatItemForm...")
             //console.dir(scope);
 
             scope.viewSubproject = subproject;
-
-            if (hi_row)
-                scope.hi_row = hi_row;
-            else
-                scope.hi_row = {};
-
+            scope.hi_row = hi_row;
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-new-habitatItem.html',

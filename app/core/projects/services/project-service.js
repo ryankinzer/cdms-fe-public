@@ -56,7 +56,7 @@ projects_module.factory('SaveProjectInstrument', ['$resource', function ($resour
 }]);
 
 projects_module.factory('SaveProjectFisherman', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/fishermen/saveprojectfishermen');
+    return $resource(serviceUrl + '/api/v1/fishermen/saveprojectfisherman');
 }]);
 
 projects_module.factory('SaveInstrument', ['$resource', function ($resource) {

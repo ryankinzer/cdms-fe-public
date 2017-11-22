@@ -21,15 +21,6 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 	$rootScope.projectId = $scope.project.Id;
 	console.log("$scope.projectId = " + $scope.projectId);
 	
-    $scope.hi_row = angular.copy($scope.hi_row);
-	//if ($scope.hi_row)
-	//{
-	//	$scope.hi_row = angular.copy($scope.hi_row);
-
-	//}
-	//else
-	//	$scope.hi_row = {};
-	
 	var keepGoing = true;
 	var foundIt = false;
 
@@ -128,6 +119,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 		if (!saveRow.Id)
 			saveRow.Id = 0;
 		//$scope.foundDuplicate = false;
+
 		
 		console.log("saveRow is next, after checking/setting the Id...");
 		console.dir(saveRow);
@@ -330,10 +322,42 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 		//console.log("$scope is next...");
 		//console.dir($scope);
 		
+
+        //save the habitat item
+        var promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.viewSubproject.Id, saveRow);
+
+        if (typeof promise !== 'undefined') {
+
+            promise.$promise.then(function () {
+                //did we edit or add new?
+                if (saveRow.Id > 0) {
+                    $scope.postEditHabitatItemUpdateGrid(promise);
+                } else {
+                    $scope.postAddHabitatItemUpdateGrid(promise);
+                }
+                $modalInstance.dismiss();
+            });
+
+            console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
+            if ($scope.fileCount === 0) {
+                $scope.loading = false; // Stop the fish spinner.
+                $scope.showCloseButton = true;
+                $scope.showCancelButton = false;
+                $scope.showFormItems = false;
+            }
+
+        }
+
+
+
+
+        
+
 		/*	If the user chooses to create a Habitat Item (HI), at the same time that they are creating a new Subproject,
 		*   $scope.viewSubproject is not available yet, so we cannot pass the Id from there.  When we create the new Subproject,
 		*   we capture the Id from the Subproject, which is the same thing, so we pass that instead, to create the HI.
 		*/
+            /*
 		if ($rootScope.habProjectName)
 			$scope.habProjectName = $rootScope.habProjectName;
 		
@@ -344,13 +368,13 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 			var promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.viewSubproject.Id, saveRow);
 			if (typeof promise !== 'undefined')
 			{
-				promise.$promise.then(function(){
-					//$scope.reloadSubprojects();
-					//$scope.viewSelectedSubproject();
-					//$("#habitatItems").load("habitatItems.html #habitatItems");
-					//$modalInstance.dismiss();
+                promise.$promise.then(function () {
+                    //$scope.reloadSubprojects();
+                    //$scope.viewSelectedSubproject();
+                    //$("#habitatItems").load("habitatItems.html #habitatItems");
+                    //$modalInstance.dismiss();
                     $scope.postAddHabitatItemUpdateGrid(promise);
-					})
+                });
 					
 				console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
 				if ($scope.fileCount === 0)
@@ -384,7 +408,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 					$scope.showFormItems = false;					
 				}
 			}
-		}
+		}*/
     };
 	
 	$scope.close = function(){

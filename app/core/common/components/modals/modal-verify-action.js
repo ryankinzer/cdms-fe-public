@@ -153,4 +153,6 @@ var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'Subproject
 		
     		
 	}
-}];
+    }];
+
+console.log("loaded modal verify action. 9((((((((((*******************************");
