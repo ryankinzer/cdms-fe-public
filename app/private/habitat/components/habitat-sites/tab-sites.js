@@ -108,6 +108,8 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                 scope.openHabitatItemForm(subproject, {});
             });
 
+            div.appendChild(addBtn);
+
             return div;
             /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
             return '<div project-role="editor">' +
