@@ -1,6 +1,9 @@
 ﻿//this is a nested controller used on the project-details page to load
 // the correspondence tab grid. It only appears for projects that are CRPP Correspondence.
 
+//var METADATA_PROPERTY_PROGRAM = 23; //add this to your config.js
+
+
 var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
@@ -42,7 +45,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             div.appendChild(delBtn);
             div.appendChild(document.createTextNode("|"));
 
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Event';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 scope.openCorrespondenceEventForm(param.data, {});
@@ -120,7 +123,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
         //grid columns for crpp correspondence tab (master/subprojects)
         scope.agColumnDefs = [  //in order the columns will display, by the way...
             {
-                headerName: '', width: 100, cellRenderer: EditMasterLinksTemplate
+                headerName: '', width: 140, cellRenderer: EditMasterLinksTemplate
             },
             {
                 headerName: 'ID',
@@ -132,7 +135,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             {
                 field: 'EffDt',
                 headerName: 'Updated',
-                width: 150,
+                width: 120,
                 valueFormatter: function (params) {
                     if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
                         return moment(params.node.data.EffDt).format('L');
@@ -140,7 +143,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 sort: 'desc',
             },
             {
-                headerName: 'Events', width: 80,
+                headerName: 'Events', width: 60,
                 cellRenderer: EventCount,
                 valueGetter: function (params) {
                     return (params.data.CorrespondenceEvents !== undefined && params.data.CorrespondenceEvents.length > 0) ? params.data.CorrespondenceEvents.length : 0;
@@ -328,57 +331,42 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             },
         };
 
-        //watch the datasets on the parent-detail page to load... once they do, check to see if we should show our tab
-        var crpp_ds_watcher = scope.$parent.$watch('datasets', function () {
-            console.log("Inside TAB CORRESPONDENCE watch datasets... --------------------------");
+        //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
+        var crpp_ds_watcher = scope.$parent.$watch('project', function () {
+            console.log("Inside TAB CORRESPONDENCE watch project... --------------------------");
 
-            //console.log("parent datasets");
-            //console.dir(scope.$parent.datasets);
-            //console.log("our datasets");
-            //console.dir(scope.datasets);
-
-            if (scope.datasets === undefined || scope.datasets.length === 0)
+            if (scope.project === undefined || scope.project.Id === undefined)
                 return;
 
-            console.log("OK TAB CORRESPONDNEC .  The datasets are loaded...");
+            console.log("OK TAB CORRESPONDNEC .  The project is loaded...");
 
-            //scope.datasets = scope.$parent.datasets; //but i dont' want to do this.'
             crpp_ds_watcher(); //turn off watcher
 
+            if (scope.isCRPPProject(scope.project)) {
 
-            for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
-                
-                if (scope.datasets[i].Datastore.TablePrefix === "CrppContracts") {
-                    console.log("Adding Correspondence to tab bar...");
-                    scope.ShowSubproject = true;
+                console.log("Adding Correspondence to tab bar...");
+                scope.ShowSubproject = true;
 
+                //load ag-grid but only once.
+                //if (typeof scope.ag_grid === 'undefined') {
+                    var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
+                    //console.dir(ag_grid_div);
+                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
+                    scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+                //}
 
-                    //load ag-grid but only once.
-                    if (typeof scope.ag_grid === 'undefined') {
-                        var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
-                        //console.dir(ag_grid_div);
-                        scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
-                        scope.agGridOptions.api.showLoadingOverlay(); //show loading...
-                    }
+                scope.subprojectList = SubprojectService.getSubprojects();
+                console.log("Fetching CRPP subprojects...");
 
-                    scope.subprojectList = SubprojectService.getSubprojects();
-                    console.log("Fetching CRPP subproject...");
-                    // Note:  If we are on CRPP, it has only one dataset.
-                    // We must set the scope.DatastoreTablePrefix, in order for the Edit Subproject to work.
-                    // The Correspondence Event also needs scope.DatastoreTablePrefix, in order to save documents properly.
-                    scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
+                var watcher = scope.$watch('subprojectList.length', function () {
+                    if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
+                        return;
 
-                    var watcher = scope.$watch('subprojectList.length', function () {
-                        if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
-                            return;
+                    console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
+                    scope.agGridOptions.api.setRowData(scope.subprojectList);
 
-                        console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
-                        scope.agGridOptions.api.setRowData(scope.subprojectList);
-
-                        watcher();
-                    });
-
-                }
+                    watcher();
+                });
             }
 
         },true);
@@ -624,6 +612,11 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             console.log("redrawgroupmodel!");
         };
 
+        //looks at the metadata setting to see if it is a crpp project
+        scope.isCRPPProject = function(a_project)
+        {
+            return (a_project.MetadataValue[METADATA_PROPERTY_PROGRAM]) === "CRPP";
+        }
 
     }
 ];

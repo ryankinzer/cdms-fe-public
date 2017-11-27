@@ -144,7 +144,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 				for (var i = 0; i < scope.datasets.length; i++)
 				{
 					DatasetService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
-					console.log("dataset CONFIGURED! TablePrefix: " + scope.datasets[i].Datastore.TablePrefix);
+                    //console.log("dataset CONFIGURED! TablePrefix: " + scope.datasets[i].Datastore.TablePrefix);
+
+                    //this is used in some of the modals -- note that doing this will set the DatastoreTablePrefix to the LAST dataset parsed.
+                    scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
 				}
 			}
 			else
@@ -156,60 +159,37 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
         },true);
 
-        
-		
 
-		
 		scope.$watch('project.Files.length', function(){
 			
 			console.log("Inside watch project.Files.length...");
-			//console.log("project.Files is next...");
-			//console.dir(scope.project.Files);
-			
-			//if ((typeof scope.project.Files === 'undefined') || (scope.project.Files === null))
-			//{
-			//	scope.project.Files = [];
-			//}
-			//else
-			//{
-				//if (scope.project.Files.length > 0)
-				//{
-					scope.project.Images = [];
-					scope.project.Docs = [];
+
+			scope.project.Images = [];
+			scope.project.Docs = [];
 					
-					var docIndex = 0;
-					angular.forEach(scope.project.Files, function(file, key){
-						//console.log("file.FileType.Name = " + file.FileType.Name + ", file.Subproject_CrppId = " + file.Subproject_CrppId);
-						//if ((file.FileType.Name === "Image") && ((file.Subproject_CrppId === null) || (file.Subproject_CrppId === 1)))
-						//if ((file.FileType.Name === "Image") && (file.Subproject_CrppId === null))
-						if ((file.FileType.Name === "Image") && (file.DatasetId === null) && (file.Subproject_CrppId === null))
-							scope.project.Images.push(file);
-						else
-						{
-							//if ((file.Subproject_CrppId === null) || (file.Subproject_CrppId === 1))
-							//if (file.Subproject_CrppId === null)
-							if ((file.DatasetId === null) && (file.Subproject_CrppId === null))
-							{
-								scope.project.Docs.push(file);
+			var docIndex = 0;
+			angular.forEach(scope.project.Files, function(file, key){
+				if ((file.FileType.Name === "Image") && (file.DatasetId === null) && (file.Subproject_CrppId === null))
+					scope.project.Images.push(file);
+				else
+				{
+					if ((file.DatasetId === null) && (file.Subproject_CrppId === null))
+					{
+						scope.project.Docs.push(file);
 
-								// If the user created a document and left the Title or Description blank, those fields were saved as "undefined" in the database.
-								// When we read the list of files back in, the "undefined" shows on the page, and the user would rather have a blank show instead.
-								if(!scope.project.Docs[docIndex].Title)
-									scope.project.Docs[docIndex].Title = "";
+						// If the user created a document and left the Title or Description blank, those fields were saved as "undefined" in the database.
+						// When we read the list of files back in, the "undefined" shows on the page, and the user would rather have a blank show instead.
+						if(!scope.project.Docs[docIndex].Title)
+							scope.project.Docs[docIndex].Title = "";
 
-								if(!scope.project.Docs[docIndex].Description)
-									scope.project.Docs[docIndex].Description = "";
+						if(!scope.project.Docs[docIndex].Description)
+							scope.project.Docs[docIndex].Description = "";
 
-								docIndex++;
-							}	     
-						}
-					});
-				//}
-				//else
-				//{
-				//	console.log("scope.project.Files empty; nothing to load...");
-				//}
-			//}
+						docIndex++;
+					}	     
+				}
+			});
+				
 		});
 		
         scope.$watch('project.Id', function(){
@@ -233,15 +213,11 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
                 var docIndex = 0;
                 angular.forEach(scope.project.Files, function(file, key){
-					//console.log("file.FileType.Name = " + file.FileType.Name + ", file.Subproject_CrppId = " + file.Subproject_CrppId);
-                    //if ((file.FileType.Name === "Image") && ((file.Subproject_CrppId === null) || (file.Subproject_CrppId === 1)))
-                    //if ((file.FileType.Name === "Image") && (file.Subproject_CrppId === null))
+
                     if (file.FileType.Name === "Image")
                         scope.project.Images.push(file);
                     else
                     {
-						//if ((file.Subproject_CrppId === null) || (file.Subproject_CrppId === 1))
-						//if (file.Subproject_CrppId === null)
 						if ((file.DatasetId === null) && (file.Subproject_CrppId === null))
 						{
 							scope.project.Docs.push(file);
@@ -276,44 +252,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             }
 
         });
-
-        /* 
-		scope.$watch('subproject.Id', function(){
-			if ((typeof scope.subproject === 'undefined') || (scope.subproject === null))
-			{
-				console.log("watching...");
-				return;
-			}
-			
-			console.log("Inside controllers.js, watch subproject.Id...");
-			console.log("scope.subproject.Id = " + scope.subproject.Id);
-		});
-        */
-
-        /*
-		
-		scope.cleanGateKeeper = function(theText)
-		{
-			console.log("Inside scope.cleanGateKeeper...theText = " + theText);
-			
-			var intStringLocation = -1;
-			
-			// Check if the watch has completed already.  If so, clean out the text before appending; otherwise, the string gets really long.
-			if (scope.FileLocationSubprojectFundersWatchVariable.indexOf(theText) > -1)
-			{
-				//scope.FileLocationSubprojectFundersWatchVariable.replace(/File/g, '');
-				intStringLocation = scope.FileLocationSubprojectFundersWatchVariable.indexOf(theText);
-				while (intStringLocation > -1)
-				{
-					//console.log("scope.FileLocationSubprojectFundersWatchVariable (during cleaning) = " + scope.FileLocationSubprojectFundersWatchVariable);
-					scope.FileLocationSubprojectFundersWatchVariable = scope.FileLocationSubprojectFundersWatchVariable.replace(theText, "");
-					intStringLocation = scope.FileLocationSubprojectFundersWatchVariable.indexOf(theText);
-				}
-			}
-			//console.log("scope.FileLocationSubprojectFundersWatchVariable (after cleaning) = " + scope.FileLocationSubprojectFundersWatchVariable);
-		};
-		*/
-
 
 		scope.ShowMap = {
 			Display: false,
@@ -415,8 +353,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
 		};
 		
-		
-
 
         //metadata -- we have a list of metadata properties that are configured for "project" entities.
         //  any metadata already associated with a project come in teh project's Metadata array, but ones that haven't
@@ -447,15 +383,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
               scope: scope, //very important to pass the scope along...
             });
         };
-
-      
-
-		
-
-		
-
-
-		
+        		
         scope.openDeleteFileModal = function(selection)
         {
             scope.row = selection;
@@ -512,60 +440,12 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         {
 			$window.open(PROJECT_REPORT_URL+scope.project.Id,'_blank');
         };
-
         
 
         scope.reloadProject = function(){
             ProjectService.clearProject();
             scope.project = ProjectService.getProject(routeParams.Id);
         };
-
-        
-        
-		
-		/*
-		
-        scope.reloadThisProject = function()
-        {
-            console.log('0000000000000000000000000------------------------------------------');
-            return;
-
-
-			//scope.project = [];
-			console.log("Inside controllers.js, projectDatasetsController, scope.reloadThisProject...");
-			console.log("scope.projectId = " + scope.projectId + ", scope.SdeObjectId = " + scope.SdeObjectId);
-			
-			scope.FileLocationSubprojectFundersWatchVariable = ""; // Clean GateKeeper variable.
-			
-			// Right now, we still now what the project and subproject type are, so reload the extra items for these specific projects.
-			if (scope.subprojectType === "CRPP") // CRPP
-				scope.subprojectList = SubprojectService.getSubprojects();
-			else if (scope.subprojectType === "Habitat")
-			{
-				console.log("scope.projectId = " + scope.projectId);
-				scope.project = ProjectService.getProject(scope.projectId);
-				//scope.subprojectList = SubprojectService.getHabSubprojects();
-				scope.subprojectList = SubprojectService.getProjectSubprojects(scope.projectId);
-				scope.funderList = ProjectService.getProjectFunders(scope.projectId);
-			}
-			
-			scope.project = ProjectService.getProject(parseInt(scope.projectId));
-        };
-
-        */
-
-        /*
-		
-        scope.reloadThisHabSubproject = function(subprojectId)
-        {
-            console.log('00022222222222220000000000000000000000------------------------------------------');
-            return;
-			//scope.project = [];
-			console.log("Inside controllers.js, projectDatasetsController, scope.reloadThisHabSubproject...");
-			console.log("scope.projectId = " + scope.projectId + ", scope.SdeObjectId = " + scope.SdeObjectId + ", subprojectId = " + subprojectId);
-			scope.project = SubprojectService.getHabSubproject(parseInt(subprojectId));		
-        };
-		*/
 
 
 		scope.setSdeObjectId = function(sdeObjectId)
@@ -576,62 +456,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			console.log("scope.SdeObjectId");
 		};
 
-        /*
-		scope.reloadSubprojects = function()
-        {
-            console.log('000000044444444444444000000000000000000------------------------------------------');
-            return;
-
-			console.log("Inside controllers.js, projectDatasetsController, scope.reloadSubprojects...");
-			SubprojectService.clearSubprojects();
-
-			if (scope.subprojectType === "CRPP") // CRPP
-				scope.subprojectList = SubprojectService.getSubprojects();
-			else if (scope.subprojectType === "Habitat")
-			{
-				console.log("scope.projectId = " + scope.projectId);
-				scope.project = ProjectService.getProject(scope.projectId);
-				//scope.subprojectList = SubprojectService.getHabSubprojects();
-				scope.subprojectList = SubprojectService.getProjectSubprojects(scope.projectId);
-				scope.funderList = ProjectService.getProjectFunders(scope.projectId);
-			}
-			
-			var watcher = scope.$watch('subprojectList.length', function(){
-				// We wait until subprojects gets loaded and then turn this watch off.
-				if (scope.subprojectList === null)
-					return;
-
-                //else if (scope.subprojectList.length === 0) //watcher() below turns off the watch.
-				//	return
-				
-				//angular.forEach(scope.subprojectList, function(subproject){
-				//	subproject.searchField = "";
-				//	subproject.searchField = subproject.searchField.concat(subproject.ProjectName);
-				//	subproject.searchField = subproject.searchField.concat(" ");
-				//	subproject.searchField = subproject.searchField.concat(subproject.Agency);
-				//	subproject.searchField = subproject.searchField.concat(" ");
-				//	subproject.searchField = subproject.searchField.concat(subproject.ProjectProponent);
-				//	subproject.searchField = subproject.searchField.concat(" ");
-				//	subproject.searchField = subproject.searchField.concat(subproject.Closed);
-				//	subproject.searchField = subproject.searchField.concat(" ");
-				//	subproject.searchField = subproject.searchField.concat(subproject.ProjectLead);
-				//});
-				
-			
-				//scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
-				
-				console.log("subprojects is loaded...");
-                console.dir(scope.subprojectList);
-
-				watcher();
-			});
-			
-		};
-        */
-        
-
-
-
+       
 
         //return an array from the eventfiles.
         scope.getFilesArrayAsList = function (theFiles) {

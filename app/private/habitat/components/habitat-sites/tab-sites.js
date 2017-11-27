@@ -3,24 +3,14 @@
 
 //hab-sites-grid
 
+//var METADATA_PROPERTY_SUBPROGRAM = 24; //add this to your config.js 
+
 var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
     function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
-        console.log("Inside tab sites controller...");
-
-//        console.log("I wonder what I have access to here?!");
-//        console.dir(scope);
-
-
-        // On the CorrespondenceEvents html page, the app was getting confused with serviceUrl somehow (only gave the domain name...).
-		// When I manually set here like this, and use theServiceUrl instead, the links worked properly.
-		//console.log("serviceUrl = " + serviceUrl);
-		//scope.theServiceUrl = serviceUrl;
-
-
-
+//        console.log("Inside tab sites controller...");
 
         scope.subprojectFileList = null;
         scope.funderList = null;
@@ -53,7 +43,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             div.appendChild(delBtn);
             div.appendChild(document.createTextNode("|"));
 
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Item';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 scope.openHabitatItemForm(param.data, {});
@@ -88,8 +78,8 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
             editBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                console.log("detail param: ");
-                console.dir(detailparam);
+                //console.log("detail param: ");
+                //console.dir(detailparam);
                 scope.openHabitatItemForm(subproject, detailparam.data); //parent subproject, detail line.
             });
             div.appendChild(editBtn);
@@ -125,7 +115,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         //grid columns for sites tab (master/subprojects)
         scope.agColumnDefs = [  //in order the columns will display, by the way...
             {
-                headerName: '', width: 100, cellRenderer: EditMasterLinksTemplate
+                headerName: '', width: 130, cellRenderer: EditMasterLinksTemplate
             },
             {
                 field: 'ProjectName', headerName: 'Name', width: 325, cellRenderer: 'group',
@@ -133,7 +123,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             {
                 field: 'EffDt',
                 headerName: 'Updated',
-                width: 150,
+                width: 130,
                 valueFormatter: function (params) {
                     if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
                         return moment(params.node.data.EffDt).format('L');
@@ -141,7 +131,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                 sort: 'desc',
             },
             {
-                headerName: 'Items', width: 80,
+                headerName: 'Items', width: 60,
                 cellRenderer: ItemCount,
                 valueGetter: function (params) {
                     return (params.data.HabitatItems !== undefined && params.data.HabitatItems.length > 0) ? params.data.HabitatItems.length : 0;
@@ -236,7 +226,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
 
             animateRows: true,
             enableSorting: true,
-            enableFilter: true, //turning it off because: https://github.com/ag-grid/ag-grid/issues/1324
+            enableFilter: true, 
             enableColResize: true,
             showToolPanel: false,
             columnDefs: scope.agColumnDefs,
@@ -253,17 +243,6 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                 {
                     console.log("rows:");
                     console.dir(rows);
-
-                    /*
-                    if (!Array.isArray(rows[0]) && !rows[0].hasOwnProperty('SubprojectId')) //only change the selection if they clicked a header row.
-                    {
-                        scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
-                        //scope.agGridOptions.api.redrawRows();
-                        //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-                        console.log("selected a header row so selection actually changed");
-                        scope.viewSubproject = rows[0];
-                        console.dir(scope.viewSubproject);
-                    }*/
                 }
                 
             },
@@ -328,83 +307,65 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         //scope.subprojectType = $rootScope.subprojectType = ProjectService.getProjectType(scope.project.Id);
         //console.log("scope.subprojectType = " + scope.subprojectType);
         //SubprojectService.setServiceSubprojectType(scope.subprojectType);
-				/*************************************************************/
+		/*************************************************************/
 
 
 
 
-        //watch the datasets on the parent-detail page to load... once they do, check to see if we should show our tab
-        var sites_ds_watcher = scope.$parent.$watch('datasets', function () {
-            console.log("Inside TAB SITES watch datasets... --------------------------");
+        //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
+        var sites_ds_watcher = scope.$parent.$watch('project', function () {
+            //console.log("Inside TAB SITES watch project... --------------------------");
 
-            //console.log("parent datasets");
-            //console.dir(scope.$parent.datasets);
-            //console.log("our datasets");
-            //console.dir(scope.datasets);
-
-            if (scope.datasets === undefined || scope.datasets.length === 0)
+            if (scope.project === undefined || scope.project.Id === undefined)
                 return;
 
             sites_ds_watcher(); //turn off the watcher.
 
-            console.log("OK TAB SITES .  The datasets are loaded...");
+            //console.log("Woohoo! are we habitat project?");
+            //console.dir(scope.project);
+                
+            if (scope.isHabitatProject(scope.project)) {
+                //console.log("YES! Adding Sites to tab bar...");
+                scope.$parent.ShowHabitat = true; //need to update parent scope for the map to show.
 
-            //scope.datasets = scope.$parent.datasets; //but i dont' want to do this.'
+                //load ag-grid but only once.
+                //if (typeof scope.ag_grid === 'undefined') {
+                    var ag_grid_div = document.querySelector('#hab-sites-grid');    //get the container id...
+                    //console.dir(ag_grid_div);
+                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
+                    scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+                //}
 
-            for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
+                scope.subprojectList = SubprojectService.getProjectSubprojects(scope.project.Id); //the habitat subprojects
+                //console.log("Fetching Habitat subprojects...");
 
-                //TODO: check to see if we are a habitat type project ---------------------------<<<<<<<<<<<<<<<<<<<<<< TODO
-                console.log("Woohoo! are we habitat project?");
-                console.dir(scope.project);
+                //ok let's watch for when the subprojects come back and we can load the other things we need.
+                var watcher = scope.$watch('subprojectList.length', function () {
+                    if (scope.subprojectList === undefined || scope.subprojectList == null)
+                        return;
 
-                if ((scope.datasets[i].Datastore.TablePrefix === "Metrics") ||
-                    (scope.datasets[i].Datastore.TablePrefix === "Benthic") ||
-                    (scope.datasets[i].Datastore.TablePrefix === "Drift")
-                ) {
-                    console.log("Adding Sites to tab bar...");
-                    scope.$parent.ShowHabitat = true; //need to update parent scope for the map to show.
+                    //console.log("our subproject list is back! we have " + scope.subprojectList.length + " of them.");
 
-                    //load ag-grid but only once.
-                    if (typeof scope.ag_grid === 'undefined') {
-                        var ag_grid_div = document.querySelector('#hab-sites-grid');    //get the container id...
-                        //console.dir(ag_grid_div);
-                        scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
-                        scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+                    //if there are no subprojects then don't show any points on the map.
+                    if (scope.subprojectList.length === 0) {
+                        if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById')) {
+                            //scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
+                            // Note:  If we sent an empty list, it pulls all the locations.
+                            // If we supply an Id that we know does not exist (0), we get no locations, which is what we want.
+                            scope.map.locationLayer.showLocationsById(0); //
+                        }
+                        return;
                     }
 
-                    scope.subprojectList = SubprojectService.getProjectSubprojects(scope.datasets[i].ProjectId); //the habitat subprojects
-                    console.log("Fetching Habitat subproject...");
+                    //build the grid based on our subprojects
+                    scope.agGridOptions.api.setRowData(scope.subprojectList);
 
-                    scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
+                    //console.log("ok now firing off the habitat subproject parts loading...");
+                    scope.refreshSubprojectLists();
 
-                    //ok let's watch for when the subprojects come back and we can load the other things we need.
-                    var watcher = scope.$watch('subprojectList.length', function () {
-                        if (scope.subprojectList === undefined || scope.subprojectList == null)
-                            return;
+                    watcher();
+                });
 
-                        console.log("our subproject list is back! we have " + scope.subprojectList.length + " of them.");
-
-                        //if there are no subprojects then don't show any points on the map.
-                        if (scope.subprojectList.length === 0) {
-                            if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById')) {
-                                //scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
-                                // Note:  If we sent an empty list, it pulls all the locations.
-                                // If we supply an Id that we know does not exist (0), we get no locations, which is what we want.
-                                scope.map.locationLayer.showLocationsById(0); //
-                            }
-                            return;
-                        }
-
-                        //build the grid based on our subprojects
-                        scope.agGridOptions.api.setRowData(scope.subprojectList);
-
-                        console.log("ok now firing off the habitat subproject parts loading...");
-                        scope.refreshSubprojectLists();
-
-                        watcher();
-                    });
-
-                }
             }
 
         }, true);
@@ -424,7 +385,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                     //if ((location.LocationTypeId === 3) || (subproject.Id === location.SubprojectId))
                     //console.log("location.LocationTypeId = " +  location.LocationTypeId + ", subproject.LocationId = " + subproject.LocationId + ", location.Id = " + location.Id);
                     if (subproject.LocationId === location.Id) {
-                        console.log("Found a subproject location")
+                        //console.log("Found a subproject location")
                         //console.dir(location);
                         scope.thisProjectsLocationObjects.push(location.SdeObjectId);
                         subproject.GPSEasting = location.GPSEasting;
@@ -442,7 +403,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         //looks like we will need a version of this over on the crpp correspondence tab. TODO:kb 11/21/17
         scope.matchFilesToSubproject = function () {
 
-            console.log("ok matching files: ");
+            //console.log("ok matching files: ");
             //console.dir(scope.project.SubprojectFileList);
 
             angular.forEach(scope.subprojectList, function (subproject) {
@@ -463,7 +424,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                             subproject.ItemFiles = angular.copy(spFile);
 
                         //scope.viewSubproject.ItemFiles = subproject.ItemFiles;
-                        console.log("Matched subproject file...");
+                        //console.log("Matched subproject file...");
                     }
                 });
             });
@@ -551,16 +512,16 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         //after we remove one in the modal, call here to update the grid.
         scope.postRemoveHabitatSubprojectUpdateGrid = function () {
             //the scope.viewSubproject is the one we removed.
-            console.log("ok - we removed one so update the grid...");
+            //console.log("ok - we removed one so update the grid...");
 
             scope.subprojectList.forEach(function (item, index) {
                 if (item.Id === scope.viewSubproject.Id) {
                     scope.subprojectList.splice(index, 1);
-                    console.log("ok we removed :" + index);
-                    console.dir(scope.subprojectList[index]);
+                    //console.log("ok we removed :" + index);
+                    //console.dir(scope.subprojectList[index]);
                     scope.agGridOptions.api.setRowData(scope.subprojectList);
                     //scope.agGridOptions.api.redrawRows();
-                    console.log("done reloading grid.");
+                    //console.log("done reloading grid.");
                 }
             });
         };
@@ -576,7 +537,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                     item.HabitatItems.forEach(function (hab_item, hab_item_index) {
                         if (hab_item.Id === edited_item.Id) {
                             angular.extend(hab_item, edited_item); //replace the data for that item
-                            console.log("OK!! we edited that habitat item");
+                            //console.log("OK!! we edited that habitat item");
                         }
                     });
                 }
@@ -596,7 +557,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         //called by the modal once a habitat item is saved
         scope.postAddHabitatItemUpdateGrid = function (new_item) {
             //console.dir(new_item);
-            console.log("saving habitat item for " + new_item.SubprojectId);
+            //console.log("saving habitat item for " + new_item.SubprojectId);
 
             var subproject = getById(scope.subprojectList, new_item.SubprojectId);
 
@@ -638,8 +599,8 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             $scope.remove = function () {
                 console.log("Inside ModalAddHabitatItemCtrl, remove...");
                 //console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-                console.log("$scope.hi_row is next...");
-                console.dir($scope.hi_row);
+                //console.log("$scope.hi_row is next...");
+                //console.dir($scope.hi_row);
                 $scope.hi_rowId = $scope.hi_row.Id;
 
                 $scope.verifyAction = "Delete";
@@ -687,7 +648,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                             item.HabitatItems.forEach(function (hab_item, hab_item_index) {
                                 if (hab_item.Id === in_item.Id) {
                                     item.HabitatItems.splice(hab_item_index, 1);
-                                    console.log("OK!! we removed that habitat item");
+                                    //console.log("OK!! we removed that habitat item");
                                 }
                             });
                         }
@@ -930,6 +891,11 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             console.log("redrawgroupmodel!");
         };
 
+        //looks at the metadata setting to see if it is a habitat project
+        scope.isHabitatProject = function(a_project)
+        {
+            return (a_project.MetadataValue[METADATA_PROPERTY_SUBPROGRAM]) === "Habitat";
+        }
 
     }
 ];
