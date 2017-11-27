@@ -26,16 +26,13 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         scope.ShowHabitat = false;     //habitat
 
 
-        // -- things to move out to their own tab listener?
-
 		scope.subprojectList = null;  // Set this to null first, so that we can monitor it later.
         scope.subprojectType = "";
         scope.viewSubproject = null;
         scope.SdeObjectId = 0;
-        scope.FileLocationSubprojectFundersWatchVariable = "";
+        //scope.FileLocationSubprojectFundersWatchVariable = "";
 
 
-        // -- don't know if we need to move these
 		scope.uploadFileType = "";
 		scope.projectName = "";
 		scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = "";
@@ -526,7 +523,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         
         
 		
-		
+		/*
 		
         scope.reloadThisProject = function()
         {
@@ -554,6 +551,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			
 			scope.project = ProjectService.getProject(parseInt(scope.projectId));
         };
+
+        */
+
+        /*
 		
         scope.reloadThisHabSubproject = function(subprojectId)
         {
@@ -564,7 +565,9 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			console.log("scope.projectId = " + scope.projectId + ", scope.SdeObjectId = " + scope.SdeObjectId + ", subprojectId = " + subprojectId);
 			scope.project = SubprojectService.getHabSubproject(parseInt(subprojectId));		
         };
-		
+		*/
+
+
 		scope.setSdeObjectId = function(sdeObjectId)
 		{
 			console.log("Inside contollers.js, scope.setSdeObjectId...");
@@ -572,7 +575,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			scope.SdeObjectId = sdeObjectId;
 			console.log("scope.SdeObjectId");
 		};
-		 
+
+        /*
 		scope.reloadSubprojects = function()
         {
             console.log('000000044444444444444000000000000000000------------------------------------------');
@@ -600,21 +604,21 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                 //else if (scope.subprojectList.length === 0) //watcher() below turns off the watch.
 				//	return
 				
-				/*angular.forEach(scope.subprojectList, function(subproject){
-					subproject.searchField = "";
-					subproject.searchField = subproject.searchField.concat(subproject.ProjectName);
-					subproject.searchField = subproject.searchField.concat(" ");
-					subproject.searchField = subproject.searchField.concat(subproject.Agency);
-					subproject.searchField = subproject.searchField.concat(" ");
-					subproject.searchField = subproject.searchField.concat(subproject.ProjectProponent);
-					subproject.searchField = subproject.searchField.concat(" ");
-					subproject.searchField = subproject.searchField.concat(subproject.Closed);
-					subproject.searchField = subproject.searchField.concat(" ");
-					subproject.searchField = subproject.searchField.concat(subproject.ProjectLead);
-				});
-				*/
+				//angular.forEach(scope.subprojectList, function(subproject){
+				//	subproject.searchField = "";
+				//	subproject.searchField = subproject.searchField.concat(subproject.ProjectName);
+				//	subproject.searchField = subproject.searchField.concat(" ");
+				//	subproject.searchField = subproject.searchField.concat(subproject.Agency);
+				//	subproject.searchField = subproject.searchField.concat(" ");
+				//	subproject.searchField = subproject.searchField.concat(subproject.ProjectProponent);
+				//	subproject.searchField = subproject.searchField.concat(" ");
+				//	subproject.searchField = subproject.searchField.concat(subproject.Closed);
+				//	subproject.searchField = subproject.searchField.concat(" ");
+				//	subproject.searchField = subproject.searchField.concat(subproject.ProjectLead);
+				//});
+				
 			
-				scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
+				//scope.FileLocationSubprojectFundersWatchVariable += "Sdone";
 				
 				console.log("subprojects is loaded...");
                 console.dir(scope.subprojectList);
@@ -623,7 +627,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			});
 			
 		};
-
+        */
         
 
 
@@ -638,6 +642,20 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             return (files === null || !Array.isArray(files)) ? [] : files; //if it isn't an array, make an empty array
 
         }
+
+        //return an array of file links to cdmsShareUrl (defined in config) for subproject
+        scope.getSubprojectFilesArrayAsLinks = function(a_projectId, a_subprojectId, a_files)
+        {
+            var files = scope.getFilesArrayAsList(a_files);
+            var retval = [];
+
+            angular.forEach(files, function (file, value) {
+                retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/S/" + a_subprojectId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+            });
+
+            return retval;
+        }
+
 		
 		scope.refreshProjectLocations = function(){
 			console.log("Inside controllers.js, refreshProjectLocations...");

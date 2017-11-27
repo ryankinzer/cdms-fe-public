@@ -65,11 +65,12 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
 
 
         var FileListCellTemplate = function (params) {
-            var files = scope.getFilesArrayAsList(params.node.data.ItemFiles); //notsure
             var list = '<div class="event-file-list"><ul>';
 
-            files.forEach(function (file) {
-                list += '<li>' + file.Name + '</li>';
+            var file_links = scope.getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.ItemFiles);
+
+            file_links.forEach(function (link) {
+                list += '<li>' + link + '</li>';
             });
 
             list += '</ul></div>';

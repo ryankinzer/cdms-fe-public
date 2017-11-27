@@ -61,11 +61,12 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
 
 
         var FileListCellTemplate = function (params) {
-            var files = scope.getFilesArrayAsList(params.node.data.EventFiles);
             var list = '<div class="event-file-list"><ul>';
 
-            files.forEach(function (file) {
-                list += '<li>' + file.Name + '</li>';
+            var file_links = scope.getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.EventFiles);
+
+            file_links.forEach(function (link) {
+                list += '<li>' + link + '</li>';
             });
 
             list += '</ul></div>';
