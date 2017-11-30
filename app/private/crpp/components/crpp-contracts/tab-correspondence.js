@@ -4,10 +4,10 @@
 //var METADATA_PROPERTY_PROGRAM = 23; //add this to your config.js
 
 
-var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
         console.log("Inside tab correspondence controller...");
 
@@ -121,7 +121,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
 
 
         //grid columns for crpp correspondence tab (master/subprojects)
-        scope.agColumnDefs = [  //in order the columns will display, by the way...
+        scope.corrAgColumnDefs = [  //in order the columns will display, by the way...
             {
                 headerName: '', width: 140, cellRenderer: EditMasterLinksTemplate
             },
@@ -202,18 +202,18 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
         ];
 
         //detail grid options correspondence events
-        scope.detailGridOptions = {
+        scope.corrDetailGridOptions = {
             enableSorting: true,
             enableFilter: true,
             enableColResize: true,
             //rowSelection: 'single',
             //onSelectionChanged: function (params) {
             //    console.log("selection changed!");
-            //scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
+            //scope.corrAgGridOptions.selectedItems = scope.corrAgGridOptions.api.getSelectedRows();
             //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             //},
             //onFilterModified: function () {
-            //    scope.agGridOptions.api.deselectAll();
+            //    scope.corrAgGridOptions.api.deselectAll();
             //},
             //selectedItems: [],
             //rowData: eventRecords,
@@ -241,11 +241,11 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
 
 
 
-        scope.agGridOptions = {
+        scope.corrAgGridOptions = {
 
             masterDetail: true,
             detailCellRendererParams: {
-                detailGridOptions: scope.detailGridOptions,
+                detailGridOptions: scope.corrDetailGridOptions,
                 getDetailRowData: function (params) {
                     params.successCallback(params.data.CorrespondenceEvents);
                 },
@@ -256,7 +256,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             enableFilter: true, //turning it off because: https://github.com/ag-grid/ag-grid/issues/1324
             enableColResize: true,
             showToolPanel: false,
-            columnDefs: scope.agColumnDefs,
+            columnDefs: scope.corrAgColumnDefs,
             rowData: null,
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             //debug: true,
@@ -264,15 +264,15 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
             onSelectionChanged: function (params) {
                 console.log("selection changed fired!");
                 /*
-                var rows = scope.agGridOptions.api.getSelectedRows();
+                var rows = scope.corrAgGridOptions.api.getSelectedRows();
                 if (Array.isArray(rows) && rows[0] != null)
                 {
                     console.log("rows:");
                     console.dir(rows);
                     if (!Array.isArray(rows[0]) && !rows[0].hasOwnProperty('SubprojectId')) //only change the selection if they clicked a header row.
                     {
-                        scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
-                        //scope.agGridOptions.api.redrawRows();
+                        scope.corrAgGridOptions.selectedItems = scope.corrAgGridOptions.api.getSelectedRows();
+                        //scope.corrAgGridOptions.api.redrawRows();
                         //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                         console.log("selected a header row so selection actually changed");
                         scope.viewSubproject = rows[0];
@@ -282,7 +282,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 */
             },
             //onFilterModified: function () {
-            //    scope.agGridOptions.api.deselectAll();
+            //    scope.corrAgGridOptions.api.deselectAll();
             //},
             selectedItems: [],
             //isFullWidthCell: function (rowNode) {
@@ -322,7 +322,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 }
             },*/
             onRowDoubleClicked: function (row) {
-                scope.agGridOptions.api.collapseAll();
+                scope.corrAgGridOptions.api.collapseAll();
                 row.node.setSelected(true);
                 row.node.setExpanded(true);
             },
@@ -335,7 +335,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
         var crpp_ds_watcher = scope.$parent.$watch('project', function () {
             console.log("Inside TAB CORRESPONDENCE watch project... --------------------------");
 
-            if (scope.project === undefined || scope.project.Id === undefined)
+            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
                 return;
 
             console.log("OK TAB CORRESPONDNEC .  The project is loaded...");
@@ -347,26 +347,29 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 console.log("Adding Correspondence to tab bar...");
                 scope.ShowSubproject = true;
 
-                //load ag-grid but only once.
-                //if (typeof scope.ag_grid === 'undefined') {
+                $timeout(function () {
+
                     var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
                     //console.dir(ag_grid_div);
-                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
-                    scope.agGridOptions.api.showLoadingOverlay(); //show loading...
-                //}
+                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.corrAgGridOptions); //bind the grid to it.
+                    scope.corrAgGridOptions.api.showLoadingOverlay(); //show loading...
 
-                scope.subprojectList = SubprojectService.getSubprojects();
-                console.log("Fetching CRPP subprojects...");
+                    scope.subprojectList = SubprojectService.getSubprojects();
+                    console.log("Fetching CRPP subprojects...");
 
-                var watcher = scope.$watch('subprojectList.length', function () {
-                    if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
-                        return;
+                    var watcher = scope.$watch('subprojectList.length', function () {
+                        if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
+                            return;
 
-                    console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
-                    scope.agGridOptions.api.setRowData(scope.subprojectList);
+                        console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
+                        scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
 
-                    watcher();
-                });
+                        watcher();
+                    });
+                }, 0);
+
+            } else {
+                console.log(" we are NOT a crpp project so no Correspondence tab.");
             }
 
         },true);
@@ -422,8 +425,8 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                     scope.subprojectList.splice(index, 1);
                     console.log("ok we removed :" + index);
                     console.dir(scope.subprojectList[index]);
-                    scope.agGridOptions.api.setRowData(scope.subprojectList);
-                    //scope.agGridOptions.api.redrawRows();
+                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+                    //scope.corrAgGridOptions.api.redrawRows();
                     console.log("done reloading grid.");
                 }
             });
@@ -446,12 +449,12 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                 }
             });
 
-            scope.agGridOptions.api.setRowData(scope.subprojectList);
+            scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
 
             //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
             var the_node = scope.expandSubProjectById(edited_event.SubprojectId);
             if (the_node != null)
-                scope.agGridOptions.api.ensureNodeVisible(the_node);
+                scope.corrAgGridOptions.api.ensureNodeVisible(the_node);
 
             console.log("done reloading grid after removing item.");
 
@@ -474,12 +477,12 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                         console.log("Added event " + new_event.Id + " to " + subproject.Id);
                     }
                 });
-                scope.agGridOptions.api.setRowData(scope.subprojectList);
+                scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
 
                 //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
                 var the_node = scope.expandSubProjectById(subproject.Id);
                 if (the_node != null)
-                    scope.agGridOptions.api.ensureNodeVisible(the_node);
+                    scope.corrAgGridOptions.api.ensureNodeVisible(the_node);
 
                 console.log("done reloading grid after removing item.");
             }
@@ -488,7 +491,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
         //returns the (last) node or null if none found.
         scope.expandSubProjectById = function (id_in) {
             var the_node = null;
-            scope.agGridOptions.api.forEachNode(function (node) {
+            scope.corrAgGridOptions.api.forEachNode(function (node) {
                 if (node.data.Id === id_in) {
                     console.log("Expanding! " + id_in);
                     node.setExpanded(true);
@@ -517,12 +520,12 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                             });
                         }
                     });
-                    scope.agGridOptions.api.setRowData(scope.subprojectList);
+                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
 
                     //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
                     var the_node = scope.expandSubProjectById(subproject.Id);
                     if (the_node != null)
-                        scope.agGridOptions.api.ensureNodeVisible(the_node);
+                        scope.corrAgGridOptions.api.ensureNodeVisible(the_node);
 
                     console.log("done reloading grid after removing item.");
                 });
@@ -564,7 +567,7 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                     angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
                     console.log("ok we found a match! -- updating! after:");
                     console.dir(scope.subprojectList[index]);
-                    scope.agGridOptions.api.redrawRows();
+                    scope.corrAgGridOptions.api.redrawRows();
                     console.log("done reloading grid.");
                 }
                 count++;
@@ -574,8 +577,8 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
                     the_promise.CorrespondenceEvents = [];
                     the_promise.Files = [];
                     scope.subprojectList.push(the_promise); //add that item
-                    scope.agGridOptions.api.setRowData([]);
-                    scope.agGridOptions.api.setRowData(scope.subprojectList);
+                    scope.corrAgGridOptions.api.setRowData([]);
+                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
 
                     console.log("done reloading grid.");
                 }
@@ -595,20 +598,20 @@ var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'Projec
         };
 
         scope.redrawRows = function () {
-            scope.agGridOptions.api.setRowData([]);
-            setTimeout(function () { scope.agGridOptions.api.setRowData(scope.subprojectList); }, 4000);
+            scope.corrAgGridOptions.api.setRowData([]);
+            setTimeout(function () { scope.corrAgGridOptions.api.setRowData(scope.subprojectList); }, 4000);
 
 
             console.log("redrawrows!");
         };
 
         scope.refreshCells = function () {
-            scope.agGridOptions.api.refreshCells();
+            scope.corrAgGridOptions.api.refreshCells();
             console.log("refreshcells!");
         };
 
         scope.refreshMemory = function () {
-            scope.agGridOptions.api.refreshInMemoryRowModel('group');
+            scope.corrAgGridOptions.api.refreshInMemoryRowModel('group');
             console.log("redrawgroupmodel!");
         };
 

@@ -6,10 +6,16 @@
          		<button ng-disabled="galleryFileSelection.length == 0" class="btn btn-danger" ng-click="deleteGalleryFile()">Delete</button>
          		
          	</div>
+             <!--
          	<div style="padding: 8px; width: 260px;">
          		<input class="form-control" ng-model="GalleryFilterOptions.filterText" placeholder="Find Images" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>
-         	</div>
-            <div class="gridStyleWide gridTable" ng-grid="gridGallery"></div>
-                <p>Number of images in this project: {{project.Images.length}}</p>
+         	</div>-->
+
+             <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                 <div id="gallery-tab-grid" class="ag-blue gridStyle-small"></div>
+             </div>
+
+             <div class="data-tab-grid-footer">Number of images in this project: {{project.Images.length}}</div>
+
         </div>
     </div>

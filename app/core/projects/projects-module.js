@@ -16,6 +16,9 @@ require([
     //tabs for the project detail page
     'app/core/projects/components/project-detail/project-detail-tab-instruments',
     'app/core/projects/components/project-detail/project-detail-tab-fishermen',
+    'app/core/projects/components/project-detail/project-detail-tab-data',
+    'app/core/projects/components/project-detail/project-detail-tab-documents',
+    'app/core/projects/components/project-detail/project-detail-tab-gallery',
 
     'app/core/projects/components/project-list/project-list',
 
@@ -31,6 +34,10 @@ require([
     projects_module.controller('project-detail-ctrl', project_detail);
     projects_module.controller('TabInstrumentsCtrl', tab_instruments);
     projects_module.controller('TabFishermenCtrl', tab_fishermen);
+    projects_module.controller('TabGalleryCtrl', tab_gallery);
+
+    projects_module.controller('TabDataCtrl', tab_data);
+    projects_module.controller('TabDocumentsCtrl', tab_docs);
     
     projects_module.controller('ModalEditFileCtrl', modal_edit_file);
     projects_module.controller('ModalNewFileCtrl', modal_new_file);

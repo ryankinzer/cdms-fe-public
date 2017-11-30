@@ -1,4 +1,5 @@
 ﻿
+
 var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','CommonService','SubprojectService', 'ServiceUtilities', 
 	'$timeout', '$location', '$anchorScroll', '$document', '$upload', 
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, CommonService, SubprojectService, ServiceUtilities, 
@@ -719,8 +720,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 			// If the user just wants to create the Subproject, we can continue without waiting.
 			//$scope.reloadSubproject($scope.subprojectId);
 			
-			$scope.subprojects = null;
-			$scope.reloadSubprojects();
+			//$scope.subprojects = null;
+			//$scope.reloadSubprojects();
 			$scope.reloadSubprojectLocations();
 			
 			$modalInstance.dismiss();

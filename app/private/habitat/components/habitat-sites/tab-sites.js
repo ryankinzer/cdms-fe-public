@@ -5,10 +5,10 @@
 
 //var METADATA_PROPERTY_SUBPROGRAM = 24; //add this to your config.js 
 
-var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 //        console.log("Inside tab sites controller...");
 
@@ -113,7 +113,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
 
 
         //grid columns for sites tab (master/subprojects)
-        scope.agColumnDefs = [  //in order the columns will display, by the way...
+        scope.sitesColumnDefs = [  //in order the columns will display, by the way...
             {
                 headerName: '', width: 130, cellRenderer: EditMasterLinksTemplate
             },
@@ -175,18 +175,18 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         ];
 
         //detail grid options correspondence events
-        scope.detailGridOptions = {
+        scope.sitesDetailGridOptions = {
             enableSorting: true,
             enableFilter: true,
             enableColResize: true,
             //rowSelection: 'single',
             //onSelectionChanged: function (params) {
             //    console.log("selection changed!");
-            //scope.agGridOptions.selectedItems = scope.agGridOptions.api.getSelectedRows();
+            //scope.sitesGridOptions.selectedItems = scope.sitesGridOptions.api.getSelectedRows();
             //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             //},
             //onFilterModified: function () {
-            //    scope.agGridOptions.api.deselectAll();
+            //    scope.sitesGridOptions.api.deselectAll();
             //},
             //selectedItems: [],
             //rowData: eventRecords,
@@ -214,11 +214,12 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
 
 
 
-        scope.agGridOptions = {
+        scope.sitesGridOptions = {
+
 
             masterDetail: true,
             detailCellRendererParams: {
-                detailGridOptions: scope.detailGridOptions,
+                detailGridOptions: scope.sitesDetailGridOptions,
                 getDetailRowData: function (params) {
                     params.successCallback(params.data.HabitatItems);
                 },
@@ -229,7 +230,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             enableFilter: true, 
             enableColResize: true,
             showToolPanel: false,
-            columnDefs: scope.agColumnDefs,
+            columnDefs: scope.sitesColumnDefs,
             rowData: null,
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             //debug: true,
@@ -237,7 +238,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
             onSelectionChanged: function (params) {
                 console.log("selection changed fired!");
                 
-                var rows = scope.agGridOptions.api.getSelectedRows();
+                var rows = scope.sitesGridOptions.api.getSelectedRows();
 
                 if (Array.isArray(rows) && rows[0] != null)
                 {
@@ -247,7 +248,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                 
             },
             //onFilterModified: function () {
-            //    scope.agGridOptions.api.deselectAll();
+            //    scope.sitesGridOptions.api.deselectAll();
             //},
             selectedItems: [],
             //isFullWidthCell: function (rowNode) {
@@ -289,7 +290,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                 }
             },*/
             onRowDoubleClicked: function (row) {
-                scope.agGridOptions.api.collapseAll();
+                scope.sitesGridOptions.api.collapseAll();
                 row.node.setSelected(true);
                 row.node.setExpanded(true);
             },
@@ -316,7 +317,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         var sites_ds_watcher = scope.$parent.$watch('project', function () {
             //console.log("Inside TAB SITES watch project... --------------------------");
 
-            if (scope.project === undefined || scope.project.Id === undefined)
+            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
                 return;
 
             sites_ds_watcher(); //turn off the watcher.
@@ -328,44 +329,46 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                 //console.log("YES! Adding Sites to tab bar...");
                 scope.$parent.ShowHabitat = true; //need to update parent scope for the map to show.
 
-                //load ag-grid but only once.
-                //if (typeof scope.ag_grid === 'undefined') {
+                $timeout(function () {
+
                     var ag_grid_div = document.querySelector('#hab-sites-grid');    //get the container id...
                     //console.dir(ag_grid_div);
-                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
-                    scope.agGridOptions.api.showLoadingOverlay(); //show loading...
-                //}
+                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.sitesGridOptions); //bind the grid to it.
+                    scope.sitesGridOptions.api.showLoadingOverlay(); //show loading...
 
-                scope.subprojectList = SubprojectService.getProjectSubprojects(scope.project.Id); //the habitat subprojects
-                //console.log("Fetching Habitat subprojects...");
+                    scope.subprojectList = SubprojectService.getProjectSubprojects(scope.project.Id); //the habitat subprojects
+                    //console.log("Fetching Habitat subprojects...");
 
-                //ok let's watch for when the subprojects come back and we can load the other things we need.
-                var watcher = scope.$watch('subprojectList.length', function () {
-                    if (scope.subprojectList === undefined || scope.subprojectList == null)
-                        return;
+                    //ok let's watch for when the subprojects come back and we can load the other things we need.
+                    var watcher = scope.$watch('subprojectList.length', function () {
+                        if (scope.subprojectList === undefined || scope.subprojectList == null)
+                            return;
 
-                    //console.log("our subproject list is back! we have " + scope.subprojectList.length + " of them.");
+                        //console.log("our subproject list is back! we have " + scope.subprojectList.length + " of them.");
 
-                    //if there are no subprojects then don't show any points on the map.
-                    if (scope.subprojectList.length === 0) {
-                        if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById')) {
-                            //scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
-                            // Note:  If we sent an empty list, it pulls all the locations.
-                            // If we supply an Id that we know does not exist (0), we get no locations, which is what we want.
-                            scope.map.locationLayer.showLocationsById(0); //
+                        //if there are no subprojects then don't show any points on the map.
+                        if (scope.subprojectList.length === 0) {
+                            if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById')) {
+                                //scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
+                                // Note:  If we sent an empty list, it pulls all the locations.
+                                // If we supply an Id that we know does not exist (0), we get no locations, which is what we want.
+                                scope.map.locationLayer.showLocationsById(0); //
+                            }
+                            return;
                         }
-                        return;
-                    }
 
-                    //build the grid based on our subprojects
-                    scope.agGridOptions.api.setRowData(scope.subprojectList);
+                        //build the grid based on our subprojects
+                        scope.sitesGridOptions.api.setRowData(scope.subprojectList);
 
-                    //console.log("ok now firing off the habitat subproject parts loading...");
-                    scope.refreshSubprojectLists();
+                        //console.log("ok now firing off the habitat subproject parts loading...");
+                        scope.refreshSubprojectLists();
 
-                    watcher();
-                });
+                        watcher();
+                    });
+                },0);
 
+            } else {
+                console.log(" we are NOT a habitat project so no Sites tab.");
             }
 
         }, true);
@@ -519,8 +522,8 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                     scope.subprojectList.splice(index, 1);
                     //console.log("ok we removed :" + index);
                     //console.dir(scope.subprojectList[index]);
-                    scope.agGridOptions.api.setRowData(scope.subprojectList);
-                    //scope.agGridOptions.api.redrawRows();
+                    scope.sitesGridOptions.api.setRowData(scope.subprojectList);
+                    //scope.sitesGridOptions.api.redrawRows();
                     //console.log("done reloading grid.");
                 }
             });
@@ -543,12 +546,12 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                 }
             });
 
-            scope.agGridOptions.api.setRowData(scope.subprojectList);
+            scope.sitesGridOptions.api.setRowData(scope.subprojectList);
 
             //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
             var the_node = scope.expandSubProjectById(edited_item.SubprojectId);
             if (the_node != null)
-                scope.agGridOptions.api.ensureNodeVisible(the_node);
+                scope.sitesGridOptions.api.ensureNodeVisible(the_node);
 
             console.log("done reloading grid after removing item.");
 
@@ -571,12 +574,12 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                         console.log("Added item " + new_item.Id + " to " + subproject.Id);
                     }
                 });
-                scope.agGridOptions.api.setRowData(scope.subprojectList);
+                scope.sitesGridOptions.api.setRowData(scope.subprojectList);
 
                 //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
                 var the_node = scope.expandSubProjectById(subproject.Id);
                 if (the_node != null)
-                    scope.agGridOptions.api.ensureNodeVisible(the_node);
+                    scope.sitesGridOptions.api.ensureNodeVisible(the_node);
 
                 console.log("done reloading grid after removing item.");
             }
@@ -585,7 +588,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         //returns the (last) node or null if none found.
         scope.expandSubProjectById = function (id_in) {
             var the_node = null;
-            scope.agGridOptions.api.forEachNode(function (node) {
+            scope.sitesGridOptions.api.forEachNode(function (node) {
                 if (node.data.Id === id_in) {
                     console.log("Expanding! " + id_in);
                     node.setExpanded(true);
@@ -653,12 +656,12 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                             });
                         }
                     });
-                    scope.agGridOptions.api.setRowData(scope.subprojectList);
+                    scope.sitesGridOptions.api.setRowData(scope.subprojectList);
 
                     //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
                     var the_node = scope.expandSubProjectById(subproject.Id);
                     if (the_node != null)
-                        scope.agGridOptions.api.ensureNodeVisible(the_node);
+                        scope.sitesGridOptions.api.ensureNodeVisible(the_node);
 
                     console.log("done reloading grid after removing item.");
                 });
@@ -755,7 +758,7 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                     angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
                     console.log("ok we found a match! -- updating! after:");
                     console.dir(scope.subprojectList[index]);
-                    scope.agGridOptions.api.redrawRows();
+                    scope.sitesGridOptions.api.redrawRows();
                     console.log("done reloading grid.");
                 }
                 count++;
@@ -765,8 +768,8 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
                     the_promise.HabitatItems = [];
                     the_promise.Files = [];
                     scope.subprojectList.push(the_promise); //add that item
-                    scope.agGridOptions.api.setRowData([]);
-                    scope.agGridOptions.api.setRowData(scope.subprojectList);
+                    scope.sitesGridOptions.api.setRowData([]);
+                    scope.sitesGridOptions.api.setRowData(scope.subprojectList);
 
                     console.log("done reloading grid.");
                 }
@@ -874,20 +877,20 @@ var tab_sites = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService'
         };
 
         scope.redrawRows = function () {
-            scope.agGridOptions.api.setRowData([]);
-            setTimeout(function () { scope.agGridOptions.api.setRowData(scope.subprojectList); }, 4000);
+            scope.sitesGridOptions.api.setRowData([]);
+            setTimeout(function () { scope.sitesGridOptions.api.setRowData(scope.subprojectList); }, 4000);
 
 
             console.log("redrawrows!");
         };
 
         scope.refreshCells = function () {
-            scope.agGridOptions.api.refreshCells();
+            scope.sitesGridOptions.api.refreshCells();
             console.log("refreshcells!");
         };
 
         scope.refreshMemory = function () {
-            scope.agGridOptions.api.refreshInMemoryRowModel('group');
+            scope.sitesGridOptions.api.refreshInMemoryRowModel('group');
             console.log("redrawgroupmodel!");
         };
 
