@@ -1559,10 +1559,9 @@ var projectDatasetsController = ['$scope', '$routeParams', 'DataService','Datast
 			*/
 			console.log("That length = " + getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length);
             //if(!scope.selectedInstrument || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
-            //if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
-            if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length < 1)
+            if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
 			{
-				//console.log("Returning...");
+				alert("Either no instrument is selected, or the selected instrument is already in the project");
                 return;
 			}
 
