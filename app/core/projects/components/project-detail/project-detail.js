@@ -1292,8 +1292,11 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			*  The selected instrument is not already associated to the project.
 			*/
             //if(!scope.selectedInstrument || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
-            if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)	
+            if(!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
+			{
+				alert("Either no instrument is selected, or the selected instrument is already in the project");
                 return;
+			}
 
             var Instruments = getMatchingByField(scope.allInstruments, scope.selectedInstrument, 'Id');
 
