@@ -9,8 +9,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
     function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
-		console.log("Inside controllers.js, projectDatasetsController...");
-		console.log("routeParams.Id = " + routeParams.Id);
+		//console.log("Inside controllers.js, projectDatasetsController...");
+		//console.log("routeParams.Id = " + routeParams.Id);
 		
 		scope.activities = null;
 		
@@ -96,7 +96,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             project_watcher();
 
 			console.log("Inside project-detail -- our project just loaded...");
-
 			console.log("scope.project.Id = " + scope.project.Id);
 			$rootScope.projectId = scope.project.Id;
 				
@@ -329,7 +328,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
 		
 		scope.refreshProjectLocations = function(){
-			console.log("Inside controllers.js, refreshProjectLocations...");
+			//console.log("Inside controllers.js, refreshProjectLocations...");
 			ProjectService.clearProject();
 			scope.project = null;
 			scope.project = ProjectService.getProject(parseInt(scope.projectId));

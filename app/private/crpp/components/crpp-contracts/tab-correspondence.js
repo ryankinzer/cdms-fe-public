@@ -9,7 +9,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
     function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
-        console.log("Inside tab correspondence controller...");
+        //console.log("Inside tab correspondence controller...");
 
        
         //this is for the crpp/subproject correspondence tab below - might can move this all out sometime...
@@ -87,8 +87,6 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
             var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
             editBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                console.log("detail param: ");
-                console.dir(detailparam);
                 scope.openCorrespondenceEventForm(subproject, detailparam.data); //parent subproject, detail line.
             });
             div.appendChild(editBtn);
@@ -153,9 +151,8 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
             { field: 'ProjectLead', headerName: 'Project Lead', width: 150 },
             { field: 'Closed', headerName: 'Closed?', width: 80 },
             {
-                field: 'Comments', headerName: 'Comments', width: 300, cellStyle: {
-                    'white-space': 'normal'
-                }
+                //note: white-space here causes word-wrap
+                field: 'Comments', headerName: 'Comments', width: 300, cellStyle: { 'white-space': 'normal' }
             },
             { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150 },
             { field: 'County', headerName: 'County', width: 150 },
@@ -333,18 +330,18 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
 
         //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
         var crpp_ds_watcher = scope.$parent.$watch('project', function () {
-            console.log("Inside TAB CORRESPONDENCE watch project... --------------------------");
+            //console.log("Inside TAB CORRESPONDENCE watch project... --------------------------");
 
             if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
                 return;
 
-            console.log("OK TAB CORRESPONDNEC .  The project is loaded...");
+            //console.log("OK TAB CORRESPONDNEC .  The project is loaded...");
 
             crpp_ds_watcher(); //turn off watcher
 
             if (scope.isCRPPProject(scope.project)) {
 
-                console.log("Adding Correspondence to tab bar...");
+                console.log("Adding Correspondence to tab bar because we are a CRPP project...");
                 scope.ShowSubproject = true;
 
                 $timeout(function () {
@@ -355,7 +352,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                     scope.corrAgGridOptions.api.showLoadingOverlay(); //show loading...
 
                     scope.subprojectList = SubprojectService.getSubprojects();
-                    console.log("Fetching CRPP subprojects...");
+                    //console.log("Fetching CRPP subprojects...");
 
                     var watcher = scope.$watch('subprojectList.length', function () {
                         if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
@@ -379,11 +376,11 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         //if you are creating a new one for the project, the ce_row should be empty {}
         // if you are editing an existing one, send in the project and the ce_row.
         scope.openCorrespondenceEventForm = function (subproject, ce_row) {
-            console.log("Inside openCorrespondenceEventForm...")
+            //console.log("Inside openCorrespondenceEventForm...")
 
             scope.viewSubproject = subproject;
-            console.log("ok subproject set: ");
-            console.dir(scope.viewSubproject);
+            //console.log("ok subproject set: ");
+            //console.dir(scope.viewSubproject);
 
             scope.ce_row = ce_row;
 
@@ -395,7 +392,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         };
 
         scope.removeCrppSubproject = function (subproject) {
-            console.log("Inside removeViewSubproject, scope is next...");
+            //console.log("Inside removeViewSubproject, scope is next...");
 
             if (!subproject)
                 return;
@@ -407,7 +404,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
             } else {
                 scope.verifyAction = "Delete";
                 scope.verifyingCaller = "CrppSubproject";
-                console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " + scope.viewSubproject.Id);
+                //console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " + scope.viewSubproject.Id);
                 var modalInstance = $modal.open({
                     templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
                     controller: 'ModalVerifyActionCtrl',
@@ -423,11 +420,11 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
             scope.subprojectList.forEach(function (item, index) {
                 if (item.Id === scope.viewSubproject.Id) {
                     scope.subprojectList.splice(index, 1);
-                    console.log("ok we removed :" + index);
-                    console.dir(scope.subprojectList[index]);
+                    //console.log("ok we removed :" + index);
+                    //console.dir(scope.subprojectList[index]);
                     scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
                     //scope.corrAgGridOptions.api.redrawRows();
-                    console.log("done reloading grid.");
+                    //console.log("done reloading grid.");
                 }
             });
         };
@@ -443,7 +440,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                     item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
                         if (event_item.Id === edited_event.Id) {
                             angular.extend(event_item, edited_event); //replace the data for that item
-                            console.log("OK!! we edited that correspondence event");
+                            //console.log("OK!! we edited that correspondence event");
                         }
                     });
                 }
@@ -468,13 +465,13 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
             var subproject = getById(scope.subprojectList, new_event.SubprojectId);
 
             if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
-                console.log("no subproject... hmm ... i guess we should reload everything...");
+                console.log("no subproject...");
             } else {
                 scope.subprojectList.forEach(function (item, index) {
                     if (item.Id === subproject.Id) {
                         item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort - this was already updated in the be
                         item.CorrespondenceEvents.push(new_event);
-                        console.log("Added event " + new_event.Id + " to " + subproject.Id);
+                        //console.log("Added event " + new_event.Id + " to " + subproject.Id);
                     }
                 });
                 scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
@@ -493,7 +490,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
             var the_node = null;
             scope.corrAgGridOptions.api.forEachNode(function (node) {
                 if (node.data.Id === id_in) {
-                    console.log("Expanding! " + id_in);
+                    //console.log("Expanding! " + id_in);
                     node.setExpanded(true);
                     the_node = node;
                 }
@@ -515,7 +512,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                             item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
                                 if (event_item.Id === event.Id) {
                                     item.CorrespondenceEvents.splice(event_item_index, 1);
-                                    console.log("OK!! we removed that correspondence event");
+                                    //console.log("OK!! we removed that correspondence event");
                                 }
                             });
                         }
@@ -539,7 +536,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
             scope.createNewSubproject = true;
             //scope.subprojectList = null;
             scope.subprojectOptions = null;
-            console.log("scope.createNewSubproject = " + scope.createNewSubproject);
+            //console.log("scope.createNewSubproject = " + scope.createNewSubproject);
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
                 controller: 'ModalCreateSubprojectCtrl',
@@ -551,7 +548,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         //fired after a user saves a new or edited project.
         // we update the item in the main subproject array and then refresh the grid.
         scope.postSaveSubprojectUpdateGrid = function (the_promise) {
-            console.log("ok - we saved so update the grid...");
+            //console.log("ok - we saved so update the grid...");
             var total = scope.subprojectList.length;
             var count = 0;
             var updated = false;
@@ -565,28 +562,28 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                         delete the_promise.CorrespondenceEvents; //remove this before the copy.
 
                     angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
-                    console.log("ok we found a match! -- updating! after:");
-                    console.dir(scope.subprojectList[index]);
+                    //console.log("ok we found a match! -- updating! after:");
+                    //console.dir(scope.subprojectList[index]);
                     scope.corrAgGridOptions.api.redrawRows();
-                    console.log("done reloading grid.");
+                    //console.log("done reloading grid.");
                 }
                 count++;
                 if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
                 {
-                    console.log("ok we found never a match! -- adding!");
+                    //console.log("ok we found never a match! -- adding!");
                     the_promise.CorrespondenceEvents = [];
                     the_promise.Files = [];
                     scope.subprojectList.push(the_promise); //add that item
                     scope.corrAgGridOptions.api.setRowData([]);
                     scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
 
-                    console.log("done reloading grid.");
+                    //console.log("done reloading grid.");
                 }
             });
         };
 
         scope.editCrppSubproject = function (subproject) {
-            console.log("editCrppSubproject...");
+            //console.log("editCrppSubproject...");
 
             scope.viewSubproject = subproject;
 
@@ -600,19 +597,14 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         scope.redrawRows = function () {
             scope.corrAgGridOptions.api.setRowData([]);
             setTimeout(function () { scope.corrAgGridOptions.api.setRowData(scope.subprojectList); }, 4000);
-
-
-            console.log("redrawrows!");
         };
 
         scope.refreshCells = function () {
             scope.corrAgGridOptions.api.refreshCells();
-            console.log("refreshcells!");
         };
 
         scope.refreshMemory = function () {
             scope.corrAgGridOptions.api.refreshInMemoryRowModel('group');
-            console.log("redrawgroupmodel!");
         };
 
         //looks at the metadata setting to see if it is a crpp project

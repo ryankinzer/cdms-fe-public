@@ -2,16 +2,11 @@
 
 var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document, $timeout) {
 
-
-    var fileLinkTemplate = '<a href="{{row.getProperty(\'Link\')}}" target="_blank" title="{{row.getProperty(\'Link\')}}">' +
-        '<img src="assets/images/file_image.png" width="100px"/><br/><div class="ngCellText" ng-class="col.colIndex()">' +
-        '</a>' +
-        '</div>';
-
-    var uploadedBy = '<div class="ngCellText" ng-class="col.colIndex()">' +
-        '{{row.getProperty("UploadDate")|date}} by {{row.getProperty("User.Fullname")}}' +
-        '</div>';
-
+    var UploadedByTemplate = function (param) {
+        console.dir(param);
+        console.log("uploaded by template!");
+        return moment(param.node.data.UploadDate).format('L') + " by " + param.node.data.User.Fullname;
+    };
 
     var EditLinksTemplate = function (param) {
 
@@ -36,14 +31,19 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
     };
 
 
-    var linkTemplate = function (param) {
+    var ImageTemplate = function (param) {
 
         var div = document.createElement('div');
 
         var linkBtn = document.createElement('a');
-        linkBtn.href = '#/' + param.data.activitiesRoute + '/' + param.data.Id;
-        linkBtn.innerHTML = param.data.Name;
+        linkBtn.href = param.data.Link;
+        linkBtn.target = "_blank";
 
+        var img = document.createElement('img');
+        img.src = param.data.Link;
+        img.width = 150;
+
+        linkBtn.appendChild(img);
         div.appendChild(linkBtn);
 
         return div;
@@ -65,34 +65,31 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
             //console.dir(scope.galleryGridOptions.selectedItems);
             //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
         },
+        getRowHeight: function () { return 120; },
         onFilterModified: function () {
             scope.galleryGridOptions.api.deselectAll();
         },
         //selectedItems: [],
         columnDefs:
         [
-            { cellRenderer: EditLinksTemplate, width: 80 },
-            { field: 'Name', headerName: 'File Name', width: 250, sort: 'asc' },
-            { field: 'Title', headerName: 'Title' },
-            { field: 'Description', headerName: 'Description' },
-            { field: 'Uploaded', headerName: "Uploaded", width: 200 },
+            { cellRenderer: EditLinksTemplate, width: 120 },
+            { headerName: 'File', cellRenderer: ImageTemplate, width: 190 },
+            { field: 'Title', headerName: 'Title', width: 250, sort: 'asc' },
+            { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300 },
+            { field: 'Uploaded', headerName: "Uploaded", width: 200, cellRenderer: UploadedByTemplate },
         ]
     };
 
     $document.ready(function () {
-        console.log("------------ setting up watcvher after doc ready ");
         //after the project files are loaded by our parent, they are split into two arrays. project.Images is ours.
         var gallery_ds_watcher = scope.$parent.$watch('project', function () {
 
             if (typeof scope.project === 'undefined' || typeof scope.project.Images === 'undefined')
                 return;
 
-            console.log("Gallery tab has a project loaded!");
-
             gallery_ds_watcher(); //turn off watcher
 
             //////// Load the gallery grid
-            console.log(" ---------- OK gallery has window onload ");
             var ag_grid_div = document.querySelector('#gallery-tab-grid');    //get the container id...
             console.dir(ag_grid_div);
 

@@ -2,16 +2,10 @@
 
 var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $timeout) {
 
-    
-    var fileLinkTemplate = '<a href="{{row.getProperty(\'Link\')}}" target="_blank" title="{{row.getProperty(\'Link\')}}">' +
-        '<img src="assets/images/file_image.png" width="100px"/><br/><div class="ngCellText" ng-class="col.colIndex()">' +
-        '</a>' +
-        '</div>';
 
-    var uploadedBy = '<div class="ngCellText" ng-class="col.colIndex()">' +
-        '{{row.getProperty("UploadDate")|date}} by {{row.getProperty("User.Fullname")}}' +
-        '</div>';
-
+    var UploadedByTemplate = function (param) {
+        return moment(param.node.data.UploadDate).format('L') + " by " + param.node.data.User.Fullname;
+    };
 
     var EditLinksTemplate = function (param) {
 
@@ -34,25 +28,18 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
 
         return div;
     };
+    
+    var LinkTemplate = function (param) {
 
-
-    var linkTemplate = function (param) {
-   
         var div = document.createElement('div');
 
         var linkBtn = document.createElement('a');
-        linkBtn.href = '#/' + param.data.activitiesRoute + '/' + param.data.Id;
-        linkBtn.innerHTML = param.data.Name;
-
+        linkBtn.href = param.data.Link;
+        linkBtn.innerHTML = param.data.Title;
+        linkBtn.target = "_blank";
         div.appendChild(linkBtn);
-
         return div;
     };
-
-    //scope.fileSelection = [];
-    //scope.FileFilterOptions = {};
-    //scope.GalleryFilterOptions = {};
-
 
     ///////////////documents grid
     scope.docsGridOptions = {
@@ -72,10 +59,10 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
         columnDefs:
         [
             { cellRenderer: EditLinksTemplate, width: 80 },
-            { field: 'Name', headerName: 'File Name', width: 250, sort: 'asc' },
-            { field: 'Title', headerName: 'Title' },
+            //{ field: 'Name', headerName: 'File', width: 250, sort: 'asc', cellRenderer: LinkTemplate },
+            { field: 'Title', headerName: 'Title', sort: 'asc', cellRenderer: LinkTemplate, width: 250 },
             { field: 'Description', headerName: 'Description' },
-            { field: 'Uploaded', headerName: "Uploaded",  width: 200 },
+            { field: 'Uploaded', headerName: "Uploaded", width: 200, cellRenderer: UploadedByTemplate },
         ]
     };
 
@@ -88,14 +75,11 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
             if (typeof scope.project.Docs === 'undefined' || scope.project.Docs.length === 0)
                 return;
 
-            console.log("Documents tab has docs loaded!");
-
             docs_ds_watcher(); //turn off watcher
 
             ///////// Load the docs grid
             $timeout(function () {
 
-                console.log("************************************************************************* angular ready... documents ");
                 var ag_grid_div = document.querySelector('#docs-tab-grid');    //get the container id...
 
                 scope.docstab_ag_grid = new agGrid.Grid(ag_grid_div, scope.docsGridOptions); //bind the grid to it.
@@ -109,11 +93,6 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
     });
     
     ///////// file handling for Documents tab
-    
-//    scope.newFile = function () {
-//        scope.uploadFileType = "document";
-//        scope.openNewFileModal();
-//    };
 
     //open the new file modal
     scope.newFile = function () {

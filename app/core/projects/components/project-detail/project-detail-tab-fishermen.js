@@ -7,61 +7,44 @@ var tab_fishermen = ['$scope', '$routeParams', 'SubprojectService', 'ProjectServ
     function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 
-        console.log("Inside tab fishermen controller...");
+        //console.log("Inside tab fishermen controller...");
         
         scope.fishermanList = null;
         scope.theFishermen = null;
 
+
         //watch the datasets on the parent-detail page to load... once they do, check to see if we should show our tab
-        var f_ds_watcher = scope.$parent.$watch('datasets', function () {
-            console.log("Inside TAB FISHERMEN watch datasets... --------------------------");
+        var f_ds_watcher = scope.$parent.$watch('project', function () {
 
-            //console.log("parent datasets");
-            //console.dir(scope.$parent.datasets);
-            //console.log("our datasets");
-            //console.dir(scope.datasets);
-
-            if (scope.datasets === undefined || scope.datasets.length === 0)
+            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
                 return;
 
-            console.log("OK TAB FISHERMEN .  The datasets are loaded...");
+            f_ds_watcher(); //turn off the watcher.
 
-            //scope.datasets = scope.$parent.datasets; //but i dont' want to do this.
-            f_ds_watcher(); //turn off watcher
-
-            for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
-
-                console.log("Woohoo! are we creel?");
-                console.dir(scope.project);
-
-                if (scope.datasets[i].Datastore.TablePrefix === "CreelSurvey") {
-                    console.log("Adding Fishermen to tab bar...");
-                    scope.ShowFishermen = true;
-                    scope.fishermenList = ProjectService.getFishermen(); // All fishermen, but only CreelSurvey has fishermen.//
-                    scope.theFishermen = ProjectService.getProjectFishermen(scope.datasets[i].ProjectId);
-
-                    // Note:  If we are on Harvest, it has only one dataset.
-                    //scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
-                }
+            if (scope.isHarvestProject(scope.project)) {
+                console.log("Adding Fishermen to tab bar because we are a Harvest project...");
+                scope.ShowFishermen = true;
+                scope.fishermenList = ProjectService.getFishermen(); // All fishermen, but only CreelSurvey has fishermen.//
+                scope.theFishermen = ProjectService.getProjectFishermen(scope.project.Id);
             }
         }, true);
 
 
 
         scope.$watch('fishermenList', function () {
-            console.log("Inside watch, fishermenList");
+            //console.log("Inside watch, fishermenList");
             //if (typeof scope.fishermenList.$resolved === 'undefined')
             if (!scope.fishermenList) {
-                console.log("scope.fishermenList has not loaded.");
+                //console.log("scope.fishermenList has not loaded.");
                 return;
             }
             else if (scope.fishermenList.length === 0) {
-                console.log("No fishermen found yet...");
+                //console.log("No fishermen found yet...");
                 return;
             }
 
-            console.log("scope.fishermenList is next..");
-            console.dir(scope.fishermenList);
+            //console.log("scope.fishermenList is next..");
+            //console.dir(scope.fishermenList);
 
             // If we switch the parameters for the makeObjects, like this makeObjects(scope.fishermenList, 'FullName', 'Id'), it will put them in alpha order by name.
             // However, we must test this first, to verify that it does not mess anything up. ~GC tested the idea; it needed more work.  It does not work in it simplicity here.
@@ -72,22 +55,22 @@ var tab_fishermen = ['$scope', '$routeParams', 'SubprojectService', 'ProjectServ
             //	console.dir(fisherman);
             //});
 
-            console.log("scope.fishermenOptions is next...");
-            console.dir(scope.fishermenOptions);
+            //console.log("scope.fishermenOptions is next...");
+            //console.dir(scope.fishermenOptions);
         });	
 
 
         //when the parent project is loaded...
         scope.$parent.$watch('project.Id', function () {
 
-            console.log("Parent project is loaded! watching from fishermen tab ---------------- >>>>>>>>>>>>>>");
+            //console.log("Parent project is loaded! watching from fishermen tab");
             
             if ((typeof scope.viewFisherman !== 'undefined') && (scope.viewFisherman !== null)) {
                 scope.viewFisherman = getMatchingByField(scope.project.Fishermen, scope.viewFisherman.Id, 'Id')[0];
                 // The DateAdded is in UTC format and we need to display only YYYY-MM-DD format.
                 // The value is a string, and JavaScript Date
-                console.log("scope.viewFisherman is next...");
-                console.dir(scope.viewFisherman);
+                //console.log("scope.viewFisherman is next...");
+                //console.dir(scope.viewFisherman);
 
                 // If we just deleted a fisherman from the project, scope.viewFisherman will be null or undefined now, after the getMatchingByField function call above.
                 // So we don't want to try accessing scope.viewFisherman.DateAdded at this time.
@@ -184,6 +167,11 @@ var tab_fishermen = ['$scope', '$routeParams', 'SubprojectService', 'ProjectServ
                 scope: scope, //very important to pass the scope along...
             });
         };
+
+        //looks at the metadata setting to see if it is a harvest project
+        scope.isHarvestProject = function (a_project) {
+            return (a_project.MetadataValue[METADATA_PROPERTY_SUBPROGRAM]) === "Harvest";
+        }
 
 
 }];

@@ -6,7 +6,7 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
     function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
-        console.log("Inside tab instruments controller...");
+        //console.log("Inside tab instruments controller...");
 
         //        console.log("I wonder what I have access to here?!");
         //        console.dir(scope);
@@ -19,7 +19,7 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
 
         //watch the datasets on the parent-detail page to load... once they do, check to see if we should show our tab
         var inst_ds_watcher = scope.$parent.$watch('datasets', function () {
-            console.log("Inside TAB INSTRUMENTS watch datasets... --------------------------");
+            //console.log("Inside TAB INSTRUMENTS watch datasets... --------------------------");
 
             //console.log("parent datasets");
             //console.dir(scope.$parent.datasets);
@@ -29,7 +29,7 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
             if (scope.datasets === undefined || scope.datasets.length === 0)
                 return;
 
-            console.log("OK TAB INSTRUMENTS .  The datasets are loaded...");
+            //console.log("OK TAB INSTRUMENTS .  The datasets are loaded...");
 
             //scope.datasets = scope.$parent.datasets; //but i dont' want to do this.
 
@@ -37,8 +37,8 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
 
             for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
 
-                console.log("Woohoo! are we water tempproject?"); //TODO!! don't look at the dataset, look at the project type
-                console.dir(scope.project);
+                //console.log("Woohoo! are we water tempproject?"); //TODO!! don't look at the dataset, look at the project type
+                //console.dir(scope.project);
 
                 if (scope.datasets[i].Datastore.TablePrefix === "WaterTemp") {
                     console.log("Adding instruments to tab bar...");
@@ -58,7 +58,7 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
         //when the parent project is loaded...
         scope.$parent.$watch('project.Id', function () {
 
-            console.log("Parent project is loaded! watching from instruments tab ---------------- >>>>>>>>>>>>>>");
+            //console.log("Parent project is loaded! watching from instruments tab ---------------- >>>>>>>>>>>>>>");
 
             //reload if it is already selected -- this is what allows you to see the new accuracycheck/characteristic immediately after it is added
             if (scope.viewInstrument)

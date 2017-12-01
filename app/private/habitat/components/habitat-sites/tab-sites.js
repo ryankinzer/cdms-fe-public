@@ -215,8 +215,6 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
 
         scope.sitesGridOptions = {
-
-
             masterDetail: true,
             detailCellRendererParams: {
                 detailGridOptions: scope.sitesDetailGridOptions,
@@ -326,7 +324,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             //console.dir(scope.project);
                 
             if (scope.isHabitatProject(scope.project)) {
-                //console.log("YES! Adding Sites to tab bar...");
+                console.log("Turning on Sites tab because we are a habitat project...");
                 scope.$parent.ShowHabitat = true; //need to update parent scope for the map to show.
 
                 $timeout(function () {
@@ -436,7 +434,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         };
 
         scope.matchFundersToSubproject = function () {
-            console.log("Inside controllers.js, scope.matchFundersToSubproject...");
+            //console.log("Inside controllers.js, scope.matchFundersToSubproject...");
             //console.dir(scope.project.FunderList);
 
             var strFunders = "";
@@ -452,7 +450,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         };
 
         scope.matchCollaboratorToSubproject = function () {
-            console.log("Inside controllers.js, scope.matchCollaboratorToSubproject...");
+            //console.log("Inside controllers.js, scope.matchCollaboratorToSubproject...");
             //console.dir(scope.project.CollaboratorList);
 
             var strCollaborators = "";
@@ -470,7 +468,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         //open the habitat item form for creating (if hi_row is {}) or editing (if hi_row is the habitat item)
         scope.openHabitatItemForm = function (subproject, hi_row) {
-            console.log("Inside openHabitatItemForm...")
+            //console.log("Inside openHabitatItemForm...")
             //console.dir(scope);
 
             scope.viewSubproject = subproject;
@@ -484,7 +482,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         };
 
         scope.openGeospatialDataPage = function () {
-            console.log("Inside openGeospatialDataPage...");
+            //console.log("Inside openGeospatialDataPage...");
 
             var strUrl = "http://ctuirgis.maps.arcgis.com/apps/webappviewer/index.html?id=1669df9b26874c9eb49cc41ec4d57ec5";
             //var strWindowFeatures = "location=yes,height=570,width=520,scrollbars=yes,status=yes";			
@@ -497,11 +495,11 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         //if you are creating a new one for the project, the ce_row should be empty {}
         // if you are editing an existing one, send in the project and the ce_row.
         scope.openCorrespondenceEventForm = function (subproject, ce_row) {
-            console.log("Inside openCorrespondenceEventForm...")
+            //console.log("Inside openCorrespondenceEventForm...")
 
             scope.viewSubproject = subproject;
-            console.log("ok subproject set: ");
-            console.dir(scope.viewSubproject);
+            //console.log("ok subproject set: ");
+            //console.dir(scope.viewSubproject);
 
             scope.ce_row = ce_row;
 
@@ -531,7 +529,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         //called by the modal once the habitat item is successfully saved.
         scope.postEditHabitatItemUpdateGrid = function (edited_item) {
-            console.log("postEditHabitatItemUpdateGrid..." + edited_item.Id + " for subproject " + edited_item.SubprojectId);
+            //console.log("postEditHabitatItemUpdateGrid..." + edited_item.Id + " for subproject " + edited_item.SubprojectId);
 
             //edit our correspondence item and then reload the grid.
             scope.subprojectList.forEach(function (item, index) {
@@ -565,7 +563,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             var subproject = getById(scope.subprojectList, new_item.SubprojectId);
 
             if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
-                console.log("no subproject... hmm ... i guess we should reload everything...");
+                console.log("no subproject...");
             } else {
                 scope.subprojectList.forEach(function (item, index) {
                     if (item.Id === subproject.Id) {
@@ -590,7 +588,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             var the_node = null;
             scope.sitesGridOptions.api.forEachNode(function (node) {
                 if (node.data.Id === id_in) {
-                    console.log("Expanding! " + id_in);
+                    //console.log("Expanding! " + id_in);
                     node.setExpanded(true);
                     the_node = node;
                 }
@@ -600,7 +598,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         scope.removeHabitatFileItem = function (subproject, item) {
             $scope.remove = function () {
-                console.log("Inside ModalAddHabitatItemCtrl, remove...");
+                //console.log("Inside ModalAddHabitatItemCtrl, remove...");
                 //console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
                 //console.log("$scope.hi_row is next...");
                 //console.dir($scope.hi_row);
@@ -639,7 +637,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         //removes the habitat item and then updates the grid
         scope.removeHabitatFileItem = function (subproject, in_item) {
-            console.log("removeHabitatFileItem..." + in_item.Id + " for subproject " + subproject.Id);
+            //console.log("removeHabitatFileItem..." + in_item.Id + " for subproject " + subproject.Id);
 
             if (confirm('Are you sure that you want to delete this Habitat Item?')) {
                 var promise = SubprojectService.removeHabitatItem(scope.project.Id, subproject.Id, in_item.Id, scope.DatastoreTablePrefix);
@@ -671,21 +669,21 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
 
         scope.removeHabitatSubproject = function (subproject) {
-            console.log("Inside removeHabitatSubproject, scope is next...");
+            //console.log("Inside removeHabitatSubproject, scope is next...");
 
             if (!subproject)
                 return;
 
             scope.viewSubproject = subproject;
 
-            console.log("removing scope.projectId = " + scope.projectId);
+            //console.log("removing scope.projectId = " + scope.projectId);
             if (scope.viewSubproject.HabitatItems.length > 0) {
                 alert("This project has associated Habitat items.  Those must be deleted first.");
             }
             else {
                 scope.verifyAction = "Delete";
                 scope.verifyingCaller = "HabSubproject";
-                console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " + scope.viewSubproject.Id);
+                //console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " + scope.viewSubproject.Id);
                 var modalInstance = $modal.open({
                     templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
                     controller: 'ModalVerifyActionCtrl',
@@ -700,7 +698,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             scope.createNewSubproject = true;
             //scope.subprojectList = null;
             scope.subprojectOptions = null;
-            console.log("scope.createNewSubproject = " + scope.createNewSubproject);
+            //console.log("scope.createNewSubproject = " + scope.createNewSubproject);
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
                 controller: 'ModalCreateHabSubprojectCtrl',
@@ -741,7 +739,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         //fired after a user saves a new or edited project.
         // we update the item in the main subproject array and then refresh the grid.
         scope.postSaveHabitatSubprojectUpdateGrid = function (the_promise) {
-            console.log("ok - we saved so update the grid...");
+            //console.log("ok - we saved so update the grid...");
             var total = scope.subprojectList.length;
             var count = 0;
             var updated = false;
@@ -749,29 +747,29 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                 if (item.Id === the_promise.Id) {
                     updated = true;
 
-                    console.log("ok we found a match! -- updating! before:");
-                    console.dir(scope.subprojectList[index]);
+                    //console.log("ok we found a match! -- updating! before:");
+                    //console.dir(scope.subprojectList[index]);
 
                     if (the_promise.HabitatItems !== undefined)
                         delete the_promise.HabitatItems; //remove this before the copy.
 
                     angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
-                    console.log("ok we found a match! -- updating! after:");
-                    console.dir(scope.subprojectList[index]);
+                    //console.log("ok we found a match! -- updating! after:");
+                    //console.dir(scope.subprojectList[index]);
                     scope.sitesGridOptions.api.redrawRows();
-                    console.log("done reloading grid.");
+                    //console.log("done reloading grid.");
                 }
                 count++;
                 if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
                 {
-                    console.log("ok we found never a match! -- adding!");
+                    //console.log("ok we found never a match! -- adding!");
                     the_promise.HabitatItems = [];
                     the_promise.Files = [];
                     scope.subprojectList.push(the_promise); //add that item
                     scope.sitesGridOptions.api.setRowData([]);
                     scope.sitesGridOptions.api.setRowData(scope.subprojectList);
 
-                    console.log("done reloading grid.");
+                    //console.log("done reloading grid.");
                 }
             });
 
@@ -815,8 +813,8 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             console.log("Inside controllers.addSubproject.");
             //console.log("scope is next...");
             //console.dir(scope);
-            console.log("scope.selectedSubproject is next...");
-            console.dir(scope.selectedSubproject);
+            //console.log("scope.selectedSubproject is next...");
+            //console.dir(scope.selectedSubproject);
 
             if (!scope.selectedSubproject || scope.selectedSubproject === null || getMatchingByField(scope.project.CrppSubProjects, scope.selectedSubproject, 'Id').length > 0)
                 return;
@@ -834,7 +832,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         scope.editHabitatSubproject = function (subproject) {
 
-            console.log("Inside editHabitatSubproject...");
+            //console.log("Inside editHabitatSubproject...");
 
             scope.viewSubproject = subproject; //set this var for the modal controller.
 
@@ -863,8 +861,8 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
                 });
             });
-            console.log("scope.thisProjectsLocationObjects is next...");
-            console.dir(scope.thisProjectsLocationObjects);
+            //console.log("scope.thisProjectsLocationObjects is next...");
+            //console.dir(scope.thisProjectsLocationObjects);
 
             if (scope.thisProjectsLocationObjects.length > 0) {
                 if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
@@ -881,17 +879,17 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             setTimeout(function () { scope.sitesGridOptions.api.setRowData(scope.subprojectList); }, 4000);
 
 
-            console.log("redrawrows!");
+            //console.log("redrawrows!");
         };
 
         scope.refreshCells = function () {
             scope.sitesGridOptions.api.refreshCells();
-            console.log("refreshcells!");
+            //console.log("refreshcells!");
         };
 
         scope.refreshMemory = function () {
             scope.sitesGridOptions.api.refreshInMemoryRowModel('group');
-            console.log("redrawgroupmodel!");
+            //console.log("redrawgroupmodel!");
         };
 
         //looks at the metadata setting to see if it is a habitat project
