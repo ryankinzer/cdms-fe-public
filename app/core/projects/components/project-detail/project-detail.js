@@ -141,9 +141,9 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     //note: Subproject_CrppId indicates the file belongs to a subproject (not just crpp)
                     if (file.DatasetId === null && file.Subproject_CrppId === null)
                     {
-                        if (file.FileType.Name === "Image") {
+                        if (file.FileType.Name === "Image") { //images go to 'Gallery' tab
                             scope.project.Images.push(file);
-                        } else {
+                        } else { //everything else goes to 'Documents' tab
                             scope.project.Docs.push(file);
                         }
                     }

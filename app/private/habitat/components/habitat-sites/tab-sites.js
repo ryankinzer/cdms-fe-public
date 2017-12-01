@@ -115,7 +115,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         //grid columns for sites tab (master/subprojects)
         scope.sitesColumnDefs = [  //in order the columns will display, by the way...
             {
-                headerName: '', width: 130, cellRenderer: EditMasterLinksTemplate
+                width: 130, cellRenderer: EditMasterLinksTemplate
             },
             {
                 field: 'ProjectName', headerName: 'Name', width: 325, cellRenderer: 'group',

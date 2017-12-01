@@ -71,7 +71,7 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
         selectedItems: [],
         columnDefs:
         [
-            { field: '', cellRenderer: EditLinksTemplate, width: 80 },
+            { cellRenderer: EditLinksTemplate, width: 80 },
             { field: 'Name', headerName: 'File Name', width: 250, sort: 'asc' },
             { field: 'Title', headerName: 'Title' },
             { field: 'Description', headerName: 'Description' },

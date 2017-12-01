@@ -123,7 +123,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         //grid columns for crpp correspondence tab (master/subprojects)
         scope.corrAgColumnDefs = [  //in order the columns will display, by the way...
             {
-                headerName: '', width: 140, cellRenderer: EditMasterLinksTemplate
+                width: 140, cellRenderer: EditMasterLinksTemplate
             },
             {
                 headerName: 'ID',
