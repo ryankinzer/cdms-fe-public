@@ -13,6 +13,28 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
         '</div>';
 
 
+    var EditLinksTemplate = function (param) {
+
+        var div = document.createElement('div');
+
+        var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+        editBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            scope.openEditFileModal(param.data, scope.afterEditDocsFile);
+        });
+        div.appendChild(editBtn);
+        div.appendChild(document.createTextNode("|"));
+
+        var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
+        delBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            scope.openDeleteFileModal(param.data, scope.afterDeleteDocsFile);
+        });
+        div.appendChild(delBtn);
+
+        return div;
+    };
+
 
     var linkTemplate = function (param) {
    
@@ -49,7 +71,8 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
         selectedItems: [],
         columnDefs:
         [
-            { field: 'Name', headerName: 'File Name',  width: 250 },
+            { field: '', cellRenderer: EditLinksTemplate, width: 80 },
+            { field: 'Name', headerName: 'File Name', width: 250, sort: 'asc' },
             { field: 'Title', headerName: 'Title' },
             { field: 'Description', headerName: 'Description' },
             { field: 'Uploaded', headerName: "Uploaded",  width: 200 },
@@ -86,19 +109,56 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
     });
     
     ///////// file handling for Documents tab
-    scope.deleteFile = function () {
-        scope.openDeleteFileModal(scope.fileSelection[0]);
-    };
-
-    scope.editFile = function () {
-        scope.openEditFileModal(scope.fileSelection[0]);
-    };
-
-    scope.newFile = function () {
-        scope.uploadFileType = "document";
-        scope.openNewFileModal();
-    };
     
+//    scope.newFile = function () {
+//        scope.uploadFileType = "document";
+//        scope.openNewFileModal();
+//    };
+
+    //open the new file modal
+    scope.newFile = function () {
+        scope.openNewFileModal(scope.afterNewDocsFile);
+    };
+
+    //after create a new file
+    scope.afterNewDocsFile = function (new_item) {
+        //console.log("After saved a doc");
+        //console.dir(new_item[0]);
+        scope.project.Docs.push(new_item[0]);
+        scope.project.Files.push(new_item[0]);
+        scope.docsGridOptions.api.setRowData(scope.project.Docs);
+        console.log("done reloading grid after editing docs item.");
+    };
+
+
+    //remove an item from our project docs list and then reload the grid.
+    scope.afterDeleteDocsFile = function (removed_item) {        
+        scope.project.Docs.forEach(function (item, index) {
+            console.log("item id is " + item.Id + " looking for " + removed_item.File.Id);
+            if (item.Id === removed_item.File.Id) {
+                console.log("FOund an ID that matches for delete");
+                scope.project.Docs.splice(index, 1);
+            }
+        });
+
+        scope.removeFromFiles(removed_item);
+
+        scope.docsGridOptions.api.setRowData(scope.project.Docs);
+        console.log("done reloading grid after removing doc item.");
+    };
+
+    //edit our project docs list and then reload the grid.
+    scope.afterEditDocsFile = function (edited_item) {
+        scope.project.Docs.forEach(function (item, index) {
+            if (item.Id === edited_item.Id) {
+                angular.extend(hab_item, edited_item); //replace the data for that item
+            }
+        });
+
+        scope.docsGridOptions.api.setRowData(scope.project.Docs);
+        console.log("done reloading grid after editing doc item.");
+    };
+
 }];
 
 

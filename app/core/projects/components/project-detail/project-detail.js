@@ -125,37 +125,30 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     return;
 
                 file_watcher();
-                console.log('-------------- project FILES are loaded >>>>>>>>>>>>>>>> ');
+                //console.log('-------------- project FILES are loaded >>>>>>>>>>>>>>>> ');
 
                 //since we want a tab of images and a tab of other files, 
                 // split them out into two arrays we will use to populate the two grids.
                 scope.project.Images = [];
                 scope.project.Docs = [];
 
-                var docIndex = 0;
                 scope.project.Files.forEach(function (file, key) {
+                    // If the user created a document and left the Title or Description blank, those fields were saved as "undefined" in the database.
+                    // When we read the list of files back in, the "undefined" shows on the page, and the user would rather have a blank show instead.
+                    file.Title = (!file.Title || file.Title === 'undefined' || typeof file.Title === 'undefined') ? "" : file.Title;
+                    file.Description = (!file.Description || file.Description === 'undefined' || typeof file.Description === 'undefined') ? "" : file.Description;
 
                     if (file.FileType.Name === "Image")
                         scope.project.Images.push(file);
                     else {
                         if ((file.DatasetId === null) && (file.Subproject_CrppId === null)) {
                             scope.project.Docs.push(file);
-
-                            // If the user created a document and left the Title or Description blank, those fields were saved as "undefined" in the database.
-                            // When we read the list of files back in, the "undefined" shows on the page, and the user would rather have a blank show instead.
-                            if (!scope.project.Docs[docIndex].Title)
-                                scope.project.Docs[docIndex].Title = "";
-
-                            if (!scope.project.Docs[docIndex].Description)
-                                scope.project.Docs[docIndex].Description = "";
-
-                            docIndex++;
                         }
                     }
                 });
                 console.log("OK! Done loading files... ");
-                console.dir(scope.project.Images);
-                console.dir(scope.project.Docs);
+                //console.dir(scope.project.Images);
+                //console.dir(scope.project.Docs);
 
             }, true); //end after files load watcher.
             
@@ -292,7 +285,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         };
         
 
-        scope.reloadProject = function(){
+        scope.reloadProject = function () {
+            console.log(" --- *** --- *** Reloading project... are you sure you want this?!!  *****************");
             ProjectService.clearProject();
             scope.project = ProjectService.getProject(routeParams.Id);
         };
@@ -439,8 +433,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
 
         //both docs and gallery tabs use these:
-        scope.openDeleteFileModal = function (selection) {
-            scope.row = selection;
+        scope.openDeleteFileModal = function (a_selection, a_callback) {
+            scope.row = a_selection;
+            scope.callback = a_callback;
+
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-delete-file.html',
                 controller: 'ModalDeleteFileCtrl',
@@ -448,8 +444,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 
-        scope.openEditFileModal = function (selection) {
-            scope.row = selection;
+        //selection to edit, callback to fire on success.
+        scope.openEditFileModal = function (a_selection, a_callback) {
+            scope.row = a_selection;
+            scope.callback = a_callback;
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-file.html',
                 controller: 'ModalEditFileCtrl',
@@ -457,7 +455,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 
-        scope.openNewFileModal = function (selection) {
+        scope.openNewFileModal = function (a_callback) {
+            scope.callback = a_callback;
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-upload-files.html',
                 controller: 'ModalNewFileCtrl',
@@ -465,7 +464,16 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             });
         };
 
-
+        //removes the given file from project.Files (usually after deleting an item from docs/gallery already)
+        scope.removeFromFiles = function (removed_item) {
+            scope.project.Files.forEach(function (item, index) {
+                //console.log("item id is " + item.Id + " looking for " + removed_item.File.Id);
+                if (item.Id === removed_item.File.Id) {
+                    //console.log("FOund an ID that matches for delete");
+                    scope.project.Files.splice(index, 1);
+                }
+            });
+        };
 	}
 ];
 
