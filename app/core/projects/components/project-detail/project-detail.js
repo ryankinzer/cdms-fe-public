@@ -138,10 +138,12 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     file.Title = (!file.Title || file.Title === 'undefined' || typeof file.Title === 'undefined') ? "" : file.Title;
                     file.Description = (!file.Description || file.Description === 'undefined' || typeof file.Description === 'undefined') ? "" : file.Description;
 
-                    if (file.FileType.Name === "Image")
-                        scope.project.Images.push(file);
-                    else {
-                        if ((file.DatasetId === null) && (file.Subproject_CrppId === null)) {
+                    //note: Subproject_CrppId indicates the file belongs to a subproject (not just crpp)
+                    if (file.DatasetId === null && file.Subproject_CrppId === null)
+                    {
+                        if (file.FileType.Name === "Image") {
+                            scope.project.Images.push(file);
+                        } else {
                             scope.project.Docs.push(file);
                         }
                     }
