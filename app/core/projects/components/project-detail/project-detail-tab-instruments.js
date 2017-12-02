@@ -1,22 +1,82 @@
 ﻿//this is a nested controller used on the project-details page to load
 // the instruments tab if it is a water temperature project. 
 
-var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
         //console.log("Inside tab instruments controller...");
-
-        //        console.log("I wonder what I have access to here?!");
-        //        console.dir(scope);
-
 
         scope.allInstruments = null;
         scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias from service ?? TODO: check this kb/11/21
         scope.viewInstrument = null; //what they've clicked to view accuracy checks
         scope.selectedInstrument = null; //what they've selected in the dropdown to add to the project
 
+
+        var EditLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.editHabitatSubproject(param.data);
+            });
+            div.appendChild(editBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
+            delBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.removeHabitatSubproject(param.data);
+            });
+            div.appendChild(delBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add AC';
+            addBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.openHabitatItemForm(param.data, {});
+            });
+            div.appendChild(addBtn);
+
+            return div;
+        };
+
+        ///////////////instruments grid
+        scope.instrGridOptions = {
+            enableSorting: true,
+            enableFilter: true,
+            enableColResize: true,
+            rowSelection: 'single',
+            onSelectionChanged: function (params) {
+                console.log("selection changed!");
+                scope.instrGridOptions.selectedItems = scope.instrGridOptions.api.getSelectedRows();
+                //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+            onFilterModified: function () {
+                scope.instrGridOptions.api.deselectAll();
+            },
+            selectedItems: [],
+            columnDefs:
+            [
+                { cellRenderer: EditLinksTemplate, width: 80 },
+                { field: 'Name', headerName: 'Name', width: 250, sort: 'asc' },
+                { field: 'SerialNumber', headerName: 'SerialNumber', width: 120 },
+                //{ field: 'Description', headerName: 'Description', width: 250 },
+                { field: 'Manufacturer', headerName: 'Manufacturer', width: 150 },
+                { field: 'Model', headerName: 'Model', width: 150 },
+                
+                { field: 'OwningDepartment.Name', headerName: 'Owner', width: 250 },
+                { field: 'InstrumentType.Name', headerName: 'Type' },
+                
+            ]
+        };
+
+        
+
+        
         //watch the datasets on the parent-detail page to load... once they do, check to see if we should show our tab
         var inst_ds_watcher = scope.$parent.$watch('datasets', function () {
             //console.log("Inside TAB INSTRUMENTS watch datasets... --------------------------");
@@ -50,7 +110,6 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
                     scope.allInstruments.$promise.then(function () {
                         scope.allInstruments.sort(orderByAlphaName);
                     });
-
                 }
             }
         }, true);
@@ -58,13 +117,31 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
         //when the parent project is loaded...
         scope.$parent.$watch('project.Id', function () {
 
+            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
+                return;
+
+            console.log("project done loading: your project instruments:-------------------- *************************");
+            console.dir(scope.project.Instruments);
+
+            $timeout(function () {
+
+                var ag_grid_div = document.querySelector('#instruments-tab-grid');    //get the container id...
+                scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.instrGridOptions); //bind the grid to it.
+                scope.instrGridOptions.api.showLoadingOverlay(); //show loading...
+
+                //build the grid based on our subprojects
+                scope.instrGridOptions.api.setRowData(scope.project.Instruments);
+
+            }, 0);
+
+
             //console.log("Parent project is loaded! watching from instruments tab ---------------- >>>>>>>>>>>>>>");
 
             //reload if it is already selected -- this is what allows you to see the new accuracycheck/characteristic immediately after it is added
-            if (scope.viewInstrument)
-            {
-                scope.viewInstrument = getMatchingByField(scope.project.Instruments, scope.viewInstrument.Id, 'Id')[0];
-            }
+            //if (scope.viewInstrument)
+            //{
+            //    scope.viewInstrument = getMatchingByField(scope.project.Instruments, scope.viewInstrument.Id, 'Id')[0];
+            //}
         });
 
         scope.createInstrument = function () {
