@@ -164,13 +164,6 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
                 if (scope.datasets[i].Datastore.TablePrefix === "WaterTemp") {
                     console.log("Adding instruments to tab bar...");
                     scope.ShowInstruments = true;
-
-                    //these are the ones that show up in the dropdown list to select from -- ALL the instruments in the world.
-                    scope.allInstruments = ProjectService.getAllInstruments();
-
-                    scope.allInstruments.$promise.then(function () {
-                        scope.allInstruments.sort(orderByAlphaName);
-                    });
                 }
             }
         }, true);
@@ -194,6 +187,14 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
                 scope.instrGridOptions.api.setRowData(scope.project.Instruments);
 
             }, 0);
+
+            //these are the ones that show up in the dropdown list to select from -- ALL the instruments in the world.
+            scope.allInstruments = ProjectService.getAllInstruments();
+
+            //filter and only show instruments not already in our project.
+            scope.allInstruments.$promise.then(function () {    
+                scope.filterAllInstruments();
+            });
 
 
             //console.log("Parent project is loaded! watching from instruments tab ---------------- >>>>>>>>>>>>>>");
@@ -220,21 +221,25 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
         };
 
         scope.addInstrument = function () {
-			/* Verify that all three situations are true:
+			/* Verify that situations are true:
 			*  scope.selectedInstrument exists				This is important because IE will not actually select something, when you select it the first time.
 			*  scope.selectedInstrument is not null			Important for the same reason just mentioned.
-			*  The selected instrument is not already associated to the project.
 			*/
-            //if(!scope.selectedInstrument || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
-            if (!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
+
+            if (!scope.selectedInstrument || scope.selectedInstrument === null )
+            {
+                alert("Please select an Instrument from the dropdown to add to this project.");
                 return;
+            }
 
-            var Instruments = getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id');
-
-            var promise = ProjectService.saveProjectInstrument(scope.project.Id, Instruments[0]);
+            var instrument_to_add = getById(scope.allInstruments, scope.selectedInstrument)
+            var promise = ProjectService.saveProjectInstrument(scope.project.Id, instrument_to_add);
 
             promise.$promise.then(function () {
-                //scope.reloadProject();
+                //done, add it to the list.
+                scope.project.Instruments.push(instrument_to_add);
+                scope.filterAllInstruments();
+                scope.instrGridOptions.api.setRowData(scope.project.Instruments);
             });
         };
 
@@ -252,6 +257,8 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
                         if (item.Id === scope.viewInstrument.Id) {
                             scope.project.Instruments.splice(index, 1);
                             scope.instrGridOptions.api.setRowData(scope.project.Instruments);
+                            scope.allInstruments.push(instrument);
+                            scope.filterAllInstruments();
                         }
                     });
                 });
@@ -400,6 +407,17 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
                 controller: 'ModalAddAccuracyCheckCtrl',
                 scope: scope, //very important to pass the scope along...
             });
+        };
+
+        scope.filterAllInstruments = function () {
+            var filteredInstruments = [];
+            scope.allInstruments.forEach(function (item, index) {
+                var have_instrument = getById(scope.project.Instruments, item.Id);
+                if (typeof have_instrument === 'undefined' || have_instrument == null) {
+                    filteredInstruments.push(item);
+                }
+            });
+            scope.allInstruments = filteredInstruments.sort(orderByAlphaName);
         };
 
 }];
