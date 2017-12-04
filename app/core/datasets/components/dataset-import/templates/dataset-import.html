@@ -151,7 +151,8 @@
 
 
 				<!--<div class="header-box" style="margin-top: 20px; width: 500px;" ng-show="showHeaderForm">-->
-				<div class="header-box" style="margin-top: 20px; width: 600px;" ng-show="showHeaderForm">
+				<!--<div class="header-box" style="margin-top: 20px; width: 600px;" ng-show="showHeaderForm">-->
+				<div class="header-box" style="margin-top: 100px; width: 600px;" ng-show="showHeaderForm"> 
 
 					<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
 						<div class="header-label">Location:</div>
@@ -251,7 +252,8 @@
 					<button class="btn btn-sm" ng-disabled="selectedItems.length == 0" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
 				</div>
 
-				<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>
+				<!--<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>-->
+				<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 120px;"></div> 
 				<div ng-include="'app/core/datasets/templates/bottom-bar.html'"/><!--Note the closing "/" here!-->
 					<div style="margin-top: 15px; padding-bottom: 30px;">
 						<button class="btn" ng-disabled="!onRow" ng-click="removeRow()">Remove Row</button>
