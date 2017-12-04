@@ -32,7 +32,7 @@ common_module.factory('GetTimeZones', ['$resource', function($resource){
 }]);
 
 common_module.factory('GetDepartments', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/department/getdepartment');
+        return $resource(serviceUrl+'/api/v1/department/getdepartments');
 }]);
 
 common_module.factory('Users', ['$resource', function ($resource) {

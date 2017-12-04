@@ -67,6 +67,10 @@ projects_module.factory('SaveInstrumentAccuracyCheck', ['$resource', function ($
     return $resource(serviceUrl + '/api/v1/instrument/saveinstrumentaccuracycheck');
 }]);
 
+projects_module.factory('RemoveInstrumentAccuracyCheck', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/instrument/removeinstrumentaccuracycheck');
+}]);
+
 projects_module.factory('SaveFisherman', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/fishermen/savefisherman');
 }]);
@@ -135,6 +139,7 @@ projects_module.service('ProjectService', ['$q',
     'GetFishermen',
     'GetProjectFishermen',
     'RemoveProjectFisherman',
+    'RemoveInstrumentAccuracyCheck',
     function ($q,
         ProjectFunders,
         ProjectCollaborators,
@@ -158,7 +163,8 @@ projects_module.service('ProjectService', ['$q',
         RemoveProjectInstrument,
         GetFishermen,
         GetProjectFishermen,
-        RemoveProjectFisherman) {
+        RemoveProjectFisherman,
+        RemoveInstrumentAccuracyCheck) {
 
         var service = {
             project: null,
@@ -327,6 +333,10 @@ projects_module.service('ProjectService', ['$q',
 
             saveInstrumentAccuracyCheck: function (instrumentId, ac) {
                 return SaveInstrumentAccuracyCheck.save({ InstrumentId: instrumentId, AccuracyCheck: ac });
+            },
+
+            removeInstrumentAccuracyCheck: function (instrumentId, ac) {
+                return RemoveInstrumentAccuracyCheck.save({ InstrumentId: instrumentId, AccuracyCheck: ac });
             },
 
             updateFile: function (projectId, file) {
