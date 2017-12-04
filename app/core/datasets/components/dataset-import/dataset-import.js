@@ -295,7 +295,13 @@
     		});
 			
 			$scope.$watch('project.Name', function(){
-	        	if(!$scope.project.Name) return;
+				// Note:  If we check for the project name without typeof, it throws an error in the debugger, stating that Name is undefined. 
+				// Yes, it does stop the code in its tracks (like the return), but the typeof handles the issue gracefully.
+	        	//if(!$scope.project.Name) return;
+				if ((typeof $scope.project === 'undefined') || ($scope.project === null))
+					return;
+				else if ((typeof $scope.project.Name === 'undefined') || ($scope.project.Name === null))
+					return;
 				
 				console.log("Inside DatasetImportCtrl, project.Name watcher...");
 	        	//Logger.debug($scope.project);
