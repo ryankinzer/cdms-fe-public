@@ -58,11 +58,11 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
         selectedItems: [],
         columnDefs:
         [
-            { cellRenderer: EditLinksTemplate, width: 80 },
+            { cellRenderer: EditLinksTemplate, width: 80, menuTabs: [] },
             //{ field: 'Name', headerName: 'File', width: 250, sort: 'asc', cellRenderer: LinkTemplate },
-            { field: 'Title', headerName: 'Title', sort: 'asc', cellRenderer: LinkTemplate, width: 250 },
-            { field: 'Description', headerName: 'Description' },
-            { field: 'Uploaded', headerName: "Uploaded", width: 200, cellRenderer: UploadedByTemplate },
+            { field: 'Title', headerName: 'Title', sort: 'asc', cellRenderer: LinkTemplate, width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'Description', headerName: 'Description', menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'Uploaded', headerName: "Uploaded", width: 200, cellRenderer: UploadedByTemplate, menuTabs: [] },
         ]
     };
 

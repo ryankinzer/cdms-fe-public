@@ -121,14 +121,16 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         //grid columns for crpp correspondence tab (master/subprojects)
         scope.corrAgColumnDefs = [  //in order the columns will display, by the way...
             {
-                width: 140, cellRenderer: EditMasterLinksTemplate
+                width: 140, cellRenderer: EditMasterLinksTemplate, menuTabs: [],
             },
             {
                 headerName: 'ID',
                 field: 'Id',
                 width: 80,
                 cellRenderer: 'group',
-                cellRendererParams: { suppressCount: true }
+                cellRendererParams: { suppressCount: true },
+                menuTabs: ['filterMenuTab'],
+                filter: 'number'
             },
             {
                 field: 'EffDt',
@@ -139,6 +141,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                         return moment(params.node.data.EffDt).format('L');
                 },
                 sort: 'desc',
+                menuTabs: [],
             },
             {
                 headerName: 'Events', width: 60,
@@ -146,17 +149,18 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 valueGetter: function (params) {
                     return (params.data.CorrespondenceEvents !== undefined && params.data.CorrespondenceEvents.length > 0) ? params.data.CorrespondenceEvents.length : 0;
                 },
+                menuTabs: [],
             },
-            { field: 'ProjectName', headerName: 'Name', width: 275 },
-            { field: 'ProjectLead', headerName: 'Project Lead', width: 150 },
-            { field: 'Closed', headerName: 'Closed?', width: 80 },
+            { field: 'ProjectName', headerName: 'Name', width: 275, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'ProjectLead', headerName: 'Project Lead', width: 150, menuTabs: ['filterMenuTab'], },
+            { field: 'Closed', headerName: 'Closed?', width: 80, menuTabs: ['filterMenuTab'], },
             {
                 //note: white-space here causes word-wrap
-                field: 'Comments', headerName: 'Comments', width: 300, cellStyle: { 'white-space': 'normal' }
+                field: 'Comments', headerName: 'Comments', width: 300, cellStyle: { 'white-space': 'normal' }, menuTabs: ['filterMenuTab'], filter: 'text'
             },
-            { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150 },
-            { field: 'County', headerName: 'County', width: 150 },
-            { field: 'ProjectProponent', headerName: 'Project Proponent', width: 150 },
+            { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150, menuTabs: ['filterMenuTab'], },
+            { field: 'County', headerName: 'County', width: 150, menuTabs: ['filterMenuTab'], },
+            { field: 'ProjectProponent', headerName: 'Project Proponent', width: 150, menuTabs: ['filterMenuTab'], },
 
 
         ];
@@ -164,7 +168,7 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         //details for the correspondence
         var detailColumnDefs = [
             {
-                headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate
+                headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [],
             },
             {
                 headerName: 'Notice Date', field: 'CorrespondenceDate', width: 120, cellClass: 'event-record-cell',
@@ -172,11 +176,12 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                     if (params.node.data.CorrespondenceDate !== undefined && params.data.CorrespondenceDate !== null)
                         return moment(params.node.data.CorrespondenceDate).format('L');
                 },
-                sort: 'desc'
+                sort: 'desc',
+                menuTabs: [],
             },
-            { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150 },
-            { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 150 },
-            { headerName: 'Days to Respond', field: 'NumberOfDays', cellClass: 'event-record-cell', width: 100 },
+            { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Days to Respond', field: 'NumberOfDays', cellClass: 'event-record-cell', width: 100, menuTabs: [], },
 
             {
                 field: 'ResponseDate',
@@ -185,15 +190,17 @@ var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 valueFormatter: function (params) {
                     if (params.data.ResponseDate !== undefined && params.data.ResponseDate !== null)
                         return moment(params.node.data.ResponseDate).format('L');
-                }
+                },
+                menuTabs: [],
             },
-            { headerName: 'Technician', field: 'StaffMember', cellClass: 'event-record-cell', width: 150 },
+            { headerName: 'Technician', field: 'StaffMember', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
             {
                 headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 300, cellStyle: {
                     'white-space': 'normal'
-                }
+                },
+                menuTabs: ['filterMenuTab'], filter: 'text'
             },
-            { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate },
+            { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: [], },
 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
         ];

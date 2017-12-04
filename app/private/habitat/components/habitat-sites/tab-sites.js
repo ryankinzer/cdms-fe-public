@@ -115,11 +115,14 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         //grid columns for sites tab (master/subprojects)
         scope.sitesColumnDefs = [  //in order the columns will display, by the way...
             {
-                width: 130, cellRenderer: EditMasterLinksTemplate
+                width: 130, cellRenderer: EditMasterLinksTemplate, menuTabs: [],
             },
             {
                 field: 'ProjectName', headerName: 'Name', width: 325, cellRenderer: 'group',
-                cellRendererParams: { suppressCount: true } },
+                cellRendererParams: { suppressCount: true },
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
+            },
             {
                 field: 'EffDt',
                 headerName: 'Updated',
@@ -129,6 +132,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                         return moment(params.node.data.EffDt).format('L');
                 },
                 sort: 'desc',
+                menuTabs: [],
             },
             {
                 headerName: 'Items', width: 60,
@@ -136,6 +140,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                 valueGetter: function (params) {
                     return (params.data.HabitatItems !== undefined && params.data.HabitatItems.length > 0) ? params.data.HabitatItems.length : 0;
                 },
+                menuTabs: [],
             },
             {
                 field: 'ProjectStartDate', headerName: 'Start Date', width: 150,
@@ -143,6 +148,8 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                     if (params.node.data.ProjectStartDate !== undefined && params.node.data.ProjectStartDate !== null)
                         return moment(params.node.data.ProjectStartDate).format('L');
                 },
+                menuTabs: [],
+
             },
             {
                 field: 'ProjectEndDate', headerName: 'End Date', width: 150,
@@ -150,19 +157,20 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                     if (params.node.data.ProjectEndDate !== undefined && params.node.data.ProjectEndDate !== null)
                         return moment(params.node.data.ProjectEndDate).format('L');
                 },
+                menuTabs: [],
             },
         ];
 
         //details for the correspondence
         var detailColumnDefs = [
             {
-                headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate
+                headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [],
             },
             
-            { headerName: 'Item Type', field: 'ItemType', cellClass: 'item-record-cell', width: 100 },
-            { headerName: 'Item Name', field: 'ItemName', cellClass: 'item-record-cell', width: 150 },
-            { headerName: 'Documents', field: 'ItemFiles', width: 300, cellRenderer: FileListCellTemplate },
-            { headerName: 'External Links', field: 'ExternalLinks', cellClass: 'item-record-cell', width: 250 },
+            { headerName: 'Item Type', field: 'ItemType', cellClass: 'item-record-cell', width: 100, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Item Name', field: 'ItemName', cellClass: 'item-record-cell', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: 'Documents', field: 'ItemFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: [], },
+            { headerName: 'External Links', field: 'ExternalLinks', cellClass: 'item-record-cell', width: 250, menuTabs: [], },
             {
                 field: 'EffDt',
                 headerName: 'Updated',
@@ -171,6 +179,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                     if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
                         return moment(params.node.data.EffDt).format('L');
                 },
+                menuTabs: [],
             },
         ];
 

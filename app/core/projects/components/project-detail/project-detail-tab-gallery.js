@@ -72,10 +72,10 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
         //selectedItems: [],
         columnDefs:
         [
-            { cellRenderer: EditLinksTemplate, width: 120 },
-            { headerName: 'File', cellRenderer: ImageTemplate, width: 190 },
-            { field: 'Title', headerName: 'Title', width: 250, sort: 'asc' },
-            { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300 },
+            { cellRenderer: EditLinksTemplate, width: 120, menuTabs: [] },
+            { headerName: 'File', cellRenderer: ImageTemplate, width: 190, menuTabs: [] },
+            { field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Uploaded', headerName: "Uploaded", width: 200, cellRenderer: UploadedByTemplate },
         ]
     };
