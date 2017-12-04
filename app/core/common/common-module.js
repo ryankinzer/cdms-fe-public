@@ -83,7 +83,7 @@ require([
     common_module.service('CreelSurvey_ChartService', creelsurvey_chartservice);
     common_module.service('ElectroFishing_ChartService', electrofishing_chartservice);
     common_module.service('SnorkelFish_ChartService', snorkelfish_chartservice);
-    common_module.service('WaterQuality_ChartService', water_quality);
+    common_module.service('WaterQuality_ChartService', waterquality_chartservice);
     common_module.service('WaterTemp_ChartService', watertemp_chartservice);
 
     //the master chartservice that exposes all of the other dataset-specific chart services
