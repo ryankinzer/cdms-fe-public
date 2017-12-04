@@ -1,4 +1,4 @@
-﻿var water_quality = [ 
+﻿var waterquality_chartservice = [ 
     function(){
         var service = {
 
