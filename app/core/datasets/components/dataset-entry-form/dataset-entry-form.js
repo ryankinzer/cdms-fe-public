@@ -27,6 +27,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.primaryDatasetLocation = 0;
         $scope.sortedLocations = [];
         $scope.errors = { heading: [] };
+		$scope.activities = {};
 
         $scope.addNewSection = false; // This is a flag.  On Creel Survey, a user may add a new section, which saves the section, but the page remains on the activity.
         $scope.dataEntryPage = true;  // This is s flag, telling the app that we are on the Data Entry Page, to make the Add Section button show only on the Data Entry page.	
@@ -315,6 +316,18 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$scope at end of watch project.Name is next...");
             //console.dir($scope);
         });
+		
+		$scope.$watch('duplicateEntry', function(){
+			console.log("Inside watch duplicateEntry...");
+			//console.log("typeof $scope.duplicateEntry = " + $scope.duplicateEntry);
+			console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
+			if ((typeof $scope.duplicateEntry === 'undefined') || ($scope.duplicateEntry === null))
+				return;
+			else if ($scope.duplicateEntry)
+				return;
+			else
+				$scope.continueSaving();
+		});
 
         $scope.selectProjectLocationsByLocationType = function () {
             console.log("Inside selectProjectLocationsByLocationType...");
