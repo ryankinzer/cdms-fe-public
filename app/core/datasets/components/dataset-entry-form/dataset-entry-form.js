@@ -493,6 +493,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
             if ($scope.row.LastAccuracyCheck)
                 $scope.row.AccuracyCheckId = $scope.row.LastAccuracyCheck.Id;
+			
+			$scope.activities.errors = undefined;
+			$scope.removeRowErrorsBeforeRecheck();
+			$scope.checkForDuplicates();
         };
 
         $scope.cancel = function () {
