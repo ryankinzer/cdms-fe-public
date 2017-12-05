@@ -426,6 +426,28 @@ table.metadata td
 	max-width: 250px;
 	overflow: none;
 }
+
+.dataset-config-tab {
+    background-color: #E6E6E6;
+    padding: 5px 15px 15px 15px;
+    border-radius: 3px;
+    height: 100%;
+}
+
+.dataset-config-tab .prop-name {
+    font-weight: bold;
+    width: 300px;
+    text-align: right;
+    padding-right: 15px;
+    vertical-align: top;
+}
+
+
+.dataset-config-tab .prop-val .form-control {
+    width: 300px;
+}
+
+
 .inherited-properties pre
 {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
@@ -596,4 +618,64 @@ table.metadata td
   color: grey;
   font-style: italic;
   font-size: small;
+}
+
+
+.full-width-panel {
+    position: relative;
+    background: #fafafa;
+    height: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    border-left: 2px solid grey;
+    border-bottom: 2px solid lightgray;
+    border-right: 2px solid lightgray;
+}
+
+.event-record-cell {
+}
+
+.full-width-detail {
+    padding-top: 4px;
+}
+
+.full-width-details {
+    float: left;
+    padding: 5px;
+    margin: 5px;
+    width: 150px;
+}
+
+.full-width-grid {
+    margin-left: 15px;
+    padding-top: 10px;
+    box-sizing: border-box;
+    display: block;
+    height: 100%;
+}
+
+.full-width-grid-toolbar {
+    top: 4px;
+    left: 30px;
+    margin-left: 150px;
+    display: block;
+    position: absolute;
+}
+
+.full-width-phone-icon {
+    padding-right: 10px;
+}
+
+.full-width-search {
+    border: 1px solid #eee;
+    margin-left: 10px;
+}
+
+.word-wrap {
+    white-space: normal;
+}
+
+.event-file-list ul {
+    padding-left: 15px;
+    list-style-type: circle;
 }

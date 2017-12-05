@@ -21,15 +21,6 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 	$rootScope.projectId = $scope.project.Id;
 	console.log("$scope.projectId = " + $scope.projectId);
 	
-    $scope.hi_row = angular.copy($scope.hi_row);
-	//if ($scope.hi_row)
-	//{
-	//	$scope.hi_row = angular.copy($scope.hi_row);
-
-	//}
-	//else
-	//	$scope.hi_row = {};
-	
 	var keepGoing = true;
 	var foundIt = false;
 
@@ -99,43 +90,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 		$scope.filesToUpload[field] = files;
 	};
 	
-	$scope.remove = function(){
-		console.log("Inside ModalAddHabitatItemCtrl, remove...");
-		//console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-		console.log("$scope.hi_row is next...");
-		console.dir($scope.hi_row);
-		$scope.hi_rowId = $scope.hi_row.Id;
-		
-		$scope.verifyAction = "Delete";
-		$scope.verifyingCaller = "HabitatItem";
-		//console.log("scope.verifyAction = " + scope.verifyAction);
-			
-		$scope.verifyActionFormOpen = "Yes";
-		
-		if (confirm('Are you sure that you want to delete this Habitat Item?'))
-		{
-			//SubprojectService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
-			
-			//var promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
-			//var promise = SubprojectService.removeHabitatItem($scope.project.Id, $scope.viewSubproject.Id, $scope.hi_rowId, $scope.DatastoreTablePrefix);
-			var promise = SubprojectService.removeHabitatItem($scope.project.Id, $scope.viewSubproject.Id, $scope.hi_rowId);
-			
-			promise.$promise.then(function(){
-				$scope.subprojects = null;
-				
-				// If we were down in the list of subprojects (sites) somewhere, and we removed a Habitat Item
-				// -- perhaps we entered it in error on the wrong Subproject (site) -- 
-				// we would want that item to pop to the top; all updated items to go the top (most recent).
-				// Therefore we must reload all the subprojects to pop it to the top, not just this project.
-				//$scope.reloadThisProject();
-				
-				$scope.reloadSubprojects(); // Need to reload ALL the subprojects, so that this one will pop to the top.
-				//$scope.viewSelectedSubproject(); // Don't run this just yet, because the project has not re-loaded yet.
-				$("#habitatItems").load("habitatItems.html #habitatItems");
-				$modalInstance.dismiss();
-			});
-		}
-	};
+	
 	
 	$scope.$watch('fileProgress', function(){
 		if($scope.fileProgress < $scope.fileCount)
@@ -164,6 +119,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 		if (!saveRow.Id)
 			saveRow.Id = 0;
 		//$scope.foundDuplicate = false;
+
 		
 		console.log("saveRow is next, after checking/setting the Id...");
 		console.dir(saveRow);
@@ -366,10 +322,42 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 		//console.log("$scope is next...");
 		//console.dir($scope);
 		
+
+        //save the habitat item
+        var promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.viewSubproject.Id, saveRow);
+
+        if (typeof promise !== 'undefined') {
+
+            promise.$promise.then(function () {
+                //did we edit or add new?
+                if (saveRow.Id > 0) {
+                    $scope.postEditHabitatItemUpdateGrid(promise);
+                } else {
+                    $scope.postAddHabitatItemUpdateGrid(promise);
+                }
+                $modalInstance.dismiss();
+            });
+
+            console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
+            if ($scope.fileCount === 0) {
+                $scope.loading = false; // Stop the fish spinner.
+                $scope.showCloseButton = true;
+                $scope.showCancelButton = false;
+                $scope.showFormItems = false;
+            }
+
+        }
+
+
+
+
+        
+
 		/*	If the user chooses to create a Habitat Item (HI), at the same time that they are creating a new Subproject,
 		*   $scope.viewSubproject is not available yet, so we cannot pass the Id from there.  When we create the new Subproject,
 		*   we capture the Id from the Subproject, which is the same thing, so we pass that instead, to create the HI.
 		*/
+            /*
 		if ($rootScope.habProjectName)
 			$scope.habProjectName = $rootScope.habProjectName;
 		
@@ -380,12 +368,13 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 			var promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.viewSubproject.Id, saveRow);
 			if (typeof promise !== 'undefined')
 			{
-				promise.$promise.then(function(){
-					$scope.reloadSubprojects();
-					$scope.viewSelectedSubproject();
-					$("#habitatItems").load("habitatItems.html #habitatItems");
-					//$modalInstance.dismiss();
-					})
+                promise.$promise.then(function () {
+                    //$scope.reloadSubprojects();
+                    //$scope.viewSelectedSubproject();
+                    //$("#habitatItems").load("habitatItems.html #habitatItems");
+                    //$modalInstance.dismiss();
+                    $scope.postAddHabitatItemUpdateGrid(promise);
+                });
 					
 				console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
 				if ($scope.fileCount === 0)
@@ -403,12 +392,13 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 			var promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.subprojectId, saveRow);
 			if (typeof promise !== 'undefined')
 			{
-				promise.$promise.then(function(){
-					$scope.reloadSubprojects();
-					$scope.viewSelectedSubproject();
-					$("#habitatItems").load("habitatItems.html #habitatItems");
-					//$modalInstance.dismiss();
-					})
+                promise.$promise.then(function () {
+                    //$scope.reloadSubprojects();
+                    //$scope.viewSelectedSubproject();
+                    //$("#habitatItems").load("habitatItems.html #habitatItems");
+                    //$modalInstance.dismiss();
+                    $scope.postEditHabitatItemUpdateGrid(promise); //we edited
+                });
 					
 				if ($scope.fileCount === 0)
 				{
@@ -418,7 +408,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 					$scope.showFormItems = false;					
 				}
 			}
-		}
+		}*/
     };
 	
 	$scope.close = function(){

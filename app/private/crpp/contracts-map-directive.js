@@ -12,7 +12,7 @@ define([
 ], function (app, Map, Point, InfoWindow, InfoTemplate) {
 
   // register a new directive called esriMap with our app
-  app.directive('CrppDocumentsMap', function($rootScope){
+  app.directive('crppDocumentsMap', function($rootScope){
     // this object will tell angular how our directive behaves
     return {
       // only allow esriMap to be used as an element (<esri-map>)

@@ -31,7 +31,9 @@ var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'Subproject
 	}
 
     //$scope.header_message = $scope.verifyAction.toLowerCase() + " this CRPP project";
-	
+
+
+        /* kb - commenting out to see if we can do without now
 	var subprojectListwatcher = $scope.$watch('subprojectList.length', function(){
 		console.log("Inside ModalVerifyActionCtrl watch, subprojectList");
 
@@ -57,7 +59,9 @@ var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'Subproject
 		//subprojectListwatcher(); // Turn off this watcher.
 		//$modalInstance.dismiss();
 	});
-	
+	*/
+
+
     $scope.cancel = function(){
         $modalInstance.dismiss();
 		$scope.verifyAction = 'undefined';
@@ -76,13 +80,23 @@ var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'Subproject
 		if (($scope.verifyAction === "Delete") && ($scope.verifyingCaller === "CrppSubproject"))
 		{
 			console.log("$scope.project.Id = " + $scope.project.Id + ", $scope.viewSubproject.Id = " + $scope.viewSubproject.Id);
-			promise = SubprojectService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
+            promise = SubprojectService.removeSubproject($scope.project.Id, $scope.viewSubproject.Id);
+            promise.$promise.then(function () {
+                $scope.postRemoveSubprojectUpdateGrid();
+                $modalInstance.dismiss();
+            });
 		}
 		else if (($scope.verifyAction === "Delete") && ($scope.verifyingCaller === "CorrespondenceEvent"))
-		{
+        {
+            //maybe there is no case of this...
+
 			console.log("$scope.project.Id = " + $scope.project.Id + ", $scope.viewSubproject.Id = " + $scope.viewSubproject.Id + ", $scope.ce_RowId = " + $scope.ce_rowId);
 			//var promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
-			promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
+            promise = SubprojectService.removeCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, $scope.ce_rowId);
+            promise.$promise.then(function () {
+                //$scope.postRemoveSubprojectUpdateGrid();
+                $modalInstance.dismiss();
+            });
 		}
 		else if (($scope.verifyAction === "Delete") && ($scope.verifyingCaller === "HabSubproject"))
 		{
@@ -130,25 +144,14 @@ var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'Subproject
 			
 			//promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id);
 			//promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id, theSdeObjectId);
-			promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id, $scope.viewSubproject.LocationId);
+            promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id, $scope.viewSubproject.LocationId);
+            promise.$promise.then(function () {
+                $scope.postRemoveHabitatSubprojectUpdateGrid();
+                $modalInstance.dismiss();
+            });
 		}
 		
-		// This works fine for removing subprojects.
-		// For removing Correspondence events, it has problems.
-		promise.$promise.then(function(){
-			$scope.subprojects = null;
-			$scope.reloadSubprojects();
-			$scope.reloadSubprojectLocations();
-			$modalInstance.dismiss();
-			});
-			
-			/*.then(function(){
-				$scope.viewSelectedSubproject();
-			})
-			*/
-			/*.then(function(){
-				$modalInstance.dismiss();
-			});
-			*/
+    		
 	}
-}];
+    }];
+

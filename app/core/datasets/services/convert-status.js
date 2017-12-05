@@ -5,8 +5,8 @@ datasets_module.service('ConvertStatus', ['Logger', '$window', '$route',
         var service = {
 
             convertStatus: function (aStatus) {
-                console.log("Inside convertStatus...");
-                console.log("aStatus = " + aStatus);
+                //console.log("Inside convertStatus...");
+                //console.log("aStatus = " + aStatus);
 
                 var strStatus = null;
 
@@ -16,13 +16,13 @@ datasets_module.service('ConvertStatus', ['Logger', '$window', '$route',
                 else {
                     strStatus = "Inactive";
                 }
-                console.log("strStatus = " + strStatus);
+                //console.log("strStatus = " + strStatus);
 
                 return strStatus;
             },
             convertOkToCall: function (aStatus) {
-                console.log("Inside convertOkToCall...");
-                console.log("aStatus = " + aStatus);
+                //console.log("Inside convertOkToCall...");
+                //console.log("aStatus = " + aStatus);
 
                 var strStatus = null;
 
@@ -32,7 +32,7 @@ datasets_module.service('ConvertStatus', ['Logger', '$window', '$route',
                 else {
                     strStatus = "No";
                 }
-                console.log("strStatus = " + strStatus);
+                //console.log("strStatus = " + strStatus);
 
                 return strStatus;
             },

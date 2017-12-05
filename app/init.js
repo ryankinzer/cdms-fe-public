@@ -54,11 +54,14 @@ require([
           window.location=LOGIN_URL;
         })
   	    .always(function(){
-		    console.log("Booting angular...");
-  		    angular.bootstrap(document.body, ['app']);
-            console.log("Booting dojo...");
-            parser.parse();
-            console.log("all systems GO!")
+            //require(['dojo/domReady'], function (doc) {
+                console.log("Booting dojo...");
+                parser.parse();
+                console.log("Booting angular...");
+                angular.bootstrap(document.body, ['app']);
+              
+                console.log("all systems GO!")
+            //});
   	    });
 	  
   });

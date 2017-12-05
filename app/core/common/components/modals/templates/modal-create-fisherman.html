@@ -18,23 +18,23 @@
 
   			<div class="header-label">First Name</div>
   			<div class="header-value">
-	  			<input  class="form-control" type="text" ng-model="fisherman_row.FirstName" />
+	  			<input  class="form-control" type="text" ng-change="updateFullName()" ng-model="fisherman_row.FirstName" />
 	  		</div>
 
 	  		<div class="header-label">AKA</div>
   			<div class="header-value">
-	  			<input  class="form-control" type="text" ng-model="fisherman_row.Aka" />
+	  			<input  class="form-control" type="text" ng-change="updateFullName()" ng-model="fisherman_row.Aka" />
 	  		</div>
 
 	  		<div class="header-label">Last Name</div>
   			<div class="header-value">
-	  			<input  class="form-control" type="text" ng-model="fisherman_row.LastName" />
+	  			<input  class="form-control" type="text" ng-change="updateFullName()" ng-model="fisherman_row.LastName" />
 	  		</div>
 
 	  		<div class="header-label">Full Name</div>
   			<div class="header-value">
 	  			<!--<input  class="form-control" type="text" disabled value="{{fisherman_row.FirstName + ' \'' + fisherman_row.Aka + '\' ' + fisherman_row.LastName}}" />-->
-	  			<input  class="form-control" type="text" disabled value="{{fisherman_row.FirstName + ' (' + fisherman_row.Aka + ') ' + fisherman_row.LastName}}" />
+	  			<input  class="form-control" type="text" disabled value="{{fisherman_row.FullName}}" />
 	  		</div>
 			
 	  		<div class="header-label">Phone Number</div>

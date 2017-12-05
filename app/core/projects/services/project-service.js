@@ -56,7 +56,7 @@ projects_module.factory('SaveProjectInstrument', ['$resource', function ($resour
 }]);
 
 projects_module.factory('SaveProjectFisherman', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/fishermen/saveprojectfishermen');
+    return $resource(serviceUrl + '/api/v1/fishermen/saveprojectfisherman');
 }]);
 
 projects_module.factory('SaveInstrument', ['$resource', function ($resource) {
@@ -65,6 +65,10 @@ projects_module.factory('SaveInstrument', ['$resource', function ($resource) {
 
 projects_module.factory('SaveInstrumentAccuracyCheck', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/instrument/saveinstrumentaccuracycheck');
+}]);
+
+projects_module.factory('RemoveInstrumentAccuracyCheck', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/instrument/removeinstrumentaccuracycheck');
 }]);
 
 projects_module.factory('SaveFisherman', ['$resource', function ($resource) {
@@ -135,6 +139,7 @@ projects_module.service('ProjectService', ['$q',
     'GetFishermen',
     'GetProjectFishermen',
     'RemoveProjectFisherman',
+    'RemoveInstrumentAccuracyCheck',
     function ($q,
         ProjectFunders,
         ProjectCollaborators,
@@ -158,7 +163,8 @@ projects_module.service('ProjectService', ['$q',
         RemoveProjectInstrument,
         GetFishermen,
         GetProjectFishermen,
-        RemoveProjectFisherman) {
+        RemoveProjectFisherman,
+        RemoveInstrumentAccuracyCheck) {
 
         var service = {
             project: null,
@@ -228,7 +234,7 @@ projects_module.service('ProjectService', ['$q',
 
                 service.project = Project.query({ id: id });
 
-                service.project.$promise.then(function () {
+                /*service.project.$promise.then(function () {
                     console.log("after-project-load!");
                     //do some sorting after we load for instruments
                     if (service.project.Instruments && service.project.Instruments.length > 0)
@@ -237,11 +243,14 @@ projects_module.service('ProjectService', ['$q',
                     //and also for locations
                     //service.project.Locations = service.project.Locations.sort(orderByAlpha);
                 });
+                */
 
                 return service.project;
             },
 
             // We don't really like to set things this way...  Is there a better way?
+            // TODO: look at the Project's "program" metadata (propertyid = 23)
+            //       and the "subprogram" metadata (propertyid = 24)
             getProjectType: function (aProjectId) {
                 var theType = null;
 
@@ -324,6 +333,10 @@ projects_module.service('ProjectService', ['$q',
 
             saveInstrumentAccuracyCheck: function (instrumentId, ac) {
                 return SaveInstrumentAccuracyCheck.save({ InstrumentId: instrumentId, AccuracyCheck: ac });
+            },
+
+            removeInstrumentAccuracyCheck: function (instrumentId, ac) {
+                return RemoveInstrumentAccuracyCheck.save({ InstrumentId: instrumentId, AccuracyCheck: ac });
             },
 
             updateFile: function (projectId, file) {
