@@ -527,10 +527,18 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                     //console.log(row_num + " --------------- is our rownum");
                     //console.log("row_errors is next...");
                     //console.dir(row_errors);
+					
+					/*	Notes are in order here.
+					*	All three items below (row.isValid, row.errors, and scope.gridHasErrors) are necessary to turn the row color red.
+					*	If all three itesms ARE NOT preset, the error will be flagged, but the color WILL NOT turn red.
+					*/
                     if (row_errors.length > 0) {
                         row.isValid = false;
                         //row.errors = row_errors;
-                        row.errors = angular.copy(row_errors); // row.errors is $scope.dataSheetDataset.errors
+						
+						// validateGrid(scope) calls validate
+						// validate does angular.forEach on $scope.dataSheetDataset, passing the data_row to here, coming in as row.
+                        row.errors = angular.copy(row_errors);
                         //scope.row.errors = angular.copy(row_errors);
                         scope.gridHasErrors = true;
                     }
