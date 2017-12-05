@@ -152,56 +152,20 @@
 		    <div class="row-fluid">
 		        <div class="span10">
 		     
-		           <div class="panel panel-default">
-						<div class="panel-body">
-					  		<h3>{{project.Name}} > Manage Fishermen</h3>
+                    <div class="panel panel-default">
 
-					  		<p><i>Manage fisherman for this project</i></p>
-					  		<hr/>
-							<div project-role="editor" class="panel-body" style="width: 600px;">
-								<h3>Add a Fisherman:</h3>
-								
-								<select ui-select2="select2Options" data-placeholder="Add a fisherman" ng-model="selectedFisherman" style="width: 300px;">
-										<!--<option ng-repeat="fisherman in fishermenOptions" value="{{fisherman.Id}}">{{fisherman.FullName}}</option>-->
-										<option ng-repeat="fisherman in fishermenList" value="{{fisherman.Id}}">{{fisherman.FullName}}</option>
-								</select>
+                        <button style="margin: 20px;" class="right btn" ng-click="createFisherman()">Create New</button>
+                        
+                        <div style="height: 400px; width: 100%; margin-top: 80px; margin-bottom: 115px;">
+                            <div id="fisherman-tab-grid" class="ag-blue gridStyle-small"></div>
+                        </div>
 
-								<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createFisherman()">Create New</button>
-								<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addFisherman()">Add to Project</button>
-								
-							</div>
-					  		<div ng-show="project.Fishermen.length==0">No fishermen are associated with this project.</div>
-					  		<div class="col-md-6 admin-field-list-box" ng-show="project.Fishermen.length>0">
-								<div class="row">
-										<div ng-click="viewSelectedFisherman(fisherman)" class="admin-field" ng-class="{'admin-field-selected': fisherman.Id == viewFisherman.Id}" ng-repeat="fisherman in project.Fishermen">
-											<span class="admin-field-name">{{fisherman.FullName}}</span><br/>
-											<span class="admin-field-desc">{{fisherman.PhoneNumber}}</span>											
-											<div project-role="editor" ng-class="{'hidden': fisherman.Id != viewFisherman.Id}" class="right">
-												<button ng-click="removeViewFisherman()" class="btn btn-xs">Remove</button>
-												<button ng-click="editViewFisherman()" class="btn btn-xs">Edit</button>
-											</div>
-										</div>
-								</div>
+                        <div class="data-tab-grid-footer">Total fishermen: {{project.Fishermen.length}}</div>
 
-							</div>
-							
-							<div ng-show="viewFisherman" class="col-md-6 admin-criteria-list-box">
-								<div class="row">
-									<div class="col-md-12">
-										<div ng-include="'app/core/common/templates/fishermanInfo.html'"></div>
-										<div project-role="editor" class="right" style="margin-top: 50px;">
-											<!--<button class="btn" ng-click="openAccuracyCheckForm()">Add</button>-->
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+                    </div>
 		        </div>
 		    </div>
 		</div>
-		<!--</div>-->
 	</tab>
 	<!--<tab heading="Correspondence">-->
 	<tab heading="Correspondence" ng-show="AuthorizedToViewProject && ShowSubproject" ng-controller="TabCorrespondenceController">
@@ -226,7 +190,6 @@
 							
 							
 					  </div>
-					  <!--<div class="gridStyle-small" ng-grid="gridOptions"></div>-->
 		        </div>
 		    </div>
 		</div>

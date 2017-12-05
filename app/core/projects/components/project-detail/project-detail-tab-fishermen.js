@@ -1,16 +1,95 @@
 ﻿//this is a nested controller used on the project-details page to load
 // the fishermen tab if it is a harvest/creel project. 
 
-var tab_fishermen = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var tab_fishermen = ['$scope', '$timeout', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 
         //console.log("Inside tab fishermen controller...");
         
         scope.fishermanList = null;
         scope.theFishermen = null;
+
+        //fisherman-tab-grid
+
+        var FirstNameRenderer = function (param)
+        {
+            return (param.data.Aka) ? param.data.FirstName + ' (' + param.data.Aka + ')' : param.data.FirstName;
+        }
+
+        var DateAddedRenderer = function (param) {
+            return moment(param.data.DateAdded).format('L');
+        };
+
+        var StatusIdRenderer = function (param) {
+            var str_status = ConvertStatus.convertStatus(param.data.StatusId);
+            //return (param.data.StatusId === 1) ? str_status + '(' + param.data.DateInactive + ')' : str_status; //include the dateinactive if inactive
+            // well, it looks like the dateinactive isn't being set so it is null... guess we can use that later; now we'll just return the status
+            return str_status;
+        };
+
+        var OkToCallRenderer = function (param) {
+            return ConvertStatus.convertOkToCall(param.data.OkToCallId);
+        };
+
+        var EditLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.editFisherman(param.data);
+            });
+            div.appendChild(editBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
+            delBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.removeFisherman(param.data);
+            });
+            div.appendChild(delBtn);
+
+            return div;
+        };
+
+        ///////////////fishermen grid
+        scope.fishGridOptions = {
+
+            enableSorting: true,
+            enableFilter: true,
+            enableColResize: true,
+            rowSelection: 'single',
+            onSelectionChanged: function (params) {
+                console.log("selection changed!");
+                scope.fishGridOptions.selectedItems = scope.fishGridOptions.api.getSelectedRows();
+                //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+            onFilterModified: function () {
+                scope.fishGridOptions.api.deselectAll();
+            },
+            selectedItems: [],
+            columnDefs:
+            [
+                { cellRenderer: EditLinksTemplate, width: 80, menuTabs: [], },
+                { field: 'FirstName', cellRenderer: FirstNameRenderer, headerName: 'First Name', width: 100, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
+                //{ field: 'Aka', headerName: 'Aka', width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'LastName', headerName: 'Last Name', width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'FullName', headerName: 'Full Name', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'PhoneNumber', headerName: 'Phone', width: 100, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'OkToCallId', headerName: 'Ok To Call', width: 80, menuTabs: ['filterMenuTab'], cellRenderer: OkToCallRenderer },
+                { field: 'FishermanComments', headerName: 'Comments', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'DateAdded', headerName: 'Date Added', width: 100, cellRenderer: DateAddedRenderer, menuTabs: [], },
+                { field: 'StatusId', headerName: 'Status', width: 100, menuTabs: ['filterMenuTab'], cellRenderer: StatusIdRenderer},
+                //{ field: 'DateInactive', headerName: 'Date Inactive', menuTabs: [], },
+                //{ field: 'OwningDepartment.Name', headerName: 'Owner', width: 250, menuTabs: ['filterMenuTab'], },
+
+
+            ]
+        };
 
 
         //watch the datasets on the parent-detail page to load... once they do, check to see if we should show our tab
@@ -24,130 +103,45 @@ var tab_fishermen = ['$scope', '$routeParams', 'SubprojectService', 'ProjectServ
             if (scope.isHarvestProject(scope.project)) {
                 console.log("Adding Fishermen to tab bar because we are a Harvest project...");
                 scope.ShowFishermen = true;
-                scope.fishermenList = ProjectService.getFishermen(); // All fishermen, but only CreelSurvey has fishermen.//
-                scope.theFishermen = ProjectService.getProjectFishermen(scope.project.Id);
+                //scope.fishermenList = ProjectService.getFishermen(); // All fishermen, but only CreelSurvey has fishermen.//
+                //scope.theFishermen = ProjectService.getProjectFishermen(scope.project.Id);
+                
+
+                $timeout(function () {
+
+                    var ag_grid_div = document.querySelector('#fisherman-tab-grid');    //get the container id...
+                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.fishGridOptions); //bind the grid to it.
+                    scope.fishGridOptions.api.showLoadingOverlay(); //show loading...
+
+                    //build the grid based on our subprojects
+                    scope.fishGridOptions.api.setRowData(scope.project.Fishermen);
+
+                }, 0);
+
             }
         }, true);
 
 
-
-        scope.$watch('fishermenList', function () {
-            //console.log("Inside watch, fishermenList");
-            //if (typeof scope.fishermenList.$resolved === 'undefined')
-            if (!scope.fishermenList) {
-                //console.log("scope.fishermenList has not loaded.");
-                return;
-            }
-            else if (scope.fishermenList.length === 0) {
-                //console.log("No fishermen found yet...");
-                return;
-            }
-
-            //console.log("scope.fishermenList is next..");
-            //console.dir(scope.fishermenList);
-
-            // If we switch the parameters for the makeObjects, like this makeObjects(scope.fishermenList, 'FullName', 'Id'), it will put them in alpha order by name.
-            // However, we must test this first, to verify that it does not mess anything up. ~GC tested the idea; it needed more work.  It does not work in it simplicity here.
-            scope.fishermenOptions = $rootScope.fishermenOptions = makeObjects(scope.fishermenList, 'Id', 'FullName');
-
-            // Debug output ... wanted to verify the contents of scope.fishermenOptions
-            //angular.forEach(scope.fishermenOptions, function(fisherman){
-            //	console.dir(fisherman);
-            //});
-
-            //console.log("scope.fishermenOptions is next...");
-            //console.dir(scope.fishermenOptions);
-        });	
-
-
-        //when the parent project is loaded...
-        scope.$parent.$watch('project.Id', function () {
-
-            //console.log("Parent project is loaded! watching from fishermen tab");
-            
-            if ((typeof scope.viewFisherman !== 'undefined') && (scope.viewFisherman !== null)) {
-                scope.viewFisherman = getMatchingByField(scope.project.Fishermen, scope.viewFisherman.Id, 'Id')[0];
-                // The DateAdded is in UTC format and we need to display only YYYY-MM-DD format.
-                // The value is a string, and JavaScript Date
-                //console.log("scope.viewFisherman is next...");
-                //console.dir(scope.viewFisherman);
-
-                // If we just deleted a fisherman from the project, scope.viewFisherman will be null or undefined now, after the getMatchingByField function call above.
-                // So we don't want to try accessing scope.viewFisherman.DateAdded at this time.
-                if ((typeof scope.viewFisherman !== 'undefined') && (scope.viewFisherman !== null)) {
-                    var strDate = scope.viewFisherman.DateAdded;
-                    scope.viewFisherman.DateAdded = ServiceUtilities.extractDateFromString(strDate);
-
-                    scope.viewFisherman.Status = ConvertStatus.convertStatus(scope.viewFisherman.StatusId);
-                    console.log("scope.viewFisherman.Status = " + scope.viewFisherman.Status);
-
-                    scope.viewFisherman.OkToCall = ConvertStatus.convertOkToCall(scope.viewFisherman.OkToCallId);
-                    console.log("scope.viewFisherman.OkToCall = " + scope.viewFisherman.OkToCall);
-                }
-            }
-
-        });
-
-
-        scope.viewSelectedFisherman = function (fisherman) {
-            console.log("Inside controllers.js, scope.viewSelectedFisherman");
-            if (scope.viewFisherman)
-                delete scope.viewFisherman;
-
-            scope.viewFisherman = fisherman;
-            //console.log("scope is next...");
-            //console.dir(scope);			
-            console.log("scope.viewFisherman is next...");
-            console.dir(scope.viewFisherman);
-            console.log("scope.viewFisherman.DateAdded = " + scope.viewFisherman.DateAdded);
-
-            //var strInDate = scope.viewFisherman.DateAdded;
-            //console.log("strInDate = " + strInDate);
-            //scope.viewFisherman.DateAdded = ServiceUtilities.extractDateFromString(strInDate);
-            //console.log("scope.viewFisherman.DateAdded = " + scope.viewFisherman.DateAdded);
-
-            scope.viewFisherman.Status = ConvertStatus.convertStatus(scope.viewFisherman.StatusId);
-            console.log("scope.viewFisherman.Status = " + scope.viewFisherman.Status)
-
-            scope.viewFisherman.OkToCall = ConvertStatus.convertOkToCall(scope.viewFisherman.OkToCallId);
-            console.log("scope.viewFisherman.OkToCall = " + scope.viewFisherman.OkToCall);
-        };
-
-
-
-        scope.removeViewFisherman = function () {
-            //console.log("scope is next...");
-            //console.dir(scope);
-            if (!scope.viewFisherman)
+        scope.removeFisherman = function (a_fisherman) {
+            console.log("alrighty, remove this fisherman!");
+            console.dir(a_fisherman);
+            if (!a_fisherman)
                 return;
 
-            var promise = ProjectService.removeProjectFisherman(scope.project.Id, scope.viewFisherman.Id);
+            if (!confirm("Are you sure you want to remove this fisherman from this project?"))
+                return;
+
+            var promise = ProjectService.removeProjectFisherman(scope.project.Id, a_fisherman.Id);
 
             promise.$promise.then(function () {
-                scope.reloadProject();
+                scope.project.Fishermen.forEach(function (item, index) {
+                    if (item.Id === a_fisherman.Id) {
+                        scope.project.Fishermen.splice(index, 1);
+                        scope.fishGridOptions.api.setRowData(scope.project.Fishermen);
+                    }
+                });
             });
         };
-
-
-        scope.addFisherman = function () {
-            console.log("Inside controllers.addFisherman.");
-            //console.log("scope is next...");
-            //console.dir(scope);
-            console.log("scope.selectedFisherman is next...");
-            console.dir(scope.selectedFisherman);
-
-            if (!scope.selectedFisherman || scope.selectedFisherman === null || getMatchingByField(scope.project.Fishermen, scope.selectedFisherman, 'Id').length > 0)
-                return;
-
-            var theFishermen = getMatchingByField(scope.fishermenList, scope.selectedFisherman, 'Id');
-
-            var promise = ProjectService.saveProjectFisherman(scope.project.Id, theFishermen[0]);
-
-            promise.$promise.then(function () {
-                scope.reloadProject();
-            });
-        };
-
 
         scope.createFisherman = function () {
             scope.viewFisherman = null;
@@ -158,14 +152,43 @@ var tab_fishermen = ['$scope', '$routeParams', 'SubprojectService', 'ProjectServ
             });
         };
 
+        scope.editFisherman = function (a_fisherman) {
+            scope.viewFisherman = a_fisherman;
 
-
-        scope.editViewFisherman = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-fisherman.html',
                 controller: 'ModalCreateFishermanCtrl',
                 scope: scope, //very important to pass the scope along...
             });
+        };
+
+        scope.postSaveFishermanUpdateGrid = function (the_promise) {
+            var updated = false;
+            scope.project.Fishermen.forEach(function (item, index) {
+                if (item.Id === the_promise.Id) {
+                    updated = true;
+
+                    //console.log("ok we found a match! -- updating! before:");
+                    //console.dir(scope.subprojectList[index]);
+
+                    angular.extend(scope.project.Fishermen[index], the_promise); //replace the data for that item
+                    //console.log("ok we found a match! -- updating! after:");
+                    scope.fishGridOptions.api.redrawRows();
+                    console.log("done reloading grid after editing a fisherman.");
+                }
+            });
+            if (updated === false) //if we get all done and we never found it, lets add it to the end.
+            {
+                //console.log("ok we found never a match! -- adding!");
+                scope.project.Fishermen.push(the_promise); //add that item
+                scope.fishGridOptions.api.setRowData([]);
+                scope.fishGridOptions.api.setRowData(scope.project.Fishermen);
+
+                console.log("done reloading grid after adding a fisherman.");
+            }
+
+            console.log("updated the list and the grid... now refreshing ");
+
         };
 
         //looks at the metadata setting to see if it is a harvest project
