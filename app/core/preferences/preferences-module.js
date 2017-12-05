@@ -1,7 +1,5 @@
 ﻿// defines the preferences module 
 
-var preferences_module = angular.module('PreferencesModule', ['ui.bootstrap', 'ngResource']);
-
 require([
     //load components
     'core/preferences/components/dataset-preferences/dataset-preferences',

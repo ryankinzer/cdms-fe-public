@@ -1,7 +1,5 @@
 ﻿// defines the habitat module
 
-var habitat_module = angular.module('HabitatModule', ['ui.bootstrap', 'ngResource']);
-
 require([
     //controllers
     'private/habitat/components/habitat-sites/modal-add-habitat-item',

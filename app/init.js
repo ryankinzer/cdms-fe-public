@@ -15,7 +15,6 @@
             { name: 'private', location: root + '/app/private' },
         ]
     });
-    
 
     // require loads each of the javascript files referenced below, which can in turn load other files.
     require([
@@ -25,13 +24,14 @@
       'dijit/MenuItem',
       'dijit/form/DropDownButton',
 //      'app/app',                                                    //main.js
-        'core/common/common-module',
-        'private/crpp/crpp-module',
+      'core/all-modules',
+      'core/common/common-module',
       'core/projects/projects-module',
       'core/datasets/datasets-module',
       'core/admin/admin-module',
       'core/preferences/preferences-module',
-      
+      'private/all-modules',
+      'private/crpp/crpp-module',
       'private/habitat/habitat-module',
       'private/appraisals/appraisals-module',
 

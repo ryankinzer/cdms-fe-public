@@ -1,3 +1,15 @@
+//define all of the core modules we use -- this is required for proper loading and optimizing
+var common_module = angular.module('CommonModule', ['ui.bootstrap', 'ngResource']);
+var admin_module = angular.module('AdminModule', ['ui.bootstrap', 'ngResource']);
+var datasets_module = angular.module('DatasetModule', ['ui.bootstrap', 'ngResource']);
+var preferences_module = angular.module('PreferencesModule', ['ui.bootstrap', 'ngResource']);
+var projects_module = angular.module('ProjectModule', ['ui.bootstrap', 'angularFileUpload', 'ui.select2', 'ngResource']);
+
+
+
+
+define("core/all-modules", function(){});
+
 /*
 *   These are functions used in services or controllers across modules
 */
@@ -5283,8 +5295,6 @@ define("core/common/components/chart/watertemp-chartservice", function(){});
 
 // defines cross-module functions, components and services that we can use in anywhere
 
-var common_module = angular.module('CommonModule', ['ui.bootstrap', 'ngResource']);
-
 //I wish you could just specify a directory and it would find the files and load them, but
 // requirejs doesn't work that way so we have to reference each one by hand. -kb
 require([
@@ -5383,2578 +5393,6 @@ require([
     });
 });
 define("core/common/common-module", function(){});
-
-
-var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','SubprojectService','ServiceUtilities',
-	'$filter', 'FileUploadService','$upload','$location', '$anchorScroll',
-    function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
-	$filter, FileUploadService, $upload, $location, $anchorScroll){
-	console.log("Inside ModalAddCorrespondenceEventCtrl...");
-	
-	if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
-		$rootScope.subprojectId = $scope.viewSubproject.Id;
-	
-	$scope.filesToUpload = {};
-	$scope.verifyActionFormOpen = "No";
-	$scope.showOtherResponseType = false;
-	$scope.showOtherCorrespondenceType = false;
-	$scope.ReadyToClose = ""; // Set to "", so that "False" does not show on the form.
-	$scope.showCloseButton = false;
-	$scope.showCancelButton = true;
-	$scope.showFormItems = true;
-	$scope.fileCount = 0;
-	$scope.fileProgress = 0;
-
-    $scope.ce_row = angular.copy($scope.ce_row);
-	
-	console.log("$scope.ce_row is next...");
-	console.dir($scope.ce_row);
-	
-	$scope.ceCorrespondenceType = [];
-		$scope.ceCorrespondenceType.push({Id: 0, Label: "Project Notification"});
-		$scope.ceCorrespondenceType.push({Id: 1, Label: "Notice of Application"});
-		$scope.ceCorrespondenceType.push({Id: 2, Label: "Seeking Concurrence"});
-		$scope.ceCorrespondenceType.push({Id: 3, Label: "Document Review"});
-		$scope.ceCorrespondenceType.push({Id: 4, Label: "Permit Review"});
-		$scope.ceCorrespondenceType.push({Id: 5, Label: "Sending materials for our records"});
-		$scope.ceCorrespondenceType.push({Id: 6, Label: "Other"});		
-	
-	/*$scope.ceResponseType = [];
-		$scope.ceResponseType.push("APE letter");
-		$scope.ceResponseType.push("Asked to be consulting party");
-		$scope.ceResponseType.push("Defer to other tribe(s)");
-		$scope.ceResponseType.push("Determination of Eligibility");
-		$scope.ceResponseType.push("Did not review");
-		$scope.ceResponseType.push("Emailed Comments");
-		$scope.ceResponseType.push("Finding of Effect");
-		$scope.ceResponseType.push("Issued survey/excavation permit");
-		$scope.ceResponseType.push("Let it go");
-		$scope.ceResponseType.push("Missed opportunity to review");
-		$scope.ceResponseType.push("NAGPRA FR Notice");
-		$scope.ceResponseType.push("NAGPRA inventory/summary");
-		$scope.ceResponseType.push("none--ok");
-		$scope.ceResponseType.push("Other");
-		$scope.ceResponseType.push("Out of area");
-		$scope.ceResponseType.push("Permit Application");
-		$scope.ceResponseType.push("Report for Review");
-		$scope.ceResponseType.push("Requested a monitor");
-		$scope.ceResponseType.push("Requested a survey");
-		$scope.ceResponseType.push("Requested additional information");
-		$scope.ceResponseType.push("Requested report");
-		$scope.ceResponseType.push("Requested testing");
-		$scope.ceResponseType.push("Response to comments");
-		$scope.ceResponseType.push("Reviewed report");
-		$scope.ceResponseType.push("Same as previously reviewed project");
-		$scope.ceResponseType.push("Sent letter");
-		$scope.ceResponseType.push("Signed off on");
-		$scope.ceResponseType.push("Simple Notification");
-	*/
-	$scope.ceResponseType = [];
-		$scope.ceResponseType.push({Id: 0, Label: "APE letter"});
-		$scope.ceResponseType.push({Id: 1, Label: "Asked to be consulting party"});
-		$scope.ceResponseType.push({Id: 2, Label: "Defer to other tribe(s)"});
-		$scope.ceResponseType.push({Id: 3, Label: "Determination of Eligibility"});
-		$scope.ceResponseType.push({Id: 4, Label: "Did not review"});
-		$scope.ceResponseType.push({Id: 5, Label: "Emailed Comments"});
-		$scope.ceResponseType.push({Id: 6, Label: "Finding of Effect"});
-		$scope.ceResponseType.push({Id: 7, Label: "Issued survey/excavation permit"});
-		$scope.ceResponseType.push({Id: 8, Label: "Let it go"});
-		$scope.ceResponseType.push({Id: 9, Label: "Missed opportunity to review"});
-		$scope.ceResponseType.push({Id: 10, Label: "NAGPRA FR Notice"});
-		$scope.ceResponseType.push({Id: 11, Label: "NAGPRA inventory/summary"});
-		$scope.ceResponseType.push({Id: 12, Label: "none--ok"});
-		$scope.ceResponseType.push({Id: 13, Label: "Notice of Application"});
-		$scope.ceResponseType.push({Id: 14, Label: "Other"});
-		$scope.ceResponseType.push({Id: 15, Label: "Out of area"});
-		$scope.ceResponseType.push({Id: 16, Label: "Permit Application"});
-		$scope.ceResponseType.push({Id: 17, Label: "Report for Review"});
-		$scope.ceResponseType.push({Id: 18, Label: "Requested a monitor"});
-		$scope.ceResponseType.push({Id: 19, Label: "Requested a survey"});
-		$scope.ceResponseType.push({Id: 20, Label: "Requested additional information"});
-		$scope.ceResponseType.push({Id: 21, Label: "Requested report"});
-		$scope.ceResponseType.push({Id: 22, Label: "Requested testing"});
-		$scope.ceResponseType.push({Id: 23, Label: "Response to comments"});
-		$scope.ceResponseType.push({Id: 24, Label: "Reviewed report"});
-		$scope.ceResponseType.push({Id: 25, Label: "Same as previously reviewed project"});
-		$scope.ceResponseType.push({Id: 26, Label: "Sent letter"});
-		$scope.ceResponseType.push({Id: 27, Label: "Signed off on"});
-		$scope.ceResponseType.push({Id: 28, Label: "Simple Notification"});
-	
-	/*$scope.ceResponseType = [];
-		$scope.ceResponseType.push("APE letter");
-		$scope.ceResponseType.push("Asked to be consulting party");
-		$scope.ceResponseType.push("Defer to other tribe(s)");
-		$scope.ceResponseType.push("Determination of Eligibility");
-		$scope.ceResponseType.push("Did not review");
-		$scope.ceResponseType.push("Emailed Comments");
-		$scope.ceResponseType.push("Finding of Effect");
-		$scope.ceResponseType.push("Issued survey/excavation permit");
-		$scope.ceResponseType.push("Let it go");
-		$scope.ceResponseType.push("Missed opportunity to review");
-		$scope.ceResponseType.push("NAGPRA FR Notice");
-		$scope.ceResponseType.push("NAGPRA inventory/summary");
-		$scope.ceResponseType.push("none--ok");
-		$scope.ceResponseType.push("Other");
-		$scope.ceResponseType.push("Out of area");
-		$scope.ceResponseType.push("Permit Application");
-		$scope.ceResponseType.push("Report for Review");
-		$scope.ceResponseType.push("Requested a monitor");
-		$scope.ceResponseType.push("Requested a survey");
-		$scope.ceResponseType.push("Requested additional information");
-		$scope.ceResponseType.push("Requested report");
-		$scope.ceResponseType.push("Requested testing");
-		$scope.ceResponseType.push("Response to comments");
-		$scope.ceResponseType.push("Reviewed report");
-		$scope.ceResponseType.push("Same as previously reviewed project");
-		$scope.ceResponseType.push("Sent letter");
-		$scope.ceResponseType.push("Signed off on");
-		$scope.ceResponseType.push("Simple Notification");
-	*/	
-	console.log("$scope.ceResponseType is next...");
-	console.dir($scope.ceResponseType);
-	
-	/*$scope.responseTypeOptions = $rootScope.responseTypeOptions = makeObjects($scope.ceResponseType, 'Id','Label') ;
-	console.log("$scope.responseTypeOptions is next...");
-	console.dir($scope.responseTypeOptions);
-	*/
-
-	var keepGoing = true;
-	var foundIt = false;
-	//var responseTypeIndex = 0;
-	//var responseTypeMarker = "";
-	/*angular.forEach($scope.responseTypeOptions, function(option){
-		console.log("option = x" + option + "x, $scope.ce_row.ResponseType = x" + $scope.ce_row.ResponseType + "x.");
-		if ((keepGoing) && (option.indexOf($scope.ce_row.ResponseType) >= 0))
-		{
-			console.log("option = " + option);
-			console.log("Found the ResponseType...");
-			responseTypeMarker = responseTypeIndex;
-			$scope.ce_row.ResponseType = "" + responseTypeMarker;
-			foundIt = true;
-			keepGoing = false;
-		}
-		responseTypeIndex++;
-	});
-	*/
-	
-	// If ce_row.CorrespondenceDate exists, then we are editing.
-	if ($scope.ce_row.CorrespondenceDate)
-	{
-		angular.forEach($scope.ceResponseType, function(option){
-		//console.log("option.Label = x" + option.Label + "x, $scope.ce_row.ResponseType = x" + $scope.ce_row.ResponseType + "x.");
-			if ((keepGoing) && (option.Label === $scope.ce_row.ResponseType))
-			{
-				//console.log("option.Label = " + option.Label);
-				//console.log("Found the ResponseType...");
-				foundIt = true;
-				keepGoing = false;
-			}
-			//responseTypeIndex++;
-		});
-	
-		if (!foundIt)
-		{
-			console.log("Value of ResponseType is not in the list...");
-			$scope.ce_row.OtherResponseType = $scope.ce_row.ResponseType;
-			$scope.ce_row.ResponseType = "Other";
-			$scope.showOtherResponseType = true;		
-		}
-		
-		foundIt = false;
-		keepGoing = true;
-		//console.log("$scope.ce_row.CorrespondenceType is next...");
-		//console.dir($scope.ce_row.CorrespondenceType);
-		angular.forEach($scope.ceCorrespondenceType, function(option){
-			//console.log("option is next...");
-			//console.dir(option);
-			//console.log("option.Label = x" + option.Label + "x, $scope.ce_row.CorrespondenceType = x" + $scope.ce_row.CorrespondenceType + "x.");
-			if ((keepGoing) && (option.Label === $scope.ce_row.CorrespondenceType))
-			{
-				//console.log("option.Label = " + option.Label);
-				//console.log("Found the CorrespondenceType...");
-				foundIt = true;
-				keepGoing = false;
-			}
-		});
-		
-	
-		if (!foundIt)
-		{
-			console.log("Value of CorrespondenceType is not in the list...");
-			$scope.ce_row.OtherCorrespondenceType = $scope.ce_row.CorrespondenceType;
-			$scope.ce_row.CorrespondenceType = "Other";
-			$scope.showOtherCorrespondenceType = true;		
-		}
-	}
-	/*console.log("Location of ResponseType = " + $scope.ceResponseType.indexOf($scope.ce_row.ResponseType));
-	if ($scope.ceResponseType.indexOf($scope.ce_row.ResponseType) < 0)
-	{
-		// The value of ResponseType IS NOT in our array of possible values, which means we have an odd item,
-		// so we must do some jiggling...
-		console.log("Value of ResponseType is not in the list...");
-		$scope.ce_row.OtherResponseType = $scope.ce_row.ResponseType;
-		$scope.ce_row.ResponseType = "Other";
-		$scope.showOtherResponseType = true;
-	}
-	*/
-    if($scope.ce_row.Id > 0)
-    {
-        $scope.header_message = "Edit Event for Project " + $scope.viewSubproject.ProjectName;
-    }
-	else
-	{
-		if ((typeof $scope.viewSubproject !== 'undefined' ) && ($scope.viewSubproject !== null))
-			$scope.header_message = "Add Event to Project " + $scope.viewSubproject.ProjectName;
-		else if ((typeof $scope.crppProjectName !== 'undefined' ) && ($scope.crppProjectName !== null))
-			$scope.header_message = "Add Event to Project " + $scope.crppProjectName;
-	}
-	
-	if (!$scope.ce_row.NumberOfDays)
-		$scope.ce_row.NumberOfDays = "Other";
-	
-	//console.log("$scope.ce_row is next...");
-	//console.dir($scope.ce_row);
-	
-	$scope.field = {
-		DbColumnName: "EventFiles"
-	};
-	
-	//console.log("$scope is next...");
-	//console.dir($scope);
-	
-	/*$scope.ceEvents = function(items, key) {
-		element.all(by.repeater(key + ' in $scope.viewSubproject.CorrespondenceEvents').column(key + '.EventComments')).then(function(arr) {
-			arr.forEach(function(wd, i) {
-			  expect(wd.getText()).toMatch(items[i]);
-			});
-		});
-	};
-	
-	$scope.ceFilterEventComments = function()
-	{
-		var searchEventComments = element(by.model('correspondenceEventsFilter.EventComments'));
-		var strict = element(by.model('strict'));
-		searchEventComments.clear();
-		searchEventComments.sendKeys('i');
-		$scope.ceEvents($scope.viewSubproject.CorrespondenceEvents, event);
-		//strict.click();
-	}
-	*/
-	
-	$scope.openFileModal = function(row, field)
-	{
-		console.log("Inside ModalAddCorrespondenceEventCtrl, openFileModal...");
-		console.log("row is next...");
-		console.dir(row);
-		console.log("field is next...");
-		console.dir(field);
-		$scope.file_row = row;
-		$scope.file_field = field;
-		
-		var modalInstance = $modal.open({
-			templateUrl: 'app/core/common/components/file/templates/modal-file.html',
-			controller: 'FileModalCtrl',
-			scope: $scope, //scope to make a child of
-		});
-	};
-	
-	$scope.selectCorrespondenceType = function () {
-		console.log("Inside selectCorrespondenceType...");
-		console.log("$scope.ce_row at top of selectCorrespondenceType is next...");
-		console.dir($scope.ce_row);
-		if ($scope.ce_row.CorrespondenceType === "Other")
-			$scope.showOtherCorrespondenceType = true;
-		else
-		{
-			$scope.showOtherCorrespondenceType = false;
-			$scope.ce_row.OtherCorrespondenceType = null;
-		}
-		
-		console.log("$scope.showOtherCorrespondenceType = " + $scope.showOtherCorrespondenceType);
-		console.log("$scope.ce_row at end of selectCorrespondenceType is next...");
-		console.dir($scope.ce_row);
-	};
-	
-	/*$scope.responseTypeChanged = function () {
-		console.log("Inside responseTypeChanged...");
-		console.log("$scope.ce_row is next...");
-		console.dir($scope.ce_row);
-		if ($scope.ce_row.ResponseType === "Other")
-			$scope.showOtherResponseType = true;
-		else
-		{
-			$scope.showOtherResponseType = false;
-			$scope.ce_row.OtherResponseType = 'undefined';
-		}
-		
-		console.log("$scope.showOtherResponseType = " + $scope.showOtherResponseType);
-	};
-	*/
-	
-	$scope.selectResponseType = function () {
-		console.log("Inside selectResponseType...");
-		console.log("$scope.ce_row at top of selectResponseType is next...");
-		console.dir($scope.ce_row);
-		if ($scope.ce_row.ResponseType === "Other")
-			$scope.showOtherResponseType = true;
-		else
-		{
-			$scope.showOtherResponseType = false;
-			$scope.ce_row.OtherResponseType = null;
-		}
-		
-		console.log("$scope.showOtherResponseType = " + $scope.showOtherResponseType);
-		console.log("$scope.ce_row at end of selectResponseType is next...");
-		console.dir($scope.ce_row);
-	};
-
-	$scope.GetTypeOfResponse = function(){
-		var theName = [];
-		theName.push($filter('ResponseTypeFilter')($scope.ResponseTypeList, $scope.ce_row.ResponseType.Id))[0];
-		console.log("theName is next...");
-		console.dir(theName);
-		
-	};
-
-
-	
-	//field = DbColumnName
-	$scope.onFileSelect = function(field, files)
-	{
-		console.log("Inside ModalAddCorrespondenceEventCtrl, onFileSelect");
-		console.log("file selected! " + field);
-		$scope.filesToUpload[field] = files;
-	};
-	
-	/*$scope.$watch("CorrespondenceDate", function(newValue, oldValue){
-		console.log("CorrespondenceDate changed...");
-	});
-	*/
-	
-	$scope.calculateDateOfResponse = function(){
-		console.log("Inside calculateDateOfResponse...");
-		console.log("$scope.ShowDateOfResponsePopup = " + $scope.ShowDateOfResponsePopup);
-		console.log("$scope.ce_row is next...");
-		console.dir($scope.ce_row);
-		//console.log("$scope.ce_row.NumberOfDays.length = " + $scope.ce_row.NumberOfDays.length);
-		
-		var	dtDateOfResponse = 'undefined';
-		var	strDateOfResponse = 'undefined';
-		
-		/* 	Initially, we set NumberOfDays to Other, with the placeholder in the box on the form.
-		*	When the user chooses a number, we change the NumberOfDays to a DatePicker.
-		*	If the user chooses Other again, we switch back to the placeholder.
-		*/
-		if ($scope.ce_row.NumberOfDays.length < 3)
-		{
-			//if ($scope.ce_row.CorrespondenceDate)
-			//console.log("$scope.ce_row.CorrespondenceDate text:  " + $scope.ce_row.CorrespondenceDate.toString());
-
-			// If the user left the Date of Correspondence blank, get today's date.
-			// Otherwise, use the date they picked.
-			if ((!$scope.ce_row.CorrespondenceDate) || ($scope.ce_row.CorrespondenceDate === null))
-			{
-				console.log("Date of Correspondence left blank; using today's date...");
-				dtDateOfResponse = new Date();
-			}
-			else
-			{
-				console.log("User picked this date...");
-				console.dir($scope.ce_row.CorrespondenceDate);
-
-				// If we just copy $scope.ce_row.CorrespondenceDate into dtDateOfResponse,
-				// all that really gets copied is the reference.  As we do calculations
-				// and change dtDateOfResponse, the same changes happen to $scope.ce_row.CorrespondenceDate.
-				// To avoid this, we clone the object in the next line, in order to break that link.
-				var strTmpDate = JSON.parse(JSON.stringify($scope.ce_row.CorrespondenceDate));
-				//console.log("strTmpDate = " + strTmpDate);
-
-				var dtTempDate = new Date(strTmpDate);
-				//var dtTempDate = Date.parse(strTmpDate);
-				console.log("dtTempDate " + dtTempDate);
-				dtDateOfResponse = dtTempDate;
-			}
-			
-			console.log("dtDateOfResponse initial setting is next...");
-			console.dir(dtDateOfResponse);
-			
-			dtDateOfResponse.setDate(dtDateOfResponse.getDate() + parseInt($scope.ce_row.NumberOfDays));
-			//console.log("dtDateOfResponse after adding days = " + dtDateOfResponse);
-
-			var strDateOfResponse = ServiceUtilities.formatDate2(dtDateOfResponse);
-			//console.log("strDateOfResponse after formatting = " + strDateOfResponse);
-
-			// Extract the date info from the date/time string.
-			var intSpaceLocation = strDateOfResponse.indexOf(" ");
-			strDateOfResponse = strDateOfResponse.substring(0, intSpaceLocation);
-			console.log("strDateOfResponse (text version) = " + strDateOfResponse);
-
-
-			$scope.ce_row.ResponseDate = strDateOfResponse;
-			console.log("$scope.ce_row.ResponseDate = " + $scope.ce_row.ResponseDate);
-			
-			console.log("$scope.ce_row is next...");
-			console.dir($scope.ce_row);
-			//$scope.ShowDateOfResponsePopup  = true;
-		}
-		else
-		{
-			$scope.ShowDateOfResponsePopup  = false;
-			//$scope.ce_row.ResponseDate = null;
-		}
-	};
-	
-	$scope.$watch('fileProgress', function(){
-		console.log("Inside watch fileProgress...");
-		console.log("$scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
-		if($scope.fileProgress < $scope.fileCount)
-			return;
-		
-		if ($scope.saving)
-		{
-			$scope.loading = false; // Stop the fish spinner.
-			$scope.showCloseButton = true;
-			$scope.showCancelButton = false;
-			$scope.showFormItems = false;
-		}
-	});
-	
-    $scope.save = function(){
-		console.log("Inside ModalAddCorrespondenceEventCtrl, save...");
-		//console.log("$scope is next...");
-		//console.dir($scope);
-		
-		$scope.saving = true; // Used in $scope.$watch('fileProgress'
-		$scope.loading = true; // Start the fish spinner.
-		
-		//console.log("$scope.ce_row.ResponseType.Id = " + $scope.ce_row.ResponseType.Id);
-		//console.log("$scope.ce_row.ResponseType.Name = " + $scope.ce_row.ResponseType.Name);
-		console.log("$scope.ce_row.ResponseType = " + $scope.ce_row.ResponseType);
-		var saveRow = angular.copy($scope.ce_row);
-		console.log("saveRow is next, before checking the Id...");
-		console.dir(saveRow);
-		if (!saveRow.Id)
-			saveRow.Id = 0;
-		//$scope.foundDuplicate = false;
-		
-		console.log("saveRow is next, after checking/setting the Id...");
-		console.dir(saveRow);
-
-		if ($scope.foundDuplicate)
-		{
-			alert("One or more of the files to upload is a duplicate!");
-			return;
-		}
-		
-		var subprojectId = 0;
-		if ($scope.viewSubproject)
-			subprojectId = $scope.viewSubproject.Id
-		else
-			subprojectId = $scope.subprojectId;
-		
-		// First let's handle the files.
-		if ($scope.filesToUpload.EventFiles)
-		{
-			// Count how many files we have.
-			$scope.fileCount = 0;
-			angular.forEach($scope.filesToUpload.EventFiles, function(aFile){
-				$scope.fileCount++;
-			});
-			console.log("$scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
-			
-			console.log("$scope.filesToUpload.EventFiles is next...");
-			console.dir($scope.filesToUpload.EventFiles);
-			for(var i = 0; i < $scope.filesToUpload.EventFiles.length; i++)
-			{
-				var file = $scope.filesToUpload.EventFiles[i];
-				console.log("file is next...");
-				console.dir(file);
-				
-				var newFileNameLength = file.name.length;
-				console.log("file name length = " + newFileNameLength);
-
-				// Inform the user immediately, if there are duplicate files.
-				if ($scope.foundDuplicate)
-					alert(errors);
-				else
-				{
-					console.log("file.success = " + file.success);
-					if(file.success != "Success")
-					{
-						console.log("No file.success, so let's save the file...");
-						$scope.upload = $upload.upload({
-                            url: serviceUrl + '/api/v1/crppsubproject/uploadcrppsubprojectfile',
-							method: "POST",
-							// headers: {'headerKey': 'headerValue'},
-							// withCredential: true,
-							//data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name},
-							data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, DatastoreTablePrefix: $scope.DatastoreTablePrefix},
-							file: file,
-
-							}).progress(function(evt) {
-								console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-							}).success(function(data, status, headers, config) {
-								console.dir(data);
-								console.dir(status);
-								console.dir(headers);
-								console.dir(config);
-								console.dir(file);
-								config.file.success = "Success";
-								console.log("done and success!");
-								$scope.fileProgress++;
-								console.log("$scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
-							})
-							.error(function(data, status, headers, config) {
-								$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
-								//console.log(file.name + " was error.");
-								config.file.success = "Failed";
-							});
-						console.log("$scope.upload is next...");
-						console.dir($scope.upload);
-					}
-				}
-			}
-			
-			angular.forEach($scope.filesToUpload, function(files, field){
-
-				if(field == "null" || field == "")
-					return;
-				
-				var local_files = [];
-
-				for(var i = 0; i < files.length; i++)
-				{
-					console.log("$scope is next...")
-					//console.dir($scope);
-				  
-					var file = files[i];
-					console.log("Reviewing results on file " + file.Name);
-					console.dir(file);
-				  
-					console.log("$scope.errors is next...");
-					console.dir($scope.errors);
-					console.log("typeof $scope.errors = " + typeof $scope.errors);
-					if(file.data && file.data.length == 1) //since we only upload one at a time...
-					{
-						//console.dir(file.data);
-						local_files.push(file.data[0]); //only ever going to be one if there is any...
-						//console.log("file id = "+file.data[0].Id);
-					}
-					else if (typeof $scope.errors === 'undefined')
-					{
-						console.log("No errors...");
-					}
-					else
-					{
-						//console.log("no file id.");
-						$scope.foundDuplicate = true;
-						$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-						//console.log("$scope is next...");
-						//console.dir($scope);
-						throw "Problem saving file: " + file.Name;
-					}
-				}
-
-				//console.log("$scope is next...");
-				//console.dir($scope);
-				console.log("$scope.file_row is next...");
-				console.dir($scope.file_row);
-				console.log("field = " + field);
-				//if we already had actual files in this field, copy them in
-				if($scope.file_row[field])
-				{
-					console.log("On Files field...");
-					var current_files = angular.fromJson($scope.file_row[field]);
-					angular.forEach(current_files, function(file){
-						if(file.Id) //our incoming files don't have an id, just actual files.
-							local_files.push(file);		
-					});
-				}
-
-				$scope.file_row[field] = angular.toJson(local_files);
-				//console.log("Ok our new list of files: "+$scope.row[field]);
-			});
-		}
-		
-		// Now let's handle the other fields on the form.
-		console.log("typeof saveRow.CorrespondenceDate = " + typeof saveRow.CorrespondenceDate);
-		if (typeof saveRow.CorrespondenceDate !== "string")
-		{
-			var strCorrespondenceDate = ServiceUtilities.toExactISOString(saveRow.CorrespondenceDate);
-			console.log("strCorrespondenceDate = " + strCorrespondenceDate);
-			saveRow.CorrespondenceDate = ServiceUtilities.extractDateFromString(strCorrespondenceDate);
-			console.log("saveRow.CorrespondenceDate = " + saveRow.CorrespondenceDate);
-		}
-		
-		//saveRow.CorrespondenceDate = ServiceUtilities.formatDate2(saveRow.CorrespondenceDate);
-		//console.log("saveRow.CorrespondenceDate = " + saveRow.CorrespondenceDate);
-		
-		if (saveRow.ResponseDate)
-		{
-			console.log("saveRow.ResponseDate initially = " + saveRow.ResponseDate);
-			console.log("typeof saveRow.ResponseDate = " + typeof saveRow.ResponseDate);
-			if (typeof saveRow.ResponseDate !== "string")
-			{
-				var strResponseDate = ServiceUtilities.toExactISOString(saveRow.ResponseDate);
-				console.log("strResponseDate = " + strResponseDate);
-			}
-			else
-			{
-				var dtDateOfResponse = new Date(saveRow.ResponseDate);
-				console.log("dtDateOfResponse = " + dtDateOfResponse);
-				var strResponseDate = ServiceUtilities.toExactISOString(dtDateOfResponse);
-				console.log("strResponseDate = " + strResponseDate);
-			}
-			saveRow.ResponseDate = ServiceUtilities.extractDateFromString(strResponseDate);
-			console.log("saveRow.ResponseDate after conversion = " + saveRow.ResponseDate);
-			
-		}
-		
-		console.log("saveRow is next, after processing dates...");
-		console.dir(saveRow);
-		
-		if (saveRow.NumberOfDays === "Other")
-			saveRow.NumberOfDays = null;
-		
-		if (saveRow.CorrespondenceType === "Other")
-		{
-			saveRow.CorrespondenceType = saveRow.OtherCorrespondenceType;
-			saveRow.OtherCorrespondenceType = 'undefined';  // Throw this away, because we do not want to save it; no database field or it.
-		}
-		
-		// Note:  I could not get the following working; while it pulled the ResponseType name OK for the select, when you clicked save, 
-		// the ResponseTypeName was always 'undefined'.
-		/* On the form, $scope.subproject_row.ResponseType is an object, like this: (Id: theId Name: theName)
-		* The technique used to grab the ResponseType works on the first click (an improvement).  
-		* Note:  The improvement only occurred on the subproject page; the select box for ResponseType did not behave the same way.
-		* Therefore, I (gc) kept the technique, and chose to extract/reset $scope.subproject_row.Agency here in the controller, as just the name.
-		*/
-		//console.log("typeof saveRow.ResponseType = " + typeof saveRow.ResponseType);
-		//saveRow.ResponseType = 'undefined';
-		//saveRow.ResponseType = $scope.ce_row.ResponseType.Name;
-		//console.log("saveRow.ResponseType = " + saveRow.ResponseType);
-		
-		// Response Type:  If the user selected Other, we must use the name they supplied in OtherResponseType.
-		//if ((saveRow.OtherResponseType) && (typeof saveRow.OtherResponseType !== 'undefined'))
-		if (saveRow.ResponseType === "Other")
-		{
-			saveRow.ResponseType = saveRow.OtherResponseType;
-			saveRow.OtherResponseType = 'undefined'; // Throw this away, because we do not want to save it; no database field or it.
-		}
-
-		/*var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, saveRow);
-		if (typeof promise !== 'undefined')
-		{
-			promise.$promise.then(function(){
-				$scope.reloadSubprojects();
-				$scope.viewSelectedSubproject();
-				$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
-				$modalInstance.dismiss();
-				})
-		}
-		*/
-		
-		//console.log("$scope is next...");
-		//console.dir($scope);
-		
-		/*	If the user chooses to create a Correspondence Event (CE), at the same time that they are creating a new Subproject,
-		*   $scope.viewSubproject is not available yet, so we cannot pass the Id from there.  When we create the new Subproject,
-		*   we capture the Id from the Subproject, which is the same thing, so we pass that instead, to create the CE.
-		*/
-		if ($rootScope.crppProjectName)
-			$scope.crppProjectName = $rootScope.crppProjectName;
-		
-		if ($scope.viewSubproject !== null)
-        {
-            console.log("$scope.viewSubproject is present, using that...");
-			console.log("$scope.viewSubproject.Id = " + $scope.viewSubproject.Id);
-			var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, saveRow);
-			if (typeof promise !== 'undefined')
-			{
-                promise.$promise.then(function () {
-                    //$scope.reloadSubprojects();
-                    //$scope.viewSelectedSubproject();
-                    //$scope.viewSelectedSubproject($scope.viewSubproject);
-                    //$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
-                    //$modalInstance.dismiss();
-                    if (saveRow.Id === 0) //we saved a new one!
-                        $scope.postAddCorrespondenceEventUpdateGrid(promise);
-                    else //we edited one!
-                        $scope.postEditCorrespondenceEventUpdateGrid(promise);
-
-                    console.log("all done saving correspondence event!");
-
-                    console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
-                    if ($scope.fileCount === 0) {
-                        $scope.loading = false; // Stop the fish spinner.
-                        $scope.showCloseButton = true;
-                        $scope.showCancelButton = false;
-                        $scope.showFormItems = false;
-                    }
-                });
-			}	
-		}
-		else if ((typeof $scope.crppProjectName !== 'undefined' ) && ($scope.crppProjectName !== null))
-		{
-			console.log("$scope.viewSubproject missing, using $scope.subprojectId:  " + $scope.subprojectId);
-			var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.subprojectId, saveRow);
-			if (typeof promise !== 'undefined')
-			{
-				promise.$promise.then(function(){
-					$scope.reloadSubprojects();
-					//$scope.viewSelectedSubproject();
-					$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
-					//$modalInstance.dismiss();
-					})
-					
-				if ($scope.fileCount === 0)
-				{
-					$scope.loading = false; // Stop the fish spinner.
-					$scope.showCloseButton = true;
-					$scope.showCancelButton = false;
-					$scope.showFormItems = false;					
-				}
-			}
-		}
-    };
-	
-	$scope.close = function(){
-		console.log("Inside $scope.close...");
-		$modalInstance.dismiss();	
-	};
-
-    $scope.cancel = function(){
-		$modalInstance.dismiss();
-    };
-	
-	$scope.gotoBottom = function (){
-		// set the location.hash to the id of
-		// the element you wish to scroll to.
-		$location.hash('bottom');
-		
-		// call $anchorScroll()
-		$anchorScroll();
-	};
-	  
-	$scope.gotoTopCorrespondenceEventsTop = function (){
-		// set the location.hash to the id of
-		// the element you wish to scroll to.
-		console.log("Inside gotoTopCorrespondenceEventsTop...");
-		//$location.hash('top');
-		$location.hash('ceTop');
-		
-		// call $anchorScroll()
-		$anchorScroll();
-	};
-	  
-	$scope.gotoCategory = function (category) {
-		$location.hash(category);
-		$anchorScroll();
-	};
-
-  }
-];
-
-define("private/crpp/components/crpp-contracts/modal-add-correspondence-event", function(){});
-
-
-var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'DatasetService', 'SubprojectService', 'ServiceUtilities',
-    '$timeout', '$location', '$anchorScroll', '$document',
-    function ($scope, $rootScope, $modalInstance, DatasetService, SubprojectService, ServiceUtilities,
-        $timeout, $location, $anchorScroll, $document) {
-        console.log("Inside ModalCreateSubprojectCtrl...");
-
-        //$scope.agencyInfo = [[]];
-
-        $document.on('keydown', function (e) {
-            //console.log("Inside document.on keydown...");
-            //console.log("e is next...");
-            //console.dir(e);
-            //console.log("e.target.nodeName = " + e.target.nodeName);
-
-            // Note:  keyCode 8 = Backspace; the nodeName value is in uppercase, so we must check for that here.
-            if ((e.keyCode === 8) && (e.target.nodeName === "TEXTAREA")) {
-                //console.log("  Backspace pressed...and we are in a TEXTAREA");
-                //e.preventDefault();
-
-                var keyboardEvent = $document[0].createEvent("KeyboardEvent");
-                var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
-
-                keyboardEvent[initMethod](
-                    "keydown", // event type : keydown, keyup, keypress
-                    true, // bubbles
-                    true, // cancelable
-                    window, // viewArg: should be window
-                    false, // ctrlKeyArg
-                    false, // altKeyArg
-                    false, // shiftKeyArg
-                    false, // metaKeyArg
-                    37, // keyCodeArg : unsigned long the virtual key code, else 0.  37 = Left Arrow key
-                    0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0				
-                );
-                //console.log("Just did left arrow...");
-
-                document.dispatchEvent(keyboardEvent);
-
-                keyboardEvent[initMethod](
-                    "keydown", // event type : keydown, keyup, keypress
-                    true, // bubbles
-                    true, // cancelable
-                    window, // viewArg: should be window
-                    false, // ctrlKeyArg
-                    false, // altKeyArg
-                    false, // shiftKeyArg
-                    false, // metaKeyArg
-                    46, // keyCodeArg : unsigned long the virtual key code, else 0.  46 = Delete key
-                    0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0				
-                );
-
-                //console.log("Doing delete...");			
-                return document.dispatchEvent(keyboardEvent);
-            }
-        });
-
-        $scope.header_message = "Create new CRPP project";
-        $rootScope.crppProjectName = $scope.crppProjectName = "";
-        $rootScope.projectId = $scope.project.Id;
-
-        $scope.subproject_row = {
-            StatusId: 0,
-            //OwningDepartmentId: 1,
-        };
-
-        $scope.agencyList = [];
-        $scope.agencyList.push({ Id: 0, Label: "ACHP" });
-        $scope.agencyList.push({ Id: 1, Label: "Anderson Perry" });
-        $scope.agencyList.push({ Id: 2, Label: "Army" });
-        $scope.agencyList.push({ Id: 3, Label: "Baker County" });
-        $scope.agencyList.push({ Id: 4, Label: "Benton County" });
-        $scope.agencyList.push({ Id: 5, Label: "BIA" });
-        $scope.agencyList.push({ Id: 6, Label: "BLM" });
-        $scope.agencyList.push({ Id: 7, Label: "Blue Mountain Ranger District" });
-        $scope.agencyList.push({ Id: 8, Label: "BNSF" });
-        $scope.agencyList.push({ Id: 9, Label: "BOR" });
-        $scope.agencyList.push({ Id: 10, Label: "BPA" });
-        $scope.agencyList.push({ Id: 11, Label: "Camas" });
-        $scope.agencyList.push({ Id: 12, Label: "CenturyLink" });
-        $scope.agencyList.push({ Id: 13, Label: "Clark County" });
-        $scope.agencyList.push({ Id: 14, Label: "College Place" });
-        $scope.agencyList.push({ Id: 15, Label: "Columbia County" });
-        $scope.agencyList.push({ Id: 16, Label: "Corps Portland District" });
-        $scope.agencyList.push({ Id: 17, Label: "Corps Regulatory" });
-        $scope.agencyList.push({ Id: 18, Label: "Corps Walla Walla District" });
-        $scope.agencyList.push({ Id: 19, Label: "CRGNSA" });
-        $scope.agencyList.push({ Id: 20, Label: "CTUIR" });
-        $scope.agencyList.push({ Id: 21, Label: "DAHP" });
-        $scope.agencyList.push({ Id: 22, Label: "DECD" });
-        $scope.agencyList.push({ Id: 23, Label: "Department of Ecology" });
-        $scope.agencyList.push({ Id: 24, Label: "DEQ" });
-        $scope.agencyList.push({ Id: 25, Label: "DOE" });
-        $scope.agencyList.push({ Id: 26, Label: "DOGAMI" });
-        $scope.agencyList.push({ Id: 27, Label: "DSL" });
-        $scope.agencyList.push({ Id: 28, Label: "EPA" });
-        $scope.agencyList.push({ Id: 29, Label: "FAA" });
-        $scope.agencyList.push({ Id: 30, Label: "FCC" });
-        $scope.agencyList.push({ Id: 31, Label: "Federal Transit Authority" });
-        $scope.agencyList.push({ Id: 32, Label: "FEMA" });
-        $scope.agencyList.push({ Id: 33, Label: "FERC" });
-        $scope.agencyList.push({ Id: 34, Label: "FHWA" });
-        $scope.agencyList.push({ Id: 35, Label: "Fisheries" });
-        $scope.agencyList.push({ Id: 36, Label: "Fort Vancouver (NPS)" });
-        $scope.agencyList.push({ Id: 37, Label: "Franklin County" });
-        $scope.agencyList.push({ Id: 38, Label: "FSA" });
-        $scope.agencyList.push({ Id: 39, Label: "Hells Canyon NRA" });
-        $scope.agencyList.push({ Id: 40, Label: "Heppner Ranger District" });
-        $scope.agencyList.push({ Id: 41, Label: "Hermiston" });
-        $scope.agencyList.push({ Id: 42, Label: "Hood River County" });
-        $scope.agencyList.push({ Id: 43, Label: "HUD" });
-        $scope.agencyList.push({ Id: 44, Label: "Idaho Power" });
-        $scope.agencyList.push({ Id: 45, Label: "Irrigon" });
-        $scope.agencyList.push({ Id: 46, Label: "John Day Fossil Beds (NPS)" });
-        $scope.agencyList.push({ Id: 47, Label: "Kennewick" });
-        $scope.agencyList.push({ Id: 48, Label: "Klickitat County" });
-        $scope.agencyList.push({ Id: 49, Label: "La Grande Ranger District" });
-        $scope.agencyList.push({ Id: 50, Label: "Landowner" });
-        $scope.agencyList.push({ Id: 51, Label: "Malheur National Forest" });
-        $scope.agencyList.push({ Id: 52, Label: "Morrow County" });
-        $scope.agencyList.push({ Id: 53, Label: "Navy" });
-        $scope.agencyList.push({ Id: 54, Label: "Nez Perce National Historical Park (NPS)" });
-        $scope.agencyList.push({ Id: 55, Label: "North Fork John Day Ranger District" });
-        $scope.agencyList.push({ Id: 56, Label: "Northwest Pipeline" });
-        $scope.agencyList.push({ Id: 57, Label: "NPS" });
-        $scope.agencyList.push({ Id: 58, Label: "NRCS" });
-        $scope.agencyList.push({ Id: 59, Label: "ODEQ" });
-        $scope.agencyList.push({ Id: 60, Label: "ODOE" });
-        $scope.agencyList.push({ Id: 61, Label: "ODOT" });
-        $scope.agencyList.push({ Id: 62, Label: "OPRD" });
-        $scope.agencyList.push({ Id: 63, Label: "Oregon City" });
-        $scope.agencyList.push({ Id: 64, Label: "Oregon Military Department/Oregon Army National Guard" });
-        $scope.agencyList.push({ Id: 65, Label: "Other" });
-        $scope.agencyList.push({ Id: 66, Label: "OWRD" });
-        $scope.agencyList.push({ Id: 67, Label: "PacifiCorp" });
-        $scope.agencyList.push({ Id: 68, Label: "Pasco" });
-        $scope.agencyList.push({ Id: 69, Label: "PGE" });
-        $scope.agencyList.push({ Id: 70, Label: "Planning Dept" });
-        $scope.agencyList.push({ Id: 71, Label: "Pomeroy Ranger District" });
-        $scope.agencyList.push({ Id: 72, Label: "Port of Benton" });
-        $scope.agencyList.push({ Id: 73, Label: "Port of Clarkston" });
-        $scope.agencyList.push({ Id: 74, Label: "Port of Columbia" });
-        $scope.agencyList.push({ Id: 75, Label: "Port of Kennewick" });
-        $scope.agencyList.push({ Id: 76, Label: "Port of Morrow" });
-        $scope.agencyList.push({ Id: 77, Label: "Port of Umatilla" });
-        $scope.agencyList.push({ Id: 78, Label: "Port of Walla Walla" });
-        $scope.agencyList.push({ Id: 79, Label: "Public Works" });
-        $scope.agencyList.push({ Id: 80, Label: "RAF" });
-        $scope.agencyList.push({ Id: 81, Label: "Recreation and Conservation Office" });
-        $scope.agencyList.push({ Id: 82, Label: "Richland" });
-        $scope.agencyList.push({ Id: 83, Label: "Rural Development" });
-        $scope.agencyList.push({ Id: 84, Label: "RUS" });
-        $scope.agencyList.push({ Id: 85, Label: "SHPO Oregon" });
-        $scope.agencyList.push({ Id: 86, Label: "Skamania County" });
-        $scope.agencyList.push({ Id: 87, Label: "Skamania County PUD" });
-        $scope.agencyList.push({ Id: 88, Label: "Umatilla County" });
-        $scope.agencyList.push({ Id: 89, Label: "Umatilla National Forest" });
-        $scope.agencyList.push({ Id: 90, Label: "UPRR" });
-        $scope.agencyList.push({ Id: 91, Label: "USACE" });
-        $scope.agencyList.push({ Id: 92, Label: "USFWS" });
-        $scope.agencyList.push({ Id: 93, Label: "VA" });
-        $scope.agencyList.push({ Id: 94, Label: "Vancouver" });
-        $scope.agencyList.push({ Id: 95, Label: "Walla Walla City" });
-        $scope.agencyList.push({ Id: 96, Label: "Walla Walla County" });
-        $scope.agencyList.push({ Id: 97, Label: "Walla Walla Ranger District" });
-        $scope.agencyList.push({ Id: 98, Label: "Wallowa County" });
-        $scope.agencyList.push({ Id: 99, Label: "Wallowa Valley Ranger District" });
-        $scope.agencyList.push({ Id: 100, Label: "Wallowa-Whitman National Forest" });
-        $scope.agencyList.push({ Id: 101, Label: "Wasco County" });
-        $scope.agencyList.push({ Id: 102, Label: "Washington Department of Commerce" });
-        $scope.agencyList.push({ Id: 103, Label: "Washington Department of Health" });
-        $scope.agencyList.push({ Id: 104, Label: "Washington Department of Natural Resources" });
-        $scope.agencyList.push({ Id: 105, Label: "Washington State Parks" });
-        $scope.agencyList.push({ Id: 106, Label: "Water Resources" });
-        $scope.agencyList.push({ Id: 107, Label: "WDFW" });
-        $scope.agencyList.push({ Id: 108, Label: "Western Federal Lands Highway Division" });
-        $scope.agencyList.push({ Id: 109, Label: "Whitman Mission (NPS)" });
-        $scope.agencyList.push({ Id: 110, Label: "Whitman Unit" });
-        $scope.agencyList.push({ Id: 111, Label: "Wildlife" });
-        $scope.agencyList.push({ Id: 112, Label: "WSDOT" });
-        $scope.agencyList.push({ Id: 113, Label: "Yellowstone National Park" });
-
-        console.log("$scope.agencyList is next...");
-        console.dir($scope.agencyList);
-
-        //$scope.agencyOptions = $rootScope.responseTypeOptions = makeObjects($scope.agencyList, 'Id','Label') ;
-        //console.log("$scope.agencyOptions is next...");
-        //console.dir($scope.agencyOptions);
-
-        $scope.counties = [];
-
-        $scope.countyList = [];
-        $scope.countyList.push({ Id: 0, Label: "Asotin" });
-        $scope.countyList.push({ Id: 1, Label: "Baker" });
-        $scope.countyList.push({ Id: 2, Label: "Benton" });
-        $scope.countyList.push({ Id: 3, Label: "Clark" });
-        $scope.countyList.push({ Id: 4, Label: "Columbia" });
-        $scope.countyList.push({ Id: 5, Label: "Franklin" });
-        $scope.countyList.push({ Id: 7, Label: "Garfield" });
-        $scope.countyList.push({ Id: 8, Label: "Gilliam" });
-        $scope.countyList.push({ Id: 9, Label: "Garfield" });
-        $scope.countyList.push({ Id: 10, Label: "Grant, WA" });
-        $scope.countyList.push({ Id: 11, Label: "Grant, OR" });
-        $scope.countyList.push({ Id: 12, Label: "Hood River" });
-        $scope.countyList.push({ Id: 13, Label: "Klickitat" });
-        $scope.countyList.push({ Id: 14, Label: "Malheur" });
-        $scope.countyList.push({ Id: 15, Label: "Morrow" });
-        $scope.countyList.push({ Id: 16, Label: "Multnomah" });
-        $scope.countyList.push({ Id: 17, Label: "Other" });
-        $scope.countyList.push({ Id: 18, Label: "Sherman" });
-        $scope.countyList.push({ Id: 19, Label: "Skamania" });
-        $scope.countyList.push({ Id: 20, Label: "Umatilla" });
-        $scope.countyList.push({ Id: 21, Label: "Union" });
-        $scope.countyList.push({ Id: 22, Label: "Walla Walla" });
-        $scope.countyList.push({ Id: 23, Label: "Wallowa" });
-        $scope.countyList.push({ Id: 24, Label: "Wasco" });
-        $scope.countyList.push({ Id: 25, Label: "Wheeler" });
-        $scope.countyList.push({ Id: 26, Label: "Whitman" });
-
-        console.log("$scope.countyList is next...");
-        console.dir($scope.countyList);
-        //$scope.countyOptions = $rootScope.countyOptions = makeObjects($scope.countyList, 'Id','Label') ;
-
-        $scope.showOtherAgency = false;
-        $scope.showOtherProjectProponent = false;
-        $scope.showOtherCounty = false;
-        $scope.showCountyOptions = false;
-        $scope.showAddDocument = true;
-
-        $scope.example1model = [];
-        $scope.example1data = [{ id: 1, label: "David" }, { id: 2, label: "Jhon" }, { id: 3, label: "Danny" }];
-
-        if ($scope.viewSubproject) {
-            $scope.header_message = "Edit CRPP project: " + $scope.viewSubproject.ProjectName;
-            $scope.subproject_row = angular.copy($scope.viewSubproject);
-            console.log("$scope.subproject_row is next...");
-            console.dir($scope.subproject_row);
-
-            $scope.showAddDocument = false;
-
-            console.log("$scope.subproject_row.Agency = " + $scope.subproject_row.Agency);
-            var keepGoing = true;
-            var foundIt = false;
-            //var responseTypeIndex = 0;
-
-            /*
-            *	Need to redo the Agency, Project Proponent, and County
-            *
-            */
-            // Check the Agency
-            /*angular.forEach($scope.agencyList, function(option){
-            //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.Agency = x" + $scope.subproject_row.Agency + "x.");
-                if ((keepGoing) && (option.Label === $scope.subproject_row.Agency))
-                {
-                    //console.log("option.Label = " + option.Label);
-                    //console.log("Found the Agency...");
-                    foundIt = true;
-                    keepGoing = false;
-                }
-                //responseTypeIndex++;
-            });
-        	
-            if (!foundIt)
-            {
-                console.log("Value of Agency is not in the list...");
-                $scope.subproject_row.OtherAgency = $scope.subproject_row.Agency;
-                $scope.subproject_row.Agency = "Other";
-                $scope.showOtherAgency = true;		
-            }
-            */
-            if ((typeof $scope.subproject_row.OtherAgency !== 'undefined') && ($scope.subproject_row.OtherAgency !== null))
-                $scope.showOtherAgency = true;
-
-            /*
-            keepGoing = true;
-            foundIt = false;
-            // Check the Project Proponent  Note:  We use the same list as for the Agency.
-            console.log("$scope.subproject_row.ProjectProponent = " + $scope.subproject_row.ProjectProponent);
-            angular.forEach($scope.agencyList, function(option){
-            //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.ProjectProponent = x" + $scope.subproject_row.ProjectProponent + "x.");
-                if ((keepGoing) && (option.Label === $scope.subproject_row.ProjectProponent))
-                {
-                    //console.log("option.Label = " + option.Label);
-                    //console.log("Found the ProjectProponent...");
-                    foundIt = true;
-                    keepGoing = false;
-                }
-                //responseTypeIndex++;
-            });
-        	
-            if (!foundIt)
-            {
-                console.log("Value of ProjectProponent is not in the list...");
-                $scope.subproject_row.OtherProjectProponent = $scope.subproject_row.ProjectProponent;
-                $scope.subproject_row.ProjectProponent = "Other";
-                $scope.showOtherProjectProponent = true;		
-            }
-            */
-            if ((typeof $scope.subproject_row.OtherProjectProponent !== 'undefined') && ($scope.subproject_row.OtherProjectProponent !== null))
-                $scope.showOtherProjectProponent = true;
-
-            /*
-            keepGoing = true;
-            foundIt = false;
-            // Check the County
-            console.log("$scope.subproject_row.County = " + $scope.subproject_row.County);
-        	
-            // Copy the array into a string.
-            var strCounty = "";
-            angular.forEach($scope.subproject_row.County, function(item){
-                strCounty += item + ",";
-            });
-            console.log("strCounty = " + strCounty);
-        	
-            // Remove the trailing comma.
-            strCounty = strCounty.substring(0, strCounty.length - 1);
-            console.log("strCounty = " + strCounty);
-            */
-
-            // Now, strip off the "[]".
-            if ((typeof $scope.subproject_row.County !== 'undefined') && ($scope.subproject_row.County !== null)) {
-                var strCounty = $scope.subproject_row.County;
-                strCounty = strCounty.replace(/["\[\]]+/g, '');
-                console.log("strCounty = " + strCounty);
-                $scope.subproject_row.County = strCounty;
-                console.log("$scope.subproject_row.County = " + $scope.subproject_row.County);
-
-                $scope.subproject_row.txtCounty = strCounty;
-            }
-
-            if ((typeof $scope.subproject_row.OtherCounty !== 'undefined') && ($scope.subproject_row.OtherCounty !== null))
-                $scope.showOtherCounty = true;
-
-
-            // Now convert our string to an array, to compare with the countyList.
-            /*var aryCounties = $scope.subproject_row.County.split(",");
-            console.log("aryCounties is next...");
-            console.dir(aryCounties);
-    
-            angular.forEach(aryCounties, function(county){		
-            //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.County = x" + $scope.subproject_row.County + "x.");
-                angular.forEach($scope.countyList, function(option){
-                    if ((keepGoing) && (option.Label === county))
-                    {
-                        //console.log("option.Label = " + option.Label);
-                        console.log("Found county:  " + county);
-                        foundIt = true;
-                        keepGoing = false;
-                    }
-                });
-                if (!foundIt)
-                {
-                	
-                }
-            });		
-            */
-
-            /*angular.forEach($scope.countyList, function(option){
-            //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.County = x" + $scope.subproject_row.County + "x.");
-                if ((keepGoing) && (option.Label === $scope.subproject_row.County))
-                {
-                    //console.log("option.Label = " + option.Label);
-                    //console.log("Found the County...");
-                    foundIt = true;
-                    keepGoing = false;
-                }
-            });
-    
-        	
-            if (!foundIt)
-            {
-                console.log("Value of County is not in the list...");
-                $scope.subproject_row.OtherCounty = $scope.subproject_row.County;
-                $scope.subproject_row.County = "Other";
-                $scope.showOtherCounty = true;		
-            }
-            */
-
-
-
-            // First convert our county string into an array.
-            /*var strCounty = $scope.subproject_row.County;
-            console.log("strCounty = " + strCounty);
-        	
-            strCounty = strCounty.substring(1, strCounty.length -1);
-            console.log("strCounty = " + strCounty);
-        	
-            strCounty = strCounty.replace(/["]+/g, '');
-            console.log("strCounty = " + strCounty);		
-        	
-            var aryCounty = strCounty.split(",");
-            console.log("aryCounty is next...");
-            console.dir(aryCounty);
-        	
-            //var result = document.getElementsByTagName("select");
-            //var result = document.getElementById("County");
-            //console.dir(result);
-            var c = 0;
-            angular.forEach(result, function(item){
-                console.log(item[c].innerHTML);
-                c++;
-            });
-        	
-            var wrappedResult = angular.element(result);
-            console.dir(wrappedResult);
-            angular.forEach(element.find('select'), function(node)
-            {
-                if (node.Id === 'County')
-                    console.log("Found County select...");
-            	
-            });
-        	
-            var counties = angular.element("County").options;
-            console.log("counties is next...");
-            console.dir(counties);
-            angular.forEach(aryCounty, function (county){
-                for (var i = 0, max = counties.length; i < max; i++)
-                {
-                    if (counties[i].innerHTML === county)
-                        counties[i].selected = true;
-                }
-            	
-            });		
-            $scope.subproject_row.County = aryCounty;
-            */
-            /*scope.subproject_row.County = 'undefined';
-            $scope.subproject_row.County = [];
-            angular.forEach(aryCounty, function(county){
-                $scope.subproject_row.County.push(county);
-            });
-            */
-            console.log("$scope.subproject_row.County is next...");
-            console.dir($scope.subproject_row.County);
-
-            angular.forEach($scope.countyList, function (option) {
-                //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.County = x" + $scope.subproject_row.County + "x.");
-                if ((keepGoing) && (option.Label === $scope.subproject_row.County)) {
-                    //console.log("option.Label = " + option.Label);
-                    //console.log("Found the County...");
-                    foundIt = true;
-                    keepGoing = false;
-                }
-            });
-            angular.forEach($scope.subproject_row.County, function (county) {
-                if (county === "Other")
-                    foundIt = true;
-
-            });
-
-            if (!foundIt) {
-                console.log("Value of County is not in the list...");
-                $scope.subproject_row.OtherCounty = $scope.subproject_row.County;
-                $scope.subproject_row.County = "Other";
-                $scope.showOtherCounty = true;
-            }
-        }
-
-        console.log("$scope inside ModalCreateSubprojectCtrl, after initializing, is next...");
-        //console.dir($scope);
-
-        $scope.selectAgency = function () {
-            console.log("Inside selectAgency...");
-            //console.dir($scope);
-            console.log("$scope.subproject_row is next...");
-            console.dir($scope.subproject_row);
-
-            $scope.showCountyOptions = false;
-
-            if ($scope.subproject_row.Agency === "Other") {
-                $scope.showOtherAgency = true;
-                $scope.subproject_row.OtherAgency = "";
-            }
-            else {
-                $scope.showOtherAgency = false;
-                $scope.subproject_row.OtherAgency = 'undefined';
-            }
-
-            console.log("$scope.showOtherAgency = " + $scope.showOtherAgency);
-        };
-
-        /*$scope.agencyChanged = function () {
-            console.log("Inside agencyChanged...");
-            console.log("$scope.subproject_row is next...");
-            console.dir($scope.subproject_row);
-            if ($scope.subproject_row.Agency === "Other")
-            {
-                $scope.showOtherAgency = true;
-                $scope.subproject_row.OtherAgency = "";
-            }
-            else
-                $scope.showOtherAgency = false;
-                $scope.subproject_row.OtherAgency = 'undefined';
-        	
-            console.log("$scope.showOtherAgency = " + $scope.showOtherAgency);
-        };
-        */
-
-        $scope.selectProjectProponent = function () {
-            console.log("Inside selectProjectProponent...");
-            console.log("$scope.subproject_row is next...");
-            console.dir($scope.subproject_row);
-
-            $scope.showCountyOptions = false;
-
-            if ($scope.subproject_row.ProjectProponent === "Other") {
-                $scope.showOtherProjectProponent = true;
-                $scope.subproject_row.OtherProjectProponent = "";
-            }
-            else {
-                $scope.showOtherProjectProponent = false;
-                $scope.subproject_row.OtherProjectProponent = 'undefined';
-            }
-
-            console.log("$scope.showOtherProjectProponent = " + $scope.showOtherProjectProponent);
-        };
-
-        /*$scope.selectCounty = function () {
-            console.log("Inside selectCounty...");
-            console.log("$scope.subproject_row is next...");
-            console.dir($scope.subproject_row);
-        	
-            var strCounty = $scope.subproject_row.County.toString();
-            if (strCounty.indexOf("Other") > -1)
-            {
-                $scope.showOtherCounty = true;
-            }
-            else
-            {
-                $scope.showOtherCounty = false;
-            }
-            */
-		/*if ($scope.subproject_row.County === "Other")
-		{
-			$scope.showOtherCounty = true;
-			$scope.subproject_row.OtherCounty = "";
-		}
-		else
-		{
-			$scope.showOtherCounty = false;
-			$scope.subproject_row.OtherCounty = 'undefined';
-		}
-		*/
-		/*
-		console.log("$scope.showOtherCounty = " + $scope.showOtherCounty);
-	};
-	*/
-
-        /*$scope.projectProponentChanged = function () {
-            console.log("Inside projectProponentChanged...");
-            console.log("$scope.viewSubproject is next...");
-            console.dir($scope.subproject_row);
-            if ($scope.subproject_row.ProjectProponent === "Other")
-                $scope.showOtherProjectProponent = true;
-            else
-                $scope.showOtherProjectProponent = false;
-        	
-            console.log("$scope.showOtherProjectProponent = " + $scope.showOtherProjectProponent);
-        };
-        */
-
-        $scope.enteredSelectedCounties = function () {
-            $scope.showCountyOptions = true;
-        };
-
-        $scope.enteredSomethingElse = function () {
-            $scope.showCountyOptions = false;
-        };
-
-        $scope.countyChanged = function () {
-            console.log("Inside countyChanged...");
-            console.log("$scope.subproject_row is next...");
-            console.dir($scope.subproject_row);
-
-            $scope.subproject_row.txtCounty = $scope.subproject_row.County.toString();
-            if ($scope.subproject_row.txtCounty.indexOf("Other") > -1) {
-                $scope.showOtherCounty = true;
-            }
-            else {
-                $scope.showOtherCounty = false;
-                $scope.subproject_row.OtherCounty = null;
-            }
-
-            /*if ($scope.subproject_row.County === "Other")
-                $scope.showOtherCounty = true;
-            else
-                $scope.showOtherCounty = false;
-            */
-
-            //$scope.showOtherCounty = false;
-            //var foundOther = false;
-            //angular.forEach($scope.subproject_row.County, function(county){
-            // There is only one entry for "Other"
-			/*if(county === "Other")
-			{
-				foundOther = true;
-				$scope.showOtherCounty = true
-				$scope.subproject_row.OtherCounty = [];
-			}
-			*/
-            //});
-
-            //if (!foundOther)
-            //	$scope.subproject_row.OtherCounty = 'undefined';
-
-
-            console.log("$scope.showOtherCounty = " + $scope.showOtherCounty);
-        };
-
-        /*$scope.checkKeyPress = function(event){
-            if (event.keyCode === 8) {
-                console.log("Backspace pressed...");
-            }
-        };
-        */
-
-        $scope.save = function () {
-            console.log("Inside ModalCreateSubprojectCtrl, save...");
-            $scope.subprojectSave = undefined;
-            $scope.subprojectSave = [];
-            $scope.createNewSubproject = false;
-            if ((typeof $scope.subproject_row.ProjectName === 'undefined') || ($scope.subproject_row.ProjectName === null)) {
-                console.log("Project name is empty...");
-                $scope.subprojectSave.error = true;
-            }
-            //console.dir($scope);
-
-            if (!$scope.subprojectSave.error) {
-                // Capture the AddDocument flag, before discarding it.
-                console.log("$scope.subproject_row, full is next...");
-                console.dir($scope.subproject_row);
-
-                var addDocument = $scope.subproject_row.AddDocument;
-                $scope.subproject_row.AddDocument = null;
-                console.log("addDocument = " + addDocument);
-                console.log("$scope.subproject_row, after del is next...");
-                console.dir($scope.subproject_row);
-
-                var saveRow = angular.copy($scope.subproject_row);
-                console.log("saveRow is next..");
-                console.dir(saveRow);
-                /* On the form, $scope.subproject_row.Agency is an object, like this: (Id: theId Name: theName)
-                * The technique used to grab the Agency works on the first click (an improvement).
-                * Therefore, I (gc) kept the technique, and chose to extract/reset $scope.subproject_row.Agency here in the controller, as just the name.
-                */
-                //console.log("typeof saveRow.Agency = " + saveRow.Agency);
-                //saveRow.Agency = 'undefined';
-                //saveRow.Agency = $scope.subproject_row.Agency.Name;
-                //console.log("saveRow.Agency = " + saveRow.Agency);
-
-                // Agency Name:  If the user selected Other, we must use the name they supplied in OtherAgency.
-                // 20160721:  Colette said that we need the OtherAgency, OtherProjectProponent, and OtherCounty to have their own columns in the database,
-                // so that she can easily filter out and determine what "other" agencies, Project Proponents, or Counties that CRPP has interacted with.
-                /*if ((typeof saveRow.OtherAgency !== 'undefined') && (saveRow.OtherAgency !== null) && (saveRow.OtherAgency !== 'undefined'))
-                {
-                    saveRow.Agency = saveRow.OtherAgency;
-                    saveRow.OtherAgency = null; // Throw this away, because we do not want to save it; no database field or it.
-                }
-                */
-
-                // Project Proponent Name:  If the user selected Other, we must use the name they supplied in OtherProjectProponent.
-                /*if ((typeof saveRow.OtherProjectProponent !== 'undefined') && (saveRow.OtherProjectProponent !== null) && (saveRow.OtherProjectProponent !== 'undefined'))
-                {
-                    saveRow.ProjectProponent = saveRow.OtherProjectProponent;
-                    saveRow.OtherProjectProponent = null; // Throw this away, because we do not want to save it; no database field or it.
-                }
-                */
-
-                // County Name:  If the user selected Other, we must use the name they supplied in OtherCounty.
-                //if (saveRow.OtherCounty)
-                /*if ((typeof saveRow.OtherCounty !== 'undefined') && (saveRow.OtherCounty !== null) && (saveRow.OtherCounty !== 'undefined'))
-                {
-                    console.log("OtherCounty has a value...");
-                    saveRow.County = saveRow.OtherCounty; // For single select
-                    //saveRow.County.push(saveRow.OtherCounty); // For multiSelect
-                	
-                    saveRow.OtherCounty = null; // Throw this away, because we do not want to save it; no database field or it.
-                }*/
-
-                // Convert the multiselect (array) values into a json array string.
-                //saveRow.County = angular.toJson(saveRow.County).toString();
-                //var strCounty = "[";
-                saveRow.County = saveRow.txtCounty;
-                //angular.forEach(saveRow.County, function(county){
-                //	strCounty += '"' + county + '",'; // Use single-quotes and double-quotes, so that JavaScript does not get confused.
-                //});
-
-                //console.log("strCounty = " + strCounty);
-                // Trim the trailing ","
-                //if (strCounty.length > 1)
-                //	strCounty = strCounty.substring(0, strCounty.length -1);
-
-                //strCounty += "]";
-                //saveRow.County = strCounty;
-
-
-                saveRow.YearDate = ServiceUtilities.dateTimeNowToStrYYYYMMDD_HHmmSS();
-                console.log("saveRow.TrackingNumber = " + saveRow.TrackingNumber);
-                if (saveRow.TrackingNumber) {
-                    // The tracking number exists, but let's verify that is it not just spaces.
-                    var tmpTrackingNumber = saveRow.TrackingNumber;
-                    if ((tmpTrackingNumber !== null) && (tmpTrackingNumber.length > 0)) {
-                        // The tracking number contains something.  Replace all the spaces and see what is left.
-                        tmpTrackingNumber = tmpTrackingNumber.replace(" ", "");
-                    }
-
-                    if (tmpTrackingNumber.length === 0) {
-                        saveRow.TrackingNumber = saveRow.YearDate
-                    }
-                }
-                else {
-                    // The user does not want the TrackingNumber to be set, if they leave it blank.
-                    //saveRow.TrackingNumber = saveRow.YearDate
-                }
-                console.log("saveRow.TrackingNumber = " + saveRow.TrackingNumber);
-
-                //if(!saveRow.CompleteDate)
-                //	saveRow.CompleteDate = null;
-                saveRow.CorrespondenceEvents = undefined;
-                console.log("saveRow is next...");
-                console.dir(saveRow);
-
-                $scope.saveResults = {};
-                //console.log("$scope is next...");
-                //console.dir($scope);
-                var promise = SubprojectService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
-                if (typeof promise !== 'undefined') {
-                    promise.$promise.then(function () {
-                        //window.location.reload();
-                        console.log("promise is next...");
-                        console.dir(promise);
-                        $scope.subprojectId = $rootScope.subprojectId = promise.Id;
-                        console.log("$scope.subprojectId = " + $scope.subprojectId);
-
-                        $scope.subproject_row = 'undefined';
-                        $scope.crppProjectName = saveRow.ProjectName;
-
-                        //$scope.reloadSubprojects();
-                        $scope.postSaveSubprojectUpdateGrid(promise);
-
-                        if (addDocument === "Yes") {
-                            console.log("addDocument = Yes...");
-
-                            // If the user wishes to add a Correspondence Event right away, we must wait to get the ID of the new subproject, before we can continue.
-                            //$scope.reloadSubproject(promise.Id);
-                            //var promise2 = $scope.reloadSubproject(promise.Id);
-                            //console.log("Inside reloadSubproject...");
-                            SubprojectService.clearSubproject();
-                            $scope.reloadSubproject($scope.subprojectId);
-                            $modalInstance.dismiss();
-                            $scope.openCorrespondenceEventForm();
-                            //$scope.subproject = SubprojectService.getSubproject(id);
-                        }
-                        else {
-                            console.log("addDocument != Yes");
-
-                            // If the user just wants to create the Subproject, we can continue without waiting.
-                            $scope.reloadSubproject($scope.subprojectId);
-                            $modalInstance.dismiss();
-                        }
-                    });
-                }
-            }
-        };
-
-        $scope.cancel = function () {
-            // If the user clicks on Cancel, we need to grab the contents of the Other... boxes and put it back into the main box.
-
-            // Agency Name:  If the user selected Other, we must use the name they supplied in OtherAgency.
-            if ($scope.subproject_row.OtherAgency) {
-                $scope.subproject_row.Agency = $scope.subproject_row.OtherAgency;
-                $scope.subproject_row.OtherAgency = null; // Throw this away, because we do not want to save it; no database field or it.
-            }
-
-            // Project Proponent Name:  If the user selected Other, we must use the name they supplied in OtherProjectProponent.
-            if ($scope.subproject_row.OtherProjectProponent) {
-                $scope.subproject_row.ProjectProponent = $scope.subproject_row.OtherProjectProponent;
-                $scope.subproject_row.OtherProjectProponent = null; // Throw this away, because we do not want to save it; no database field or it.
-            }
-
-            // County Name:  If the user selected Other, we must use the name they supplied in OtherCounty.
-            if ($scope.subproject_row.OtherCounty) {
-                $scope.subproject_row.County = $scope.subproject_row.OtherCounty;
-                $scope.subproject_row.OtherCounty = null; // Throw this away, because we do not want to save it; no database field or it.
-            }
-            $scope.subproject_row = 'undefined';
-            //$scope.reloadSubprojects();
-            $modalInstance.dismiss();
-        };
-        /*
-        $scope.gotoBottom = function (){
-            // set the location.hash to the id of
-            // the element you wish to scroll to.
-            $location.hash('bottom');
-        	
-            // call $anchorScroll()
-            $anchorScroll();
-        };
-          
-        $scope.gotoSubprojectsTop = function (){
-            // set the location.hash to the id of
-            // the element you wish to scroll to.
-            console.log("Inside gotoSubprojectsTop...");
-            //$location.hash('top');
-            $location.hash('spTop');
-        	
-            // call $anchorScroll()
-            $anchorScroll();
-        };
-          
-        $scope.gotoCategory = function (category) {
-            $location.hash(category);
-            $anchorScroll();
-        };
-        */
-    }
-];
-
-define("private/crpp/components/crpp-contracts/modal-create-crpp-subproject", function(){});
-
-//this is a nested controller used on the project-details page to load
-// the correspondence tab grid. It only appears for projects that are CRPP Correspondence.
-
-//var METADATA_PROPERTY_PROGRAM = 23; //add this to your config.js
-
-
-var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
-    '$modal', 'ServiceUtilities', 'ConvertStatus',
-    function (scope, $timeout, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $modal,
-        ServiceUtilities, ConvertStatus) {
-        //console.log("Inside tab correspondence controller...");
-
-       
-        //this is for the crpp/subproject correspondence tab below - might can move this all out sometime...
-        var otherAgencyTemplate = function (params) {
-            return '<span>' + params.node.data.Agency + '</span>'
-                + ((params.node.data.OtherAgency) ? ('<span> (' + params.node.data.OtherAgency + ')</span>') : ''); //ternery: if otheragency then show it
-        };
-
-        var EventCount = function (params) {
-            if (params.node.data.CorrespondenceEvents === undefined || params.node.data.CorrespondenceEvents === null)
-                return '0';
-
-            return '' + params.node.data.CorrespondenceEvents.length;
-        };
-
-        var EditMasterLinksTemplate = function (param) {
-
-            var div = document.createElement('div');
-
-            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
-            editBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                scope.editCrppSubproject(param.data);
-            });
-            div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
-
-            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
-            delBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                scope.removeCrppSubproject(param.data);
-            });
-            div.appendChild(delBtn);
-            div.appendChild(document.createTextNode("|"));
-
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Event';
-            addBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                scope.openCorrespondenceEventForm(param.data, {});
-            });
-            div.appendChild(addBtn);
-
-            return div;
-            /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
-            return '<div project-role="editor">' +
-                        '<a ng-click="editViewSubproject();">Edit</a>|' +
-                        '<a ng-click="removeViewSubproject();">Delete</div>|' + 
-                        '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
-                '</div>';
-                */
-        };
-
-
-        var FileListCellTemplate = function (params) {
-            var list = '<div class="event-file-list"><ul>';
-
-            var file_links = scope.getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.EventFiles);
-
-            file_links.forEach(function (link) {
-                list += '<li>' + link + '</li>';
-            });
-
-            list += '</ul></div>';
-
-            return list;
-        };
-
-
-        //this template gives the Edit|Delete|Add for the detail.
-        var EditDetailLinksTemplate = function (detailparam) {
-            var subproject = getById(scope.subprojectList, detailparam.data.SubprojectId);
-
-            var div = document.createElement('div');
-
-            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
-            editBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                scope.openCorrespondenceEventForm(subproject, detailparam.data); //parent subproject, detail line.
-            });
-            div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
-
-            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
-            delBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                scope.removeCrppCorrespondenceEvent(subproject, detailparam.data);
-            });
-            div.appendChild(delBtn);
-            div.appendChild(document.createTextNode("|"));
-
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
-            addBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                scope.openCorrespondenceEventForm(subproject, {});
-            });
-            div.appendChild(addBtn);
-
-            return div;
-            /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
-            return '<div project-role="editor">' +
-                        '<a ng-click="editViewSubproject();">Edit</a>|' +
-                        '<a ng-click="removeViewSubproject();">Delete</div>|' + 
-                        '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
-                '</div>';
-                */
-        };
-
-
-        //grid columns for crpp correspondence tab (master/subprojects)
-        scope.corrAgColumnDefs = [  //in order the columns will display, by the way...
-            {
-                width: 140, cellRenderer: EditMasterLinksTemplate, menuTabs: [],
-            },
-            {
-                headerName: 'ID',
-                field: 'Id',
-                width: 80,
-                cellRenderer: 'group',
-                cellRendererParams: { suppressCount: true },
-                menuTabs: ['filterMenuTab'],
-                filter: 'number'
-            },
-            {
-                field: 'EffDt',
-                headerName: 'Updated',
-                width: 120,
-                valueFormatter: function (params) {
-                    if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
-                        return moment(params.node.data.EffDt).format('L');
-                },
-                sort: 'desc',
-                menuTabs: [],
-            },
-            {
-                headerName: 'Events', width: 60,
-                cellRenderer: EventCount,
-                valueGetter: function (params) {
-                    return (params.data.CorrespondenceEvents !== undefined && params.data.CorrespondenceEvents.length > 0) ? params.data.CorrespondenceEvents.length : 0;
-                },
-                menuTabs: [],
-            },
-            { field: 'ProjectName', headerName: 'Name', width: 275, menuTabs: ['filterMenuTab'], filter: 'text' },
-            { field: 'ProjectLead', headerName: 'Project Lead', width: 150, menuTabs: ['filterMenuTab'], },
-            { field: 'Closed', headerName: 'Closed?', width: 80, menuTabs: ['filterMenuTab'], },
-            {
-                //note: white-space here causes word-wrap
-                field: 'Comments', headerName: 'Comments', width: 300, cellStyle: { 'white-space': 'normal' }, menuTabs: ['filterMenuTab'], filter: 'text'
-            },
-            { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150, menuTabs: ['filterMenuTab'], },
-            { field: 'County', headerName: 'County', width: 150, menuTabs: ['filterMenuTab'], },
-            { field: 'ProjectProponent', headerName: 'Project Proponent', width: 150, menuTabs: ['filterMenuTab'], },
-
-
-        ];
-
-        //details for the correspondence
-        var detailColumnDefs = [
-            {
-                headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [],
-            },
-            {
-                headerName: 'Notice Date', field: 'CorrespondenceDate', width: 120, cellClass: 'event-record-cell',
-                valueFormatter: function (params) {
-                    if (params.node.data.CorrespondenceDate !== undefined && params.data.CorrespondenceDate !== null)
-                        return moment(params.node.data.CorrespondenceDate).format('L');
-                },
-                sort: 'desc',
-                menuTabs: [],
-            },
-            { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Days to Respond', field: 'NumberOfDays', cellClass: 'event-record-cell', width: 100, menuTabs: [], },
-
-            {
-                field: 'ResponseDate',
-                headerName: 'Date of Response',
-                width: 120,
-                valueFormatter: function (params) {
-                    if (params.data.ResponseDate !== undefined && params.data.ResponseDate !== null)
-                        return moment(params.node.data.ResponseDate).format('L');
-                },
-                menuTabs: [],
-            },
-            { headerName: 'Technician', field: 'StaffMember', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
-            {
-                headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 300, cellStyle: {
-                    'white-space': 'normal'
-                },
-                menuTabs: ['filterMenuTab'], filter: 'text'
-            },
-            { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: [], },
-
-            //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
-        ];
-
-        //detail grid options correspondence events
-        scope.corrDetailGridOptions = {
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
-            //rowSelection: 'single',
-            //onSelectionChanged: function (params) {
-            //    console.log("selection changed!");
-            //scope.corrAgGridOptions.selectedItems = scope.corrAgGridOptions.api.getSelectedRows();
-            //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-            //},
-            //onFilterModified: function () {
-            //    scope.corrAgGridOptions.api.deselectAll();
-            //},
-            //selectedItems: [],
-            //rowData: eventRecords,
-            columnDefs: detailColumnDefs,
-            onGridReady: function (params) {
-                //setTimeout(function () { params.api.sizeColumnsToFit(); }, 0);
-            },
-            getRowHeight: function (params) {
-                var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
-                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                var file_height = 25 * (scope.getFilesArrayAsList(params.data.EventFiles).length); //count up the number of file lines we will have.
-                return (comment_height > file_height) ? comment_height : file_height;
-            },
-            //onRowClicked: function (row) {
-            //console.dir(row);
-
-            //    row.node.setSelected(true);
-            //    console.log("detail selected!");
-            //},
-            //defaultColDef: {
-            //    editable: true
-            //},
-            //enableRangeSelection: true
-        };
-
-
-
-        scope.corrAgGridOptions = {
-
-            masterDetail: true,
-            detailCellRendererParams: {
-                detailGridOptions: scope.corrDetailGridOptions,
-                getDetailRowData: function (params) {
-                    params.successCallback(params.data.CorrespondenceEvents);
-                },
-            },
-
-            animateRows: true,
-            enableSorting: true,
-            enableFilter: true, //turning it off because: https://github.com/ag-grid/ag-grid/issues/1324
-            enableColResize: true,
-            showToolPanel: false,
-            columnDefs: scope.corrAgColumnDefs,
-            rowData: null,
-            //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
-            //debug: true,
-            rowSelection: 'single',
-            onSelectionChanged: function (params) {
-                console.log("selection changed fired!");
-                /*
-                var rows = scope.corrAgGridOptions.api.getSelectedRows();
-                if (Array.isArray(rows) && rows[0] != null)
-                {
-                    console.log("rows:");
-                    console.dir(rows);
-                    if (!Array.isArray(rows[0]) && !rows[0].hasOwnProperty('SubprojectId')) //only change the selection if they clicked a header row.
-                    {
-                        scope.corrAgGridOptions.selectedItems = scope.corrAgGridOptions.api.getSelectedRows();
-                        //scope.corrAgGridOptions.api.redrawRows();
-                        //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-                        console.log("selected a header row so selection actually changed");
-                        scope.viewSubproject = rows[0];
-                        console.dir(scope.viewSubproject);
-                    }
-                }
-                */
-            },
-            //onFilterModified: function () {
-            //    scope.corrAgGridOptions.api.deselectAll();
-            //},
-            selectedItems: [],
-            //isFullWidthCell: function (rowNode) {
-            //    return rowNode.level === 1;
-            //},
-            onGridReady: function (params) {
-                //params.api.sizeColumnsToFit();
-            },
-            //fullWidthCellRenderer: CorrespondenceDetailCellRenderer,
-            getRowHeight: function (params) {
-                var rowIsDetailRow = params.node.level === 1;
-                // return dynamic height when detail row, otherwise return 25
-                if (rowIsDetailRow) {
-                    return 300;
-                } else {
-                    var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
-                    return 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                }
-                //return rowIsDetailRow ? 200 : 25;
-            },
-            /*
-            getNodeChildDetails: function (record) {
-                //console.dir(record);
-                if (record.CorrespondenceEvents) {
-                    //console.log("yep we have events!");
-                    return {
-                        group: true,
-                        // the key is used by the default group cellRenderer
-                        key: record.CorrespondenceDate,
-                        // provide ag-Grid with the children of this group
-                        parentData: record,
-                        children: [record.CorrespondenceEvents],
-                    };
-                } else {
-                    //console.log("didn't find any correspondence events for that record.");
-                    return null;
-                }
-            },*/
-            onRowDoubleClicked: function (row) {
-                scope.corrAgGridOptions.api.collapseAll();
-                row.node.setSelected(true);
-                row.node.setExpanded(true);
-            },
-            onRowClicked: function (row) {
-                row.node.setSelected(true);
-            },
-        };
-
-        //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
-        var crpp_ds_watcher = scope.$parent.$watch('project', function () {
-            //console.log("Inside TAB CORRESPONDENCE watch project... --------------------------");
-
-            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
-                return;
-
-            //console.log("OK TAB CORRESPONDNEC .  The project is loaded...");
-
-            crpp_ds_watcher(); //turn off watcher
-
-            if (scope.isCRPPProject(scope.project)) {
-
-                console.log("Adding Correspondence to tab bar because we are a CRPP project...");
-                scope.ShowSubproject = true;
-
-                $timeout(function () {
-
-                    var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
-                    //console.dir(ag_grid_div);
-                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.corrAgGridOptions); //bind the grid to it.
-                    scope.corrAgGridOptions.api.showLoadingOverlay(); //show loading...
-
-                    scope.subprojectList = SubprojectService.getSubprojects();
-                    //console.log("Fetching CRPP subprojects...");
-
-                    var watcher = scope.$watch('subprojectList.length', function () {
-                        if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
-                            return;
-
-                        console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
-                        scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
-
-                        watcher();
-                    });
-                }, 0);
-
-            } else {
-                console.log(" we are NOT a crpp project so no Correspondence tab.");
-            }
-
-        },true);
-
-
-
-        //if you are creating a new one for the project, the ce_row should be empty {}
-        // if you are editing an existing one, send in the project and the ce_row.
-        scope.openCorrespondenceEventForm = function (subproject, ce_row) {
-            //console.log("Inside openCorrespondenceEventForm...")
-
-            scope.viewSubproject = subproject;
-            //console.log("ok subproject set: ");
-            //console.dir(scope.viewSubproject);
-
-            scope.ce_row = ce_row;
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-new-correspondenceEvent.html',
-                controller: 'ModalAddCorrespondenceEventCtrl',
-                scope: scope, //very important to pass the scope along...
-            });
-        };
-
-        scope.removeCrppSubproject = function (subproject) {
-            //console.log("Inside removeViewSubproject, scope is next...");
-
-            if (!subproject)
-                return;
-
-            scope.viewSubproject = subproject;
-
-            if (scope.viewSubproject.CorrespondenceEvents.length > 0) {
-                alert("This project has associated correspondence events.  Those must be deleted first.");
-            } else {
-                scope.verifyAction = "Delete";
-                scope.verifyingCaller = "CrppSubproject";
-                //console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " + scope.viewSubproject.Id);
-                var modalInstance = $modal.open({
-                    templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
-                    controller: 'ModalVerifyActionCtrl',
-                    scope: scope, //very important to pass the scope along...
-                });
-            }
-        };
-
-        scope.postRemoveSubprojectUpdateGrid = function () {
-            //the scope.subproject is the one we removed.
-            console.log("ok - we removed one so update the grid...");
-
-            scope.subprojectList.forEach(function (item, index) {
-                if (item.Id === scope.viewSubproject.Id) {
-                    scope.subprojectList.splice(index, 1);
-                    //console.log("ok we removed :" + index);
-                    //console.dir(scope.subprojectList[index]);
-                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
-                    //scope.corrAgGridOptions.api.redrawRows();
-                    //console.log("done reloading grid.");
-                }
-            });
-        };
-
-        //called by the modal once the correspondence event is successfully saved.
-        scope.postEditCorrespondenceEventUpdateGrid = function (edited_event) {
-            console.log("editCrppCorrespondenceEvent..." + edited_event.Id + " for subproject " + edited_event.SubprojectId);
-
-            //edit our correspondence item and then reload the grid.
-            scope.subprojectList.forEach(function (item, index) {
-                if (item.Id === edited_event.SubprojectId) {
-                    item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort. - this was already updated in the be
-                    item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
-                        if (event_item.Id === edited_event.Id) {
-                            angular.extend(event_item, edited_event); //replace the data for that item
-                            //console.log("OK!! we edited that correspondence event");
-                        }
-                    });
-                }
-            });
-
-            scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
-
-            //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
-            var the_node = scope.expandSubProjectById(edited_event.SubprojectId);
-            if (the_node != null)
-                scope.corrAgGridOptions.api.ensureNodeVisible(the_node);
-
-            console.log("done reloading grid after removing item.");
-
-        };
-
-        //called by the modal once a correspondence event (edit) is saved
-        scope.postAddCorrespondenceEventUpdateGrid = function (new_event) {
-            //console.dir(new_event);
-            console.log("saving correspondence event for " + new_event.SubprojectId);
-
-            var subproject = getById(scope.subprojectList, new_event.SubprojectId);
-
-            if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
-                console.log("no subproject...");
-            } else {
-                scope.subprojectList.forEach(function (item, index) {
-                    if (item.Id === subproject.Id) {
-                        item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort - this was already updated in the be
-                        item.CorrespondenceEvents.push(new_event);
-                        //console.log("Added event " + new_event.Id + " to " + subproject.Id);
-                    }
-                });
-                scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
-
-                //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
-                var the_node = scope.expandSubProjectById(subproject.Id);
-                if (the_node != null)
-                    scope.corrAgGridOptions.api.ensureNodeVisible(the_node);
-
-                console.log("done reloading grid after removing item.");
-            }
-        };
-
-        //returns the (last) node or null if none found.
-        scope.expandSubProjectById = function (id_in) {
-            var the_node = null;
-            scope.corrAgGridOptions.api.forEachNode(function (node) {
-                if (node.data.Id === id_in) {
-                    //console.log("Expanding! " + id_in);
-                    node.setExpanded(true);
-                    the_node = node;
-                }
-            });
-            return the_node;
-        };
-
-        //removes the correspondence event and then updates the grid
-        scope.removeCrppCorrespondenceEvent = function (subproject, event) {
-            console.log("removeCrppCorrespondenceEvent..." + event.Id + " for subproject " + subproject.Id);
-
-            if (confirm('Are you sure that you want to delete this Correspondence Event?')) {
-                var promise = SubprojectService.removeCorrespondenceEvent(scope.project.Id, subproject.Id, event.Id, scope.DatastoreTablePrefix);
-
-                promise.$promise.then(function () {
-                    //remove from our subprojectList and then reload the grid.
-                    scope.subprojectList.forEach(function (item, index) {
-                        if (item.Id === subproject.Id) {
-                            item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
-                                if (event_item.Id === event.Id) {
-                                    item.CorrespondenceEvents.splice(event_item_index, 1);
-                                    //console.log("OK!! we removed that correspondence event");
-                                }
-                            });
-                        }
-                    });
-                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
-
-                    //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
-                    var the_node = scope.expandSubProjectById(subproject.Id);
-                    if (the_node != null)
-                        scope.corrAgGridOptions.api.ensureNodeVisible(the_node);
-
-                    console.log("done reloading grid after removing item.");
-                });
-            }
-        };
-
-
-        //opens create crpp subproject modal
-        scope.createCrppSubproject = function () {
-            scope.viewSubproject = null;
-            scope.createNewSubproject = true;
-            //scope.subprojectList = null;
-            scope.subprojectOptions = null;
-            //console.log("scope.createNewSubproject = " + scope.createNewSubproject);
-            var modalInstance = $modal.open({
-                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
-                controller: 'ModalCreateSubprojectCtrl',
-                scope: scope, //very important to pass the scope along...
-            });
-        };
-
-
-        //fired after a user saves a new or edited project.
-        // we update the item in the main subproject array and then refresh the grid.
-        scope.postSaveSubprojectUpdateGrid = function (the_promise) {
-            //console.log("ok - we saved so update the grid...");
-            var total = scope.subprojectList.length;
-            var count = 0;
-            var updated = false;
-            scope.subprojectList.forEach(function (item, index) {
-                if (item.Id === the_promise.Id) {
-                    updated = true;
-                    //console.log("ok we found a match! -- updating! before:");
-                    //console.dir(scope.subprojectList[index]);
-
-                    if (the_promise.CorrespondenceEvents !== undefined)
-                        delete the_promise.CorrespondenceEvents; //remove this before the copy.
-
-                    angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
-                    //console.log("ok we found a match! -- updating! after:");
-                    //console.dir(scope.subprojectList[index]);
-                    scope.corrAgGridOptions.api.redrawRows();
-                    //console.log("done reloading grid.");
-                }
-                count++;
-                if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
-                {
-                    //console.log("ok we found never a match! -- adding!");
-                    the_promise.CorrespondenceEvents = [];
-                    the_promise.Files = [];
-                    scope.subprojectList.push(the_promise); //add that item
-                    scope.corrAgGridOptions.api.setRowData([]);
-                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
-
-                    //console.log("done reloading grid.");
-                }
-            });
-        };
-
-        scope.editCrppSubproject = function (subproject) {
-            //console.log("editCrppSubproject...");
-
-            scope.viewSubproject = subproject;
-
-            var modalInstance = $modal.open({
-                    templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
-                    controller: 'ModalCreateSubprojectCtrl',
-                    scope: scope, //very important to pass the scope along...
-            });
-        };
-
-        scope.redrawRows = function () {
-            scope.corrAgGridOptions.api.setRowData([]);
-            setTimeout(function () { scope.corrAgGridOptions.api.setRowData(scope.subprojectList); }, 4000);
-        };
-
-        scope.refreshCells = function () {
-            scope.corrAgGridOptions.api.refreshCells();
-        };
-
-        scope.refreshMemory = function () {
-            scope.corrAgGridOptions.api.refreshInMemoryRowModel('group');
-        };
-
-        //looks at the metadata setting to see if it is a crpp project
-        scope.isCRPPProject = function(a_project)
-        {
-            return (a_project.MetadataValue[METADATA_PROPERTY_PROGRAM]) === "CRPP";
-        }
-
-    }
-];
-
-define("private/crpp/components/crpp-contracts/tab-correspondence", function(){});
-
-
-
-define('private/crpp/contracts-map-directive',[
-  'app',
-  'esri/map',
-  'esri/geometry/Point',
-  'esri/dijit/InfoWindow',
-  'esri/InfoTemplate',
-  'esri/dijit/BasemapLayer',
-  'esri/dijit/BasemapGallery',
-  'esri/dijit/Basemap'
-], function (app, Map, Point, InfoWindow, InfoTemplate) {
-
-  // register a new directive called esriMap with our app
-  app.directive('crppDocumentsMap', function($rootScope){
-    // this object will tell angular how our directive behaves
-    return {
-      // only allow esriMap to be used as an element (<esri-map>)
-      restrict: 'E',
-
-      scope: false,
-
-      // define how our template is compiled this gets the $element our directive is on as well as its attributes ($attrs)
-      compile: function($element, $attrs){
-        // remove the id attribute from the main element
-        $element.removeAttr("id");
-
-        // append a new div inside this element, this is where we will create our map
-        $element.append("<div id=" + $attrs.id + "></div>");
-
-        // since we are using compile we need to return our linker function
-        // the 'link' function handles how our directive responds to changes in $scope
-        return function (scope, element, attrs, controller){
-          scope.$watch("center", function (newCenter, oldCenter) {
-            if(newCenter !== oldCenter){
-              controller.centerAt(newCenter);
-            }
-          });
-        };
-      },
-
-      // even though $scope is shared we can declare a controller for manipulating this directive
-      // this is great for when you need to expose an API for manipulaiting your directive
-      // this is also the best place to setup our map
-      controller: function($scope, $element, $attrs){
-
-        //console.dir($attrs);
-
-        // setup our map options based on the attributes and scope
-        var mapOptions = {
-          center: ($attrs.center) ? $attrs.center.split(",") : $scope.center,
-          zoom: ($attrs.zoom) ? $attrs.zoom : $scope.zoom,
-          spatialReference: {
-              wkid:102100 //mercator
-              //wkid:26911 //nad_1983
-              //"wkt":'PROJCS["NAD83(NSRS2007) / UTM zone 11N",GEOGCS["NAD83(NSRS2007)",DATUM["D_",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-117],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["Meter",1]]'
-
-            }
-        };
-
-        // declare our map
-        console.log("trying to make the map");
-
-        var map = new Map($attrs.id, mapOptions);
-        //our first layer from up above...
-        //console.log("//restdata.umatilla.nsn.us/arcgis/rest/services/BasemapParcelViewerCTUIR/MapServer?token=" + security_token);
-
-        //setup basemaps
-        map.selectedBasemap = defaultLayer;
-        map.selectedServiceLayers = [];
-
-        map.basemaps = [];
-        for (var property in parcelLayerConfig) {
-          if(parcelLayerConfig.hasOwnProperty(property))
-          {
-              map.basemaps.push({label: parcelLayerConfig[property].Display, name: property});
-          }
-        };
-
-        map.serviceLayers = [];
-        for (var property in servicesLayerConfig) {
-          if(servicesLayerConfig.hasOwnProperty(property))
-          {
-              map.serviceLayers.push({label: servicesLayerConfig[property].Display, name: property});
-          }
-        };
-
-
-
-        
-
-        //var layer = new esri.layers.ArcGISTiledMapServiceLayer("//restdata.umatilla.nsn.us/arcgis/rest/services/BasemapParcelViewerCTUIR/MapServer?token=" + security_token);
-
-        //var layer = new esri.layers.ArcGISTiledMapServiceLayer(parcelLayerConfig[map.selectedBasemap].ServiceURL);
-        //map.addLayer(layer);
-        //map.currentBasemapLayer = layer;
-
-        //map.parcelLayer = new esri.layers.GraphicsLayer();
-        //map.addLayer(map.parcelLayer);
-
-        map.updateLayers = function(){
-
-            console.log("Changing Layer: "+map.selectedBasemap);
-
-            try{
-              console.log("Loading layer: " + parcelLayerConfig[map.selectedBasemap].ServiceURL);      
-
-              map.removeAllLayers();
-
-              //add the selected basemap
-              var new_layer = new esri.layers.ArcGISTiledMapServiceLayer(parcelLayerConfig[map.selectedBasemap].ServiceURL);
-              map.addLayer(new_layer);
-              map.currentBasemapLayer = new_layer;
-
-              //now add any selected service layers
-              for (var i = map.selectedServiceLayers.length - 1; i >= 0; i--) {
-                var service_layer = new esri.layers.ArcGISDynamicMapServiceLayer(servicesLayerConfig[map.selectedServiceLayers[i]].ServiceURL);
-                map.addLayer(service_layer);
-              };
-
-              map.parcelLayer = new esri.layers.GraphicsLayer();
-              map.addLayer(map.parcelLayer);
-
-              console.log("done!");
-              map.reposition();
-            }
-            catch(e)
-            {
-              console.dir(e);
-            }
-        };
-
-        map.updateLayers();
-
-
-        // start exposing an API by setting properties on "this" which is our controller
-        // lets expose the "addLayer" method so child directives can add themselves to the map
-        this.addLayer = function(layer, filter){
-          map.locationLayer = map.addLayer(layer);
-
-//          console.log("Added layer to map");
-//          console.log("layer_"+layer.id);
-
-            //setup our layer locationid function so we can all it again sometime
-            layer.showLocationsById = function(locationObjectIds){
-              try{
-                this.clearSelection();
-                var definitionExpression = "OBJECTID IN (" + locationObjectIds + ")";
-                console.log("Definition expression: " + definitionExpression);
-                this.setDefinitionExpression(definitionExpression);
-                this.refresh();
-              }catch(e)
-
-              {
-                console.dir(e);
-              }                  
-            };
-
-          if(filter && filter == "location")
-          {
-              if(typeof $scope.locationObjectIds == "undefined")
-              {
-                $scope.$watch('locationObjectIds', function(){
-
-                  //skip the first run
-                  if(typeof $scope.locationObjectIds == "undefined")
-                    return;
-                  
-                  layer.showLocationsById($scope.locationObjectIds); // now call it
-
-                  layer.show();                  
-
-                });
-              }
-          }
-          
-          return map.locationLayer;
-        };
-
-        //use this for doing a search by parcelid or address
-        map.querySearchParcel = function(searchParam, callback)
-        {
-          var queryTask = new esri.tasks.QueryTask(parcelLayerConfig[map.selectedBasemap].QueryURL);
-          var query = new esri.tasks.Query();
-          query.where = dojo.string.substitute(parcelLayerConfig[map.selectedBasemap].ParcelQuery, [searchParam]);
-          query.returnGeometry = false;
-          query.outSpatialReference = this.spatialReference;
-          query.outFields = ["*"];
-        
-          queryTask.execute(query, function (result) {
-              callback(result.features); //give back the parcel features we found...
-          }, function(err){
-              console.log("Failure executing query!");
-              console.dir(err);
-              console.dir(query);
-          });            
-        };
-
-        //use this for selecting a specific parcel/allotment by id (no geometry)
-        map.queryMatchParcel = function(searchParam, callback)
-        {
-          var queryTask = new esri.tasks.QueryTask(parcelLayerConfig[map.selectedBasemap].QueryURL);
-          var query = new esri.tasks.Query();
-          query.where = dojo.string.substitute(parcelLayerConfig[map.selectedBasemap].LocateParcelQuery, [searchParam]);
-          query.returnGeometry = false;
-          query.outSpatialReference = this.spatialReference;
-          query.outFields = ["*"];
-        
-          queryTask.execute(query, function (result) {
-              callback(result.features); //give back the parcel features we found...
-          }, function(err){
-              console.log("Failure executing query!");
-              console.dir(err);
-              console.dir(query);
-          });            
-        };
-
-
-        //use this to select a particular parcel either by objectid (like after a search) or x,y mapPoint
-        map.querySelectParcel = function(mapPoint, objectId, callback){
-
-          console.log("Running query on: "+ parcelLayerConfig[map.selectedBasemap].QueryURL);
-
-          var queryTask = new esri.tasks.QueryTask(parcelLayerConfig[map.selectedBasemap].QueryURL);
-          var query = new esri.tasks.Query();
-
-          query.outSpatialReference = this.spatialReference;
-          query.returnGeometry = true;
-          query.outFields = ["*"];
-          if (mapPoint) {
-              query.geometry = mapPoint;
-          }
-          else {
-              query.objectIds = [objectId];
-          }
-          
-          query.spatialRelationship = esri.tasks.Query.SPATIAL_REL_INTERSECTS;
-          queryTask.execute(query, function (result) {
-              console.dir(result);
-              callback(result.features); //give back the parcel features we found...
-          }, function(err){
-              console.log("Failure executing query!");
-              console.dir(err);
-              console.dir(query);
-          });            
-
-                  
-        };
-
-        map.clearGraphics = function(){
-          this.parcelLayer.clear();
-        }
-
-        map.addParcelToMap = function(feature, color, alpha)
-        {
-            
-                var graphic;
-                if(!color)
-                  color = "#FF6600";
-                
-                if(!alpha)
-                  alpha = .25;
-
-
-                var lineColor = new dojo.Color();
-                lineColor.setColor(color);
-
-                var fillColor = new dojo.Color();
-                fillColor.setColor(color);
-                fillColor.a = alpha;
-
-                var symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID,
-                    new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, lineColor, 3), fillColor);
-
-                graphic = new esri.Graphic(feature.geometry, symbol, feature.attributes);
-
-                this.parcelLayer.clear();
-                this.parcelLayer.add(graphic);
-                this.selectedFeature = feature;
-                this.selectedGraphic = graphic;
-
-                $scope.$emit("map.selectedFeature",feature); //notify
-        }
-
-        map.centerAndZoomToGraphic = function(graphic)
-        {
-            var centerPoint = graphic.geometry.getExtent().getCenter();
-            return map.centerAndZoom(centerPoint, 15);
-        };
-
-        // lets expose a version of centerAt that takes an array of [lng,lat]
-        this.centerAt = function(center){
-          var point = new Point({
-            x: center[0],
-            y: center[1],
-            spatialReference: {
-              wkid:102100 //mercator
-              //wkid:26911 //nad_1983
-              //"wkt":'PROJCS["NAD83(NSRS2007) / UTM zone 11N",GEOGCS["NAD83(NSRS2007)",DATUM["D_",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-117],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["Meter",1]]'
-
-            }
-          });
-
-          map.centerAt(point);
-        };
-
-        // listen for click events and expost them as broadcasts on the scope and suing the scopes click handler
-        map.on("click", function(e){
-          // emit a message that bubbles up scopes, listen for it on your scope
-          $scope.$emit("map.click", e);
-
-          // use the scopes click fuction to handle the event
-          $scope.$apply(function($scope) {
-            $scope.click.call($scope, e);
-          });
-        });
-
-        $scope.map = map;
-
-      }
-    };
-  });
-});
-
-
-// defines the crpp module
-
-var crpp_module = angular.module('CrppModule', ['ui.bootstrap', 'ngResource']);
-
-require([
-    //controllers
-    //'private/crpp/components/crpp-contracts/crpp-contracts',
-    'private/crpp/components/crpp-contracts/modal-add-correspondence-event',
-    'private/crpp/components/crpp-contracts/modal-create-crpp-subproject',
-    'private/crpp/components/crpp-contracts/tab-correspondence',
-
-    //directives
-    'private/crpp/contracts-map-directive',
-
-    //renderer for master/detail in grid - used on project-details page (until it gets consolidated to this module)
-    //'private/crpp/components/crpp-contracts/renderer-correspondence-detail',
-
-], function () {
-    //crpp_module.controller('CrppContractsCtrl', crpp_contracts);
-    crpp_module.controller('ModalAddCorrespondenceEventCtrl', modal_add_correspondence_event);
-    crpp_module.controller('ModalCreateSubprojectCtrl', modal_create_crpp_subproject);
-    crpp_module.controller('TabCorrespondenceController', tab_correspondence);
-});
-
-
-
-
-define("private/crpp/crpp-module", function(){});
 
 /*
 *   This page loads the project details. It includes some tabs that are always populated and some tabs
@@ -10824,9 +8262,6 @@ projects_module.service('SubprojectService', ['$q',
 define("core/projects/services/subproject-service", function(){});
 
 // defines the project module and all project controllers.
-
-//project module and its dependencies
-var projects_module = angular.module('ProjectModule', ['ui.bootstrap', 'angularFileUpload', 'ui.select2', 'ngResource']);
 
 //load the components for this module
 require([
@@ -21164,9 +18599,6 @@ define("core/datasets/services/file-upload", function(){});
 
 // defines the dataset module and all dataset controllers.
 
-//dataset module and its dependencies
-var datasets_module = angular.module('DatasetModule', ['ui.bootstrap','ngResource']);
-
 //load the components for this module
 require([
 
@@ -21624,8 +19056,6 @@ define("core/admin/admin-service", function(){});
 
 // defines the admin module and loads the components, controllers and services
 
-var admin_module = angular.module('AdminModule', ['ui.bootstrap', 'ngResource']);
-
 //load the components for this module
 require([
     'core/admin/components/admin-page/admin-view',
@@ -21837,8 +19267,6 @@ define("core/preferences/preferences-service", function(){});
 
 // defines the preferences module 
 
-var preferences_module = angular.module('PreferencesModule', ['ui.bootstrap', 'ngResource']);
-
 require([
     //load components
     'core/preferences/components/dataset-preferences/dataset-preferences',
@@ -21863,6 +19291,2583 @@ require([
 
 
 define("core/preferences/preferences-module", function(){});
+
+//define all of the private modules we use -- this is required for proper loading and optimizing
+var habitat_module = angular.module('HabitatModule', ['ui.bootstrap', 'ngResource']);
+var crpp_module = angular.module('CrppModule', ['ui.bootstrap', 'ngResource']);
+var appraisals_module = angular.module('AppraisalsModule', ['ui.bootstrap', 'ngResource']);
+
+define("private/all-modules", function(){});
+
+
+var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','SubprojectService','ServiceUtilities',
+	'$filter', 'FileUploadService','$upload','$location', '$anchorScroll',
+    function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
+	$filter, FileUploadService, $upload, $location, $anchorScroll){
+	console.log("Inside ModalAddCorrespondenceEventCtrl...");
+	
+	if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
+		$rootScope.subprojectId = $scope.viewSubproject.Id;
+	
+	$scope.filesToUpload = {};
+	$scope.verifyActionFormOpen = "No";
+	$scope.showOtherResponseType = false;
+	$scope.showOtherCorrespondenceType = false;
+	$scope.ReadyToClose = ""; // Set to "", so that "False" does not show on the form.
+	$scope.showCloseButton = false;
+	$scope.showCancelButton = true;
+	$scope.showFormItems = true;
+	$scope.fileCount = 0;
+	$scope.fileProgress = 0;
+
+    $scope.ce_row = angular.copy($scope.ce_row);
+	
+	console.log("$scope.ce_row is next...");
+	console.dir($scope.ce_row);
+	
+	$scope.ceCorrespondenceType = [];
+		$scope.ceCorrespondenceType.push({Id: 0, Label: "Project Notification"});
+		$scope.ceCorrespondenceType.push({Id: 1, Label: "Notice of Application"});
+		$scope.ceCorrespondenceType.push({Id: 2, Label: "Seeking Concurrence"});
+		$scope.ceCorrespondenceType.push({Id: 3, Label: "Document Review"});
+		$scope.ceCorrespondenceType.push({Id: 4, Label: "Permit Review"});
+		$scope.ceCorrespondenceType.push({Id: 5, Label: "Sending materials for our records"});
+		$scope.ceCorrespondenceType.push({Id: 6, Label: "Other"});		
+	
+	/*$scope.ceResponseType = [];
+		$scope.ceResponseType.push("APE letter");
+		$scope.ceResponseType.push("Asked to be consulting party");
+		$scope.ceResponseType.push("Defer to other tribe(s)");
+		$scope.ceResponseType.push("Determination of Eligibility");
+		$scope.ceResponseType.push("Did not review");
+		$scope.ceResponseType.push("Emailed Comments");
+		$scope.ceResponseType.push("Finding of Effect");
+		$scope.ceResponseType.push("Issued survey/excavation permit");
+		$scope.ceResponseType.push("Let it go");
+		$scope.ceResponseType.push("Missed opportunity to review");
+		$scope.ceResponseType.push("NAGPRA FR Notice");
+		$scope.ceResponseType.push("NAGPRA inventory/summary");
+		$scope.ceResponseType.push("none--ok");
+		$scope.ceResponseType.push("Other");
+		$scope.ceResponseType.push("Out of area");
+		$scope.ceResponseType.push("Permit Application");
+		$scope.ceResponseType.push("Report for Review");
+		$scope.ceResponseType.push("Requested a monitor");
+		$scope.ceResponseType.push("Requested a survey");
+		$scope.ceResponseType.push("Requested additional information");
+		$scope.ceResponseType.push("Requested report");
+		$scope.ceResponseType.push("Requested testing");
+		$scope.ceResponseType.push("Response to comments");
+		$scope.ceResponseType.push("Reviewed report");
+		$scope.ceResponseType.push("Same as previously reviewed project");
+		$scope.ceResponseType.push("Sent letter");
+		$scope.ceResponseType.push("Signed off on");
+		$scope.ceResponseType.push("Simple Notification");
+	*/
+	$scope.ceResponseType = [];
+		$scope.ceResponseType.push({Id: 0, Label: "APE letter"});
+		$scope.ceResponseType.push({Id: 1, Label: "Asked to be consulting party"});
+		$scope.ceResponseType.push({Id: 2, Label: "Defer to other tribe(s)"});
+		$scope.ceResponseType.push({Id: 3, Label: "Determination of Eligibility"});
+		$scope.ceResponseType.push({Id: 4, Label: "Did not review"});
+		$scope.ceResponseType.push({Id: 5, Label: "Emailed Comments"});
+		$scope.ceResponseType.push({Id: 6, Label: "Finding of Effect"});
+		$scope.ceResponseType.push({Id: 7, Label: "Issued survey/excavation permit"});
+		$scope.ceResponseType.push({Id: 8, Label: "Let it go"});
+		$scope.ceResponseType.push({Id: 9, Label: "Missed opportunity to review"});
+		$scope.ceResponseType.push({Id: 10, Label: "NAGPRA FR Notice"});
+		$scope.ceResponseType.push({Id: 11, Label: "NAGPRA inventory/summary"});
+		$scope.ceResponseType.push({Id: 12, Label: "none--ok"});
+		$scope.ceResponseType.push({Id: 13, Label: "Notice of Application"});
+		$scope.ceResponseType.push({Id: 14, Label: "Other"});
+		$scope.ceResponseType.push({Id: 15, Label: "Out of area"});
+		$scope.ceResponseType.push({Id: 16, Label: "Permit Application"});
+		$scope.ceResponseType.push({Id: 17, Label: "Report for Review"});
+		$scope.ceResponseType.push({Id: 18, Label: "Requested a monitor"});
+		$scope.ceResponseType.push({Id: 19, Label: "Requested a survey"});
+		$scope.ceResponseType.push({Id: 20, Label: "Requested additional information"});
+		$scope.ceResponseType.push({Id: 21, Label: "Requested report"});
+		$scope.ceResponseType.push({Id: 22, Label: "Requested testing"});
+		$scope.ceResponseType.push({Id: 23, Label: "Response to comments"});
+		$scope.ceResponseType.push({Id: 24, Label: "Reviewed report"});
+		$scope.ceResponseType.push({Id: 25, Label: "Same as previously reviewed project"});
+		$scope.ceResponseType.push({Id: 26, Label: "Sent letter"});
+		$scope.ceResponseType.push({Id: 27, Label: "Signed off on"});
+		$scope.ceResponseType.push({Id: 28, Label: "Simple Notification"});
+	
+	/*$scope.ceResponseType = [];
+		$scope.ceResponseType.push("APE letter");
+		$scope.ceResponseType.push("Asked to be consulting party");
+		$scope.ceResponseType.push("Defer to other tribe(s)");
+		$scope.ceResponseType.push("Determination of Eligibility");
+		$scope.ceResponseType.push("Did not review");
+		$scope.ceResponseType.push("Emailed Comments");
+		$scope.ceResponseType.push("Finding of Effect");
+		$scope.ceResponseType.push("Issued survey/excavation permit");
+		$scope.ceResponseType.push("Let it go");
+		$scope.ceResponseType.push("Missed opportunity to review");
+		$scope.ceResponseType.push("NAGPRA FR Notice");
+		$scope.ceResponseType.push("NAGPRA inventory/summary");
+		$scope.ceResponseType.push("none--ok");
+		$scope.ceResponseType.push("Other");
+		$scope.ceResponseType.push("Out of area");
+		$scope.ceResponseType.push("Permit Application");
+		$scope.ceResponseType.push("Report for Review");
+		$scope.ceResponseType.push("Requested a monitor");
+		$scope.ceResponseType.push("Requested a survey");
+		$scope.ceResponseType.push("Requested additional information");
+		$scope.ceResponseType.push("Requested report");
+		$scope.ceResponseType.push("Requested testing");
+		$scope.ceResponseType.push("Response to comments");
+		$scope.ceResponseType.push("Reviewed report");
+		$scope.ceResponseType.push("Same as previously reviewed project");
+		$scope.ceResponseType.push("Sent letter");
+		$scope.ceResponseType.push("Signed off on");
+		$scope.ceResponseType.push("Simple Notification");
+	*/	
+	console.log("$scope.ceResponseType is next...");
+	console.dir($scope.ceResponseType);
+	
+	/*$scope.responseTypeOptions = $rootScope.responseTypeOptions = makeObjects($scope.ceResponseType, 'Id','Label') ;
+	console.log("$scope.responseTypeOptions is next...");
+	console.dir($scope.responseTypeOptions);
+	*/
+
+	var keepGoing = true;
+	var foundIt = false;
+	//var responseTypeIndex = 0;
+	//var responseTypeMarker = "";
+	/*angular.forEach($scope.responseTypeOptions, function(option){
+		console.log("option = x" + option + "x, $scope.ce_row.ResponseType = x" + $scope.ce_row.ResponseType + "x.");
+		if ((keepGoing) && (option.indexOf($scope.ce_row.ResponseType) >= 0))
+		{
+			console.log("option = " + option);
+			console.log("Found the ResponseType...");
+			responseTypeMarker = responseTypeIndex;
+			$scope.ce_row.ResponseType = "" + responseTypeMarker;
+			foundIt = true;
+			keepGoing = false;
+		}
+		responseTypeIndex++;
+	});
+	*/
+	
+	// If ce_row.CorrespondenceDate exists, then we are editing.
+	if ($scope.ce_row.CorrespondenceDate)
+	{
+		angular.forEach($scope.ceResponseType, function(option){
+		//console.log("option.Label = x" + option.Label + "x, $scope.ce_row.ResponseType = x" + $scope.ce_row.ResponseType + "x.");
+			if ((keepGoing) && (option.Label === $scope.ce_row.ResponseType))
+			{
+				//console.log("option.Label = " + option.Label);
+				//console.log("Found the ResponseType...");
+				foundIt = true;
+				keepGoing = false;
+			}
+			//responseTypeIndex++;
+		});
+	
+		if (!foundIt)
+		{
+			console.log("Value of ResponseType is not in the list...");
+			$scope.ce_row.OtherResponseType = $scope.ce_row.ResponseType;
+			$scope.ce_row.ResponseType = "Other";
+			$scope.showOtherResponseType = true;		
+		}
+		
+		foundIt = false;
+		keepGoing = true;
+		//console.log("$scope.ce_row.CorrespondenceType is next...");
+		//console.dir($scope.ce_row.CorrespondenceType);
+		angular.forEach($scope.ceCorrespondenceType, function(option){
+			//console.log("option is next...");
+			//console.dir(option);
+			//console.log("option.Label = x" + option.Label + "x, $scope.ce_row.CorrespondenceType = x" + $scope.ce_row.CorrespondenceType + "x.");
+			if ((keepGoing) && (option.Label === $scope.ce_row.CorrespondenceType))
+			{
+				//console.log("option.Label = " + option.Label);
+				//console.log("Found the CorrespondenceType...");
+				foundIt = true;
+				keepGoing = false;
+			}
+		});
+		
+	
+		if (!foundIt)
+		{
+			console.log("Value of CorrespondenceType is not in the list...");
+			$scope.ce_row.OtherCorrespondenceType = $scope.ce_row.CorrespondenceType;
+			$scope.ce_row.CorrespondenceType = "Other";
+			$scope.showOtherCorrespondenceType = true;		
+		}
+	}
+	/*console.log("Location of ResponseType = " + $scope.ceResponseType.indexOf($scope.ce_row.ResponseType));
+	if ($scope.ceResponseType.indexOf($scope.ce_row.ResponseType) < 0)
+	{
+		// The value of ResponseType IS NOT in our array of possible values, which means we have an odd item,
+		// so we must do some jiggling...
+		console.log("Value of ResponseType is not in the list...");
+		$scope.ce_row.OtherResponseType = $scope.ce_row.ResponseType;
+		$scope.ce_row.ResponseType = "Other";
+		$scope.showOtherResponseType = true;
+	}
+	*/
+    if($scope.ce_row.Id > 0)
+    {
+        $scope.header_message = "Edit Event for Project " + $scope.viewSubproject.ProjectName;
+    }
+	else
+	{
+		if ((typeof $scope.viewSubproject !== 'undefined' ) && ($scope.viewSubproject !== null))
+			$scope.header_message = "Add Event to Project " + $scope.viewSubproject.ProjectName;
+		else if ((typeof $scope.crppProjectName !== 'undefined' ) && ($scope.crppProjectName !== null))
+			$scope.header_message = "Add Event to Project " + $scope.crppProjectName;
+	}
+	
+	if (!$scope.ce_row.NumberOfDays)
+		$scope.ce_row.NumberOfDays = "Other";
+	
+	//console.log("$scope.ce_row is next...");
+	//console.dir($scope.ce_row);
+	
+	$scope.field = {
+		DbColumnName: "EventFiles"
+	};
+	
+	//console.log("$scope is next...");
+	//console.dir($scope);
+	
+	/*$scope.ceEvents = function(items, key) {
+		element.all(by.repeater(key + ' in $scope.viewSubproject.CorrespondenceEvents').column(key + '.EventComments')).then(function(arr) {
+			arr.forEach(function(wd, i) {
+			  expect(wd.getText()).toMatch(items[i]);
+			});
+		});
+	};
+	
+	$scope.ceFilterEventComments = function()
+	{
+		var searchEventComments = element(by.model('correspondenceEventsFilter.EventComments'));
+		var strict = element(by.model('strict'));
+		searchEventComments.clear();
+		searchEventComments.sendKeys('i');
+		$scope.ceEvents($scope.viewSubproject.CorrespondenceEvents, event);
+		//strict.click();
+	}
+	*/
+	
+	$scope.openFileModal = function(row, field)
+	{
+		console.log("Inside ModalAddCorrespondenceEventCtrl, openFileModal...");
+		console.log("row is next...");
+		console.dir(row);
+		console.log("field is next...");
+		console.dir(field);
+		$scope.file_row = row;
+		$scope.file_field = field;
+		
+		var modalInstance = $modal.open({
+			templateUrl: 'app/core/common/components/file/templates/modal-file.html',
+			controller: 'FileModalCtrl',
+			scope: $scope, //scope to make a child of
+		});
+	};
+	
+	$scope.selectCorrespondenceType = function () {
+		console.log("Inside selectCorrespondenceType...");
+		console.log("$scope.ce_row at top of selectCorrespondenceType is next...");
+		console.dir($scope.ce_row);
+		if ($scope.ce_row.CorrespondenceType === "Other")
+			$scope.showOtherCorrespondenceType = true;
+		else
+		{
+			$scope.showOtherCorrespondenceType = false;
+			$scope.ce_row.OtherCorrespondenceType = null;
+		}
+		
+		console.log("$scope.showOtherCorrespondenceType = " + $scope.showOtherCorrespondenceType);
+		console.log("$scope.ce_row at end of selectCorrespondenceType is next...");
+		console.dir($scope.ce_row);
+	};
+	
+	/*$scope.responseTypeChanged = function () {
+		console.log("Inside responseTypeChanged...");
+		console.log("$scope.ce_row is next...");
+		console.dir($scope.ce_row);
+		if ($scope.ce_row.ResponseType === "Other")
+			$scope.showOtherResponseType = true;
+		else
+		{
+			$scope.showOtherResponseType = false;
+			$scope.ce_row.OtherResponseType = 'undefined';
+		}
+		
+		console.log("$scope.showOtherResponseType = " + $scope.showOtherResponseType);
+	};
+	*/
+	
+	$scope.selectResponseType = function () {
+		console.log("Inside selectResponseType...");
+		console.log("$scope.ce_row at top of selectResponseType is next...");
+		console.dir($scope.ce_row);
+		if ($scope.ce_row.ResponseType === "Other")
+			$scope.showOtherResponseType = true;
+		else
+		{
+			$scope.showOtherResponseType = false;
+			$scope.ce_row.OtherResponseType = null;
+		}
+		
+		console.log("$scope.showOtherResponseType = " + $scope.showOtherResponseType);
+		console.log("$scope.ce_row at end of selectResponseType is next...");
+		console.dir($scope.ce_row);
+	};
+
+	$scope.GetTypeOfResponse = function(){
+		var theName = [];
+		theName.push($filter('ResponseTypeFilter')($scope.ResponseTypeList, $scope.ce_row.ResponseType.Id))[0];
+		console.log("theName is next...");
+		console.dir(theName);
+		
+	};
+
+
+	
+	//field = DbColumnName
+	$scope.onFileSelect = function(field, files)
+	{
+		console.log("Inside ModalAddCorrespondenceEventCtrl, onFileSelect");
+		console.log("file selected! " + field);
+		$scope.filesToUpload[field] = files;
+	};
+	
+	/*$scope.$watch("CorrespondenceDate", function(newValue, oldValue){
+		console.log("CorrespondenceDate changed...");
+	});
+	*/
+	
+	$scope.calculateDateOfResponse = function(){
+		console.log("Inside calculateDateOfResponse...");
+		console.log("$scope.ShowDateOfResponsePopup = " + $scope.ShowDateOfResponsePopup);
+		console.log("$scope.ce_row is next...");
+		console.dir($scope.ce_row);
+		//console.log("$scope.ce_row.NumberOfDays.length = " + $scope.ce_row.NumberOfDays.length);
+		
+		var	dtDateOfResponse = 'undefined';
+		var	strDateOfResponse = 'undefined';
+		
+		/* 	Initially, we set NumberOfDays to Other, with the placeholder in the box on the form.
+		*	When the user chooses a number, we change the NumberOfDays to a DatePicker.
+		*	If the user chooses Other again, we switch back to the placeholder.
+		*/
+		if ($scope.ce_row.NumberOfDays.length < 3)
+		{
+			//if ($scope.ce_row.CorrespondenceDate)
+			//console.log("$scope.ce_row.CorrespondenceDate text:  " + $scope.ce_row.CorrespondenceDate.toString());
+
+			// If the user left the Date of Correspondence blank, get today's date.
+			// Otherwise, use the date they picked.
+			if ((!$scope.ce_row.CorrespondenceDate) || ($scope.ce_row.CorrespondenceDate === null))
+			{
+				console.log("Date of Correspondence left blank; using today's date...");
+				dtDateOfResponse = new Date();
+			}
+			else
+			{
+				console.log("User picked this date...");
+				console.dir($scope.ce_row.CorrespondenceDate);
+
+				// If we just copy $scope.ce_row.CorrespondenceDate into dtDateOfResponse,
+				// all that really gets copied is the reference.  As we do calculations
+				// and change dtDateOfResponse, the same changes happen to $scope.ce_row.CorrespondenceDate.
+				// To avoid this, we clone the object in the next line, in order to break that link.
+				var strTmpDate = JSON.parse(JSON.stringify($scope.ce_row.CorrespondenceDate));
+				//console.log("strTmpDate = " + strTmpDate);
+
+				var dtTempDate = new Date(strTmpDate);
+				//var dtTempDate = Date.parse(strTmpDate);
+				console.log("dtTempDate " + dtTempDate);
+				dtDateOfResponse = dtTempDate;
+			}
+			
+			console.log("dtDateOfResponse initial setting is next...");
+			console.dir(dtDateOfResponse);
+			
+			dtDateOfResponse.setDate(dtDateOfResponse.getDate() + parseInt($scope.ce_row.NumberOfDays));
+			//console.log("dtDateOfResponse after adding days = " + dtDateOfResponse);
+
+			var strDateOfResponse = ServiceUtilities.formatDate2(dtDateOfResponse);
+			//console.log("strDateOfResponse after formatting = " + strDateOfResponse);
+
+			// Extract the date info from the date/time string.
+			var intSpaceLocation = strDateOfResponse.indexOf(" ");
+			strDateOfResponse = strDateOfResponse.substring(0, intSpaceLocation);
+			console.log("strDateOfResponse (text version) = " + strDateOfResponse);
+
+
+			$scope.ce_row.ResponseDate = strDateOfResponse;
+			console.log("$scope.ce_row.ResponseDate = " + $scope.ce_row.ResponseDate);
+			
+			console.log("$scope.ce_row is next...");
+			console.dir($scope.ce_row);
+			//$scope.ShowDateOfResponsePopup  = true;
+		}
+		else
+		{
+			$scope.ShowDateOfResponsePopup  = false;
+			//$scope.ce_row.ResponseDate = null;
+		}
+	};
+	
+	$scope.$watch('fileProgress', function(){
+		console.log("Inside watch fileProgress...");
+		console.log("$scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
+		if($scope.fileProgress < $scope.fileCount)
+			return;
+		
+		if ($scope.saving)
+		{
+			$scope.loading = false; // Stop the fish spinner.
+			$scope.showCloseButton = true;
+			$scope.showCancelButton = false;
+			$scope.showFormItems = false;
+		}
+	});
+	
+    $scope.save = function(){
+		console.log("Inside ModalAddCorrespondenceEventCtrl, save...");
+		//console.log("$scope is next...");
+		//console.dir($scope);
+		
+		$scope.saving = true; // Used in $scope.$watch('fileProgress'
+		$scope.loading = true; // Start the fish spinner.
+		
+		//console.log("$scope.ce_row.ResponseType.Id = " + $scope.ce_row.ResponseType.Id);
+		//console.log("$scope.ce_row.ResponseType.Name = " + $scope.ce_row.ResponseType.Name);
+		console.log("$scope.ce_row.ResponseType = " + $scope.ce_row.ResponseType);
+		var saveRow = angular.copy($scope.ce_row);
+		console.log("saveRow is next, before checking the Id...");
+		console.dir(saveRow);
+		if (!saveRow.Id)
+			saveRow.Id = 0;
+		//$scope.foundDuplicate = false;
+		
+		console.log("saveRow is next, after checking/setting the Id...");
+		console.dir(saveRow);
+
+		if ($scope.foundDuplicate)
+		{
+			alert("One or more of the files to upload is a duplicate!");
+			return;
+		}
+		
+		var subprojectId = 0;
+		if ($scope.viewSubproject)
+			subprojectId = $scope.viewSubproject.Id
+		else
+			subprojectId = $scope.subprojectId;
+		
+		// First let's handle the files.
+		if ($scope.filesToUpload.EventFiles)
+		{
+			// Count how many files we have.
+			$scope.fileCount = 0;
+			angular.forEach($scope.filesToUpload.EventFiles, function(aFile){
+				$scope.fileCount++;
+			});
+			console.log("$scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
+			
+			console.log("$scope.filesToUpload.EventFiles is next...");
+			console.dir($scope.filesToUpload.EventFiles);
+			for(var i = 0; i < $scope.filesToUpload.EventFiles.length; i++)
+			{
+				var file = $scope.filesToUpload.EventFiles[i];
+				console.log("file is next...");
+				console.dir(file);
+				
+				var newFileNameLength = file.name.length;
+				console.log("file name length = " + newFileNameLength);
+
+				// Inform the user immediately, if there are duplicate files.
+				if ($scope.foundDuplicate)
+					alert(errors);
+				else
+				{
+					console.log("file.success = " + file.success);
+					if(file.success != "Success")
+					{
+						console.log("No file.success, so let's save the file...");
+						$scope.upload = $upload.upload({
+                            url: serviceUrl + '/api/v1/crppsubproject/uploadcrppsubprojectfile',
+							method: "POST",
+							// headers: {'headerKey': 'headerValue'},
+							// withCredential: true,
+							//data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name},
+							data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, DatastoreTablePrefix: $scope.DatastoreTablePrefix},
+							file: file,
+
+							}).progress(function(evt) {
+								console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+							}).success(function(data, status, headers, config) {
+								console.dir(data);
+								console.dir(status);
+								console.dir(headers);
+								console.dir(config);
+								console.dir(file);
+								config.file.success = "Success";
+								console.log("done and success!");
+								$scope.fileProgress++;
+								console.log("$scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
+							})
+							.error(function(data, status, headers, config) {
+								$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
+								//console.log(file.name + " was error.");
+								config.file.success = "Failed";
+							});
+						console.log("$scope.upload is next...");
+						console.dir($scope.upload);
+					}
+				}
+			}
+			
+			angular.forEach($scope.filesToUpload, function(files, field){
+
+				if(field == "null" || field == "")
+					return;
+				
+				var local_files = [];
+
+				for(var i = 0; i < files.length; i++)
+				{
+					console.log("$scope is next...")
+					//console.dir($scope);
+				  
+					var file = files[i];
+					console.log("Reviewing results on file " + file.Name);
+					console.dir(file);
+				  
+					console.log("$scope.errors is next...");
+					console.dir($scope.errors);
+					console.log("typeof $scope.errors = " + typeof $scope.errors);
+					if(file.data && file.data.length == 1) //since we only upload one at a time...
+					{
+						//console.dir(file.data);
+						local_files.push(file.data[0]); //only ever going to be one if there is any...
+						//console.log("file id = "+file.data[0].Id);
+					}
+					else if (typeof $scope.errors === 'undefined')
+					{
+						console.log("No errors...");
+					}
+					else
+					{
+						//console.log("no file id.");
+						$scope.foundDuplicate = true;
+						$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
+						//console.log("$scope is next...");
+						//console.dir($scope);
+						throw "Problem saving file: " + file.Name;
+					}
+				}
+
+				//console.log("$scope is next...");
+				//console.dir($scope);
+				console.log("$scope.file_row is next...");
+				console.dir($scope.file_row);
+				console.log("field = " + field);
+				//if we already had actual files in this field, copy them in
+				if($scope.file_row[field])
+				{
+					console.log("On Files field...");
+					var current_files = angular.fromJson($scope.file_row[field]);
+					angular.forEach(current_files, function(file){
+						if(file.Id) //our incoming files don't have an id, just actual files.
+							local_files.push(file);		
+					});
+				}
+
+				$scope.file_row[field] = angular.toJson(local_files);
+				//console.log("Ok our new list of files: "+$scope.row[field]);
+			});
+		}
+		
+		// Now let's handle the other fields on the form.
+		console.log("typeof saveRow.CorrespondenceDate = " + typeof saveRow.CorrespondenceDate);
+		if (typeof saveRow.CorrespondenceDate !== "string")
+		{
+			var strCorrespondenceDate = ServiceUtilities.toExactISOString(saveRow.CorrespondenceDate);
+			console.log("strCorrespondenceDate = " + strCorrespondenceDate);
+			saveRow.CorrespondenceDate = ServiceUtilities.extractDateFromString(strCorrespondenceDate);
+			console.log("saveRow.CorrespondenceDate = " + saveRow.CorrespondenceDate);
+		}
+		
+		//saveRow.CorrespondenceDate = ServiceUtilities.formatDate2(saveRow.CorrespondenceDate);
+		//console.log("saveRow.CorrespondenceDate = " + saveRow.CorrespondenceDate);
+		
+		if (saveRow.ResponseDate)
+		{
+			console.log("saveRow.ResponseDate initially = " + saveRow.ResponseDate);
+			console.log("typeof saveRow.ResponseDate = " + typeof saveRow.ResponseDate);
+			if (typeof saveRow.ResponseDate !== "string")
+			{
+				var strResponseDate = ServiceUtilities.toExactISOString(saveRow.ResponseDate);
+				console.log("strResponseDate = " + strResponseDate);
+			}
+			else
+			{
+				var dtDateOfResponse = new Date(saveRow.ResponseDate);
+				console.log("dtDateOfResponse = " + dtDateOfResponse);
+				var strResponseDate = ServiceUtilities.toExactISOString(dtDateOfResponse);
+				console.log("strResponseDate = " + strResponseDate);
+			}
+			saveRow.ResponseDate = ServiceUtilities.extractDateFromString(strResponseDate);
+			console.log("saveRow.ResponseDate after conversion = " + saveRow.ResponseDate);
+			
+		}
+		
+		console.log("saveRow is next, after processing dates...");
+		console.dir(saveRow);
+		
+		if (saveRow.NumberOfDays === "Other")
+			saveRow.NumberOfDays = null;
+		
+		if (saveRow.CorrespondenceType === "Other")
+		{
+			saveRow.CorrespondenceType = saveRow.OtherCorrespondenceType;
+			saveRow.OtherCorrespondenceType = 'undefined';  // Throw this away, because we do not want to save it; no database field or it.
+		}
+		
+		// Note:  I could not get the following working; while it pulled the ResponseType name OK for the select, when you clicked save, 
+		// the ResponseTypeName was always 'undefined'.
+		/* On the form, $scope.subproject_row.ResponseType is an object, like this: (Id: theId Name: theName)
+		* The technique used to grab the ResponseType works on the first click (an improvement).  
+		* Note:  The improvement only occurred on the subproject page; the select box for ResponseType did not behave the same way.
+		* Therefore, I (gc) kept the technique, and chose to extract/reset $scope.subproject_row.Agency here in the controller, as just the name.
+		*/
+		//console.log("typeof saveRow.ResponseType = " + typeof saveRow.ResponseType);
+		//saveRow.ResponseType = 'undefined';
+		//saveRow.ResponseType = $scope.ce_row.ResponseType.Name;
+		//console.log("saveRow.ResponseType = " + saveRow.ResponseType);
+		
+		// Response Type:  If the user selected Other, we must use the name they supplied in OtherResponseType.
+		//if ((saveRow.OtherResponseType) && (typeof saveRow.OtherResponseType !== 'undefined'))
+		if (saveRow.ResponseType === "Other")
+		{
+			saveRow.ResponseType = saveRow.OtherResponseType;
+			saveRow.OtherResponseType = 'undefined'; // Throw this away, because we do not want to save it; no database field or it.
+		}
+
+		/*var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, saveRow);
+		if (typeof promise !== 'undefined')
+		{
+			promise.$promise.then(function(){
+				$scope.reloadSubprojects();
+				$scope.viewSelectedSubproject();
+				$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
+				$modalInstance.dismiss();
+				})
+		}
+		*/
+		
+		//console.log("$scope is next...");
+		//console.dir($scope);
+		
+		/*	If the user chooses to create a Correspondence Event (CE), at the same time that they are creating a new Subproject,
+		*   $scope.viewSubproject is not available yet, so we cannot pass the Id from there.  When we create the new Subproject,
+		*   we capture the Id from the Subproject, which is the same thing, so we pass that instead, to create the CE.
+		*/
+		if ($rootScope.crppProjectName)
+			$scope.crppProjectName = $rootScope.crppProjectName;
+		
+		if ($scope.viewSubproject !== null)
+        {
+            console.log("$scope.viewSubproject is present, using that...");
+			console.log("$scope.viewSubproject.Id = " + $scope.viewSubproject.Id);
+			var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.viewSubproject.Id, saveRow);
+			if (typeof promise !== 'undefined')
+			{
+                promise.$promise.then(function () {
+                    //$scope.reloadSubprojects();
+                    //$scope.viewSelectedSubproject();
+                    //$scope.viewSelectedSubproject($scope.viewSubproject);
+                    //$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
+                    //$modalInstance.dismiss();
+                    if (saveRow.Id === 0) //we saved a new one!
+                        $scope.postAddCorrespondenceEventUpdateGrid(promise);
+                    else //we edited one!
+                        $scope.postEditCorrespondenceEventUpdateGrid(promise);
+
+                    console.log("all done saving correspondence event!");
+
+                    console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
+                    if ($scope.fileCount === 0) {
+                        $scope.loading = false; // Stop the fish spinner.
+                        $scope.showCloseButton = true;
+                        $scope.showCancelButton = false;
+                        $scope.showFormItems = false;
+                    }
+                });
+			}	
+		}
+		else if ((typeof $scope.crppProjectName !== 'undefined' ) && ($scope.crppProjectName !== null))
+		{
+			console.log("$scope.viewSubproject missing, using $scope.subprojectId:  " + $scope.subprojectId);
+			var promise = SubprojectService.saveCorrespondenceEvent($scope.project.Id, $scope.subprojectId, saveRow);
+			if (typeof promise !== 'undefined')
+			{
+				promise.$promise.then(function(){
+					$scope.reloadSubprojects();
+					//$scope.viewSelectedSubproject();
+					$("#correspondenceEvents").load("correspondenceEvents.html #correspondenceEvents");
+					//$modalInstance.dismiss();
+					})
+					
+				if ($scope.fileCount === 0)
+				{
+					$scope.loading = false; // Stop the fish spinner.
+					$scope.showCloseButton = true;
+					$scope.showCancelButton = false;
+					$scope.showFormItems = false;					
+				}
+			}
+		}
+    };
+	
+	$scope.close = function(){
+		console.log("Inside $scope.close...");
+		$modalInstance.dismiss();	
+	};
+
+    $scope.cancel = function(){
+		$modalInstance.dismiss();
+    };
+	
+	$scope.gotoBottom = function (){
+		// set the location.hash to the id of
+		// the element you wish to scroll to.
+		$location.hash('bottom');
+		
+		// call $anchorScroll()
+		$anchorScroll();
+	};
+	  
+	$scope.gotoTopCorrespondenceEventsTop = function (){
+		// set the location.hash to the id of
+		// the element you wish to scroll to.
+		console.log("Inside gotoTopCorrespondenceEventsTop...");
+		//$location.hash('top');
+		$location.hash('ceTop');
+		
+		// call $anchorScroll()
+		$anchorScroll();
+	};
+	  
+	$scope.gotoCategory = function (category) {
+		$location.hash(category);
+		$anchorScroll();
+	};
+
+  }
+];
+
+define("private/crpp/components/crpp-contracts/modal-add-correspondence-event", function(){});
+
+
+var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'DatasetService', 'SubprojectService', 'ServiceUtilities',
+    '$timeout', '$location', '$anchorScroll', '$document',
+    function ($scope, $rootScope, $modalInstance, DatasetService, SubprojectService, ServiceUtilities,
+        $timeout, $location, $anchorScroll, $document) {
+        console.log("Inside ModalCreateSubprojectCtrl...");
+
+        //$scope.agencyInfo = [[]];
+
+        $document.on('keydown', function (e) {
+            //console.log("Inside document.on keydown...");
+            //console.log("e is next...");
+            //console.dir(e);
+            //console.log("e.target.nodeName = " + e.target.nodeName);
+
+            // Note:  keyCode 8 = Backspace; the nodeName value is in uppercase, so we must check for that here.
+            if ((e.keyCode === 8) && (e.target.nodeName === "TEXTAREA")) {
+                //console.log("  Backspace pressed...and we are in a TEXTAREA");
+                //e.preventDefault();
+
+                var keyboardEvent = $document[0].createEvent("KeyboardEvent");
+                var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
+
+                keyboardEvent[initMethod](
+                    "keydown", // event type : keydown, keyup, keypress
+                    true, // bubbles
+                    true, // cancelable
+                    window, // viewArg: should be window
+                    false, // ctrlKeyArg
+                    false, // altKeyArg
+                    false, // shiftKeyArg
+                    false, // metaKeyArg
+                    37, // keyCodeArg : unsigned long the virtual key code, else 0.  37 = Left Arrow key
+                    0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0				
+                );
+                //console.log("Just did left arrow...");
+
+                document.dispatchEvent(keyboardEvent);
+
+                keyboardEvent[initMethod](
+                    "keydown", // event type : keydown, keyup, keypress
+                    true, // bubbles
+                    true, // cancelable
+                    window, // viewArg: should be window
+                    false, // ctrlKeyArg
+                    false, // altKeyArg
+                    false, // shiftKeyArg
+                    false, // metaKeyArg
+                    46, // keyCodeArg : unsigned long the virtual key code, else 0.  46 = Delete key
+                    0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0				
+                );
+
+                //console.log("Doing delete...");			
+                return document.dispatchEvent(keyboardEvent);
+            }
+        });
+
+        $scope.header_message = "Create new CRPP project";
+        $rootScope.crppProjectName = $scope.crppProjectName = "";
+        $rootScope.projectId = $scope.project.Id;
+
+        $scope.subproject_row = {
+            StatusId: 0,
+            //OwningDepartmentId: 1,
+        };
+
+        $scope.agencyList = [];
+        $scope.agencyList.push({ Id: 0, Label: "ACHP" });
+        $scope.agencyList.push({ Id: 1, Label: "Anderson Perry" });
+        $scope.agencyList.push({ Id: 2, Label: "Army" });
+        $scope.agencyList.push({ Id: 3, Label: "Baker County" });
+        $scope.agencyList.push({ Id: 4, Label: "Benton County" });
+        $scope.agencyList.push({ Id: 5, Label: "BIA" });
+        $scope.agencyList.push({ Id: 6, Label: "BLM" });
+        $scope.agencyList.push({ Id: 7, Label: "Blue Mountain Ranger District" });
+        $scope.agencyList.push({ Id: 8, Label: "BNSF" });
+        $scope.agencyList.push({ Id: 9, Label: "BOR" });
+        $scope.agencyList.push({ Id: 10, Label: "BPA" });
+        $scope.agencyList.push({ Id: 11, Label: "Camas" });
+        $scope.agencyList.push({ Id: 12, Label: "CenturyLink" });
+        $scope.agencyList.push({ Id: 13, Label: "Clark County" });
+        $scope.agencyList.push({ Id: 14, Label: "College Place" });
+        $scope.agencyList.push({ Id: 15, Label: "Columbia County" });
+        $scope.agencyList.push({ Id: 16, Label: "Corps Portland District" });
+        $scope.agencyList.push({ Id: 17, Label: "Corps Regulatory" });
+        $scope.agencyList.push({ Id: 18, Label: "Corps Walla Walla District" });
+        $scope.agencyList.push({ Id: 19, Label: "CRGNSA" });
+        $scope.agencyList.push({ Id: 20, Label: "CTUIR" });
+        $scope.agencyList.push({ Id: 21, Label: "DAHP" });
+        $scope.agencyList.push({ Id: 22, Label: "DECD" });
+        $scope.agencyList.push({ Id: 23, Label: "Department of Ecology" });
+        $scope.agencyList.push({ Id: 24, Label: "DEQ" });
+        $scope.agencyList.push({ Id: 25, Label: "DOE" });
+        $scope.agencyList.push({ Id: 26, Label: "DOGAMI" });
+        $scope.agencyList.push({ Id: 27, Label: "DSL" });
+        $scope.agencyList.push({ Id: 28, Label: "EPA" });
+        $scope.agencyList.push({ Id: 29, Label: "FAA" });
+        $scope.agencyList.push({ Id: 30, Label: "FCC" });
+        $scope.agencyList.push({ Id: 31, Label: "Federal Transit Authority" });
+        $scope.agencyList.push({ Id: 32, Label: "FEMA" });
+        $scope.agencyList.push({ Id: 33, Label: "FERC" });
+        $scope.agencyList.push({ Id: 34, Label: "FHWA" });
+        $scope.agencyList.push({ Id: 35, Label: "Fisheries" });
+        $scope.agencyList.push({ Id: 36, Label: "Fort Vancouver (NPS)" });
+        $scope.agencyList.push({ Id: 37, Label: "Franklin County" });
+        $scope.agencyList.push({ Id: 38, Label: "FSA" });
+        $scope.agencyList.push({ Id: 39, Label: "Hells Canyon NRA" });
+        $scope.agencyList.push({ Id: 40, Label: "Heppner Ranger District" });
+        $scope.agencyList.push({ Id: 41, Label: "Hermiston" });
+        $scope.agencyList.push({ Id: 42, Label: "Hood River County" });
+        $scope.agencyList.push({ Id: 43, Label: "HUD" });
+        $scope.agencyList.push({ Id: 44, Label: "Idaho Power" });
+        $scope.agencyList.push({ Id: 45, Label: "Irrigon" });
+        $scope.agencyList.push({ Id: 46, Label: "John Day Fossil Beds (NPS)" });
+        $scope.agencyList.push({ Id: 47, Label: "Kennewick" });
+        $scope.agencyList.push({ Id: 48, Label: "Klickitat County" });
+        $scope.agencyList.push({ Id: 49, Label: "La Grande Ranger District" });
+        $scope.agencyList.push({ Id: 50, Label: "Landowner" });
+        $scope.agencyList.push({ Id: 51, Label: "Malheur National Forest" });
+        $scope.agencyList.push({ Id: 52, Label: "Morrow County" });
+        $scope.agencyList.push({ Id: 53, Label: "Navy" });
+        $scope.agencyList.push({ Id: 54, Label: "Nez Perce National Historical Park (NPS)" });
+        $scope.agencyList.push({ Id: 55, Label: "North Fork John Day Ranger District" });
+        $scope.agencyList.push({ Id: 56, Label: "Northwest Pipeline" });
+        $scope.agencyList.push({ Id: 57, Label: "NPS" });
+        $scope.agencyList.push({ Id: 58, Label: "NRCS" });
+        $scope.agencyList.push({ Id: 59, Label: "ODEQ" });
+        $scope.agencyList.push({ Id: 60, Label: "ODOE" });
+        $scope.agencyList.push({ Id: 61, Label: "ODOT" });
+        $scope.agencyList.push({ Id: 62, Label: "OPRD" });
+        $scope.agencyList.push({ Id: 63, Label: "Oregon City" });
+        $scope.agencyList.push({ Id: 64, Label: "Oregon Military Department/Oregon Army National Guard" });
+        $scope.agencyList.push({ Id: 65, Label: "Other" });
+        $scope.agencyList.push({ Id: 66, Label: "OWRD" });
+        $scope.agencyList.push({ Id: 67, Label: "PacifiCorp" });
+        $scope.agencyList.push({ Id: 68, Label: "Pasco" });
+        $scope.agencyList.push({ Id: 69, Label: "PGE" });
+        $scope.agencyList.push({ Id: 70, Label: "Planning Dept" });
+        $scope.agencyList.push({ Id: 71, Label: "Pomeroy Ranger District" });
+        $scope.agencyList.push({ Id: 72, Label: "Port of Benton" });
+        $scope.agencyList.push({ Id: 73, Label: "Port of Clarkston" });
+        $scope.agencyList.push({ Id: 74, Label: "Port of Columbia" });
+        $scope.agencyList.push({ Id: 75, Label: "Port of Kennewick" });
+        $scope.agencyList.push({ Id: 76, Label: "Port of Morrow" });
+        $scope.agencyList.push({ Id: 77, Label: "Port of Umatilla" });
+        $scope.agencyList.push({ Id: 78, Label: "Port of Walla Walla" });
+        $scope.agencyList.push({ Id: 79, Label: "Public Works" });
+        $scope.agencyList.push({ Id: 80, Label: "RAF" });
+        $scope.agencyList.push({ Id: 81, Label: "Recreation and Conservation Office" });
+        $scope.agencyList.push({ Id: 82, Label: "Richland" });
+        $scope.agencyList.push({ Id: 83, Label: "Rural Development" });
+        $scope.agencyList.push({ Id: 84, Label: "RUS" });
+        $scope.agencyList.push({ Id: 85, Label: "SHPO Oregon" });
+        $scope.agencyList.push({ Id: 86, Label: "Skamania County" });
+        $scope.agencyList.push({ Id: 87, Label: "Skamania County PUD" });
+        $scope.agencyList.push({ Id: 88, Label: "Umatilla County" });
+        $scope.agencyList.push({ Id: 89, Label: "Umatilla National Forest" });
+        $scope.agencyList.push({ Id: 90, Label: "UPRR" });
+        $scope.agencyList.push({ Id: 91, Label: "USACE" });
+        $scope.agencyList.push({ Id: 92, Label: "USFWS" });
+        $scope.agencyList.push({ Id: 93, Label: "VA" });
+        $scope.agencyList.push({ Id: 94, Label: "Vancouver" });
+        $scope.agencyList.push({ Id: 95, Label: "Walla Walla City" });
+        $scope.agencyList.push({ Id: 96, Label: "Walla Walla County" });
+        $scope.agencyList.push({ Id: 97, Label: "Walla Walla Ranger District" });
+        $scope.agencyList.push({ Id: 98, Label: "Wallowa County" });
+        $scope.agencyList.push({ Id: 99, Label: "Wallowa Valley Ranger District" });
+        $scope.agencyList.push({ Id: 100, Label: "Wallowa-Whitman National Forest" });
+        $scope.agencyList.push({ Id: 101, Label: "Wasco County" });
+        $scope.agencyList.push({ Id: 102, Label: "Washington Department of Commerce" });
+        $scope.agencyList.push({ Id: 103, Label: "Washington Department of Health" });
+        $scope.agencyList.push({ Id: 104, Label: "Washington Department of Natural Resources" });
+        $scope.agencyList.push({ Id: 105, Label: "Washington State Parks" });
+        $scope.agencyList.push({ Id: 106, Label: "Water Resources" });
+        $scope.agencyList.push({ Id: 107, Label: "WDFW" });
+        $scope.agencyList.push({ Id: 108, Label: "Western Federal Lands Highway Division" });
+        $scope.agencyList.push({ Id: 109, Label: "Whitman Mission (NPS)" });
+        $scope.agencyList.push({ Id: 110, Label: "Whitman Unit" });
+        $scope.agencyList.push({ Id: 111, Label: "Wildlife" });
+        $scope.agencyList.push({ Id: 112, Label: "WSDOT" });
+        $scope.agencyList.push({ Id: 113, Label: "Yellowstone National Park" });
+
+        console.log("$scope.agencyList is next...");
+        console.dir($scope.agencyList);
+
+        //$scope.agencyOptions = $rootScope.responseTypeOptions = makeObjects($scope.agencyList, 'Id','Label') ;
+        //console.log("$scope.agencyOptions is next...");
+        //console.dir($scope.agencyOptions);
+
+        $scope.counties = [];
+
+        $scope.countyList = [];
+        $scope.countyList.push({ Id: 0, Label: "Asotin" });
+        $scope.countyList.push({ Id: 1, Label: "Baker" });
+        $scope.countyList.push({ Id: 2, Label: "Benton" });
+        $scope.countyList.push({ Id: 3, Label: "Clark" });
+        $scope.countyList.push({ Id: 4, Label: "Columbia" });
+        $scope.countyList.push({ Id: 5, Label: "Franklin" });
+        $scope.countyList.push({ Id: 7, Label: "Garfield" });
+        $scope.countyList.push({ Id: 8, Label: "Gilliam" });
+        $scope.countyList.push({ Id: 9, Label: "Garfield" });
+        $scope.countyList.push({ Id: 10, Label: "Grant, WA" });
+        $scope.countyList.push({ Id: 11, Label: "Grant, OR" });
+        $scope.countyList.push({ Id: 12, Label: "Hood River" });
+        $scope.countyList.push({ Id: 13, Label: "Klickitat" });
+        $scope.countyList.push({ Id: 14, Label: "Malheur" });
+        $scope.countyList.push({ Id: 15, Label: "Morrow" });
+        $scope.countyList.push({ Id: 16, Label: "Multnomah" });
+        $scope.countyList.push({ Id: 17, Label: "Other" });
+        $scope.countyList.push({ Id: 18, Label: "Sherman" });
+        $scope.countyList.push({ Id: 19, Label: "Skamania" });
+        $scope.countyList.push({ Id: 20, Label: "Umatilla" });
+        $scope.countyList.push({ Id: 21, Label: "Union" });
+        $scope.countyList.push({ Id: 22, Label: "Walla Walla" });
+        $scope.countyList.push({ Id: 23, Label: "Wallowa" });
+        $scope.countyList.push({ Id: 24, Label: "Wasco" });
+        $scope.countyList.push({ Id: 25, Label: "Wheeler" });
+        $scope.countyList.push({ Id: 26, Label: "Whitman" });
+
+        console.log("$scope.countyList is next...");
+        console.dir($scope.countyList);
+        //$scope.countyOptions = $rootScope.countyOptions = makeObjects($scope.countyList, 'Id','Label') ;
+
+        $scope.showOtherAgency = false;
+        $scope.showOtherProjectProponent = false;
+        $scope.showOtherCounty = false;
+        $scope.showCountyOptions = false;
+        $scope.showAddDocument = true;
+
+        $scope.example1model = [];
+        $scope.example1data = [{ id: 1, label: "David" }, { id: 2, label: "Jhon" }, { id: 3, label: "Danny" }];
+
+        if ($scope.viewSubproject) {
+            $scope.header_message = "Edit CRPP project: " + $scope.viewSubproject.ProjectName;
+            $scope.subproject_row = angular.copy($scope.viewSubproject);
+            console.log("$scope.subproject_row is next...");
+            console.dir($scope.subproject_row);
+
+            $scope.showAddDocument = false;
+
+            console.log("$scope.subproject_row.Agency = " + $scope.subproject_row.Agency);
+            var keepGoing = true;
+            var foundIt = false;
+            //var responseTypeIndex = 0;
+
+            /*
+            *	Need to redo the Agency, Project Proponent, and County
+            *
+            */
+            // Check the Agency
+            /*angular.forEach($scope.agencyList, function(option){
+            //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.Agency = x" + $scope.subproject_row.Agency + "x.");
+                if ((keepGoing) && (option.Label === $scope.subproject_row.Agency))
+                {
+                    //console.log("option.Label = " + option.Label);
+                    //console.log("Found the Agency...");
+                    foundIt = true;
+                    keepGoing = false;
+                }
+                //responseTypeIndex++;
+            });
+        	
+            if (!foundIt)
+            {
+                console.log("Value of Agency is not in the list...");
+                $scope.subproject_row.OtherAgency = $scope.subproject_row.Agency;
+                $scope.subproject_row.Agency = "Other";
+                $scope.showOtherAgency = true;		
+            }
+            */
+            if ((typeof $scope.subproject_row.OtherAgency !== 'undefined') && ($scope.subproject_row.OtherAgency !== null))
+                $scope.showOtherAgency = true;
+
+            /*
+            keepGoing = true;
+            foundIt = false;
+            // Check the Project Proponent  Note:  We use the same list as for the Agency.
+            console.log("$scope.subproject_row.ProjectProponent = " + $scope.subproject_row.ProjectProponent);
+            angular.forEach($scope.agencyList, function(option){
+            //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.ProjectProponent = x" + $scope.subproject_row.ProjectProponent + "x.");
+                if ((keepGoing) && (option.Label === $scope.subproject_row.ProjectProponent))
+                {
+                    //console.log("option.Label = " + option.Label);
+                    //console.log("Found the ProjectProponent...");
+                    foundIt = true;
+                    keepGoing = false;
+                }
+                //responseTypeIndex++;
+            });
+        	
+            if (!foundIt)
+            {
+                console.log("Value of ProjectProponent is not in the list...");
+                $scope.subproject_row.OtherProjectProponent = $scope.subproject_row.ProjectProponent;
+                $scope.subproject_row.ProjectProponent = "Other";
+                $scope.showOtherProjectProponent = true;		
+            }
+            */
+            if ((typeof $scope.subproject_row.OtherProjectProponent !== 'undefined') && ($scope.subproject_row.OtherProjectProponent !== null))
+                $scope.showOtherProjectProponent = true;
+
+            /*
+            keepGoing = true;
+            foundIt = false;
+            // Check the County
+            console.log("$scope.subproject_row.County = " + $scope.subproject_row.County);
+        	
+            // Copy the array into a string.
+            var strCounty = "";
+            angular.forEach($scope.subproject_row.County, function(item){
+                strCounty += item + ",";
+            });
+            console.log("strCounty = " + strCounty);
+        	
+            // Remove the trailing comma.
+            strCounty = strCounty.substring(0, strCounty.length - 1);
+            console.log("strCounty = " + strCounty);
+            */
+
+            // Now, strip off the "[]".
+            if ((typeof $scope.subproject_row.County !== 'undefined') && ($scope.subproject_row.County !== null)) {
+                var strCounty = $scope.subproject_row.County;
+                strCounty = strCounty.replace(/["\[\]]+/g, '');
+                console.log("strCounty = " + strCounty);
+                $scope.subproject_row.County = strCounty;
+                console.log("$scope.subproject_row.County = " + $scope.subproject_row.County);
+
+                $scope.subproject_row.txtCounty = strCounty;
+            }
+
+            if ((typeof $scope.subproject_row.OtherCounty !== 'undefined') && ($scope.subproject_row.OtherCounty !== null))
+                $scope.showOtherCounty = true;
+
+
+            // Now convert our string to an array, to compare with the countyList.
+            /*var aryCounties = $scope.subproject_row.County.split(",");
+            console.log("aryCounties is next...");
+            console.dir(aryCounties);
+    
+            angular.forEach(aryCounties, function(county){		
+            //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.County = x" + $scope.subproject_row.County + "x.");
+                angular.forEach($scope.countyList, function(option){
+                    if ((keepGoing) && (option.Label === county))
+                    {
+                        //console.log("option.Label = " + option.Label);
+                        console.log("Found county:  " + county);
+                        foundIt = true;
+                        keepGoing = false;
+                    }
+                });
+                if (!foundIt)
+                {
+                	
+                }
+            });		
+            */
+
+            /*angular.forEach($scope.countyList, function(option){
+            //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.County = x" + $scope.subproject_row.County + "x.");
+                if ((keepGoing) && (option.Label === $scope.subproject_row.County))
+                {
+                    //console.log("option.Label = " + option.Label);
+                    //console.log("Found the County...");
+                    foundIt = true;
+                    keepGoing = false;
+                }
+            });
+    
+        	
+            if (!foundIt)
+            {
+                console.log("Value of County is not in the list...");
+                $scope.subproject_row.OtherCounty = $scope.subproject_row.County;
+                $scope.subproject_row.County = "Other";
+                $scope.showOtherCounty = true;		
+            }
+            */
+
+
+
+            // First convert our county string into an array.
+            /*var strCounty = $scope.subproject_row.County;
+            console.log("strCounty = " + strCounty);
+        	
+            strCounty = strCounty.substring(1, strCounty.length -1);
+            console.log("strCounty = " + strCounty);
+        	
+            strCounty = strCounty.replace(/["]+/g, '');
+            console.log("strCounty = " + strCounty);		
+        	
+            var aryCounty = strCounty.split(",");
+            console.log("aryCounty is next...");
+            console.dir(aryCounty);
+        	
+            //var result = document.getElementsByTagName("select");
+            //var result = document.getElementById("County");
+            //console.dir(result);
+            var c = 0;
+            angular.forEach(result, function(item){
+                console.log(item[c].innerHTML);
+                c++;
+            });
+        	
+            var wrappedResult = angular.element(result);
+            console.dir(wrappedResult);
+            angular.forEach(element.find('select'), function(node)
+            {
+                if (node.Id === 'County')
+                    console.log("Found County select...");
+            	
+            });
+        	
+            var counties = angular.element("County").options;
+            console.log("counties is next...");
+            console.dir(counties);
+            angular.forEach(aryCounty, function (county){
+                for (var i = 0, max = counties.length; i < max; i++)
+                {
+                    if (counties[i].innerHTML === county)
+                        counties[i].selected = true;
+                }
+            	
+            });		
+            $scope.subproject_row.County = aryCounty;
+            */
+            /*scope.subproject_row.County = 'undefined';
+            $scope.subproject_row.County = [];
+            angular.forEach(aryCounty, function(county){
+                $scope.subproject_row.County.push(county);
+            });
+            */
+            console.log("$scope.subproject_row.County is next...");
+            console.dir($scope.subproject_row.County);
+
+            angular.forEach($scope.countyList, function (option) {
+                //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.County = x" + $scope.subproject_row.County + "x.");
+                if ((keepGoing) && (option.Label === $scope.subproject_row.County)) {
+                    //console.log("option.Label = " + option.Label);
+                    //console.log("Found the County...");
+                    foundIt = true;
+                    keepGoing = false;
+                }
+            });
+            angular.forEach($scope.subproject_row.County, function (county) {
+                if (county === "Other")
+                    foundIt = true;
+
+            });
+
+            if (!foundIt) {
+                console.log("Value of County is not in the list...");
+                $scope.subproject_row.OtherCounty = $scope.subproject_row.County;
+                $scope.subproject_row.County = "Other";
+                $scope.showOtherCounty = true;
+            }
+        }
+
+        console.log("$scope inside ModalCreateSubprojectCtrl, after initializing, is next...");
+        //console.dir($scope);
+
+        $scope.selectAgency = function () {
+            console.log("Inside selectAgency...");
+            //console.dir($scope);
+            console.log("$scope.subproject_row is next...");
+            console.dir($scope.subproject_row);
+
+            $scope.showCountyOptions = false;
+
+            if ($scope.subproject_row.Agency === "Other") {
+                $scope.showOtherAgency = true;
+                $scope.subproject_row.OtherAgency = "";
+            }
+            else {
+                $scope.showOtherAgency = false;
+                $scope.subproject_row.OtherAgency = 'undefined';
+            }
+
+            console.log("$scope.showOtherAgency = " + $scope.showOtherAgency);
+        };
+
+        /*$scope.agencyChanged = function () {
+            console.log("Inside agencyChanged...");
+            console.log("$scope.subproject_row is next...");
+            console.dir($scope.subproject_row);
+            if ($scope.subproject_row.Agency === "Other")
+            {
+                $scope.showOtherAgency = true;
+                $scope.subproject_row.OtherAgency = "";
+            }
+            else
+                $scope.showOtherAgency = false;
+                $scope.subproject_row.OtherAgency = 'undefined';
+        	
+            console.log("$scope.showOtherAgency = " + $scope.showOtherAgency);
+        };
+        */
+
+        $scope.selectProjectProponent = function () {
+            console.log("Inside selectProjectProponent...");
+            console.log("$scope.subproject_row is next...");
+            console.dir($scope.subproject_row);
+
+            $scope.showCountyOptions = false;
+
+            if ($scope.subproject_row.ProjectProponent === "Other") {
+                $scope.showOtherProjectProponent = true;
+                $scope.subproject_row.OtherProjectProponent = "";
+            }
+            else {
+                $scope.showOtherProjectProponent = false;
+                $scope.subproject_row.OtherProjectProponent = 'undefined';
+            }
+
+            console.log("$scope.showOtherProjectProponent = " + $scope.showOtherProjectProponent);
+        };
+
+        /*$scope.selectCounty = function () {
+            console.log("Inside selectCounty...");
+            console.log("$scope.subproject_row is next...");
+            console.dir($scope.subproject_row);
+        	
+            var strCounty = $scope.subproject_row.County.toString();
+            if (strCounty.indexOf("Other") > -1)
+            {
+                $scope.showOtherCounty = true;
+            }
+            else
+            {
+                $scope.showOtherCounty = false;
+            }
+            */
+		/*if ($scope.subproject_row.County === "Other")
+		{
+			$scope.showOtherCounty = true;
+			$scope.subproject_row.OtherCounty = "";
+		}
+		else
+		{
+			$scope.showOtherCounty = false;
+			$scope.subproject_row.OtherCounty = 'undefined';
+		}
+		*/
+		/*
+		console.log("$scope.showOtherCounty = " + $scope.showOtherCounty);
+	};
+	*/
+
+        /*$scope.projectProponentChanged = function () {
+            console.log("Inside projectProponentChanged...");
+            console.log("$scope.viewSubproject is next...");
+            console.dir($scope.subproject_row);
+            if ($scope.subproject_row.ProjectProponent === "Other")
+                $scope.showOtherProjectProponent = true;
+            else
+                $scope.showOtherProjectProponent = false;
+        	
+            console.log("$scope.showOtherProjectProponent = " + $scope.showOtherProjectProponent);
+        };
+        */
+
+        $scope.enteredSelectedCounties = function () {
+            $scope.showCountyOptions = true;
+        };
+
+        $scope.enteredSomethingElse = function () {
+            $scope.showCountyOptions = false;
+        };
+
+        $scope.countyChanged = function () {
+            console.log("Inside countyChanged...");
+            console.log("$scope.subproject_row is next...");
+            console.dir($scope.subproject_row);
+
+            $scope.subproject_row.txtCounty = $scope.subproject_row.County.toString();
+            if ($scope.subproject_row.txtCounty.indexOf("Other") > -1) {
+                $scope.showOtherCounty = true;
+            }
+            else {
+                $scope.showOtherCounty = false;
+                $scope.subproject_row.OtherCounty = null;
+            }
+
+            /*if ($scope.subproject_row.County === "Other")
+                $scope.showOtherCounty = true;
+            else
+                $scope.showOtherCounty = false;
+            */
+
+            //$scope.showOtherCounty = false;
+            //var foundOther = false;
+            //angular.forEach($scope.subproject_row.County, function(county){
+            // There is only one entry for "Other"
+			/*if(county === "Other")
+			{
+				foundOther = true;
+				$scope.showOtherCounty = true
+				$scope.subproject_row.OtherCounty = [];
+			}
+			*/
+            //});
+
+            //if (!foundOther)
+            //	$scope.subproject_row.OtherCounty = 'undefined';
+
+
+            console.log("$scope.showOtherCounty = " + $scope.showOtherCounty);
+        };
+
+        /*$scope.checkKeyPress = function(event){
+            if (event.keyCode === 8) {
+                console.log("Backspace pressed...");
+            }
+        };
+        */
+
+        $scope.save = function () {
+            console.log("Inside ModalCreateSubprojectCtrl, save...");
+            $scope.subprojectSave = undefined;
+            $scope.subprojectSave = [];
+            $scope.createNewSubproject = false;
+            if ((typeof $scope.subproject_row.ProjectName === 'undefined') || ($scope.subproject_row.ProjectName === null)) {
+                console.log("Project name is empty...");
+                $scope.subprojectSave.error = true;
+            }
+            //console.dir($scope);
+
+            if (!$scope.subprojectSave.error) {
+                // Capture the AddDocument flag, before discarding it.
+                console.log("$scope.subproject_row, full is next...");
+                console.dir($scope.subproject_row);
+
+                var addDocument = $scope.subproject_row.AddDocument;
+                $scope.subproject_row.AddDocument = null;
+                console.log("addDocument = " + addDocument);
+                console.log("$scope.subproject_row, after del is next...");
+                console.dir($scope.subproject_row);
+
+                var saveRow = angular.copy($scope.subproject_row);
+                console.log("saveRow is next..");
+                console.dir(saveRow);
+                /* On the form, $scope.subproject_row.Agency is an object, like this: (Id: theId Name: theName)
+                * The technique used to grab the Agency works on the first click (an improvement).
+                * Therefore, I (gc) kept the technique, and chose to extract/reset $scope.subproject_row.Agency here in the controller, as just the name.
+                */
+                //console.log("typeof saveRow.Agency = " + saveRow.Agency);
+                //saveRow.Agency = 'undefined';
+                //saveRow.Agency = $scope.subproject_row.Agency.Name;
+                //console.log("saveRow.Agency = " + saveRow.Agency);
+
+                // Agency Name:  If the user selected Other, we must use the name they supplied in OtherAgency.
+                // 20160721:  Colette said that we need the OtherAgency, OtherProjectProponent, and OtherCounty to have their own columns in the database,
+                // so that she can easily filter out and determine what "other" agencies, Project Proponents, or Counties that CRPP has interacted with.
+                /*if ((typeof saveRow.OtherAgency !== 'undefined') && (saveRow.OtherAgency !== null) && (saveRow.OtherAgency !== 'undefined'))
+                {
+                    saveRow.Agency = saveRow.OtherAgency;
+                    saveRow.OtherAgency = null; // Throw this away, because we do not want to save it; no database field or it.
+                }
+                */
+
+                // Project Proponent Name:  If the user selected Other, we must use the name they supplied in OtherProjectProponent.
+                /*if ((typeof saveRow.OtherProjectProponent !== 'undefined') && (saveRow.OtherProjectProponent !== null) && (saveRow.OtherProjectProponent !== 'undefined'))
+                {
+                    saveRow.ProjectProponent = saveRow.OtherProjectProponent;
+                    saveRow.OtherProjectProponent = null; // Throw this away, because we do not want to save it; no database field or it.
+                }
+                */
+
+                // County Name:  If the user selected Other, we must use the name they supplied in OtherCounty.
+                //if (saveRow.OtherCounty)
+                /*if ((typeof saveRow.OtherCounty !== 'undefined') && (saveRow.OtherCounty !== null) && (saveRow.OtherCounty !== 'undefined'))
+                {
+                    console.log("OtherCounty has a value...");
+                    saveRow.County = saveRow.OtherCounty; // For single select
+                    //saveRow.County.push(saveRow.OtherCounty); // For multiSelect
+                	
+                    saveRow.OtherCounty = null; // Throw this away, because we do not want to save it; no database field or it.
+                }*/
+
+                // Convert the multiselect (array) values into a json array string.
+                //saveRow.County = angular.toJson(saveRow.County).toString();
+                //var strCounty = "[";
+                saveRow.County = saveRow.txtCounty;
+                //angular.forEach(saveRow.County, function(county){
+                //	strCounty += '"' + county + '",'; // Use single-quotes and double-quotes, so that JavaScript does not get confused.
+                //});
+
+                //console.log("strCounty = " + strCounty);
+                // Trim the trailing ","
+                //if (strCounty.length > 1)
+                //	strCounty = strCounty.substring(0, strCounty.length -1);
+
+                //strCounty += "]";
+                //saveRow.County = strCounty;
+
+
+                saveRow.YearDate = ServiceUtilities.dateTimeNowToStrYYYYMMDD_HHmmSS();
+                console.log("saveRow.TrackingNumber = " + saveRow.TrackingNumber);
+                if (saveRow.TrackingNumber) {
+                    // The tracking number exists, but let's verify that is it not just spaces.
+                    var tmpTrackingNumber = saveRow.TrackingNumber;
+                    if ((tmpTrackingNumber !== null) && (tmpTrackingNumber.length > 0)) {
+                        // The tracking number contains something.  Replace all the spaces and see what is left.
+                        tmpTrackingNumber = tmpTrackingNumber.replace(" ", "");
+                    }
+
+                    if (tmpTrackingNumber.length === 0) {
+                        saveRow.TrackingNumber = saveRow.YearDate
+                    }
+                }
+                else {
+                    // The user does not want the TrackingNumber to be set, if they leave it blank.
+                    //saveRow.TrackingNumber = saveRow.YearDate
+                }
+                console.log("saveRow.TrackingNumber = " + saveRow.TrackingNumber);
+
+                //if(!saveRow.CompleteDate)
+                //	saveRow.CompleteDate = null;
+                saveRow.CorrespondenceEvents = undefined;
+                console.log("saveRow is next...");
+                console.dir(saveRow);
+
+                $scope.saveResults = {};
+                //console.log("$scope is next...");
+                //console.dir($scope);
+                var promise = SubprojectService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
+                if (typeof promise !== 'undefined') {
+                    promise.$promise.then(function () {
+                        //window.location.reload();
+                        console.log("promise is next...");
+                        console.dir(promise);
+                        $scope.subprojectId = $rootScope.subprojectId = promise.Id;
+                        console.log("$scope.subprojectId = " + $scope.subprojectId);
+
+                        $scope.subproject_row = 'undefined';
+                        $scope.crppProjectName = saveRow.ProjectName;
+
+                        //$scope.reloadSubprojects();
+                        $scope.postSaveSubprojectUpdateGrid(promise);
+
+                        if (addDocument === "Yes") {
+                            console.log("addDocument = Yes...");
+
+                            // If the user wishes to add a Correspondence Event right away, we must wait to get the ID of the new subproject, before we can continue.
+                            //$scope.reloadSubproject(promise.Id);
+                            //var promise2 = $scope.reloadSubproject(promise.Id);
+                            //console.log("Inside reloadSubproject...");
+                            SubprojectService.clearSubproject();
+                            $scope.reloadSubproject($scope.subprojectId);
+                            $modalInstance.dismiss();
+                            $scope.openCorrespondenceEventForm();
+                            //$scope.subproject = SubprojectService.getSubproject(id);
+                        }
+                        else {
+                            console.log("addDocument != Yes");
+
+                            // If the user just wants to create the Subproject, we can continue without waiting.
+                            $scope.reloadSubproject($scope.subprojectId);
+                            $modalInstance.dismiss();
+                        }
+                    });
+                }
+            }
+        };
+
+        $scope.cancel = function () {
+            // If the user clicks on Cancel, we need to grab the contents of the Other... boxes and put it back into the main box.
+
+            // Agency Name:  If the user selected Other, we must use the name they supplied in OtherAgency.
+            if ($scope.subproject_row.OtherAgency) {
+                $scope.subproject_row.Agency = $scope.subproject_row.OtherAgency;
+                $scope.subproject_row.OtherAgency = null; // Throw this away, because we do not want to save it; no database field or it.
+            }
+
+            // Project Proponent Name:  If the user selected Other, we must use the name they supplied in OtherProjectProponent.
+            if ($scope.subproject_row.OtherProjectProponent) {
+                $scope.subproject_row.ProjectProponent = $scope.subproject_row.OtherProjectProponent;
+                $scope.subproject_row.OtherProjectProponent = null; // Throw this away, because we do not want to save it; no database field or it.
+            }
+
+            // County Name:  If the user selected Other, we must use the name they supplied in OtherCounty.
+            if ($scope.subproject_row.OtherCounty) {
+                $scope.subproject_row.County = $scope.subproject_row.OtherCounty;
+                $scope.subproject_row.OtherCounty = null; // Throw this away, because we do not want to save it; no database field or it.
+            }
+            $scope.subproject_row = 'undefined';
+            //$scope.reloadSubprojects();
+            $modalInstance.dismiss();
+        };
+        /*
+        $scope.gotoBottom = function (){
+            // set the location.hash to the id of
+            // the element you wish to scroll to.
+            $location.hash('bottom');
+        	
+            // call $anchorScroll()
+            $anchorScroll();
+        };
+          
+        $scope.gotoSubprojectsTop = function (){
+            // set the location.hash to the id of
+            // the element you wish to scroll to.
+            console.log("Inside gotoSubprojectsTop...");
+            //$location.hash('top');
+            $location.hash('spTop');
+        	
+            // call $anchorScroll()
+            $anchorScroll();
+        };
+          
+        $scope.gotoCategory = function (category) {
+            $location.hash(category);
+            $anchorScroll();
+        };
+        */
+    }
+];
+
+define("private/crpp/components/crpp-contracts/modal-create-crpp-subproject", function(){});
+
+//this is a nested controller used on the project-details page to load
+// the correspondence tab grid. It only appears for projects that are CRPP Correspondence.
+
+//var METADATA_PROPERTY_PROGRAM = 23; //add this to your config.js
+
+
+var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+    '$modal', 'ServiceUtilities', 'ConvertStatus',
+    function (scope, $timeout, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $modal,
+        ServiceUtilities, ConvertStatus) {
+        //console.log("Inside tab correspondence controller...");
+
+       
+        //this is for the crpp/subproject correspondence tab below - might can move this all out sometime...
+        var otherAgencyTemplate = function (params) {
+            return '<span>' + params.node.data.Agency + '</span>'
+                + ((params.node.data.OtherAgency) ? ('<span> (' + params.node.data.OtherAgency + ')</span>') : ''); //ternery: if otheragency then show it
+        };
+
+        var EventCount = function (params) {
+            if (params.node.data.CorrespondenceEvents === undefined || params.node.data.CorrespondenceEvents === null)
+                return '0';
+
+            return '' + params.node.data.CorrespondenceEvents.length;
+        };
+
+        var EditMasterLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.editCrppSubproject(param.data);
+            });
+            div.appendChild(editBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
+            delBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.removeCrppSubproject(param.data);
+            });
+            div.appendChild(delBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Event';
+            addBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.openCorrespondenceEventForm(param.data, {});
+            });
+            div.appendChild(addBtn);
+
+            return div;
+            /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
+            return '<div project-role="editor">' +
+                        '<a ng-click="editViewSubproject();">Edit</a>|' +
+                        '<a ng-click="removeViewSubproject();">Delete</div>|' + 
+                        '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
+                '</div>';
+                */
+        };
+
+
+        var FileListCellTemplate = function (params) {
+            var list = '<div class="event-file-list"><ul>';
+
+            var file_links = scope.getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.EventFiles);
+
+            file_links.forEach(function (link) {
+                list += '<li>' + link + '</li>';
+            });
+
+            list += '</ul></div>';
+
+            return list;
+        };
+
+
+        //this template gives the Edit|Delete|Add for the detail.
+        var EditDetailLinksTemplate = function (detailparam) {
+            var subproject = getById(scope.subprojectList, detailparam.data.SubprojectId);
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.openCorrespondenceEventForm(subproject, detailparam.data); //parent subproject, detail line.
+            });
+            div.appendChild(editBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
+            delBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.removeCrppCorrespondenceEvent(subproject, detailparam.data);
+            });
+            div.appendChild(delBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+            addBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.openCorrespondenceEventForm(subproject, {});
+            });
+            div.appendChild(addBtn);
+
+            return div;
+            /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
+            return '<div project-role="editor">' +
+                        '<a ng-click="editViewSubproject();">Edit</a>|' +
+                        '<a ng-click="removeViewSubproject();">Delete</div>|' + 
+                        '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
+                '</div>';
+                */
+        };
+
+
+        //grid columns for crpp correspondence tab (master/subprojects)
+        scope.corrAgColumnDefs = [  //in order the columns will display, by the way...
+            {
+                width: 140, cellRenderer: EditMasterLinksTemplate, menuTabs: [],
+            },
+            {
+                headerName: 'ID',
+                field: 'Id',
+                width: 80,
+                cellRenderer: 'group',
+                cellRendererParams: { suppressCount: true },
+                menuTabs: ['filterMenuTab'],
+                filter: 'number'
+            },
+            {
+                field: 'EffDt',
+                headerName: 'Updated',
+                width: 120,
+                valueFormatter: function (params) {
+                    if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
+                        return moment(params.node.data.EffDt).format('L');
+                },
+                sort: 'desc',
+                menuTabs: [],
+            },
+            {
+                headerName: 'Events', width: 60,
+                cellRenderer: EventCount,
+                valueGetter: function (params) {
+                    return (params.data.CorrespondenceEvents !== undefined && params.data.CorrespondenceEvents.length > 0) ? params.data.CorrespondenceEvents.length : 0;
+                },
+                menuTabs: [],
+            },
+            { field: 'ProjectName', headerName: 'Name', width: 275, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'ProjectLead', headerName: 'Project Lead', width: 150, menuTabs: ['filterMenuTab'], },
+            { field: 'Closed', headerName: 'Closed?', width: 80, menuTabs: ['filterMenuTab'], },
+            {
+                //note: white-space here causes word-wrap
+                field: 'Comments', headerName: 'Comments', width: 300, cellStyle: { 'white-space': 'normal' }, menuTabs: ['filterMenuTab'], filter: 'text'
+            },
+            { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150, menuTabs: ['filterMenuTab'], },
+            { field: 'County', headerName: 'County', width: 150, menuTabs: ['filterMenuTab'], },
+            { field: 'ProjectProponent', headerName: 'Project Proponent', width: 150, menuTabs: ['filterMenuTab'], },
+
+
+        ];
+
+        //details for the correspondence
+        var detailColumnDefs = [
+            {
+                headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [],
+            },
+            {
+                headerName: 'Notice Date', field: 'CorrespondenceDate', width: 120, cellClass: 'event-record-cell',
+                valueFormatter: function (params) {
+                    if (params.node.data.CorrespondenceDate !== undefined && params.data.CorrespondenceDate !== null)
+                        return moment(params.node.data.CorrespondenceDate).format('L');
+                },
+                sort: 'desc',
+                menuTabs: [],
+            },
+            { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Days to Respond', field: 'NumberOfDays', cellClass: 'event-record-cell', width: 100, menuTabs: [], },
+
+            {
+                field: 'ResponseDate',
+                headerName: 'Date of Response',
+                width: 120,
+                valueFormatter: function (params) {
+                    if (params.data.ResponseDate !== undefined && params.data.ResponseDate !== null)
+                        return moment(params.node.data.ResponseDate).format('L');
+                },
+                menuTabs: [],
+            },
+            { headerName: 'Technician', field: 'StaffMember', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
+            {
+                headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 300, cellStyle: {
+                    'white-space': 'normal'
+                },
+                menuTabs: ['filterMenuTab'], filter: 'text'
+            },
+            { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: [], },
+
+            //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
+        ];
+
+        //detail grid options correspondence events
+        scope.corrDetailGridOptions = {
+            enableSorting: true,
+            enableFilter: true,
+            enableColResize: true,
+            //rowSelection: 'single',
+            //onSelectionChanged: function (params) {
+            //    console.log("selection changed!");
+            //scope.corrAgGridOptions.selectedItems = scope.corrAgGridOptions.api.getSelectedRows();
+            //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            //},
+            //onFilterModified: function () {
+            //    scope.corrAgGridOptions.api.deselectAll();
+            //},
+            //selectedItems: [],
+            //rowData: eventRecords,
+            columnDefs: detailColumnDefs,
+            onGridReady: function (params) {
+                //setTimeout(function () { params.api.sizeColumnsToFit(); }, 0);
+            },
+            getRowHeight: function (params) {
+                var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
+                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+                var file_height = 25 * (scope.getFilesArrayAsList(params.data.EventFiles).length); //count up the number of file lines we will have.
+                return (comment_height > file_height) ? comment_height : file_height;
+            },
+            //onRowClicked: function (row) {
+            //console.dir(row);
+
+            //    row.node.setSelected(true);
+            //    console.log("detail selected!");
+            //},
+            //defaultColDef: {
+            //    editable: true
+            //},
+            //enableRangeSelection: true
+        };
+
+
+
+        scope.corrAgGridOptions = {
+
+            masterDetail: true,
+            detailCellRendererParams: {
+                detailGridOptions: scope.corrDetailGridOptions,
+                getDetailRowData: function (params) {
+                    params.successCallback(params.data.CorrespondenceEvents);
+                },
+            },
+
+            animateRows: true,
+            enableSorting: true,
+            enableFilter: true, //turning it off because: https://github.com/ag-grid/ag-grid/issues/1324
+            enableColResize: true,
+            showToolPanel: false,
+            columnDefs: scope.corrAgColumnDefs,
+            rowData: null,
+            //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
+            //debug: true,
+            rowSelection: 'single',
+            onSelectionChanged: function (params) {
+                console.log("selection changed fired!");
+                /*
+                var rows = scope.corrAgGridOptions.api.getSelectedRows();
+                if (Array.isArray(rows) && rows[0] != null)
+                {
+                    console.log("rows:");
+                    console.dir(rows);
+                    if (!Array.isArray(rows[0]) && !rows[0].hasOwnProperty('SubprojectId')) //only change the selection if they clicked a header row.
+                    {
+                        scope.corrAgGridOptions.selectedItems = scope.corrAgGridOptions.api.getSelectedRows();
+                        //scope.corrAgGridOptions.api.redrawRows();
+                        //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+                        console.log("selected a header row so selection actually changed");
+                        scope.viewSubproject = rows[0];
+                        console.dir(scope.viewSubproject);
+                    }
+                }
+                */
+            },
+            //onFilterModified: function () {
+            //    scope.corrAgGridOptions.api.deselectAll();
+            //},
+            selectedItems: [],
+            //isFullWidthCell: function (rowNode) {
+            //    return rowNode.level === 1;
+            //},
+            onGridReady: function (params) {
+                //params.api.sizeColumnsToFit();
+            },
+            //fullWidthCellRenderer: CorrespondenceDetailCellRenderer,
+            getRowHeight: function (params) {
+                var rowIsDetailRow = params.node.level === 1;
+                // return dynamic height when detail row, otherwise return 25
+                if (rowIsDetailRow) {
+                    return 300;
+                } else {
+                    var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
+                    return 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+                }
+                //return rowIsDetailRow ? 200 : 25;
+            },
+            /*
+            getNodeChildDetails: function (record) {
+                //console.dir(record);
+                if (record.CorrespondenceEvents) {
+                    //console.log("yep we have events!");
+                    return {
+                        group: true,
+                        // the key is used by the default group cellRenderer
+                        key: record.CorrespondenceDate,
+                        // provide ag-Grid with the children of this group
+                        parentData: record,
+                        children: [record.CorrespondenceEvents],
+                    };
+                } else {
+                    //console.log("didn't find any correspondence events for that record.");
+                    return null;
+                }
+            },*/
+            onRowDoubleClicked: function (row) {
+                scope.corrAgGridOptions.api.collapseAll();
+                row.node.setSelected(true);
+                row.node.setExpanded(true);
+            },
+            onRowClicked: function (row) {
+                row.node.setSelected(true);
+            },
+        };
+
+        //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
+        var crpp_ds_watcher = scope.$parent.$watch('project', function () {
+            //console.log("Inside TAB CORRESPONDENCE watch project... --------------------------");
+
+            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
+                return;
+
+            //console.log("OK TAB CORRESPONDNEC .  The project is loaded...");
+
+            crpp_ds_watcher(); //turn off watcher
+
+            if (scope.isCRPPProject(scope.project)) {
+
+                console.log("Adding Correspondence to tab bar because we are a CRPP project...");
+                scope.ShowSubproject = true;
+
+                $timeout(function () {
+
+                    var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
+                    //console.dir(ag_grid_div);
+                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.corrAgGridOptions); //bind the grid to it.
+                    scope.corrAgGridOptions.api.showLoadingOverlay(); //show loading...
+
+                    scope.subprojectList = SubprojectService.getSubprojects();
+                    //console.log("Fetching CRPP subprojects...");
+
+                    var watcher = scope.$watch('subprojectList.length', function () {
+                        if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
+                            return;
+
+                        console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
+                        scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+
+                        watcher();
+                    });
+                }, 0);
+
+            } else {
+                console.log(" we are NOT a crpp project so no Correspondence tab.");
+            }
+
+        },true);
+
+
+
+        //if you are creating a new one for the project, the ce_row should be empty {}
+        // if you are editing an existing one, send in the project and the ce_row.
+        scope.openCorrespondenceEventForm = function (subproject, ce_row) {
+            //console.log("Inside openCorrespondenceEventForm...")
+
+            scope.viewSubproject = subproject;
+            //console.log("ok subproject set: ");
+            //console.dir(scope.viewSubproject);
+
+            scope.ce_row = ce_row;
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-new-correspondenceEvent.html',
+                controller: 'ModalAddCorrespondenceEventCtrl',
+                scope: scope, //very important to pass the scope along...
+            });
+        };
+
+        scope.removeCrppSubproject = function (subproject) {
+            //console.log("Inside removeViewSubproject, scope is next...");
+
+            if (!subproject)
+                return;
+
+            scope.viewSubproject = subproject;
+
+            if (scope.viewSubproject.CorrespondenceEvents.length > 0) {
+                alert("This project has associated correspondence events.  Those must be deleted first.");
+            } else {
+                scope.verifyAction = "Delete";
+                scope.verifyingCaller = "CrppSubproject";
+                //console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " + scope.viewSubproject.Id);
+                var modalInstance = $modal.open({
+                    templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
+                    controller: 'ModalVerifyActionCtrl',
+                    scope: scope, //very important to pass the scope along...
+                });
+            }
+        };
+
+        scope.postRemoveSubprojectUpdateGrid = function () {
+            //the scope.subproject is the one we removed.
+            console.log("ok - we removed one so update the grid...");
+
+            scope.subprojectList.forEach(function (item, index) {
+                if (item.Id === scope.viewSubproject.Id) {
+                    scope.subprojectList.splice(index, 1);
+                    //console.log("ok we removed :" + index);
+                    //console.dir(scope.subprojectList[index]);
+                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+                    //scope.corrAgGridOptions.api.redrawRows();
+                    //console.log("done reloading grid.");
+                }
+            });
+        };
+
+        //called by the modal once the correspondence event is successfully saved.
+        scope.postEditCorrespondenceEventUpdateGrid = function (edited_event) {
+            console.log("editCrppCorrespondenceEvent..." + edited_event.Id + " for subproject " + edited_event.SubprojectId);
+
+            //edit our correspondence item and then reload the grid.
+            scope.subprojectList.forEach(function (item, index) {
+                if (item.Id === edited_event.SubprojectId) {
+                    item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort. - this was already updated in the be
+                    item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
+                        if (event_item.Id === edited_event.Id) {
+                            angular.extend(event_item, edited_event); //replace the data for that item
+                            //console.log("OK!! we edited that correspondence event");
+                        }
+                    });
+                }
+            });
+
+            scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+
+            //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
+            var the_node = scope.expandSubProjectById(edited_event.SubprojectId);
+            if (the_node != null)
+                scope.corrAgGridOptions.api.ensureNodeVisible(the_node);
+
+            console.log("done reloading grid after removing item.");
+
+        };
+
+        //called by the modal once a correspondence event (edit) is saved
+        scope.postAddCorrespondenceEventUpdateGrid = function (new_event) {
+            //console.dir(new_event);
+            console.log("saving correspondence event for " + new_event.SubprojectId);
+
+            var subproject = getById(scope.subprojectList, new_event.SubprojectId);
+
+            if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
+                console.log("no subproject...");
+            } else {
+                scope.subprojectList.forEach(function (item, index) {
+                    if (item.Id === subproject.Id) {
+                        item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort - this was already updated in the be
+                        item.CorrespondenceEvents.push(new_event);
+                        //console.log("Added event " + new_event.Id + " to " + subproject.Id);
+                    }
+                });
+                scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+
+                //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
+                var the_node = scope.expandSubProjectById(subproject.Id);
+                if (the_node != null)
+                    scope.corrAgGridOptions.api.ensureNodeVisible(the_node);
+
+                console.log("done reloading grid after removing item.");
+            }
+        };
+
+        //returns the (last) node or null if none found.
+        scope.expandSubProjectById = function (id_in) {
+            var the_node = null;
+            scope.corrAgGridOptions.api.forEachNode(function (node) {
+                if (node.data.Id === id_in) {
+                    //console.log("Expanding! " + id_in);
+                    node.setExpanded(true);
+                    the_node = node;
+                }
+            });
+            return the_node;
+        };
+
+        //removes the correspondence event and then updates the grid
+        scope.removeCrppCorrespondenceEvent = function (subproject, event) {
+            console.log("removeCrppCorrespondenceEvent..." + event.Id + " for subproject " + subproject.Id);
+
+            if (confirm('Are you sure that you want to delete this Correspondence Event?')) {
+                var promise = SubprojectService.removeCorrespondenceEvent(scope.project.Id, subproject.Id, event.Id, scope.DatastoreTablePrefix);
+
+                promise.$promise.then(function () {
+                    //remove from our subprojectList and then reload the grid.
+                    scope.subprojectList.forEach(function (item, index) {
+                        if (item.Id === subproject.Id) {
+                            item.CorrespondenceEvents.forEach(function (event_item, event_item_index) {
+                                if (event_item.Id === event.Id) {
+                                    item.CorrespondenceEvents.splice(event_item_index, 1);
+                                    //console.log("OK!! we removed that correspondence event");
+                                }
+                            });
+                        }
+                    });
+                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+
+                    //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
+                    var the_node = scope.expandSubProjectById(subproject.Id);
+                    if (the_node != null)
+                        scope.corrAgGridOptions.api.ensureNodeVisible(the_node);
+
+                    console.log("done reloading grid after removing item.");
+                });
+            }
+        };
+
+
+        //opens create crpp subproject modal
+        scope.createCrppSubproject = function () {
+            scope.viewSubproject = null;
+            scope.createNewSubproject = true;
+            //scope.subprojectList = null;
+            scope.subprojectOptions = null;
+            //console.log("scope.createNewSubproject = " + scope.createNewSubproject);
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
+                controller: 'ModalCreateSubprojectCtrl',
+                scope: scope, //very important to pass the scope along...
+            });
+        };
+
+
+        //fired after a user saves a new or edited project.
+        // we update the item in the main subproject array and then refresh the grid.
+        scope.postSaveSubprojectUpdateGrid = function (the_promise) {
+            //console.log("ok - we saved so update the grid...");
+            var total = scope.subprojectList.length;
+            var count = 0;
+            var updated = false;
+            scope.subprojectList.forEach(function (item, index) {
+                if (item.Id === the_promise.Id) {
+                    updated = true;
+                    //console.log("ok we found a match! -- updating! before:");
+                    //console.dir(scope.subprojectList[index]);
+
+                    if (the_promise.CorrespondenceEvents !== undefined)
+                        delete the_promise.CorrespondenceEvents; //remove this before the copy.
+
+                    angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
+                    //console.log("ok we found a match! -- updating! after:");
+                    //console.dir(scope.subprojectList[index]);
+                    scope.corrAgGridOptions.api.redrawRows();
+                    //console.log("done reloading grid.");
+                }
+                count++;
+                if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
+                {
+                    //console.log("ok we found never a match! -- adding!");
+                    the_promise.CorrespondenceEvents = [];
+                    the_promise.Files = [];
+                    scope.subprojectList.push(the_promise); //add that item
+                    scope.corrAgGridOptions.api.setRowData([]);
+                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+
+                    //console.log("done reloading grid.");
+                }
+            });
+        };
+
+        scope.editCrppSubproject = function (subproject) {
+            //console.log("editCrppSubproject...");
+
+            scope.viewSubproject = subproject;
+
+            var modalInstance = $modal.open({
+                    templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
+                    controller: 'ModalCreateSubprojectCtrl',
+                    scope: scope, //very important to pass the scope along...
+            });
+        };
+
+        scope.redrawRows = function () {
+            scope.corrAgGridOptions.api.setRowData([]);
+            setTimeout(function () { scope.corrAgGridOptions.api.setRowData(scope.subprojectList); }, 4000);
+        };
+
+        scope.refreshCells = function () {
+            scope.corrAgGridOptions.api.refreshCells();
+        };
+
+        scope.refreshMemory = function () {
+            scope.corrAgGridOptions.api.refreshInMemoryRowModel('group');
+        };
+
+        //looks at the metadata setting to see if it is a crpp project
+        scope.isCRPPProject = function(a_project)
+        {
+            return (a_project.MetadataValue[METADATA_PROPERTY_PROGRAM]) === "CRPP";
+        }
+
+    }
+];
+
+define("private/crpp/components/crpp-contracts/tab-correspondence", function(){});
+
+
+
+define('private/crpp/contracts-map-directive',[
+  'app',
+  'esri/map',
+  'esri/geometry/Point',
+  'esri/dijit/InfoWindow',
+  'esri/InfoTemplate',
+  'esri/dijit/BasemapLayer',
+  'esri/dijit/BasemapGallery',
+  'esri/dijit/Basemap'
+], function (app, Map, Point, InfoWindow, InfoTemplate) {
+
+  // register a new directive called esriMap with our app
+  app.directive('crppDocumentsMap', function($rootScope){
+    // this object will tell angular how our directive behaves
+    return {
+      // only allow esriMap to be used as an element (<esri-map>)
+      restrict: 'E',
+
+      scope: false,
+
+      // define how our template is compiled this gets the $element our directive is on as well as its attributes ($attrs)
+      compile: function($element, $attrs){
+        // remove the id attribute from the main element
+        $element.removeAttr("id");
+
+        // append a new div inside this element, this is where we will create our map
+        $element.append("<div id=" + $attrs.id + "></div>");
+
+        // since we are using compile we need to return our linker function
+        // the 'link' function handles how our directive responds to changes in $scope
+        return function (scope, element, attrs, controller){
+          scope.$watch("center", function (newCenter, oldCenter) {
+            if(newCenter !== oldCenter){
+              controller.centerAt(newCenter);
+            }
+          });
+        };
+      },
+
+      // even though $scope is shared we can declare a controller for manipulating this directive
+      // this is great for when you need to expose an API for manipulaiting your directive
+      // this is also the best place to setup our map
+      controller: function($scope, $element, $attrs){
+
+        //console.dir($attrs);
+
+        // setup our map options based on the attributes and scope
+        var mapOptions = {
+          center: ($attrs.center) ? $attrs.center.split(",") : $scope.center,
+          zoom: ($attrs.zoom) ? $attrs.zoom : $scope.zoom,
+          spatialReference: {
+              wkid:102100 //mercator
+              //wkid:26911 //nad_1983
+              //"wkt":'PROJCS["NAD83(NSRS2007) / UTM zone 11N",GEOGCS["NAD83(NSRS2007)",DATUM["D_",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-117],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["Meter",1]]'
+
+            }
+        };
+
+        // declare our map
+        console.log("trying to make the map");
+
+        var map = new Map($attrs.id, mapOptions);
+        //our first layer from up above...
+        //console.log("//restdata.umatilla.nsn.us/arcgis/rest/services/BasemapParcelViewerCTUIR/MapServer?token=" + security_token);
+
+        //setup basemaps
+        map.selectedBasemap = defaultLayer;
+        map.selectedServiceLayers = [];
+
+        map.basemaps = [];
+        for (var property in parcelLayerConfig) {
+          if(parcelLayerConfig.hasOwnProperty(property))
+          {
+              map.basemaps.push({label: parcelLayerConfig[property].Display, name: property});
+          }
+        };
+
+        map.serviceLayers = [];
+        for (var property in servicesLayerConfig) {
+          if(servicesLayerConfig.hasOwnProperty(property))
+          {
+              map.serviceLayers.push({label: servicesLayerConfig[property].Display, name: property});
+          }
+        };
+
+
+
+        
+
+        //var layer = new esri.layers.ArcGISTiledMapServiceLayer("//restdata.umatilla.nsn.us/arcgis/rest/services/BasemapParcelViewerCTUIR/MapServer?token=" + security_token);
+
+        //var layer = new esri.layers.ArcGISTiledMapServiceLayer(parcelLayerConfig[map.selectedBasemap].ServiceURL);
+        //map.addLayer(layer);
+        //map.currentBasemapLayer = layer;
+
+        //map.parcelLayer = new esri.layers.GraphicsLayer();
+        //map.addLayer(map.parcelLayer);
+
+        map.updateLayers = function(){
+
+            console.log("Changing Layer: "+map.selectedBasemap);
+
+            try{
+              console.log("Loading layer: " + parcelLayerConfig[map.selectedBasemap].ServiceURL);      
+
+              map.removeAllLayers();
+
+              //add the selected basemap
+              var new_layer = new esri.layers.ArcGISTiledMapServiceLayer(parcelLayerConfig[map.selectedBasemap].ServiceURL);
+              map.addLayer(new_layer);
+              map.currentBasemapLayer = new_layer;
+
+              //now add any selected service layers
+              for (var i = map.selectedServiceLayers.length - 1; i >= 0; i--) {
+                var service_layer = new esri.layers.ArcGISDynamicMapServiceLayer(servicesLayerConfig[map.selectedServiceLayers[i]].ServiceURL);
+                map.addLayer(service_layer);
+              };
+
+              map.parcelLayer = new esri.layers.GraphicsLayer();
+              map.addLayer(map.parcelLayer);
+
+              console.log("done!");
+              map.reposition();
+            }
+            catch(e)
+            {
+              console.dir(e);
+            }
+        };
+
+        map.updateLayers();
+
+
+        // start exposing an API by setting properties on "this" which is our controller
+        // lets expose the "addLayer" method so child directives can add themselves to the map
+        this.addLayer = function(layer, filter){
+          map.locationLayer = map.addLayer(layer);
+
+//          console.log("Added layer to map");
+//          console.log("layer_"+layer.id);
+
+            //setup our layer locationid function so we can all it again sometime
+            layer.showLocationsById = function(locationObjectIds){
+              try{
+                this.clearSelection();
+                var definitionExpression = "OBJECTID IN (" + locationObjectIds + ")";
+                console.log("Definition expression: " + definitionExpression);
+                this.setDefinitionExpression(definitionExpression);
+                this.refresh();
+              }catch(e)
+
+              {
+                console.dir(e);
+              }                  
+            };
+
+          if(filter && filter == "location")
+          {
+              if(typeof $scope.locationObjectIds == "undefined")
+              {
+                $scope.$watch('locationObjectIds', function(){
+
+                  //skip the first run
+                  if(typeof $scope.locationObjectIds == "undefined")
+                    return;
+                  
+                  layer.showLocationsById($scope.locationObjectIds); // now call it
+
+                  layer.show();                  
+
+                });
+              }
+          }
+          
+          return map.locationLayer;
+        };
+
+        //use this for doing a search by parcelid or address
+        map.querySearchParcel = function(searchParam, callback)
+        {
+          var queryTask = new esri.tasks.QueryTask(parcelLayerConfig[map.selectedBasemap].QueryURL);
+          var query = new esri.tasks.Query();
+          query.where = dojo.string.substitute(parcelLayerConfig[map.selectedBasemap].ParcelQuery, [searchParam]);
+          query.returnGeometry = false;
+          query.outSpatialReference = this.spatialReference;
+          query.outFields = ["*"];
+        
+          queryTask.execute(query, function (result) {
+              callback(result.features); //give back the parcel features we found...
+          }, function(err){
+              console.log("Failure executing query!");
+              console.dir(err);
+              console.dir(query);
+          });            
+        };
+
+        //use this for selecting a specific parcel/allotment by id (no geometry)
+        map.queryMatchParcel = function(searchParam, callback)
+        {
+          var queryTask = new esri.tasks.QueryTask(parcelLayerConfig[map.selectedBasemap].QueryURL);
+          var query = new esri.tasks.Query();
+          query.where = dojo.string.substitute(parcelLayerConfig[map.selectedBasemap].LocateParcelQuery, [searchParam]);
+          query.returnGeometry = false;
+          query.outSpatialReference = this.spatialReference;
+          query.outFields = ["*"];
+        
+          queryTask.execute(query, function (result) {
+              callback(result.features); //give back the parcel features we found...
+          }, function(err){
+              console.log("Failure executing query!");
+              console.dir(err);
+              console.dir(query);
+          });            
+        };
+
+
+        //use this to select a particular parcel either by objectid (like after a search) or x,y mapPoint
+        map.querySelectParcel = function(mapPoint, objectId, callback){
+
+          console.log("Running query on: "+ parcelLayerConfig[map.selectedBasemap].QueryURL);
+
+          var queryTask = new esri.tasks.QueryTask(parcelLayerConfig[map.selectedBasemap].QueryURL);
+          var query = new esri.tasks.Query();
+
+          query.outSpatialReference = this.spatialReference;
+          query.returnGeometry = true;
+          query.outFields = ["*"];
+          if (mapPoint) {
+              query.geometry = mapPoint;
+          }
+          else {
+              query.objectIds = [objectId];
+          }
+          
+          query.spatialRelationship = esri.tasks.Query.SPATIAL_REL_INTERSECTS;
+          queryTask.execute(query, function (result) {
+              console.dir(result);
+              callback(result.features); //give back the parcel features we found...
+          }, function(err){
+              console.log("Failure executing query!");
+              console.dir(err);
+              console.dir(query);
+          });            
+
+                  
+        };
+
+        map.clearGraphics = function(){
+          this.parcelLayer.clear();
+        }
+
+        map.addParcelToMap = function(feature, color, alpha)
+        {
+            
+                var graphic;
+                if(!color)
+                  color = "#FF6600";
+                
+                if(!alpha)
+                  alpha = .25;
+
+
+                var lineColor = new dojo.Color();
+                lineColor.setColor(color);
+
+                var fillColor = new dojo.Color();
+                fillColor.setColor(color);
+                fillColor.a = alpha;
+
+                var symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID,
+                    new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, lineColor, 3), fillColor);
+
+                graphic = new esri.Graphic(feature.geometry, symbol, feature.attributes);
+
+                this.parcelLayer.clear();
+                this.parcelLayer.add(graphic);
+                this.selectedFeature = feature;
+                this.selectedGraphic = graphic;
+
+                $scope.$emit("map.selectedFeature",feature); //notify
+        }
+
+        map.centerAndZoomToGraphic = function(graphic)
+        {
+            var centerPoint = graphic.geometry.getExtent().getCenter();
+            return map.centerAndZoom(centerPoint, 15);
+        };
+
+        // lets expose a version of centerAt that takes an array of [lng,lat]
+        this.centerAt = function(center){
+          var point = new Point({
+            x: center[0],
+            y: center[1],
+            spatialReference: {
+              wkid:102100 //mercator
+              //wkid:26911 //nad_1983
+              //"wkt":'PROJCS["NAD83(NSRS2007) / UTM zone 11N",GEOGCS["NAD83(NSRS2007)",DATUM["D_",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-117],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["Meter",1]]'
+
+            }
+          });
+
+          map.centerAt(point);
+        };
+
+        // listen for click events and expost them as broadcasts on the scope and suing the scopes click handler
+        map.on("click", function(e){
+          // emit a message that bubbles up scopes, listen for it on your scope
+          $scope.$emit("map.click", e);
+
+          // use the scopes click fuction to handle the event
+          $scope.$apply(function($scope) {
+            $scope.click.call($scope, e);
+          });
+        });
+
+        $scope.map = map;
+
+      }
+    };
+  });
+});
+
+
+// defines the crpp module
+
+require([
+    //controllers
+    //'private/crpp/components/crpp-contracts/crpp-contracts',
+    'private/crpp/components/crpp-contracts/modal-add-correspondence-event',
+    'private/crpp/components/crpp-contracts/modal-create-crpp-subproject',
+    'private/crpp/components/crpp-contracts/tab-correspondence',
+
+    //directives
+    'private/crpp/contracts-map-directive',
+
+    //renderer for master/detail in grid - used on project-details page (until it gets consolidated to this module)
+    //'private/crpp/components/crpp-contracts/renderer-correspondence-detail',
+
+], function () {
+    //crpp_module.controller('CrppContractsCtrl', crpp_contracts);
+    crpp_module.controller('ModalAddCorrespondenceEventCtrl', modal_add_correspondence_event);
+    crpp_module.controller('ModalCreateSubprojectCtrl', modal_create_crpp_subproject);
+    crpp_module.controller('TabCorrespondenceController', tab_correspondence);
+});
+
+
+
+
+define("private/crpp/crpp-module", function(){});
 
 
 var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','SubprojectService','ServiceUtilities',
@@ -24613,8 +24618,6 @@ define("private/habitat/components/habitat-sites/tab-sites", function(){});
 
 // defines the habitat module
 
-var habitat_module = angular.module('HabitatModule', ['ui.bootstrap', 'ngResource']);
-
 require([
     //controllers
     'private/habitat/components/habitat-sites/modal-add-habitat-item',
@@ -25430,8 +25433,6 @@ define('private/appraisals/appraisal-map-directive',[
 
 // defines the appraisals module
 
-var appraisals_module = angular.module('AppraisalsModule', ['ui.bootstrap', 'ngResource']);
-
 require([
     //controllers
     'private/appraisals/components/appraisal-activities/appraisal-activities',
@@ -25466,7 +25467,6 @@ define("private/appraisals/appraisals-module", function(){});
             { name: 'private', location: root + '/app/private' },
         ]
     });
-    
 
     // require loads each of the javascript files referenced below, which can in turn load other files.
     require([
@@ -25476,13 +25476,14 @@ define("private/appraisals/appraisals-module", function(){});
       'dijit/MenuItem',
       'dijit/form/DropDownButton',
 //      'app/app',                                                    //main.js
-        'core/common/common-module',
-        'private/crpp/crpp-module',
+      'core/all-modules',
+      'core/common/common-module',
       'core/projects/projects-module',
       'core/datasets/datasets-module',
       'core/admin/admin-module',
       'core/preferences/preferences-module',
-      
+      'private/all-modules',
+      'private/crpp/crpp-module',
       'private/habitat/habitat-module',
       'private/appraisals/appraisals-module',
 

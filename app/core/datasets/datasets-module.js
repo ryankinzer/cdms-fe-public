@@ -1,8 +1,5 @@
 ﻿// defines the dataset module and all dataset controllers.
 
-//dataset module and its dependencies
-var datasets_module = angular.module('DatasetModule', ['ui.bootstrap','ngResource']);
-
 //load the components for this module
 require([
 

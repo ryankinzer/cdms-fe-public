@@ -1,7 +1,5 @@
 ﻿// defines cross-module functions, components and services that we can use in anywhere
 
-var common_module = angular.module('CommonModule', ['ui.bootstrap', 'ngResource']);
-
 //I wish you could just specify a directory and it would find the files and load them, but
 // requirejs doesn't work that way so we have to reference each one by hand. -kb
 require([

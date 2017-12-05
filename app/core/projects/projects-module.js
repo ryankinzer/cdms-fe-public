@@ -1,8 +1,5 @@
 ﻿// defines the project module and all project controllers.
 
-//project module and its dependencies
-var projects_module = angular.module('ProjectModule', ['ui.bootstrap', 'angularFileUpload', 'ui.select2', 'ngResource']);
-
 //load the components for this module
 require([
     'core/projects/components/project-detail/project-detail',

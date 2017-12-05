@@ -1,7 +1,5 @@
 ﻿// defines the crpp module
 
-var crpp_module = angular.module('CrppModule', ['ui.bootstrap', 'ngResource']);
-
 require([
     //controllers
     //'private/crpp/components/crpp-contracts/crpp-contracts',
