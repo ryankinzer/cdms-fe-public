@@ -87,14 +87,23 @@ var tab_instruments = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSe
 			*  scope.selectedInstrument is not null			Important for the same reason just mentioned.
 			*  The selected instrument is not already associated to the project.
 			*/
+			console.log("Inside scope.addInstrument...");
+			console.log("scope.selectedInstrument is next..."); 
+			var theResult = getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id');
+			console.log("theResult.length = " + theResult.length); 
+			
             //if(!scope.selectedInstrument || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
             if (!scope.selectedInstrument || scope.selectedInstrument === null || getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id').length > 0)
+			{	
+				alert("Either no instrument is selected, or the selected instrument is already in the project"); 
                 return;
-
-            var Instruments = getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id');
-
+			}
+			
+            //var Instruments = getMatchingByField(scope.project.Instruments, scope.selectedInstrument, 'Id');
+			
+			var Instruments = getMatchingByField(scope.allInstruments, scope.selectedInstrument, 'Id');
+			
             var promise = ProjectService.saveProjectInstrument(scope.project.Id, Instruments[0]);
-
             promise.$promise.then(function () {
                 scope.reloadProject();
             });
