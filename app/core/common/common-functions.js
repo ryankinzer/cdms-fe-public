@@ -892,60 +892,61 @@ function formatDateFromUtcToFriendly(d) {
 //		01/01/2015 08:00:00
 // Therefore, we must allow for either format and convert.
 function formatDateFromFriendlyToUtc(d) {
-    console.log("d = " + d);
+	//console.log("Inside formatDateFromFriendlyToUtc; d = " + d);
+    //console.log("d = " + d);
     var separatorLocation = d.indexOf("/");
-    console.log("slashLocation = " + separatorLocation);
+    //console.log("slashLocation = " + separatorLocation);
     if (separatorLocation < 2) {
         var theMonth = d.substring(0, 1);
-        console.log("theMonth = " + theMonth);
+        //console.log("theMonth = " + theMonth);
         theMonth = pad(theMonth);
-        console.log("theMonth = " + theMonth);
+        //console.log("theMonth = " + theMonth);
         d = d.substring(2);
     }
     else {
         var theMonth = d.substring(0, 2);
-        console.log("theMonth = " + theMonth);
+        //console.log("theMonth = " + theMonth);
         d = d.substring(3);
     }
 
-    console.log("d = " + d);
+    //console.log("d = " + d);
 
     separatorLocation = d.indexOf("/");
     if (separatorLocation < 2) {
         var theDay = d.substring(0, 1);
-        console.log("theDay = " + theDay);
+        //console.log("theDay = " + theDay);
         theDay = pad(theDay);
-        console.log("theDay = " + theDay);
+        //console.log("theDay = " + theDay);
         d = d.substring(2);
     }
     else {
         var theDay = d.substring(0, 2);
-        console.log("theDay = " + theDay);
+        //console.log("theDay = " + theDay);
         d = d.substring(3);
     }
 
-    console.log("d = " + d);
+    //console.log("d = " + d);
 
     var theYear = d.substring(0, 4);
     //console.log("theYear = " + theYear);
     d = d.substring(5);
-    console.log("d = " + d);
+    //console.log("d = " + d);
 
     separatorLocation = d.indexOf(":");
     if (separatorLocation < 2) {
         var theHour = d.substring(0, 1);
-        console.log("theHour = " + theHour);
+        //console.log("theHour = " + theHour);
         theHour = pad(theHour);
-        console.log("theHour = " + theHour);
+        //console.log("theHour = " + theHour);
         d = d.substring(2);
     }
     else {
         var theHour = d.substring(0, 2);
-        console.log("theHour = " + theHour);
+        //console.log("theHour = " + theHour);
         d = d.substring(3);
     }
 
-    console.log("d = " + d);
+    //console.log("d = " + d);
 
     var theMinutes = d.substring(0, 2);
     //console.log("theMinutes = " + theMinutes);
@@ -968,7 +969,7 @@ function formatDateFromFriendlyToUtc(d) {
         ":" + theSeconds +
         "." + "000";
 
-    console.log("utc = " + utc);
+    //console.log("utc = " + utc);
     return utc;
 }
 
