@@ -1107,26 +1107,46 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			{	
 				var strReadingDateTimeList = "";
 				strActivityLocationList = $scope.row.locationId;
+				console.log("typeof strActivityLocationList = " + typeof strActivityLocationList + ", strActivityLocationList = " + strActivityLocationList);
 				strInstrumentIdList = $scope.row.InstrumentId;
+				console.log("typeof strInstrumentIdList = " + typeof strInstrumentIdList + ", strInstrumentIdList = " + strInstrumentIdList);
+				
+				// As users work their way down the form, changing the location, or the instrument will
+				// trigger this function, even if they have NOT entered a ReadingDateTime yet.
+				// We must wait until we have the location, instrument, and ReadingDateTime, before we proceed.
+				if ((typeof strActivityLocationList === 'undefined') || (strInstrumentIdList === null)) return;
 				
 				count = 0;
+				var keepGoing = true;
 				angular.forEach($scope.dataSheetDataset, function(item){
 					console.log("item is next...");
 					console.dir(item);
-					//var strIsoTime = moment(item.ReadingDateTime).format("YYYY-MM-DD").toString();
-					var strIsoDateTime = formatDateFromFriendlyToUtc(item.ReadingDateTime);
-					console.log("strIsoDateTime = " + strIsoDateTime);
 					
-					if (count === 0)
+					// If the user has not entered a ReadingDateTime yet, then we DO NOT have the necessary data to continue yet.
+					if ((typeof item.ReadingDateTime !== 'undefined') && (item.ReadingDateTime !== null))
 					{
-						strReadingDateTimeList = strIsoDateTime;
+						//var strIsoDateTime = null;
+						//var strIsoTime = moment(item.ReadingDateTime).format("YYYY-MM-DD").toString();
+						var strIsoDateTime = strIsoDateTime = formatDateFromFriendlyToUtc(item.ReadingDateTime);
+						
+						console.log("strIsoDateTime = " + strIsoDateTime);
+						
+						if (count === 0)
+						{
+							strReadingDateTimeList = strIsoDateTime;
+						}
+						else
+						{
+							strReadingDateTimeList += "," + strIsoDateTime; // Note the leading comma.
+						}
+						count++;
 					}
 					else
-					{
-						strReadingDateTimeList += "," + strIsoDateTime; // Note the leading comma.
-					}
-					count++;
+						keepGoing = false;
 				});
+				if (!keepGoing)
+					return;
+				
 				console.log("strReadingDateTimeList (with dupes) = " + strReadingDateTimeList);
 				console.log("typeof strReadingDateTimeList = " + typeof strReadingDateTimeList);
 				
@@ -1185,6 +1205,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 										detailRecord.isValid = false;
 										detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
 										$scope.gridHasErrors = true;
+										$scope.saving = false;
 									}
 								});
 								
@@ -1239,6 +1260,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 							$scope.duplicateEntry = true;
 							$scope.activities.errors = {};
 							$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
+							$scope.saving = false;
 						}
 						else
 						{
