@@ -43,13 +43,15 @@
                 <div class="header-label">Location:</div>
                 <div class="header-value">
                     <!--<select ui-select2="select2Options" data-placeholder="Choose a Location" style="width: 200px; margin-top: 4px;" ng-model="row['locationId']" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
-                    <select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>
+                    <!--<select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
+                    <select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'" ng-change="onLocationChange()"></select>
                 </div>
             </div>
             <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
                 <div class="header-label">Activity Date:</div>
                 <div class="header-value">
-                    <input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="aopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                    <!--<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="aopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
+                    <input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="aopened" datepicker-options="dateOptions" ng-required="false" ng-change="onActivityDateChange()" close-text="Close" />
                 </div>
             </div>
             <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('SampleDate')">
