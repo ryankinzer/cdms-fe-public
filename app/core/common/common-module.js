@@ -31,18 +31,7 @@ require([
     'app/core/common/components/file/modal-file-delete',
     'app/core/common/components/file/modal-files',
     'app/core/common/components/file/modal-exportfile',
-
-    //loads common services
-    'app/core/common/components/chart/adultweir-chartservice',
-    'app/core/common/components/chart/artificialproduction-chartservice',
-    'app/core/common/components/chart/bsample-chartservice',
-    'app/core/common/components/chart/creelsurvey-chartservice',
-    'app/core/common/components/chart/electrofishing-chartservice',
-    'app/core/common/components/chart/snorkelfish-chartservice',
-    'app/core/common/components/chart/waterquality-chartservice',
-    'app/core/common/components/chart/watertemp-chartservice',
-    'app/core/common/components/chart/chart-services',                    //the wrapper for them all...
-
+    
     //load other common directives
     'app/core/common/directives/checklists',
     'app/core/common/directives/feature-layer',
@@ -72,9 +61,24 @@ require([
     common_module.controller('FileAddModalCtrl', modal_file_add);
     common_module.controller('FileDeleteModalCtrl', modal_file_delete);
     common_module.controller('FileModalCtrl', modal_files); 
-
     
-    //services
+});
+
+
+//We load these asych with the others
+require([
+    //loads chart services
+    'app/core/common/components/chart/adultweir-chartservice',
+    'app/core/common/components/chart/artificialproduction-chartservice',
+    'app/core/common/components/chart/bsample-chartservice',
+    'app/core/common/components/chart/creelsurvey-chartservice',
+    'app/core/common/components/chart/electrofishing-chartservice',
+    'app/core/common/components/chart/snorkelfish-chartservice',
+    'app/core/common/components/chart/waterquality-chartservice',
+    'app/core/common/components/chart/watertemp-chartservice',
+
+], function () {
+
     //there is a chartservice for each dataset.
     // NOTE: If you are creating a new dataset, you'll want to make a chartservice for it.
     common_module.service('AdultWeir_ChartService', adultweir_chartservice);
@@ -86,8 +90,12 @@ require([
     common_module.service('WaterQuality_ChartService', water_quality);
     common_module.service('WaterTemp_ChartService', watertemp_chartservice);
 
-    //the master chartservice that exposes all of the other dataset-specific chart services
-    common_module.service('ChartService', chart_services);
-
+    //and then we only load this one after the others are done...
+    require([
+        'app/core/common/components/chart/chart-services',                    //the wrapper for them all...
+    ], function () {
+        //the master chartservice that exposes all of the other dataset-specific chart services
+        common_module.service('ChartService', chart_services);
+        
+    });
 });
-

@@ -16,16 +16,16 @@ define([
 	 [
 	  'ngRoute',						// assets/js/angular/angular-route.js (referred to in js/controllers/login-controller.js)
       'ngGrid',							// assets/js/ng-grid-2.0.7.ken.js (referred to in js/main.js)
-      'angularFileUpload',				// assets/js/angular-file-upload/angular-file-upload.js (referred to in controllers.js)
-      'angularCharts',					// assets/js/angular-charts.ken.js
-
-
+      
       //these are the cdms modules
       'CommonModule',
       'ProjectModule',
       'DatasetModule',
       'AdminModule',
       'PreferencesModule',
+
+      'angularFileUpload',				
+      'angularCharts',					
 
       //these are ctuir specific
       'AppraisalsModule',
