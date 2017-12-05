@@ -325,8 +325,12 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				return;
 			else if ($scope.duplicateEntry)
 				return;
-			else
+			else if ($scope.saving)
 				$scope.continueSaving();
+			else
+			{
+				// Do nothing.
+			}
 		});
 
         $scope.selectProjectLocationsByLocationType = function () {
@@ -778,6 +782,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$rootScope is next...");
             console.dir($rootScope);
 			$scope.duplicateEntry = undefined;
+			$scope.saving = true;
 			
 			$scope.checkForDuplicates();
         };
@@ -886,6 +891,11 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
 			console.log("$scope.activities.errors is next...");
 			console.dir($scope.activities.errors);
+			if ($scope.activities.errors === {})
+				console.log("Empty object...");
+			else
+				console.log("Something else...");
+			
 			//console.log("$scope.activities.errors.saveError.length = " + $scope.activities.errors.saveError.length);
 			if (!$scope.activities.errors)
 			{
@@ -1071,6 +1081,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 console.log("$scope.activities in saveData, just before calling DatasetService.saveActivities is next...");
                 console.dir($scope.activities);
                 DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
+				$scope.saving = false;
             }
             else {
                 console.log("We have errors...");
@@ -1249,7 +1260,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
 		$scope.onActivityDateChange = function()
 		{
 			console.log("Inside $scope.onActivityDateChange...");
-			$scope.activities.errors = {};
+			//$scope.activities.errors = {};
+			$scope.activities.errors = undefined;
 			$scope.duplicateEntry = undefined;
 			$scope.checkForDuplicates();
 		};
