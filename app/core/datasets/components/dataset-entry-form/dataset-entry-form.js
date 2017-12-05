@@ -764,7 +764,14 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.dir($scope);
             console.log("$rootScope is next...");
             console.dir($rootScope);
-
+			$scope.duplicateEntry = undefined;
+			
+			$scope.checkForDuplicates();
+        };
+		
+		$scope.continueSaving = function(){
+			//console.log("Inside $scope.continueSaving...");
+			
             /**** CreeSurvey Header Time Time calculations Start ****/
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 // Headers = row
@@ -864,104 +871,111 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.dir($rootScope.FieldSheetFile);
             $scope.filesToUpload.FieldSheetFile = $rootScope.FieldSheetFile;
 
-            if ($scope.filesToUpload.FieldSheetFile) {
-                //for(var i = 0; i < $scope.filesToUpload.FieldSheetFile.length; i++)
-                //for(var i = 0; i < $scope.filesToUpload.length; i++)
-                for (var i = 0; i < $rootScope.currentFiles.length; i++) {
-                    //var file = $scope.filesToUpload.FieldSheetFile[i];
-                    var file = $scope.currentFiles[i];
-                    console.log("file is next...");
-                    console.dir(file);
+			console.log("$scope.activities.errors is next...");
+			console.dir($scope.activities.errors);
+			//console.log("$scope.activities.errors.saveError.length = " + $scope.activities.errors.saveError.length);
+			if (!$scope.activities.errors)
+			{
+				console.log("No errors yet...");
+				if ($scope.filesToUpload.FieldSheetFile) {
+					//for(var i = 0; i < $scope.filesToUpload.FieldSheetFile.length; i++)
+					//for(var i = 0; i < $scope.filesToUpload.length; i++)
+					for (var i = 0; i < $rootScope.currentFiles.length; i++) {
+						//var file = $scope.filesToUpload.FieldSheetFile[i];
+						var file = $scope.currentFiles[i];
+						console.log("file is next...");
+						console.dir(file);
 
-                    var newFileNameLength = file.name.length;
-                    console.log("file name length = " + newFileNameLength);
+						var newFileNameLength = file.name.length;
+						console.log("file name length = " + newFileNameLength);
 
-                    console.log("file.type = " + file.type);
-                    if ($scope.uploadFileType === "image") {
-                        console.log("We have an image...");
-                        for (var n = 0; n < $scope.project.Images.length; n++) {
-                            var existingFileName = $scope.project.Images[n].Name;
-                            console.log("existingFileName = " + existingFileName);
-                            var existingFileNameLength = existingFileName.length;
-                            if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
-                                $scope.foundDuplicate = true;
-                                console.log(file.name + " already exists in the project file list.");
-                                errors.push(file.name + " already exists in the list of project images.");
-                            }
-                        }
-                    }
-                    else {
-                        console.log("We have something other than an image...");
-                        for (var n = 0; n < $scope.project.Files.length; n++) {
-                            var existingFileName = $scope.project.Files[n].Name;
-                            console.log("existingFileName = " + existingFileName);
-                            var existingFileNameLength = existingFileName.length;
-                            if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
-                                $scope.foundDuplicate = true;
-                                console.log(file.name + " already exists in the project file list.");
-                                errors.push(file.name + " already exists in the list of project Files.");
-                            }
-                        }
-                    }
+						console.log("file.type = " + file.type);
+						if ($scope.uploadFileType === "image") {
+							console.log("We have an image...");
+							for (var n = 0; n < $scope.project.Images.length; n++) {
+								var existingFileName = $scope.project.Images[n].Name;
+								console.log("existingFileName = " + existingFileName);
+								var existingFileNameLength = existingFileName.length;
+								if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
+									$scope.foundDuplicate = true;
+									console.log(file.name + " already exists in the project file list.");
+									errors.push(file.name + " already exists in the list of project images.");
+								}
+							}
+						}
+						else {
+							console.log("We have something other than an image...");
+							for (var n = 0; n < $scope.project.Files.length; n++) {
+								var existingFileName = $scope.project.Files[n].Name;
+								console.log("existingFileName = " + existingFileName);
+								var existingFileNameLength = existingFileName.length;
+								if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
+									$scope.foundDuplicate = true;
+									console.log(file.name + " already exists in the project file list.");
+									errors.push(file.name + " already exists in the list of project Files.");
+								}
+							}
+						}
 
-                    console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);
+						console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);
 
-                    if ($scope.foundDuplicate)
-                        alert(errors);
-                    else {
-                        console.log("Not a duplicate.  Uploading the file...");
-                        if (file.success != "Success") {
-                            $scope.upload = $upload.upload({
-                                //url: serviceUrl + '/data/UploadProjectFile',
-                                url: serviceUrl + '/api/v1/file/uploaddatasetfile',
-                                method: "POST",
-                                // headers: {'headerKey': 'headerValue'},
-                                // withCredential: true,
-                                //data: {ProjectId: $scope.project.Id, Description: "Uploaded file " + file.Name, Title: file.Name},
-                                data: { ProjectId: $scope.project.Id, DatasetId: $scope.dataset.Id, Description: "Uploaded file " + file.Name, Title: file.Name },
-                                file: file,
+						if ($scope.foundDuplicate)
+							alert(errors);
+						else {
+							console.log("Not a duplicate.  Uploading the file...");
+							if (file.success != "Success") {
+								$scope.upload = $upload.upload({
+									//url: serviceUrl + '/data/UploadProjectFile',
+									url: serviceUrl + '/api/v1/file/uploaddatasetfile',
+									method: "POST",
+									// headers: {'headerKey': 'headerValue'},
+									// withCredential: true,
+									//data: {ProjectId: $scope.project.Id, Description: "Uploaded file " + file.Name, Title: file.Name},
+									data: { ProjectId: $scope.project.Id, DatasetId: $scope.dataset.Id, Description: "Uploaded file " + file.Name, Title: file.Name },
+									file: file,
 
-                            }).progress(function (evt) {
-                                console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                            }).success(function (data, status, headers, config) {
-                                config.file.success = "Success";
-                            }).error(function (data, status, headers, config) {
-                                $scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
-                                //console.log(file.name + " was error.");
-                                config.file.success = "Failed";
-                            });
-                        }
-                    }
-                }
+								}).progress(function (evt) {
+									console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+								}).success(function (data, status, headers, config) {
+									config.file.success = "Success";
+								}).error(function (data, status, headers, config) {
+									$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
+									//console.log(file.name + " was error.");
+									config.file.success = "Failed";
+								});
+							}
+						}
+					}
 
-                //spin through the files that we uploaded
-                //angular.forEach($scope.filesToUpload, function(files, field){
-                angular.forEach($scope.currentFiles, function (files, field) {
+					//spin through the files that we uploaded
+					//angular.forEach($scope.filesToUpload, function(files, field){
+					angular.forEach($scope.currentFiles, function (files, field) {
 
-                    if (field == "null" || field == "")
-                        return;
+						if (field == "null" || field == "")
+							return;
 
-                    var local_files = [];
+						var local_files = [];
 
-                    //if we already had actual files in this field, copy them in
-                    if ($scope.file_row[field]) {
-                        var current_files = angular.fromJson($scope.file_row[field]);
-                        angular.forEach(current_files, function (file) {
-                            if (file.Id) //our incoming files don't have an id, just actual files.
-                                local_files.push(file);
-                        });
-                    }
+						//if we already had actual files in this field, copy them in
+						if ($scope.file_row[field]) {
+							var current_files = angular.fromJson($scope.file_row[field]);
+							angular.forEach(current_files, function (file) {
+								if (file.Id) //our incoming files don't have an id, just actual files.
+									local_files.push(file);
+							});
+						}
 
-                    $scope.file_row[field] = angular.toJson(local_files);
-                    //console.log("Ok our new list of files: "+$scope.row[field]);
-                });
+						$scope.file_row[field] = angular.toJson(local_files);
+						//console.log("Ok our new list of files: "+$scope.row[field]);
+					});
 
-                $scope.saveDatasheetData();
-            }
-            else {
-                $scope.saveDatasheetData();
-            }
-        };
+					$scope.saveDatasheetData();
+				}
+				else {
+					$scope.saveDatasheetData();
+				}
+			}
+		};
 
         $scope.saveDatasheetData = function () {
             console.log("Inside saveDatasheetData, $scope is next...");
