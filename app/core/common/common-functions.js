@@ -1074,3 +1074,32 @@ function addMetadataProperties(metadata_list, all_metadata, scope, CommonService
     });
 };
 
+// This function takes an array that may have duplicate entries, and removes the duplicates.
+// [a, a, b, c, c, c] -> [a, b, c] 
+function uniq_fast(a) {
+	//console.log("Inside uniq_fast...");
+	//console.dir(a);
+	var seen = {};
+	var out = [];
+	var len = a.length;
+	var j = 0;
+	
+	//console.log("len = " + len);
+	for (var i = 0; i < len; i++)
+	{
+		var item = a[i];
+		//console.log("item = " + item);
+		//console.log("seen[" + item + "] = " + seen[item]);
+		if ((seen[item] === undefined) || (seen[item] !== 1))
+		{
+			//console.log("New item...");
+			seen[item] = 1;
+			out[j++] = item;
+		}
+	}
+	//console.log("out is next...");
+	console.dir(out);
+	
+	return out;
+};
+
