@@ -541,12 +541,28 @@ datasets_module.service('DatasetService', ['$q',
                 return OutmigrationYears.query({ id: datasetId });
             },
 			
-			/*getSpecificActivities: function (datasetId, locationId, readingDateTime) {
-				console.log("Inside dataset-service, getSpecificActivities");
-				//return SpecificActivities.query({ id: datasetId, locationId: locationId, readingDateTime: readingDateTime});
-				return SpecificActivities.query({ id: datasetId});
-			},
-			*/
+            getSpecificActivities: function (datasetId, locationIdList, activityDateList) {
+				console.log("Inside dataset-service.js, getSpecificActivities...");
+				var searchCriteria = {
+					DatasetId: datasetId,
+					LocationId: locationIdList,
+					ActivityDate: activityDateList
+				}
+				
+                return SpecificActivitiesWithBounds.save(searchCriteria);
+            },
+			
+            getSpecificWaterTempActivities: function (datasetId, locationIdList, instrumentIdList,dateTimeList) {
+				console.log("Inside dataset-service.js, getSpecificWaterTempActivities...");
+				var searchCriteria = {
+					DatasetId: datasetId,
+					LocationId: locationIdList,
+					InstrumentId: instrumentIdList,
+					DateTimeList: dateTimeList
+				}
+				
+                return SpecificWaterTempActivities.save(searchCriteria);
+            },
         };
 
         return service;
