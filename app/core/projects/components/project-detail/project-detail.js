@@ -300,9 +300,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 			scope.SdeObjectId = sdeObjectId;
 			console.log("scope.SdeObjectId");
 		};
-
        
-
         //return an array from the eventfiles.
         scope.getFilesArrayAsList = function (theFiles) {
             if (theFiles === undefined || theFiles === null)
