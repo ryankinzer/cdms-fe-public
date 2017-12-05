@@ -1,36 +1,17 @@
-﻿var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+﻿//this is a nested controller used on the project-details page to load
+// the correspondence tab grid. It only appears for projects that are CRPP Correspondence.
+
+//var METADATA_PROPERTY_PROGRAM = 23; //add this to your config.js
+
+
+var tab_correspondence = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
     function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
         console.log("Inside tab correspondence controller...");
 
-        console.log("I wonder what I have access to here?!");
-        console.dir(scope);
-
-
-        //return an array from the eventfiles.
-        function getEventFilesArray(EventFiles) {
-            if (EventFiles === undefined || EventFiles === null)
-                return [];
-
-            var files = angular.fromJson(EventFiles);
-            return (files === null || !Array.isArray(files)) ? [] : files; //if it isn't an array, make an empty array
-
-        }
-
-        //returns null if none found...
-        scope.getSubprojectById = function (id_in) {
-            var result = null;
-            scope.subprojectList.forEach(function (item) {
-                if (item.Id === id_in) {
-                    result = item; //can't just return here -- see Array.foreach docs
-                }
-            });
-
-            return result;
-        };
-
+       
         //this is for the crpp/subproject correspondence tab below - might can move this all out sometime...
         var otherAgencyTemplate = function (params) {
             return '<span>' + params.node.data.Agency + '</span>'
@@ -64,7 +45,7 @@
             div.appendChild(delBtn);
             div.appendChild(document.createTextNode("|"));
 
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Event';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 scope.openCorrespondenceEventForm(param.data, {});
@@ -83,11 +64,12 @@
 
 
         var FileListCellTemplate = function (params) {
-            var files = getEventFilesArray(params.node.data.EventFiles);
             var list = '<div class="event-file-list"><ul>';
 
-            files.forEach(function (file) {
-                list += '<li>' + file.Name + '</li>';
+            var file_links = scope.getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.EventFiles);
+
+            file_links.forEach(function (link) {
+                list += '<li>' + link + '</li>';
             });
 
             list += '</ul></div>';
@@ -98,7 +80,7 @@
 
         //this template gives the Edit|Delete|Add for the detail.
         var EditDetailLinksTemplate = function (detailparam) {
-            var subproject = scope.getSubprojectById(detailparam.data.SubprojectId);
+            var subproject = getById(scope.subprojectList, detailparam.data.SubprojectId);
 
             var div = document.createElement('div');
 
@@ -141,7 +123,7 @@
         //grid columns for crpp correspondence tab (master/subprojects)
         scope.agColumnDefs = [  //in order the columns will display, by the way...
             {
-                headerName: '', width: 100, cellRenderer: EditMasterLinksTemplate
+                headerName: '', width: 140, cellRenderer: EditMasterLinksTemplate
             },
             {
                 headerName: 'ID',
@@ -153,7 +135,7 @@
             {
                 field: 'EffDt',
                 headerName: 'Updated',
-                width: 150,
+                width: 120,
                 valueFormatter: function (params) {
                     if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
                         return moment(params.node.data.EffDt).format('L');
@@ -161,7 +143,7 @@
                 sort: 'desc',
             },
             {
-                headerName: 'Events', width: 80,
+                headerName: 'Events', width: 60,
                 cellRenderer: EventCount,
                 valueGetter: function (params) {
                     return (params.data.CorrespondenceEvents !== undefined && params.data.CorrespondenceEvents.length > 0) ? params.data.CorrespondenceEvents.length : 0;
@@ -242,7 +224,7 @@
             getRowHeight: function (params) {
                 var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
                 var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                var file_height = 25 * (getEventFilesArray(params.data.EventFiles).length); //count up the number of file lines we will have.
+                var file_height = 25 * (scope.getFilesArrayAsList(params.data.EventFiles).length); //count up the number of file lines we will have.
                 return (comment_height > file_height) ? comment_height : file_height;
             },
             //onRowClicked: function (row) {
@@ -271,7 +253,7 @@
 
             animateRows: true,
             enableSorting: true,
-            enableFilter: false, //turning it off because: https://github.com/ag-grid/ag-grid/issues/1324
+            enableFilter: true, //turning it off because: https://github.com/ag-grid/ag-grid/issues/1324
             enableColResize: true,
             showToolPanel: false,
             columnDefs: scope.agColumnDefs,
@@ -349,53 +331,42 @@
             },
         };
 
+        //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
+        var crpp_ds_watcher = scope.$parent.$watch('project', function () {
+            console.log("Inside TAB CORRESPONDENCE watch project... --------------------------");
 
-        scope.$parent.$watch('datasets', function () {
-            console.log("Inside TAB CORRESPONDENCE watch datasets... --------------------------");
-
-            console.log("parent datasets");
-            console.dir(scope.$parent.datasets);
-            console.log("our datasets");
-            console.dir(scope.datasets);
-
-            if (scope.datasets === undefined || scope.datasets.length === 0)
+            if (scope.project === undefined || scope.project.Id === undefined)
                 return;
 
-            console.log("OK TAB CORRESPONDNEC .  The datasets are loaded...");
+            console.log("OK TAB CORRESPONDNEC .  The project is loaded...");
 
-            scope.datasets = scope.$parent.datasets; //but i dont' want to do this.'
+            crpp_ds_watcher(); //turn off watcher
 
-            //load ag-grid but only once.
-            if (typeof scope.ag_grid === 'undefined') {
-                var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
-                console.dir(ag_grid_div);
-                scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
-                scope.agGridOptions.api.showLoadingOverlay(); //show loading...
-            }
+            if (scope.isCRPPProject(scope.project)) {
 
-            for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
-                
-                if (scope.datasets[i].Datastore.TablePrefix === "CrppContracts") {
-                    console.log("Adding Correspondence to tab bar...");
-                    scope.ShowSubproject = true;
-                    scope.subprojectList = SubprojectService.getSubprojects();
-                    console.log("Fetching CRPP subproject...");
-                    // Note:  If we are on CRPP, it has only one dataset.
-                    // We must set the scope.DatastoreTablePrefix, in order for the Edit Subproject to work.
-                    // The Correspondence Event also needs scope.DatastoreTablePrefix, in order to save documents properly.
-                    scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = scope.datasets[i].Datastore.TablePrefix;
+                console.log("Adding Correspondence to tab bar...");
+                scope.ShowSubproject = true;
 
-                    var watcher = scope.$watch('subprojectList.length', function () {
-                        if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
-                            return;
+                //load ag-grid but only once.
+                //if (typeof scope.ag_grid === 'undefined') {
+                    var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
+                    //console.dir(ag_grid_div);
+                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
+                    scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+                //}
 
-                        console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
-                        scope.agGridOptions.api.setRowData(scope.subprojectList);
+                scope.subprojectList = SubprojectService.getSubprojects();
+                console.log("Fetching CRPP subprojects...");
 
-                        watcher();
-                    });
+                var watcher = scope.$watch('subprojectList.length', function () {
+                    if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
+                        return;
 
-                }
+                    console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
+                    scope.agGridOptions.api.setRowData(scope.subprojectList);
+
+                    watcher();
+                });
             }
 
         },true);
@@ -491,7 +462,7 @@
             //console.dir(new_event);
             console.log("saving correspondence event for " + new_event.SubprojectId);
 
-            var subproject = scope.getSubprojectById(new_event.SubprojectId);
+            var subproject = getById(scope.subprojectList, new_event.SubprojectId);
 
             if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
                 console.log("no subproject... hmm ... i guess we should reload everything...");
@@ -641,6 +612,11 @@
             console.log("redrawgroupmodel!");
         };
 
+        //looks at the metadata setting to see if it is a crpp project
+        scope.isCRPPProject = function(a_project)
+        {
+            return (a_project.MetadataValue[METADATA_PROPERTY_PROGRAM]) === "CRPP";
+        }
 
     }
 ];

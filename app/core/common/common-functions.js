@@ -32,20 +32,16 @@ function initEdit() {
 }
 
 
+//in any array with an "Id" attribute, get the matching item
+function getById(list, search_name) {
+    return getByField(list, search_name, 'Id');
+}
+
+
 
 //in any array with a "Name" attribute, get the matching item
 function getByName(list, search_name) {
     return getByField(list, search_name, 'Name');
-
-    /*
-    for (var i = 0; i < list.length; i++) {
-        var pref = list[i];
-        if(pref.Name == search_name)
-            return pref;
-    };
-
-    return null;
-    */
 }
 
 //returns single match in any fieldname

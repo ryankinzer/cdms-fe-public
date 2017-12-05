@@ -56,7 +56,7 @@ projects_module.factory('SaveProjectInstrument', ['$resource', function ($resour
 }]);
 
 projects_module.factory('SaveProjectFisherman', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/fishermen/saveprojectfishermen');
+    return $resource(serviceUrl + '/api/v1/fishermen/saveprojectfisherman');
 }]);
 
 projects_module.factory('SaveInstrument', ['$resource', function ($resource) {
@@ -228,7 +228,7 @@ projects_module.service('ProjectService', ['$q',
 
                 service.project = Project.query({ id: id });
 
-                service.project.$promise.then(function () {
+                /*service.project.$promise.then(function () {
                     console.log("after-project-load!");
                     //do some sorting after we load for instruments
                     if (service.project.Instruments && service.project.Instruments.length > 0)
@@ -237,11 +237,14 @@ projects_module.service('ProjectService', ['$q',
                     //and also for locations
                     //service.project.Locations = service.project.Locations.sort(orderByAlpha);
                 });
+                */
 
                 return service.project;
             },
 
             // We don't really like to set things this way...  Is there a better way?
+            // TODO: look at the Project's "program" metadata (propertyid = 23)
+            //       and the "subprogram" metadata (propertyid = 24)
             getProjectType: function (aProjectId) {
                 var theType = null;
 
