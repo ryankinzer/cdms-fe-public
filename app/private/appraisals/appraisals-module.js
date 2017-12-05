@@ -4,10 +4,10 @@ var appraisals_module = angular.module('AppraisalsModule', ['ui.bootstrap', 'ngR
 
 require([
     //controllers
-    'app/private/appraisals/components/appraisal-activities/appraisal-activities',
+    'private/appraisals/components/appraisal-activities/appraisal-activities',
 
     //directives
-    'app/private/appraisals/appraisal-map-directive',
+    'private/appraisals/appraisal-map-directive',
 
 ], function () {
     appraisals_module.controller('AppraisalCtrl', appraisal_activities);    

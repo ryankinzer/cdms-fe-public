@@ -4,11 +4,10 @@
 //var METADATA_PROPERTY_PROGRAM = 23; //add this to your config.js
 
 
-var tab_correspondence = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
-    '$rootScope', '$modal', '$sce', '$window', '$http',
-    'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
-        ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
+var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+    '$modal', 'ServiceUtilities', 'ConvertStatus',
+    function (scope, $timeout, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $modal,
+        ServiceUtilities, ConvertStatus) {
         //console.log("Inside tab correspondence controller...");
 
        

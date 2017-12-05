@@ -1,5 +1,4 @@
 // CDMS Application bootstrapper
-"use strict";
 (function (angular) {
 
     var root = location.pathname.replace(new RegExp(/\/[^\/]+$/), '');
@@ -10,12 +9,13 @@
 
     require({
         async: true,
-        packages: [{
-            name: 'app',
-            location: root + '/app'
-        }]
+        packages: [
+            { name: 'app', location: root + '/app' },
+            { name: 'core', location: root + '/app/core' },
+            { name: 'private', location: root + '/app/private' },
+        ]
     });
-
+    
 
     // require loads each of the javascript files referenced below, which can in turn load other files.
     require([
@@ -24,15 +24,16 @@
       'dijit/Menu',
       'dijit/MenuItem',
       'dijit/form/DropDownButton',
-      'app',                                                    //main.js
-      'app/core/common/common-module',
-      'app/core/projects/projects-module',
-      'app/core/datasets/datasets-module',
-      'app/core/admin/admin-module',
-      'app/core/preferences/preferences-module',
-      'app/private/appraisals/appraisals-module',
-      'app/private/crpp/crpp-module',
-      'app/private/habitat/habitat-module',
+//      'app/app',                                                    //main.js
+        'core/common/common-module',
+        'private/crpp/crpp-module',
+      'core/projects/projects-module',
+      'core/datasets/datasets-module',
+      'core/admin/admin-module',
+      'core/preferences/preferences-module',
+      
+      'private/habitat/habitat-module',
+      'private/appraisals/appraisals-module',
 
     ], function (angular, parser) {
    
@@ -42,9 +43,6 @@
 	        //http://nadeemkhedr.wordpress.com/2013/11/25/how-to-do-authorization-and-role-based-permissions-in-angularjs/
 	
   	        $.get(WHOAMI_URL, function(data){
-		        //console.log("Inside init.js, $.get...");
-		        //console.log("data is next...");
-		        //console.dir(data);
   		        profile = data;
   	        })
             .fail(function(){
@@ -53,14 +51,14 @@
             .always(function () {
 
                 console.log("Booting dojo...");
-                parser.parse();
+                //parser.parse();
 
                 require(['dojo/domReady!'], function () {
                     console.log("Booting angular...");
                     setTimeout(function () {
                         angular.bootstrap(document.body, ['app']);
                         console.log("all systems GO!")
-                    }, 2000);
+                    }, 4000);
                 });
                 
                 
@@ -71,4 +69,4 @@
     });
 
 
-}(angular));
+}(angular))
