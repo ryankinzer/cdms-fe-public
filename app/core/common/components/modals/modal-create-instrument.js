@@ -37,7 +37,8 @@
         saveRow.OwningDepartment = undefined;
         var promise = ProjectService.saveInstrument($scope.project.Id, saveRow);
         promise.$promise.then(function(){
-            $scope.reloadProject();
+            //$scope.reloadProject();
+            $scope.postSaveInstrumentUpdateGrid(promise);
             $modalInstance.dismiss();
         });
     };

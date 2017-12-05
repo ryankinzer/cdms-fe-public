@@ -33,13 +33,24 @@
 
 		$scope.fisherman_row.OkToCallId = $scope.viewFisherman.OkToCallId;
 		$scope.viewFisherman.OkToCall = ConvertStatus.convertOkToCall($scope.viewFisherman.OkToCallId);
-		console.log("$scope.viewFisherman.OkToCall = " + $scope.viewFisherman.OkToCall);
+        console.log("$scope.viewFisherman.OkToCall = " + $scope.viewFisherman.OkToCall);
+
+        if ((typeof $scope.fisherman_row.Aka !== 'undefined') && ($scope.fisherman_row.Aka !== null))
+            $scope.fisherman_row.FullName = $scope.fisherman_row.FirstName + " (" + $scope.fisherman_row.Aka + ") " + $scope.fisherman_row.LastName;
+        else
+            $scope.fisherman_row.FullName = $scope.fisherman_row.FirstName + " " + $scope.fisherman_row.LastName;	
     }
 	else
 	{
 		$scope.fisherman_row['DateAdded'] = new Date();			
 	}	
-	
+
+    $scope.updateFullName = function () {
+        if ((typeof $scope.fisherman_row.Aka !== 'undefined') && ($scope.fisherman_row.Aka !== null) && ($scope.fisherman_row.Aka !== ''))
+            $scope.fisherman_row.FullName = $scope.fisherman_row.FirstName + " (" + $scope.fisherman_row.Aka + ") " + $scope.fisherman_row.LastName;
+        else
+            $scope.fisherman_row.FullName = $scope.fisherman_row.FirstName + " " + $scope.fisherman_row.LastName;	
+    }
 	
     $scope.saveFisherman = function(){
         console.log("$scope in saveFisherman is next...");
@@ -106,8 +117,9 @@
 				console.log("promise is next...");
 				console.dir(promise);
 				promise.$promise.then(function(){
-					$scope.reloadProject();
+					//$scope.reloadProject();
 					//location.reload(true);
+                    $scope.postSaveFishermanUpdateGrid(promise);
 					$modalInstance.dismiss();
 				});	
 			}

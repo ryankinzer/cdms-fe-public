@@ -36,20 +36,22 @@
 	<tab heading="Details" ng-show="AuthorizedToViewProject">
 		<div ng-include="'app/core/projects/components/project-detail/templates/project-details.html'"></div>
 	</tab>
-	<tab heading="Gallery" ng-show="AuthorizedToViewProject">
-		<div ng-include="'app/core/projects/components/project-detail/templates/project-gallery.html'"></div>
-	</tab>
-	<tab heading="Documents" ng-show="AuthorizedToViewProject">
-		<div ng-include="'app/core/projects/components/project-detail/templates/project-files.html'"></div>
-	</tab>
-	<tab heading="Data" ng-show="AuthorizedToViewProject">
+    <tab heading="Gallery" ng-controller="TabGalleryCtrl">
+        <div ng-include="'app/core/projects/components/project-detail/templates/project-gallery.html'"></div>
+    </tab>
+    <tab heading="Documents" ng-controller="TabDocumentsCtrl">
+        <div ng-include="'app/core/projects/components/project-detail/templates/project-documents.html'"></div>
+    </tab>
+	<tab heading="Data" ng-controller="TabDataCtrl">
 		<div class="container-fluid">
 		    <div class="row-fluid">
 		        <div class="span10">
 		     
-		           <div class="gridStyle-small" ng-grid="gridOptions"></div>
+                    <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                        <div id="data-tab-grid" class="ag-blue gridStyle-small"></div>
+                    </div>
 
-		            <p>Number of datasets in this project: {{datasets.length}}</p>
+                    <div class="data-tab-grid-footer">Total datasets in this project: {{datasets.length}}</div>
 
 		        </div>
 		    </div>
@@ -108,125 +110,62 @@
 
 	</tab>
 
-	<!--<tab heading="Instruments">-->
 	<!--<tab heading="Instruments" ng-show="AuthorizedToViewProject && project.Instruments">-->
-	<tab heading="Instruments" ng-show="AuthorizedToViewProject && ShowInstruments">
+	<tab heading="Instruments" ng-show="AuthorizedToViewProject && ShowInstruments" ng-controller="TabInstrumentsCtrl">
 		<div class="container-fluid">
 		    <div class="row-fluid">
-		        <div class="span10">
-		     
-		           <div class="panel panel-default">
+                <div class="span10">
 
-					  <div class="panel-body">
-					  		<h3>{{project.Name}} > Manage Instruments</h3>
+                    <div class="panel panel-default">
 
-					  		<p><i>Manage instruments and their accuracy checks for this project</i></p>
-					  		<hr/>
-							<div project-role="editor" class="panel-body" style="width: 600px;">
-								<h3>Add an Instrument:</h3>
-								
-								<select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-model="selectedInstrument" style="width: 300px;">
-									    <option ng-repeat="instrument in allInstruments" value="{{instrument.Id}}">{{instrument.Name}} - SN:{{instrument.SerialNumber}}</option>
-								</select>
+                            <div class="panel-body">
+                                <div project-role="editor" class="panel-body" style="width: 600px;">
+                                    <h3>Add an Instrument:</h3>
 
-								<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createInstrument()">Create New</button>
-								<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addInstrument()">Add to Project</button>
-								
-							</div>
+                                    <select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-model="selectedInstrument" style="width: 300px;">
+                                        <option ng-repeat="instrument in allInstruments" value="{{instrument.Id}}">{{instrument.Name}} - SN:{{instrument.SerialNumber}}</option>
+                                    </select>
 
-					  		<!--<p><i>Manage instruments and their accuracy checks for this project</i></p>-->
-					  		<!--<hr/>-->
-							
-					  		<div ng-show="project.Instruments.length==0">No instruments are associated with this project.</div>
-					  		<div class="col-md-6 admin-field-list-box" ng-show="project.Instruments.length>0">
-								<div class="row">
-										<div ng-click="viewSelectedInstrument(instrument)" class="admin-field" ng-class="{'admin-field-selected': instrument.Id == viewInstrument.Id}" ng-repeat="instrument in project.Instruments">
-											<span class="admin-field-name">{{instrument.Name}}/{{instrument.SerialNumber}}</span><br/>
-											<span class="admin-field-desc">{{instrument.Description}}</span>
-											<div project-role="editor" ng-class="{'hidden': instrument.Id != viewInstrument.Id}" class="right">
-												<button ng-click="removeViewInstrument()" class="btn btn-xs">Remove</button>
-												<button ng-click="editViewInstrument()" class="btn btn-xs">Edit</button>
-											</div>
-										</div>
-								</div>
+                                    <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createInstrument()">Create New</button>
+                                    <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addInstrument()">Add to Project</button>
 
-							</div>
-							
-							<div ng-show="viewInstrument" class="col-md-6 admin-criteria-list-box">
-								<div class="row">
-									<div class="col-md-12">
-										<div ng-include="'app/core/common/templates/accuracychecks.html'"></div>
-										<div project-role="editor" class="right" style="margin-top: 50px;">
-											<button class="btn" ng-click="openAccuracyCheckForm()">Add</button>
-										</div>
+                                </div>
+                            </div>
 
-									</div>
-								</div>
-								
-							</div>
-					  </div>
-		        </div>
-		    </div>
-		</div>
-		</div>
+
+                            <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                                <div id="instruments-tab-grid" class="ag-blue gridStyle-small"></div>
+                            </div>
+
+                            <div class="data-tab-grid-footer">Total instruments in this project: {{project.Instruments.length}}</div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
 	</tab>
 
 	<!--<tab heading="Fishermen">-->
-	<tab heading="Fishermen" ng-show="AuthorizedToViewProject && ShowFishermen">
+	<tab heading="Fishermen" ng-show="AuthorizedToViewProject && ShowFishermen" ng-controller="TabFishermenCtrl">
 		<div class="container-fluid">
 		    <div class="row-fluid">
 		        <div class="span10">
 		     
-		           <div class="panel panel-default">
-						<div class="panel-body">
-					  		<h3>{{project.Name}} > Manage Fishermen</h3>
+                    <div class="panel panel-default">
 
-					  		<p><i>Manage fisherman for this project</i></p>
-					  		<hr/>
-							<div project-role="editor" class="panel-body" style="width: 600px;">
-								<h3>Add a Fisherman:</h3>
-								
-								<select ui-select2="select2Options" data-placeholder="Add a fisherman" ng-model="selectedFisherman" style="width: 300px;">
-										<!--<option ng-repeat="fisherman in fishermenOptions" value="{{fisherman.Id}}">{{fisherman.FullName}}</option>-->
-										<option ng-repeat="fisherman in fishermenList" value="{{fisherman.Id}}">{{fisherman.FullName}}</option>
-								</select>
+                        <button style="margin: 20px;" class="right btn" ng-click="createFisherman()">Create New</button>
+                        
+                        <div style="height: 400px; width: 100%; margin-top: 80px; margin-bottom: 115px;">
+                            <div id="fisherman-tab-grid" class="ag-blue gridStyle-small"></div>
+                        </div>
 
-								<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createFisherman()">Create New</button>
-								<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addFisherman()">Add to Project</button>
-								
-							</div>
-					  		<div ng-show="project.Fishermen.length==0">No fishermen are associated with this project.</div>
-					  		<div class="col-md-6 admin-field-list-box" ng-show="project.Fishermen.length>0">
-								<div class="row">
-										<div ng-click="viewSelectedFisherman(fisherman)" class="admin-field" ng-class="{'admin-field-selected': fisherman.Id == viewFisherman.Id}" ng-repeat="fisherman in project.Fishermen">
-											<span class="admin-field-name">{{fisherman.FullName}}</span><br/>
-											<span class="admin-field-desc">{{fisherman.PhoneNumber}}</span>											
-											<div project-role="editor" ng-class="{'hidden': fisherman.Id != viewFisherman.Id}" class="right">
-												<button ng-click="removeViewFisherman()" class="btn btn-xs">Remove</button>
-												<button ng-click="editViewFisherman()" class="btn btn-xs">Edit</button>
-											</div>
-										</div>
-								</div>
+                        <div class="data-tab-grid-footer">Total fishermen: {{project.Fishermen.length}}</div>
 
-							</div>
-							
-							<div ng-show="viewFisherman" class="col-md-6 admin-criteria-list-box">
-								<div class="row">
-									<div class="col-md-12">
-										<div ng-include="'app/core/common/templates/fishermanInfo.html'"></div>
-										<div project-role="editor" class="right" style="margin-top: 50px;">
-											<!--<button class="btn" ng-click="openAccuracyCheckForm()">Add</button>-->
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+                    </div>
 		        </div>
 		    </div>
 		</div>
-		<!--</div>-->
 	</tab>
 	<!--<tab heading="Correspondence">-->
 	<tab heading="Correspondence" ng-show="AuthorizedToViewProject && ShowSubproject" ng-controller="TabCorrespondenceController">
@@ -243,20 +182,18 @@
 
                             <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
                                 <div id="crpp-correspondence-grid" class="ag-blue gridStyle-small"></div>
-                                <div class="crpp-correspondence-grid-footer">Total correspondence events: {{subprojectList.length}}</div>
+                                <div class="crpp-correspondence-grid-footer">Total correspondence projects: {{subprojectList.length}}</div>
                             </div>
 
 					
-					  		<div ng-show="subprojectList.length==0">No correspondence projects are associated with this project.</div>
-														
+					  		<div ng-show="subprojectList.length==0">No correspondence projects are associated with this project.</div>						
 						</div>
-						<!--<div class="gridStyle-small" ng-grid="gridOptions"></div>-->
 					</div>
 				</div>
 			</div>
 		</div>
 	</tab>
-	<tab heading="Sites" ng-show="AuthorizedToViewProject && ShowHabitat">
+	<tab heading="Sites" ng-show="AuthorizedToViewProject && ShowHabitat" ng-controller="TabSitesController">
 		<div class="container-fluid">
 		    <div class="row-fluid">
 		        <div class="span10">
@@ -265,88 +202,21 @@
 
 						
 					  		<h3>{{project.Name}} > Manage Sites</h3>
+                            <p><i>Manage Habitat Site Items</i></p>
 
-					  		<p><i>Manage Habitat Site Items</i></p>
-					  		<hr/>
-							<div project-role="editor" class="panel-body" style="width: 600px;">
-								<!--<h3>Add a CRPP Project:</h3>
-								
-								<select ui-select2="select2Options" data-placeholder="Add a Project" ng-model="selectedCorrespondence" style="width: 300px;">
-									    <option ng-repeat="correspondence in correspondenceProjectList" value="{{correspondence.Id}}">{{correspondence.ProjectName}}</option>
-								</select>-->
-							</div>
+                            <button style="margin-left: 10px;" class="right btn" ng-click="createHabSubproject()">Create Site</button>
+                            <button class="right btn" ng-click="openGeospatialDataPage()">Geospatial Data</button>
+					  		
+					  		<br/>
 							
+                            <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                                <div id="hab-sites-grid" class="ag-blue gridStyle-small"></div>
+                                <div class="hab-sites-grid-footer">Total sites: {{subprojectList.length}}</div>
+                            </div>
+
 					  		<div ng-show="subprojectList.length==0">No Habitat items are associated with this project.</div>
-							<!--<div id="correspondenceEventsScrollArea">
-								<a id="ceTop"></a>-->
-								<div ng-show="viewSubproject" class="col-md-6 admin-criteria-list-box">
-									<div class="row">
-										<div class="col-md-12">
-											<div project-role="editor" class="right" style="margin-top: 50px;">
-												<button class="btn" ng-click="openGeospatialDataPage()">Geospatial Data</button>
-												<!--<button class="btn" ng-click="openTest()">Geospatial Data</button>-->
-												<button class="btn" ng-click="openHabitatItemForm()">Add an Item</button>
-												<!--<button class="btn" ng-click="openHabitatTest()">Add an Item</button>-->
-											</div>
-											<div ng-include="'app/private/habitat/components/habitat-sites/templates/habitatItems.html'"></div>
-										</div>
-									</div>
-								</div>
-							<!--</div>-->
 							
-					  		<!--<div class="col-md-6 admin-field-list-box" ng-show="subprojectList.length>0">-->
-					  		<!--<div class="col-md-6 admin-field-list-box">-->
-					  		<div class="right col-md-6 admin-field-list-box">
-								<h4>Habitat Sites</h4>
-								<div id="subprojectScrollArea" >
-									<a id="spHTop"></a>
-
-									<div style="padding: 8px; width: 260; display: table">
-										<!--<input class="form-control" ng-model="gridOptionsFilter.filterText" placeholder="Filter By" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>-->
-										<!--<input class="form-control" ng-model="gridOptionsFilter.$" placeholder="Filter By" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>-->
-										<table>
-											<tr>
-												<td>
-													<div style="display: table-cell"><input class="form-control" ng-model="gridOptionsFilter.ProjectName" placeholder="Filter By Project Name" type="text"/></div>
-													<!--<div style="display: table-cell"><input class="form-control" ng-model="gridOptionsFilter.Agency" placeholder="Filter By Agency" type="text"/></div>-->
-													<!--<div style="display: table-cell"><input class="form-control" ng-model="gridOptionsFilter.ProjectLead" placeholder="Filter By Project Lead" type="text"/></div>-->
-												</td>
-											</tr>
-										</table>
-										<!--<img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>-->
-									</div>
-									<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createHabSubproject()">Create New</button>
-									<!--<button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addCorrespondence()">Add to Project</button>-->
-									<hr>
-									<div class="row">
-										<!--<div ng-click="viewSelectedSubproject(subproject)" class="admin-field" ng-class="{'admin-field-selected': subproject.Id == viewSubproject.Id}" ng-repeat="subproject in subprojectList">-->
-										
-										<div ng-click="viewSelectedSubproject(subproject)" class="admin-field" ng-class="{'admin-field-selected': subproject.Id == viewSubproject.Id}" ng-repeat="subproject in subprojectList | filter: gridOptionsFilter:strict">
-										<!--<div ng-click="viewSelectedSubproject(subproject)" class="admin-field" ng-class="{'admin-field-selected': subproject.Id == viewSubproject.Id}" ng-repeat="subproject in habSubprojectList | filter: gridOptionsFilter:strict">-->
-											<span class="admin-field-name" >{{subproject.ProjectName}}</span><br/>
-											<!--<span class="admin-field-desc">{{subproject.Agency}}, {{subproject.ProjectProponent}}, Closed: {{subproject.Closed}}, Project Lead: {{subproject.ProjectLead}}-->
-											<!--<span class="admin-field-desc">, {{subproject.ProjectProponent}}, Closed: {{subproject.Closed}}, Project Lead: {{subproject.ProjectLead}}-->
-												<div style="display: none;">{{subproject.searchField}}</div>
-											</span>
-											<div project-role="editor" ng-class="{'hidden': subproject.Id != viewSubproject.Id}" class="right">
-												<button ng-click="gotoSubprojectsTop()" class="btn btn-xs">Go to Top of Projects</button>
-												<button ng-click="removeViewSubproject()" class="btn btn-xs">Remove</button>
-												<!--<button ng-click="editViewSubproject()" class="btn btn-xs">Edit</button>-->
-												<button ng-click="editViewSubproject(subproject)" class="btn btn-xs">Edit</button>
-											</div>
-										</div>
-
-												<!--<span class="admin-field-name">{{subproject.ProjectName}}</span><br/>
-												<span class="admin-field-desc">{{subproject.Agency}}, {{subproject.ProjectProponent}}, Closed: {{subproject.Closed}}, Project Lead: {{subproject.ProjectLead}}</span>
-												<div project-role="editor" ng-class="{'hidden': subproject.Id != viewSubproject.Id}" class="right">
-													<button ng-click="removeViewSubproject()" class="btn btn-xs">Remove</button>
-													<button ng-click="editViewSubproject(subproject)" class="btn btn-xs">Edit</button>
-												</div>
-												-->
-
-									</div>
-								</div>
-							</div>
+                            
 							
 					  </div>
 					  <!--<div class="gridStyle-small" ng-grid="gridOptions"></div>-->

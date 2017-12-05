@@ -88,9 +88,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
 
-            { field: 'ActivityDate', headerName: 'Activity Date', filter: 'date', cellRenderer: activityDateTemplate, width: 150 },
-            { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120 },
-            { field: 'headerdata.RunYear', headerName: 'Run Year', cellRenderer: runYearTemplate, width: 120 },
+            { field: 'ActivityDate', headerName: 'Activity Date', filter: 'date', cellRenderer: activityDateTemplate, width: 150, menuTabs: ['filterMenuTab']},
+            { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120, menuTabs: [] },
+            { field: 'headerdata.RunYear', headerName: 'Run Year', cellRenderer: runYearTemplate, width: 120, menuTabs: [] },
             {
                 field: 'headerdata.TimeStart',
                 headerName: 'Time Start',
@@ -98,24 +98,26 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 valueFormatter: function (params) {
                     if (params.node.data.headerdata.TimeStart !== undefined)
                         return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
-                }
+                }, 
+                menuTabs: []
             },
-            { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, minWidth: 100 }, //appraisal
-            { field: 'headerdata.AllotmentStatus', headerName: 'Status', minWidth: 120 },
-            { field: 'Description', headerName: 'Date Range', cellRenderer: desclinkTemplate, minWidth: 200, width:250 },
-            { field: 'Location.Label', headerName: 'Location', cellRenderer: locationLabelTemplate, minWidth: 360 },
-            { field: 'Location.WaterBody.Name', headerName: 'Waterbody' },
-            { field: 'headerdata.FieldActivityType', headerName: 'Field Activity Type', minWidth: 120 },
-            { field: 'headerdata.DataType', headerName: 'Data Type', minWidth: 120 },
+            { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, minWidth: 100, menuTabs: ['filterMenuTab'] }, //appraisal
+            { field: 'headerdata.AllotmentStatus', headerName: 'Status', minWidth: 120, menuTabs: ['filterMenuTab'] },
+            { field: 'Description', headerName: 'Date Range', cellRenderer: desclinkTemplate, minWidth: 200, width: 250, menuTabs: ['filterMenuTab'], filter:'text' },
+            { field: 'Location.Label', headerName: 'Location', cellRenderer: locationLabelTemplate, minWidth: 360, menuTabs: ['filterMenuTab'] },
+            { field: 'Location.WaterBody.Name', headerName: 'Waterbody', menuTabs: ['filterMenuTab'] },
+            { field: 'headerdata.FieldActivityType', headerName: 'Field Activity Type', minWidth: 120, menuTabs: ['filterMenuTab'] },
+            { field: 'headerdata.DataType', headerName: 'Data Type', minWidth: 120, menuTabs: ['filterMenuTab'] },
 
             //all datasets get these
-            { field: 'User.Fullname', headerName: 'By User', minWidth: 120, alwaysShowField: true },  //note: alwaysShowField is true.
+            { field: 'User.Fullname', headerName: 'By User', minWidth: 120, alwaysShowField: true, menuTabs: ['filterMenuTab'] },  //note: alwaysShowField is true.
             {
                 field: 'QAStatus', headerName: 'QA Status', cellRenderer: QATemplate, minWidth: 100,
                 alwaysShowField: true,
+                menuTabs: ['filterMenuTab'],
                 valueGetter: function (params) { return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId]; }
             },
-            { field: 'Actions', headerName: '', cellRenderer: editButtonTemplate, minWidth: 50, alwaysShowField: true },
+            { field: 'Actions', headerName: '', cellRenderer: editButtonTemplate, minWidth: 50, alwaysShowField: true, menuTabs: [] },
 
         ];
 

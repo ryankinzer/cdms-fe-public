@@ -33,8 +33,38 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
 
 			$scope.dataFields = $scope.dataset.Fields;
 
+            if ($scope.dataset.Config !== undefined && $scope.dataset.Config != null) {
+                $scope.dataset.ConfigString = angular.toJson($scope.dataset.Config, true);
+                $scope.parseConfigString();
+            }
+
+            $scope.dataset.DefaultActivityQAStatusId = "" + $scope.dataset.DefaultActivityQAStatusId;
+            $scope.dataset.DefaultRowQAStatusId = "" + $scope.dataset.DefaultRowQAStatusId;
+
+            $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
+            $scope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  
+
+            console.log('-----------------');
+            console.dir($scope.QAStatusList);
+            console.dir($scope.dataset.DefaultActivityQAStatusId);
+            console.dir($scope.dataset);
+
+
+
+            //$scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
+
+
+
 		});
-		
+
+        $scope.logStatus = function () {
+            console.log('-----------------');
+            console.dir($scope.QAStatusList);
+            console.dir($scope.dataset.DefaultActivityQAStatusId);
+            console.log(typeof $scope.dataset.DefaultActivityQAStatusId);
+            console.dir($scope.dataset);
+        };
+
 		$scope.$watch('Sources',function(){
 			if($scope.Sources.length > 0)
 			$scope.SourcesLookup = makeObjects($scope.Sources, 'Id','Name');
@@ -96,11 +126,28 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
 			
 			$scope.saveResults = {};
 			AdminService.saveDatasetField($scope.SelectedField, $scope.saveResults);
-		};
+        };
+
+        $scope.saveConfig = function () {
+            $scope.saveResults = {};
+            dataset.Config = dataset.ConfigString;
+            DatasetService.saveDataset($scope.dataset, $scope.saveResults);
+        };
 
 		$scope.selectField = function(field){
 			$scope.SelectedField = field;
-		};
+        };
+
+        $scope.parseConfigString = function () {
+            try {
+                var ConfigObject = angular.fromJson($scope.dataset.ConfigString);
+                if (ConfigObject)
+                    $scope.ConfigParse = "Parse successful.";
+            } catch (exception) {
+                console.dir(exception);
+                $scope.ConfigParse = exception.message;
+            }
+        }
 		
 
 	}
