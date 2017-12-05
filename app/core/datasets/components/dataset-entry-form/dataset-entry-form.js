@@ -196,7 +196,13 @@ var dataset_entry_form = ['$scope', '$routeParams',
         //update our location options as soon as our project is loaded.
         // The project gets called/loaded in $scope.$watch('dataset.Fields' (above), so $scope.DatastoreTablePrefix was set there.
         $scope.$watch('project.Name', function () {
-            if (!$scope.project.Name) return;
+			// Note:  If we check for the project name without typeof, it throws an error in the debugger, stating that Name is undefined. 
+			// Yes, it does stop the code in its tracks (like the return), but the typeof handles the issue gracefully.
+			//if(!$scope.project.Name) return;
+			if ((typeof $scope.project === 'undefined') || ($scope.project === null))
+				return;
+			else if ((typeof $scope.project.Name === 'undefined') || ($scope.project.Name === null))
+				return;
 
             console.log("Inside watch project.Name...");
             //console.log("$scope.project is next...");
