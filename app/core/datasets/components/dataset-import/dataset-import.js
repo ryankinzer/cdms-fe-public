@@ -2073,7 +2073,22 @@
 						var strIsoDataTime = "";
 						if (typeof item.activityDate === "string")
 						{
-							strIsoDateTime = item.activityDate.replace("T", " ");
+							var slashLoc = item.activityDate.indexOf("/");
+							console.log("slashLoc = " + slashLoc);
+							
+							if (slashLoc > -1)
+							{
+								console.log("The date is in friendly format; need to convert...");
+								strIsoDateTime = formatDateFromFriendlyToUtc(item.activityDate);
+								item.activityDate = strIsoDateTime.replace(" ", "T");
+								var periodLoc = strIsoDateTime.indexOf(".");
+								strIsoDateTime = strIsoDateTime.substring(0, periodLoc);
+							}	
+							else
+							{
+								console.log("The date is in UTC; OK...");
+								strIsoDateTime = item.activityDate.replace("T", " ");
+							}
 						}
 						else // date object
 						{
@@ -2176,7 +2191,7 @@
 							}
 							console.log("After the 'if' promise.length...");
 						});
-						console.log("Location after promise.then (but it may not have completed yet... ");
+						console.log("Location after promise.then (but it may not have completed yet)... ");
 					}
 				}
 				console.log("$scope.dataSheetDataset is next...");
