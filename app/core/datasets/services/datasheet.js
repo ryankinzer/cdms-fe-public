@@ -622,7 +622,12 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
             //fired whenever a cell value changes.
             updateCell: function (row, field_name, scope) {
+				console.log("Inside datasheet.js, updateCell...");
+				console.log("row is next...");
+				console.dir(row);
                 //console.log("Field changed: " + field_name);
+				console.log("scope is next...");
+				console.dir(scope);
 
                 scope.dataChanged = true;
 
@@ -630,7 +635,10 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                     var fromValue = scope.onRow.entity[field_name];
                     var toValue = row.entity[field_name];
 
-                    console.log("Changed " + field + " from: " + fromValue + " to: " + toValue);
+                    //console.log("Changed " + field + " from: " + fromValue + " to: " + toValue);
+                    console.log("Changed " + field_name + " from: " + fromValue + " to: " + toValue);
+					
+					//scope.removeRowErrorsBeforeRecheck();
                 }
                 //console.log("has an id? " + row.entity.Id);
 
@@ -744,7 +752,15 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                 //this is expensive in that it runs every time a value is changed in the grid.
                 scope.validateGrid(scope); //so that number of errors gets calculated properly.
 
-
+				if ((field_name === "ReadingDateTime") || (field_name === "activityDate"))
+				{
+					console.log("Found " + field_name);
+					if ((typeof scope.activities !== 'undefined') && (scope.activities !== null))
+						scope.activities.errors = undefined;
+					
+					//scope.removeRowErrorsBeforeRecheck();
+					scope.checkForDuplicates();
+				}
             },
 
 
