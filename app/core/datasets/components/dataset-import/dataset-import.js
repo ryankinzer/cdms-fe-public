@@ -738,6 +738,7 @@
 			};
 
 			$scope.floatErrorsToTop = function(){
+				console.log("Inside $scope.floatErrorsToTop...");
 				//iterate and split errors from valid records.
 				angular.forEach($scope.dataSheetDataset, function(row, key){
 					if(row.isValid)
@@ -2111,92 +2112,76 @@
 					
 					//console.log("$scope.datasetId = " + $scope.datasetId + ", $scope.row.locationId = " + $scope.row.locationId + ", $scope.row.activityDate = " + $scope.row.activityDate);
 					console.log("$scope.datasetId = " + $scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
-					//$scope.SpecificActivitiesResults = null;
 					var promise = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
-					//var promise = $scope.specificActivities = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
-					//$scope.specificActivities = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
-				}
-				console.log("$scope.dataSheetDataset is next...");
-				console.dir($scope.dataSheetDataset);
-				//console.log("$scope.specificActivities is next...");
-				//console.dir($scope.specificActivities);
-			};
-			
-			//$scope.$watch('specificActivities.length', function(){
-			//	if ($scope.specificActivities === null ) return;
-				
-				//console.log("Inside watch specificActivities.length...");
-				
-				console.log("typeof $promise = " + typeof promise);
-				if (typeof promise !== 'undefined') 
-				{
-					console.log("promise is exists, but has not results yet...")
-					console.dir(promise);
 					
-					promise.$promise.then(function(list){
-						console.log("promise is received its results and is next...");
+					console.log("typeof $promise = " + typeof promise);
+					if (typeof promise !== 'undefined') 
+					{
+						console.log("promise is exists, but has no results yet...")
 						console.dir(promise);
-						if (promise.length > 0)
-						//console.log("typeof $scope.specificActivities = " + typeof $scope.specificActivities);
-						//if ((typeof $scope.specificActivities !== 'undefined') && ($scope.specificActivities.length > 0))
-						{
-							$scope.duplicateEntry = true;
-							var duplicateItems = angular.copy($scope.specificActivities);
-							
-							if ($scope.showHeaderForm)
+						
+						promise.$promise.then(function(list){
+							console.log("promise received its results and is next...");
+							console.dir(promise);
+							if (promise.length > 0)
 							{
-								$scope.activities.errors = {};
-								$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
+								$scope.duplicateEntry = true;
+								var duplicateItems = angular.copy(promise);								
+								
+								if ($scope.showHeaderForm)
+								{
+									$scope.activities.errors = {};
+									$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
+								}
+								else
+								{
+									angular.forEach(duplicateItems, function(item){
+										console.log("item is next...");
+										console.dir(item);
+										
+										// The datetime coming back from the backend has a "T" in it; we must remove it.
+										item.ActivityDate = item.ActivityDate.replace("T", " ");
+										//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
+										
+										angular.forEach($scope.dataSheetDataset, function(detailRecord){
+											// In order tom compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
+											//strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.activityDate);
+											strIsoDateTime = detailRecord.activityDate;
+											strIsoDateTime = strIsoDateTime.replace("T", " ");
+											
+											// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
+											strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
+											console.log("item.ActivityDate = " + item.ActivityDate + ", strIsoDateTime = " + strIsoDateTime);
+											if (item.ActivityDate === strIsoDateTime)
+											{
+												console.log("Found dupe...");
+												if (!detailRecord.errors)
+													detailRecord.errors = [];
+												
+												// All three of these are required to turn the lines with errors red.
+												detailRecord.isValid = false;
+												detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
+												$scope.gridHasErrors = true;
+											}
+										});
+										console.log("Finished inside looping through $scope.dataSheetDataset for ActivityDate errors...");
+									});
+									console.log("Finished outside looping through duplicateItems for ActivityDate errors...");
+								}
+								console.log("After 'if' checking for duplicates...");
 							}
 							else
 							{
-								angular.forEach(duplicateItems, function(item){
-									console.log("item is next...");
-									console.dir(item);
-									
-									// The datetime coming back from the backend has a "T" in it; we must remove it.
-									item.ActivityDate = item.ActivityDate.replace("T", " ");
-									//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
-									
-									angular.forEach($scope.dataSheetDataset, function(detailRecord){
-										// In order tom compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
-										//strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.activityDate);
-										strIsoDateTime = detailRecord.activityDate;
-										strIsoDateTime = strIsoDateTime.replace("T", " ");
-										
-										// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
-										strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
-										console.log("item.ActivityDate = " + item.ActivityDate + ", strIsoDateTime = " + strIsoDateTime);
-										if (item.ActivityDate === strIsoDateTime)
-										{
-											console.log("Found dupe...");
-											if (!detailRecord.errors)
-												detailRecord.errors = [];
-											
-											// All three of these are required to turn the lines with errors red.
-											detailRecord.isValid = false;
-											detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
-											$scope.gridHasErrors = true;
-										}
-									});
-									console.log("Finished inside looping through $scope.dataSheetDataset for ActivityDate errors...");
-								});
-								console.log("Finished outside looping through duplicateItems for ActivityDate errors...");
+								$scope.duplicateEntry = false;
 							}
-							console.log("After 'if' checking for duplicates...");
-						}
-						else
-						{
-							$scope.duplicateEntry = false;
-						//	console.log("$scope.specificActivities is next...");
-						//	console.dir($scope.specificActivities);
-						}
-						console.log("After the 'if' promise.length...");
-					});
-					console.log("Location after promise.then (but it may not have completed yet... ");
+							console.log("After the 'if' promise.length...");
+						});
+						console.log("Location after promise.then (but it may not have completed yet... ");
+					}
 				}
-				console.log("Location after 'if' promise is undefined... ");
-			//});
+				console.log("$scope.dataSheetDataset is next...");
+				console.dir($scope.dataSheetDataset);
+			};
 			
 			$scope.removeRowErrorsBeforeRecheck = function()
 			{
