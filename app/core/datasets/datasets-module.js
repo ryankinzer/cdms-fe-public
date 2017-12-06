@@ -1,38 +1,35 @@
 ﻿// defines the dataset module and all dataset controllers.
 
-//dataset module and its dependencies
-var datasets_module = angular.module('DatasetModule', ['ui.bootstrap','ngResource']);
-
 //load the components for this module
 require([
 
     //loads the dataset functions
-    'app/core/datasets/datasets-functions',
+    'core/datasets/datasets-functions',
 
     //loads the dataset filters
-    'app/core/datasets/datasets-filters',
+    'core/datasets/datasets-filters',
 
     //load all components for the dataset module
-    'app/core/datasets/components/dataset-activities-list/dataset-activities-list',
-    'app/core/datasets/components/dataset-detail/dataset-detail',
-    'app/core/datasets/components/dataset-editor/dataset-edit-form',
-    'app/core/datasets/components/dataset-entry-form/dataset-entry-form',
-    'app/core/datasets/components/dataset-entry-sheet/dataset-entry-sheet',
-    'app/core/datasets/components/dataset-view/dataset-view',
-    'app/core/datasets/components/dataset-view/modal-qa-update',
-    'app/core/datasets/components/dataset-view/modal-data-entry',
-    'app/core/datasets/components/dataset-import/dataset-import',
-    'app/core/datasets/components/dataset-import/modal-dataset-duplicates',
-    'app/core/datasets/components/dataset-query/dataset-query',
-    'app/core/datasets/components/dataset-query/big-bucket-query',
-    //'app/core/datasets/components/dataset-relationgrid/modal-relationgrid',
+    'core/datasets/components/dataset-activities-list/dataset-activities-list',
+    'core/datasets/components/dataset-detail/dataset-detail',
+    'core/datasets/components/dataset-editor/dataset-edit-form',
+    'core/datasets/components/dataset-entry-form/dataset-entry-form',
+    'core/datasets/components/dataset-entry-sheet/dataset-entry-sheet',
+    'core/datasets/components/dataset-view/dataset-view',
+    'core/datasets/components/dataset-view/modal-qa-update',
+    'core/datasets/components/dataset-view/modal-data-entry',
+    'core/datasets/components/dataset-import/dataset-import',
+    'core/datasets/components/dataset-import/modal-dataset-duplicates',
+    'core/datasets/components/dataset-query/dataset-query',
+    'core/datasets/components/dataset-query/big-bucket-query',
+    //'core/datasets/components/dataset-relationgrid/modal-relationgrid',
 
     //load the various dataset services
-    'app/core/datasets/services/dataset-service',
-    'app/core/datasets/services/activity-parser',
-    'app/core/datasets/services/convert-status',
-    'app/core/datasets/services/datasheet',
-    'app/core/datasets/services/file-upload',
+    'core/datasets/services/dataset-service',
+    'core/datasets/services/activity-parser',
+    'core/datasets/services/convert-status',
+    'core/datasets/services/datasheet',
+    'core/datasets/services/file-upload',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!

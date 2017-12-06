@@ -1,30 +1,27 @@
 ﻿// defines the project module and all project controllers.
 
-//project module and its dependencies
-var projects_module = angular.module('ProjectModule', ['ui.bootstrap', 'angularFileUpload', 'ui.select2', 'ngResource']);
-
 //load the components for this module
 require([
-    'app/core/projects/components/project-detail/project-detail',
-    'app/core/projects/components/project-detail/modal-new-file',
-    'app/core/projects/components/project-detail/modal-edit-file',
-    'app/core/projects/components/project-detail/modal-edit-project',
-    'app/core/projects/components/project-detail/modal-delete-file',
-    'app/core/projects/components/project-detail/modal-choose-summary-images',
-    'app/core/projects/components/project-detail/modal-choose-map',
-    'app/core/projects/components/project-detail/modal-add-accuracy-check',
+    'core/projects/components/project-detail/project-detail',
+    'core/projects/components/project-detail/modal-new-file',
+    'core/projects/components/project-detail/modal-edit-file',
+    'core/projects/components/project-detail/modal-edit-project',
+    'core/projects/components/project-detail/modal-delete-file',
+    'core/projects/components/project-detail/modal-choose-summary-images',
+    'core/projects/components/project-detail/modal-choose-map',
+    'core/projects/components/project-detail/modal-add-accuracy-check',
     //tabs for the project detail page
-    'app/core/projects/components/project-detail/project-detail-tab-instruments',
-    'app/core/projects/components/project-detail/project-detail-tab-fishermen',
-    'app/core/projects/components/project-detail/project-detail-tab-data',
-    'app/core/projects/components/project-detail/project-detail-tab-documents',
-    'app/core/projects/components/project-detail/project-detail-tab-gallery',
+    'core/projects/components/project-detail/project-detail-tab-instruments',
+    'core/projects/components/project-detail/project-detail-tab-fishermen',
+    'core/projects/components/project-detail/project-detail-tab-data',
+    'core/projects/components/project-detail/project-detail-tab-documents',
+    'core/projects/components/project-detail/project-detail-tab-gallery',
 
-    'app/core/projects/components/project-list/project-list',
+    'core/projects/components/project-list/project-list',
 
     //load project service
-    'app/core/projects/services/project-service',
-    'app/core/projects/services/subproject-service',
+    'core/projects/services/project-service',
+    'core/projects/services/subproject-service',
 
     
 

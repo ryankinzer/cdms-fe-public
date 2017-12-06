@@ -1,16 +1,14 @@
 ﻿// defines the admin module and loads the components, controllers and services
 
-var admin_module = angular.module('AdminModule', ['ui.bootstrap', 'ngResource']);
-
 //load the components for this module
 require([
-    'app/core/admin/components/admin-page/admin-view',
-    'app/core/admin/components/admin-page/admin-add-project-dataset',
-    'app/core/admin/components/admin-page/admin-edit-dataset',
-    'app/core/admin/components/admin-page/admin-edit-master',
+    'core/admin/components/admin-page/admin-view',
+    'core/admin/components/admin-page/admin-add-project-dataset',
+    'core/admin/components/admin-page/admin-edit-dataset',
+    'core/admin/components/admin-page/admin-edit-master',
 
     //service
-    'app/core/admin/admin-service',
+    'core/admin/admin-service',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!

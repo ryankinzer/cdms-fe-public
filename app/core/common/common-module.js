@@ -1,55 +1,42 @@
 ﻿// defines cross-module functions, components and services that we can use in anywhere
 
-var common_module = angular.module('CommonModule', ['ui.bootstrap', 'ngResource']);
-
 //I wish you could just specify a directory and it would find the files and load them, but
 // requirejs doesn't work that way so we have to reference each one by hand. -kb
 require([
 
     //loads a variety of common functions
-    'app/core/common/common-functions',
+    'core/common/common-functions',
 
     //loads services used by other modules
-    'app/core/common/services/common-service',
-    'app/core/common/services/logger',
-    'app/core/common/services/service-utilities',
-    'app/core/common/services/wish',
+    'core/common/services/common-service',
+    'core/common/services/logger',
+    'core/common/services/service-utilities',
+    'core/common/services/wish',
 
     //loads the common controllers
-    'app/core/common/components/modals/modal-quick-add-accuracycheck',
-    'app/core/common/components/modals/modal-quick-add-characteristic',
-    'app/core/common/components/modals/modal-add-location',
-    'app/core/common/components/modals/modal-create-instrument',
-    'app/core/common/components/modals/modal-bulk-rowqa-change',
-    'app/core/common/components/modals/modal-save-success',
-    'app/core/common/components/modals/modal-create-fisherman',
-    'app/core/common/components/modals/modal-link-field',
-    'app/core/common/components/modals/modal-verify-action',
-    'app/core/common/components/modals/modal-invalid-operation',
+    'core/common/components/modals/modal-quick-add-accuracycheck',
+    'core/common/components/modals/modal-quick-add-characteristic',
+    'core/common/components/modals/modal-add-location',
+    'core/common/components/modals/modal-create-instrument',
+    'core/common/components/modals/modal-bulk-rowqa-change',
+    'core/common/components/modals/modal-save-success',
+    'core/common/components/modals/modal-create-fisherman',
+    'core/common/components/modals/modal-link-field',
+    'core/common/components/modals/modal-verify-action',
+    'core/common/components/modals/modal-invalid-operation',
 
-    'app/core/common/components/file/modal-file-add',
-    'app/core/common/components/file/modal-file-delete',
-    'app/core/common/components/file/modal-files',
-    'app/core/common/components/file/modal-exportfile',
-
-    //loads common services
-    'app/core/common/components/chart/adultweir-chartservice',
-    'app/core/common/components/chart/artificialproduction-chartservice',
-    'app/core/common/components/chart/bsample-chartservice',
-    'app/core/common/components/chart/creelsurvey-chartservice',
-    'app/core/common/components/chart/electrofishing-chartservice',
-    'app/core/common/components/chart/snorkelfish-chartservice',
-    'app/core/common/components/chart/waterquality-chartservice',
-    'app/core/common/components/chart/watertemp-chartservice',
-    'app/core/common/components/chart/chart-services',                    //the wrapper for them all...
-
+    'core/common/components/file/modal-file-add',
+    'core/common/components/file/modal-file-delete',
+    'core/common/components/file/modal-files',
+    'core/common/components/file/modal-exportfile',
+    
     //load other common directives
-    'app/core/common/directives/checklists',
-    'app/core/common/directives/feature-layer',
-    'app/core/common/directives/map',
-    'app/core/common/directives/field-definitions',
-    'app/core/common/directives/roles',
-    'app/core/common/directives/validation',
+    'core/common/directives/checklists',
+    'core/common/directives/feature-layer',
+    'core/common/directives/map',
+    'core/common/directives/field-definitions',
+    'core/common/directives/roles',
+    'core/common/directives/validation',
 
 
 
@@ -72,9 +59,24 @@ require([
     common_module.controller('FileAddModalCtrl', modal_file_add);
     common_module.controller('FileDeleteModalCtrl', modal_file_delete);
     common_module.controller('FileModalCtrl', modal_files); 
-
     
-    //services
+});
+
+
+//We load these asych with the others
+require([
+    //loads chart services
+    'core/common/components/chart/adultweir-chartservice',
+    'core/common/components/chart/artificialproduction-chartservice',
+    'core/common/components/chart/bsample-chartservice',
+    'core/common/components/chart/creelsurvey-chartservice',
+    'core/common/components/chart/electrofishing-chartservice',
+    'core/common/components/chart/snorkelfish-chartservice',
+    'core/common/components/chart/waterquality-chartservice',
+    'core/common/components/chart/watertemp-chartservice',
+
+], function () {
+
     //there is a chartservice for each dataset.
     // NOTE: If you are creating a new dataset, you'll want to make a chartservice for it.
     common_module.service('AdultWeir_ChartService', adultweir_chartservice);
@@ -86,8 +88,12 @@ require([
     common_module.service('WaterQuality_ChartService', waterquality_chartservice);
     common_module.service('WaterTemp_ChartService', watertemp_chartservice);
 
-    //the master chartservice that exposes all of the other dataset-specific chart services
-    common_module.service('ChartService', chart_services);
-
+    //and then we only load this one after the others are done...
+    require([
+        'core/common/components/chart/chart-services',                    //the wrapper for them all...
+    ], function () {
+        //the master chartservice that exposes all of the other dataset-specific chart services
+        common_module.service('ChartService', chart_services);
+        
+    });
 });
-
