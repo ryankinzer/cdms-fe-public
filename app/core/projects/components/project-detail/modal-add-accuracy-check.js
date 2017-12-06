@@ -9,7 +9,8 @@ module_add_accuracy_check = ['$scope', '$modalInstance', 'ProjectService',
             var promise = ProjectService.saveInstrumentAccuracyCheck($scope.viewInstrument.Id, $scope.ac_row);
 
             promise.$promise.then(function () {
-                $scope.reloadProject();
+                //$scope.reloadProject();
+                $scope.postInstrumentAccuracyCheckUpdateGrid(promise);
                 $modalInstance.dismiss();
             });
         };

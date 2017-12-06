@@ -86,7 +86,7 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 					{
 						console.log("file.success does not exist yet...");
 						$scope.upload = $upload.upload({
-							url: serviceUrl + '/data/UploadProjectFile',
+							url: serviceUrl + '/api/v1/file/UploadProjectFile',
 							method: "POST",
 							// headers: {'headerKey': 'headerValue'},
 							// withCredential: true,
@@ -96,7 +96,18 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 							}).progress(function(evt) {
 								console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
 							}).success(function(data, status, headers, config) {
-								config.file.success = "Success";
+                                config.file.success = "Success";
+                                /*
+                                console.log("Back from save = data");
+                                console.dir(data);
+                                console.log("Back from save = config");
+                                console.dir(config);
+                                console.log("Back from save = status");
+                                console.dir(status);
+                                console.log("Back from save = headers");
+                                console.dir(headers);
+                                */
+                                $scope.callback(data);
 							})
 							.error(function(data, status, headers, config) {
 								$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
@@ -110,8 +121,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 		};
 
 		$scope.cancel = function(){
-			if($scope.uploadFiles)
-				$scope.reloadProject();
+			//if($scope.uploadFiles)
+			//	$scope.reloadProject();
 
 			$scope.foundDuplicate = undefined;
 

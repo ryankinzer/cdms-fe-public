@@ -4,9 +4,9 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div project-role="editor">
-                        <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="newGalleryFile()">New Image File</button>
+                        <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="newFile()">New File</button>
                     </div>
-                         
+
                     <div class="project-files">
                         <!--
                         <div style="padding: 8px; width: 260px;">
@@ -14,14 +14,15 @@
                         </div>-->
 
                         <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
-                            <div id="gallery-tab-grid" class="ag-blue gridStyle-small"></div>
+                            <div id="docs-tab-grid" class="ag-blue gridStyle-small"></div>
                         </div>
 
-                        <div class="data-tab-grid-footer">Number of images in this project: {{project.Images.length}}</div>
+                        <div class="data-tab-grid-footer">Number of files in this project: {{project.Docs.length}}</div>
 
                     </div>
-                 </div>
                 </div>
+            </div>
         </div>
     </div>
 </div>
+

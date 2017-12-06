@@ -16,10 +16,7 @@ define([
 	 [
 	  'ngRoute',						// assets/js/angular/angular-route.js (referred to in js/controllers/login-controller.js)
       'ngGrid',							// assets/js/ng-grid-2.0.7.ken.js (referred to in js/main.js)
-      'angularFileUpload',				// assets/js/angular-file-upload/angular-file-upload.js (referred to in controllers.js)
-      'angularCharts',					// assets/js/angular-charts.ken.js
-
-
+      
       //these are the cdms modules
       'CommonModule',
       'ProjectModule',
@@ -27,9 +24,12 @@ define([
       'AdminModule',
       'PreferencesModule',
 
+      'angularFileUpload',				
+      'angularCharts',					
+
       //these are ctuir specific
-      'AppraisalsModule',
       'CrppModule',
+      'AppraisalsModule',
       'HabitatModule',
 
 	  ])
@@ -38,29 +38,29 @@ define([
             $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'project-list-ctrl'});
             $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets.html', controller: 'project-detail-ctrl'});
 
-	        $routeProvider.when('/mydata', {templateUrl: 'app/core/preferences/components/dataset-preferences/templates/mydatasets.html', controller: 'MyDatasetsCtrl'});
+            $routeProvider.when('/mydata', { templateUrl: 'app/core/preferences/components/dataset-preferences/templates/mydatasets.html', controller: 'MyDatasetsCtrl'});
             $routeProvider.when('/myprojects', { templateUrl: 'app/core/preferences/components/project-preferences/templates/myprojects.html', controller: 'MyProjectsCtrl'});
             $routeProvider.when('/mypreferences', { templateUrl: 'app/core/preferences/components/my-preferences/templates/mypreferences.html', controller: 'MyPreferencesCtrl'});
             $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit'});
-	        $routeProvider.when('/dataview/:Id', {templateUrl: 'app/core/datasets/components/dataset-view/templates/dataset-view.html', controller: 'DatasetViewCtrl'});
-	        $routeProvider.when('/dataentry/:Id',{templateUrl: 'app/core/datasets/components/dataset-entry-sheet/templates/dataset-entry-sheet.html', controller: 'DataEntryDatasheetCtrl', permission: 'Edit'});
+            $routeProvider.when('/dataview/:Id', { templateUrl: 'app/core/datasets/components/dataset-view/templates/dataset-view.html', controller: 'DatasetViewCtrl'});
+            $routeProvider.when('/dataentry/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-sheet/templates/dataset-entry-sheet.html', controller: 'DataEntryDatasheetCtrl', permission: 'Edit'});
             $routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-form/templates/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});
             $routeProvider.when('/edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-editor/templates/dataset-edit-form.html', controller: 'DataEditCtrl', permission: 'Edit'});
-	        $routeProvider.when('/datasetquery/:Id',{templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DataQueryCtrl'});
-	        $routeProvider.when('/dataset-details/:Id',{templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-view.html', controller: 'DatasetDetailsCtrl'});
-	        $routeProvider.when('/datasetimport/:Id',{templateUrl: 'app/core/datasets/components/dataset-import/templates/dataset-import.html', controller: 'DatasetImportCtrl', permission: 'Edit'});
+            $routeProvider.when('/datasetquery/:Id', { templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DataQueryCtrl'});
+            $routeProvider.when('/dataset-details/:Id', { templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-view.html', controller: 'DatasetDetailsCtrl'});
+            $routeProvider.when('/datasetimport/:Id', { templateUrl: 'app/core/datasets/components/dataset-import/templates/dataset-import.html', controller: 'DatasetImportCtrl', permission: 'Edit'});
             $routeProvider.when('/dataset-edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-edit.html', controller: 'DatasetDetailsCtrl', permission: 'Edit'});
 
-	        $routeProvider.when('/query/:Id', {templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DatastoreQueryCtrl'});
+            $routeProvider.when('/query/:Id', { templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DatastoreQueryCtrl'});
             $routeProvider.when('/admin', { templateUrl: 'app/core/admin/components/admin-page/templates/admin.html', controller: 'AdminCtrl'});
             $routeProvider.when('/admin-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-dataset.html', controller: 'AdminEditDatasetCtrl'});
 
             $routeProvider.when('/admin-master/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-master.html', controller: 'AdminEditMasterCtrl'});
 
 	        //custom routes for datasets that require custom controller+pages
-	        $routeProvider.when('/appraisals/:Id', {templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
-            //$routeProvider.when('/crpp/:Id', { templateUrl: 'app/private/crpp/components/crpp-contracts/templates/Crpp-contracts.html', controller: 'CrppContractsCtrl'});
-	        $routeProvider.when('/unauthorized', {templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
+            $routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
+            //$routeProvider.when('/crpp/:Id', { templateUrl: 'private/crpp/components/crpp-contracts/templates/Crpp-contracts.html', controller: 'CrppContractsCtrl'});
+            $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
 
 	        //when all else fails...
 	        $routeProvider.otherwise({redirectTo: '/projects'});

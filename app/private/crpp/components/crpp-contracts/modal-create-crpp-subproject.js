@@ -803,7 +803,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 $scope.subproject_row.OtherCounty = null; // Throw this away, because we do not want to save it; no database field or it.
             }
             $scope.subproject_row = 'undefined';
-            $scope.reloadSubprojects();
+            //$scope.reloadSubprojects();
             $modalInstance.dismiss();
         };
         /*

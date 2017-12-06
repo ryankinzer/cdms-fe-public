@@ -1,19 +1,17 @@
 ﻿// defines the crpp module
 
-var crpp_module = angular.module('CrppModule', ['ui.bootstrap', 'ngResource']);
-
 require([
     //controllers
-    //'app/private/crpp/components/crpp-contracts/crpp-contracts',
-    'app/private/crpp/components/crpp-contracts/modal-add-correspondence-event',
-    'app/private/crpp/components/crpp-contracts/modal-create-crpp-subproject',
-    'app/private/crpp/components/crpp-contracts/tab-correspondence',
+    //'private/crpp/components/crpp-contracts/crpp-contracts',
+    'private/crpp/components/crpp-contracts/modal-add-correspondence-event',
+    'private/crpp/components/crpp-contracts/modal-create-crpp-subproject',
+    'private/crpp/components/crpp-contracts/tab-correspondence',
 
     //directives
-    'app/private/crpp/contracts-map-directive',
+    'private/crpp/contracts-map-directive',
 
     //renderer for master/detail in grid - used on project-details page (until it gets consolidated to this module)
-    //'app/private/crpp/components/crpp-contracts/renderer-correspondence-detail',
+    //'private/crpp/components/crpp-contracts/renderer-correspondence-detail',
 
 ], function () {
     //crpp_module.controller('CrppContractsCtrl', crpp_contracts);

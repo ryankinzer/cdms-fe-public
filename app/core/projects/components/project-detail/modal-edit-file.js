@@ -7,7 +7,7 @@ var modal_edit_file = ['$scope', '$modalInstance', 'ProjectService',
 		$scope.save = function(){
 			var promise = ProjectService.updateFile($scope.project.Id, $scope.row);
 			promise.$promise.then(function(){
-				$scope.reloadProject();
+				$scope.callback(promise);
 				$modalInstance.dismiss();
 			});
 		};
