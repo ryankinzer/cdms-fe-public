@@ -58,7 +58,7 @@
                     setTimeout(function () {
                         angular.bootstrap(document.body, ['app']);
                         console.log("all systems GO!")
-                    }, 4000);
+                    }, 0);
                 });
                 
                 
