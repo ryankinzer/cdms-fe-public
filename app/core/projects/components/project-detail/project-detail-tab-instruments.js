@@ -227,7 +227,7 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
 			*/
             if (!scope.selectedInstrument || scope.selectedInstrument === null )
             {
-				alert("Either no instrument is selected, or the selected instrument is already in the project"); 
+                alert("Please select an Instrument from the dropdown to add to this project."); 
                 return;
             }
 
