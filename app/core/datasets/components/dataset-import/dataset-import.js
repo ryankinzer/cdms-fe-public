@@ -704,6 +704,10 @@
 				//get latest accuracy check
 				$scope.viewInstrument = getByField($scope.project.Instruments, $scope.ActivityFields.InstrumentId, "Id");
 				
+				$scope.errors = undefined;
+				$scope.dataSheetDataset = [];
+				$scope.displayImportPreview();
+				
 				// If the page is refreshed and the cache is flushed, $scope.viewInstrument is null at first.
 				if ((typeof $scope.viewInstrument !== 'undefined') && ($scope.viewInstrument !== null))				
 				{
