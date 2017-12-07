@@ -91,9 +91,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
             { field: 'ActivityDate', 
 				headerName: 'Activity Date',
 				valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object				
-				filter: 'date', 
+                filter: 'date', 
+                filterParams: { apply: true },
 				cellRenderer: activityDateTemplate, 
-				width: 150, 
+				width: 180, 
 				menuTabs: ['filterMenuTab']
 			},
             { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120, menuTabs: [] },
@@ -141,8 +142,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
             showToolPanel: false,
             columnDefs: [],
             rowData: [],
-            filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
-            debug: true,
             rowSelection: 'multiple',
             onSelectionChanged: function (params) {
                 $scope.agGridOptions.selectedItems = $scope.agGridOptions.api.getSelectedRows();
