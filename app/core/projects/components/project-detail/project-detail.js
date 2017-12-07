@@ -118,6 +118,11 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             //load the project's files
             scope.project.Files = ProjectService.getProjectFiles(scope.project.Id);
 
+            //since we want a tab of images and a tab of other files, 
+            // split them out into two arrays we will use to populate the two grids.
+            scope.project.Images = [];
+            scope.project.Docs = [];
+
             //once they load... (the docs and gallery tabs listen for this and then handle their grids.)
             var file_watcher = scope.$watch('project.Files', function () {
                 if (typeof scope.project.Files === 'undefined' || scope.project.Files.length === 0)
@@ -125,12 +130,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
                 file_watcher();
                 //console.log('-------------- project FILES are loaded >>>>>>>>>>>>>>>> ');
-
-                //since we want a tab of images and a tab of other files, 
-                // split them out into two arrays we will use to populate the two grids.
-                scope.project.Images = [];
-                scope.project.Docs = [];
-
+                
                 scope.project.Files.forEach(function (file, key) {
                     // If the user created a document and left the Title or Description blank, those fields were saved as "undefined" in the database.
                     // When we read the list of files back in, the "undefined" shows on the page, and the user would rather have a blank show instead.
