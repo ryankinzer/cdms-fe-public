@@ -1018,7 +1018,7 @@
 
 						//set default Row QA StatusId
 						//if (($scope.dataset.Datastore.TablePrefix === "WaterTemp") && ($scope.dataset.RowQAStatuses.length > 1))
-							console.log("Before new_row...");
+							//console.log("Before new_row...");
 							var new_row = {
 								RowQAStatusId: $scope.dataset.DefaultRowQAStatusId
 							};
@@ -1053,8 +1053,8 @@
 						else
 							new_row.QAStatusId = $scope.ActivityFields.QAStatusId;
 						
-						console.log("$scope.mappedActivityFields is next...");
-						console.dir($scope.mappedActivityFields);
+						//console.log("$scope.mappedActivityFields is next...");
+						//console.dir($scope.mappedActivityFields);
 						if($scope.mappedActivityFields[INDEX_FIELD])
 							new_row.activityIndex = data_row[$scope.mappedActivityFields[INDEX_FIELD]];
 
@@ -1628,10 +1628,10 @@
 						
 						new_row.errors = angular.copy(new_row.errors);
 						
-						console.log("new_row is next...");
-						console.dir(new_row);
-						console.log("new_row.errors is next...");
-						console.dir(new_row.errors);
+						//console.log("new_row is next...");
+						//console.dir(new_row);
+						//console.log("new_row.errors is next...");
+						//console.dir(new_row.errors);
 						//add imported row to datasheet.
 						if(new_row.activityDate)
 							$scope.dataSheetDataset.push(new_row);
@@ -1659,7 +1659,7 @@
 				$scope.toggleDuplicates();
 
             	//$scope.validateGrid($scope);
-				console.log("$scope.callingPage = " + $scope.callingPage);
+				//console.log("$scope.callingPage = " + $scope.callingPage);
             	$scope.validateGrid($scope);
         		$scope.floatErrorsToTop();
 
@@ -2094,19 +2094,19 @@
 					
 					count = 0;
 					angular.forEach($scope.dataSheetDataset, function(item){
-						console.log("item is next...");
-						console.dir(item);
+						//console.log("item is next...");//***
+						//console.dir(item);//***
 						
-						console.log("typeof item.activityDate = " + typeof item.activityDate);
+						//console.log("typeof item.activityDate = " + typeof item.activityDate);//***
 						var strIsoDataTime = "";
 						if (typeof item.activityDate === "string")
 						{
 							var slashLoc = item.activityDate.indexOf("/");
-							console.log("slashLoc = " + slashLoc);
+							//console.log("slashLoc = " + slashLoc);
 							
 							if (slashLoc > -1)
 							{
-								console.log("The date is in friendly format; need to convert...");
+								//console.log("The date is in friendly format; need to convert...");
 								strIsoDateTime = formatDateFromFriendlyToUtc(item.activityDate);
 								item.activityDate = strIsoDateTime.replace(" ", "T");
 								var periodLoc = strIsoDateTime.indexOf(".");
@@ -2114,7 +2114,7 @@
 							}	
 							else
 							{
-								console.log("The date is in UTC; OK...");
+								//console.log("The date is in UTC; OK...");
 								strIsoDateTime = item.activityDate.replace("T", " ");
 							}
 						}
@@ -2179,8 +2179,8 @@
 								else
 								{
 									angular.forEach(duplicateItems, function(item){
-										console.log("item is next...");
-										console.dir(item);
+										//console.log("item is next...");
+										//console.dir(item);
 										
 										// The datetime coming back from the backend has a "T" in it; we must remove it.
 										item.ActivityDate = item.ActivityDate.replace("T", " ");
@@ -2194,7 +2194,7 @@
 											
 											// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
 											strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
-											console.log("item.ActivityDate = " + item.ActivityDate + ", strIsoDateTime = " + strIsoDateTime);
+											//console.log("item.ActivityDate = " + item.ActivityDate + ", strIsoDateTime = " + strIsoDateTime);
 											if (item.ActivityDate === strIsoDateTime)
 											{
 												console.log("Found dupe...");
