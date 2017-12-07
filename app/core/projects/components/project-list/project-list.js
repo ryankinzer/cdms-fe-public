@@ -222,7 +222,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                     };
 
                     var agColumnDefs = [
-                        { field: 'Program', headerName: 'Program', width: 220, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
+                        { field: 'Program', headerName: 'Program', width: 220, sort: 'asc', menuTabs: ['filterMenuTab'] },
                         { field: 'ProjectType.Name', headerName: 'Type', width: 130, menuTabs: ['filterMenuTab'] },
                         { field: 'Name', headerName: 'Project Name', cellRenderer: agCellRendererProjectName, width: 300, menuTabs: ['filterMenuTab'], filter: 'text'},
                     ];
