@@ -751,13 +751,14 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
                 //this is expensive in that it runs every time a value is changed in the grid.
                 scope.validateGrid(scope); //so that number of errors gets calculated properly.
-
+				
 				if ((field_name === "ReadingDateTime") || (field_name === "activityDate"))
 				{
 					console.log("Found " + field_name);
 					if ((typeof scope.activities !== 'undefined') && (scope.activities !== null))
 						scope.activities.errors = undefined;
 					
+					$scope.
 					//scope.removeRowErrorsBeforeRecheck();
 					scope.checkForDuplicates();
 				}
