@@ -157,7 +157,8 @@
 					<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
 						<div class="header-label">Location:</div>
 						<div class="header-value">
-							<select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions"></select>
+							<!--<select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions"></select>-->
+							<select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions" ng-change="onLocationChange()"></select>
 						</div>
 					</div>
 
