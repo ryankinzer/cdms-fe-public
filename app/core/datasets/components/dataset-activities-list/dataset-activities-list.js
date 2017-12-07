@@ -88,7 +88,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
 
-            { field: 'ActivityDate', headerName: 'Activity Date', filter: 'date', cellRenderer: activityDateTemplate, width: 150, menuTabs: ['filterMenuTab']},
+            { field: 'ActivityDate', 
+				headerName: 'Activity Date',
+				valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object				
+				filter: 'date', 
+				cellRenderer: activityDateTemplate, 
+				width: 150, 
+				menuTabs: ['filterMenuTab']
+			},
             { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120, menuTabs: [] },
             { field: 'headerdata.RunYear', headerName: 'Run Year', cellRenderer: runYearTemplate, width: 120, menuTabs: [] },
             {
