@@ -676,3 +676,11 @@ table.metadata td
     padding-left: 15px;
     list-style-type: circle;
 }
+
+.list-group-item-green {
+    background-color: #d0e9c6 !important;
+}
+
+.list-group-item-red {
+    background-color: #ebcccc !important;
+}
