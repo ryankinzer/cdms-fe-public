@@ -36,10 +36,10 @@ var modal_file_add = ['$scope','$modalInstance', 'DatasetService','ServiceUtilit
 		console.dir($rootScope.currentFiles);
 
         $scope.save = function(){
-			console.log("Inside modals-controller, FileAddModalCtrl, save...");
+			console.log("Inside modal-file-add.js, FileAddModalCtrl, save...");
 			console.log("Adding file name(s) to the list.");
-			//console.log("$scope is next...");
-			//console.dir($scope);
+			console.log("$scope is next...");
+			console.dir($scope);
 			$rootScope.viewSubproject = $scope.viewSubproject; // Add this to the $rootScope, so that the filters can see it.
 			var errors = [];
 			

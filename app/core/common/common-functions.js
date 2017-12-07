@@ -887,77 +887,90 @@ function formatDateFromUtcToFriendly(d) {
     return friendlyDate
 }
 
-// The date may come in different formats:
+// The date may come in different string formats:
 //		1/1/2015 8:00:00 or
 //		01/01/2015 08:00:00
 // Therefore, we must allow for either format and convert.
 function formatDateFromFriendlyToUtc(d) {
-    console.log("d = " + d);
+	console.log("Inside formatDateFromFriendlyToUtc; d = " + d);
+    //console.log("d = " + d);
     var separatorLocation = d.indexOf("/");
-    console.log("slashLocation = " + separatorLocation);
+    //console.log("slashLocation = " + separatorLocation);
     if (separatorLocation < 2) {
         var theMonth = d.substring(0, 1);
-        console.log("theMonth = " + theMonth);
+        //console.log("theMonth = " + theMonth);
         theMonth = pad(theMonth);
-        console.log("theMonth = " + theMonth);
+        //console.log("theMonth = " + theMonth);
         d = d.substring(2);
     }
     else {
         var theMonth = d.substring(0, 2);
-        console.log("theMonth = " + theMonth);
+        //console.log("theMonth = " + theMonth);
         d = d.substring(3);
     }
 
-    console.log("d = " + d);
+    //console.log("d = " + d);
 
     separatorLocation = d.indexOf("/");
     if (separatorLocation < 2) {
         var theDay = d.substring(0, 1);
-        console.log("theDay = " + theDay);
+        //console.log("theDay = " + theDay);
         theDay = pad(theDay);
-        console.log("theDay = " + theDay);
+        //console.log("theDay = " + theDay);
         d = d.substring(2);
     }
     else {
         var theDay = d.substring(0, 2);
-        console.log("theDay = " + theDay);
+        //console.log("theDay = " + theDay);
         d = d.substring(3);
     }
 
-    console.log("d = " + d);
+    //console.log("d = " + d);
 
     var theYear = d.substring(0, 4);
     //console.log("theYear = " + theYear);
     d = d.substring(5);
-    console.log("d = " + d);
+    //console.log("d = " + d);
 
+	var theHour = "00";
+	var theMinutes = "00";
+	var theSeconds = "00";
     separatorLocation = d.indexOf(":");
-    if (separatorLocation < 2) {
-        var theHour = d.substring(0, 1);
-        console.log("theHour = " + theHour);
+	if (separatorLocation < 0) // The string has only date, no time.
+	{
+		// Do nothing; the hour/minutes/seconds are already set.
+	}
+    else if (separatorLocation < 2) {
+        theHour = d.substring(0, 1);
+        //console.log("theHour = " + theHour);
         theHour = pad(theHour);
-        console.log("theHour = " + theHour);
+        //console.log("theHour = " + theHour);
         d = d.substring(2);
     }
     else {
-        var theHour = d.substring(0, 2);
-        console.log("theHour = " + theHour);
+        theHour = d.substring(0, 2);
+        //console.log("theHour = " + theHour);
         d = d.substring(3);
     }
 
-    console.log("d = " + d);
-
-    var theMinutes = d.substring(0, 2);
-    //console.log("theMinutes = " + theMinutes);
-    d = d.substring(3);
     //console.log("d = " + d);
-    d = "" + d;
-    console.log("d = " + d);
-    if ((d.length > 0) && (d.length < 2))
-        var theSeconds = pad(d);
-    else
-        var theSeconds = "00";
-
+	if (separatorLocation < 0)
+	{
+		// Do nothing; the hour/minutes/seconds are already set.
+	}
+	else
+	{
+		theMinutes = d.substring(0, 2);
+		//console.log("theMinutes = " + theMinutes);
+		d = d.substring(3);
+		//console.log("d = " + d);
+		d = "" + d;
+		console.log("d = " + d);
+		if ((d.length > 0) && (d.length < 2))
+			theSeconds = pad(d);
+		else
+			theSeconds = "00";
+	}
     //console.log("theSeconds = " + theSeconds);
 
     var utc = theYear +
@@ -968,7 +981,7 @@ function formatDateFromFriendlyToUtc(d) {
         ":" + theSeconds +
         "." + "000";
 
-    console.log("utc = " + utc);
+    //console.log("utc = " + utc);
     return utc;
 }
 
@@ -1071,5 +1084,34 @@ function addMetadataProperties(metadata_list, all_metadata, scope, CommonService
 
 
     });
+};
+
+// This function takes an array that may have duplicate entries, and removes the duplicates.
+// [a, a, b, c, c, c] -> [a, b, c] 
+function uniq_fast(a) {
+	//console.log("Inside uniq_fast...");
+	//console.dir(a);
+	var seen = {};
+	var out = [];
+	var len = a.length;
+	var j = 0;
+	
+	//console.log("len = " + len);
+	for (var i = 0; i < len; i++)
+	{
+		var item = a[i];
+		//console.log("item = " + item);
+		//console.log("seen[" + item + "] = " + seen[item]);
+		if ((seen[item] === undefined) || (seen[item] !== 1))
+		{
+			//console.log("New item...");
+			seen[item] = 1;
+			out[j++] = item;
+		}
+	}
+	//console.log("out is next...");
+	console.dir(out);
+	
+	return out;
 };
 

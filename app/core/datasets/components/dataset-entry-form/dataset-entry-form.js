@@ -27,6 +27,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.primaryDatasetLocation = 0;
         $scope.sortedLocations = [];
         $scope.errors = { heading: [] };
+		$scope.activities = {};
 
         $scope.addNewSection = false; // This is a flag.  On Creel Survey, a user may add a new section, which saves the section, but the page remains on the activity.
         $scope.dataEntryPage = true;  // This is s flag, telling the app that we are on the Data Entry Page, to make the Add Section button show only on the Data Entry page.	
@@ -196,7 +197,13 @@ var dataset_entry_form = ['$scope', '$routeParams',
         //update our location options as soon as our project is loaded.
         // The project gets called/loaded in $scope.$watch('dataset.Fields' (above), so $scope.DatastoreTablePrefix was set there.
         $scope.$watch('project.Name', function () {
-            if (!$scope.project.Name) return;
+			// Note:  If we check for the project name without typeof, it throws an error in the debugger, stating that Name is undefined. 
+			// Yes, it does stop the code in its tracks (like the return), but the typeof handles the issue gracefully.
+			//if(!$scope.project.Name) return;
+			if ((typeof $scope.project === 'undefined') || ($scope.project === null))
+				return;
+			else if ((typeof $scope.project.Name === 'undefined') || ($scope.project.Name === null))
+				return;
 
             console.log("Inside watch project.Name...");
             //console.log("$scope.project is next...");
@@ -309,6 +316,22 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$scope at end of watch project.Name is next...");
             //console.dir($scope);
         });
+		
+		$scope.$watch('duplicateEntry', function(){
+			console.log("Inside watch duplicateEntry...");
+			//console.log("typeof $scope.duplicateEntry = " + $scope.duplicateEntry);
+			console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
+			if ((typeof $scope.duplicateEntry === 'undefined') || ($scope.duplicateEntry === null))
+				return;
+			else if ($scope.duplicateEntry)
+				return;
+			else if ($scope.saving)
+				$scope.continueSaving();
+			else
+			{
+				// Do nothing.
+			}
+		});
 
         $scope.selectProjectLocationsByLocationType = function () {
             console.log("Inside selectProjectLocationsByLocationType...");
@@ -470,6 +493,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
             if ($scope.row.LastAccuracyCheck)
                 $scope.row.AccuracyCheckId = $scope.row.LastAccuracyCheck.Id;
+			
+			$scope.activities.errors = undefined;
+			$scope.removeRowErrorsBeforeRecheck();
+			$scope.checkForDuplicates();
         };
 
         $scope.cancel = function () {
@@ -758,7 +785,15 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.dir($scope);
             console.log("$rootScope is next...");
             console.dir($rootScope);
-
+			$scope.duplicateEntry = undefined;
+			$scope.saving = true;
+			
+			$scope.checkForDuplicates();
+        };
+		
+		$scope.continueSaving = function(){
+			//console.log("Inside $scope.continueSaving...");
+			
             /**** CreeSurvey Header Time Time calculations Start ****/
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 // Headers = row
@@ -858,104 +893,116 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.dir($rootScope.FieldSheetFile);
             $scope.filesToUpload.FieldSheetFile = $rootScope.FieldSheetFile;
 
-            if ($scope.filesToUpload.FieldSheetFile) {
-                //for(var i = 0; i < $scope.filesToUpload.FieldSheetFile.length; i++)
-                //for(var i = 0; i < $scope.filesToUpload.length; i++)
-                for (var i = 0; i < $rootScope.currentFiles.length; i++) {
-                    //var file = $scope.filesToUpload.FieldSheetFile[i];
-                    var file = $scope.currentFiles[i];
-                    console.log("file is next...");
-                    console.dir(file);
+			console.log("$scope.activities.errors is next...");
+			console.dir($scope.activities.errors);
+			if ($scope.activities.errors === {})
+				console.log("Empty object...");
+			else
+				console.log("Something else...");
+			
+			//console.log("$scope.activities.errors.saveError.length = " + $scope.activities.errors.saveError.length);
+			if (!$scope.activities.errors)
+			{
+				console.log("No errors yet...");
+				if ($scope.filesToUpload.FieldSheetFile) {
+					//for(var i = 0; i < $scope.filesToUpload.FieldSheetFile.length; i++)
+					//for(var i = 0; i < $scope.filesToUpload.length; i++)
+					for (var i = 0; i < $rootScope.currentFiles.length; i++) {
+						//var file = $scope.filesToUpload.FieldSheetFile[i];
+						var file = $scope.currentFiles[i];
+						console.log("file is next...");
+						console.dir(file);
 
-                    var newFileNameLength = file.name.length;
-                    console.log("file name length = " + newFileNameLength);
+						var newFileNameLength = file.name.length;
+						console.log("file name length = " + newFileNameLength);
 
-                    console.log("file.type = " + file.type);
-                    if ($scope.uploadFileType === "image") {
-                        console.log("We have an image...");
-                        for (var n = 0; n < $scope.project.Images.length; n++) {
-                            var existingFileName = $scope.project.Images[n].Name;
-                            console.log("existingFileName = " + existingFileName);
-                            var existingFileNameLength = existingFileName.length;
-                            if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
-                                $scope.foundDuplicate = true;
-                                console.log(file.name + " already exists in the project file list.");
-                                errors.push(file.name + " already exists in the list of project images.");
-                            }
-                        }
-                    }
-                    else {
-                        console.log("We have something other than an image...");
-                        for (var n = 0; n < $scope.project.Files.length; n++) {
-                            var existingFileName = $scope.project.Files[n].Name;
-                            console.log("existingFileName = " + existingFileName);
-                            var existingFileNameLength = existingFileName.length;
-                            if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
-                                $scope.foundDuplicate = true;
-                                console.log(file.name + " already exists in the project file list.");
-                                errors.push(file.name + " already exists in the list of project Files.");
-                            }
-                        }
-                    }
+						console.log("file.type = " + file.type);
+						if ($scope.uploadFileType === "image") {
+							console.log("We have an image...");
+							for (var n = 0; n < $scope.project.Images.length; n++) {
+								var existingFileName = $scope.project.Images[n].Name;
+								console.log("existingFileName = " + existingFileName);
+								var existingFileNameLength = existingFileName.length;
+								if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
+									$scope.foundDuplicate = true;
+									console.log(file.name + " already exists in the project file list.");
+									errors.push(file.name + " already exists in the list of project images.");
+								}
+							}
+						}
+						else {
+							console.log("We have something other than an image...");
+							for (var n = 0; n < $scope.project.Files.length; n++) {
+								var existingFileName = $scope.project.Files[n].Name;
+								console.log("existingFileName = " + existingFileName);
+								var existingFileNameLength = existingFileName.length;
+								if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
+									$scope.foundDuplicate = true;
+									console.log(file.name + " already exists in the project file list.");
+									errors.push(file.name + " already exists in the list of project Files.");
+								}
+							}
+						}
 
-                    console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);
+						console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);
 
-                    if ($scope.foundDuplicate)
-                        alert(errors);
-                    else {
-                        console.log("Not a duplicate.  Uploading the file...");
-                        if (file.success != "Success") {
-                            $scope.upload = $upload.upload({
-                                //url: serviceUrl + '/data/UploadProjectFile',
-                                url: serviceUrl + '/api/v1/file/uploaddatasetfile',
-                                method: "POST",
-                                // headers: {'headerKey': 'headerValue'},
-                                // withCredential: true,
-                                //data: {ProjectId: $scope.project.Id, Description: "Uploaded file " + file.Name, Title: file.Name},
-                                data: { ProjectId: $scope.project.Id, DatasetId: $scope.dataset.Id, Description: "Uploaded file " + file.Name, Title: file.Name },
-                                file: file,
+						if ($scope.foundDuplicate)
+							alert(errors);
+						else {
+							console.log("Not a duplicate.  Uploading the file...");
+							if (file.success != "Success") {
+								$scope.upload = $upload.upload({
+									//url: serviceUrl + '/data/UploadProjectFile',
+									url: serviceUrl + '/api/v1/file/uploaddatasetfile',
+									method: "POST",
+									// headers: {'headerKey': 'headerValue'},
+									// withCredential: true,
+									//data: {ProjectId: $scope.project.Id, Description: "Uploaded file " + file.Name, Title: file.Name},
+									data: { ProjectId: $scope.project.Id, DatasetId: $scope.dataset.Id, Description: "Uploaded file " + file.Name, Title: file.Name },
+									file: file,
 
-                            }).progress(function (evt) {
-                                console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                            }).success(function (data, status, headers, config) {
-                                config.file.success = "Success";
-                            }).error(function (data, status, headers, config) {
-                                $scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
-                                //console.log(file.name + " was error.");
-                                config.file.success = "Failed";
-                            });
-                        }
-                    }
-                }
+								}).progress(function (evt) {
+									console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+								}).success(function (data, status, headers, config) {
+									config.file.success = "Success";
+								}).error(function (data, status, headers, config) {
+									$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
+									//console.log(file.name + " was error.");
+									config.file.success = "Failed";
+								});
+							}
+						}
+					}
 
-                //spin through the files that we uploaded
-                //angular.forEach($scope.filesToUpload, function(files, field){
-                angular.forEach($scope.currentFiles, function (files, field) {
+					//spin through the files that we uploaded
+					//angular.forEach($scope.filesToUpload, function(files, field){
+					angular.forEach($scope.currentFiles, function (files, field) {
 
-                    if (field == "null" || field == "")
-                        return;
+						if (field == "null" || field == "")
+							return;
 
-                    var local_files = [];
+						var local_files = [];
 
-                    //if we already had actual files in this field, copy them in
-                    if ($scope.file_row[field]) {
-                        var current_files = angular.fromJson($scope.file_row[field]);
-                        angular.forEach(current_files, function (file) {
-                            if (file.Id) //our incoming files don't have an id, just actual files.
-                                local_files.push(file);
-                        });
-                    }
+						//if we already had actual files in this field, copy them in
+						if ($scope.file_row[field]) {
+							var current_files = angular.fromJson($scope.file_row[field]);
+							angular.forEach(current_files, function (file) {
+								if (file.Id) //our incoming files don't have an id, just actual files.
+									local_files.push(file);
+							});
+						}
 
-                    $scope.file_row[field] = angular.toJson(local_files);
-                    //console.log("Ok our new list of files: "+$scope.row[field]);
-                });
+						$scope.file_row[field] = angular.toJson(local_files);
+						//console.log("Ok our new list of files: "+$scope.row[field]);
+					});
 
-                $scope.saveDatasheetData();
-            }
-            else {
-                $scope.saveDatasheetData();
-            }
-        };
+					$scope.saveDatasheetData();
+				}
+				else {
+					$scope.saveDatasheetData();
+				}
+			}
+		};
 
         $scope.saveDatasheetData = function () {
             console.log("Inside saveDatasheetData, $scope is next...");
@@ -1038,11 +1085,238 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 console.log("$scope.activities in saveData, just before calling DatasetService.saveActivities is next...");
                 console.dir($scope.activities);
                 DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
+				$scope.saving = false;
             }
             else {
                 console.log("We have errors...");
                 console.dir($scope.activities.errors);
             }
         };
+		
+		$scope.checkForDuplicates = function(){
+			console.log("Inside $scope.checkForDuplicates...");
+			console.log("$scope is next...");
+			console.dir($scope);
+			
+			var dtIsoFormat = "";
+			var strActivityLocationList = "";
+			var strInstrumentIdList = "";
+			var count = 0;
+			
+			if ($scope.DatastoreTablePrefix === "WaterTemp")
+			{	
+				var strReadingDateTimeList = "";
+				strActivityLocationList = $scope.row.locationId;
+				console.log("typeof strActivityLocationList = " + typeof strActivityLocationList + ", strActivityLocationList = " + strActivityLocationList);
+				strInstrumentIdList = $scope.row.InstrumentId;
+				console.log("typeof strInstrumentIdList = " + typeof strInstrumentIdList + ", strInstrumentIdList = " + strInstrumentIdList);
+				
+				// As users work their way down the form, changing the location, or the instrument will
+				// trigger this function, even if they have NOT entered a ReadingDateTime yet.
+				// We must wait until we have the location, instrument, and ReadingDateTime, before we proceed.
+				if ((typeof strActivityLocationList === 'undefined') || (strInstrumentIdList === null)) return;
+				
+				count = 0;
+				var keepGoing = true;
+				angular.forEach($scope.dataSheetDataset, function(item){
+					console.log("item is next...");
+					console.dir(item);
+					
+					// If the user has not entered a ReadingDateTime yet, then we DO NOT have the necessary data to continue yet.
+					if ((typeof item.ReadingDateTime !== 'undefined') && (item.ReadingDateTime !== null))
+					{
+						//var strIsoDateTime = null;
+						//var strIsoTime = moment(item.ReadingDateTime).format("YYYY-MM-DD").toString();
+						var strIsoDateTime = strIsoDateTime = formatDateFromFriendlyToUtc(item.ReadingDateTime);
+						
+						console.log("strIsoDateTime = " + strIsoDateTime);
+						
+						if (count === 0)
+						{
+							strReadingDateTimeList = strIsoDateTime;
+						}
+						else
+						{
+							strReadingDateTimeList += "," + strIsoDateTime; // Note the leading comma.
+						}
+						count++;
+					}
+					else
+						keepGoing = false;
+				});
+				if (!keepGoing)
+					return;
+				
+				console.log("strReadingDateTimeList (with dupes) = " + strReadingDateTimeList);
+				console.log("typeof strReadingDateTimeList = " + typeof strReadingDateTimeList);
+				
+				var aryReadingDateTimeList = strReadingDateTimeList.split(",");
+				strReadingDateTimeList = uniq_fast(aryReadingDateTimeList);
+				console.log("strReadingDateTimeList (without dupes) = " + strReadingDateTimeList);
+				
+				console.log("strActivityLocationList (with dupes) = " + strActivityLocationList);
+				console.log("typeof strActivityLocationList = " + typeof strActivityLocationList);				
+				var aryActivityLocationList = strActivityLocationList.split(",");
+				strActivityLocationList = uniq_fast(aryActivityLocationList);
+				console.log("strActivityLocationList = " + strActivityLocationList);
+				
+				console.log("strInstrumentIdList (with dupes) = " + strInstrumentIdList);
+				console.log("typeof strInstrumentIdList = " + typeof strInstrumentIdList);
+				var aryInstrumentIdList = strInstrumentIdList.split(",");
+				strInstrumentIdList = uniq_fast(aryInstrumentIdList);
+				console.log("strInstrumentIdList = " + strInstrumentIdList);
+				
+				var promise = null;
+				promise = DatasetService.getSpecificWaterTempActivities($scope.datasetId, strActivityLocationList, strInstrumentIdList, strReadingDateTimeList);
+					
+					
+				//console.log("typeof $promise = " + typeof promise);
+				if (typeof promise !== 'undefined') 
+				{
+					promise.$promise.then(function(list){
+						console.log("promise is next...");
+						console.dir(promise);
+						if (promise.length > 0)
+						{
+							$scope.duplicateEntry = true;
+							var duplicateItems = angular.copy(promise);
+							//console.log("duplicateItems is next...");
+							//console.dir(duplicateItems);
+							
+							angular.forEach(duplicateItems, function(item){
+								// The datetime coming back from the backend has a "T" in it; we must remove it.
+								item.ReadingDateTime = item.ReadingDateTime.replace("T", " ");
+								//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
+								
+								angular.forEach($scope.dataSheetDataset, function(detailRecord){
+									// In order tom compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
+									strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.ReadingDateTime);
+									
+									// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
+									strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
+									//console.log("strIsoDateTime = " + strIsoDateTime);
+									if (item.ReadingDateTime === strIsoDateTime)
+									{
+										//console.log("Found dupe...");
+										if (!detailRecord.errors)
+											detailRecord.errors = [];
+										
+										// All three of these are required to turn the lines with errors red.
+										detailRecord.isValid = false;
+										detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
+										
+										// During the (angular?) cycle, checkForDuplicates ends of running twice, so we get duplicate error entries.
+										// Therefore, clean out the duplicate entries from the error array.
+										detailRecord.errors = uniq_fast(detailRecord.errors);
+										$scope.gridHasErrors = true;
+										$scope.saving = false;
+									}
+								});
+								
+							});
+							//console.log("$scope.dataSheetDataset is next...");
+							//console.dir($scope.dataSheetDataset);
+						}
+						else
+						{
+							$scope.duplicateEntry = false;
+						}
+					});
+				}
+			}
+			else
+			{
+				// Get the ActivityDate
+				var strActivityDate = toExactISOString($scope.row.activityDate);
+				console.log("strActivityDate = " + strActivityDate);
+				
+				strActivityDate = strActivityDate.replace("T", " ");
+				console.log("strActivityDate (without T) = " + strActivityDate);
+				
+				// Convert the single date item to a one element array, because the back end expects an array.
+				var aryActivityDateList = strActivityDate.split(",");
+				console.log("aryActivityDateList is next...");
+				console.dir(aryActivityDateList);
+				
+				var strActivityDateList = uniq_fast(aryActivityDateList); // Removes dupes and converts to a string.
+				console.log("strActivityDateList = " + strActivityDateList);
+				
+				// Get the Locations
+				var intLocationId = $scope.row.locationId;
+				var aryActivityLocationList = intLocationId.split(",");
+				strActivityLocationList = uniq_fast(aryActivityLocationList);
+				console.log("strActivityLocationList = " + strActivityLocationList);
+				
+				//console.log("$scope.datasetId = " + $scope.datasetId + ", $scope.row.locationId = " + $scope.row.locationId + ", $scope.row.activityDate = " + $scope.row.activityDate);
+				console.log("$scope.datasetId = " + $scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
+				//$scope.SpecificActivitiesResults = null;
+				
+				var promise = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
+				
+				//console.log("typeof $promise = " + typeof promise);
+				if (typeof promise !== 'undefined') 
+				{
+					promise.$promise.then(function(list){
+						//console.log("promise is next...");
+						//console.dir(promise);
+						if (promise.length > 0)
+						{
+							$scope.duplicateEntry = true;
+							$scope.activities.errors = {};
+							$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
+							$scope.saving = false;
+						}
+						else
+						{
+							$scope.duplicateEntry = false;
+						}
+					});
+				}
+			}
+		};
+		
+		$scope.onLocationChange = function()
+		{
+			console.log("Inside $scope.onLocationChange...");
+
+			console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);
+			
+			$scope.activities.errors = {};
+			//$scope.errors = { heading: [] };
+			$scope.removeRowErrorsBeforeRecheck();
+			$scope.checkForDuplicates();
+		};
+		
+		$scope.onActivityDateChange = function()
+		{
+			console.log("Inside $scope.onActivityDateChange...");
+			//$scope.activities.errors = {};
+			$scope.activities.errors = undefined;
+			$scope.duplicateEntry = undefined;
+			$scope.checkForDuplicates();
+		};
+		
+		$scope.removeRowErrorsBeforeRecheck = function()
+		{
+			console.log("Inside $scope.removeRowErrorsBeforeRecheck...");
+			
+			// In order to turn the rows red, we need the following set.
+			//detailRecord.isValid = false;
+			//detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
+			//$scope.gridHasErrors = true;
+			
+			// Therefore, we reverse the process, to reset the grid, prior to rescanning for duplicates.
+			
+			angular.forEach($scope.dataSheetDataset, function(detailRecord){
+
+				if (detailRecord.errors)
+					detailRecord.errors = undefined;
+				
+				// All three of these are required to turn the lines with errors red.
+				detailRecord.isValid = true;
+			});
+			
+			$scope.gridHasErrors = false;
+		};
     }
 ];

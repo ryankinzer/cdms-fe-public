@@ -837,7 +837,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             if ($scope.updatedRows)
                 $scope.updatedRows.push(row.entity.Id);
 
-        }
+        };
         /*  -- */
 
         $scope.saveData = function () {
@@ -1151,7 +1151,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                 console.dir($scope.activities.errors);
             }
         };
-
+		
         $scope.doneButton = function () {
             $scope.activities = undefined;
             $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);

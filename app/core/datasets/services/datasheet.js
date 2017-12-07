@@ -527,10 +527,18 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                     //console.log(row_num + " --------------- is our rownum");
                     //console.log("row_errors is next...");
                     //console.dir(row_errors);
+					
+					/*	Notes are in order here.
+					*	All three items below (row.isValid, row.errors, and scope.gridHasErrors) are necessary to turn the row color red.
+					*	If all three itesms ARE NOT preset, the error will be flagged, but the color WILL NOT turn red.
+					*/
                     if (row_errors.length > 0) {
                         row.isValid = false;
                         //row.errors = row_errors;
-                        row.errors = angular.copy(row_errors); // row.errors is $scope.dataSheetDataset.errors
+						
+						// validateGrid(scope) calls validate
+						// validate does angular.forEach on $scope.dataSheetDataset, passing the data_row to here, coming in as row.
+                        row.errors = angular.copy(row_errors);
                         //scope.row.errors = angular.copy(row_errors);
                         scope.gridHasErrors = true;
                     }
@@ -614,7 +622,12 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
             //fired whenever a cell value changes.
             updateCell: function (row, field_name, scope) {
+				console.log("Inside datasheet.js, updateCell...");
+				console.log("row is next...");
+				console.dir(row);
                 //console.log("Field changed: " + field_name);
+				console.log("scope is next...");
+				console.dir(scope);
 
                 scope.dataChanged = true;
 
@@ -622,7 +635,10 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                     var fromValue = scope.onRow.entity[field_name];
                     var toValue = row.entity[field_name];
 
-                    console.log("Changed " + field + " from: " + fromValue + " to: " + toValue);
+                    //console.log("Changed " + field + " from: " + fromValue + " to: " + toValue);
+                    console.log("Changed " + field_name + " from: " + fromValue + " to: " + toValue);
+					
+					//scope.removeRowErrorsBeforeRecheck();
                 }
                 //console.log("has an id? " + row.entity.Id);
 
@@ -735,8 +751,17 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
                 //this is expensive in that it runs every time a value is changed in the grid.
                 scope.validateGrid(scope); //so that number of errors gets calculated properly.
-
-
+				
+				if ((field_name === "ReadingDateTime") || (field_name === "activityDate"))
+				{
+					console.log("Found " + field_name);
+					if ((typeof scope.activities !== 'undefined') && (scope.activities !== null))
+						scope.activities.errors = undefined;
+					
+					$scope.
+					//scope.removeRowErrorsBeforeRecheck();
+					scope.checkForDuplicates();
+				}
             },
 
 

@@ -139,13 +139,23 @@ datasets_module.factory('OutmigrationYears', ['$resource', function ($resource) 
     });
 }]);
 
-/*datasets_module.factory('SpecificActivities', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/list/getspecificactivities', {}, {
-        //query: { method: 'GET', params: { id: 'datasetId', locationId: 'locationId',  readingDateTime: readingDateTime}, isArray: true }
-        query: { method: 'GET', params: { id: 'datasetId', locationId: 'locationId',  readingDateTime: readingDateTime}, isArray: true }
+datasets_module.factory('SpecificActivities', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/activity/queryspecificactivities', {}, {
+        save: { method: 'POST', isArray: true }
     });
 }]);
-*/
+
+datasets_module.factory('SpecificActivitiesWithBounds', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/activity/queryspecificactivitieswithbounds', {}, {
+        save: { method: 'POST', isArray: true }
+    });
+}]);
+
+datasets_module.factory('SpecificWaterTempActivities', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/activity/queryspecificwatertempactivities', {}, {
+        save: { method: 'POST', isArray: true }
+    });
+}]);
 
 datasets_module.service('DatasetService', ['$q',
     'DatasetFiles',
@@ -174,7 +184,9 @@ datasets_module.service('DatasetService', ['$q',
 	'SpawningYears',
 	'BroodYears',
 	'OutmigrationYears',
-	//'SpecificActivities',
+	'SpecificActivities',
+	'SpecificActivitiesWithBounds',
+	'SpecificWaterTempActivities',
     function ($q,
         DatasetFiles,
         Activities,
@@ -201,8 +213,10 @@ datasets_module.service('DatasetService', ['$q',
 		DriftSampleYears,
         SpawningYears,
         BroodYears,
-        OutmigrationYears
-		//SpecificActivities
+        OutmigrationYears,
+		SpecificActivities,
+		SpecificActivitiesWithBounds,
+		SpecificWaterTempActivities
 		) {
 
         var service = {
@@ -541,12 +555,28 @@ datasets_module.service('DatasetService', ['$q',
                 return OutmigrationYears.query({ id: datasetId });
             },
 			
-			/*getSpecificActivities: function (datasetId, locationId, readingDateTime) {
-				console.log("Inside dataset-service, getSpecificActivities");
-				//return SpecificActivities.query({ id: datasetId, locationId: locationId, readingDateTime: readingDateTime});
-				return SpecificActivities.query({ id: datasetId});
-			},
-			*/
+            getSpecificActivities: function (datasetId, locationIdList, activityDateList) {
+				console.log("Inside dataset-service.js, getSpecificActivities...");
+				var searchCriteria = {
+					DatasetId: datasetId,
+					LocationId: locationIdList,
+					ActivityDate: activityDateList
+				}
+				
+                return SpecificActivitiesWithBounds.save(searchCriteria);
+            },
+			
+            getSpecificWaterTempActivities: function (datasetId, locationIdList, instrumentIdList,dateTimeList) {
+				console.log("Inside dataset-service.js, getSpecificWaterTempActivities...");
+				var searchCriteria = {
+					DatasetId: datasetId,
+					LocationId: locationIdList,
+					InstrumentId: instrumentIdList,
+					DateTimeList: dateTimeList
+				}
+				
+                return SpecificWaterTempActivities.save(searchCriteria);
+            },
         };
 
         return service;

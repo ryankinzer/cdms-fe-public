@@ -225,10 +225,9 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
 			*  scope.selectedInstrument exists				This is important because IE will not actually select something, when you select it the first time.
 			*  scope.selectedInstrument is not null			Important for the same reason just mentioned.
 			*/
-
             if (!scope.selectedInstrument || scope.selectedInstrument === null )
             {
-                alert("Please select an Instrument from the dropdown to add to this project.");
+                alert("Please select an Instrument from the dropdown to add to this project."); 
                 return;
             }
 
@@ -242,7 +241,6 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
                 scope.instrGridOptions.api.setRowData(scope.project.Instruments);
             });
         };
-
 
         scope.removeInstrument = function (instrument) {
             scope.viewInstrument = instrument;
@@ -264,7 +262,6 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
                 });
             }
         };
-
 
         scope.removeAccuracyCheck = function (ac) {
 
