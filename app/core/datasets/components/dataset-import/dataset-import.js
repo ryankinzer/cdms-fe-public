@@ -1006,6 +1006,9 @@
 				
 				var strErrorMessage = "";
 				
+				// When the form first loads, $scope.UploadResults has nothing.
+				if ((typeof $scope.UploadResults === 'undefined') || ($scope.UploadResults === null)) return;
+				
 				//console.log("About to loop through $scope.UploadResults.Data.rows, data_row");
 				angular.forEach($scope.UploadResults.Data.rows, function(data_row){
 					//console.log("*data_row (at top of loop) is next...");
