@@ -129,7 +129,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     return;
 
                 file_watcher();
-                //console.log('-------------- project FILES are loaded >>>>>>>>>>>>>>>> ');
+                console.log('-------------- project FILES are loaded >>>>>>>>>>>>>>>> ');
+                console.dir(scope.project.Files);
                 
                 scope.project.Files.forEach(function (file, key) {
                     // If the user created a document and left the Title or Description blank, those fields were saved as "undefined" in the database.

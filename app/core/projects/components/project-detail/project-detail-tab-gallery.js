@@ -3,8 +3,8 @@
 var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document, $timeout) {
 
     var UploadedByTemplate = function (param) {
-        console.dir(param);
-        console.log("uploaded by template!");
+        //console.dir(param);
+        //console.log("uploaded by template!");
         return moment(param.node.data.UploadDate).format('L') + " by " + param.node.data.User.Fullname;
     };
 
@@ -76,32 +76,36 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
             { headerName: 'File', cellRenderer: ImageTemplate, width: 190, menuTabs: [] },
             { field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
-            { field: 'Uploaded', headerName: "Uploaded", width: 200, cellRenderer: UploadedByTemplate },
+            { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
         ]
     };
 
     $document.ready(function () {
         //after the project files are loaded by our parent, they are split into two arrays. project.Images is ours.
-        var gallery_ds_watcher = scope.$parent.$watch('project', function () {
+        var gallery_ds_watcher = scope.$parent.$watch('project.Images', function () {
 
-            if (typeof scope.project === 'undefined' || typeof scope.project.Images === 'undefined')
+            if (typeof scope.project.Images === 'undefined')
                 return;
-
-            gallery_ds_watcher(); //turn off watcher
 
             //////// Load the gallery grid
             var ag_grid_div = document.querySelector('#gallery-tab-grid');    //get the container id...
-            console.dir(ag_grid_div);
+            //console.dir(ag_grid_div);
 
 
             $timeout(function () {
                 ag_grid_div = angular.element(document.getElementById('gallery-tab-grid'));
-                console.dir(ag_grid_div);
                 ag_grid_div = ag_grid_div.context;
-                scope.gallerytab_ag_grid = new agGrid.Grid(ag_grid_div, scope.galleryGridOptions); //bind the grid to it.
+
+                if (typeof scope.gallerytab_ag_grid === 'undefined')
+                    scope.gallerytab_ag_grid = new agGrid.Grid(ag_grid_div, scope.galleryGridOptions); //bind the grid to it.
+
                 scope.galleryGridOptions.api.showLoadingOverlay(); //show loading...
                 scope.galleryGridOptions.api.setRowData(scope.project.Images);
                 scope.galleryGridOptions.api.sizeColumnsToFit();
+
+                if (scope.project.Images.length > 0)
+                    gallery_ds_watcher();
+
             },0);
             
 

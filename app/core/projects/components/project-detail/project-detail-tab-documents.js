@@ -60,9 +60,9 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
         [
             { cellRenderer: EditLinksTemplate, width: 80, menuTabs: [] },
             //{ field: 'Name', headerName: 'File', width: 250, sort: 'asc', cellRenderer: LinkTemplate },
-            { field: 'Title', headerName: 'Title', sort: 'asc', cellRenderer: LinkTemplate, width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'Title', headerName: 'Title', sort: 'asc', cellRenderer: LinkTemplate, width: 230, menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Description', headerName: 'Description', menuTabs: ['filterMenuTab'], filter: 'text' },
-            { field: 'Uploaded', headerName: "Uploaded", width: 200, cellRenderer: UploadedByTemplate, menuTabs: [] },
+            { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
         ]
     };
 
@@ -71,21 +71,25 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
 
         //after the project files are loaded by our parent, they are split into two arrays. project.Docs is ours.
         var docs_ds_watcher = scope.$parent.$watch('project.Docs', function () {
-
-            if (typeof scope.project.Docs === 'undefined' || scope.project.Docs.length === 0)
+            console.log(' ------------------------------------------------------ docs');
+            console.dir(scope.project.Docs);
+            if (typeof scope.project.Docs === 'undefined')
                 return;
-
-            docs_ds_watcher(); //turn off watcher
-
+            
             ///////// Load the docs grid
             $timeout(function () {
 
                 var ag_grid_div = document.querySelector('#docs-tab-grid');    //get the container id...
 
-                scope.docstab_ag_grid = new agGrid.Grid(ag_grid_div, scope.docsGridOptions); //bind the grid to it.
+                if (typeof scope.docstab_ag_grid === 'undefined')
+                    scope.docstab_ag_grid = new agGrid.Grid(ag_grid_div, scope.docsGridOptions); //bind the grid to it.
+
                 scope.docsGridOptions.api.showLoadingOverlay(); //show loading...
                 scope.docsGridOptions.api.setRowData(scope.project.Docs);
                 scope.docsGridOptions.api.sizeColumnsToFit();
+
+                if (scope.project.Docs.length > 0)
+                    docs_ds_watcher(); //turn off watcher
             }, 0);
 
         }, true);
