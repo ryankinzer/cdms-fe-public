@@ -624,6 +624,23 @@
 			{
 				$scope.ActivityFields.Location = getByField($scope.project.Locations, $scope.ActivityFields.LocationId, "Id");
 			};
+			
+			$scope.onLocationChange = function()
+			{
+				console.log("Inside $scope.onLocationChange...");
+
+				$scope.ActivityFields.Location = getByField($scope.project.Locations, $scope.ActivityFields.LocationId, "Id");
+				//console.log("$scope.ActivityFields.Location is next...");
+				//console.dir($scope.ActivityFields.Location);
+				console.log("New location selected = " + $scope.ActivityFields.Location.Label);
+				
+				$scope.errors = undefined;
+				$scope.dataSheetDataset = [];
+				//$scope.removeRowErrorsBeforeRecheck();
+				//$scope.previewUpload();
+				$scope.displayImportPreview();
+				//$scope.checkForDuplicates();
+			};
 
 			$scope.reloadProject = function(){
                 //reload project instruments -- this will reload the instruments, too
