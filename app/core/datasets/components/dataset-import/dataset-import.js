@@ -2066,6 +2066,7 @@
 											// All three of these are required to turn the lines with errors red.
 											detailRecord.isValid = false;
 											detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
+											detailRecord.errors = uniq_fast(detailRecord.errors);
 											$scope.gridHasErrors = true;
 										}
 									});
@@ -2197,6 +2198,7 @@
 												// All three of these are required to turn the lines with errors red.
 												detailRecord.isValid = false;
 												detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
+												detailRecord.errors = uniq_fast(detailRecord.errors);
 												$scope.gridHasErrors = true;
 											}
 										});
