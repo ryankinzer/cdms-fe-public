@@ -1115,3 +1115,15 @@ function uniq_fast(a) {
 	return out;
 };
 
+// Is an object empty ({}) or not?
+// This function takes an object and checks to see if it has any properties inside.
+// Reference:  https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+function isObjectEmpty(obj) {
+	console.log("Inside common-functions.js, isObjectEmpty...");
+	for(var prop in obj){
+		if (obj.hasOwnProperty(prop))
+			return false;
+	}
+	return true;
+};
+
