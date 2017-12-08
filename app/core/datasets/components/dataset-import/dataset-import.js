@@ -2211,19 +2211,19 @@
 												$scope.gridHasErrors = true;
 											}
 										});
-										console.log("Finished inside looping through $scope.dataSheetDataset for ActivityDate errors...");
+										//console.log("Finished inside looping through $scope.dataSheetDataset for ActivityDate errors...");
 									});
-									console.log("Finished outside looping through duplicateItems for ActivityDate errors...");
+									//console.log("Finished outside looping through duplicateItems for ActivityDate errors...");
 								}
-								console.log("After 'if' checking for duplicates...");
+								//console.log("After 'if' checking for duplicates...");
 							}
 							else
 							{
 								$scope.duplicateEntry = false;
 							}
-							console.log("After the 'if' promise.length...");
+							//console.log("After the 'if' promise.length...");
 						});
-						console.log("Location after promise.then (but it may not have completed yet)... ");
+						//console.log("Location after promise.then (but it may not have completed yet)... ");
 					}
 				}
 				console.log("$scope.dataSheetDataset is next...");

@@ -460,8 +460,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
             //  on the controller (and obviously previously populated by the DataSheet service.)
             validate: function (row, scope) {
                 if (row) {
-                    console.log("Inside validate...");
-                    console.log("scope.callingPage = " + scope.callingPage);
+                    //console.log("Inside validate...");
+                    //console.log("scope.callingPage = " + scope.callingPage);
                     ////console.log("scope is next...");
                     ////console.dir(scope);
                     //console.log("row is next...");

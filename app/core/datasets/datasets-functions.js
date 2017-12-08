@@ -761,7 +761,7 @@ function fireRules(type, row, field, value, headers, errors, scope) {
     try {
         //fire Field rule if it exists -- OnChange
         if (field.Field && field.Field.Rule && field.Field.Rule[type]) {
-            console.log("Dataset field rule: " + field.Field.Rule[type]);
+            //console.log("Dataset field rule: " + field.Field.Rule[type]);
             if (type == "DefaultValue")
                 field.DefaultValue = field.Field.Rule[type];
             else
