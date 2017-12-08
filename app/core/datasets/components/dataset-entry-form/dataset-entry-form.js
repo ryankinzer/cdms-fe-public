@@ -1287,7 +1287,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
 			console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);
 			
-			$scope.activities.errors = {};
+			//$scope.activities.errors = {};
+			$scope.activities.errors = undefined;
 			//$scope.errors = { heading: [] };
 			$scope.removeRowErrorsBeforeRecheck();
 			$scope.checkForDuplicates();
