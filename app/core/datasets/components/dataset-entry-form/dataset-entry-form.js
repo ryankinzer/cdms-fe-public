@@ -321,6 +321,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			console.log("Inside watch duplicateEntry...");
 			//console.log("typeof $scope.duplicateEntry = " + $scope.duplicateEntry);
 			console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
+			console.log("$scope.saving = " + $scope.saving);
 			if ((typeof $scope.duplicateEntry === 'undefined') || ($scope.duplicateEntry === null))
 				return;
 			else if ($scope.duplicateEntry)
@@ -901,7 +902,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				console.log("Something else...");
 			
 			//console.log("$scope.activities.errors.saveError.length = " + $scope.activities.errors.saveError.length);
-			if (!$scope.activities.errors)
+			//if (!$scope.activities.errors)
+			if ($scope.isObjectEmpty($scope.activities.errors))
 			{
 				console.log("No errors yet...");
 				if ($scope.filesToUpload.FieldSheetFile) {
@@ -1257,18 +1259,21 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				if (typeof promise !== 'undefined') 
 				{
 					promise.$promise.then(function(list){
-						//console.log("promise is next...");
-						//console.dir(promise);
+						console.log("promise is next...");
+						console.dir(promise);
 						if (promise.length > 0)
 						{
 							$scope.duplicateEntry = true;
-							$scope.activities.errors = {};
+							if (!$scope.activities.errors)
+								$scope.activities.errors = {};
+							
 							$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
 							$scope.saving = false;
 						}
 						else
 						{
 							$scope.duplicateEntry = false;
+							//$scope.activities.errors = undefined;
 						}
 					});
 				}
@@ -1317,6 +1322,14 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			});
 			
 			$scope.gridHasErrors = false;
+		};
+		
+		$scope.isObjectEmpty = function(obj){
+			for(var prop in obj){
+				if (obj.hasOwnProperty(prop))
+					return false;
+			}
+			return true;
 		};
     }
 ];
