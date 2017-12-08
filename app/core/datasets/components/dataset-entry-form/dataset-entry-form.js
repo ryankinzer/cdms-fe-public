@@ -896,14 +896,15 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
 			console.log("$scope.activities.errors is next...");
 			console.dir($scope.activities.errors);
-			if ($scope.activities.errors === {})
-				console.log("Empty object...");
-			else
-				console.log("Something else...");
+			//if ($scope.activities.errors === {})
+			//	console.log("Empty object...");
+			//else
+			//	console.log("Something else...");
 			
 			//console.log("$scope.activities.errors.saveError.length = " + $scope.activities.errors.saveError.length);
-			//if (!$scope.activities.errors)
-			if ($scope.isObjectEmpty($scope.activities.errors))
+			if (!$scope.activities.errors)
+			//if ($scope.isObjectEmpty($scope.activities.errors))
+			//if (isObjectEmpty($scope.activities.errors))
 			{
 				console.log("No errors yet...");
 				if ($scope.filesToUpload.FieldSheetFile) {
@@ -1273,7 +1274,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 						else
 						{
 							$scope.duplicateEntry = false;
-							//$scope.activities.errors = undefined;
+							$scope.activities.errors = undefined;
 						}
 					});
 				}
