@@ -758,7 +758,6 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					if ((typeof scope.activities !== 'undefined') && (scope.activities !== null))
 						scope.activities.errors = undefined;
 					
-					$scope.
 					//scope.removeRowErrorsBeforeRecheck();
 					scope.checkForDuplicates();
 				}
