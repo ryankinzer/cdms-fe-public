@@ -27,9 +27,31 @@ var admin_new_dataset = ['$scope', '$modal', 'DatasetService', 'AdminService', '
 
         }, true);
 
-        $scope.saveField = function () {
-            $scope.saveResults = {};
-            //AdminService.saveMasterField($scope.SelectedField, $scope.saveResults);
+        $scope.addDatasetToProject = function () {
+
+            if (!$scope.SelectedProject)
+            {
+                alert("Please select a project to add this dataset to.");
+                return;
+            }
+                
+            console.log(" The selected project: " + $scope.SelectedProject);
+            $scope.fieldsToSave = [];
+
+            //whip up an array with the fields we want to have in our new dataset.
+            $scope.datastoreFields.forEach(function (item, index) {
+                if (!item.exclude)
+                    $scope.fieldsToSave.push(item);
+            });
+
+            console.dir($scope.fieldsToSave);
+
+            var promise = DatasetService.addDatasetToProject($scope.datastore.Id, $scope.SelectedProject, $scope.fieldsToSave);
+
+            promise.$promise.then(function () {
+                console.log("Hey we're back!")
+                console.dir(promise);
+            });
         }
 
         $scope.selectField = function (field) {
@@ -37,7 +59,7 @@ var admin_new_dataset = ['$scope', '$modal', 'DatasetService', 'AdminService', '
         };
 
         $scope.removeField = function (field) {
-            console.dir(field);
+            //console.dir(field);
             field.exclude = !field.exclude;
         };
 

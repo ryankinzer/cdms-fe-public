@@ -89,7 +89,12 @@ datasets_module.factory('GetRelationData', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/dataset/getrelationdata', {}, {
         save: { method: 'POST', isArray: true }
     });
-}])
+}]);
+
+datasets_module.factory('AddDatasetToProject', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/dataset/adddatasettoproject')
+}]);
+
 
 
 datasets_module.service('DatasetService', ['$q',
@@ -111,6 +116,7 @@ datasets_module.service('DatasetService', ['$q',
     'GetHeadersDataForDataset',
     'DeleteDatasetFile',
     'GetRelationData',
+    'AddDatasetToProject',
     function ($q,
         DatasetFiles,
         Activities,
@@ -129,7 +135,8 @@ datasets_module.service('DatasetService', ['$q',
         GetDatastoreDatasets,
         GetHeadersDataForDataset,
         DeleteDatasetFile,
-        GetRelationData) {
+        GetRelationData,
+        AddDatasetToProject) {
 
         var service = {
 
@@ -313,10 +320,10 @@ datasets_module.service('DatasetService', ['$q',
 
             },
 
-
-
-
-
+            addDatasetToProject: function (a_datastoreId, a_projectId, a_fields) {
+                return AddDatasetToProject.save({ DatastoreId: a_datastoreId, ProjectId: a_projectId, DatasetFields: a_fields });
+            },
+            
             saveActivities: function (userId, datasetId, activities) {
                 console.log("Inside saveActivities...starting save...");
                 console.log("activities is next...");
