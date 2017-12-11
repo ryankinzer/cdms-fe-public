@@ -157,6 +157,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 //note: white-space here causes word-wrap
                 field: 'Comments', headerName: 'Comments', width: 300, cellStyle: { 'white-space': 'normal' }, menuTabs: ['filterMenuTab'], filter: 'text'
             },
+            { field: 'TrackingNumber', headerName: 'Tracking #', width: 100, menuTabs: ['filterMenuTab'], },
             { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150, menuTabs: ['filterMenuTab'], },
             { field: 'County', headerName: 'County', width: 150, menuTabs: ['filterMenuTab'], },
             { field: 'ProjectProponent', headerName: 'Project Proponent', width: 150, menuTabs: ['filterMenuTab'], },
