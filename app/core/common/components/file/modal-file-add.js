@@ -126,6 +126,8 @@ var modal_file_add = ['$scope','$modalInstance', 'DatasetService','ServiceUtilit
 					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.FileTitle;
 				else if ($scope.DatastoreTablePrefix === "CrppContracts")
 					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.DocumentLink;
+				else if ($scope.DatastoreTablePrefix === "SpawningGroundSurvey")
+					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.FieldsheetLink;
 				else
 					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.FieldSheetFile;	
 				
