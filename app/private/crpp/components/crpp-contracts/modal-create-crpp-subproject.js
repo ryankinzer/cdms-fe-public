@@ -764,17 +764,17 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                             //$scope.reloadSubproject(promise.Id);
                             //var promise2 = $scope.reloadSubproject(promise.Id);
                             //console.log("Inside reloadSubproject...");
-                            SubprojectService.clearSubproject();
-                            $scope.reloadSubproject($scope.subprojectId);
+                            //SubprojectService.clearSubproject();
+                            //$scope.reloadSubproject($scope.subprojectId);
                             $modalInstance.dismiss();
-                            $scope.openCorrespondenceEventForm();
+                            $scope.openCorrespondenceEventForm(promise, {});
                             //$scope.subproject = SubprojectService.getSubproject(id);
                         }
                         else {
                             console.log("addDocument != Yes");
 
                             // If the user just wants to create the Subproject, we can continue without waiting.
-                            $scope.reloadSubproject($scope.subprojectId);
+                            //$scope.reloadSubproject($scope.subprojectId);
                             $modalInstance.dismiss();
                         }
                     });
