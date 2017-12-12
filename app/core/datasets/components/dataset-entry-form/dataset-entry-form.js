@@ -1326,6 +1326,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			$scope.gridHasErrors = false;
 		};
 		
+		/* Moved this function to app/core/common/common-functions.js
 		$scope.isObjectEmpty = function(obj){
 			for(var prop in obj){
 				if (obj.hasOwnProperty(prop))
@@ -1333,5 +1334,6 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			}
 			return true;
 		};
+		*/
     }
 ];
