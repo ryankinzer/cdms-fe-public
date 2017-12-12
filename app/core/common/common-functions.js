@@ -1157,4 +1157,3 @@ function isObjectEmpty(obj) {
 	}
 	return true;
 };
-
