@@ -985,6 +985,37 @@ function formatDateFromFriendlyToUtc(d) {
     return utc;
 }
 
+// This function takes a date string in the following formats...
+// YYYY-MM-DDTHH:MM:SS.mmm
+// MM/DD/YYYY HH:MM:SS
+// and converts it into this format:  YYYY-MM-DD HH:MM:SSS.mmm
+function convertDateFromUnknownStringToUTC(strD) {
+	//console.log("Inside common-functions.js, convertDateFromUnknownStringToUTC...");
+	
+	var strIsoDateTime = "";
+	var strType = "";
+	strType = typeof strD;
+	//console.log("strType = " + strType);
+	if (strType === "string")
+	{
+		if (strD.indexOf("T") > -1) // UTC (YYYY-MM-DDTHH:MM:SS.mmm)
+		{
+			strIsoDateTime = strD.replace("T", " ");
+		}
+		else if (strD.indexOf("/") > -1) // Friendly (MM/DD/YYYY HH:MM)
+		{
+			strIsoDateTime = formatDateFromFriendlyToUtc(strD); 
+		}
+	}
+	else
+	{
+		
+	}
+	//console.log("strIsoDateTime = " + strIsoDateTime);
+	return strIsoDateTime;
+	
+}
+
 //if(somearray.contains("a"))... (case insensitive) -- can't be used with ints
 if (!Array.prototype.contains) {
     Array.prototype.contains = function (searchElement) {
@@ -1110,7 +1141,7 @@ function uniq_fast(a) {
 		}
 	}
 	//console.log("out is next...");
-	console.dir(out);
+	//console.dir(out);
 	
 	return out;
 };
