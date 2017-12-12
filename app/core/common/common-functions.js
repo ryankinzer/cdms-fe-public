@@ -965,7 +965,7 @@ function formatDateFromFriendlyToUtc(d) {
 		d = d.substring(3);
 		//console.log("d = " + d);
 		d = "" + d;
-		console.log("d = " + d);
+		//console.log("d = " + d);
 		if ((d.length > 0) && (d.length < 2))
 			theSeconds = pad(d);
 		else
