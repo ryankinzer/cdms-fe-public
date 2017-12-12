@@ -1980,7 +1980,6 @@
 				console.log("$scope.dataSheetDataset is next...");
 				console.dir($scope.dataSheetDataset);
 				
-				var dtIsoFormat = "";
 				var strActivityLocationList = "";
 				var strInstrumentIdList = "";
 				var count = 0;
@@ -1988,14 +1987,14 @@
 				if ($scope.DatastoreTablePrefix === "WaterTemp")
 				{	
 					var strReadingDateTimeList = "";
+					var strIsoDateTime = "";
 					
 					count = 0;
 					angular.forEach($scope.dataSheetDataset, function(item){
-						console.log("item is next...");
-						console.dir(item);
-						//var strIsoTime = moment(item.ReadingDateTime).format("YYYY-MM-DD").toString();
-						var strIsoDateTime = formatDateFromFriendlyToUtc(item.ReadingDateTime);
-						console.log("strIsoDateTime = " + strIsoDateTime);
+						//console.log("item is next...");
+						//console.dir(item);
+						
+						strIsoDateTime = convertDateFromUnknownStringToUTC(item.ReadingDateTime);
 						
 						if (count === 0)
 						{
@@ -2047,20 +2046,24 @@
 								var duplicateItems = angular.copy(promise);
 								//console.log("duplicateItems is next...");
 								//console.dir(duplicateItems);
+								var strDupeItemDateTime = "";
 								
 								angular.forEach(duplicateItems, function(item){
 									// The datetime coming back from the backend has a "T" in it; we must remove it.
-									item.ReadingDateTime = item.ReadingDateTime.replace("T", " ");
+									//item.ReadingDateTime = item.ReadingDateTime.replace("T", " ");
 									//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
+								
+									strDupeItemDateTime = convertDateFromUnknownStringToUTC(item.ReadingDateTime);
 									
 									angular.forEach($scope.dataSheetDataset, function(detailRecord){
 										// In order tom compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
-										strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.ReadingDateTime);
+										//strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.ReadingDateTime);
+										strIsoDateTime = convertDateFromUnknownStringToUTC(detailRecord.ReadingDateTime);
 										
 										// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
 										strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
-										//console.log("strIsoDateTime = " + strIsoDateTime);
-										if (item.ReadingDateTime === strIsoDateTime)
+										//console.log("strDupeItemDateTime = " + strDupeItemDateTime + ", strIsoDateTime = " + strIsoDateTime);
+										if (strDupeItemDateTime === strIsoDateTime)
 										{
 											//console.log("Found dupe...");
 											if (!detailRecord.errors)
