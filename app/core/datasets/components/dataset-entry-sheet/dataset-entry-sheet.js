@@ -320,6 +320,10 @@ var dataset_entry_sheet = ['$scope', '$routeParams', 'DatasetService', '$modal',
             });
         };
 
+        $scope.postSaveFishermanUpdateGrid = function (new_fisherman) {
+            $scope.fishermenList.push(new_fisherman); //the watch will take care of the rest?
+        };
+
         // For Creel Survey only. 
         $scope.addNewInterview = function () {
             var row = makeNewRow($scope.datasheetColDefs);

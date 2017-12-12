@@ -129,9 +129,14 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
         };
 
         $scope.saveConfig = function () {
-            $scope.saveResults = {};
-            dataset.Config = dataset.ConfigString;
-            DatasetService.saveDataset($scope.dataset, $scope.saveResults);
+            $scope.dataset.Config = $scope.dataset.ConfigString;
+            var promise = DatasetService.saveDataset($scope.dataset );
+
+            promise.$promise.then(function () {
+                console.dir(promise);
+                $scope.dataset = DatasetService.getDataset(promise.Id);
+                $scope.success_message = "Save successful.";
+            });
         };
 
 		$scope.selectField = function(field){

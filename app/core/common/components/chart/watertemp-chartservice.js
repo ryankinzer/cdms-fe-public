@@ -70,7 +70,10 @@ var watertemp_chartservice = [
 					    //}
 
 					    //console.dir(d);
-					  });
+                    });
+
+                    //sort by date so that our graph isn't wonky
+                    data = data.sort(function (a, b) { return a.chart_date - b.chart_date });
 
 					//console.dir(data);
 

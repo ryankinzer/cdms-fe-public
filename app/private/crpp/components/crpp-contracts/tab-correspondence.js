@@ -135,12 +135,14 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 field: 'EffDt',
                 headerName: 'Updated',
                 width: 120,
+                valueGetter: function (params) { return moment(params.node.data.EffDt) }, //date filter needs js date object			
                 valueFormatter: function (params) {
                     if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
                         return moment(params.node.data.EffDt).format('L');
                 },
                 sort: 'desc',
-                menuTabs: [],
+                filter: 'date',
+                menuTabs: ['filterMenuTab'],
             },
             {
                 headerName: 'Events', width: 60,
@@ -157,6 +159,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 //note: white-space here causes word-wrap
                 field: 'Comments', headerName: 'Comments', width: 300, cellStyle: { 'white-space': 'normal' }, menuTabs: ['filterMenuTab'], filter: 'text'
             },
+            { field: 'TrackingNumber', headerName: 'Tracking #', width: 100, menuTabs: ['filterMenuTab'], },
             { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150, menuTabs: ['filterMenuTab'], },
             { field: 'County', headerName: 'County', width: 150, menuTabs: ['filterMenuTab'], },
             { field: 'ProjectProponent', headerName: 'Project Proponent', width: 150, menuTabs: ['filterMenuTab'], },
@@ -170,13 +173,18 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [],
             },
             {
-                headerName: 'Notice Date', field: 'CorrespondenceDate', width: 120, cellClass: 'event-record-cell',
+                headerName: 'Notice Date',
+                field: 'CorrespondenceDate',
+                width: 120,
+                cellClass: 'event-record-cell',
+                valueGetter: function (params) { return moment(params.node.data.CorrespondenceDate) }, //date filter needs js date object			
                 valueFormatter: function (params) {
-                    if (params.node.data.CorrespondenceDate !== undefined && params.data.CorrespondenceDate !== null)
+                    if (params.node.data.CorrespondenceDate !== undefined && params.node.data.CorrespondenceDate !== null)
                         return moment(params.node.data.CorrespondenceDate).format('L');
                 },
                 sort: 'desc',
-                menuTabs: [],
+                filter: 'date',
+                menuTabs: ['filterMenuTab'],
             },
             { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
             { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
@@ -185,12 +193,14 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             {
                 field: 'ResponseDate',
                 headerName: 'Date of Response',
+                valueGetter: function (params) { return moment(params.node.data.ResponseDate) }, //date filter needs js date object			
                 width: 120,
                 valueFormatter: function (params) {
-                    if (params.data.ResponseDate !== undefined && params.data.ResponseDate !== null)
+                    if (params.node.data.ResponseDate !== undefined && params.node.data.ResponseDate !== null)
                         return moment(params.node.data.ResponseDate).format('L');
                 },
-                menuTabs: [],
+                filter: 'date',
+                menuTabs: ['filterMenuTab'],
             },
             { headerName: 'Technician', field: 'StaffMember', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
             {
@@ -199,7 +209,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 },
                 menuTabs: ['filterMenuTab'], filter: 'text'
             },
-            { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: [], },
+            { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
         ];

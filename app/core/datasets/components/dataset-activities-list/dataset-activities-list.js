@@ -107,7 +107,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
                     if (params.node.data.headerdata.TimeStart !== undefined)
                         return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
                 }, 
-                menuTabs: []
+                //filter: 'date', //'time' does not exist yet
+                menuTabs: [],
             },
             { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, minWidth: 100, menuTabs: ['filterMenuTab'] }, //appraisal
             { field: 'headerdata.AllotmentStatus', headerName: 'Status', minWidth: 120, menuTabs: ['filterMenuTab'] },
