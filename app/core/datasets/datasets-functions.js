@@ -374,8 +374,8 @@ function validateField(field, row, key, scope, row_errors) {
                 row_errors.push("[" + field.DbColumnName + "] Value is not a date (mm/dd/yyyy).");
             break;
         case 'datetime':
-            console.log("Inside datetime...");
-            console.log("value = " + value);
+            //console.log("Inside datetime...");
+            //console.log("value = " + value);
             if (isNaN(Date.parse(value)))
                 row_errors.push("[" + field.DbColumnName + "] Value is not a date-time (mm/dd/yyyy hh:mm).");
             else // Valid date value.
