@@ -18,8 +18,17 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
 			console.log("Inside dataset.Id watcher...");
 			console.dir($scope.dataset);
 		
-			if(!$scope.MasterFields)
-				$scope.MasterFields = AdminService.getMasterFields($scope.dataset.Datastore.FieldCategoryId);
+            if (!$scope.MasterFields)
+            {
+                var promise = AdminService.getMasterFields($scope.dataset.Datastore.FieldCategoryId);
+
+                promise.$promise.then(function (data) {
+                    $scope.allFields = promise;
+                    $scope.populateAddFieldDropdown();
+                });
+            }
+            else
+                $scope.populateAddFieldDropdown();
 
 			angular.forEach($scope.dataset.Fields.sort(orderByAlpha), function(field){
 				//parseField(field, $scope);
@@ -94,7 +103,7 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
                 return;
 
 			$scope.saveResults = {};
-			AdminService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
+            AdminService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
 		}
 
 		$scope.addMasterField = function()
@@ -112,12 +121,6 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
 			
 			console.log("$scope.newField (after checking) = " + $scope.newField);
 			AdminService.addMasterFieldToDataset($scope.dataset.Id, $scope.newField, $scope.saveResults);
-			//$scope.saveResults = AdminService.addMasterFieldToDataset($scope.dataset.Id, $scope.newField, $scope.saveResults);
-			// JavaScript might run the next lines too fast, so I (GC) put them into watch saveResults.DatasetId up above.
-			//setTimeout(function(){
-			//	DatasetService.clearDataset();
-            //	$scope.dataset = DatasetService.getDataset($routeParams.Id); //reload
-            //},400);
 		};
 
 		$scope.saveField = function()
@@ -153,7 +156,17 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
                 $scope.ConfigParse = exception.message;
             }
         }
-		
 
+        $scope.populateAddFieldDropdown = function () {
+            var master_fields = [];
+
+            //make sure incoming master fields aren't already in the dataset fields
+            $scope.allFields.forEach(function (field, index) {
+                if (!getByField($scope.dataset.Fields, field.Id, 'FieldId')) {
+                    master_fields.push(field);
+                }
+            });
+            $scope.MasterFields = master_fields;
+        };
 	}
 ];
