@@ -20,17 +20,20 @@
 				</div>
 
 			</div>
-			<div ng-hide="SelectedField" class="col-md-8"><H2 class="text-center">Select a field</h2></div>
-			<div ng-show="SelectedField" class="col-md-8 admin-criteria-list-box">
-				<div class="row">
-					<div class="col-md-12">
-						<div ng-include="'app/core/admin/components/admin-page/templates/dataset-master-options.html'"></div>
-					</div>
-				</div>
-				
+            <div id="sticky-box">
 
-			</div>
+                <div ng-hide="SelectedField" class="col-md-8 admin-criteria-list-box"><H2 class="text-center">Select a field</H2></div>
+                <div ng-show="SelectedField" class="col-md-8 admin-criteria-list-box">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div ng-include="'app/core/admin/components/admin-page/templates/dataset-master-options.html'"></div>
+                        </div>
+                    </div>
 
-	  </div>
+
+                </div>
+            </div>
+
+        </div>
 	</div>
 

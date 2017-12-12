@@ -17,7 +17,7 @@ var admin_edit_dataset = ['$scope', '$modal', '$timeout', '$routeParams', 'Datas
             var stickybox = document.getElementById('sticky-box');
             if (stickybox) {
                 Stickyfill.add(stickybox);
-                console.log("stickyfill is a go!!! - !!!!!!!!!!!!!!!!!!!!!!");
+                //console.log("stickyfill is a go!!! - !!!!!!!!!!!!!!!!!!!!!!");
             }
         }, 0);
         
