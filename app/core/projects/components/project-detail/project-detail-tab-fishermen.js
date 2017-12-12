@@ -83,7 +83,7 @@ var tab_fishermen = ['$scope', '$timeout', '$routeParams', 'SubprojectService', 
                 { field: 'OkToCallId', headerName: 'Ok To Call', width: 80, menuTabs: ['filterMenuTab'], cellRenderer: OkToCallRenderer },
                 { field: 'FishermanComments', headerName: 'Comments', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'DateAdded', headerName: 'Date Added', width: 100, cellRenderer: DateAddedRenderer, menuTabs: [], },
-                { field: 'StatusId', headerName: 'Status', width: 100, menuTabs: ['filterMenuTab'], cellRenderer: StatusIdRenderer},
+                { field: 'StatusId', headerName: 'Status', width: 100, menuTabs: ['filterMenuTab'], valueGetter: StatusIdRenderer},
                 //{ field: 'DateInactive', headerName: 'Date Inactive', menuTabs: [], },
                 //{ field: 'OwningDepartment.Name', headerName: 'Owner', width: 250, menuTabs: ['filterMenuTab'], },
 
