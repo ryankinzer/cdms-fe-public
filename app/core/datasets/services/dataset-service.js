@@ -95,6 +95,10 @@ datasets_module.factory('AddDatasetToProject', ['$resource', function ($resource
     return $resource(serviceUrl + '/api/v1/dataset/adddatasettoproject')
 }]);
 
+datasets_module.factory('UpdateDataset', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/dataset/updatedataset');
+}]);
+
 
 datasets_module.factory('MigrationYears', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/list/getmigrationyears', {}, {
@@ -193,6 +197,7 @@ datasets_module.service('DatasetService', ['$q',
 	'SpecificActivitiesWithBounds',
 	'SpecificWaterTempActivities',
     'AddDatasetToProject',
+    'UpdateDataset',
     function ($q,
         DatasetFiles,
         Activities,
@@ -223,7 +228,8 @@ datasets_module.service('DatasetService', ['$q',
 		SpecificActivities,
 		SpecificActivitiesWithBounds,
 		SpecificWaterTempActivities,
-        AddDatasetToProject)
+        AddDatasetToProject,
+        UpdateDataset)
     {
 
         var service = {
@@ -325,7 +331,10 @@ datasets_module.service('DatasetService', ['$q',
             getActivitiesForView: function (id) {
                 return ActivitiesForView.query({ id: id });
             },
-			
+
+            saveDataset: function (a_dataset) {
+                return UpdateDataset.save({ id: a_dataset.Id, dataset: a_dataset });
+            },
             getDatasetFiles: function (datasetId) {
                 console.log("Inside getDatasetFiles...");
                 console.log("datasetId = " + datasetId);

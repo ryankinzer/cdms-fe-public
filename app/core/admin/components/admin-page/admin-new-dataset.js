@@ -49,8 +49,9 @@ var admin_new_dataset = ['$scope', '$modal', 'DatasetService', 'AdminService', '
             var promise = DatasetService.addDatasetToProject($scope.datastore.Id, $scope.SelectedProject, $scope.fieldsToSave);
 
             promise.$promise.then(function () {
-                console.log("Hey we're back!")
+                console.log("Hey we're back! Success!")
                 console.dir(promise);
+                angular.rootScope.go("/admin");
             });
         }
 
