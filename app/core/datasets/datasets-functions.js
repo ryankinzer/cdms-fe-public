@@ -382,7 +382,7 @@ function validateField(field, row, key, scope, row_errors) {
             {
                 var theDate = new Date(value);
                 var theYear = theDate.getFullYear();
-                console.log("theYear = " + theYear);
+                //console.log("theYear = " + theYear);
                 if (theYear < 1901)
                     row_errors.push("[" + field.DbColumnName + "] Value has a default year (from Excel?); user must set year.");
             }
