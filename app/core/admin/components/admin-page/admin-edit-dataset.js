@@ -1,6 +1,6 @@
 ﻿
-var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 'CommonService','ProjectService','AdminService',
-    function ($scope, $modal, $routeParams, DatasetService, CommonService, ProjectService, AdminService ){
+var admin_edit_dataset = ['$scope', '$modal', '$timeout', '$routeParams', 'DatasetService', 'CommonService','ProjectService','AdminService',
+    function ($scope, $modal, $timeout, $routeParams, DatasetService, CommonService, ProjectService, AdminService ){
 
 		$scope.dataset = DatasetService.getDataset($routeParams.Id);
 		$scope.FieldLookup = {};
@@ -10,6 +10,17 @@ var admin_edit_dataset = ['$scope', '$modal', '$routeParams', 'DatasetService', 
 		$scope.Sources = CommonService.getSources();
 		$scope.Instruments = ProjectService.getInstruments();
 
+
+        $timeout(function () {
+            //stickyfill - this is so that IE (dumb thing) can have sticky div.
+            //https://www.npmjs.com/package/stickyfill2
+            var stickybox = document.getElementById('sticky-box');
+            if (stickybox) {
+                Stickyfill.add(stickybox);
+                console.log("stickyfill is a go!!! - !!!!!!!!!!!!!!!!!!!!!!");
+            }
+        }, 0);
+        
 		$scope.$watch('dataset.Id', function(){
 			
 			if(!$scope.dataset.Id)

@@ -402,7 +402,7 @@ table.metadata td
 	padding: 5px 15px 15px 15px;
 	border-radius: 3px;
 	height: 100%;
-
+    width: 450px;
 }
 
 .inherited-properties tr
@@ -686,4 +686,16 @@ table.metadata td
 
 .list-group-item-red {
     background-color: #ebcccc !important;
+}
+
+#sticky-box {
+    position: -webkit-sticky;    
+    position: sticky;
+    top: 0;
+}
+
+#sticky-box:before,
+#sticky-box:after {
+    content: '';
+    display: table;
 }
