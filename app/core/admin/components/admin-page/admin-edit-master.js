@@ -1,10 +1,20 @@
 ﻿
-var admin_edit_master = ['$scope', '$modal', 'DatasetService', 'AdminService', '$routeParams',
-	function($scope, $modal, DatasetService, AdminService, $routeParams){
+var admin_edit_master = ['$scope', '$timeout', '$modal', 'DatasetService', 'AdminService', '$routeParams',
+	function($scope, $timeout, $modal, DatasetService, AdminService, $routeParams){
 
 		$scope.datastore = DatasetService.getDatastore($routeParams.Id);
 		
 		$scope.SelectedField = null;
+
+        $timeout(function () {
+            //stickyfill - this is so that IE (dumb thing) can have sticky div.
+            //https://www.npmjs.com/package/stickyfill2
+            var stickybox = document.getElementById('sticky-box');
+            if (stickybox) {
+                Stickyfill.add(stickybox);
+                //console.log("stickyfill is a go!!! - !!!!!!!!!!!!!!!!!!!!!!");
+            }
+        }, 0);
 
 		$scope.$watch('datastore.Id', function(){
 			if($scope.datastore.Id > 0)
