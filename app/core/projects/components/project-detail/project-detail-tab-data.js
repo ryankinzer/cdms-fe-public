@@ -21,10 +21,13 @@ var tab_data = ['$scope', function (scope) {
         enableSorting: true,
         enableFilter: true,
         enableColResize: true,
+        onGridReady: function (params) {
+            params.api.sizeColumnsToFit();
+        },
         columnDefs:
         [
-            { field: 'Name', headerName: 'Dataset Name', cellRenderer: linkTemplate, width: 200 },
-            { field: 'Description', headerName: 'Description', width: 400 },
+            { field: 'Name', headerName: 'Dataset Name', cellRenderer: linkTemplate, width: 280 },
+            { field: 'Description', headerName: 'Description', width: 450 },
         ]
     };
 

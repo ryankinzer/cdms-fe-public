@@ -44,6 +44,13 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
             });
         };
 
+        scope.clearLocationSelection = function () {
+            scope.selectedLocation = null;
+            scope.projects = scope.allProjects;
+            scope.map.infoWindow.hide();
+            scope.agGridOptions.api.setRowData(scope.projects);
+            scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
+        };
 
         scope.click = function(e){
 			console.log("Inside controllers.js, scope.click...");
@@ -72,7 +79,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 					scope.getInfoContent(e.graphic); // We need to wait for this to complete...
 					scope.mapEvent = 'undefined';
 					scope.mapEvent = e;	
-				}
+                }
 
 			}catch(e)
 			{
@@ -130,7 +137,9 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 				}
 			});
 			scope.projects = angular.copy(filterProjects);
-			scope.selectedLocation = graphic.attributes.OBJECTID;
+            scope.selectedLocation = graphic.attributes.OBJECTID;
+            scope.agGridOptions.api.setRowData(scope.projects);
+            scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
 			
 			console.log("matchingProjects is next...");
 			console.dir(matchingProjects);
@@ -161,10 +170,10 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
         };
 
 		// Note:  This watch is for the main Projects page.
-        scope.$watch('projects',function(){
+        var project_watcher = scope.$watch('projects',function(){
             if(scope.projects)
             {
-				//console.log("Inside controllers.js, watch projects...");
+                //console.log("Inside controllers.js, watch projects...");
 				////console.log("scope is next...");
 				////console.dir(scope);
 				
@@ -261,7 +270,9 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                     console.log('done');
                     
                 }
-                
+
+                if (scope.projects.length > 0)
+                    project_watcher();
             }
         },true);
   }
