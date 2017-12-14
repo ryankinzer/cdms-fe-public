@@ -140,13 +140,12 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 
             getAgColumnDefs: function (dataset) {
                 
-                //create list of candidate columndefs (possibleColumnDefs below).
                 var defaultShowColumns = {
                     'topHeaderFields': ['Location', 'ActivityDate'],
                     'bottomHeaderFields': ['QAStatus', 'QAComments'],
                     'sort': { 'field': 'ActivityDate', 'direction': 'desc' }
                     //'leftDetailFields': [],
-                    //'rightDetailFields': []  //note that you could just leave this key out -- you only need define the present ones.
+                    //'rightDetailFields': []  
                 };
 
                 var showColumns = defaultShowColumns;
@@ -301,7 +300,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                         }
                     });
                 }
-
+                console.log("returning from datasheet ------------------------------------------------------ asynch " + finalColumnDefs.DetailFields.length);
                 return finalColumnDefs;
             },
 

@@ -62,30 +62,16 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
 
         //AG-GRID ---------------------------------------
-        $scope.dataAgColumnDefs = [
-            /*{
-                headerName: 'ID',
-                field: 'Id',
-                width: 80,
-                cellRenderer: 'group',
-                cellRendererParams: { suppressCount: true },
-                menuTabs: ['filterMenuTab'],
-                filter: 'number'
-            },
-            */
-        ];
-
-
         $scope.dataAgGridOptions = {
             animateRows: true,
             enableSorting: true,
             enableFilter: true, 
             enableColResize: true,
             showToolPanel: false,
-            columnDefs: $scope.dataAgColumnDefs,
+            columnDefs: null,
             rowData: null,
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
-            //debug: true,
+            debug: true,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
                 console.log("selection changed fired!");
@@ -115,9 +101,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //    return rowNode.level === 1;
             //},
             onGridReady: function (params) {
-                //params.api.sizeColumnsToFit();
+                
             },
-            getRowHeight: function (params) {
+            //getRowHeight: function (params) {
                 /*
                 var rowIsDetailRow = params.node.level === 1;
                 // return dynamic height when detail row, otherwise return 25
@@ -129,7 +115,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
                 //return rowIsDetailRow ? 200 : 25;
                 */
-            },
+            //},
             /*
             onRowDoubleClicked: function (row) {
 
@@ -143,9 +129,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             */
             defaultColDef: {
                 editable: true
-            },
-            onGridReady: function (params) {
-                params.api.sizeColumnsToFit();
             },
             onRowEditingStarted: function (event) {
                 console.log('started row editing');
@@ -308,21 +291,24 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //setup grid and coldefs and then go!
             $timeout(function () {
 
-                //the header fields -- they don't actually go here... but just for demo
-                $scope.dataAgColumnDefs = DataSheet.getAgColumnDefs($scope.dataset);
+                $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs = DataSheet.getAgColumnDefs($scope.dataset).DetailFields;
 
-                console.log("OK all done getting some fields: ---------------- ");
                 console.dir($scope.dataAgColumnDefs);
+                console.log("and this will be our data");
+                console.dir($scope.dataset_activities.Details);
 
-                $scope.dataAgColumnDefs = $scope.dataAgColumnDefs.DetailFields; //just the details for noow
+                $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs;
 
                 var ag_grid_div = document.querySelector('#data-edit-grid');    //get the container id...
                 //console.dir(ag_grid_div);
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
 
+                //$scope.dataAgGridOptions.api.refreshHeader();
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
-                
+
+                console.dir($scope.dataAgGridOptions.columnApi.getAllColumns());
+
             }, 0);
 
 
