@@ -24,7 +24,7 @@
     "angular-ui-select2": "0.0.5",
     "jquery": "1.10.2",
     "moment": "^2.19.1",
-    "ag-grid-enterprise": "^14.1.1",
+    "ag-grid-enterprise": "latest",
     "Stickyfill": "^2.0.3"
   },
   "resolutions": {
