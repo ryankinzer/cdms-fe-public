@@ -1,8 +1,10 @@
 ﻿
 
 //gridDatasheetOptions needs to be set to your datasheet grid
-datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetService', '$rootScope', 
-    function (Logger, $window, $route, DatasetService, $rootScope, $q) {
+
+datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'FieldRendererService', 'DatasetService','$rootScope',
+    function (Logger, $window, $route, FieldRendererService, DatasetService, $rootScope, $q) {
+
         //var LocationCellTemplate = '<input ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-blur="updateEntity(row)" />';
         var LocationCellEditTemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'locationId\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in locationOptions"/>';
 
@@ -138,7 +140,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
             //           'sort': { 'field': 'ActivityDate', 'direction': 'desc' } //you can control the default sort on the detail grid this way
             //        }
 
-            getAgColumnDefs: function (dataset) {
+            getAgColumnDefs: function (dataset, grid_options) {
                 
                 var defaultShowColumns = {
                     'topHeaderFields': ['Location', 'ActivityDate'],
@@ -231,8 +233,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                 }
 
                 //dataset defined header fields 
-                dataset.Fields.forEach(function (field, index) {
-                    if (field.FieldRoleId === 1) //header role id
+                dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
+                    if (field.FieldRoleId === FIELD_ROLE_HEADER) 
                     {
                         //some col builder function here soon!! TODO
                         finalColumnDefs.HeaderFields.push({
@@ -266,17 +268,26 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                 }
 
                 //dataset defined detail fields 
-                dataset.Fields.forEach(function (field, index) {
-                    if (field.FieldRoleId === 2) //detail role id
-                    {
-                        //some col builder function here soon!! TODO
-                        finalColumnDefs.DetailFields.push({
+                dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
+                    if (field.FieldRoleId === FIELD_ROLE_DETAIL) {
+                        var newColDef = {
                             headerName: field.Label,
                             field: field.DbColumnName,
                             cdmsField: field, //our own we can use later
                             width: 150,
                             menuTabs: [],
-                        });
+                        };
+
+                        FieldRendererService.setRendererForField(field, newColDef, grid_options);
+                        
+//                        if (field.ControlType == "multiselect") {
+                            //console.dir(dataset_activities.Header[field.DbColumnName]);
+                            //$scope.row[field.DbColumnName] = angular.fromJson($scope.dataset_activities.Header[field.DbColumnName]);
+  //                      }
+
+                        //some col builder function here soon!! TODO
+                        finalColumnDefs.DetailFields.push(newColDef);
+
                     }
                 });
 

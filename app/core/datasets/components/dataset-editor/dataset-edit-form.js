@@ -13,6 +13,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         ActivityParser, DataSheet, UploadService, $upload) {
 
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
+        $scope.EditedRows = []; //whenever a row gets edited, it will be added here; we only send edited rows...
 
         $scope.userId = $rootScope.Profile.Id;
         $scope.fields = { header: [], detail: [], relation: [] };
@@ -130,18 +131,25 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             defaultColDef: {
                 editable: true
             },
+            //editType: 'fullRow',
             onRowEditingStarted: function (event) {
                 console.log('started row editing');
             },
             onRowEditingStopped: function (event) {
-                console.log('stopped row editing');
+                console.log('finished row editing');
             },
             onCellEditingStarted: function (event) {
                 console.log('cellEditingStarted');
             },
             onCellEditingStopped: function (event) {
                 console.log('cellEditingStopped');
-            }
+                //TODO: validation!
+                //event.cdmsField <-- if you need it
+                $scope.EditedRows.push(event.data);
+                console.dir($scope.EditedRows);
+                //console.dir(event.cdmsField);
+            },
+            components: {}, //renderers will be populated by the FieldRendererService as needed.
         };
 
 
@@ -291,7 +299,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //setup grid and coldefs and then go!
             $timeout(function () {
 
-                $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs = DataSheet.getAgColumnDefs($scope.dataset).DetailFields;
+                $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs = DataSheet.getAgColumnDefs($scope.dataset, $scope.dataAgGridOptions).DetailFields;
 
                 console.dir($scope.dataAgColumnDefs);
                 console.log("and this will be our data");
