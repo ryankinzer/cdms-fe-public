@@ -117,15 +117,46 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 
             },
 
-            //returns the list of fields to show in a grid for the given dataset
-            getAgColDefs: function (dataset) {
+            //This method builds the column definitions of a dataset for use on any grid view.
+            // and returns them as an object: {HeaderFields: [], DetailFields: []}
+
+            // the composition of header and detail arrays is controlled by the definition in dataset config key "datasheet"
+            // and is in the structure:
+            //   top header fields ("top-header-fields")
+            //   dataset defined header fields
+            //   bottom header fields ("bottom-header-fields")
+            //   left detail fields ("left-detail-fields")
+            //   dataset defined detail fields
+            //   right detail fields ("right-detail-fields")
+            //  this enables you to control the complete appearance and order of the fields via the dataset config.
+            //  Here is the default (as an example of what you might put into the dataset config):
+            //      config: [... "DatasheetFields":
+            //        {  'topHeaderFields': ['Location','ActivityDate'],
+            //           'bottomHeaderFields': ['QAStatus', 'QAComments'],
+            //           'leftDetailFields': ['RowQAStatus'],
+            //           'rightDetailFields': []  //note that you could just leave this key out -- you only need define the present ones.
+            //        }
+
+            getAgColumnDefs: function (dataset) {
                 
                 //create list of candidate columndefs (possibleColumnDefs below).
-                // have a list of default ShowFields - the fields we will show if the dataset doesn't have a different set configured.
-                // but if there is a config, spin through the list and add all the dataset config's SHOWFIELDS and return those.
-                var showColumns = ['ActivityDate', 'Location', 'QAStatus'];
-                var finalColumnDefs = [];
-                var possibleColumnDefs = [  //these are the coldefs that can be added via configuration
+                var defaultShowColumns = {
+                    'topHeaderFields': ['Location', 'ActivityDate'],
+                    'bottomHeaderFields': ['QAStatus', 'QAComments'],
+                    //'leftDetailFields': [],
+                    //'rightDetailFields': []  //note that you could just leave this key out -- you only need define the present ones.
+                };
+
+                var showColumns = defaultShowColumns;
+                var finalColumnDefs = {HeaderFields: [], DetailFields: []};
+
+                var topHeaderCols = [];
+                var bottomHeaderCols = [];
+                var leftDetailCols = [];
+                var rightDetailCols = [];
+
+                //these are the "system" coldefs that can be added via configuration
+                var possibleColumnDefs = [  
 
                     {
                         configName: 'ActivityDate', //we match on this from config
@@ -143,10 +174,16 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                         field: 'QAStatus', headerName: 'QA Status',
                         //cellRenderer: QATemplate,
                         width: 120,
-                        alwaysShowField: true,
                         menuTabs: ['filterMenuTab'],
                         valueGetter: function (params) { return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId]; }
-                    },                    
+                    },       
+                    {
+                        configName: 'QAComments',
+                        field: 'QAComments', headerName: 'QA Comments',
+                        //cellRenderer: QATemplate,
+                        width: 120,
+                        menuTabs: ['filterMenuTab'],
+                    },
                     {
                         configName: 'Location',
                         field: 'Location.Label', headerName: 'Location',
@@ -167,33 +204,107 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                     },
                     {
                         configName: 'Fisherman',
-                        field: 'Fisherman', headerName: 'Fisherman',
+                        field: 'FishermanId', headerName: 'Fisherman',
                         //cellRenderer: FishermanCellRenderer,
                         width: 150, menuTabs: ['filterMenuTab']
                     },
                 ];
 
-                console.log("composing data grid columns from config - here is dataset config!");
+                console.log("composing data grid columns from config - here is the dataset config!");
                 console.dir(dataset.Config);
 
                 //if the dataset has a config and the ActivityPage.ShowFields is set, use it
                 if (dataset.Config != undefined
-                    && dataset.Config.DatasheetFields != undefined
-                    && dataset.Config.DatasheetFields.ShowFields != undefined) {
-                    console.log("Hey config has a showfields configured!");
-                    showColumns = dataset.Config.DatasheetFields.ShowFields; //set
+                    && dataset.Config.DatasheetFields != undefined) {
+
+                    console.log("Hey config has a DatasheetFields configured!");
+                    showColumns = dataset.Config.DatasheetFields; //use our dataset config
+                    
                 } else {
                     console.log("aww no showfields in config... we'll just use the ShowColumns defaults as configured above..."); 
                 }
 
-                possibleColumnDefs.forEach(function (coldef) {
-                    if (showColumns.contains(coldef.configName)) {
-                        finalColumnDefs.push(coldef);
+                
+
+                //these set later from config (or default)
+                var topHeaderCols = [];
+                var bottomHeaderCols = [];
+                var leftDetailCols = [];
+                var rightDetailCols = [];
+
+
+                //top header fields
+                if (typeof showColumns.topHeaderFields !== 'undefined' && Array.isArray(showColumns.topHeaderFields)) {
+                    showColumns.topHeaderFields.forEach(function (fieldname) {
+                        possibleColumnDefs.forEach(function (coldef) {
+                            if (coldef.configName == fieldname)
+                                finalColumnDefs.HeaderFields.push(coldef);
+                        });
+                    });
+                }
+
+                //dataset defined header fields 
+                dataset.Fields.forEach(function (field, index) {
+                    if (field.FieldRoleId === 1) //header role id
+                    {
+                        //some col builder function here soon!! TODO
+                        finalColumnDefs.HeaderFields.push({
+                            headerName: field.Label,
+                            field: field.DbColumnName,
+                            cdmsField: field, //our own we can use later
+                            width: 150,
+                            menuTabs: [],
+                        });
                     }
                 });
 
+                //bottom header fields
+                if (typeof showColumns.bottomHeaderFields !== 'undefined' && Array.isArray(showColumns.bottomHeaderFields)) {
+                    showColumns.bottomHeaderFields.forEach(function (fieldname) {
+                        possibleColumnDefs.forEach(function (coldef) {
+                            if (coldef.configName == fieldname)
+                                finalColumnDefs.HeaderFields.push(coldef);
+                        });
+                    });
+                }
+
+                //left detail fields
+                if (typeof showColumns.leftDetailFields !== 'undefined' && Array.isArray(showColumns.leftDetailFields)) {
+                    showColumns.leftDetailFields.forEach(function (fieldname) {
+                        possibleColumnDefs.forEach(function (coldef) {
+                            if (coldef.configName == fieldname)
+                                finalColumnDefs.DetailFields.push(coldef);
+                        });
+                    });
+                }
+
+                //dataset defined detail fields 
+                dataset.Fields.forEach(function (field, index) {
+                    if (field.FieldRoleId === 2) //detail role id
+                    {
+                        //some col builder function here soon!! TODO
+                        finalColumnDefs.DetailFields.push({
+                            headerName: field.Label,
+                            field: field.DbColumnName,
+                            cdmsField: field, //our own we can use later
+                            width: 150,
+                            menuTabs: [],
+                        });
+                    }
+                });
+
+                //right detail fields
+                if (typeof showColumns.rightDetailFields !== 'undefined' && Array.isArray(showColumns.rightDetailFields)) {
+                    showColumns.rightDetailFields.forEach(function (fieldname) {
+                        possibleColumnDefs.forEach(function (coldef) {
+                            if (coldef.configName == fieldname)
+                                finalColumnDefs.DetailFields.push(coldef);
+                        });
+                    });
+                }
+
                 //set the first column to be the sort column:
-                finalColumnDefs[0].sort = "desc";
+                //finalColumnDefs[0].sort = "desc";
 
                 return finalColumnDefs;
             },

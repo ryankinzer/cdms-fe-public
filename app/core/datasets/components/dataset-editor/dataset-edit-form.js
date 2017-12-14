@@ -309,22 +309,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $timeout(function () {
 
                 //the header fields -- they don't actually go here... but just for demo
-                //$scope.dataAgColumnDefs = DataSheet.getAgColDefs($scope.dataset);
-
-                //all the detail fields...
-                $scope.dataset.Fields.forEach(function (field, index) {
-                    $scope.dataAgColumnDefs.push({
-                        headerName: field.Label,
-                        id: field.Id,
-                        field: field.DbColumnName,
-                        width: 150,
-                        menuTabs: ['filterMenuTab'],
-                        filter: 'text'
-                    });
-                });
+                $scope.dataAgColumnDefs = DataSheet.getAgColumnDefs($scope.dataset);
 
                 console.log("OK all done getting some fields: ---------------- ");
                 console.dir($scope.dataAgColumnDefs);
+
+                $scope.dataAgColumnDefs = $scope.dataAgColumnDefs.DetailFields; //just the details for noow
 
                 var ag_grid_div = document.querySelector('#data-edit-grid');    //get the container id...
                 //console.dir(ag_grid_div);
