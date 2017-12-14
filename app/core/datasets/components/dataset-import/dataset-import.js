@@ -47,6 +47,7 @@
 			//to be able to show only the invalid records.
 			$scope.ValidRecordsBucket = [];
 			$scope.TempRecordsBucket = [];
+			$scope.validation_error_count = 0;
 			
 			//datasheet grid
 			$scope.gridDatasheetOptions = {
@@ -970,6 +971,14 @@
 			$scope.displayImportPreview = function()
 			{
 				console.log("Inside displayImportPreview");
+				$scope.validation_error_count = 0;
+				
+				var tmpYear = 0;
+				var tmpMonth = 0;
+				var tmpDate = 0;
+				var tmpHour = 0;
+				var tmpMinutes = 0;
+				var tmpSeconds = 0;
 				////console.log("$scope is next...");
 				////console.dir($scope);
 				//console.log("$scope.datasheetColDefs is next...");
@@ -1288,7 +1297,22 @@
 												if ((typeof new_row.activityDate !== 'string') && (field.FieldRoleId === 1))
 													row[field.DbColumnName] = toExactISOString(d); // Header form
 												else
+												{
+													tmpYear = d.getFullYear();
+													tmpMonth = d.getMonth();
+													tmpDate = d.getDate();
+													tmpHour = d.getHours();
+													tmpMinutes = d.getMinutes();
+													tmpSeconds = d.getSeconds();
+
 													new_row[field.DbColumnName] = toExactISOString(d); // Datasheet form
+													if ((tmpYear === 2016) && (tmpMonth === 3) && (tmpDate === 13) && (tmpHour > 0) && (tmpHour < 4))
+													{
+														console.log("d = " + d.toString());
+														console.log(tmpYear + "-" + tmpMonth + "-" + tmpDate + " " + tmpHour + ":" + tmpMinutes + ":" + tmpSeconds);
+														console.log(new_row[field.DbColumnName]);
+													}
+												}
 											}
 										}
 										catch(e)
@@ -2047,8 +2071,10 @@
 								//console.log("duplicateItems is next...");
 								//console.dir(duplicateItems);
 								var strDupeItemDateTime = "";
+								var intPlaceCount = 0;
 								
 								angular.forEach(duplicateItems, function(item){
+									intPlaceCount++;
 									// The datetime coming back from the backend has a "T" in it; we must remove it.
 									//item.ReadingDateTime = item.ReadingDateTime.replace("T", " ");
 									//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
@@ -2072,6 +2098,13 @@
 											// All three of these are required to turn the lines with errors red.
 											detailRecord.isValid = false;
 											detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
+											$scope.validation_error_count++;
+											//if ($scope.validation_error_count > $scope.dataSheetDataset.length)
+											//if ($scope.validation_error_count > intPlaceCount)
+											//{
+											//	var strMsg = "detailRecord.ReadingDateTime = " + detailRecord.ReadingDateTime;
+											//	alert(strMsg);
+											//}
 											
 											// During the (angular?) cycle, checkForDuplicates ends of running twice, so we get duplicate error entries.
 											// Therefore, clean out the duplicate entries from the error array.
@@ -2207,6 +2240,7 @@
 												// All three of these are required to turn the lines with errors red.
 												detailRecord.isValid = false;
 												detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
+												$scope.validation_error_count++;
 												
 												// During the (angular?) cycle, checkForDuplicates ends of running twice, so we get duplicate error entries.
 												// Therefore, clean out the duplicate entries from the error array.
