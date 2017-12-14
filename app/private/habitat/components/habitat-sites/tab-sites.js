@@ -131,6 +131,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                     if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
                         return moment(params.node.data.EffDt).format('L');
                 },
+                valueGetter: function (params) { return moment(params.node.data.EffDt) }, //date filter needs js date object			
                 sort: 'desc',
                 menuTabs: [],
             },
@@ -148,7 +149,9 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                     if (params.node.data.ProjectStartDate !== undefined && params.node.data.ProjectStartDate !== null)
                         return moment(params.node.data.ProjectStartDate).format('L');
                 },
-                menuTabs: [],
+                valueGetter: function (params) { return moment(params.node.data.ProjectStartDate) }, //date filter needs js date object			
+                filter: 'date',
+                menuTabs: ['filterMenuTab'],
 
             },
             {
@@ -157,7 +160,9 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                     if (params.node.data.ProjectEndDate !== undefined && params.node.data.ProjectEndDate !== null)
                         return moment(params.node.data.ProjectEndDate).format('L');
                 },
-                menuTabs: [],
+                valueGetter: function (params) { return (params.node.data.ProjectEndDate) ? moment(params.node.data.ProjectEndDate) : null }, //date filter needs js date object
+                filter: 'date',
+                menuTabs: ['filterMenuTab'],
             },
         ];
 
