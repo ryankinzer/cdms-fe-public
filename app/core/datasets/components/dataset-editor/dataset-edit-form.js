@@ -6,12 +6,13 @@
 
 //Fieldsheet / form version of the dataentry page
 //was "DataEditCtrl" from DataEditControllers
-var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$modal', '$location', '$rootScope',
-    'ActivityParser', 'DataSheet', '$upload',
-    function ($scope, $q, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
-        ActivityParser, DataSheet, $upload) {
 
-        initEdit(); // stop backspace from ditching in the wrong place.
+var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$modal', '$location', '$rootScope',
+    'ActivityParser', 'DataSheet', 'FileUploadService', '$upload',
+    function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
+        ActivityParser, DataSheet, UploadService, $upload) {
+
+        initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
 
         $scope.userId = $rootScope.Profile.Id;
         $scope.fields = { header: [], detail: [], relation: [] };
@@ -56,6 +57,112 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
         $scope.showDetails = true;
 
         $scope.foundDuplicate = false;
+
+
+
+
+        //AG-GRID ---------------------------------------
+        $scope.dataAgColumnDefs = [
+            /*{
+                headerName: 'ID',
+                field: 'Id',
+                width: 80,
+                cellRenderer: 'group',
+                cellRendererParams: { suppressCount: true },
+                menuTabs: ['filterMenuTab'],
+                filter: 'number'
+            },
+            */
+        ];
+
+
+        $scope.dataAgGridOptions = {
+            animateRows: true,
+            enableSorting: true,
+            enableFilter: true, 
+            enableColResize: true,
+            showToolPanel: false,
+            columnDefs: $scope.dataAgColumnDefs,
+            rowData: null,
+            //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
+            //debug: true,
+            rowSelection: 'single',
+            onSelectionChanged: function (params) {
+                console.log("selection changed fired!");
+                /*
+                var rows = scope.corrAgGridOptions.api.getSelectedRows();
+                if (Array.isArray(rows) && rows[0] != null)
+                {
+                    console.log("rows:");
+                    console.dir(rows);
+                    if (!Array.isArray(rows[0]) && !rows[0].hasOwnProperty('SubprojectId')) //only change the selection if they clicked a header row.
+                    {
+                        scope.corrAgGridOptions.selectedItems = scope.corrAgGridOptions.api.getSelectedRows();
+                        //scope.corrAgGridOptions.api.redrawRows();
+                        //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+                        console.log("selected a header row so selection actually changed");
+                        scope.viewSubproject = rows[0];
+                        console.dir(scope.viewSubproject);
+                    }
+                }
+                */
+            },
+            //onFilterModified: function () {
+            //    scope.corrAgGridOptions.api.deselectAll();
+            //},
+            selectedItems: [],
+            //isFullWidthCell: function (rowNode) {
+            //    return rowNode.level === 1;
+            //},
+            onGridReady: function (params) {
+                //params.api.sizeColumnsToFit();
+            },
+            getRowHeight: function (params) {
+                /*
+                var rowIsDetailRow = params.node.level === 1;
+                // return dynamic height when detail row, otherwise return 25
+                if (rowIsDetailRow) {
+                    return 300;
+                } else {
+                    var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
+                    return 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+                }
+                //return rowIsDetailRow ? 200 : 25;
+                */
+            },
+            /*
+            onRowDoubleClicked: function (row) {
+
+                scope.corrAgGridOptions.api.collapseAll();
+                row.node.setSelected(true);
+                row.node.setExpanded(true);
+            },
+            onRowClicked: function (row) {
+                row.node.setSelected(true);
+            },
+            */
+            defaultColDef: {
+                editable: true
+            },
+            onGridReady: function (params) {
+                params.api.sizeColumnsToFit();
+            },
+            onRowEditingStarted: function (event) {
+                console.log('started row editing');
+            },
+            onRowEditingStopped: function (event) {
+                console.log('stopped row editing');
+            },
+            onCellEditingStarted: function (event) {
+                console.log('cellEditingStarted');
+            },
+            onCellEditingStopped: function (event) {
+                console.log('cellEditingStopped');
+            }
+        };
+
+
+
 
         //datasheet grid
         $scope.gridDatasheetOptions = {
@@ -196,6 +303,40 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             $scope.dataset = $scope.dataset_activities.Dataset;
             console.log("$scope.dataset is next...");
             console.dir($scope.dataset);
+
+
+            //setup grid and coldefs and then go!
+            $timeout(function () {
+
+                //the header fields -- they don't actually go here... but just for demo
+                //$scope.dataAgColumnDefs = DataSheet.getAgColDefs($scope.dataset);
+
+                //all the detail fields...
+                $scope.dataset.Fields.forEach(function (field, index) {
+                    $scope.dataAgColumnDefs.push({
+                        headerName: field.Label,
+                        id: field.Id,
+                        field: field.DbColumnName,
+                        width: 150,
+                        menuTabs: ['filterMenuTab'],
+                        filter: 'text'
+                    });
+                });
+
+                console.log("OK all done getting some fields: ---------------- ");
+                console.dir($scope.dataAgColumnDefs);
+
+                var ag_grid_div = document.querySelector('#data-edit-grid');    //get the container id...
+                //console.dir(ag_grid_div);
+                $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
+                $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
+
+                $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
+                
+            }, 0);
+
+
+
 
             $rootScope.datasetId = $scope.datasetId = $scope.dataset.Id;
             console.log("$rootScope.datasetId = " + $rootScope.datasetId);

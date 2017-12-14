@@ -117,6 +117,90 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 
             },
 
+            //returns the list of fields to show in a grid for the given dataset
+            getAgColDefs: function (dataset) {
+                
+                //create list of candidate columndefs (possibleColumnDefs below).
+                // have a list of default ShowFields - the fields we will show if the dataset doesn't have a different set configured.
+                // but if there is a config, spin through the list and add all the dataset config's SHOWFIELDS and return those.
+                var showColumns = ['ActivityDate', 'Location', 'QAStatus'];
+                var finalColumnDefs = [];
+                var possibleColumnDefs = [  //these are the coldefs that can be added via configuration
+
+                    {
+                        configName: 'ActivityDate', //we match on this from config
+                        field: 'ActivityDate',
+                        headerName: 'Activity Date',
+                        valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object				
+                        filter: 'date',
+                        filterParams: { apply: true },
+                        //cellRenderer: ActivityCellRenderer,
+                        width: 180,
+                        menuTabs: ['filterMenuTab']
+                    },
+                    {
+                        configName: 'QAStatus',
+                        field: 'QAStatus', headerName: 'QA Status',
+                        //cellRenderer: QATemplate,
+                        width: 120,
+                        alwaysShowField: true,
+                        menuTabs: ['filterMenuTab'],
+                        valueGetter: function (params) { return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId]; }
+                    },                    
+                    {
+                        configName: 'Location',
+                        field: 'Location.Label', headerName: 'Location',
+                        //cellRenderer: LocationCellRenderer,
+                        width: 200, menuTabs: ['filterMenuTab']
+                    },
+                    {
+                        configName: 'Instrument',
+                        field: 'InstrumentId', headerName: 'Instrument',
+                        //cellRenderer: InstrumentCellRenderer,
+                        width: 200, menuTabs: ['filterMenuTab']
+                    },
+                    {
+                        configName: 'Timezone',
+                        field: 'Timezone', headerName: 'Reading Timezone',
+                        //cellRenderer: TimezoneCellRenderer,
+                        width: 150, menuTabs: ['filterMenuTab']
+                    },
+                    {
+                        configName: 'Fisherman',
+                        field: 'Fisherman', headerName: 'Fisherman',
+                        //cellRenderer: FishermanCellRenderer,
+                        width: 150, menuTabs: ['filterMenuTab']
+                    },
+                ];
+
+                console.log("composing data grid columns from config - here is dataset config!");
+                console.dir(dataset.Config);
+
+                //if the dataset has a config and the ActivityPage.ShowFields is set, use it
+                if (dataset.Config != undefined
+                    && dataset.Config.DatasheetFields != undefined
+                    && dataset.Config.DatasheetFields.ShowFields != undefined) {
+                    console.log("Hey config has a showfields configured!");
+                    showColumns = dataset.Config.DatasheetFields.ShowFields; //set
+                } else {
+                    console.log("aww no showfields in config... we'll just use the ShowColumns defaults as configured above..."); 
+                }
+
+                possibleColumnDefs.forEach(function (coldef) {
+                    if (showColumns.contains(coldef.configName)) {
+                        finalColumnDefs.push(coldef);
+                    }
+                });
+
+                //set the first column to be the sort column:
+                finalColumnDefs[0].sort = "desc";
+
+                return finalColumnDefs;
+            },
+
+
+            
+
             getColDefs: function (DatastoreTablePrefix, theMode) {
                 console.log("Inside services, getColDefs...");
                 console.log("theMode = " + theMode);

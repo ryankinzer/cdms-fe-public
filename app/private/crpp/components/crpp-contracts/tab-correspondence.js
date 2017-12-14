@@ -261,7 +261,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
 
             animateRows: true,
             enableSorting: true,
-            enableFilter: true, //turning it off because: https://github.com/ag-grid/ag-grid/issues/1324
+            enableFilter: true,
             enableColResize: true,
             showToolPanel: false,
             columnDefs: scope.corrAgColumnDefs,
