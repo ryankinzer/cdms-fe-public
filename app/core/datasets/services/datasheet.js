@@ -150,11 +150,6 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                 var showColumns = defaultShowColumns;
                 var finalColumnDefs = {HeaderFields: [], DetailFields: []};
 
-                var topHeaderCols = [];
-                var bottomHeaderCols = [];
-                var leftDetailCols = [];
-                var rightDetailCols = [];
-
                 //these are the "system" coldefs that can be added via configuration
                 var possibleColumnDefs = [  
 
@@ -223,15 +218,6 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                 } else {
                     console.log("aww no showfields in config... we'll just use the ShowColumns defaults as configured above..."); 
                 }
-
-                
-
-                //these set later from config (or default)
-                var topHeaderCols = [];
-                var bottomHeaderCols = [];
-                var leftDetailCols = [];
-                var rightDetailCols = [];
-
 
                 //top header fields
                 if (typeof showColumns.topHeaderFields !== 'undefined' && Array.isArray(showColumns.topHeaderFields)) {
