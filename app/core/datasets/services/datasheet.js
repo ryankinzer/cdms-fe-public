@@ -135,6 +135,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
             //           'bottomHeaderFields': ['QAStatus', 'QAComments'],
             //           'leftDetailFields': ['RowQAStatus'],
             //           'rightDetailFields': []  //note that you could just leave this key out -- you only need define the present ones.
+            //           'sort': { 'field': 'ActivityDate', 'direction': 'desc' } //you can control the default sort on the detail grid this way
             //        }
 
             getAgColumnDefs: function (dataset) {
@@ -143,6 +144,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                 var defaultShowColumns = {
                     'topHeaderFields': ['Location', 'ActivityDate'],
                     'bottomHeaderFields': ['QAStatus', 'QAComments'],
+                    'sort': { 'field': 'ActivityDate', 'direction': 'desc' }
                     //'leftDetailFields': [],
                     //'rightDetailFields': []  //note that you could just leave this key out -- you only need define the present ones.
                 };
@@ -289,8 +291,16 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                     });
                 }
 
-                //set the first column to be the sort column:
-                //finalColumnDefs[0].sort = "desc";
+                //set the sort from the config, if present.
+                if (typeof showColumns.sort !== 'undefined' && showColumns.sort.field && showColumns.sort.direction)
+                {
+                    finalColumnDefs.DetailFields.forEach(function (field) {
+                        if (field.configName === showColumns.sort.field)
+                        {
+                            field.sort = showColumns.sort.direction;
+                        }
+                    });
+                }
 
                 return finalColumnDefs;
             },
