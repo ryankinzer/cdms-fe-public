@@ -621,7 +621,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
             },
 
             //fired whenever a cell value changes.
-            updateCell: function (row, field_name, scope) {
+            //updateCell: function (row, field_name, scope) {
+            updateCell: function (row, field_name, scope, rootScope) {
 				console.log("Inside datasheet.js, updateCell...");
 				console.log("row is next...");
 				console.dir(row);
@@ -758,6 +759,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					if ((typeof scope.activities !== 'undefined') && (scope.activities !== null))
 						scope.activities.errors = undefined;
 					
+					//scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
+					
 					//scope.removeRowErrorsBeforeRecheck();
 					scope.checkForDuplicates();
 				}
@@ -792,6 +795,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                     return;
 
                 console.log(">>>>>>> validating the whole grid baby");
+				console.log("Resetting scope.validation_error_count...");
                 scope.validation_error_count = 0;
 
                 angular.forEach(scope.dataSheetDataset, function (data_row, key) {
