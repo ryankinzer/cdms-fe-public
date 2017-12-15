@@ -27,12 +27,14 @@ require([
     'core/datasets/components/dataset-seasons-list/modal-create-season',
 
     //load the various dataset services
+    'core/datasets/services/datasheet-controltype-definitions',
     'core/datasets/services/dataset-service',
     'core/datasets/services/activity-parser',
     'core/datasets/services/convert-status',
     'core/datasets/services/datasheet',
     //'core/datasets/services/file-upload',
     'core/datasets/services/field-renderer-service',
+
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!

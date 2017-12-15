@@ -140,7 +140,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'FieldRende
             //           'sort': { 'field': 'ActivityDate', 'direction': 'desc' } //you can control the default sort on the detail grid this way
             //        }
 
-            getAgColumnDefs: function (dataset, grid_options) {
+            getAgColumnDefs: function (dataset) {
                 
                 var defaultShowColumns = {
                     'topHeaderFields': ['Location', 'ActivityDate'],
@@ -278,7 +278,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'FieldRende
                             menuTabs: [],
                         };
 
-                        FieldRendererService.setRendererForField(field, newColDef, grid_options);
+                        FieldRendererService.setRendererForField(field, newColDef);
                         
 //                        if (field.ControlType == "multiselect") {
                             //console.dir(dataset_activities.Header[field.DbColumnName]);

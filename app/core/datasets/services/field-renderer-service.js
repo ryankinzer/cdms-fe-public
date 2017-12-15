@@ -1,33 +1,35 @@
 ﻿//ag-grid field renderer service
 
-//common renderers are defined in this section. 
-// functions create dynamic ones (lists, or service based)
- 
+
 
 datasets_module.service('FieldRendererService', ['$window', '$route',
     function ($window, $route, $q) {
 
         var service = {
 
-            setRendererForField: function (cdms_field, col_def, grid_options)
+            setRendererForField: function (cdms_field, col_def)
             {
-                if (col_def.field === "Species")
-                {
-                    var SpeciesCellRenderer = function (params) {
-                        console.log("In renderer!");
-                        console.dir(params);
-                        return params.value;
-                    };
+                //is it in our field library (Instrument, Fishermen, Location, etc.)
+                //TODO
 
-                    grid_options.components.speciesCellRenderer = SpeciesCellRenderer;
+                //is it a list? (to be implemented feature)
+                //TODO
+                
+                //ControlType RENDERERS: get the field's definition by controltype
+                var control_type_renderer = ControlTypeDefinitions[cdms_field.ControlType];
+                console.log(cdms_field.DbColumnName + " ----------------------------------------------------------");
 
-                    col_def.cellRenderer = 'speciesCellRenderer';
-                    col_def.cellEditor = 'agSelectCellEditor';
-                    col_def.cellEditorParams = {
-                        cellRenderer: 'speciesCellRenderer',
-                        values: ['CHR','ABC','BUT'],
-                    };
+                if (control_type_renderer && typeof control_type_renderer === "function") {
+                    var new_col_def = control_type_renderer(cdms_field, col_def);
+                    console.dir(new_col_def);
+                    return new_col_def;
                 }
+
+                console.dir(cdms_field);
+
+
+                
+
             },
 
             convertStatus: function (aStatus) {

@@ -299,7 +299,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //setup grid and coldefs and then go!
             $timeout(function () {
 
-                $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs = DataSheet.getAgColumnDefs($scope.dataset, $scope.dataAgGridOptions).DetailFields;
+                $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs = DataSheet.getAgColumnDefs($scope.dataset).DetailFields;
 
                 console.dir($scope.dataAgColumnDefs);
                 console.log("and this will be our data");
