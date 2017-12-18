@@ -48,7 +48,7 @@
 			$scope.ValidRecordsBucket = [];
 			$scope.TempRecordsBucket = [];
 			$scope.validation_error_count = 0;
-			$scope.readingdatetimeList = [];
+			$scope.datetimeList = [];
 			
 			//datasheet grid
 			$scope.gridDatasheetOptions = {
@@ -1660,6 +1660,7 @@
 						//add imported row to datasheet.
 						if(new_row.activityDate)
 						{
+							//console.log("We have an activityDate...");
 							/*var d = new Date(new_row.ReadingDateTime);
 							tmpYear = d.getFullYear();
 							tmpMonth = d.getMonth();
@@ -1678,8 +1679,32 @@
 							}
 							*/
 							$scope.dataSheetDataset.push(new_row);
-							var strIsoDateTime = convertDateFromUnknownStringToUTC(new_row.ReadingDateTime);
-							$scope.readingdatetimeList.push(strIsoDateTime);
+							
+							// We want to build a list of all the ReadingDateTime values, so that we can use it as an index later to search.
+							//console.log("typeof new_row.ReadingDateTime = " + typeof new_row.ReadingDateTime);
+							//var strIsoDateTime = convertDateFromUnknownStringToUTC(new_row.ReadingDateTime);
+							strIsoDateTime = "";
+							if ($scope.DatastoreTablePrefix === "WaterTemp")
+							{
+								if (typeof new_row.ReadingDateTime === "string")
+								{
+									//console.log("ReadingDateTime is a string...");
+									strIsoDateTime = convertDateFromUnknownStringToUTC(new_row.ReadingDateTime);
+								}
+								else if (typeof new_row.ReadingDateTime === "date")
+								{
+									//console.log("ReadingDateTime is a date...");
+									strIsoDateTime = toExactISOString(new_row.ReadingDateTime);
+								}
+								else
+								{
+									console.log("ReadingDateTime is not a date or a string...");
+								}
+							}
+							else
+								strIsoDateTime = new_row.activityDate;
+							
+							$scope.datetimeList.push(strIsoDateTime);
 						}
 							
 					}
@@ -2293,6 +2318,12 @@
 				var strActivityLocationList = "";
 				var strInstrumentIdList = "";
 				var count = 0;
+				var intPlaceCount = 0;
+				var keepGoing = true;
+				var DateTimeIndex = -1;
+				var strDupeItemDateTime = "";
+				//var strIsoDateTime = "";
+				var errorMessage = ""
 				
 				if ($scope.DatastoreTablePrefix === "WaterTemp")
 				{	
@@ -2357,12 +2388,12 @@
 								//console.log("duplicateItems is next...");
 								//console.dir(duplicateItems);
 								var strDupeItemDateTime = "";
-								var intPlaceCount = 0;
+								//var intPlaceCount = 0;
 								var keepGoing = true;
 								var readingDateTimeIndex = -1;
 								
 								angular.forEach(duplicateItems, function(item){
-									intPlaceCount++;
+									//intPlaceCount++;
 									// The datetime coming back from the backend has a "T" in it; we must remove it.
 									//item.ReadingDateTime = item.ReadingDateTime.replace("T", " ");
 									//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
@@ -2372,7 +2403,7 @@
 									/*angular.forEach($scope.dataSheetDataset, function(detailRecord){
 										if (keepGoing)
 										{
-											// In order tom compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
+											// In order to compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
 											//strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.ReadingDateTime);
 											strIsoDateTime = convertDateFromUnknownStringToUTC(detailRecord.ReadingDateTime);
 											
@@ -2405,20 +2436,37 @@
 										}
 									});
 									*/
-									var strDupeItemDateTime2 = strDupeItemDateTime + ".000";
+									//var strDupeItemDateTime2 = strDupeItemDateTime + ".000";
 									//console.log("strDupeItemDateTime = " + strDupeItemDateTime2);
-									//console.log("$scope.readingdatetimeList is next...");
-									//console.dir($scope.readingdatetimeList);
-									readingDateTimeIndex = $scope.readingdatetimeList.indexOf(strDupeItemDateTime2);
-									//console.log("readingDateTimeIndex = " + readingDateTimeIndex);
 									
-									//console.log("$scope.dataSheetDataset[readingDateTimeIndex] is next...");
-									//console.dir($scope.dataSheetDataset[readingDateTimeIndex]);
-									if (typeof $scope.dataSheetDataset[readingDateTimeIndex].errors === 'undefined')
-										$scope.dataSheetDataset[readingDateTimeIndex].errors = [];
+									// Need to fix a problem in here.
+									//console.log("typeof item.ReadingDateTime = " + typeof item.ReadingDateTime);
+									//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
+									//strIsoDateTime = toExactISOString(item.ReadingDateTime);
 									
-									$scope.dataSheetDataset[readingDateTimeIndex].isValid = false;
-									$scope.dataSheetDataset[readingDateTimeIndex].errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
+									strIsoDateTime = item.ReadingDateTime;
+									//console.log("typeof strIsoDateTime = " + typeof strIsoDateTime);
+									strIsoDateTime = strIsoDateTime.replace("T", " ");
+									strIsoDateTime = strIsoDateTime + ".000";
+									//console.log("strIsoDateTime = " + strIsoDateTime);
+									
+									//console.log("$scope.datetimeList is next...");
+									//console.dir($scope.datetimeList);
+									dateTimeIndex = $scope.datetimeList.indexOf(strIsoDateTime);
+									//console.log("dateTimeIndex = " + dateTimeIndex);
+									
+									//console.log("$scope.dataSheetDataset[dateTimeIndex] is next...");
+									//console.dir($scope.dataSheetDataset[dateTimeIndex]);
+									if (typeof $scope.dataSheetDataset[dateTimeIndex].errors === 'undefined')
+										$scope.dataSheetDataset[dateTimeIndex].errors = [];
+									
+									$scope.dataSheetDataset[dateTimeIndex].isValid = false;
+									errorMessage = "Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.";
+									//if (($scope.dataSheetDataset[dateTimeIndex].errors.length > 0) &&
+									//	($scope.dataSheetDataset[dateTimeIndex].errors.indexOf(errorMessage) < 0))
+										$scope.dataSheetDataset[dateTimeIndex].errors.push(errorMessage);
+										
+									$scope.dataSheetDataset[dateTimeIndex].errors = uniq_fast($scope.dataSheetDataset[dateTimeIndex].errors);
 									$scope.gridHasErrors = true;
 									//throw "Stopping right here.";
 									
@@ -2513,6 +2561,8 @@
 						promise.$promise.then(function(list){
 							console.log("promise received its results and is next...");
 							console.dir(promise);
+							console.log("list is next...");
+							console.dir(list);
 							if (promise.length > 0)
 							{
 								$scope.duplicateEntry = true;
@@ -2525,23 +2575,47 @@
 								}
 								else
 								{
+									console.log("$scope.datetimeList is next..");
+									console.dir($scope.datetimeList);
+									
+									console.log("duplicateItems.length = " + duplicateItems.length);
+									count = 1;
 									angular.forEach(duplicateItems, function(item){
 										//console.log("item is next...");
 										//console.dir(item);
-										
 										// The datetime coming back from the backend has a "T" in it; we must remove it.
-										item.ActivityDate = item.ActivityDate.replace("T", " ");
+										//item.ActivityDate = item.ActivityDate.replace("T", " ");
 										//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
 										
+										//keepGoing = true;
+										//***
+										//DateTimeIndex = $scope.datetimeList.indexOf(item.ActivityDate);
+										//console.log("DateTimeIndex = " + DateTimeIndex);
+										
+										//console.log("$scope.dataSheetDataset[DateTimeIndex] is next...");
+										//console.dir($scope.dataSheetDataset[DateTimeIndex]);
+										//if (typeof $scope.dataSheetDataset[DateTimeIndex].errors === 'undefined')
+										//	$scope.dataSheetDataset[DateTimeIndex].errors = [];
+										
+										//$scope.dataSheetDataset[DateTimeIndex].isValid = false;
+										//$scope.dataSheetDataset[DateTimeIndex].errors.push("Duplicate:  a record with this ActivityDate and Location already exists.");
+										//$scope.dataSheetDataset[DateTimeIndex].errors = uniq_fast($scope.dataSheetDataset[DateTimeIndex].errors);
+										//$scope.gridHasErrors = true;
+										
+										//console.log(count);
+										//console.log("...");
+										//count++;
+										//***
+										
 										angular.forEach($scope.dataSheetDataset, function(detailRecord){
-											// In order tom compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
+											// In order to compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
 											//strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.activityDate);
 											strIsoDateTime = detailRecord.activityDate;
-											strIsoDateTime = strIsoDateTime.replace("T", " ");
+											//strIsoDateTime = strIsoDateTime.replace("T", " ");
 											
 											// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
 											strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
-											//console.log("item.ActivityDate = " + item.ActivityDate + ", strIsoDateTime = " + strIsoDateTime);
+											console.log("item.ActivityDate = " + item.ActivityDate + ", strIsoDateTime = " + strIsoDateTime);
 											if (item.ActivityDate === strIsoDateTime)
 											{
 												console.log("Found dupe...");
@@ -2550,15 +2624,16 @@
 												
 												// All three of these are required to turn the lines with errors red.
 												detailRecord.isValid = false;
-												detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
+												detailRecord.errors.push("Duplicate:  a record with this Dataset, Location, and ActivityDate already exists.");
 												//$scope.validation_error_count++;
 												
-												// During the (angular?) cycle, checkForDuplicates ends of running twice, so we get duplicate error entries.
+												// During the (angular?) cycle, checkForDuplicates ends up running twice, so we get duplicate error entries.
 												// Therefore, clean out the duplicate entries from the error array.
 												detailRecord.errors = uniq_fast(detailRecord.errors);
 												$scope.gridHasErrors = true;
 											}
 										});
+										
 										//console.log("Finished inside looping through $scope.dataSheetDataset for ActivityDate errors...");
 									});
 									//console.log("Finished outside looping through duplicateItems for ActivityDate errors...");
@@ -2571,7 +2646,7 @@
 							}
 							//console.log("After the 'if' promise.length...");
 						});
-						//console.log("Location after promise.then (but it may not have completed yet)... ");
+						console.log("Location after promise.then (but it may not have completed yet)... ");
 					}
 				}
 				console.log("$scope.dataSheetDataset is next...");
@@ -2602,13 +2677,29 @@
 				$scope.gridHasErrors = false;
 			};
 			
-			$scope.locateRecordItem = function(recordList, searchedForItem)
+			$scope.rebuildDateTimeList = function()
+			{
+				$scope.datetimeList = [];
+				var strIsoDateTime = null;
+				
+				angular.forEach($scope.dataSheetDataset, function(item){
+					if ($scope.DatastoreTablePrefix === "WaterTemp")
+						strIsoDateTime = convertDateFromUnknownStringToUTC(item.ReadingDateTime);
+					else
+						strIsoDateTime = item.activityDate;
+					
+					$scope.datetimeList.push(strIsoDateTime);
+				});
+			};
+			
+			/*$scope.locateRecordItem = function(recordList, searchedForItem)
 			{
 				var locatedItem = null;
 				
 				var recordListLength = recordList.length;
 				
 			};
+			*/
 
 	    	$scope.openDuplicatesModal = function(){
 				var modalInstance = $modal.open({
