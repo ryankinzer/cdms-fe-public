@@ -114,9 +114,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         //grid columns for sites tab (master/subprojects)
         scope.sitesColumnDefs = [  //in order the columns will display, by the way...
-            {
-                width: 130, cellRenderer: EditMasterLinksTemplate, menuTabs: [],
-            },
+            { colId: 'EditLinksMaster', width: 130, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             {
                 field: 'ProjectName', headerName: 'Name', width: 325, cellRenderer: 'group',
                 cellRendererParams: { suppressCount: true },
@@ -168,10 +166,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         //details for the correspondence
         var detailColumnDefs = [
-            {
-                headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [],
-            },
-            
+            //{ headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [], }, 
             { headerName: 'Item Type', field: 'ItemType', cellClass: 'item-record-cell', width: 100, menuTabs: ['filterMenuTab'], },
             { headerName: 'Item Name', field: 'ItemName', cellClass: 'item-record-cell', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: 'Documents', field: 'ItemFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: [], },
@@ -350,6 +345,12 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
                     scope.subprojectList = SubprojectService.getProjectSubprojects(scope.project.Id); //the habitat subprojects
                     //console.log("Fetching Habitat subprojects...");
+
+                    //if user can edit, unhide the edit links
+                    if (scope.canEdit(scope.project)) {
+                        scope.sitesGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
+                        scope.sitesDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [] }); //add this column to the front of the detail grid cols
+                    }
 
                     //ok let's watch for when the subprojects come back and we can load the other things we need.
                     var watcher = scope.$watch('subprojectList.length', function () {

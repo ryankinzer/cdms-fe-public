@@ -74,7 +74,7 @@ var tab_fishermen = ['$scope', '$timeout', '$routeParams', 'SubprojectService', 
             selectedItems: [],
             columnDefs:
             [
-                { cellRenderer: EditLinksTemplate, width: 80, menuTabs: [], },
+                { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 80, menuTabs: [], hide: true },
                 { field: 'FirstName', cellRenderer: FirstNameRenderer, headerName: 'First Name', width: 100, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
                 //{ field: 'Aka', headerName: 'Aka', width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'LastName', headerName: 'Last Name', width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -115,6 +115,10 @@ var tab_fishermen = ['$scope', '$timeout', '$routeParams', 'SubprojectService', 
 
                     //build the grid based on our subprojects
                     scope.fishGridOptions.api.setRowData(scope.project.Fishermen);
+
+                    //if user can edit, unhide the edit links
+                    if (scope.canEdit(scope.project))
+                        scope.fishGridOptions.columnApi.setColumnVisible("EditLinks", true);
 
                 }, 0);
 

@@ -145,8 +145,12 @@ function configureProfile(profile)
 		return false;
 	}
 
+    //if is project owner, has role of editor or admin.
 	profile.canEdit = function(project)
-	{
+    {
+        if (!project)
+            return null;
+
 		return (profile.isProjectOwner(project) || profile.isProjectEditor(project));
 	};
 

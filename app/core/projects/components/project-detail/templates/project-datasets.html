@@ -154,7 +154,9 @@
 		     
                     <div class="panel panel-default">
 
-                        <button style="margin: 20px;" class="right btn" ng-click="createFisherman()">Create New</button>
+                        <div project-role="editor">
+                            <button style="margin: 20px;" class="right btn" ng-click="createFisherman()">Create New</button>
+                        </div>
                         
                         <div style="height: 400px; width: 100%; margin-top: 80px; margin-bottom: 115px;">
                             <div id="fisherman-tab-grid" class="ag-blue gridStyle-small"></div>
@@ -176,7 +178,9 @@
 						<div class="panel-body">
 					  		<h3>{{project.Name}} > Manage Correspondence</h3>
 
-                            <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createCrppSubproject()">Create Project</button>
+                            <div project-role="editor">
+                                <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createCrppSubproject()">Create Project</button>
+                            </div>
 					  		<p><i>Manage CRPP correspondence with agencies</i></p>
 					  		<hr/>
 
@@ -203,7 +207,9 @@
 					  		<h3>{{project.Name}} > Manage Sites</h3>
                             <p><i>Manage Habitat Site Items</i></p>
 
-                            <button style="margin-left: 10px;" class="right btn" ng-click="createHabSubproject()">Create Site</button>
+                            <div project-role="editor">
+                                <button style="margin-left: 10px;" class="right btn" ng-click="createHabSubproject()">Create Site</button>
+                            </div>
                             <button class="right btn" ng-click="openGeospatialDataPage()">Geospatial Data</button>
 					  		
 					  		<br/>

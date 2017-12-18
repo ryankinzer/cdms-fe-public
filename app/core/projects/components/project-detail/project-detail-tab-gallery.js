@@ -1,6 +1,6 @@
 ﻿//This controller handles the Gallery tab on the Project Details page. 
 
-var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document, $timeout) {
+var tab_gallery = ['$scope','$timeout', function (scope, $timeout) {
 
     var UploadedByTemplate = function (param) {
         //console.dir(param);
@@ -52,7 +52,7 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
     //scope.fileSelection = [];
     //scope.FileFilterOptions = {};
     //scope.GalleryFilterOptions = {};
-
+    
     /////////// gallery grid
     scope.galleryGridOptions = {
         enableSorting: true,
@@ -72,7 +72,7 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
         //selectedItems: [],
         columnDefs:
         [
-            { cellRenderer: EditLinksTemplate, width: 120, menuTabs: [] },
+            { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 120, menuTabs: [], hide: true },
             { headerName: 'File', cellRenderer: ImageTemplate, width: 190, menuTabs: [] },
             { field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -80,7 +80,7 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
         ]
     };
 
-    $document.ready(function () {
+    //$document.ready(function () {
         //after the project files are loaded by our parent, they are split into two arrays. project.Images is ours.
         var gallery_ds_watcher = scope.$parent.$watch('project.Images', function () {
 
@@ -88,11 +88,10 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
                 return;
 
             //////// Load the gallery grid
-            var ag_grid_div = document.querySelector('#gallery-tab-grid');    //get the container id...
-            //console.dir(ag_grid_div);
-
-
             $timeout(function () {
+
+                var ag_grid_div = document.querySelector('#gallery-tab-grid');    //get the container id...
+    
                 ag_grid_div = angular.element(document.getElementById('gallery-tab-grid'));
                 ag_grid_div = ag_grid_div.context;
 
@@ -103,6 +102,11 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
                 scope.galleryGridOptions.api.setRowData(scope.project.Images);
                 scope.galleryGridOptions.api.sizeColumnsToFit();
 
+                //if user can edit, unhide the edit links
+                if (scope.canEdit(scope.project))
+                    scope.galleryGridOptions.columnApi.setColumnVisible("EditLinks", true);
+
+
                 if (scope.project.Images.length > 0)
                     gallery_ds_watcher();
 
@@ -111,7 +115,7 @@ var tab_gallery = ['$scope','$document', '$timeout', function (scope, $document,
 
         }, true);
 
-    });
+    //});
 
     ///////// file handling for Gallery tab
 

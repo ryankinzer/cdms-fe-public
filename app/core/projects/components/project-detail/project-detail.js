@@ -474,7 +474,13 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                 }
             });
         };
-	}
+
+        scope.canEdit = function (project) {
+            return $rootScope.Profile.canEdit(project);
+        };
+
+    }
+
 ];
 
 

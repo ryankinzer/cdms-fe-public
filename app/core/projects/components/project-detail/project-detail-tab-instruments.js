@@ -84,7 +84,7 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
 
         //Instrument Accuracy Checks
         var instrDetailColDefs = [
-            { cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [] },
+            //{ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [], hide: true },
             { field: 'CheckDate', headerName: 'Check Date', width: 100, sort: 'desc', cellRenderer: CheckDateRenderer, menuTabs: []},
             { field: 'CheckMethod', headerName: 'Check Method', cellRenderer: CheckMethodRenderer, width: 230, menuTabs: ['filterMenuTab'] },
             { field: 'Bath1Grade', headerName: 'Bath 1 Grade', width: 100, menuTabs: ['filterMenuTab'] },
@@ -123,7 +123,7 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
             selectedItems: [],
             columnDefs:
             [
-                { cellRenderer: EditLinksTemplate, width: 120, menuTabs: [], },
+                { colId: 'EditLinksMaster', cellRenderer: EditLinksTemplate, width: 120, menuTabs: [], hide: true },
                 { field: 'Name', headerName: 'Name', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text', cellRenderer: 'group' },
                 { field: 'SerialNumber', headerName: 'SerialNumber', width: 120, menuTabs: ['filterMenuTab'], filter: 'text'},
                 { field: 'Manufacturer', headerName: 'Manufacturer', width: 150, menuTabs: ['filterMenuTab'], },
@@ -186,6 +186,12 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
                 //build the grid based on our subprojects
                 scope.instrGridOptions.api.setRowData(scope.project.Instruments);
 
+                //if user can edit, unhide the edit links
+                if (scope.canEdit(scope.project)) {
+                    scope.instrGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
+                    scope.instrDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [] }); //add this column to the front of the detail grid cols
+                }
+                
             }, 0);
 
             //these are the ones that show up in the dropdown list to select from -- ALL the instruments in the world.

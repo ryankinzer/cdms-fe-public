@@ -87,7 +87,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         // but if there is a config, spin through the list and add all the dataset config's SHOWFIELDS and display those.
 
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
-
+            { field: 'EditLinks', headerName: '', cellRenderer: editButtonTemplate, minWidth: 40, alwaysShowField: true, menuTabs: [], hide: true },
             { field: 'ActivityDate', 
 				headerName: 'Activity Date',
 				valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object				
@@ -125,8 +125,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 alwaysShowField: true,
                 menuTabs: ['filterMenuTab'],
                 valueGetter: function (params) { return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId]; }
-            },
-            { field: 'Actions', headerName: '', cellRenderer: editButtonTemplate, minWidth: 50, alwaysShowField: true, menuTabs: [] },
+            }
 
         ];
 
@@ -160,7 +159,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
 
 
-        //Maybe there is a better way?! 
         $scope.activities.$promise.then( function () {
 
             console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
@@ -180,7 +178,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 $scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
                     allColumnIds.push(column.colId);
                 });
-                $scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
+                //$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
                 
             });
             console.log("$scope at end of $scope.activities.$promise is next...");
@@ -251,7 +249,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             });
 
             //set the first column to be the sort column:
-            showColDefs[0].sort = "desc";
+            showColDefs[1].sort = "desc";
 
             $scope.columnDefs = showColDefs; 
             $scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
@@ -368,6 +366,13 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 console.log("$scope.subprojectType = " + $scope.subprojectType);
                 SubprojectService.setServiceSubprojectType($scope.subprojectType);
 
+                //if user can edit, unhide the edit links
+                if ($rootScope.Profile.canEdit($scope.project)) {
+                    $scope.agGridOptions.columnApi.setColumnVisible("EditLinks", true);
+                    $scope.agGridOptions.api.refreshHeader();
+                }
+
+                /* -- this may no longer be necessary? -- */
                 //if ($scope.subprojectType === "Habitat")
                 if ($scope.DatastoreTablePrefix === "Metrics") {
                     console.log("x")
@@ -406,6 +411,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 else {
                     $scope.reloadProjectLocations();
                 }
+                
             }
         });
 

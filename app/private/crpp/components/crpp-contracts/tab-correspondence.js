@@ -119,9 +119,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
 
         //grid columns for crpp correspondence tab (master/subprojects)
         scope.corrAgColumnDefs = [  //in order the columns will display, by the way...
-            {
-                width: 140, cellRenderer: EditMasterLinksTemplate, menuTabs: [],
-            },
+            { colId: 'EditLinksMaster', width: 140, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             {
                 headerName: 'ID',
                 field: 'Id',
@@ -169,9 +167,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
 
         //details for the correspondence
         var detailColumnDefs = [
-            {
-                headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [],
-            },
+            //{ colId: 'EditLinksDetail', headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [], },
             {
                 headerName: 'Notice Date',
                 field: 'CorrespondenceDate',
@@ -369,6 +365,12 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
 
                     scope.subprojectList = SubprojectService.getSubprojects();
                     //console.log("Fetching CRPP subprojects...");
+
+                    //if user can edit, unhide the edit links
+                    if (scope.canEdit(scope.project)) {
+                        scope.corrAgGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
+                        scope.corrDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [] }); //add this column to the front of the detail grid cols
+                    }
 
                     var watcher = scope.$watch('subprojectList.length', function () {
                         if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)

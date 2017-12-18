@@ -58,7 +58,7 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
         selectedItems: [],
         columnDefs:
         [
-            { cellRenderer: EditLinksTemplate, width: 80, menuTabs: [] },
+            { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 80, menuTabs: [], hide: true },
             //{ field: 'Name', headerName: 'File', width: 250, sort: 'asc', cellRenderer: LinkTemplate },
             { field: 'Title', headerName: 'Title', sort: 'asc', cellRenderer: LinkTemplate, width: 230, menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Description', headerName: 'Description', menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -87,6 +87,10 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
                 scope.docsGridOptions.api.showLoadingOverlay(); //show loading...
                 scope.docsGridOptions.api.setRowData(scope.project.Docs);
                 scope.docsGridOptions.api.sizeColumnsToFit();
+
+                //if user can edit, unhide the edit links
+                if (scope.canEdit(scope.project))
+                    scope.docsGridOptions.columnApi.setColumnVisible("EditLinks", true);
 
                 if (scope.project.Docs.length > 0)
                     docs_ds_watcher(); //turn off watcher
