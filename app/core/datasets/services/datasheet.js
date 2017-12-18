@@ -762,6 +762,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					//scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
 					
 					//scope.removeRowErrorsBeforeRecheck();
+					scope.rebuildDateTimeList();
 					scope.checkForDuplicates();
 				}
             },
