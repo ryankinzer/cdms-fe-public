@@ -3,23 +3,9 @@
 // definition that will be used to configure a column of that type.
 // Note: Custom cell renderers are defined in ag-grid-custom-components.js
 
+//multiselect list - displays as multiple selection dropdown list
 var MultiselectControlType = function (cdms_field, col_def) {
     
-    /* -- if you need to do something special when rendering you can : 
-    var SpeciesCellRenderer = function (params) {
-        //note: in params here are some cool things you have:
-        // .data (whole row)
-        // .columnApi
-        // .gridApi
-        // .value
-     
-        console.log("In renderer!");
-        console.dir(params);
-        return params.value;
-    };
-    */
-
-    //col_def.cellRenderer = CDMSMultiselectCellRenderer;
     col_def.cellEditor = CDMSMultiselectCellEditor;
     col_def.cellEditorParams = {
         values: angular.fromJson(cdms_field.Field.PossibleValues)
@@ -29,7 +15,7 @@ var MultiselectControlType = function (cdms_field, col_def) {
 
 };
 
-
+//select list - displays as drop down select
 var SelectControlType = function (cdms_field, col_def) {
     //    console.log('we are a select');
 
@@ -41,7 +27,14 @@ var SelectControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
+//currency - displays as USD currency, saves as number
 var CurrencyControlType = function (cdms_field, col_def) {
+    col_def.valueFormatter = function (params) {
+        return filterToCurrency(params.value);
+    };
+    col_def.valueParser = function (params) {
+        return parseToFloat(params.newValue);
+    };
     return col_def;
 };
 

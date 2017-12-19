@@ -1528,3 +1528,27 @@ function valueFormatterDate(in_date, in_format) {
     
     return retval;
 }
+
+//Takes a string or number, however formatted, and turns it into a javascript number.
+function parseToFloat(value, decimal) {
+
+    if (!decimal)
+        decimal = 2; //2 decimal places by default
+
+    var regex = new RegExp("[^0-9-" + '.' + "]", ["g"]);
+    var output = parseFloat(
+        ("" + value)
+            .replace(/\((?=\d+)(.*)\)/, "-$1") // replace bracketed values with negatives
+            .replace(regex, '')         // strip out any cruft
+    );
+
+    output.toFixed(decimal); 
+
+    return output;
+}
+
+//Takes a string or number, however formatted, and returns it filtered for USD currency.
+function filterToCurrency(value) {
+    return (parseToFloat(value)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+}
+
