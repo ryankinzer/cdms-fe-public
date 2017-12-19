@@ -30,6 +30,7 @@ require([
     'core/common/components/file/modal-files',
     'core/common/components/file/modal-exportfile',
     'core/common/components/file/modal-waypoint-file',
+    'core/common/components/grid/ag-grid-custom-components',
     
     //load other common directives
     'core/common/directives/checklists',

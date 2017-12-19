@@ -7,7 +7,7 @@
 
 var MultiselectControlType = function (cdms_field, col_def) {
     
-    /* -- if you need to so something special when rendering you can : 
+    /* -- if you need to do something special when rendering you can : 
     var SpeciesCellRenderer = function (params) {
         //note: in params here are some cool things you have:
         // .data (whole row)
@@ -21,8 +21,8 @@ var MultiselectControlType = function (cdms_field, col_def) {
     };
     */
 
-    //col_def.cellRenderer = SpeciesCellRenderer;
-    col_def.cellEditor = 'agSelectCellEditor'; //or: agRichSelectCellEditor
+    //col_def.cellRenderer = CDMSMultiselectCellRenderer;
+    col_def.cellEditor = CDMSMultiselectCellEditor;
     col_def.cellEditorParams = {
         values: angular.fromJson(cdms_field.Field.PossibleValues)
     };
@@ -66,35 +66,59 @@ var NumberControlType = function (cdms_field, col_def) {
 };
 
 var SelectControlType = function (cdms_field, col_def) {
-    col_def.cellEditor = 'agSelectCellEditor'; //or: agRichSelectCellEditor OR better I think we make our own...
+    console.log('we are a select');
+
+    col_def.cellEditor = CDMSSelectCellEditor; //or: agRichSelectCellEditor OR better I think we make our own...
     col_def.cellEditorParams = {
-        values: angular.fromJson(cdms_field.Field.PossibleValues)
+        values: angular.fromJson(cdms_field.Field.PossibleValues),
     };
 
-    console.log('ok it was a select');
-    if (!col_def.cellEditorParams.values || !Array.isArray(col_def.cellEditorParams.values))
-    {
-        console.log("nope not an array");
-        //at least return an empty array
-        var new_values = [];
+    /*
+    var the_values = [];
+    var possiblevalues = angular.fromJson(cdms_field.Field.PossibleValues);
 
-        console.log("the values");
-        console.dir(col_def.cellEditorParams.values);
-        console.log(typeof (col_def.cellEditorParams.values));
-
-        //if we actually have an object then just return the values ----------------------------------------- TODO this is temporary, we need our own control.
-        if (col_def.cellEditorParams.values && typeof (col_def.cellEditorParams.values) === 'object')
-        {
-            console.log(" hey we have an object... ");
-            Object.values(col_def.cellEditorParams.values).forEach(function (item) {
-                console.dir(item);
-                new_values.push(item);
-            });
-        }
-
-        col_def.cellEditorParams.values = new_values;
+    if (Array.isArray(possiblevalues)) {
+        console.log("select values is an array!");
+        the_values = possiblevalues;
+    } else if (typeof (possiblevalues) === 'object') {
+        console.log("select values is an object!")
+        the_values = Object.values(possiblevalues);
     }
+    
+    col_def.cellEditorParams = {
+        values: the_values,
+    };
 
+    col_def.valueFormatter = function (params) {
+        console.log("valueformatter");
+        console.dir(params);
+        var mappings = angular.fromJson(cdms_field.Field.PossibleValues);
+        var alias = params.value;
+
+        for (var key in mappings) {
+            if (mappings.hasOwnProperty(key)) {
+                if (alias === mappings[key]) {
+                    return key;
+                }
+            }
+        }
+        //return angular.fromJson(cdms_field.Field.PossibleValues)[params.value]
+    };
+    col_def.valueParser = function (params) {
+        console.log("valueparser");
+        console.dir(params);
+        var mappings = angular.fromJson(cdms_field.Field.PossibleValues);
+        var alias = params.newValue;
+
+        for (var key in mappings) {
+            if (mappings.hasOwnProperty(key)) {
+                if (alias === mappings[key]) {
+                    return key;
+                }
+            }
+        }
+    };
+    */
     return col_def;
 };
 
