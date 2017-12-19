@@ -1,9 +1,7 @@
 ﻿//ControlType Definitions are defined below.
 // Each type of control that can be on a datasheet needs to have a basic
 // definition that will be used to configure a column of that type.
-
-
-
+// Note: Custom cell renderers are defined in ag-grid-custom-components.js
 
 var MultiselectControlType = function (cdms_field, col_def) {
     
@@ -27,10 +25,20 @@ var MultiselectControlType = function (cdms_field, col_def) {
         values: angular.fromJson(cdms_field.Field.PossibleValues)
     };
 
-//    console.dir(col_def);
-
     return col_def;
 
+};
+
+
+var SelectControlType = function (cdms_field, col_def) {
+    //    console.log('we are a select');
+
+    col_def.cellEditor = CDMSSelectCellEditor; //or: agRichSelectCellEditor OR better I think we make our own...
+    col_def.cellEditorParams = {
+        values: angular.fromJson(cdms_field.Field.PossibleValues),
+    };
+
+    return col_def;
 };
 
 var CurrencyControlType = function (cdms_field, col_def) {
@@ -62,63 +70,6 @@ var NorthingControlType = function (cdms_field, col_def) {
 };
 
 var NumberControlType = function (cdms_field, col_def) {
-    return col_def;
-};
-
-var SelectControlType = function (cdms_field, col_def) {
-    console.log('we are a select');
-
-    col_def.cellEditor = CDMSSelectCellEditor; //or: agRichSelectCellEditor OR better I think we make our own...
-    col_def.cellEditorParams = {
-        values: angular.fromJson(cdms_field.Field.PossibleValues),
-    };
-
-    /*
-    var the_values = [];
-    var possiblevalues = angular.fromJson(cdms_field.Field.PossibleValues);
-
-    if (Array.isArray(possiblevalues)) {
-        console.log("select values is an array!");
-        the_values = possiblevalues;
-    } else if (typeof (possiblevalues) === 'object') {
-        console.log("select values is an object!")
-        the_values = Object.values(possiblevalues);
-    }
-    
-    col_def.cellEditorParams = {
-        values: the_values,
-    };
-
-    col_def.valueFormatter = function (params) {
-        console.log("valueformatter");
-        console.dir(params);
-        var mappings = angular.fromJson(cdms_field.Field.PossibleValues);
-        var alias = params.value;
-
-        for (var key in mappings) {
-            if (mappings.hasOwnProperty(key)) {
-                if (alias === mappings[key]) {
-                    return key;
-                }
-            }
-        }
-        //return angular.fromJson(cdms_field.Field.PossibleValues)[params.value]
-    };
-    col_def.valueParser = function (params) {
-        console.log("valueparser");
-        console.dir(params);
-        var mappings = angular.fromJson(cdms_field.Field.PossibleValues);
-        var alias = params.newValue;
-
-        for (var key in mappings) {
-            if (mappings.hasOwnProperty(key)) {
-                if (alias === mappings[key]) {
-                    return key;
-                }
-            }
-        }
-    };
-    */
     return col_def;
 };
 

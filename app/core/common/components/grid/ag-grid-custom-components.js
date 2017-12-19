@@ -1,32 +1,13 @@
-﻿/*
-//we might not need this - the default renderer is doing what we want.
-function CDMSMultiselectCellRenderer() {
-}
-
-CDMSMultiselectCellRenderer.prototype.init = function (params) {
-    this.values = params.values;
-    this.span = document.createElement('span');
-    this.span.innerHTML = '';
-    this.refresh(params);
-};
-
-CDMSMultiselectCellRenderer.prototype.refresh = function (params) {
-    this.span.innerHTML = params.valueFormatted;
-}
-
-CDMSMultiselectCellRenderer.prototype.getGui = function () {
-    return this.span;
-};
-*/
-
-
-/*
-* This cell editor provides a basic multiselect dropdown since one is not included in ag-grid
-* a couple of helpful sites 
+﻿/* These custom ag-grid cell editors provide improved behavior for our purposes. 
+* a couple of helpful sites for documentation and examples
 * https://www.ag-grid.com/javascript-grid-cell-editor
 * https://spapas.github.io/2017/01/03/ag-grid-custom-components/
-*
 */
+
+//here are the custom cell editors defined in this file:
+function CDMSMultiselectCellEditor() { };
+function CDMSSelectCellEditor() { };
+
 
 
 var onKeyDown = function (event) {
@@ -39,11 +20,14 @@ var onKeyDown = function (event) {
 }
 
 
-//MULTISELECT control
+/*
+* The MULTISELECT cell editor provides a basic multiselect dropdown since one is not included in ag-grid
 
 //params.values are the possible values.
 //params.value is our selection
-function CDMSMultiselectCellEditor() { };
+
+*/
+
 CDMSMultiselectCellEditor.prototype.init = function (params) {
     //console.log("init: editor params = ");
     //console.dir(params);
@@ -120,9 +104,7 @@ CDMSMultiselectCellEditor.prototype.isPopup = function () { return true; };
 CDMSMultiselectCellEditor.prototype.afterGuiAttached = function () { this.eSelect.focus(); };
 
 
-//SELECT control
-
-function CDMSSelectCellEditor() { };
+//SELECT cell edit control provides standard ability as well as 
 CDMSSelectCellEditor.prototype.init = function (params) {
     //console.log("init: editor params = ");
     //console.dir(params);
@@ -425,4 +407,26 @@ var RichSelectCellEditor = (function (_super) {
     return RichSelectCellEditor;
 }(main_1.Component));
 exports.RichSelectCellEditor = RichSelectCellEditor;
+*/
+
+
+/*
+//we might not need this - the default renderer is doing what we want.
+function CDMSMultiselectCellRenderer() {
+}
+
+CDMSMultiselectCellRenderer.prototype.init = function (params) {
+    this.values = params.values;
+    this.span = document.createElement('span');
+    this.span.innerHTML = '';
+    this.refresh(params);
+};
+
+CDMSMultiselectCellRenderer.prototype.refresh = function (params) {
+    this.span.innerHTML = params.valueFormatted;
+}
+
+CDMSMultiselectCellRenderer.prototype.getGui = function () {
+    return this.span;
+};
 */
