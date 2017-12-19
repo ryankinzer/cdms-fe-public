@@ -117,7 +117,7 @@ CDMSMultiselectCellEditor.prototype.getValue = function () {
 
 CDMSMultiselectCellEditor.prototype.destroy = function () {};
 CDMSMultiselectCellEditor.prototype.isPopup = function () { return true; };
-CDMSMultiselectCellEditor.prototype.afterGuiAttached = function () { };
+CDMSMultiselectCellEditor.prototype.afterGuiAttached = function () { this.eSelect.focus(); };
 
 
 //SELECT control
