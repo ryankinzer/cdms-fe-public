@@ -139,8 +139,9 @@
 							<tr>
 								<td>Total Records:</td><td>{{dataSheetDataset.length + ValidRecordsBucket.length}}</td>
 							</tr>
-							<tr>
-								<td>Records with errors:</td><td>{{validation_error_count}}</td>
+							<tr ng-show="gridHasErrors">
+								<!--<td>Records with errors:</td><td>{{validation_error_count}}</td>-->
+								<td class="errors-box"><b>There are errors...</b></td>
 							</tr>
 						</tbody>
 					</table>
@@ -250,7 +251,8 @@
 
 				<div class="right" style="margin-top: -25px;" ng-show="dataSheetDataset.length > 0">
 					<button class="btn btn-sm" ng-disabled="selectedItems.length == 0" ng-click="clearSelections()">Clear selections</button>
-					<button class="btn btn-sm" ng-disabled="selectedItems.length == 0" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
+					<!--<button class="btn btn-sm" ng-disabled="selectedItems.length == 0" ng-click="openBulkQAChange()">Bulk Row QA Change</button>-->
+					<button class="btn btn-sm" ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange')" ng-disabled="selectedItems.length == 0" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
 				</div>
 
 				<!--<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>-->
