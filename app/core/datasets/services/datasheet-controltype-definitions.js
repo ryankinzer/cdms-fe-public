@@ -38,13 +38,39 @@ var CurrencyControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
+//date - displays as MM/DD/YYYY date without time, saves datetime
+//TIMEZONE note - we save it as a date without any timezone. 
 var DateControlType = function (cdms_field, col_def) {
+    col_def.cellEditor = 'agTextCellEditor';
+    col_def.cellEditorParams = {
+        useFormatter: true, 
+    };
+    col_def.valueFormatter = function (params) {
+        if (params.value !== undefined && params.value !== null)
+            return moment(params.value).format("YYYY-MM-DD");
+    };
+    col_def.valueParser = function (params) {
+        return moment(params.newValue).format("YYYY-MM-DDTHH:mm:ss")  // 2017-12-19T14:03:10 (no timezone)
+    };
+    return col_def;};
+
+//datetime - displays as MM/DD/YYYY HH:mm:ss, saves as datetime
+//TIMEZONE note - we save it as a date without any timezone. 
+var DateTimeControlType = function (cdms_field, col_def) {
+    col_def.cellEditor = 'agTextCellEditor';
+    col_def.cellEditorParams = {
+        useFormatter: true,
+    };
+    col_def.valueFormatter = function (params) {
+        if (params.value !== undefined && params.value !== null)
+            return moment(params.value).format("YYYY-MM-DD HH:mm:ss"); 
+    };
+    col_def.valueParser = function (params) {
+        return moment(params.newValue).format("YYYY-MM-DDTHH:mm:ss")  // 2017-12-19T14:03:10 (no timezone)
+    };
     return col_def;
 };
 
-var DateTimeControlType = function (cdms_field, col_def) {
-    return col_def;
-};
 
 var EastingControlType = function (cdms_field, col_def) {
     return col_def;
