@@ -29,7 +29,6 @@ CDMSMultiselectCellRenderer.prototype.getGui = function () {
 */
 
 
-/* if we need key control --
 var onKeyDown = function (event) {
     var key = event.which || event.keyCode;
     if (key == 37 ||  // left
@@ -38,7 +37,6 @@ var onKeyDown = function (event) {
         event.stopPropagation();
     }
 }
-*/
 
 
 //MULTISELECT control
@@ -157,7 +155,7 @@ CDMSSelectCellEditor.prototype.init = function (params) {
             var option = document.createElement('option');
             option.value = value;
             option.text = value;
-            if (params.value.contains(value)) { //is this one already selected?
+            if (params.value === value) { //is this one already selected?
                 option.selected = true;
             }
             _this.eSelect.appendChild(option);
@@ -166,15 +164,16 @@ CDMSSelectCellEditor.prototype.init = function (params) {
 
     if (!Array.isArray(params.values) && typeof params.values === 'object') {
         console.log("params.values is an object");
-        params.values.forEach(function (key, value) {
+        for (key in params.values)
+        {
             var option = document.createElement('option');
             option.value = key;
-            option.text = value;
-            if (Object.values(params.value).contains(value)) { //is this one already selected?
+            option.text = params.values[key];
+            if (params.value === key) { //is this one already selected?
                 option.selected = true;
             }
             _this.eSelect.appendChild(option);
-        });
+        };
     }
 
 };
@@ -190,8 +189,8 @@ CDMSSelectCellEditor.prototype.getValue = function () {
 
 CDMSSelectCellEditor.prototype.destroy = function () { };
 CDMSSelectCellEditor.prototype.isPopup = function () { return true; };
-CDMSSelectCellEditor.prototype.afterGuiAttached = function () { };
-
+CDMSSelectCellEditor.prototype.afterGuiAttached = function () { this.eSelect.focus(); };
+CDMSSelectCellEditor.prototype.focusIn = function () { this.eSelect.focus(); };
 
 
 
