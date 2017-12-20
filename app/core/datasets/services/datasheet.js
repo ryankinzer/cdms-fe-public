@@ -550,6 +550,9 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 						// validate does angular.forEach on $scope.dataSheetDataset, passing the data_row to here, coming in as row.
                         //row.errors = angular.copy(row_errors);
 						angular.forEach(row_errors, function(item){
+							if ((typeof row.errors === 'undefined') || (row.errors === null))
+								row.errors = [];
+							
 							row.errors.push(item);
 						});
 						//console.log("row.errors.length = " + row.errors.length)
@@ -837,6 +840,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                 angular.forEach(scope.dataSheetDataset, function (data_row, key) {
 					//console.log("data_row (before validate) is next...");
 					//console.dir(data_row);
+					data_row.errors = undefined;
                     service.validate(data_row, scope);
 					//console.log("data_row (after validate) is next...");
 					//console.dir(data_row);
