@@ -151,7 +151,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 {
                     if (!event.colDef.validatorInstance) {
                         var ValidatorFunction = event.colDef.cellValidator;
-                        event.colDef.validatorInstance = new ValidatorFunction(event.colDef.cdmsField);
+                        event.colDef.validatorInstance = new ValidatorFunction();
+                        event.colDef.validatorInstance.init(event.colDef.cdmsField);
                         console.log("Created validator instance ** ");
                     }
                     $scope.ValidationErrors = $scope.ValidationErrors.concat(event.colDef.validatorInstance.validate(event));

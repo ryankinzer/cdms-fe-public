@@ -21,8 +21,10 @@ function ValidationError(field, message) {
 };
 
 //Parent class of all cell validators (see below)
-function CellValidator(cdms_field) {
+function CellValidator() {};
 
+CellValidator.prototype.init = function(cdms_field) {
+    console.log(" --------------- cell validator init ! --------- ");
     this.cdms_field = cdms_field;
 
     //cache our validations as an array for convenience and performance.
@@ -69,9 +71,11 @@ CellValidator.prototype.validateFieldLevelValidation = function (data) {
 //parses the cdms_field validations and returns an array of validation strings or [] if none.
 // for example a string of: "Required; [1000-2000]" will return: ['required','[1000-2000]']
 CellValidator.prototype.getValidationsArray = function (cdms_field) {
+    console.log(" ------ get validation array ");
     var empty = [];
 
     if (!cdms_field) {
+        console.log("empty cdms_field -- no validations array for you.");
         return empty;
     }
 
@@ -104,9 +108,25 @@ CellValidator.prototype.getValidationsArray = function (cdms_field) {
 
 };
 
+/**
+* Validate our field value and return an array of ValidationErrors if any.
+*/
+CellValidator.prototype.validate = function (data) {
+    this.errors = []; //start fresh!
+
+    this.validateFieldLevelValidation(data);
+    this.validateFieldControlTypeValidation(data);
+    this.validateFieldOnValidateRule(data);
+
+    return this.errors;
+};
+
+
 /*
- * All CDMS cell validators are defined below
+ * All CDMS cell validators are defined below ---------------------------------------------------------------------------------------- ///////
  */
+
+// to write a new validator, just follow the pattern: subclass CellValidator, implement the validateFieldControlTypeValidation function.
 
 //CDMSTextCellValidator
 function CDMSTextCellValidator(cdms_field) {
@@ -124,15 +144,6 @@ CDMSTextCellValidator.prototype.validateFieldControlTypeValidation = function (d
     return this.errors;
 };
 
-CDMSTextCellValidator.prototype.validate = function (data) {
-    this.errors = []; //start fresh!
-
-    this.validateFieldLevelValidation(data);
-    this.validateFieldControlTypeValidation(data);
-    this.validateFieldOnValidateRule(data);
-
-    return this.errors;
-};
 
 
 //NEXT!
