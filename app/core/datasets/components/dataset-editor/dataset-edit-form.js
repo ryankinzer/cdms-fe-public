@@ -142,7 +142,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 console.log('cellEditingStarted');
             },
             onCellEditingStopped: function (event) {
-                console.log('cellEditingStopped');
+                console.log('cellEditingStopped :: VALIDATION');
                 //TODO: validation!
                 //event.cdmsField <-- if you need it
                 $scope.EditedRows.push(event.data);

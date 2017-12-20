@@ -7,6 +7,7 @@
 //here are the custom cell editors defined in this file:
 function CDMSMultiselectCellEditor() { };
 function CDMSSelectCellEditor() { };
+function CDMSTextareaCellEditor() { };
 
 
 
@@ -104,7 +105,7 @@ CDMSMultiselectCellEditor.prototype.isPopup = function () { return true; };
 CDMSMultiselectCellEditor.prototype.afterGuiAttached = function () { this.eSelect.focus(); };
 
 
-//SELECT cell edit control provides standard ability as well as 
+//SELECT cell edit control provides standard ["label"] as well as {"id":"label"}
 CDMSSelectCellEditor.prototype.init = function (params) {
     //console.log("init: editor params = ");
     //console.dir(params);
@@ -174,6 +175,34 @@ CDMSSelectCellEditor.prototype.isPopup = function () { return true; };
 CDMSSelectCellEditor.prototype.afterGuiAttached = function () { this.eSelect.focus(); };
 CDMSSelectCellEditor.prototype.focusIn = function () { this.eSelect.focus(); };
 
+
+
+//TEXTAREA custom cell edit control
+CDMSTextareaCellEditor.prototype.init = function (params) {
+    var _this = this;
+
+    _this.value = params.value;
+    _this.container = document.createElement('div');
+    _this.container.style = "border-radius: 3px; border: 1px solid grey;background: #e6e6e6;padding: 1px;";
+    _this.eSelect = document.createElement("textarea");
+    _this.eSelect.rows = 7;
+    _this.eSelect.cols = 40;
+    _this.eSelect.value = params.value;
+    _this.container.appendChild(_this.eSelect);
+};
+
+CDMSTextareaCellEditor.prototype.getGui = function () {
+    return this.container;
+};
+
+CDMSTextareaCellEditor.prototype.getValue = function () {
+    return this.eSelect.value;
+};
+
+CDMSTextareaCellEditor.prototype.destroy = function () { };
+CDMSTextareaCellEditor.prototype.isPopup = function () { return true; };
+CDMSTextareaCellEditor.prototype.afterGuiAttached = function () { this.eSelect.focus(); };
+CDMSTextareaCellEditor.prototype.focusIn = function () { this.eSelect.focus(); };
 
 
 

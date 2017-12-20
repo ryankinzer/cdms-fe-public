@@ -71,47 +71,69 @@ var DateTimeControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
+//time - displays as time, saves as date+time (default date)
+var TimeControlType = function (cdms_field, col_def) {
+    col_def.cellEditor = 'agTextCellEditor';
+    col_def.cellEditorParams = {
+        useFormatter: true,
+    };
+    col_def.valueFormatter = function (params) {
+        if (params.value !== undefined && params.value !== null)
+            return moment(params.value).format("HH:mm:ss");
+    };
+    col_def.valueParser = function (params) {
+        return moment(params.newValue).format("YYYY-MM-DDTHH:mm:ss")  // 2017-12-19T14:03:10 (no timezone)
+    };
+    return col_def;
+};
 
+//easting - no special handling in the editor or display
 var EastingControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
-var FileControlType = function (cdms_field, col_def) {
-    return col_def;
-};
-
-var LinkControlType = function (cdms_field, col_def) {
-    return col_def;
-};
-
+//northing - no special handling in the editor or display
 var NorthingControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
+//file - just in header fields...
+var FileControlType = function (cdms_field, col_def) {
+    return col_def;
+};
+
+//link - just in header fields? (TSR sharepoint)
+var LinkControlType = function (cdms_field, col_def) {
+    return col_def;
+};
+
+//number - no special handling
 var NumberControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
+//string - no special handling
 var StringControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
+//temp-waypoint-file - header only
 var TempWaypointFileControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
+//text - no special handling
 var TextControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
+//textarea - our own special text box
 var TextAreaControlType = function (cdms_field, col_def) {
+    col_def.cellEditor = CDMSTextareaCellEditor;     
     return col_def;
 };
 
-var TimeControlType = function (cdms_field, col_def) {
-    return col_def;
-};
-
+//upload - headers
 var UploadControlType = function (cdms_field, col_def) {
     return col_def;
 };
@@ -127,7 +149,7 @@ var ControlTypeDefinitions = {
     'northing': NorthingControlType,
     'number': NumberControlType,
     'select': SelectControlType,
-    'string': StringControlType,
+    'string': TextControlType, //just use the Text renderer
     'temp-waypoint-file': TempWaypointFileControlType,
     'text': TextControlType,
     'textarea': TextAreaControlType,
