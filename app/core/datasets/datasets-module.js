@@ -27,13 +27,15 @@ require([
     'core/datasets/components/dataset-seasons-list/modal-create-season',
 
     //load the various dataset services
-    'core/datasets/services/datasheet-controltype-definitions',
     'core/datasets/services/dataset-service',
     'core/datasets/services/activity-parser',
     'core/datasets/services/convert-status',
     'core/datasets/services/datasheet',
     //'core/datasets/services/file-upload',
+    'core/datasets/services/datasheet-cell-validators',
+    'core/datasets/services/datasheet-controltype-definitions',
     'core/datasets/services/field-renderer-service',
+
 
 
 ], function () {

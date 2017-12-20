@@ -14,6 +14,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
         $scope.EditedRows = []; //whenever a row gets edited, it will be added here; we only send edited rows...
+        $scope.ValidationErrors = [];
 
         $scope.userId = $rootScope.Profile.Id;
         $scope.fields = { header: [], detail: [], relation: [] };
@@ -143,13 +144,28 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
             onCellEditingStopped: function (event) {
                 console.log('cellEditingStopped :: VALIDATION');
+                console.dir(event);
+
+                //perform cell validation if a cellValidator exists for this field
+                if (event.colDef.hasOwnProperty('cellValidator'))
+                {
+                    if (!event.colDef.validatorInstance) {
+                        var ValidatorFunction = event.colDef.cellValidator;
+                        event.colDef.validatorInstance = new ValidatorFunction(event.colDef.cdmsField);
+                        console.log("Created validator instance ** ");
+                    }
+                    $scope.ValidationErrors = $scope.ValidationErrors.concat(event.colDef.validatorInstance.validate(event));
+                    console.log("So our errors are:")
+                    console.dir($scope.ValidationErrors);
+                }
+
                 //TODO: validation!
+                //TODO: on change!
                 //event.cdmsField <-- if you need it
                 $scope.EditedRows.push(event.data);
                 console.dir($scope.EditedRows);
                 //console.dir(event.cdmsField);
             },
-            components: {}, //renderers will be populated by the FieldRendererService as needed.
         };
 
 

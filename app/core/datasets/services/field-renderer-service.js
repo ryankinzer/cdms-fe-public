@@ -17,18 +17,15 @@ datasets_module.service('FieldRendererService', ['$window', '$route',
                 
                 //ControlType RENDERERS: get the field's definition by controltype
                 var control_type_renderer = ControlTypeDefinitions[cdms_field.ControlType];
-                console.log(cdms_field.DbColumnName + " ----------------------------------------------------------");
+                //console.log(cdms_field.DbColumnName + " ----------------------------------------------------------");
 
                 if (control_type_renderer && typeof control_type_renderer === "function") {
                     var new_col_def = control_type_renderer(cdms_field, col_def);
-                    console.dir(new_col_def);
+                  //  console.dir(new_col_def);
                     return new_col_def;
                 }
 
-                console.dir(cdms_field);
-
-
-                
+                //console.dir(cdms_field);
 
             },
 

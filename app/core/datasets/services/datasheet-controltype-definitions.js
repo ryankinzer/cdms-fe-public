@@ -10,6 +10,7 @@ var MultiselectControlType = function (cdms_field, col_def) {
     col_def.cellEditorParams = {
         values: angular.fromJson(cdms_field.Field.PossibleValues)
     };
+    //col_def.cellValidator = CDMSMultiselectCellValidator;
 
     return col_def;
 
@@ -112,24 +113,21 @@ var NumberControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
-//string - no special handling
-var StringControlType = function (cdms_field, col_def) {
-    return col_def;
-};
-
 //temp-waypoint-file - header only
 var TempWaypointFileControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
-//text - no special handling
+//text - no special editor handling
 var TextControlType = function (cdms_field, col_def) {
+    col_def.cellValidator = CDMSTextCellValidator;
     return col_def;
 };
 
 //textarea - our own special text box
 var TextAreaControlType = function (cdms_field, col_def) {
     col_def.cellEditor = CDMSTextareaCellEditor;     
+    //col_def.cellValidator = CDMSTextareaCellValidator;
     return col_def;
 };
 
