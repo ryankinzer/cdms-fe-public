@@ -699,3 +699,8 @@ table.metadata td
     content: '';
     display: table;
 }
+
+a {
+    color: rgb(29, 29, 199);
+    text-decoration: none;
+}
