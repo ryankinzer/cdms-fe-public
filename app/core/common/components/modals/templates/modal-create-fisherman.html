@@ -1,0 +1,85 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+  			<h4>{{header_message}}</h4>
+  		</div>
+		
+		<div class="import-has-errors"  ng-show="fishermanSave.error">		
+			<div class="alert alert-danger" ng-show="fishermanSave.error">
+				Fisherman already exists!
+			</div>
+			<div class="alert alert-info" ng-show="!fishermanSave.error" >
+				Fisherman does not exist.
+			</div>		
+		</div>		
+		
+  		<div class="modal-body">
+
+  			<div class="header-label">First Name</div>
+  			<div class="header-value">
+	  			<input  class="form-control" type="text" ng-change="updateFullName()" ng-model="fisherman_row.FirstName" />
+	  		</div>
+
+	  		<div class="header-label">AKA</div>
+  			<div class="header-value">
+	  			<input  class="form-control" type="text" ng-change="updateFullName()" ng-model="fisherman_row.Aka" />
+	  		</div>
+
+	  		<div class="header-label">Last Name</div>
+  			<div class="header-value">
+	  			<input  class="form-control" type="text" ng-change="updateFullName()" ng-model="fisherman_row.LastName" />
+	  		</div>
+
+	  		<div class="header-label">Full Name</div>
+  			<div class="header-value">
+	  			<!--<input  class="form-control" type="text" disabled value="{{fisherman_row.FirstName + ' \'' + fisherman_row.Aka + '\' ' + fisherman_row.LastName}}" />-->
+	  			<input  class="form-control" type="text" disabled value="{{fisherman_row.FullName}}" />
+	  		</div>
+			
+	  		<div class="header-label">Phone Number</div>
+  			<div class="header-value">
+	  			<input  class="form-control" type="text" ng-model="fisherman_row.PhoneNumber" />
+	  		</div>
+
+  			<!--<div class="header-label">Date Added</div>-->
+  			<!--<div class="header-value">-->
+	  				<!----<input class="form-control" type="text" datepicker-popup="shortDate" ng-model="fisherman_row['DateAdded']" is-open="aopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />---->
+	  				<!--<input class="form-control" type="text" datepicker-popup='yyyy-MM-dd' ng-model="fisherman_row['DateAdded']" is-open="aopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
+	  		<!--</div>-->
+
+	  		<div class="header-label">Comments</div>
+  			<div class="header-value">
+	  			<textarea class="form-control" ng-model="fisherman_row.FishermanComments" ></textarea>
+	  		</div>
+			
+  			<!--<div class="header-label">Date Inactive</div>-->
+  			<!--<div class="header-value">-->
+	  				<!--<input class="form-control" type="text" datepicker-popup='yyyy-MM-dd' ng-model="fisherman_row['DateInactive']" is-open="bopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
+	  		<!--</div>-->
+
+			<div class="header-label">Fisherman Status</div>
+	  		<div class="header-value">
+	  				<select class="form-control" ng-model="fisherman_row.StatusId">
+	  					<option value="0">Active</option>
+	  					<option value="1">Inactive</option>
+	  				</select>
+					
+			</div>
+
+			<div class="header-label">OK to Call?</div>
+	  		<div class="header-value">
+	  				<select class="form-control" ng-model="fisherman_row.OkToCallId">
+						<option value="0">Yes</option>
+	  					<option value="1">No</option>
+	  				</select>		
+			</div>				
+  		
+  		</div>
+		<div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="saveFisherman()">Save</button>
+        </div>
+
+  </div>
+</div>

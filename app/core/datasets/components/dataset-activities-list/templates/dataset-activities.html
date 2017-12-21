@@ -1,0 +1,78 @@
+﻿<div title="Toggle 'Favorite' status" class="fav-dataset">
+    <a href='' ng-click="toggleFavorite()">
+        <img id="favorite-active" ng-show="isFavorite" class="on" src='assets/images/favorite-on.png'/>
+        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='assets/images/favorite-off.png'/>
+    </a></div>
+
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li class="active">{{dataset.Name}}</li>  
+</ul>
+
+
+<div ng-show="selectedLocation" project-role="editor">
+    <button style="margin-top: -12px; margin-left: 5px;" class="btn right btn-danger" ng-click="clearLocation()">Cancel</button>
+    <button style="margin-top: -12px; margin-left: 5px;" class="btn right btn-danger" ng-disabled="activities.length > 0" ng-click="removeLocation()">Delete</button>
+    <button style="margin-top: -12px; margin-left: 5px;" class="btn right" ng-click="editLocation()">Edit</button>
+</div>
+
+<div ng-show="newGraphic" project-role="editor">
+    <button style="margin-top: -12px; margin-left: 5px;" class="btn right btn-danger" ng-click="clearLocation()">Cancel</button>
+    <button style="margin-top: -12px; margin-left: 5px;" class="btn right" ng-click="addLocation()">Create New</button>
+</div>
+
+<div class="alert alert-info" ng-show="!project.Id">Loading...</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2">
+            <button style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>
+            <!-- img class="map-center" src="assets/images/map_image1.png"  -->
+            <div ng-show="ShowMap.Display">
+                <div style="margin-left:125px; margin-top: -45px; margin-bottom: 25px;" id="basemapDropdown">
+                    <img src="assets/images/imgBaseMap.png" width="35px"/>
+                    <select class="form-control" style="display: inline" ng-options="b.name as b.label for b in map.basemaps" ng-model="map.selectedBasemap" ng-change="map.updateLayers()"></select>
+                </div>
+
+                <esri-map class="claro" id="map" center="-118.45,45.56" zoom="10" basemap="streets" onclick="click">
+                    <esri-feature-layer url="//restdata.ctuir.org/arcgis/rest/services/CDMS_ProjectPoints/FeatureServer/0" filter="location"></esri-feature-layer>
+                </esri-map>
+            </div>
+            
+            <h4>{{dataset.Name}}</h4>
+            <div ng-show="selectedLocation"><i>Filtering by location: <b>{{selectedLocation.Label}}</b></i>  <button ng-click="removeFilter()" class="btn btn-xs">clear</button><br/><br/></div>
+            <div class="btn-group" dropdown project-role="editor">
+                <button type="button" class="btn dropdown-toggle">Data Entry <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#/dataentryform/{{dataset.Id}}">Data Entry Form</a></li>
+                    <!--<li><a href="#/dataentry/{{dataset.Id}}">Data Entry Sheet</a></li>-->
+					<li ng-show="showDataEntrySheetButton"><a href="#/dataentry/{{dataset.Id}}">Data Entry Sheet</a></li>
+                </ul>
+            </div>
+            <button project-role="editor" class="btn" ng-click="openImportWindow()">Import data</button>
+            <button class="btn" ng-click="openQueryWindow()">Query/Export data</button>
+            <button class="btn" ng-click="openDetailsWindow()">Metadata</button>
+            <div class="right">
+                <div ng-show="saveResults" style="float: left;">
+                    <!--<div ng-click="saveResults=null" ng-show="saveResults.success" class="delete-error alert alert-success">Deleted</div>-->
+                    <div ng-click="saveResults=null" ng-show="saveResults.success && (gridOptions.selectedItems.length === 0)" class="delete-error alert alert-success">Deleted</div>
+                    <div ng-click="saveResults=null" ng-show="saveResults.failure" class="delete-error alert alert-danger">Error</div>
+                </div>
+                <button project-role="editor" class="btn right" ng-show="agGridOptions.selectedItems.length > 0" ng-click="deleteActivities()">Delete {{agGridOptions.selectedItems.length}} Activities</button>
+                
+            </div>
+            <!--
+            <div ng-show="showFilter" style="padding: 8px; width: 260px;">
+                <input class="form-control" ng-model="gridOptionsFilter.filterText" placeholder="Filter By" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>
+            </div>
+            -->
+
+            <!-- div class="gridActivities" ng-grid="gridOptions" style="margin-top: 10px;"></!--div -->
+            <div id="activity-list-grid" class="ag-blue gridStyle-small"></div>
+
+            Total Activities: {{activities.length}} <img ng-show="loading" src="assets/images/FishLoading.gif"/>
+
+
+        </div>
+    </div>
+</div>

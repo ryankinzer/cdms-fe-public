@@ -1,0 +1,9 @@
+<div style="margin-top: 5px; margin-bottom: 3px;">
+	<div class="header-label">{{field.Label}}:</div>
+	<!--<div class="header-value" style="margin-left: 198px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">-->
+	<!--<div class="header-value" style="margin-left: 250px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">-->
+	<div class="header-value" style="margin-left: 300px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">
+		<button class="right btn btn-xs" ng-click="openLinkModal(row, field)">Add/Remove</button>
+		<div ng-bind-html="row[field.DbColumnName] | urlsFromString">&nbsp;</div>
+	</div>
+</div>

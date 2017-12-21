@@ -51,12 +51,16 @@ angular.module('angularCharts').directive('acChart', [
         throw new Error('Please set height and width for the chart element');
       }
       function init() {
-        prepareData();
-        setHeightWidth();
-        setContainers();
-        var chartFunc = getChartFunction(chartType);
-        chartFunc();
-        drawLegend();
+		// When the import page first loads, it has no data, so we need not prep the chart.
+		if ((typeof scope.acData !== 'undefined') && (scope.acData !== null))
+		{
+			prepareData();
+			setHeightWidth();
+			setContainers();
+			var chartFunc = getChartFunction(chartType);
+			chartFunc();
+			drawLegend();
+		}
       }
       function setHeightWidth() {
         if (!config.legend.display) {

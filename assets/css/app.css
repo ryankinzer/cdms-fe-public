@@ -1,0 +1,711 @@
+
+.navbar {
+	background-image: linear-gradient(#49567F, #1E2B52 60%);
+}
+
+
+
+html {
+  background: url(../images/eobg.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 100%;
+}
+
+body { background-color: transparent !important; height: 100%;}
+
+.header-box {
+	min-height: 200px;
+}
+
+.nav, .pagination, .carousel a { cursor: pointer; }
+
+.gridWrapper {
+	margin-right: 50px;
+	background-color: black;
+}
+
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    width: 2000px;
+    height: 400px;
+    margin-right: 20px;
+}
+
+.duplicateGridStyle
+{
+	border: 1px solid rgb(212,212,212);
+    width: 550px;
+    height: 300px;
+    margin-right: 20px;
+}
+
+.gridStyle-small {
+    border: 1px solid rgb(212,212,212);
+    height: 500px;
+}
+
+.datasheet-grid
+{
+	border: 1px solid rgb(212,212,212);
+    width: 2000px;
+    height: 400px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 12px;
+    margin-right: 20px;
+}
+
+.gridActivities {
+	border: 1px solid rgb(212,212,212);
+    height: 300px
+}
+
+.gridStyleWide {
+	border: 1px solid rgb(212,212,212);
+    width: 100%;
+    height: 300px;
+    margin-right: 20px;
+}
+
+.header-label {
+	font-weight: bold;
+	float: left;
+	/*width: 250px;*/
+	width: 300px;
+	text-align: right;
+	padding-right: 15px;
+}
+
+.modal {
+	display: block;
+}
+
+.right {
+	float: right;
+}
+
+.alert-error
+{
+	background-color: #ffaaaa;
+}
+
+input, select {
+	border-radius: 3px;
+	margin: 2px;
+}
+
+.form-control {
+	width: 200px;
+	height: 30px;
+	padding: 2px;
+}
+
+.form-control-smallNumber {
+	width: 100px;
+	height: 30px;
+	padding: 2px;	
+}
+
+textarea.form-control { width: 300px;}
+
+input.form-control-checkbox { width: 30px;}
+
+.map-panel
+{
+	height: 200px;
+}
+
+.activities-where-box
+{
+	background-color: #CEE3F6;
+	padding: 5px 15px 15px 15px;
+	border-radius: 3px;
+	height: 375px;
+}
+
+.selected-field-description{
+	height: 200px;
+	overflow-y: auto;
+
+}
+
+.field-list-box
+{
+	background-color: #F3E3C0;
+	padding: 5px 15px 15px 15px;
+	border-radius: 3px;
+	height: 375px;
+}
+.criteria-list-box
+{
+	background-color: #CEF6D3;
+	padding: 5px 15px 15px 15px;
+	border-radius: 3px;
+	height: 375px;
+}
+
+.query-header-text
+{
+	padding-bottom: 4px;
+	font-weight: bold;
+	border-bottom: dashed 1px black;
+}
+
+
+.top-divider
+{
+	margin-top: 5px;
+	padding-top: 4px;
+	font-weight: bold;
+	border-top: dashed 1px lightgray;
+}
+
+.query-form-control
+{
+	width: 160px;
+}
+
+.query-date-control
+{
+	width:80px;
+}
+
+ul.dropdown-menu .btn {
+	padding: 2px;
+	background-color: #FAFAFA !important;
+	border: 1px solid lightgrey;
+	color: black !important;
+	margin: 1px;
+}
+
+.sumField
+{
+	display: inline-block;
+	text-align: left;
+	font-size: 11px;
+}
+
+.grid-footer-totals{
+	background-color: lightgrey;
+	border: 1px solid darkgrey;
+}
+
+.large-font {
+	font-size: 20px;
+}
+
+.datasheet-form .ng-invalid {
+  border: 1px solid red;
+  background-color: red;
+}
+
+.errors-box{
+  border: 1px solid red;
+  background-color: red;
+}
+
+/* -- in order for dropdowns and multiselect dropdowns to show up in ngGrid -- */
+.ngCell { overflow: visible;}
+
+.field-multiselect, .cell-multiselect
+{
+	position: relative;
+	overflow: visible;
+    z-index: 888;
+}
+
+
+.panel-footer { background-color:rgba(206,227,246,0.8);}
+
+.mapped-activity-field
+{
+	background-color: rgba(193,229,198,0.9);
+	padding: 7px;
+	border-radius: 6px;
+	text-align: center;
+}
+
+.options-panel
+{
+	background-color: #CEF6D3; height: 300px; border-radius:6px;
+}
+
+.has-validation-error
+{
+	background-color: #f2dede;
+	border-bottom: 1px solid #E6E6E6;
+}
+
+.switch-link
+{
+	font-size: small;
+	background-color: #E0E6F8;
+	padding: 3px;
+	margin-top: -5px;
+	border-radius: 3px;
+}
+
+.ngViewport {
+	overflow-x: hidden;
+}
+
+.field-error-block
+{
+	color: #b94a48;
+	margin-left: 200px;
+	border: 1px solid lightgrey;
+	background-color: #f2dede;
+	border-radius: 6px;
+
+}
+
+.small-graph-box {
+	width: 400px;
+	height: 200px;
+
+}
+
+.chart {
+	height: 100%;
+	width: 100%;
+	background-color: #E6E6E6;
+	border: 1px solid lightgrey;
+	border-radius: 6px;
+}
+
+.large-graph-box {
+	width: 800px;
+	height: 380px;
+	border: 1px solid lightgrey;
+	border-radius: 6px;
+	margin: 50px auto 0 auto;
+}
+
+#chart-div
+{
+	border: 1px solid lightgrey;
+	border-radius: 6px;
+}
+
+.map
+{
+	border: 1px solid lightgrey;
+	border-radius: 6px;
+	margin-top: -10px;
+}
+
+.delete-error
+{
+	height: 38px; padding: 8px; margin-right:5px;
+}
+
+/* http://stackoverflow.com/questions/19094723/angular-ng-grid-row-height */
+.gridTable .ngCell  {
+  display : table-cell;
+  height: auto !important;
+  overflow:visible;
+  position: static;
+}
+
+.gridTable .ngRow {
+  display : table-row;
+  height: auto !important;
+  position: static;
+}
+
+.gridTable .ngCellText{
+  height: auto !important;
+  min-height: 20px;
+  white-space: normal;
+  overflow:visible;
+}
+
+pre {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 12px;
+    word-wrap: break-word !important;
+    word-break: normal !important;
+}
+
+table.metadata td
+{
+    border: solid 1px lightgray;
+    vertical-align: top;
+}
+
+.metadata-field
+{
+    font-weight: bold;
+    border: solid 1px lightgray;
+}
+
+.metadata-value{
+	border: solid 1px lightgray;
+}
+
+.nav-buttons{
+	width: 28px;
+	cursor: pointer;
+}
+
+.fav-dataset { float: right; }
+
+.grid-bar-info {
+	background-color: lightgray;
+	font-size: small;
+	border-bottom: solid 1px gray;
+}
+
+.grid-bar-stats {
+	background-color: lightgray;
+	font-size: small;
+	border-bottom: solid 1px gray;
+	margin-bottom: 10px;
+}
+
+.grid-bar-item {
+	padding-left: 5px;
+	display: inline-block;
+	margin: 0px;
+}
+
+.admin-field-name
+{
+	font-size: large;
+}
+
+.admin-field-desc
+{
+	font-size: small;
+	font-style: italic;
+}
+
+.admin-field {
+	border-bottom: 1px solid gray;
+	padding: 4px;
+	padding-bottom: 16px;
+}
+
+.admin-field-selected
+{
+	background-color: #E0F2F7;
+}
+
+
+.admin-field-list-box
+{
+	background-color: #F2F2F2;
+	padding: 5px 15px 15px 15px;
+	border-radius: 3px;
+
+}
+.admin-criteria-list-box
+{
+	background-color: #E6E6E6;
+	padding: 5px 15px 15px 15px;
+	border-radius: 3px;
+	height: 100%;
+    width: 535px;
+}
+
+.inherited-properties tr
+{
+	padding-top: 5px;
+}
+
+
+
+.prop-name
+{
+	font-weight: bold;
+	width: 200px;
+	text-align: right;
+	padding-right: 15px;
+	vertical-align: top;
+}
+
+.prop-val
+{
+	max-width: 250px;
+	overflow: none;
+}
+
+.dataset-config-tab {
+    background-color: #E6E6E6;
+    padding: 5px 15px 15px 15px;
+    border-radius: 3px;
+    height: 100%;
+}
+
+.dataset-config-tab .prop-name {
+    font-weight: bold;
+    width: 300px;
+    text-align: right;
+    padding-right: 15px;
+    vertical-align: top;
+}
+
+
+.dataset-config-tab .prop-val .form-control {
+    width: 300px;
+}
+
+
+.inherited-properties pre
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 12px;
+    word-wrap: break-word !important;
+    word-break: normal !important;
+    background-color: #BDBDBD;
+    margin-right: 10px;
+}
+
+.map-inset {
+	margin-top: -40px;
+	margin-left: 40px;
+	margin-right: 60px;
+	border: lightgray 1px solid;
+}
+
+.map-inset img
+{
+	width: 200px;
+}
+
+.quad-images
+{
+	border: lightgray 1px solid;
+	padding: 7px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+.quad-images img
+{
+	width: 350px;
+	padding-bottom: 10px;
+}
+
+.input-label{
+	vertical-align: top;
+}
+
+.edit-project-modal .header-label, .edit-project-modal .header-value
+{
+	margin-top: 7px;
+}
+
+.edit-project-modal textarea.form-control { width: 400px;}
+
+/*.edit-project-modal { width: 700px;}*/
+.edit-project-modal { width: 750px;}
+
+.edit-project-modal .checkbox-itemlist
+{
+	width: 400px;
+	/*margin-left: 250px;*/
+	margin-left: 300px;
+	border: lightgrey 1px solid;
+	border-radius:6px;
+	padding: 8px;
+}
+
+/* margin-left: 200px */
+
+.hab-subproject-modal .checkbox-itemlist
+{
+	width: 400px;
+	margin-left: 250px;
+	border: lightgrey 1px solid;
+	border-radius:6px;
+	padding: 8px;
+}
+
+.basemap-menu {
+	color: white;
+	border: none;
+	padding: 10px;
+	padding-top: 12px;
+	padding-bottom: 15px;
+
+}
+
+.basemap-menu:hover
+{
+	background-color: #157ab5;
+}
+
+.basemap-menu .dijitButtonNode {
+	border: none;
+}
+
+.dijitMenuItemLabel {
+	padding-left: 8px !important;
+	padding-right: 8px !important;
+	padding-top: 5px !important;
+	padding-bottom: 10px !important;
+}
+
+.dijitMenuTable {
+	margin-top: 18px !important;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+.dijitMenuItemSelected, .digitMenuItemHover
+{
+	background-color: #157ab5 !important;
+}
+
+#overlay {
+    position: absolute; /* makes the div go into a position that’s absolute to the browser viewing area */
+    left: 40%; /* positions the div half way horizontally */
+    top: 25%; /* positions the div half way vertically */
+    padding: 25px;
+    width: 50%;
+    height: 50%;
+    z-index: 100; /* makes the div the top layer, so it’ll lay on top of the other content */
+    color: white;
+    font-size: 32px;
+}
+
+#fade {
+    position: absolute;  /* makes the div go into a position that’s absolute to the browser viewing area */
+    left: 0%; /* makes the div span all the way across the viewing area */
+    top: 0%; /* makes the div span all the way across the viewing area */
+    background-color: black;
+    -moz-opacity: 0.5; /* makes the div transparent, so you have a cool overlay effect */
+    opacity: .50;
+    filter: alpha(opacity=50);
+    width: 100%;
+    height: 100%;
+    z-index: 90; /* makes the div the second most top layer, so it’ll lay on top of everything else EXCEPT for divs with a higher z-index (meaning the #overlay ruleset) */
+}
+
+.parcel-sidebar-box
+{
+	height: 400px;
+	width: 330px;
+	border: 1px solid black;
+	padding: 7px;
+ 	border-radius: 3px;
+ 	margin-top: 15px;
+ 	overflow-y: auto;
+}
+
+#photoWrapper {
+	margin-left: -40px;
+	white-space: nowrap;
+	margin-bottom: 0px;
+
+}
+
+#photoWrapper li {
+	display: inline;
+	list-style-type: none;
+}
+
+#photoWrapper img
+{
+	border-radius: 5px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin: 0px;
+	height: 250px;
+}
+
+.example-text {
+  color: grey;
+  font-style: italic;
+  font-size: small;
+}
+
+
+.full-width-panel {
+    position: relative;
+    background: #fafafa;
+    height: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    border-left: 2px solid grey;
+    border-bottom: 2px solid lightgray;
+    border-right: 2px solid lightgray;
+}
+
+.event-record-cell {
+}
+
+.full-width-detail {
+    padding-top: 4px;
+}
+
+.full-width-details {
+    float: left;
+    padding: 5px;
+    margin: 5px;
+    width: 150px;
+}
+
+.full-width-grid {
+    margin-left: 15px;
+    padding-top: 10px;
+    box-sizing: border-box;
+    display: block;
+    height: 100%;
+}
+
+.full-width-grid-toolbar {
+    top: 4px;
+    left: 30px;
+    margin-left: 150px;
+    display: block;
+    position: absolute;
+}
+
+.full-width-phone-icon {
+    padding-right: 10px;
+}
+
+.full-width-search {
+    border: 1px solid #eee;
+    margin-left: 10px;
+}
+
+.word-wrap {
+    white-space: normal;
+}
+
+.event-file-list ul {
+    padding-left: 15px;
+    list-style-type: circle;
+}
+
+.list-group-item-green {
+    background-color: #d0e9c6 !important;
+}
+
+.list-group-item-red {
+    background-color: #ebcccc !important;
+}
+
+#sticky-box {
+    position: -webkit-sticky;    
+    position: sticky;
+    top: 0;
+}
+
+#sticky-box:before,
+#sticky-box:after {
+    content: '';
+    display: table;
+}
+
+a {
+    color: #07C;
+    text-decoration: none;
+}
