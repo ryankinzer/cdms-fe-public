@@ -238,6 +238,11 @@ ul.dropdown-menu .btn {
 	border-bottom: 1px solid #E6E6E6;
 }
 
+.row-validation-error {
+    border: 1px solid red;
+    border-radius: 5px;
+}
+
 .switch-link
 {
 	font-size: small;

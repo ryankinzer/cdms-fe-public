@@ -129,6 +129,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 row.node.setSelected(true);
             },
             */
+            rowClassRules: {
+                'row-validation-error': function(params) { return params.node.data.rowHasError; }
+            },
             defaultColDef: {
                 editable: true
             },
