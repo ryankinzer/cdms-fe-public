@@ -156,13 +156,38 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                         event.colDef.validatorInstance.init(event.colDef.cdmsField);
                         console.log("Created validator instance ** ");
                     }
-                    //validate this value
-                    event.node.data.validationErrors = event.colDef.validatorInstance.validate(event);
+
+                    //initialize our validationErrors array
+                    if (typeof event.node.data.validationErrors === 'undefined')
+                        event.node.data.validationErrors = [];
+
+                    //validate this cell's value!
+                    event.node.data.validationErrors = event.colDef.validatorInstance.validate(event).concat(event.node.data.validationErrors);
+
+                    //set validation status and message
+                    event.node.data.rowHasError = false;
+
+                    //collect error messages into a tooltip for the cells with error/s
+                    if ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0)) {
+                        event.node.data.rowHasError = true;
+                        event.node.data.validationErrors.forEach(function (error, index) {
+                            event.node.data.rowErrorTooltip = (index === 0) ? "" : event.node.data.rowErrorTooltip + "\n"; //either initialize to "" or add a newline
+
+                            //flatten the error messages for this cell
+                            event.node.data.rowErrorTooltip = event.node.data.rowErrorTooltip +
+                                "[" + error.field.DbColumnName + "] " + error.message;
+
+                            console.log("validation errors for [" + error.field.DbColumnName + "] " + event.node.data.rowErrorTooltip);
+                            console.dir(event.node.data);
+
+                        });
+                    }
+
                     event.api.redrawRows();
                     //$scope.validationErrors = $scope.validationErrors.concat(event.node.validationErrors);
                     
                     console.log("So our errors are:");
-                    console.dir(event.colDef.validationErrors);
+                    console.dir(event.node.data.validationErrors);
                 }
 
                 //TODO: validation!

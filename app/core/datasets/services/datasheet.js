@@ -277,11 +277,23 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'FieldRende
                             cdmsField: field, //our own we can use later
                             width: 150,
                             menuTabs: [],
+                            tooltipField: "rowErrorTooltip", //rowErrorTooltip is populated only when a validation error exists for any cell in a row.
                             cellClassRules: {
-                                'has-validation-error': function (params) {
-                                    console.log("Hey! in a css rule!");
-                                    console.dir(params);
-                                    return (Array.isArray(params.node.data.validationErrors) && params.node.data.validationErrors.length > 0);
+                                'has-validation-error': function (params) {        
+                                    var fieldHasErrors = false;
+                                    //console.log("checking for validatoin errors in css");
+                                    //this css class is added to the cell if there are validation errors matching this field
+                                    if ((Array.isArray(params.node.data.validationErrors) && params.node.data.validationErrors.length > 0))
+                                    {
+                                        //console.log(" >> we do have errors for this row... ");
+                                        params.node.data.validationErrors.forEach(function (error, index) {
+                                            //console.log(" -- checking " + error.field.DbColumnName + " and " + params.colDef.field);
+                                            //is there a validation error for this cell?
+                                            if (error.field.DbColumnName === params.colDef.field)
+                                                fieldHasErrors = true;
+                                        });
+                                    }
+                                    return fieldHasErrors;
                                 },
                             }
                         };
