@@ -201,6 +201,11 @@ ul.dropdown-menu .btn {
   background-color: red;
 }
 
+.errors-box{
+  border: 1px solid red;
+  background-color: red;
+}
+
 /* -- in order for dropdowns and multiselect dropdowns to show up in ngGrid -- */
 .ngCell { overflow: visible;}
 

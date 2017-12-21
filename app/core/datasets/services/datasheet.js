@@ -466,6 +466,10 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                     ////console.dir(scope);
                     //console.log("row is next...");
                     //console.dir(row);
+					//row.errors = angular.copy(row.errors); // row.errors is not filling in without doing this.
+                    //console.log("row is next...");
+                    //console.dir(row);
+					//console.dir(row.errors);
 
                     //spin through our fields and validate our value according to validation rules
                     var row_errors = [];
@@ -474,7 +478,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
                     // We use row_num to give us a reference for what line of data we are on, in the debugger.
                     //var row_num = 0;
-
+					//console.log("row_errors.length = " + row_errors.length + ", row.errors.length = " + row.errors.length);
+					//console.dir(row.errors);
                     angular.forEach(scope.FieldLookup, function (field, key) {
                         //TODO: first check if there is no value but one is required.
 
@@ -527,27 +532,55 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                     //console.log(row_num + " --------------- is our rownum");
                     //console.log("row_errors is next...");
                     //console.dir(row_errors);
+					//console.log("row.errors is next...");
+					//console.dir(row.errors);
+					//if ((typeof row.errors !== 'undefined') && (row.errors !== null))
+					//	console.log("row_errors.length = " + row_errors.length + ", row.errors.length = " + row.errors.length);
 					
 					/*	Notes are in order here.
 					*	All three items below (row.isValid, row.errors, and scope.gridHasErrors) are necessary to turn the row color red.
 					*	If all three itesms ARE NOT preset, the error will be flagged, but the color WILL NOT turn red.
 					*/
                     if (row_errors.length > 0) {
+						console.log("row_errors.length = " + row_errors.length)
                         row.isValid = false;
                         //row.errors = row_errors;
 						
 						// validateGrid(scope) calls validate
 						// validate does angular.forEach on $scope.dataSheetDataset, passing the data_row to here, coming in as row.
-                        row.errors = angular.copy(row_errors);
+                        //row.errors = angular.copy(row_errors);
+						angular.forEach(row_errors, function(item){
+							if ((typeof row.errors === 'undefined') || (row.errors === null))
+								row.errors = [];
+							
+							row.errors.push(item);
+						});
+						//console.log("row.errors.length = " + row.errors.length)
                         //scope.row.errors = angular.copy(row_errors);
                         scope.gridHasErrors = true;
                     }
+					else if ((typeof row.errors !== 'undefined') && (row.errors !== null))
+					{
+						//console.log("row.errors is real...");
+						if (row.errors.length > 0)
+						{
+							//console.log("row.errors.length = " + row.errors.length)
+							row.isValid = false;
+							scope.gridHasErrors = true;
+						}
+						else
+						{
+							row.isValid = true;						
+						}
+					}
                     else {
+						//console.log("No Errors...");
                         row.isValid = true;
                         row.errors = undefined;
                     }
 
                 }
+				//console.log("scope.gridHasErrors = " + scope.gridHasErrors);
             },
 
             //updateHeaderField: function(field_name, scope)
@@ -749,9 +782,6 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                 if (field && value) {
                     fireRules("OnChange", row, field, value, headers, [], scope);
                 }
-
-                //this is expensive in that it runs every time a value is changed in the grid.
-                scope.validateGrid(scope); //so that number of errors gets calculated properly.
 				
 				if ((field_name === "ReadingDateTime") || (field_name === "activityDate"))
 				{
@@ -761,9 +791,17 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					
 					//scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
 					
-					//scope.removeRowErrorsBeforeRecheck();
+					scope.removeRowErrorsBeforeRecheck();
 					scope.rebuildDateTimeList();
 					scope.checkForDuplicates();
+					
+					//this is expensive in that it runs every time a value is changed in the grid.
+					scope.validateGrid(scope); //so that number of errors gets calculated properly.
+				}
+				else
+				{
+					//this is expensive in that it runs every time a value is changed in the grid.
+					scope.validateGrid(scope); //so that number of errors gets calculated properly.
 				}
             },
 
@@ -800,7 +838,12 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                 scope.validation_error_count = 0;
 
                 angular.forEach(scope.dataSheetDataset, function (data_row, key) {
+					//console.log("data_row (before validate) is next...");
+					//console.dir(data_row);
+					data_row.errors = undefined;
                     service.validate(data_row, scope);
+					//console.log("data_row (after validate) is next...");
+					//console.dir(data_row);
                     if (!data_row.isValid)
                         scope.validation_error_count++;
                 });
