@@ -270,12 +270,20 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'FieldRende
                 //dataset defined detail fields 
                 dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
                     if (field.FieldRoleId === FIELD_ROLE_DETAIL) {
+                        //initial values for detail column definition
                         var newColDef = {
                             headerName: field.Label,
                             field: field.DbColumnName,
                             cdmsField: field, //our own we can use later
                             width: 150,
                             menuTabs: [],
+                            cellClassRules: {
+                                'has-validation-error': function (params) {
+                                    console.log("Hey! in a css rule!");
+                                    console.dir(params);
+                                    return (Array.isArray(params.node.data.validationErrors) && params.node.data.validationErrors.length > 0);
+                                },
+                            }
                         };
 
                         FieldRendererService.setRendererForField(field, newColDef);

@@ -14,7 +14,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
         $scope.EditedRows = []; //whenever a row gets edited, it will be added here; we only send edited rows...
-        $scope.ValidationErrors = [];
+        $scope.validationErrors = [];
 
         $scope.userId = $rootScope.Profile.Id;
         $scope.fields = { header: [], detail: [], relation: [] };
@@ -149,15 +149,20 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //perform cell validation if a cellValidator exists for this field
                 if (event.colDef.hasOwnProperty('cellValidator'))
                 {
-                    if (!event.colDef.validatorInstance) {
-                        var ValidatorFunction = event.colDef.cellValidator;
-                        event.colDef.validatorInstance = new ValidatorFunction();
+                    //only do this once per colDef
+                    if (!event.colDef.validatorInstance) { 
+                        var validatorFunction = event.colDef.cellValidator;
+                        event.colDef.validatorInstance = new validatorFunction();
                         event.colDef.validatorInstance.init(event.colDef.cdmsField);
                         console.log("Created validator instance ** ");
                     }
-                    $scope.ValidationErrors = $scope.ValidationErrors.concat(event.colDef.validatorInstance.validate(event));
-                    console.log("So our errors are:")
-                    console.dir($scope.ValidationErrors);
+                    //validate this value
+                    event.node.data.validationErrors = event.colDef.validatorInstance.validate(event);
+                    event.api.redrawRows();
+                    //$scope.validationErrors = $scope.validationErrors.concat(event.node.validationErrors);
+                    
+                    console.log("So our errors are:");
+                    console.dir(event.colDef.validationErrors);
                 }
 
                 //TODO: validation!

@@ -24,7 +24,6 @@ function ValidationError(field, message) {
 function CellValidator() {};
 
 CellValidator.prototype.init = function(cdms_field) {
-    console.log(" --------------- cell validator init ! --------- ");
     this.cdms_field = cdms_field;
 
     //cache our validations as an array for convenience and performance.
@@ -71,7 +70,6 @@ CellValidator.prototype.validateFieldLevelValidation = function (data) {
 //parses the cdms_field validations and returns an array of validation strings or [] if none.
 // for example a string of: "Required; [1000-2000]" will return: ['required','[1000-2000]']
 CellValidator.prototype.getValidationsArray = function (cdms_field) {
-    console.log(" ------ get validation array ");
     var empty = [];
 
     if (!cdms_field) {
