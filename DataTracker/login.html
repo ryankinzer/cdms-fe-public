@@ -1,36 +1,11 @@
-<!DOCTYPE html>
-<html lang="en"  xmlns="http://www.w3.org/1999/xhtml" ng-app="loginModule">
+<html>
 <head>
-    <title>Dataset Tracker v.1.0</title>
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store">
-    <link href='//fonts.googleapis.com/css?family=Lusitana' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css"/>
-
-    <link rel="stylesheet" href="css/app.css"/>
-
-    <script src="../bower_components/jquery/dist/jquery.js"></script>
-
-    <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="../bower_components/angular-route/angular-route.min.js"></script>
-    <script src="../bower_components/angular-resource/angular-resource.min.js"></script>
-
-    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-
-    <script src="js/config.js"></script>
-    <script src="js/controllers/login-controller.js"></script>
-
+	<!-- Note:  With the advent of the CDMS frontend reorganization, we found that the DataTracker folder itself was an extra, unnecessary  
+	layer.  Therefore, we removed that folder, which moved all the subfolders up one level.  Unfortunately, all the users have saved the link  
+	to the previous location.  This reorg then demanded that we advise people of the new location, and that we add a redirect page, to route  
+	users to the correct location (one folder up).  
+	--> 
+	<meta http-equiv="refresh" content="0; url=../login.html" />
+	<meta http-equiv="Cache-Control" content="no-cache, no-store">
 </head>
-<body>
-<div ng-include="'partials/login-header.html'"></div>
-<div id="wrap">
-    <div class="well well-small" style="margin: 20px;">
-      <div class="view-container">
-        <div ng-view class="view-frame"></div>
-      </div>
-    </div>
-    <div id="push"></div>
-</div>
-</body>
 </html>

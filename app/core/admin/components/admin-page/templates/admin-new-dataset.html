@@ -1,0 +1,31 @@
+﻿
+
+<div class="panel-body" style="width: 600px;">
+    <h3>Add Dataset to Project</h3>
+    <hr/>
+    <div>
+        Add <b>{{datastore.Name}}</b> to:
+    </div>
+
+    <div>
+        <select ui-select2="select2Options" data-placeholder="Add a field" ng-model="SelectedProject" style="width: 300px;">
+            <option ng-repeat="project in projects" value="{{project.Id}}">{{project.Name}}</option>
+        </select>
+    </div>
+    <div style="margin-top: 30px;">
+        With these fields (click to exclude field from dataset):
+    </div>
+    <div>
+        <div class="list-group">
+            <a href ng-click="removeField(field)" 
+               class="list-group-item list-group-group-item-action" 
+               ng-class="{'list-group-item-red': field.exclude, 'list-group-item-green':!field.exclude}" 
+               ng-repeat="field in datastoreFields">
+               {{field.Name}}
+            </a>
+        </div>
+
+        <button style="" class="right btn" ng-click="addDatasetToProject()">Create Dataset</button>
+
+   </div>
+</div>
