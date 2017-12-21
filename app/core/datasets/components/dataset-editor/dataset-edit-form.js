@@ -147,29 +147,27 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 console.dir(event);
 
                 //perform cell validation if a cellValidator exists for this field
-                if (event.colDef.hasOwnProperty('cellValidator'))
-                {
-                    //only do this once per colDef
-                    if (!event.colDef.validatorInstance) { 
+                if (event.colDef.hasOwnProperty('cellValidator')) {
+                    //only does this init once per colDef
+                    if (!event.colDef.validatorInstance) {
                         var validatorFunction = event.colDef.cellValidator;
                         event.colDef.validatorInstance = new validatorFunction();
                         event.colDef.validatorInstance.init(event.colDef.cdmsField);
                         console.log("Created validator instance ** ");
                     }
 
-                    //initialize our validationErrors array
-                    if (typeof event.node.data.validationErrors === 'undefined')
-                        event.node.data.validationErrors = [];
+                    //remove this field's validation errors from our row's validation errors
+                    event.node.data.validationErrors = event.colDef.validatorInstance.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
 
-                    //validate this cell's value!
-                    event.node.data.validationErrors = event.colDef.validatorInstance.validate(event).concat(event.node.data.validationErrors);
+                    //validate this cell's value and merge in any errors with this row's errors.
+                    var fieldValidationErrors = event.colDef.validatorInstance.validate(event);
+                    event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
 
                     //set validation status and message
-                    event.node.data.rowHasError = false;
+                    event.node.data.rowHasError = ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0));
 
                     //collect error messages into a tooltip for the cells with error/s
-                    if ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0)) {
-                        event.node.data.rowHasError = true;
+                    if (event.node.data.rowHasError) {
                         event.node.data.validationErrors.forEach(function (error, index) {
                             event.node.data.rowErrorTooltip = (index === 0) ? "" : event.node.data.rowErrorTooltip + "\n"; //either initialize to "" or add a newline
 
@@ -182,12 +180,13 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
                         });
                     }
+                    else {
+                        event.node.data.rowErrorTooltip = ""; //clear the tooltip if there are no errors.
+                    }
 
                     event.api.redrawRows();
-                    //$scope.validationErrors = $scope.validationErrors.concat(event.node.validationErrors);
+
                     
-                    console.log("So our errors are:");
-                    console.dir(event.node.data.validationErrors);
                 }
 
                 //TODO: validation!
@@ -199,8 +198,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
         };
 
-
-
+        
 
         //datasheet grid
         $scope.gridDatasheetOptions = {

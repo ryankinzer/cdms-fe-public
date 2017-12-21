@@ -119,6 +119,23 @@ CellValidator.prototype.validate = function (data) {
     return this.errors;
 };
 
+/**
+* utility function to remove the given column's validation errors from this array
+*/
+CellValidator.prototype.removeFieldValidationErrors = function (validationErrors, colDef) {
+        
+    var otherValidationErrors = [];
+
+        if (typeof validationErrors !== 'undefined') {
+            //if this error matches the field then skip, otherwise add to our otherValidationErrors array.
+            validationErrors.forEach(function (error, index) {
+                if (error.field.DbColumnName !== colDef.field)
+                    otherValidationErrors.push(error);
+            });
+        }
+
+        return otherValidationErrors;
+    };
 
 /*
  * All CDMS cell validators are defined below ---------------------------------------------------------------------------------------- ///////
