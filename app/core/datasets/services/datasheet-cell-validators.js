@@ -63,11 +63,13 @@ CellValidator.prototype.validateFieldLevelValidation = function (data) {
     if (this.validation.contains('required') && (data.value === null || data.value === '')) //this is probably not sufficient.
         this.errors.push(new ValidationError(this.cdms_field, "Field is required."));
 
+    //other types of field-level validation?
+
     return this.errors;
 };
 
 
-//parses the cdms_field validations and returns an array of validation strings or [] if none.
+//parses the cdms_field validations and returns an array of validation definitions or [] if none.
 // for example a string of: "Required; [1000-2000]" will return: ['required','[1000-2000]']
 CellValidator.prototype.getValidationsArray = function (cdms_field) {
     var empty = [];
@@ -99,11 +101,81 @@ CellValidator.prototype.getValidationsArray = function (cdms_field) {
         return empty;
     }
 
-    console.log("Found some validation for that field: " + cdms_field.DbColumnName);
+    console.log("Found some validation for that field: " + cdms_field.DbColumnName + " -- now parsing... ");
+    console.dir(validation);
+    console.log("  -- now parsing... ");
+
+    validation = this.getParsedValidationArray(validation); //add the .parsed property to each validation that tokenizes the validation string
     console.dir(validation);
 
     return validation;
 
+};
+
+//parses number validations by tokens into a validation definition object
+// adds a "parsed" property to the validations object if it can parse the validation.
+CellValidator.prototype.getParsedValidationArray = function (validations) {
+    //btw: handy tool for testing regex: https://www.debuggex.com
+
+    var parsed_validations = [];
+
+    //the regex that matches our "range" validations (ex: "[100,500]")
+    var rangeRegex = new RegExp(/\[\d*\,\d*\]$/);
+
+    //the regexs that match the int/float format validations
+    var validationMatchers =
+        [
+            new RegExp(/^(int)\((\d)\)$/), //int(4)
+            new RegExp(/^(int)$/),         //int
+            new RegExp(/^(float)$/),         //float
+            new RegExp(/^(float)\(()(\d)\)$/), //float(4)
+            new RegExp(/^(float)\((\d)\,(\d)\)$/),    //float(5,2)
+        ];
+
+    //for each validation rule, try to match it with
+    //  one of our regex patterns and produce an array
+    //  we can use to validate values later. see /tests/validations.js for example output
+    validations.forEach(function (val) {
+        var matched = false;
+
+        //range
+        if (rangeRegex.test(val)) {
+            var obj = rangeRegex.exec(val);
+            parsed_validations.push({
+                number: {
+                    'num_type': 'range',
+                    'num_range': val,
+                }
+            });
+            matched = true;
+        }
+
+        //floats and ints
+        validationMatchers.forEach(function (regex) {
+            if (regex.test(val)) {
+                var obj = regex.exec(val);
+                parsed_validations.push({
+                    number: {
+                        'num_type': obj[1],
+                        'num_length': (obj[2] === '') ? undefined : obj[2], //return undefined, not ''
+                        'num_decimal': obj[3],
+                        'original': obj.input,
+                    }
+                });
+                //console.log(" -- match --");
+                //console.dir(obj);
+                //console.dir(val);
+                matched = true;
+            }
+        });
+
+        if (!matched) {
+            parsed_validations.push(val);
+        }
+
+    });
+
+    return parsed_validations;
 };
 
 /**
@@ -141,9 +213,9 @@ CellValidator.prototype.removeFieldValidationErrors = function (validationErrors
  * All CDMS cell validators are defined below ---------------------------------------------------------------------------------------- ///////
  */
 
-// to write a new validator, just follow the pattern: subclass CellValidator, implement the validateFieldControlTypeValidation function.
+// to write a new validator, just follow the pattern: subclass the CellValidator, implement the validateFieldControlTypeValidation function.
 
-//CDMSTextCellValidator
+//CDMSTextCellValidator --------------------------------------
 function CDMSTextCellValidator(cdms_field) {
     this.base = CellValidator;
     this.base(cdms_field);
@@ -161,7 +233,34 @@ CDMSTextCellValidator.prototype.validateFieldControlTypeValidation = function (d
 
 
 
-//NEXT!
+//CDMSNumberCellValidator ----------------------------------
+function CDMSNumberCellValidator(cdms_field) {
+    this.base = CellValidator;
+    this.base(cdms_field);
+};
+CDMSNumberCellValidator.prototype = new CellValidator;
+
+CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
+
+    //validation: is the field required?
+    if (this.validation.contains('required') && (data.value === null || data.value === '')) //this is probably not sufficient.
+        this.errors.push(new ValidationError(this.cdms_field, "Field is required."));
+
+    
+
+
+    //first, if we are a
+    if (data.value != "ken")
+        this.errors.push(new ValidationError(this.cdms_field, "Your name must be KEN"));
+
+    return this.errors;
+};
+
+
+
+
+
+//NEXT! ---------------------------------------------
 
 /*
 Rules are callback functions that fire after cell editing finishes

@@ -139,8 +139,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log('cellEditingStarted');
             },
             onCellEditingStopped: function (event) {
-                //console.log('cellEditingStopped :: VALIDATION');
-                //console.dir(event);
+
+                //after a cell is edited, this calls the cell validator (if there is one).
+                // once a cell is validated, if there are errors, here is the situation:
+                //  params.node.data.validationErrors is an array of errors from this cell (+ previously set errors from other cells in this row)
+                //  params.node.data.rowHasError = true (or false if no error)
+                //  params.node.data.rowErrorTooltip = "error messages" from all validation errors for this cell for display as a tooltip (hover)
 
                 //perform cell validation if a cellValidator exists for this field
                 if (event.colDef.hasOwnProperty('cellValidator')) {

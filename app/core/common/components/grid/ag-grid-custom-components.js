@@ -57,7 +57,7 @@ CDMSMultiselectCellEditor.prototype.init = function (params) {
         params.value = [];
     
     if (Array.isArray(params.values)) {
-        console.log("params.values is an array");
+        //console.log("params.values is an array");
         params.values.forEach(function (value) {
             var option = document.createElement('option');
             option.value = value;
@@ -70,7 +70,7 @@ CDMSMultiselectCellEditor.prototype.init = function (params) {
     }
 
     if (!Array.isArray(params.values) && typeof params.values === 'object') {
-        console.log("params.values is an object");
+        //console.log("params.values is an object");
         params.values.forEach(function (key, value) {
             var option = document.createElement('option');
             option.value = key;
@@ -133,7 +133,7 @@ CDMSSelectCellEditor.prototype.init = function (params) {
         params.value = [];
 
     if (Array.isArray(params.values)) {
-        console.log("params.values is an array");
+        //console.log("params.values is an array");
         params.values.forEach(function (value) {
             var option = document.createElement('option');
             option.value = value;
@@ -146,7 +146,7 @@ CDMSSelectCellEditor.prototype.init = function (params) {
     }
 
     if (!Array.isArray(params.values) && typeof params.values === 'object') {
-        console.log("params.values is an object");
+        //console.log("params.values is an object");
         for (key in params.values)
         {
             var option = document.createElement('option');
