@@ -110,6 +110,7 @@ var LinkControlType = function (cdms_field, col_def) {
 
 //number - no special handling
 var NumberControlType = function (cdms_field, col_def) {
+    col_def.cellValidator = CDMSNumberCellValidator;
     return col_def;
 };
 

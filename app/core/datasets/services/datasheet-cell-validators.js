@@ -110,6 +110,7 @@ CellValidator.prototype.getValidationsArray = function (cdms_field) {
 
     return validation;
 
+
 };
 
 //parses number validations by tokens into a validation definition object
@@ -207,13 +208,20 @@ CellValidator.prototype.removeFieldValidationErrors = function (validationErrors
         }
 
         return otherValidationErrors;
-    };
+};
+
+//is this a number validation rule?
+CellValidator.prototype.isNumberValidation = function (val) {
+    return (typeof val === 'object' && val.hasOwnProperty('number'));
+};
 
 /*
  * All CDMS cell validators are defined below ---------------------------------------------------------------------------------------- ///////
  */
 
-// to write a new validator, just follow the pattern: subclass the CellValidator, implement the validateFieldControlTypeValidation function.
+//see the structure of this.validation (array of parsed field-level validations) in the "output" section of: tests/validations.js
+
+// to write a new validator, follow the pattern: subclass the CellValidator, implement the validateFieldControlTypeValidation function.
 
 //CDMSTextCellValidator --------------------------------------
 function CDMSTextCellValidator(cdms_field) {
@@ -232,6 +240,38 @@ CDMSTextCellValidator.prototype.validateFieldControlTypeValidation = function (d
 };
 
 
+/*
+
+[ 'required',
+  { number:
+     { num_type: 'int',
+       num_length: '4',
+       num_decimal: undefined,
+       original: 'int(4)' } },
+  { number:
+     { num_type: 'int',
+       num_length: undefined,
+       num_decimal: undefined,
+       original: 'int' } },
+  { number:
+     { num_type: 'float',
+       num_length: undefined,
+       num_decimal: undefined,
+       original: 'float' } },
+  { number:
+     { num_type: 'float',
+       num_length: undefined,
+       num_decimal: '3',
+       original: 'float(3)' } },
+  { number:
+     { num_type: 'float',
+       num_length: '5',
+       num_decimal: '2',
+       original: 'float(5,2)' } },
+  'year',
+  { number: { num_type: 'range', num_range: '[200,500]' } } ]
+
+*/
 
 //CDMSNumberCellValidator ----------------------------------
 function CDMSNumberCellValidator(cdms_field) {
@@ -241,10 +281,21 @@ function CDMSNumberCellValidator(cdms_field) {
 CDMSNumberCellValidator.prototype = new CellValidator;
 
 CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
+    //we are a number, so spin through and test any of our validations that are "number" types
+    var _this = this;
+    this.validation.forEach(function (val) {
+        if (_this.isNumberValidation(val)) //we have a number validation we need to check
+        {
+            console.log("Aha! we need to validated this! ---->>>> " + val.number.num_type);
+            console.log("KEN - you are here when you get back from vacation!");
+        }
+    });
+
 
     //validation: is the field required?
     if (this.validation.contains('required') && (data.value === null || data.value === '')) //this is probably not sufficient.
         this.errors.push(new ValidationError(this.cdms_field, "Field is required."));
+
 
     
 
