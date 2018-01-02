@@ -30,6 +30,9 @@ CellValidator.prototype.init = function(cdms_field) {
     if (!this.validation)
         this.validation = this.getValidationsArray(this.cdms_field);
 
+    console.log("cdms_field validation initialized for ---------> " + cdms_field.DbColumnName);
+    console.dir(this.validation);
+
     this.errors = [];
 };
 
@@ -52,9 +55,8 @@ CellValidator.prototype.validateFieldOnValidateRule = function (data) { };
 *  It only validates those that are NOT dependent upon the field type (like "required").
 
 * NOTE: validation that is specific to a type of field (number, multiselect) should NOT go here.
-*  but rather in datasheet-controltype-validations.js
 
-* returns an array of ValidationError objects (or [])
+* returns an array of ValidationError objects (or [] if no error)
 
 */
 CellValidator.prototype.validateFieldLevelValidation = function (data) {
@@ -72,6 +74,7 @@ CellValidator.prototype.validateFieldLevelValidation = function (data) {
 //parses the cdms_field validations and returns an array of validation definitions or [] if none.
 // for example a string of: "Required; [1000-2000]" will return: ['required','[1000-2000]']
 CellValidator.prototype.getValidationsArray = function (cdms_field) {
+
     var empty = [];
 
     if (!cdms_field) {
@@ -81,13 +84,15 @@ CellValidator.prototype.getValidationsArray = function (cdms_field) {
 
     //get validation from dataset field Validation column - otherwise from master's.
     var validation = cdms_field.Validation || cdms_field.Field.Validation; //prefer dataset over master.
+
     if (!validation)
         return empty;
 
-    //parse the cdms_field Validation into validation array 
+    //parse the cdms_field Validation into validation array.
     if (typeof validation !== 'string') //if we aren't a string then it is invalid validation
     {
         console.error(cdms_field.DbColumnName + " - Validation is invalid (not a string)");
+        console.dir(validation)
         return empty;
     }
 
@@ -210,10 +215,6 @@ CellValidator.prototype.removeFieldValidationErrors = function (validationErrors
         return otherValidationErrors;
 };
 
-//is this a number validation rule?
-CellValidator.prototype.isNumberValidation = function (val) {
-    return (typeof val === 'object' && val.hasOwnProperty('number'));
-};
 
 /*
  * All CDMS cell validators are defined below ---------------------------------------------------------------------------------------- ///////
@@ -282,27 +283,117 @@ CDMSNumberCellValidator.prototype = new CellValidator;
 
 CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
     //we are a number, so spin through and test any of our validations that are "number" types
+
+    console.log("validateFieldControlTypeValidation ------------------------------------------------ ");
+    console.dir(data);
+
+    //if it is empty, don't bother (required is a different constraint that can be applied)
+    if (data.value === null || data.value === "")
+        return this.errors;
+
+    //validation: is the field numeric?
+    if (!isNumber(data.value)) {
+        this.errors.push(new ValidationError(this.cdms_field, "Field must be numeric."));
+        return this.errors; //early return -- if the value isn't numeric, our other validation will fail, so don't clutter things up.
+    }
+
     var _this = this;
+
+    //iterate each validation in "Validation" field and
+    // validate any of the constraints that are "number" (float, int, # of digits, etc.)
     this.validation.forEach(function (val) {
-        if (_this.isNumberValidation(val)) //we have a number validation we need to check
-        {
-            console.log("Aha! we need to validated this! ---->>>> " + val.number.num_type);
-            console.log("KEN - you are here when you get back from vacation!");
+
+        try {
+
+            //if this validation is a "number" constraint
+            if (typeof val === 'object' && val.hasOwnProperty('number')) 
+            {
+
+                //is it supposed to be an int? how many digits?
+                if (val.number.num_type === "int") {
+                    if (!isInteger(0-data.value)) { //0- coerces to a number
+                        _this.errors.push(new ValidationError(_this.cdms_field, "Field must be an integer."));
+                    } else {
+                        //the number of digits specified for validation
+                        if (typeof val.number.num_length !== 'undefined' && typeof val.number.num_length === 'number') {
+                            var re_num_length = new RegExp("^\d{" + val.number.num_length + "," + val.number.num_length + "}$"); // ^\d{2,2}$ ==> 2 digit int
+                            if (!re_num_length.test(data.value))
+                                _this.errors.push(new ValidationError(_this.cdms_field, "Field must be an integer with " + val.number.num_length + " digits."));
+                        }
+                    }
+                }
+
+                //is it supposed to be a float? how many digits? how many decimals?
+                // this is specified with: "float(3,2)" where 3 = num_length and 2 = num_decimal; e.g. 351.33 would match
+                // they can also specify: "float(3)" where 3 = num_decimal and num_length is undefined so it can be as long as they want; e.g. 4482.223 would match
+                if (val.number.num_type === "float") {
+                    //NOTE: since an integer is also a float, and we've already tested that it is a number, there isn't a test purely for float: if (!isFloat(data.value+0)) {
+                    
+                    //this case is when both num_length and num_decimal are specified: float(2,3).
+                    if (typeof val.number.num_length !== 'undefined' && typeof val.number.num_length === 'number') {
+
+                        //  if the num_length is specified then there MUST be a decimal specified.
+                        if (typeof val.number.num_decimal === 'undefined' || typeof val.number.num_decimal !== 'number')
+                        {
+                            console.error("Validation constraint is invalid for " + _this.cdms_field.DbColumnName + ": decimal must be specified if length is specified");
+                            return; //skip the rest, there is nothing we can do.
+                        }
+
+                        var re_num_length = new RegExp(
+                            "^\d{" + val.number.num_length + "," + val.number.num_length + "}\.{" + val.number.num_decimal + "," + val.number.num_decimal + "}$"
+                        ); // ^\d{2,2}\.{3,3}$ ==> 2 digit float with 3 decimal places e.g. 52.432
+
+                        if (!re_num_length.test(data.value))
+                            _this.errors.push(new ValidationError(_this.cdms_field, "Field must be decimal (float) with " + val.number.num_length + " digits and " + val.number.num_decimal + " decimal places."));
+
+                    } else { 
+                        //this case is when only num_decimal is specified: float(3) 
+                        if (typeof val.number.num_decimal !== 'undefined' || typeof val.number.num_decimal === 'number') {
+
+                            var re_num_dec = new RegExp(
+                                "^\d*\.{" + val.number.num_decimal + "," + val.number.num_decimal + "}$"
+                            ); // ^\d*\.{3,3}$ ==> any digit float with 3 decimal places e.g. 52.432
+
+                            if (!re_num_dec.test(data.value))
+                                _this.errors.push(new ValidationError(_this.cdms_field, "Field must be decimal (float) with " + val.number.num_decimal + " decimal places."));
+                        }
+                    }
+                }
+
+                //is it within the constrained range?
+                if (val.number.num_type === "range") {
+                    try {
+                        var range_array = angular.fromJson(val.number.num_range);
+                        if (Array.isArray(range_array)) {
+                            var num_from = range_array[0];
+                            var num_to = range_array[1];
+                            
+                            if (typeof num_from !== 'undefined' && typeof num_from === 'number' &&
+                                typeof num_to !== 'undefined' && typeof num_to === 'number') {
+
+                                if (data.value < num_from || data.value > num_to )
+                                    _this.errors.push(new ValidationError(_this.cdms_field, "Field value is out of range: " + num_from + " - " + num_to ));
+                            }
+                        }
+                        
+                    }
+                    catch (e) {
+                        console.error("Validation for range could not be converted to array (or something similar)");
+                        console.dir(e);
+                    }
+                }
+
+                //any other numeric types? they'd go here
+
+            }
+
+        } catch (e) {
+            console.error("Problem with Validation constraint on field : " + _this.cdms_field.DbColumnName);
+            console.log(e);
         }
-    });
 
-
-    //validation: is the field required?
-    if (this.validation.contains('required') && (data.value === null || data.value === '')) //this is probably not sufficient.
-        this.errors.push(new ValidationError(this.cdms_field, "Field is required."));
-
-
-    
-
-
-    //first, if we are a
-    if (data.value != "ken")
-        this.errors.push(new ValidationError(this.cdms_field, "Your name must be KEN"));
+        
+    }); //end for each validation
 
     return this.errors;
 };

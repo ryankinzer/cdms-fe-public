@@ -413,6 +413,12 @@ function isNumber(n) {
 }
 
 
+function isInteger (value) {
+    return typeof value === 'number' &&
+        isFinite(value) &&
+        Math.floor(value) === value;
+};
+
 //give me an instrument's accuracy check and I'll give you the datagrade to display
 function getDataGrade(check) {
     if (!check)

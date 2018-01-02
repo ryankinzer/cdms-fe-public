@@ -188,10 +188,13 @@ function parseField(field, scope) {
 
     //configure field validation for DatasetFields (will be skipped for global Fields (in the case of global query))
     if (field.Field && field.Field.Validation) {
+
+        //kb 1/2/18 - changing this - we don't want this to happen for the new grid.
         try {
             console.log("configuring validation for " + field.DbColumnName);
 			//console.dir(field.Field.Validation);
-            field.Field.Validation = angular.fromJson(field.Field.Validation);
+            //field.Field.Validation = angular.fromJson(field.Field.Validation);
+            var tryme = angular.fromJson(field.Field.Validation);
         }
         catch (e) {
             // Original code
