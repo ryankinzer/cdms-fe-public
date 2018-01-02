@@ -163,7 +163,7 @@ CellValidator.prototype.getParsedValidationArray = function (validations) {
                 parsed_validations.push({
                     number: {
                         'num_type': obj[1],
-                        'num_length': (obj[2] === '') ? undefined : +obj[2], //return undefined, not ''
+                        'num_length': +obj[2],  //+
                         'num_decimal': +obj[3], //+ coerces to number
                         'original': obj.input,
                     }
@@ -284,8 +284,9 @@ CDMSNumberCellValidator.prototype = new CellValidator;
 CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
     //we are a number, so spin through and test any of our validations that are "number" types
 
-    console.log("validateFieldControlTypeValidation ------------------------------------------------ ");
-    console.dir(data);
+    //console.log("validateFieldControlTypeValidation ------------------------------------------------ ");
+    //console.dir(data);
+    //console.dir(this.validation);
 
     //if it is empty, don't bother (required is a different constraint that can be applied)
     if (data.value === null || data.value === "")
@@ -293,7 +294,7 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
 
     //validation: is the field numeric?
     if (!isNumber(data.value)) {
-        this.errors.push(new ValidationError(this.cdms_field, "Field must be numeric."));
+        this.errors.push(new ValidationError(this.cdms_field, "Field must be a number."));
         return this.errors; //early return -- if the value isn't numeric, our other validation will fail, so don't clutter things up.
     }
 
@@ -319,7 +320,7 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
                         console.dir(val);
 
                         //the number of digits specified for validation
-                        if (typeof val.number.num_length !== 'undefined' && typeof val.number.num_length === 'number') {
+                        if (typeof val.number.num_length === 'number' && !Number.isNaN(val.number.num_length)) {
                             var re_num_length = new RegExp("^\\d{" + val.number.num_length + "," + val.number.num_length + "}$"); // ^\d{2,2}$ ==> 2 digit int
                             if (!re_num_length.test(data.value))
                                 _this.errors.push(new ValidationError(_this.cdms_field, "Field must be an integer with " + val.number.num_length + " digits."));
@@ -334,25 +335,25 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
                     //NOTE: since an integer is also a float, and we've already tested that it is a number, there isn't a test purely for float: if (!isFloat(data.value+0)) {
                     
                     //this case is when both num_length and num_decimal are specified: float(2,3).
-                    if (typeof val.number.num_length !== 'undefined' && typeof (val.number.num_length === 'number')) {
+                    if (!Number.isNaN(val.number.num_length)) {
 
                         //  if the num_length is specified then there MUST be a decimal specified.
-                        if (typeof val.number.num_decimal === 'undefined' || typeof val.number.num_decimal !== 'number')
+                        if (Number.isNaN(val.number.num_decimal))
                         {
                             console.error("Validation constraint is invalid for " + _this.cdms_field.DbColumnName + ": decimal must be specified if length is specified");
                             return; //skip the rest, there is nothing we can do.
                         }
 
                         var re_num_length = new RegExp(
-                            "^\\d{" + val.number.num_length + "," + val.number.num_length + "}\\.{" + val.number.num_decimal + "," + val.number.num_decimal + "}$"
-                        ); // ^\d{2,2}\.{3,3}$ ==> 2 digit float with 3 decimal places e.g. 52.432
+                            "^\\d{" + val.number.num_length + "," + val.number.num_length + "}\\.\\d{" + val.number.num_decimal + "," + val.number.num_decimal + "}$"
+                        ); // ^\d{2,2}\.\d{3,3}$ ==> 2 digit float with 3 decimal places e.g. 52.432
 
                         if (!re_num_length.test(data.value))
                             _this.errors.push(new ValidationError(_this.cdms_field, "Field must be decimal (float) with " + val.number.num_length + " digits and " + val.number.num_decimal + " decimal places."));
 
                     } else { 
                         //this case is when only num_decimal is specified: float(3) 
-                        if (typeof val.number.num_decimal !== 'undefined' || typeof (val.number.num_decimal) === 'number') {
+                        if (!Number.isNaN(val.number.num_decimal)) {
 
                             var re_num_dec = new RegExp(
                                 "^\\d*\\.{" + val.number.num_decimal + "," + val.number.num_decimal + "}$"
@@ -371,9 +372,8 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
                         if (Array.isArray(range_array)) {
                             var num_from = range_array[0];
                             var num_to = range_array[1];
-                            
-                            if (typeof num_from !== 'undefined' && typeof num_from === 'number' &&
-                                typeof num_to !== 'undefined' && typeof num_to === 'number') {
+
+                            if (!Number.isNaN(num_from) && !Number.isNaN(num_to)){
 
                                 if (data.value < num_from || data.value > num_to )
                                     _this.errors.push(new ValidationError(_this.cdms_field, "Field value is out of range: " + num_from + " - " + num_to ));
