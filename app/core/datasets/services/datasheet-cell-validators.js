@@ -163,8 +163,8 @@ CellValidator.prototype.getParsedValidationArray = function (validations) {
                 parsed_validations.push({
                     number: {
                         'num_type': obj[1],
-                        'num_length': (obj[2] === '') ? undefined : obj[2], //return undefined, not ''
-                        'num_decimal': obj[3],
+                        'num_length': (obj[2] === '') ? undefined : +obj[2], //return undefined, not ''
+                        'num_decimal': +obj[3], //+ coerces to number
                         'original': obj.input,
                     }
                 });
@@ -311,12 +311,16 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
 
                 //is it supposed to be an int? how many digits?
                 if (val.number.num_type === "int") {
-                    if (!isInteger(0-data.value)) { //0- coerces to a number
+                    if (!isInteger(+data.value)) { //+ coerces to a number
                         _this.errors.push(new ValidationError(_this.cdms_field, "Field must be an integer."));
                     } else {
+                        
+                        console.log("is an integer we're checking... ");
+                        console.dir(val);
+
                         //the number of digits specified for validation
                         if (typeof val.number.num_length !== 'undefined' && typeof val.number.num_length === 'number') {
-                            var re_num_length = new RegExp("^\d{" + val.number.num_length + "," + val.number.num_length + "}$"); // ^\d{2,2}$ ==> 2 digit int
+                            var re_num_length = new RegExp("^\\d{" + val.number.num_length + "," + val.number.num_length + "}$"); // ^\d{2,2}$ ==> 2 digit int
                             if (!re_num_length.test(data.value))
                                 _this.errors.push(new ValidationError(_this.cdms_field, "Field must be an integer with " + val.number.num_length + " digits."));
                         }
@@ -330,7 +334,7 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
                     //NOTE: since an integer is also a float, and we've already tested that it is a number, there isn't a test purely for float: if (!isFloat(data.value+0)) {
                     
                     //this case is when both num_length and num_decimal are specified: float(2,3).
-                    if (typeof val.number.num_length !== 'undefined' && typeof val.number.num_length === 'number') {
+                    if (typeof val.number.num_length !== 'undefined' && typeof (val.number.num_length === 'number')) {
 
                         //  if the num_length is specified then there MUST be a decimal specified.
                         if (typeof val.number.num_decimal === 'undefined' || typeof val.number.num_decimal !== 'number')
@@ -340,7 +344,7 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
                         }
 
                         var re_num_length = new RegExp(
-                            "^\d{" + val.number.num_length + "," + val.number.num_length + "}\.{" + val.number.num_decimal + "," + val.number.num_decimal + "}$"
+                            "^\\d{" + val.number.num_length + "," + val.number.num_length + "}\\.{" + val.number.num_decimal + "," + val.number.num_decimal + "}$"
                         ); // ^\d{2,2}\.{3,3}$ ==> 2 digit float with 3 decimal places e.g. 52.432
 
                         if (!re_num_length.test(data.value))
@@ -348,10 +352,10 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
 
                     } else { 
                         //this case is when only num_decimal is specified: float(3) 
-                        if (typeof val.number.num_decimal !== 'undefined' || typeof val.number.num_decimal === 'number') {
+                        if (typeof val.number.num_decimal !== 'undefined' || typeof (val.number.num_decimal) === 'number') {
 
                             var re_num_dec = new RegExp(
-                                "^\d*\.{" + val.number.num_decimal + "," + val.number.num_decimal + "}$"
+                                "^\\d*\\.{" + val.number.num_decimal + "," + val.number.num_decimal + "}$"
                             ); // ^\d*\.{3,3}$ ==> any digit float with 3 decimal places e.g. 52.432
 
                             if (!re_num_dec.test(data.value))
