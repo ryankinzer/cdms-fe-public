@@ -1002,15 +1002,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             }, true);
         };
 
-
-
-
-
-
-        $scope.openDataEntry = function (p) {
-            $location.path("/dataentry/" + $scope.dataset.Id);
-        };
-
+        $scope.openDataEntry = function (p) { $location.path("/dataentryform/" + $scope.dataset.Id); };
 
         //Ok -- this is pretty ugly and non-angular-ish.  This is because in the context of a dijit I'm not sure
         //  how to get angular to process any content here... so we'll have to compose the content " by hand "

@@ -41,8 +41,8 @@
             </div>
 
             <h4>{{dataset.Name}}</h4>
-
-            <button project-role="editor" type="button" ng-click="openDataEntryWindow()" class="btn dropdown-toggle">Data Entry</button>
+            <div ng-show="selectedLocation"><i>Filtering by location: <b>{{selectedLocation.Label}}</b></i>  <button ng-click="removeFilter()" class="btn btn-xs">clear</button><br/><br/></div>
+            <button project-role="editor" class="btn" ng-click="openDataEntry()">Enter data</button>
             <button project-role="editor" class="btn" ng-click="openImportWindow()">Import data</button>
             <button class="btn" ng-click="openQueryWindow()">Query/Export data</button>
             <button class="btn" ng-click="openDetailsWindow()">Metadata</button>
