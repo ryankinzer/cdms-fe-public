@@ -35,8 +35,6 @@ require([
     'core/datasets/services/datasheet-controltype-definitions',
     'core/datasets/services/field-renderer-service',
 
-
-
 ], function () {
     //add the controllers and services to the module once the files are loaded!
 

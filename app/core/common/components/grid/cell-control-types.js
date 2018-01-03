@@ -1,7 +1,8 @@
-﻿//ControlType Definitions are defined below.
-// Each type of control that can be on a datasheet needs to have a basic
-// definition that will be used to configure a column of that type.
-// Note: Custom cell renderers are defined in ag-grid-custom-components.js
+﻿//Cell Control Types are defined below.
+// Each type of control that can be in a grid needs to have a basic
+// definition that will be used to configure a column of that type with the
+// cell editors, cell validators, formatters, etc. so that they function properly according to their type (dropdown, currency, date, etc.).
+
 
 //multiselect list - displays as multiple selection dropdown list
 var MultiselectControlType = function (cdms_field, col_def) {

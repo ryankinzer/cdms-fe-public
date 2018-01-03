@@ -2,11 +2,13 @@
 
 
 
-datasets_module.service('FieldRendererService', ['$window', '$route',
+datasets_module.service('GridService', ['$window', '$route',
     function ($window, $route, $q) {
 
         var service = {
 
+            //sets the control type object (defines renderers, editors, formatters, etc.)
+            //  for this field based on the cdms_field.ControlType
             setRendererForField: function (cdms_field, col_def)
             {
                 //is it in our field library (Instrument, Fishermen, Location, etc.)

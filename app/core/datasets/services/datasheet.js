@@ -1,9 +1,8 @@
 ﻿
 
 //gridDatasheetOptions needs to be set to your datasheet grid
-
-datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'FieldRendererService', 'DatasetService','$rootScope',
-    function (Logger, $window, $route, FieldRendererService, DatasetService, $rootScope, $q) {
+datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridService', 'DatasetService','$rootScope',
+    function (Logger, $window, $route, GridService, DatasetService, $rootScope, $q) {
 
         //var LocationCellTemplate = '<input ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-blur="updateEntity(row)" />';
         var LocationCellEditTemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'locationId\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in locationOptions"/>';
@@ -298,7 +297,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'FieldRende
                             }
                         };
 
-                        FieldRendererService.setRendererForField(field, newColDef);
+                        GridService.setRendererForField(field, newColDef);
                         
 //                        if (field.ControlType == "multiselect") {
                             //console.dir(dataset_activities.Header[field.DbColumnName]);
