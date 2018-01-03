@@ -88,6 +88,7 @@ var TimeControlType = function (cdms_field, col_def) {
     col_def.valueParser = function (params) {
         return moment(params.newValue).format("YYYY-MM-DDTHH:mm:ss")  // 2017-12-19T14:03:10 (no timezone)
     };
+    col_def.cellValidator = CDMSTimeCellValidator;
     return col_def;
 };
 
