@@ -5,13 +5,15 @@
 
 function CDMSTimeCellValidator(cdms_field) {
     this.base = CellValidator;
+    console.log("calling constructor?");
     this.base(cdms_field);
+    //this.init(cdms_field);
 };
 CDMSTimeCellValidator.prototype = new CellValidator;
 
 CDMSTimeCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
 
-    //george's original time checking
+    //george's time checking
 
     var value = data.value;
 
@@ -25,7 +27,7 @@ CDMSTimeCellValidator.prototype.validateFieldControlTypeValidation = function (d
         timeContentValid = false;
 
     if (!timeContentValid)
-        this.errors.push(new ValidationError(this.cdms_field, "Value is not a time (hh:mm)."));
+        this.errors.push(new ValidationError(this.cdms_field, "Value is not a valid time (hh:mm)."));
 
 
     return this.errors;

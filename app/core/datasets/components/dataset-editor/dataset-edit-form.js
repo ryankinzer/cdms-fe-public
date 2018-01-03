@@ -151,8 +151,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     //only does this init once per colDef
                     if (!event.colDef.validatorInstance) {
                         var validatorFunction = event.colDef.cellValidator;
-                        event.colDef.validatorInstance = new validatorFunction();
-                        event.colDef.validatorInstance.init(event.colDef.cdmsField);
+                        event.colDef.validatorInstance = new validatorFunction(event.colDef.cdmsField);
+                        //event.colDef.validatorInstance.init(event.colDef.cdmsField);
                     }
 
                     //remove this field's validation errors from our row's validation errors (returns [] if none)

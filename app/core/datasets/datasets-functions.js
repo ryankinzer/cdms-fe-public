@@ -194,7 +194,7 @@ function parseField(field, scope) {
             console.log("configuring validation for " + field.DbColumnName);
 			//console.dir(field.Field.Validation);
             //field.Field.Validation = angular.fromJson(field.Field.Validation);
-            var tryme = angular.fromJson(field.Field.Validation);
+            //var tryme = angular.fromJson(field.Field.Validation);
         }
         catch (e) {
             // Original code

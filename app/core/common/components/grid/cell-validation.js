@@ -21,6 +21,7 @@ var cellValidators = [
     'core/common/components/grid/validators/CDMSNumberCellValidator',
     'core/common/components/grid/validators/CDMSDateCellValidator',
     'core/common/components/grid/validators/CDMSDateTimeCellValidator',
+    'core/common/components/grid/validators/CDMSTimeCellValidator',
 ];
 
 
@@ -31,20 +32,22 @@ function ValidationError(field, message) {
 };
 
 //Parent class of all cell validators (see below)
-function CellValidator() {};
+function CellValidator(cdms_field) {
+    if (cdms_field)
+    {
+        this.cdms_field = cdms_field;
 
-CellValidator.prototype.init = function(cdms_field) {
-    this.cdms_field = cdms_field;
+        //cache our validations as an array for convenience and performance.
+        if (!this.validation)
+            this.validation = this.getValidationsArray(this.cdms_field);
 
-    //cache our validations as an array for convenience and performance.
-    if (!this.validation)
-        this.validation = this.getValidationsArray(this.cdms_field);
+        console.log("cdms_field validation initialized for ---------> " + cdms_field.DbColumnName);
+        console.dir(this.validation);
 
-    console.log("cdms_field validation initialized for ---------> " + cdms_field.DbColumnName);
-    console.dir(this.validation);
-
-    this.errors = [];
+        this.errors = [];
+    }
 };
+
 
 /*
 * Field Control-type validation --
@@ -71,8 +74,9 @@ CellValidator.prototype.validateFieldOnValidateRule = function (data) { };
 */
 CellValidator.prototype.validateFieldLevelValidation = function (data) {
 
-    //validation: is the field required?
-    if (this.validation.contains('required') && (data.value === null || data.value === '')) //this is probably not sufficient.
+    //validation: is the field required? "required" or "nb" (for "not blank")
+    if (  (this.validation.contains('required') || this.validation.contains("nb"))
+          && (data.value === null || data.value === '')) //this is probably not sufficient.
         this.errors.push(new ValidationError(this.cdms_field, "Field is required."));
 
     //other types of field-level validation?
