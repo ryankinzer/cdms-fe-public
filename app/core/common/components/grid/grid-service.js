@@ -7,28 +7,30 @@ datasets_module.service('GridService', ['$window', '$route',
 
         var service = {
 
-            //sets the control type object (defines renderers, editors, formatters, etc.)
-            //  for this field based on the cdms_field.ControlType
-            setRendererForField: function (cdms_field, col_def)
+            //sets the control for the field(defines renderers, editors, validators, formatters, etc.)
+            //  based on the cdms_field.ControlType
+            
+            setupColDefForField: function (cdms_field, col_def)
             {
-                //is it in our field library (Instrument, Fishermen, Location, etc.)
-                //TODO
+                //gets the control type definition function
+                var col_builder = getControlDefinition(cdms_field.ControlType);
 
-                //is it a list? (to be implemented feature)
-                //TODO
-                
-                //ControlType RENDERERS: get the field's definition by controltype
-                var control_type_renderer = ControlTypeDefinitions[cdms_field.ControlType];
-                //console.log(cdms_field.DbColumnName + " ----------------------------------------------------------");
+                if (col_builder !== null) {
 
-                if (control_type_renderer && typeof control_type_renderer === "function") {
-                    var new_col_def = control_type_renderer(cdms_field, col_def);
-                  //  console.dir(new_col_def);
-                    return new_col_def;
+                    //build this field's column definition (adds to the col_def)
+                    col_builder(cdms_field, col_def); 
+
+                    //setup this field's validator (if it has one defined)
+                    if (col_def.hasOwnProperty('cellValidator')) {
+                        var validatorFunction = col_def.cellValidator;
+                        col_def.validator = new validatorFunction(cdms_field);
+                    }
+
                 }
-
-                //console.dir(cdms_field);
-
+                else {
+                    console.warn("Notice: There isn't a ControlTypeDefinition for " + cdms_field.DbColumnName + " with ControlType = " + cdms_field.ControlType);
+                }
+                
             },
 
             convertStatus: function (aStatus) {

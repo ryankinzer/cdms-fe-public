@@ -159,3 +159,10 @@ var ControlTypeDefinitions = {
     'time': TimeControlType,
     'upload': UploadControlType,
 };
+
+function getControlDefinition(def) {
+    if (ControlTypeDefinitions.hasOwnProperty(def))
+        return ControlTypeDefinitions[def];
+    else
+        return null;
+}

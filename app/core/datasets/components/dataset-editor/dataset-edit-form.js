@@ -103,7 +103,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //    return rowNode.level === 1;
             //},
             onGridReady: function (params) {
-                
+                console.log("GRID IS READY. ------------------------------------------>>>");
+                console.log(" -- validating grid --");
+
             },
             //getRowHeight: function (params) {
                 /*
@@ -139,56 +141,60 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log('cellEditingStarted');
             },
             onCellEditingStopped: function (event) {
-
-                //after a cell is edited, this calls the cell validator (if there is one).
-                // once a cell is validated, if there are errors, here is the situation:
-                //  params.node.data.validationErrors is an array of errors from this cell (+ previously set errors from other cells in this row)
-                //  params.node.data.rowHasError = true (or false if no error)
-                //  params.node.data.rowErrorTooltip = "error messages" from all validation errors for this cell for display as a tooltip (hover)
-
-                //perform cell validation if a cellValidator exists for this field
-                if (event.colDef.hasOwnProperty('cellValidator')) {
-                    //only does this init once per colDef
-                    if (!event.colDef.validatorInstance) {
-                        var validatorFunction = event.colDef.cellValidator;
-                        event.colDef.validatorInstance = new validatorFunction(event.colDef.cdmsField);
-                        //event.colDef.validatorInstance.init(event.colDef.cdmsField);
-                    }
-
-                    //remove this field's validation errors from our row's validation errors (returns [] if none)
-                    event.node.data.validationErrors = event.colDef.validatorInstance.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
-
-                    //validate this cell's value and merge in any errors with this row's errors.
-                    var fieldValidationErrors = event.colDef.validatorInstance.validate(event);
-                    event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
-
-                    //set validation status
-                    event.node.data.rowHasError = ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0));
-
-                    //collect error messages into a tooltip for the cells with error/s
-                    if (event.node.data.rowHasError) {
-                        event.node.data.validationErrors.forEach(function (error, index) {
-                            event.node.data.rowErrorTooltip = (index === 0) ? "" : event.node.data.rowErrorTooltip + "\n"; //either initialize to "" or add a newline
-
-                            //flatten the error messages for this cell
-                            event.node.data.rowErrorTooltip = event.node.data.rowErrorTooltip +
-                                "[" + error.field.DbColumnName + "] " + error.message;
-
-                            //console.log("validation errors for [" + error.field.DbColumnName + "] " + event.node.data.rowErrorTooltip);
-                            //console.dir(event.node.data);
-
-                        });
-                    }
-                    else {
-                        event.node.data.rowErrorTooltip = ""; //clear the tooltip if there are no errors.
-                    }
-
-                    event.api.redrawRows({ columns: event.column });
-                }
+                //perform cell validation if a validator exists for this field
+                if (event.colDef.hasOwnProperty('validator')) {
+                    $scope.agValidateCell(event);
+                };
             },
         };
 
-        
+        // Called to validate a cell value after editing. 
+        //  once a cell is validated, if there are errors, here is the situation:
+        //  data.validationErrors is an array of errors from this cell (+ previously set errors from other cells in this row)
+        //  data.rowHasError = true (or false if no error)
+        //  data.rowErrorTooltip = "error messages" from all validation errors for this cell for display as a tooltip (displayed on hover)
+
+        $scope.agValidateCell = function (event) {
+            if (!event.colDef.hasOwnProperty('validator'))
+                return;
+
+            console.log("------- agValidate Cell ");
+            console.dir(event);
+
+            var validator = event.colDef.validator;
+
+            //remove this field's validation errors from our row's validation errors (returns [] if none)
+            event.node.data.validationErrors = validator.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
+
+            //validate this cell's value and merge in any errors with this row's errors.
+            var fieldValidationErrors = validator.validate(event);
+            event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
+
+            //set validation status
+            event.node.data.rowHasError = ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0));
+
+            //collect error messages into a tooltip for the cells with error/s
+            if (event.node.data.rowHasError) {
+                event.node.data.validationErrors.forEach(function (error, index) {
+                    event.node.data.rowErrorTooltip = (index === 0) ? "" : event.node.data.rowErrorTooltip + "\n"; //either initialize to "" or add a newline
+
+                    //flatten the error messages for this cell
+                    event.node.data.rowErrorTooltip = event.node.data.rowErrorTooltip +
+                        "[" + error.field.DbColumnName + "] " + error.message;
+
+                    //console.log("validation errors for [" + error.field.DbColumnName + "] " + event.node.data.rowErrorTooltip);
+                    //console.dir(event.node.data);
+
+                });
+            }
+            else {
+                event.node.data.rowErrorTooltip = ""; //clear the tooltip if there are no errors.
+            }
+
+            event.api.redrawRows({ columns: event.column });
+
+        };
+
 
         //datasheet grid
         $scope.gridDatasheetOptions = {

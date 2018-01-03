@@ -297,7 +297,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                             }
                         };
 
-                        GridService.setRendererForField(field, newColDef);
+                        
+                        GridService.setupColDefForField(field, newColDef);
                         
 //                        if (field.ControlType == "multiselect") {
                             //console.dir(dataset_activities.Header[field.DbColumnName]);
