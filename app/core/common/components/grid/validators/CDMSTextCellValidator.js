@@ -1,4 +1,4 @@
-﻿//CDMSTextCellValidator - extends CellValidator
+﻿//CDMSTextCellValidator - extends CellValidator (use this one as a template for other validators)
 
 // validates text cells. this is just an example as there isn't any validation for text fields.
 

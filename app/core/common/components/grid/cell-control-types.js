@@ -54,6 +54,7 @@ var DateControlType = function (cdms_field, col_def) {
     col_def.valueParser = function (params) {
         return moment(params.newValue).format("YYYY-MM-DDTHH:mm:ss")  // 2017-12-19T14:03:10 (no timezone)
     };
+    col_def.cellValidator = CDMSDateCellValidator;
     return col_def;};
 
 //datetime - displays as MM/DD/YYYY HH:mm:ss, saves as datetime
@@ -70,6 +71,7 @@ var DateTimeControlType = function (cdms_field, col_def) {
     col_def.valueParser = function (params) {
         return moment(params.newValue).format("YYYY-MM-DDTHH:mm:ss")  // 2017-12-19T14:03:10 (no timezone)
     };
+    col_def.cellValidator = CDMSDateTimeCellValidator;
     return col_def;
 };
 

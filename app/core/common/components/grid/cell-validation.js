@@ -19,7 +19,8 @@
 var cellValidators = [
     'core/common/components/grid/validators/CDMSTextCellValidator',
     'core/common/components/grid/validators/CDMSNumberCellValidator',
-    //'core/common/components/grid/validators/CDMSDateCellValidator',
+    'core/common/components/grid/validators/CDMSDateCellValidator',
+    'core/common/components/grid/validators/CDMSDateTimeCellValidator',
 ];
 
 
