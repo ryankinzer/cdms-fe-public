@@ -233,15 +233,17 @@ CDMSTextCellValidator.prototype = new CellValidator;
 
 CDMSTextCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
 
-    //the ken error
-    if (data.value != "ken")
-        this.errors.push(new ValidationError(this.cdms_field, "Your name must be KEN"));
+    //you can validate text cells and push any errors that arise.
+
+    //for example: the ken error
+    //if (data.value != "ken")
+    //    this.errors.push(new ValidationError(this.cdms_field, "Your name must be KEN"));
 
     return this.errors;
 };
 
 
-/*
+/* this is the format of the validation after parsing.
 
 [ 'required',
   { number:
@@ -295,12 +297,12 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
     //validation: is the field numeric?
     if (!isNumber(data.value)) {
         this.errors.push(new ValidationError(this.cdms_field, "Field must be a number."));
-        return this.errors; //early return -- if the value isn't numeric, our other validation will fail, so don't clutter things up.
+        return this.errors; //early return -- if the value isn't numeric, our other validation will fail, so bail out.
     }
 
     var _this = this;
 
-    //iterate each validation in "Validation" field and
+    //iterate each validation in "Validation" field (we can have more than one separated by semicolons) 
     // validate any of the constraints that are "number" (float, int, # of digits, etc.)
     this.validation.forEach(function (val) {
 
