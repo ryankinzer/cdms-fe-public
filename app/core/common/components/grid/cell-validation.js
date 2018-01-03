@@ -22,6 +22,8 @@ var cellValidators = [
     'core/common/components/grid/validators/CDMSDateCellValidator',
     'core/common/components/grid/validators/CDMSDateTimeCellValidator',
     'core/common/components/grid/validators/CDMSTimeCellValidator',
+    'core/common/components/grid/validators/CDMSMultiselectCellValidator',
+    'core/common/components/grid/validators/CDMSSelectCellValidator',
 ];
 
 
