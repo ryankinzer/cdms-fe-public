@@ -244,6 +244,21 @@ function order2dArrayByAlpha(a, b) {
         return 0;
 }
 
+//takes in an "ObjectList" like {1: "Sam", 3: "Bubba"} 
+//  and returns an array of item objects sorted by the value like [{Id: '3', Label: 'Bubba'}, {Id: '1', Label: 'Sam'}]
+function getOrderedObjectList(list) {
+    var sorted_obj_list = [];
+
+    //convert to array of objects for sorting
+    for (var key in list) {
+        sorted_obj_list.push({ Id: key, Label: list[key] });
+    }
+
+    return sorted_obj_list.sort(orderByAlpha);
+
+}
+
+
 function orderByAlpha(a, b) {
     if (!a || !b || !a.Label || !b.Label)
         return 0;

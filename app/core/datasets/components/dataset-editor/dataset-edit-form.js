@@ -244,6 +244,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                         $scope.fishermenOptions = $rootScope.fishermenOptions = makeObjects($scope.fishermenList, 'Id', 'FullName');
                         console.log("$scope.fishermenOptions is next...");
                         console.dir($scope.fishermenOptions);
+
+                        //and now for an AG-GRID fisherman column! -----***----- don't delete me when you clean things up :D
+                        var fisherman_column = $scope.dataAgGridOptions.columnApi.getColumn("FishermanId");
+                        fisherman_column.colDef.setPossibleValues($scope.fishermenOptions);
+                        $scope.dataAgGridOptions.api.redrawRows({ columns: fisherman_column });
+
                     }
                 }
 

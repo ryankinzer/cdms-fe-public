@@ -133,8 +133,7 @@ CDMSSelectCellEditor.prototype.init = function (params) {
         params.value = [];
 
     if (Array.isArray(params.values)) {
-        //console.log("params.values is an array");
-        params.values.forEach(function (value) {
+        params.values.sort().forEach(function (value) {
             var option = document.createElement('option');
             option.value = value;
             option.text = value;
@@ -146,17 +145,19 @@ CDMSSelectCellEditor.prototype.init = function (params) {
     }
 
     if (!Array.isArray(params.values) && typeof params.values === 'object') {
-        //console.log("params.values is an object");
-        for (key in params.values)
-        {
+
+        var ordered_values = getOrderedObjectList(params.values);
+
+        ordered_values.forEach(function (item) {
+            
             var option = document.createElement('option');
-            option.value = key;
-            option.text = params.values[key];
-            if (params.value === key) { //is this one already selected?
+            option.value = item.Id;
+            option.text = item.Label;
+            if (params.value == item.Id) { //is this one already selected?
                 option.selected = true;
             }
             _this.eSelect.appendChild(option);
-        };
+        });
     }
 
 };

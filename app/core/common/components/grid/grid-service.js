@@ -1,6 +1,4 @@
-﻿//ag-grid field renderer service
-
-
+﻿//ag-grid service
 
 datasets_module.service('GridService', ['$window', '$route',
     function ($window, $route, $q) {
@@ -26,11 +24,17 @@ datasets_module.service('GridService', ['$window', '$route',
                         col_def.validator = new validatorFunction(cdms_field);
                     }
 
+                    //add a function to the column to populate PossibleValues
+                    if (col_def.hasOwnProperty('cellEditorParams')) {
+                        col_def.setPossibleValues = function (in_values) {
+                            if (this.hasOwnProperty('cellEditorParams'))
+                                this.cellEditorParams.values = in_values;
+                        };
+                    }
                 }
                 else {
                     console.warn("Notice: There isn't a ControlTypeDefinition for " + cdms_field.DbColumnName + " with ControlType = " + cdms_field.ControlType);
-                }
-                
+                }  
             },
 
             convertStatus: function (aStatus) {

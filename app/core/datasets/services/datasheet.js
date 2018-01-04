@@ -204,10 +204,17 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                         field: 'FishermanId', headerName: 'Fisherman',
                         cellEditor: CDMSSelectCellEditor,
                         cellEditorParams: {
-                            values: []
+                            values: [] //these will be populated later (via setPossibleValues below) when the fishermanList comes in.
+                        },
+                        valueFormatter: function (params) {
+                            return params.colDef.cellEditorParams.values[params.value]; //display the fisherman name instead of fishermanId
                         },
                         cellValidator: CDMSSelectCellValidator,
-                        width: 150, menuTabs: ['filterMenuTab']
+                        width: 170, menuTabs: ['filterMenuTab'],
+                        setPossibleValues: function (in_values) {
+                            if(this.hasOwnProperty('cellEditorParams'))
+                                this.cellEditorParams.values = in_values;
+                        }
                     },
                 ];
 
