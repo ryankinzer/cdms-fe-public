@@ -58,7 +58,7 @@ CDMSMultiselectCellEditor.prototype.init = function (params) {
     
     if (Array.isArray(params.values)) {
         //console.log("params.values is an array");
-        params.values.forEach(function (value) {
+        params.values.sort().forEach(function (value) {
             var option = document.createElement('option');
             option.value = value;
             option.text = value;
@@ -71,11 +71,14 @@ CDMSMultiselectCellEditor.prototype.init = function (params) {
 
     if (!Array.isArray(params.values) && typeof params.values === 'object') {
         //console.log("params.values is an object");
-        params.values.forEach(function (key, value) {
+        var ordered_values = getOrderedObjectList(params.values);
+
+        ordered_values.forEach(function (item) {
+
             var option = document.createElement('option');
-            option.value = key;
-            option.text = value;
-            if (Object.values(params.value).contains(value)) { //is this one already selected?
+            option.value = item.Id;
+            option.text = item.Label;
+            if (Object.values(params.value).contains(item.Id)) { //is this one already selected?
                 option.selected = true;
             }
             _this.eSelect.appendChild(option);
