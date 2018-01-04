@@ -10,6 +10,9 @@ CDMSMultiselectCellValidator.prototype = new CellValidator;
 
 CDMSMultiselectCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
 
+    if (!data.value)
+        return this.errors; //early return -- don't bother if we don't have a value
+
     //validate: do the values exist in the PossibleValues?
 
     //first, make sure our PossibleValues is properly defined for this field...

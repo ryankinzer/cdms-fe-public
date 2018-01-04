@@ -73,7 +73,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             columnDefs: null,
             rowData: null,
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
-            debug: true,
+            debug: false,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
                 console.log("selection changed fired!");
@@ -104,8 +104,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //},
             onGridReady: function (params) {
                 console.log("GRID IS READY. ------------------------------------------>>>");
-                console.log(" -- validating grid --");
-
+                $scope.agValidateGrid(params);
             },
             //getRowHeight: function (params) {
                 /*
@@ -148,6 +147,27 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
         };
 
+        $scope.agValidateGrid = function (params) {
+            console.log(" -- validating grid --");
+
+            //get all of the columns for the grid
+            var gridColumns = params.columnApi.getAllColumns();
+
+            //iterate each node, columns and validate the cell
+            params.api.forEachNode(function (node, index) {
+                gridColumns.forEach(function (column) {
+                    $scope.agValidateCell({
+                        node: node,
+                        colDef: column.colDef,
+                        value: node.data[column.colDef.field],
+                        api: params.api,
+                    })
+                });
+
+            });
+        };
+
+
         // Called to validate a cell value after editing. 
         //  once a cell is validated, if there are errors, here is the situation:
         //  data.validationErrors is an array of errors from this cell (+ previously set errors from other cells in this row)
@@ -157,9 +177,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.agValidateCell = function (event) {
             if (!event.colDef.hasOwnProperty('validator'))
                 return;
-
-            console.log("------- agValidate Cell ");
-            console.dir(event);
 
             var validator = event.colDef.validator;
 
@@ -342,9 +359,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
                 $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs = DataSheet.getAgColumnDefs($scope.dataset).DetailFields;
 
-                console.dir($scope.dataAgColumnDefs);
-                console.log("and this will be our data");
-                console.dir($scope.dataset_activities.Details);
+                //console.dir($scope.dataAgColumnDefs);
+                //console.log("and this will be our data");
+                //console.dir($scope.dataset_activities.Details);
 
                 $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs;
 

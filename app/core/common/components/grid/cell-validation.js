@@ -43,8 +43,8 @@ function CellValidator(cdms_field) {
         if (!this.validation)
             this.validation = this.getValidationsArray(this.cdms_field);
 
-        console.log("cdms_field validation initialized for ---------> " + cdms_field.DbColumnName);
-        console.dir(this.validation);
+        //console.log("cdms_field validation initialized for ---------> " + cdms_field.DbColumnName);
+        //console.dir(this.validation);
 
         this.errors = [];
     }
