@@ -132,21 +132,21 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
             //  this enables you to control the complete appearance and order of the fields via the dataset config.
             //  Here is the default (as an example of what you might put into the dataset config):
             //      config: [... "DatasheetFields":
-            //        {  'topHeaderFields': ['Location','ActivityDate'],
-            //           'bottomHeaderFields': ['QAStatus', 'QAComments'],
-            //           'leftDetailFields': ['RowQAStatus'],
-            //           'rightDetailFields': []  //note that you could just leave this key out -- you only need define the present ones.
+            //        {  'TopHeaderFields': ['Location','ActivityDate'],
+            //           'BottomHeaderFields': ['QAStatus', 'QAComments'],
+            //           'LeftDetailFields': ['RowQAStatus'],
+            //           'RightDetailFields': []  //note that you could just leave this key out -- you only need define the present ones.
             //           'sort': { 'field': 'ActivityDate', 'direction': 'desc' } //you can control the default sort on the detail grid this way
             //        }
 
             getAgColumnDefs: function (dataset) {
                 
                 var defaultShowColumns = {
-                    'topHeaderFields': ['Location', 'ActivityDate'],
-                    'bottomHeaderFields': ['QAStatus', 'QAComments'],
+                    'TopHeaderFields': ['Location', 'ActivityDate'],
+                    'BottomHeaderFields': ['QAStatus', 'QAComments'],
                     'sort': { 'field': 'ActivityDate', 'direction': 'desc' }
-                    //'leftDetailFields': [],
-                    //'rightDetailFields': []  
+                    //'LeftDetailFields': [],
+                    //'RightDetailFields': []  
                 };
 
                 var showColumns = defaultShowColumns;
@@ -202,7 +202,11 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                     {
                         configName: 'Fisherman',
                         field: 'FishermanId', headerName: 'Fisherman',
-                        //cellRenderer: FishermanCellRenderer,
+                        cellEditor: CDMSSelectCellEditor,
+                        cellEditorParams: {
+                            values: []
+                        },
+                        cellValidator: CDMSSelectCellValidator,
                         width: 150, menuTabs: ['filterMenuTab']
                     },
                 ];
@@ -222,8 +226,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                 }
 
                 //top header fields
-                if (typeof showColumns.topHeaderFields !== 'undefined' && Array.isArray(showColumns.topHeaderFields)) {
-                    showColumns.topHeaderFields.forEach(function (fieldname) {
+                if (typeof showColumns.TopHeaderFields !== 'undefined' && Array.isArray(showColumns.TopHeaderFields)) {
+                    showColumns.TopHeaderFields.forEach(function (fieldname) {
                         possibleColumnDefs.forEach(function (coldef) {
                             if (coldef.configName == fieldname)
                                 finalColumnDefs.HeaderFields.push(coldef);
@@ -247,8 +251,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                 });
 
                 //bottom header fields
-                if (typeof showColumns.bottomHeaderFields !== 'undefined' && Array.isArray(showColumns.bottomHeaderFields)) {
-                    showColumns.bottomHeaderFields.forEach(function (fieldname) {
+                if (typeof showColumns.BottomHeaderFields !== 'undefined' && Array.isArray(showColumns.BottomHeaderFields)) {
+                    showColumns.BottomHeaderFields.forEach(function (fieldname) {
                         possibleColumnDefs.forEach(function (coldef) {
                             if (coldef.configName == fieldname)
                                 finalColumnDefs.HeaderFields.push(coldef);
@@ -257,8 +261,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                 }
 
                 //left detail fields
-                if (typeof showColumns.leftDetailFields !== 'undefined' && Array.isArray(showColumns.leftDetailFields)) {
-                    showColumns.leftDetailFields.forEach(function (fieldname) {
+                if (typeof showColumns.LeftDetailFields !== 'undefined' && Array.isArray(showColumns.LeftDetailFields)) {
+                    showColumns.LeftDetailFields.forEach(function (fieldname) {
                         possibleColumnDefs.forEach(function (coldef) {
                             if (coldef.configName == fieldname)
                                 finalColumnDefs.DetailFields.push(coldef);
@@ -297,23 +301,16 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                             }
                         };
 
-                        
-                        GridService.setupColDefForField(field, newColDef);
-                        
-//                        if (field.ControlType == "multiselect") {
-                            //console.dir(dataset_activities.Header[field.DbColumnName]);
-                            //$scope.row[field.DbColumnName] = angular.fromJson($scope.dataset_activities.Header[field.DbColumnName]);
-  //                      }
-
-                        //some col builder function here soon!! TODO
+                        //setup column def for DETAIL only for right now...
+                        GridService.setupColDefForField(field, newColDef);                        
                         finalColumnDefs.DetailFields.push(newColDef);
 
                     }
                 });
 
                 //right detail fields
-                if (typeof showColumns.rightDetailFields !== 'undefined' && Array.isArray(showColumns.rightDetailFields)) {
-                    showColumns.rightDetailFields.forEach(function (fieldname) {
+                if (typeof showColumns.RightDetailFields !== 'undefined' && Array.isArray(showColumns.RightDetailFields)) {
+                    showColumns.RightDetailFields.forEach(function (fieldname) {
                         possibleColumnDefs.forEach(function (coldef) {
                             if (coldef.configName == fieldname)
                                 finalColumnDefs.DetailFields.push(coldef);
@@ -331,7 +328,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                         }
                     });
                 }
-                console.log("returning from datasheet ------------------------------------------------------ asynch " + finalColumnDefs.DetailFields.length);
+                //console.log("returning from datasheet ------------------------------------------------------ asynch " + finalColumnDefs.DetailFields.length);
                 return finalColumnDefs;
             },
 

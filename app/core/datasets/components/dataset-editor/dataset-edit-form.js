@@ -168,9 +168,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         };
 
 
-        // Called to validate a cell value after editing. 
+        // Called to validate a cell value (like after editing or first time display). 
         //  once a cell is validated, if there are errors, here is the situation:
-        //  data.validationErrors is an array of errors from this cell (+ previously set errors from other cells in this row)
+        //  (data represents the row)
+        //  data.validationErrors is an array of errors from this cell + previously set errors from other cells in this row
         //  data.rowHasError = true (or false if no error)
         //  data.rowErrorTooltip = "error messages" from all validation errors for this cell for display as a tooltip (displayed on hover)
 
