@@ -84,7 +84,6 @@ CDMSMultiselectCellEditor.prototype.init = function (params) {
             _this.eSelect.appendChild(option);
         });
     }
-    
 };
 
 CDMSMultiselectCellEditor.prototype.getGui = function () {

@@ -106,7 +106,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
                 if (!$scope.filesToUpload[$scope.file_field] && !$scope.removedFiles.length > 0) {
                     $modalInstance.dismiss();
                 }
-               
+
             });
 
             console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);

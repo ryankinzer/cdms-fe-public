@@ -77,23 +77,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             rowSelection: 'single',
             onSelectionChanged: function (params) {
                 console.log("selection changed fired!");
-                /*
-                var rows = scope.corrAgGridOptions.api.getSelectedRows();
+                console.dir(params);
+                
+                var rows = params.api.getSelectedRows();
                 if (Array.isArray(rows) && rows[0] != null)
                 {
                     console.log("rows:");
                     console.dir(rows);
-                    if (!Array.isArray(rows[0]) && !rows[0].hasOwnProperty('SubprojectId')) //only change the selection if they clicked a header row.
-                    {
-                        scope.corrAgGridOptions.selectedItems = scope.corrAgGridOptions.api.getSelectedRows();
-                        //scope.corrAgGridOptions.api.redrawRows();
-                        //scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-                        console.log("selected a header row so selection actually changed");
-                        scope.viewSubproject = rows[0];
-                        console.dir(scope.viewSubproject);
-                    }
+                    
                 }
-                */
             },
             //onFilterModified: function () {
             //    scope.corrAgGridOptions.api.deselectAll();
