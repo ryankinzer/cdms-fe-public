@@ -506,25 +506,6 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         };
 
 
-
-        //if you are creating a new one for the project, the ce_row should be empty {}
-        // if you are editing an existing one, send in the project and the ce_row.
-        scope.openCorrespondenceEventForm = function (subproject, ce_row) {
-            //console.log("Inside openCorrespondenceEventForm...")
-
-            scope.viewSubproject = subproject;
-            //console.log("ok subproject set: ");
-            //console.dir(scope.viewSubproject);
-
-            scope.ce_row = ce_row;
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-new-correspondenceEvent.html',
-                controller: 'ModalAddCorrespondenceEventCtrl',
-                scope: scope, //very important to pass the scope along...
-            });
-        };
-
         //after we remove one in the modal, call here to update the grid.
         scope.postRemoveHabitatSubprojectUpdateGrid = function () {
             //the scope.viewSubproject is the one we removed.
