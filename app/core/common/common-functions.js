@@ -1157,3 +1157,14 @@ function isObjectEmpty(obj) {
 	}
 	return true;
 };
+
+
+//looks at the metadata setting to see if it is a habitat project
+function isHabitatProject (a_project) {
+    return (a_project.MetadataValue[METADATA_PROPERTY_SUBPROGRAM]) === "Habitat";
+};
+
+//looks at the metadata setting to see if it is a crpp project
+function isCRPPProject (a_project) {
+    return (a_project.MetadataValue[METADATA_PROPERTY_PROGRAM]) === "CRPP";
+}

@@ -58,15 +58,12 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 					if (existing_file.Name.indexOf(file.Name) !== -1)
 					{
 						console.log("Name matches...");
-						if ($scope.DatastoreTablePrefix === "CrppContracts")
-						{
+                        if (isCRPPProject($scope.project))
+                        {
 							console.log("CRPP file...");
 							SubprojectService.deleteCorresEventFile($scope.projectId, $scope.subprojectId, $scope.ce_row.Id, file);
 						}
-						//else if ($scope.project.Id === 1223)
-						//else if ($scope.project.Id === HAB_PROJECTID)
-						//else if (ProjectService.getProjectType($scope.project.Id) === "Habitat")
-						else if ($scope.DatastoreTablePrefix === "Metrics")
+                        if (isHabitatProject($scope.project))
 						{
 							console.log("Habitat file...");
 							// Subproject or Habitat Item-related?
@@ -251,82 +248,20 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 			
 			console.log("$scope.filesToUpload is next...");
 			console.dir($scope.filesToUpload);
-			//add any newly scheduled to upload files to the list for display
-        	angular.forEach($scope.filesToUpload[$scope.file_field.DbColumnName], function(incoming_file, key){
-        		incoming_file.Name = incoming_file.name; //copy this value!
-				console.log("incoming_file.Name = " + incoming_file.Name);
-        		$scope.currentFiles.push(incoming_file);
-				
-				$scope.foundDuplicate = false;
-				console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-				console.log("$scope.dataset is next..");
-				console.dir($scope.dataset);
-				console.log("$scope.viewSubproject is next...");
-				console.dir($scope.viewSubproject);
-				//if (($scope.DatastoreTablePrefix === "CrppContracts") && ($scope.viewSubproject))
-				if (($scope.viewSubproject) && ( ($scope.DatastoreTablePrefix === "CrppContracts") || ($scope.DatastoreTablePrefix === "Metrics")) )
-				{
-					console.log("Need to check subprojects for duplicate document...");
-					// If a subproject is has no files yet, Files will not be defined.
-					if ($scope.viewSubproject.Files)
-					{
-						for (var p = 0; p < $scope.viewSubproject.Files.length; p++)
-						{
-							if (incoming_file.Name.length <= $scope.viewSubproject.Files[p].Name.length)
-							{
-								if ($scope.viewSubproject.Files[p].Name.indexOf(incoming_file.Name) > -1)
-								{
-									$scope.foundDuplicate = true;
-									console.log(incoming_file.Name + " already exists in the subproject file list.");
-									errors.push(incoming_file.Name + " already exists in list of subproject documents.");
-								}
-							}
-						}
-					}
-				}
-				else if ($scope.dataset)
-				{
-					console.log("Need to check dataset-level files for duplicate document...");
-					if ($scope.dataset.Files)
-					{
-						console.log("$scope.dataset.Files is next...");
-						console.dir($scope.dataset.Files);
-						for (var p = 0; p < $scope.dataset.Files.length; p++)
-						{
-							if (incoming_file.Name.length <= $scope.dataset.Files[p].Name.length)
-							{
-								if ($scope.dataset.Files[p].Name.indexOf(incoming_file.Name) > -1)
-								{
-									$scope.foundDuplicate = true;
-									console.log(incoming_file.Name + " already exists in the dataset file list.");
-									errors.push(incoming_file.Name + " already exists in list of dataset documents.\n");
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					console.log("Need to check project-level files for duplicate document...");
-					if ($scope.project.Files)
-					{
-						for (var p = 0; p < $scope.project.Files.length; p++)
-						{
-							if (incoming_file.Name.length <= $scope.project.Files[p].Name.length)
-							{
-								if ($scope.project.Files[p].Name.indexOf(incoming_file.Name) > -1)
-								{
-									$scope.foundDuplicate = true;
-									console.log(incoming_file.Name + " already exists in the project file list.");
-									errors.push(incoming_file.Name + " already exists in list of project documents.\n");
-								}
-							}
-						}
-					}
-				}
-        	});
+            //add any newly scheduled to upload files to the list for display
+            filesToUpload[$scope.file_field.DbColumnName].forEach( function (incoming_file, key) {
+
+                $scope.currentFiles.push(incoming_file);
+
+                var duplicate_message = $scope.isDuplicateFile(incoming_file);
+                if (duplicate_message) {
+                    $scope.foundDuplicate = true;
+                    errors.push({ duplicate_message });
+                }
+            });
 			
-			console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);			
+            console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);	
+            
 			if (!$scope.foundDuplicate)
 			{
 				//copy back to the actual row field

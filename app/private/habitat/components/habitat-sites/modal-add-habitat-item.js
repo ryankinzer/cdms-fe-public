@@ -83,13 +83,26 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 	};
 	
 	//field = DbColumnName
+    //after user selects files to upload from the file chooser
 	$scope.onFileSelect = function(field, files)
 	{
-		console.log("Inside ModalAddHabitatItemCtrl, onFileSelect");
-		console.log("file selected! " + field);
-		$scope.filesToUpload[field] = files;
+        //console.log("Inside ModalAddHabitatItemCtrl, onFileSelect");
+        //console.log("file selected! " + field);
+        //console.dir(files);
+        //console.log("what was in there?");
+
+        files.forEach(function (file) {
+            if ($scope.isDuplicateFile(file))
+                file.UploadMessage = "DUPLICATE: will not upload";
+            else
+                file.UploadMessage = "Ready to upload.";
+        });
+
+        $scope.filesToUpload[field] = files;
+        //console.dir($scope.filesToUpload);
 	};
-	
+
+    
 	
 	
 	$scope.$watch('fileProgress', function(){

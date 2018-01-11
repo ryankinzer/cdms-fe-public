@@ -351,7 +351,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
 
             crpp_ds_watcher(); //turn off watcher
 
-            if (scope.isCRPPProject(scope.project)) {
+            if (isCRPPProject(scope.project)) {
 
                 console.log("Adding Correspondence to tab bar because we are a CRPP project...");
                 scope.ShowSubproject = true;
@@ -624,12 +624,5 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
         scope.refreshMemory = function () {
             scope.corrAgGridOptions.api.refreshInMemoryRowModel('group');
         };
-
-        //looks at the metadata setting to see if it is a crpp project
-        scope.isCRPPProject = function(a_project)
-        {
-            return (a_project.MetadataValue[METADATA_PROPERTY_PROGRAM]) === "CRPP";
-        }
-
     }
 ];
