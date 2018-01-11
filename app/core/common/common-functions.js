@@ -1168,3 +1168,31 @@ function isHabitatProject (a_project) {
 function isCRPPProject (a_project) {
     return (a_project.MetadataValue[METADATA_PROPERTY_PROGRAM]) === "CRPP";
 }
+
+
+//checks to see if the uploading file already exists
+//takes the incoming file to check and a reference to the files
+//returns boolean
+function isDuplicateUploadFile(incoming_file, files_to_check) {
+    var foundDuplicate = false;
+
+    incoming_file.Name = incoming_file.name; //copy this value into "Name" property to avoid confusion!
+
+    console.log("checking for duplicates: incoming_file.Name = " + incoming_file.Name);
+
+    if (files_to_check && Array.isArray(files_to_check)) {
+
+        console.log(" -- checking in " + files_to_check.length + " files... ");
+
+        files_to_check.forEach(function (existing_file) {
+            if (existing_file.Name === incoming_file.Name) {
+                console.log(" -- found a duplicate: " + incoming_file.Name + " already exists in the incoming files_to_check.");
+                foundDuplicate = true;
+            }
+        });
+    }
+    else
+        console.log(" -- no  files given... i guess there can't be any duplicates!");
+
+    return foundDuplicate;
+}

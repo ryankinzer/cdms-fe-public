@@ -21,14 +21,18 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
     	//console.dir($scope.filesToUpload);
 
 		console.log("$scope.file_field.DbColumnName = " + $scope.file_field.DbColumnName);
-    	$scope.currentFiles = $scope.file_row[$scope.file_field.DbColumnName];
+    	$scope.currentFiles = $scope.originalExistingFiles;
     	if($scope.currentFiles)
     		$scope.currentFiles = angular.fromJson($scope.currentFiles);
     	else
-    		$scope.currentFiles = [];
+            $scope.currentFiles = [];
+
+        //$scope.original_existingFiles = $scope.file_row[$scope.file_field.DbColumnName];
 
 		console.log("$scope.currentFiles (after check) is next...");
-    	console.dir($scope.currentFiles);
+        console.dir($scope.currentFiles);
+        console.log("And original");
+        console.dir($scope.originalExistingFiles);
 		
 		$rootScope.currentFiles = angular.copy($scope.currentFiles);
 		console.log("$rootScope.currentFiles is next...");
@@ -249,23 +253,49 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 			console.log("$scope.filesToUpload is next...");
 			console.dir($scope.filesToUpload);
             //add any newly scheduled to upload files to the list for display
-            filesToUpload[$scope.file_field.DbColumnName].forEach( function (incoming_file, key) {
 
-                $scope.currentFiles.push(incoming_file);
 
-                var duplicate_message = $scope.isDuplicateFile(incoming_file);
-                if (duplicate_message) {
+            //this class is multi-use, so which files to check for duplicates depends on the context.
+            var files_to_check_for_duplicates = [];
+            var file_duplicate_message = "";
+
+            if (isCRPPProject($scope.project) || isHabitatProject($scope.project)) {
+                files_to_check_for_duplicates = $scope.viewSubproject.Files;
+                file_duplicate_message = " - this file already exists in this subproject."
+            } else {
+                files_to_check_for_duplicates = $scope.project.Files;
+                file_duplicate_message = " - this file already exists in this project."
+            }
+            //need the dataset one?
+
+
+            var filesReadyToUpload = [];
+
+            //remove any duplicates
+            $scope.filesToUpload[$scope.file_field.DbColumnName].forEach(function (incoming_file, key) {
+                if(isDuplicateUploadFile(incoming_file, files_to_check_for_duplicates)) {
                     $scope.foundDuplicate = true;
-                    errors.push({ duplicate_message });
+                    errors.push("Ignoring: " + incoming_file.Name + file_duplicate_message);
+                } else {
+                    filesReadyToUpload.push(incoming_file);
+                    $scope.currentFiles.push(incoming_file); //add to our current files for display once they close this modal
                 }
             });
-			
-            console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);	
+
+            //set our uploads to only files that are ready.
+            $scope.filesToUpload[$scope.file_field.DbColumnName] = filesReadyToUpload;
+
+            // Inform the user we've removed their duplicate files.
+            if ($scope.foundDuplicate) {
+                console.warn(errors);
+                alert(errors);
+            }
             
-			if (!$scope.foundDuplicate)
+
+            if ($scope.filesToUpload[$scope.file_field.DbColumnName].length > 0)
 			{
 				//copy back to the actual row field
-				console.log("$scope.file_field.DbColumnName = " + $scope.file_field.DbColumnName);
+                console.log("$scope.file_field.DbColumnName = " + $scope.file_field.DbColumnName);
 				$scope.file_row[$scope.file_field.DbColumnName] = angular.toJson($scope.currentFiles);
 				console.log("$scope.file_row is next...");
 				console.dir($scope.file_row);
@@ -294,11 +324,7 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 			//console.dir($scope);
             $modalInstance.dismiss();
 			
-			// Inform the user immediately, if there are duplicate files.
-			if ($scope.foundDuplicate)
-				alert(errors);
-			
-			//ServiceUtilities.setFileName($scope.file_row.FieldSheetFile, $scope)
+			//ServiceUtilities.setFileName($scope.file_row.FieldSheetFile, $scope) //<-- not sure why this is commented out? kb
         };
 
 
@@ -339,7 +365,9 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
             $modalInstance.dismiss();
         };
 
-        $scope.cancel = function(){
+        $scope.cancel = function () {
+            $scope.file_row[$scope.file_field.DbColumnName] = $scope.originalExistingFiles;
+            $scope.filesToUpload[$scope.file_field.DbColumnName] = undefined;
             $modalInstance.dismiss();
         };
 

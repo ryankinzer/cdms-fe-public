@@ -485,71 +485,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         scope.canEdit = function (project) {
             return $rootScope.Profile.canEdit(project);
         };
-
-
-        //checks to see if the uploading file already exists
-        //returns false or a duplicate message
-        scope.isDuplicateFile = function (incoming_file) {
-            var foundDuplicate = false;
-
-            incoming_file.Name = incoming_file.name; //copy this value into "Name" property
-
-            console.log("incoming_file.Name = " + incoming_file.Name);
-            console.log("scope.DatastoreTablePrefix = " + scope.DatastoreTablePrefix);
-            console.log("scope.dataset is next..");
-            console.dir(scope.dataset);
-            console.log("scope.viewSubproject is next...");
-            console.dir(scope.viewSubproject);
-
-            if ((scope.viewSubproject) &&
-                (isCRPPProject(scope.project) || isHabitatProject(scope.project))) {
-                console.log("Need to check subprojects for duplicate document...");
-
-                // If a subproject is has no files yet, Files will not be defined.
-                if (scope.viewSubproject.Files) {
-                    for (var p = 0; p < scope.viewSubproject.Files.length; p++) {
-                        if (incoming_file.Name.length <= scope.viewSubproject.Files[p].Name.length) {
-                            if (scope.viewSubproject.Files[p].Name.indexOf(incoming_file.Name) > -1) {
-                                console.log(incoming_file.Name + " already exists in the subproject file list.");
-                                foundDuplicate = incoming_file.Name + " already exists in list of subproject documents.";
-                            }
-                        }
-                    }
-                }
-                else
-                    console.log("no subproject files yet... i guess there can't be any duplicates!");
-            }
-            else if (scope.dataset) {
-                console.log("Need to check dataset-level files for duplicate document...");
-                if (scope.dataset.Files) {
-                    console.log("scope.dataset.Files is next...");
-                    console.dir(scope.dataset.Files);
-                    for (var p = 0; p < scope.dataset.Files.length; p++) {
-                        if (incoming_file.Name.length <= scope.dataset.Files[p].Name.length) {
-                            if (scope.dataset.Files[p].Name.indexOf(incoming_file.Name) > -1) {
-                                console.log(incoming_file.Name + " already exists in the dataset file list.");
-                                foundDuplicate = incoming_file.Name + " already exists in list of dataset documents.\n";
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                console.log("Need to check project-level files for duplicate document...");
-                if (scope.project.Files) {
-                    for (var p = 0; p < scope.project.Files.length; p++) {
-                        if (incoming_file.Name.length <= scope.project.Files[p].Name.length) {
-                            if (scope.project.Files[p].Name.indexOf(incoming_file.Name) > -1) {
-                                console.log(incoming_file.Name + " already exists in the project file list.");
-                                foundDuplicate = incoming_file.Name + " already exists in list of project documents.\n";
-                            }
-                        }
-                    }
-                }
-            }
-
-            return foundDuplicate;
-        }
+        
     }
 
 ];
