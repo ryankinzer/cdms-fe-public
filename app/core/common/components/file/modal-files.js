@@ -1,4 +1,9 @@
-﻿
+﻿//this modal can be used anywhere you want to handle file uploads.
+//things you need to do in the modal that calls this one:
+// on your modal load:      $scope.originalExistingFiles = $scope.hi_row.ItemFiles; //in case the user cancels, we'll need to reset it
+// in your cancel function: $scope.hi_row.ItemFiles = $scope.originalExistingFiles;
+
+
 //handles managing file controltypes
 var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectService','$rootScope',
     function ($scope, $modalInstance, DatasetService, SubprojectService, $rootScope){
@@ -38,6 +43,8 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 		console.log("$rootScope.currentFiles is next...");
 		console.dir($rootScope.currentFiles);
 
+
+        //TODO: this needs to be refactored.
     	$scope.removeFile = function(file)
     	{
 			console.log("Inside FileModalCtrl, removeFile...");
@@ -242,6 +249,18 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 //	    	console.dir($scope.filesToUpload);
     	}
 
+        //remove this file from the $scope.filesToUpload
+        $scope.removeFileFromUpload = function (file_to_remove) {
+            var remainingFiles = [];
+            $scope.filesToUpload[$scope.file_field.DbColumnName].forEach(function (file) {
+                if (file.Name !== file_to_remove.Name) {
+                    remainingFiles.push(file);
+                }
+            });
+
+            $scope.filesToUpload[$scope.file_field.DbColumnName] = remainingFiles;
+        };
+
         $scope.save = function(){
 			console.log("Inside modals-controller, FileModalCtrl, save...");
 			console.log("Adding file name(s) to the list.");
@@ -252,8 +271,6 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 			
 			console.log("$scope.filesToUpload is next...");
 			console.dir($scope.filesToUpload);
-            //add any newly scheduled to upload files to the list for display
-
 
             //this class is multi-use, so which files to check for duplicates depends on the context.
             var files_to_check_for_duplicates = [];
