@@ -840,7 +840,26 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                 angular.forEach(scope.dataSheetDataset, function (data_row, key) {
 					//console.log("data_row (before validate) is next...");
 					//console.dir(data_row);
-					data_row.errors = undefined;
+					
+					// Notes:  We run checkForDuplicates right before the validation checks.
+					// Therefore, we may have some rows that have been flagged as duplicate records.
+					// We must retain those errors, so we cannot just set data_row.error = undefined.
+					// This solution deletes the non-duplicate-type errors.
+					//data_row.errors = undefined; // original line
+					data_row.errors.forEach(function(errorRow){
+						//console.log("errorRow = " + errorRow);
+						if (errorRow.indexOf("Duplicate:") < 0)
+						{
+							//console.log("Deleting non-duplicate-type error...");
+							const index = data_row.errors.indexOf(errorRow);
+							
+							if (index !== -1)
+							{
+								data_row.errors.splice(index, 1);
+							}
+						}
+					});
+					
                     service.validate(data_row, scope);
 					//console.log("data_row (after validate) is next...");
 					//console.dir(data_row);
