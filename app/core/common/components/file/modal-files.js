@@ -262,13 +262,22 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
         };
 
         $scope.save = function(){
-			console.log("Inside modals-controller, FileModalCtrl, save...");
+            console.log("Inside modals-controller, FileModalCtrl, save...");
+
+            if (!Array.isArray($scope.filesToUpload[$scope.file_field.DbColumnName]) || $scope.filesToUpload[$scope.file_field.DbColumnName].length == 0)
+            {
+                $modalInstance.dismiss();
+                return;
+            }
+
+
 			console.log("Adding file name(s) to the list.");
 			//console.log("$scope is next...");
 			//console.dir($scope);
 			$rootScope.viewSubproject = $scope.viewSubproject; // Add this to the $rootScope, so that the filters can see it.
 			var errors = [];
-			
+
+
 			console.log("$scope.filesToUpload is next...");
 			console.dir($scope.filesToUpload);
 

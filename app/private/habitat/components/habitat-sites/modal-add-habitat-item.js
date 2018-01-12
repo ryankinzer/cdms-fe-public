@@ -23,6 +23,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 	$scope.fileCount = 0;
     $scope.fileProgress = 0;
     $scope.originalExistingFiles = "";
+    $scope.UploadUserMessage = "saving files, please wait...";
 	
 	$rootScope.projectId = $scope.project.Id;
 	console.log("$scope.projectId = " + $scope.projectId);
@@ -113,239 +114,182 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
     
 	
 	
-	$scope.$watch('fileProgress', function(){
-		if($scope.fileProgress < $scope.fileCount)
-			return;
-		
-		if ($scope.saving)
-		{
-			$scope.loading = false; // Stop the fish spinner.
-			$scope.showCloseButton = true;
-			$scope.showCancelButton = false;
-			$scope.showFormItems = false;
-		}
-	});
-	
-    $scope.save = function(){
-		console.log("Inside ModalAddHabitatItemCtrl, save...");
-		//console.log("$scope is next...");
-		//console.dir($scope);
-		
-		$scope.saving = true; // Used in $scope.$watch('fileProgress'
-		$scope.loading = true; // Start the fish spinner.
-		
-		var saveRow = angular.copy($scope.hi_row);
-		//console.log("saveRow is next, before checking the Id...");
-		//console.dir(saveRow);
-		if (!saveRow.Id)
-			saveRow.Id = 0;
+    $scope.save = function () {
+        console.log("Inside ModalAddHabitatItemCtrl, save...");
 
-		
-		console.log("saveRow is next, after checking/setting the Id...");
-		console.dir(saveRow);
+        $scope.loading = false; // start the fish spinner.
+        //$scope.showCloseButton = true;
+        $scope.showCancelButton = false;
+        $scope.showFormItems = false;
 
-			
-		var subprojectId = 0;
-		if ($scope.viewSubproject)
-			subprojectId = $scope.viewSubproject.Id
-		else
-			subprojectId = $scope.subprojectId;
-		
-		// First let's handle the files.
-		if ($scope.filesToUpload.ItemFiles)
-		{
-			// Count how many files we have.
-			$scope.fileCount = 0;
-			angular.forEach($scope.filesToUpload.ItemFiles, function(aFile){
-				$scope.fileCount++;
-			});
-			console.log("$scope.fileCount = " + $scope.fileCount);
-			
-			console.log("$scope.filesToUpload.ItemFiles is next...");
-			console.dir($scope.filesToUpload.ItemFiles);
-			for(var i = 0; i < $scope.filesToUpload.ItemFiles.length; i++)
-			{
-				var file = $scope.filesToUpload.ItemFiles[i];
-				console.log("file is next...");
-				console.dir(file);
-				
-				var newFileNameLength = file.name.length;
-				console.log("file name length = " + newFileNameLength);
+        var saveRow = angular.copy($scope.hi_row);
 
-				console.log("file is next again...");
-				console.dir(file);
-				console.log("file.success = " + file.success);
-				if(file.success != "Success")
-				{
-					console.log("No file.success, so let's save the file...");
-					$scope.upload = $upload.upload({
+        if (!saveRow.Id)
+            saveRow.Id = 0;
+
+        console.log("saveRow is next, after checking/setting the Id...");
+        console.dir(saveRow);
+
+
+        var subprojectId = 0;
+        if ($scope.viewSubproject)
+            subprojectId = $scope.viewSubproject.Id
+        else
+            subprojectId = $scope.subprojectId;
+
+        var filesWithErrors = 0;
+        var save_habitat_item_promise = null; //will get setup later
+
+        // First let's handle the files if we have them.
+        if ($scope.filesToUpload.ItemFiles) {
+
+
+            //ok, setup our watcher that will run when all files are uploaded -------------------------------------
+            var fileProgressWatcher = $scope.$watch('fileProgress', function () {
+                if ($scope.fileProgress < $scope.fileCount)
+                    return;
+
+                //from here on, we run only if our files have all finished uploading.
+
+                $scope.loading = false; // Stop the fish spinner.
+                $scope.showCloseButton = true;
+                $scope.showCancelButton = false;
+                $scope.showFormItems = false;
+
+                if (filesWithErrors == 0)
+                    $scope.UploadUserMessage = "All files successfully uploaded.";
+                else
+                    $scope.UploadUserMessage = "There was a problem uploading a file.  Please try again or contact the Helpdesk if this issue continues.";
+
+                fileProgressWatcher(); //stop the watcher once we're done uploading...
+
+                console.log("before we remove the failed files...");
+                console.log(saveRow.ItemFiles);
+
+                //remove any failed files from the saveRow.ItemFiles column
+                var remaining_files = [];
+                var current_files = angular.fromJson(saveRow.ItemFiles);
+                if (current_files && Array.isArray(current_files)) {
+
+                    current_files.forEach(function (file_to_check) {
+                        //then find the file in the uploads... did it fail?
+                        var uploading_this_one = false;
+                        $scope.filesToUpload.ItemFiles.forEach(function (upload_file) {
+                            if (upload_file.Name === file_to_check.Name) {
+                                uploading_this_one = true;
+                                if (upload_file.success === "Success")
+                                    remaining_files.push(file_to_check);
+                            }
+                        });
+                        if (!uploading_this_one) //means this was an existing file so leave it.
+                            remaining_files.push(file_to_check);
+                    });
+                }
+                
+                saveRow.ItemFiles = angular.toJson(remaining_files);
+                console.log("after we remove the failed files...");
+                console.log(saveRow.ItemFiles);
+
+                //save the habitat item...
+                $scope.saveHabitatItem(saveRow);
+
+            }, true);
+
+            // --------------------------------------------- end of watcher.
+
+            console.log("incoming files to upload = " + $scope.filesToUpload.ItemFiles.length);
+            console.dir($scope.filesToUpload.ItemFiles);
+
+            $scope.fileCount = $scope.filesToUpload.ItemFiles.length;
+
+            $scope.filesToUpload.ItemFiles.forEach(function (file) {
+                console.log("incoming file:");
+                console.dir(file);
+
+                var newFileNameLength = file.name.length;
+                console.log("file name length = " + newFileNameLength);
+
+                console.log("file is next again...");
+                console.dir(file);
+                console.log("file.success = " + file.success);
+                if (file.success != "Success") {
+                    console.log("No file.success, so let's save the file...");
+                    $scope.upload = $upload.upload({
                         url: serviceUrl + '/api/v1/habsubproject/uploadhabitatfile',
-						method: "POST",
-						// headers: {'headerKey': 'headerValue'},
-						// withCredential: true,
-						//data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name},
-						//data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, DatastoreTablePrefix: $scope.DatastoreTablePrefix},
-						data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, SubprojectType: "Hab"},
-						file: file,
+                        method: "POST",
+                        // headers: {'headerKey': 'headerValue'},
+                        // withCredential: true,
+                        //data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name},
+                        //data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, DatastoreTablePrefix: $scope.DatastoreTablePrefix},
+                        data: { ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, SubprojectType: "Hab" },
+                        file: file,
 
-						}).progress(function(evt) {
-							console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-						}).success(function(data, status, headers, config) {
-							console.log("The following are next:  data, status, headers, config, file");
-							//console.log("file is next...");
-							console.dir(data);
-							console.dir(status);
-							console.dir(headers);
-							console.dir(config);
-							console.dir(file);
-							config.file.success = "Success";
-								
-							//console.log("file is next...");
-							//console.dir(file);
-							//var promise = SubprojectService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
-							//promise.$promise.then(function(){
-								console.log("done and success!");
-								//reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
-								//$scope.refreshProjectLocations();
-								//$modalInstance.dismiss();
-							//});
-								
-							$scope.fileProgress++;
-						}).error(function(data, status, headers, config) {
-							$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
-							//console.log(file.name + " was error.");
-							config.file.success = "Failed";
-						});
-							
-					console.log("$scope.upload is next...");
-					console.dir($scope.upload);
+                    }).progress(function (evt) {
+                        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                        file.success = "working: " + parseInt(100.0 * evt.loaded / evt.total);
+                    }).success(function (data, status, headers, config) {
+                        console.log("The following are next:  data, status, headers, config, file");
+                        //console.log("file is next...");
+                        console.dir(data); //this is what we get back... it should be an array with our saved file
+                        console.dir(status);
+                        console.dir(headers);
+                        console.dir(config);
+                        console.dir(file);
 
-					
-					
-					if (file.success)
-					{
-						
-					}
-				}
-			}
-			
-			angular.forEach($scope.filesToUpload, function(files, field){
+                        //console.log("file is next...");
+                        //console.dir(file);
+                        //var promise = SubprojectService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
+                        //promise.$promise.then(function(){
+                        console.log("done and success!");
+                        //reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
+                        //$scope.refreshProjectLocations();
+                        //$modalInstance.dismiss();
+                        //});
 
-				if(field == "null" || field == "")
-					return;
-				
-				var local_files = [];
 
-				for(var i = 0; i < files.length; i++)
-				{
-					console.log("$scope is next...")
-					//console.dir($scope);
-				  
-					var file = files[i];
-					console.log("Reviewing results on file " + file.Name);
-					console.dir(file);
-				  
-					console.log("$scope.errors is next...");
-					console.dir($scope.errors);
-					console.log("typeof $scope.errors = " + typeof $scope.errors);
-					if(file.data && file.data.length == 1) //since we only upload one at a time...
-					{
-						//console.dir(file.data);
-						local_files.push(file.data[0]); //only ever going to be one if there is any...
-						//console.log("file id = "+file.data[0].Id);
-					}
-					else if (typeof $scope.errors === 'undefined')
-					{
-						console.log("No errors...");
-					}
-					else
-					{
-						//console.log("no file id.");
-						$scope.foundDuplicate = true;
-						$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-						//console.log("$scope is next...");
-						//console.dir($scope);
-						throw "Problem saving file: " + file.Name;
-					}
-				}
+                        if (data.length == 0) //means the backend actually failed to create our object. We need an error message!
+                        {
+                            filesWithErrors++;
+                            file.success = "Failed (unknown error)"
+                        } else {
+                            $scope.viewSubproject.Files.push(data); //add this file to the subproject's file list
+                            file.success = "Success";
+                        }
 
-				console.log("$scope.file_row is next...");
-				console.dir($scope.file_row);
-				console.log("field = " + field);
-				//if we already had actual files in this field, copy them in
-				if($scope.file_row[field])
-				{
-					console.log("On Files field...");
-					var current_files = angular.fromJson($scope.file_row[field]);
-					angular.forEach(current_files, function(file){
-						if(file.Id) //our incoming files don't have an id, just actual files.
-							local_files.push(file);		
-					});
-				}
 
-				$scope.file_row[field] = angular.toJson(local_files);
-				//console.log("Ok our new list of files: "+$scope.row[field]);
-			});
-		}
-		
-		/*
-		// Now let's handle the links.
-		console.log("$scope.link_row.ExternalLinks is next...");
-		console.dir($scope.link_row.ExternalLinks);
-		if ($scope.link_row.ExternalLinks)
-		{
-			console.log("")
-			$scope.saveLink = $upload.upload({
-				url: serviceUrl + '/data/UploadHabitatFile',
-				method: "POST",
-				data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded link " + link.Name, Title: link.Name, SubprojectType: "Hab"},
+                        $scope.fileProgress++;
+                    }).error(function (data, status, headers, config) {
+                        filesWithErrors++;
+                        console.error(file.name + " failed to upload.");
+                        file.success = "Failed";
+                    });
 
-				}).progress(function(evt) {
-					console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-				}).success(function(data, status, headers, config) {
-					console.log("The following are next:  data, status, headers, config, file");
-					console.dir(data);
-					console.dir(status);
-					console.dir(headers);
-					console.dir(config);
-					console.dir(file);
-					config.file.success = "Success";
-					
-					console.log("file is next...");
-					console.dir(file);
-					//var promise = SubprojectService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
-					//promise.$promise.then(function(){
-						console.log("done and success!");
-						//reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
-						//$scope.refreshProjectLocations();
-						//$modalInstance.dismiss();
-					//});
-				}).error(function(data, status, headers, config) {
-					$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
-					//console.log(file.name + " was error.");
-					config.file.success = "Failed";
-			});
-		}
-		*/
-		
-		// Now let's handle the other fields on the form.		
-		//console.log("$scope is next...");
-		//console.dir($scope);
-		
+                    console.log("$scope.upload is next...");
+                    console.dir($scope.upload);
 
-        //save the habitat item
-        var promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.viewSubproject.Id, saveRow);
+                }
+            });
+        } else {
+            $scope.saveHabitatItem(saveRow);
+        }
 
-        if (typeof promise !== 'undefined') {
+       
+    };
 
-            promise.$promise.then(function () {
+    //called from save above once we're ready to save the item
+    $scope.saveHabitatItem = function (saveRow) {
+        var save_habitat_item_promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.viewSubproject.Id, saveRow);
+
+        //setup the promise.then that runs after the habitat item is saved...
+        if (typeof save_habitat_item_promise !== 'undefined') {
+            save_habitat_item_promise.$promise.then(function () {
                 //did we edit or add new?
                 if (saveRow.Id > 0) {
-                    $scope.postEditHabitatItemUpdateGrid(promise);
+                    $scope.postEditHabitatItemUpdateGrid(save_habitat_item_promise);
                 } else {
-                    $scope.postAddHabitatItemUpdateGrid(promise);
+                    $scope.postAddHabitatItemUpdateGrid(save_habitat_item_promise);
                 }
-                $modalInstance.dismiss();
+                //$modalInstance.dismiss();
             });
 
             console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
@@ -355,10 +299,11 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
                 $scope.showCancelButton = false;
                 $scope.showFormItems = false;
             }
-
         }
     };
-	
+
+
+
 	$scope.close = function(){
 		console.log("Inside $scope.close...");
 		$modalInstance.dismiss();	

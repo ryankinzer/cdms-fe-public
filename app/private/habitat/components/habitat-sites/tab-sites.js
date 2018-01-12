@@ -605,10 +605,29 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         scope.removeHabitatFileItem = function (subproject, in_item) {
             //console.log("removeHabitatFileItem..." + in_item.Id + " for subproject " + subproject.Id);
 
+            console.log("- --- - - removing subproject habitat item -- we need to also get the files! ");
+            console.dir(subproject);
+
             if (confirm('Are you sure that you want to delete this Habitat Item?')) {
                 var promise = SubprojectService.removeHabitatItem(scope.project.Id, subproject.Id, in_item.Id, scope.DatastoreTablePrefix);
 
                 promise.$promise.then(function () {
+                    //remove any files related to this subproject item otherwise our duplicate checking will have false positives.
+                    var item_files = angular.fromJson(in_item.ItemFiles);
+                    if (item_files && item_files.length > 0)
+                    {
+                        var new_files = [];
+                        subproject.Files.forEach(function (subproject_file) {
+                            item_files.forEach(function (item_file) {
+                                if (subproject_file.Name !== item_file.Name)
+                                {
+                                    new_files.push(subproject_file);
+                                }
+                            });
+                        });
+                        subproject.Files = new_files;
+                    }
+
                     //remove from our subprojectList and then reload the grid.
                     scope.subprojectList.forEach(function (item, index) {
                         if (item.Id === subproject.Id) {
