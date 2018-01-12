@@ -2141,7 +2141,8 @@
 								var keepGoing = true;
 								var readingDateTimeIndex = -1;
 								
-								angular.forEach(duplicateItems, function(item){
+								//angular.forEach(duplicateItems, function(item){
+								duplicateItems.forEach(function(item){
 									//intPlaceCount++;
 									// The datetime coming back from the backend has a "T" in it; we must remove it.
 									//item.ReadingDateTime = item.ReadingDateTime.replace("T", " ");
@@ -2217,10 +2218,14 @@
 									$scope.dataSheetDataset[dateTimeIndex].errors = uniq_fast($scope.dataSheetDataset[dateTimeIndex].errors);
 									$scope.gridHasErrors = true;
 									$scope.weHaveDuplicates = true;
-									
+																	
 								});
-								//console.log("$scope.dataSheetDataset is next...");
-								//console.dir($scope.dataSheetDataset);
+								
+								//console.log("$scope.dataSheetDataset (after dupe checks) is next...");
+								//$scope.dataSheetDataset.forEach(function(item){
+								//	console.dir(item);
+								//});
+								//console.log("$scope.gridHasErrors = " + $scope.gridHasErrors);
 							}
 							else
 							{
@@ -2228,6 +2233,11 @@
 							}
 							//console.log("After the 'if' promise.length...");
 							$scope.validateGrid($scope);
+							
+							//console.log("$scope.dataSheetDataset (after validation checks) is next...");
+							//$scope.dataSheetDataset.forEach(function(item){
+							//	console.dir(item);
+							//});
 						});
 						//console.log("Location after promise.then (but it may not have completed yet)... ");
 					}
