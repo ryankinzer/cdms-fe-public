@@ -2217,7 +2217,12 @@
 									//console.log("strIsoDateTime = " + strIsoDateTime + ", $scope.datetimeList[0] = " + $scope.datetimeList[0]);
 									if (strIsoDateTime.length < $scope.datetimeList[0].length)
 									{
+										//console.log("item.ReadingDateTime has YYYY-MM-DD HH.MM.SS format.");
 										strIsoDateTime = strIsoDateTime + ".000";
+									}
+									else
+									{
+										//console.log("item.ReadingDateTime has YYYY-MM-DD HH.MM.SS.mmm format.");
 									}
 									//console.log("strIsoDateTime = " + strIsoDateTime);
 									
