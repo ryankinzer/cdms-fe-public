@@ -1723,6 +1723,21 @@
 				//console.log("$scope is next");
 				////console.dir($scope);
 				
+				console.log("$scope.dataSheetDataset.length = " + $scope.dataSheetDataset.length);
+				console.dir($scope.dataSheetDataset);
+				console.log("$scope.datetimeList.length = " + $scope.datetimeList.length);
+				//console.dir($scope.datetimeList);
+				
+				//var i = 0;
+				//$scope.datetimeList.forEach(function(item){
+					//if (i % 1000 === 0)
+					//{
+					//	console.log("$scope.dataSheetDataset[" + i + "].ReadingDateTime =" + $scope.dataSheetDataset[i].ReadingDateTime);
+					//	console.log("$scope.datetimeList[" + i + "] =" + $scope.datetimeList[i]);
+					//}
+					//i++;
+				//});
+				
 //***
 				console.log("$scope.dataSheetDataset is nextX...");
 				console.dir($scope.dataSheetDataset);
@@ -2196,7 +2211,14 @@
 									strIsoDateTime = item.ReadingDateTime;
 									//console.log("typeof strIsoDateTime = " + typeof strIsoDateTime);
 									strIsoDateTime = strIsoDateTime.replace("T", " ");
-									strIsoDateTime = strIsoDateTime + ".000";
+									
+									// strIsoDateTime starts out like this:  "YYYY-MM-DD HH.MM.SS".
+									// Is the ReadingDateTime in this format "YYYY-MM-DD HH.MM.SS" or this "YYYY-MM-DD HH.MM.SS.mmm"?
+									//console.log("strIsoDateTime = " + strIsoDateTime + ", $scope.datetimeList[0] = " + $scope.datetimeList[0]);
+									if (strIsoDateTime.length < $scope.datetimeList[0].length)
+									{
+										strIsoDateTime = strIsoDateTime + ".000";
+									}
 									//console.log("strIsoDateTime = " + strIsoDateTime);
 									
 									//console.log("$scope.datetimeList is next...");
@@ -2221,6 +2243,7 @@
 																	
 								});
 								
+								console.log("Checking for duplicates is complete...");
 								//console.log("$scope.dataSheetDataset (after dupe checks) is next...");
 								//$scope.dataSheetDataset.forEach(function(item){
 								//	console.dir(item);
