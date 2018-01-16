@@ -560,23 +560,20 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         };
 
-        //called by the modal once a habitat item is saved
+        //called by the modal once a habitat item is saved -= the new_item IS the habitat item (promise)
         scope.postAddHabitatItemUpdateGrid = function (new_item) {
-            //console.dir(new_item);
-            //console.log("saving habitat item for " + new_item.SubprojectId);
+
+            console.log("post add habitat item update grid for " + new_item.SubprojectId);
+            console.dir(new_item);
 
             var subproject = getById(scope.subprojectList, new_item.SubprojectId);
+            console.dir(subproject);
 
             if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
                 console.log("no subproject...");
             } else {
-                scope.subprojectList.forEach(function (item, index) {
-                    if (item.Id === subproject.Id) {
-                        item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort - this was already updated in the be
-                        item.HabitatItems.push(new_item);
-                        console.log("Added item " + new_item.Id + " to " + subproject.Id);
-                    }
-                });
+                subproject.HabitatItems.push(new_item);
+                console.log("Added item " + new_item.Id + " to " + subproject.Id);
                 scope.sitesGridOptions.api.setRowData(scope.subprojectList);
 
                 //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
@@ -584,7 +581,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                 if (the_node != null)
                     scope.sitesGridOptions.api.ensureNodeVisible(the_node);
 
-                console.log("done reloading grid after removing item.");
+                console.log("done reloading grid after adding item.");
             }
         };
 
