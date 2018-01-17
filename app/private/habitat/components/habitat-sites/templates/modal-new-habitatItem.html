@@ -67,10 +67,10 @@
 			</div>
 
 
-              <div ng-show="!showFormItems && filesToUpload.ItemFiles.length > 0">
+              <div ng-show="!showFormItems && filesToUpload.Files.length > 0">
                   <h4>Files to upload:</h4>
                   <table class="table striped">
-                      <tr ng-repeat="file in filesToUpload.ItemFiles">
+                      <tr ng-repeat="file in filesToUpload.Files">
                           <td class="modal-file-col1">{{file.name}}</td>
                           <td class="modal-file-col2">{{file.success}}</td>
                       </tr>

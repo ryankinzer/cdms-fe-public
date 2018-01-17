@@ -122,7 +122,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
                     $scope.postAddHabitatItemUpdateGrid(save_item_promise);
                 }
 
-                if (!$scope.filesToUpload.ItemFiles && !$scope.removedFiles.length > 0) {
+                if (!$scope.filesToUpload.Files && !$scope.removedFiles.length > 0) {
                     $modalInstance.dismiss();
                 }
                
