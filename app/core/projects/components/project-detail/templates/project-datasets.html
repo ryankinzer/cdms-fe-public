@@ -36,13 +36,13 @@
 	<tab heading="Details" ng-show="AuthorizedToViewProject">
 		<div ng-include="'app/core/projects/components/project-detail/templates/project-details.html'"></div>
 	</tab>
-    <tab heading="Gallery" ng-controller="TabGalleryCtrl">
+    <tab heading="Gallery" ng-controller="TabGalleryCtrl" ng-show="AuthorizedToViewProject">
         <div ng-include="'app/core/projects/components/project-detail/templates/project-gallery.html'"></div>
     </tab>
-    <tab heading="Documents" ng-controller="TabDocumentsCtrl">
+    <tab heading="Documents" ng-controller="TabDocumentsCtrl" ng-show="AuthorizedToViewProject">
         <div ng-include="'app/core/projects/components/project-detail/templates/project-documents.html'"></div>
     </tab>
-	<tab heading="Data" ng-controller="TabDataCtrl">
+	<tab heading="Data" ng-controller="TabDataCtrl" ng-show="AuthorizedToViewProject">
 		<div class="container-fluid">
 		    <div class="row-fluid">
 		        <div class="span10">

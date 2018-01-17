@@ -3,6 +3,11 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
     	function ($scope, $route, $routeParams, DatasetService, $modal, $location, $window, $rootScope, ProjectService,CommonService, PreferencesService) {
 			console.log("Inside appraisalController...");
 			console.log("$routeParams.Id = " + $routeParams.Id);
+
+            //TODO: a nicer global route authorization scheme...
+            if (!$scope.Profile.hasRole("DECD"))
+                angular.rootScope.go("/unauthorized");
+
             $scope.dataset = DatasetService.getDataset($routeParams.Id);
             $scope.activities = DatasetService.getActivities($routeParams.Id);
             $scope.loading = true;
