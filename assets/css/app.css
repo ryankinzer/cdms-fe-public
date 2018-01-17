@@ -709,3 +709,13 @@ a {
     color: #07C;
     text-decoration: none;
 }
+
+.modal-file-col1 {
+    width: 300px;
+}
+
+.modal-file-col2 {
+    width: 150px;
+}
+
+}

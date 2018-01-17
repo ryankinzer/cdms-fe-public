@@ -1183,6 +1183,7 @@ function isDuplicateUploadFile(incoming_file, files_to_check) {
     if (files_to_check && Array.isArray(files_to_check)) {
 
         console.log(" -- checking in " + files_to_check.length + " files... ");
+        console.dir(files_to_check);
 
         files_to_check.forEach(function (existing_file) {
             if (existing_file.Name === incoming_file.Name) {

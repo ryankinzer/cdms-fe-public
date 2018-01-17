@@ -9,32 +9,45 @@
             </div>
         </div>
         <div class="modal-body">
+            
             <div ng-show="currentFiles.length>0">
                 <h4>Existing files:</h4>
                 <div ng-show="currentFiles.length == 0">None</div>
 
                 <table class="table striped">
                     <tr ng-repeat="file in currentFiles">
-                        <td>{{file.Name}}</td>
-                        <td><button class="btn btn-xs" ng-click="removeFile(file)">Remove</button></td>
+                        <td class="modal-file-col1">{{file.Name}}</td>
+                        <td class="modal-file-col2">&nbsp;</td>
+                        <td class="modal-file-col2"><button class="btn btn-xs" ng-click="removeFile(file)">Remove</button></td>
                     </tr>
                 </table>
             </div>
+
+            <div ng-show="removedFiles.length>0">
+                <h4>Removing files:</h4>
+                <table class="table striped">
+                    <tr ng-repeat="file in removedFiles">
+                        <td class="modal-file-col1">{{file.Name}}</td>
+                        <td class="modal-file-col2">&nbsp;</td>
+                        <td class="modal-file-col2">Click cancel to abort.</td>
+                    </tr>
+                </table>
+            </div>
+
 
             <div ng-show="filesToUpload.ItemFiles.length > 0">
                 <h4>Files to upload:</h4>
                 <table class="table striped">
                     <tr ng-repeat="file in filesToUpload.ItemFiles">
-                        <td>{{file.name}}</td>
-                        <td>{{file.UploadMessage}}</td>
-                        <td><button class="btn btn-xs" ng-click="removeFileFromUpload(file)">Remove</button></td>
+                        <td class="modal-file-col1">{{file.name}}</td>
+                        <td class="modal-file-col2">{{file.UploadMessage}}</td>
+                        <td class="modal-file-col2"><button class="btn btn-xs" ng-click="removeFileFromUpload(file)">Remove</button></td>
                     </tr>
                 </table>
             </div>
 
             <h4>Add file(s):</h4>
             <input type="file" ng-file-select="onFileSelect(file_field.DbColumnName,$files)" value="Something" multiple>
-
 
         </div>
         <div class="modal-footer">

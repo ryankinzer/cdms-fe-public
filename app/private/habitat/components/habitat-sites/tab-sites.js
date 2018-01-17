@@ -563,17 +563,17 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         //called by the modal once a habitat item is saved -= the new_item IS the habitat item (promise)
         scope.postAddHabitatItemUpdateGrid = function (new_item) {
 
-            console.log("post add habitat item update grid for " + new_item.SubprojectId);
-            console.dir(new_item);
+            //console.log("post add habitat item update grid for " + new_item.SubprojectId);
+            //console.dir(new_item);
 
             var subproject = getById(scope.subprojectList, new_item.SubprojectId);
-            console.dir(subproject);
+            //console.dir(subproject);
 
             if (subproject === undefined || subproject == null) { //TODO: the case where they create items before the proejct is saved?
                 console.log("no subproject...");
             } else {
                 subproject.HabitatItems.push(new_item);
-                console.log("Added item " + new_item.Id + " to " + subproject.Id);
+              //  console.log("Added item " + new_item.Id + " to " + subproject.Id);
                 scope.sitesGridOptions.api.setRowData(scope.subprojectList);
 
                 //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
@@ -615,14 +615,21 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                     {
                         var new_files = [];
                         subproject.Files.forEach(function (subproject_file) {
+                            var keep_it = true;
                             item_files.forEach(function (item_file) {
-                                if (subproject_file.Name !== item_file.Name)
-                                {
-                                    new_files.push(subproject_file);
-                                }
+                                if (subproject_file.Name === item_file.Name)
+                                    keep_it = false;
                             });
+                            if (keep_it) {
+                                new_files.push(subproject_file);
+                                console.log("keeping " + subproject_file);
+                            }
+                            else
+                                console.log(" -- removing " + subproject_file);
                         });
                         subproject.Files = new_files;
+                        console.log("after we removed files");
+                        console.dir(subproject.Files);
                     }
 
                     //remove from our subprojectList and then reload the grid.

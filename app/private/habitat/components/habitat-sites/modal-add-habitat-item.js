@@ -12,8 +12,6 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
         console.error("View Subproject is not defined! ");
     }
 		
-	
-	$scope.filesToUpload = {};
 	$scope.verifyActionFormOpen = "No";
 	$scope.showOtherResponseType = false;
 	$scope.ReadyToClose = "";
@@ -22,8 +20,13 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 	$scope.showFormItems = true;
 	$scope.fileCount = 0;
     $scope.fileProgress = 0;
+
     $scope.originalExistingFiles = "";
-    $scope.UploadUserMessage = "saving files, please wait...";
+    $scope.filesToUpload = {}; //populated by file chooser (filesToUpload.SomeDbColField)
+    $scope.currentFiles = []; //shown on the file modal
+    $scope.removedFiles = []; //gets files if the user removes them from currentFiles using the file modal
+
+    $scope.UploadUserMessage = "saving, please wait...";
 	
 	$rootScope.projectId = $scope.project.Id;
 	console.log("$scope.projectId = " + $scope.projectId);
@@ -117,7 +120,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
     $scope.save = function () {
         console.log("Inside ModalAddHabitatItemCtrl, save...");
 
-        $scope.loading = false; // start the fish spinner.
+        $scope.loading = true; // start the fish spinner.
         //$scope.showCloseButton = true;
         $scope.showCancelButton = false;
         $scope.showFormItems = false;
@@ -137,12 +140,42 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
         else
             subprojectId = $scope.subprojectId;
 
-        var filesWithErrors = 0;
+        $scope.filesWithErrors = 0;
         var save_habitat_item_promise = null; //will get setup later
 
-        // First let's handle the files if we have them.
-        if ($scope.filesToUpload.ItemFiles) {
+        //first let's remove any files that need removing...
+        if ($scope.removedFiles.length > 0)
+        {
+            $scope.removedFiles.forEach(function (file_to_remove) {
+                // Subproject or Habitat Item-related?
 
+                var remove_file_promise = null;
+
+                if ((typeof $scope.hi_row !== 'undefined') && ($scope.hi_row.Id !== null)) {
+                    console.log("We want to delete a Habitat Item file...");
+                    remove_file_promise = SubprojectService.deleteHabitatItemFile($scope.projectId, $scope.subprojectId, $scope.hi_row.Id, file_to_remove);
+                }
+                else {
+                    console.log("We want to delete a Subproject file...");
+                    remove_file_promise = SubprojectService.deleteHabSubprojectFile($scope.projectId, $scope.subprojectId, file_to_remove);
+                }							
+
+                //setup the callback if we got a promise back
+                if (remove_file_promise)
+                {
+                    file_to_remove.success = "removing...";
+                    remove_file_promise.$promise.then(function () {
+                        //condition to check?
+                        file_to_remove.success = "Success."
+                    });
+                }
+
+            });
+        }
+
+
+        // Now let's handle incoming files if we have them.
+        if ($scope.filesToUpload.ItemFiles) {
 
             //ok, setup our watcher that will run when all files are uploaded -------------------------------------
             var fileProgressWatcher = $scope.$watch('fileProgress', function () {
@@ -155,11 +188,6 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
                 $scope.showCloseButton = true;
                 $scope.showCancelButton = false;
                 $scope.showFormItems = false;
-
-                if (filesWithErrors == 0)
-                    $scope.UploadUserMessage = "All files successfully uploaded.";
-                else
-                    $scope.UploadUserMessage = "There was a problem uploading a file.  Please try again or contact the Helpdesk if this issue continues.";
 
                 fileProgressWatcher(); //stop the watcher once we're done uploading...
 
@@ -249,17 +277,17 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 
                         if (data.length == 0) //means the backend actually failed to create our object. We need an error message!
                         {
-                            filesWithErrors++;
+                            $scope.filesWithErrors++;
                             file.success = "Failed (unknown error)"
                         } else {
-                            $scope.viewSubproject.Files.push(data); //add this file to the subproject's file list
+                            $scope.viewSubproject.Files.push(data[0]); //add this file to the subproject's file list
                             file.success = "Success";
                         }
 
 
                         $scope.fileProgress++;
                     }).error(function (data, status, headers, config) {
-                        filesWithErrors++;
+                        $scope.filesWithErrors++;
                         console.error(file.name + " failed to upload.");
                         file.success = "Failed";
                     });
@@ -289,7 +317,11 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
                 } else {
                     $scope.postAddHabitatItemUpdateGrid(save_habitat_item_promise);
                 }
-                //$modalInstance.dismiss();
+
+                if (!$scope.filesToUpload.ItemFiles && !$scope.removedFiles.length > 0) {
+                    $modalInstance.dismiss();
+                }
+               
             });
 
             console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
@@ -299,6 +331,12 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
                 $scope.showCancelButton = false;
                 $scope.showFormItems = false;
             }
+
+            if ($scope.filesWithErrors == 0)
+                $scope.UploadUserMessage = "All actions successful.";
+            else
+                $scope.UploadUserMessage = "There was a problem uploading a file.  Please try again or contact the Helpdesk if this issue continues.";
+
         }
     };
 

@@ -71,11 +71,22 @@
                   <h4>Files to upload:</h4>
                   <table class="table striped">
                       <tr ng-repeat="file in filesToUpload.ItemFiles">
-                          <td>{{file.name}}</td>
-                          <td>{{file.success}}</td>
+                          <td class="modal-file-col1">{{file.name}}</td>
+                          <td class="modal-file-col2">{{file.success}}</td>
                       </tr>
                   </table>
                   
+              </div>
+
+              <div ng-show="removedFiles.length>0">
+                  <hr />
+                  <h4>Removing files:</h4>
+                  <table class="table striped">
+                      <tr ng-repeat="file in removedFiles">
+                          <td class="modal-file-col1">{{file.Name}}</td>
+                          <td class="modal-file-col2">{{file.success}}</td>
+                      </tr>
+                  </table>
               </div>
 
             <!--<button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="remove()">Remove</button>
