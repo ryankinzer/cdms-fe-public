@@ -536,7 +536,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         scope.postEditHabitatItemUpdateGrid = function (edited_item) {
             //console.log("postEditHabitatItemUpdateGrid..." + edited_item.Id + " for subproject " + edited_item.SubprojectId);
 
-            //edit our correspondence item and then reload the grid.
+            //edit our habitat item and then reload the grid.
             scope.subprojectList.forEach(function (item, index) {
                 if (item.Id === edited_item.SubprojectId) {
                     item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort. - this was already updated in the be
