@@ -4,6 +4,10 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
 	$filter, FileUploadService, $upload, $location, $anchorScroll){
 	console.log("Inside ModalAddHabitatItemCtrl...");
+
+    //mixin the properties and functions to enable the modal file chooser for this controller...
+    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.hi_row, "ItemFiles", $scope.viewSubproject.Files);
+
 	
     if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
     {
@@ -12,20 +16,9 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
         console.error("View Subproject is not defined! ");
     }
 
-    $scope.verifyActionFormOpen = "No";
-    $scope.showOtherResponseType = false;
-
-
-    //activate the modal file chooser for this controller...
-    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.hi_row, "ItemFiles", $scope.viewSubproject.Files);
-
-    
 	$rootScope.projectId = $scope.project.Id;
 	console.log("$scope.projectId = " + $scope.projectId);
 	
-	var keepGoing = true;
-	var foundIt = false;
-
     if($scope.hi_row.Id > 0)
     {
         $scope.header_message = "Edit Item for: " + $scope.viewSubproject.ProjectName;
@@ -39,11 +32,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 	}
 
 	console.log("$scope.hi_row is next...");
-	console.dir($scope.hi_row);
-	
-	console.log("$scope (after initialization) is next...");
-	//console.dir($scope);
-
+	console.dir($scope.hi_row);	
 	
 	$scope.openLinkModal = function(row, field)
 	{
@@ -70,7 +59,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
     $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
         return SubprojectService.deleteHabitatItemFile($scope.projectId, $scope.subprojectId, saveRow.Id, file_to_remove);
 
-        // original:
+        // might need some of this???:
         /*
                         if ((typeof saveRow !== 'undefined') && (saveRow.Id !== null)) {
                     console.log("We want to delete a Habitat Item file...");
@@ -119,7 +108,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 
     };
 
-    //called from save above once we're ready to save the item
+    //call back from save above once the files are done processing and we're ready to save the item
     $scope.modalFile_saveParentItem = function (saveRow) {
         var save_item_promise = SubprojectService.saveHabitatItem($scope.projectId, $scope.viewSubproject.Id, saveRow);
 
@@ -169,31 +158,5 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
         $scope.hi_row.ItemFiles = $scope.originalExistingFiles;
 		$modalInstance.dismiss();
     };
-	
-	$scope.gotoBottom = function (){
-		// set the location.hash to the id of
-		// the element you wish to scroll to.
-		$location.hash('bottom');
-		
-		// call $anchorScroll()
-		$anchorScroll();
-	};
-	  
-	$scope.gotoTopHabitatItemsTop = function (){
-		// set the location.hash to the id of
-		// the element you wish to scroll to.
-		console.log("Inside gotoTopHabitatItemsTop...");
-		//$location.hash('top');
-		$location.hash('hiTop');
-		
-		// call $anchorScroll()
-		$anchorScroll();
-	};
-	  
-	$scope.gotoCategory = function (category) {
-		$location.hash(category);
-		$anchorScroll();
-	};
-
   }
 ];
