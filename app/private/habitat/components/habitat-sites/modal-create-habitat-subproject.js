@@ -234,6 +234,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 
     }
 
+    //callback that is called from modalFile to do the actual file removal (varies by module)
+    $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
+        return SubprojectService.deleteHabitatItemFile($scope.projectId, $scope.subprojectId, saveRow.Id, file_to_remove);
+    }
     
     //call back from save above once the files are done processing and we're ready to save the item
     $scope.modalFile_saveParentItem = function (saveRow) {
@@ -305,8 +309,20 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
                 var extended = angular.extend({}, saveRow, promise); //empty + saveRow + promise -- in that order
                 console.dir(extended);
 
-
                 $scope.postSaveHabitatSubprojectUpdateGrid($scope.subproject_edited);
+
+                console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
+                if ($scope.fileCount === 0) {
+                    $scope.loading = false; // Stop the fish spinner.
+                    $scope.showCloseButton = true;
+                    $scope.showCancelButton = false;
+                    $scope.showFormItems = false;
+                }
+
+                if ($scope.filesWithErrors == 0)
+                    $scope.UploadUserMessage = "All actions successful.";
+                else
+                    $scope.UploadUserMessage = "There was a problem uploading a file.  Please try again or contact the Helpdesk if this issue continues.";
 
 			}); //promise/then - after saving habitat subproject
 		}		
@@ -881,11 +897,19 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 		
     };
 
-    $scope.cancel = function(){	
-		$scope.subproject_row = 'undefined';
-        $modalInstance.dismiss();
-		//$scope.reloadSubprojects();
 
+    $scope.close = function () {
+        console.log("Inside $scope.close...");
+        $modalInstance.dismiss();
+    };
+
+    $scope.cancel = function () {
+        //if they've made file changes, the files appear as if they are existing files in the ItemFiles array... 
+        // we need to reset it back to the real, actual existing files.
+
+        $scope.subproject_row = 'undefined';
+        //$scope.hi_row.ItemFiles = $scope.originalExistingFiles;
+        $modalInstance.dismiss();
     };
 
 
