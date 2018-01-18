@@ -429,9 +429,12 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                     //is the file in this subproject?
                     if ((subproject.Id === spFile.Subproject_CrppId))
                     {
-                        if (spFile.FeatureImage === 0)
+                        subproject.Files.push(spFile);
+
+                        //if it is the feature image
+                        if (spFile.FeatureImage === 1)
                         {
-                            subproject.Files.push(spFile);
+                            subproject.FeatureImage = spFile.Name; //connects with modal
                         }
                     }
                     /* delete me
