@@ -718,4 +718,7 @@ a {
     width: 150px;
 }
 
+.has-error {
+    color: #D8000C;
+    background-color: #FFBABA;
 }

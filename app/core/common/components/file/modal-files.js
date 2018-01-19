@@ -26,12 +26,14 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 
         console.log("$scope.file_field.DbColumnName = " + $scope.file_field.DbColumnName);
 
-        //currentFiles are the ones that show up on the modal-file.html "current files" list.
-    	$scope.currentFiles = $scope.originalExistingFiles;
-    	if($scope.currentFiles)
-    		$scope.currentFiles = angular.fromJson($scope.currentFiles);
+        $scope.currentFiles.push("HI");
+
+        if ($scope.originalExistingFiles) {
+            $scope.currentFiles.length = 0;
+            $scope.currentFiles = angular.extend($scope.currentFiles, angular.fromJson($scope.originalExistingFiles));
+        }
     	else
-            $scope.currentFiles = [];
+            $scope.currentFiles.length = 0;
 
         //$scope.original_existingFiles = $scope.file_row[$scope.file_field.DbColumnName];
 
@@ -167,8 +169,9 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 		//	{
 			//	$scope.filesToUpload.Files = undefined;
 			//}
-			
-			//console.dir($scope);
+
+                console.dir($scope.currentFiles);
+
             $modalInstance.dismiss();
 			
 			//ServiceUtilities.setFileName($scope.file_row.FieldSheetFile, $scope) //<-- not sure why this is commented out? kb
@@ -244,6 +247,10 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_row, i
 
     //properties that will be available on your host modal
     $scope.originalExistingFiles = in_row[in_DbColumnName]; //in case the user cancels, we'll need to reset it
+
+    console.log("------------------------ original ");
+    console.dir($scope.originalExistingFiles);
+
     $scope.filesToUpload = {}; //populated by file chooser (filesToUpload.Files)
     $scope.currentFiles = []; //shown on the file modal
     $scope.removedFiles = []; //gets files if the user removes them from currentFiles using the file modal

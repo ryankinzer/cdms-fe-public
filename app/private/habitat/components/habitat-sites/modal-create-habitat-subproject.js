@@ -8,7 +8,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	console.log("Inside ModalCreateHabSubprojectCtrl...");
 
     initEdit(); //prevent backspace
-	
+
     $scope.header_message = "Create new Habitat project";
 	$rootScope.newSubproject = $scope.newSubproject = true;
     $scope.waterbodies = CommonService.getWaterBodies();
@@ -22,7 +22,6 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	$scope.fundersPresent = false;
 	$scope.collaboratorPresent = false;
 	$scope.featureImagePresent = false;
-	
     $scope.subproject_row = {
         StatusId: 0,
         //OwningDepartmentId: 1,
@@ -129,7 +128,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 
         if ($scope.subproject_row.FeatureImage !== null) {
             $scope.subproject_row.ItemFiles = '[{"Name":"' + $scope.subproject_row.FeatureImage + '"}]';
-        }
+        } 
+
 
         values = null; // Set/reuse this variable.
         try {
@@ -667,8 +667,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 			$scope.subprojectSave.errorMessage += "Easting and Northing cannot be blank!  ";
 		}
 		
-        if ($scope.subprojectSave.error)
-            return;
+            if ($scope.subprojectSave.error)
+                return;
 
 
 			console.log("$scope.subproject_row, full is next...");
@@ -907,8 +907,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
         //if they've made file changes, the files appear as if they are existing files in the ItemFiles array... 
         // we need to reset it back to the real, actual existing files.
 
-        $scope.subproject_row = 'undefined';
-        //$scope.hi_row.ItemFiles = $scope.originalExistingFiles;
+        $scope.subproject_row.ItemFiles = $scope.originalExistingFiles;
         $modalInstance.dismiss();
     };
 
