@@ -836,6 +836,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                 console.log(">>>>>>> validating the whole grid baby");
 				console.log("Resetting scope.validation_error_count...");
                 scope.validation_error_count = 0;
+				scope.ValidationCheckRunning = true;
 
                 angular.forEach(scope.dataSheetDataset, function (data_row, key) {
 					//console.log("data_row (before validate) is next...");
@@ -868,6 +869,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                 });
 
                 scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
+				if (!scope.gridHasErrors)
+					scope.ValidationCheckRunning = false;
 
             },
 

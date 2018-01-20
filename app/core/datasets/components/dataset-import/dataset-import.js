@@ -51,6 +51,8 @@
 			$scope.datetimeList = [];
 			$scope.gridHasErrors = false;
 			$scope.weHaveDuplicates = false;
+			$scope.DupeCheckRunning = true;
+			$scope.ValidationCheckRunning = true;
 			
 			//datasheet grid
 			$scope.gridDatasheetOptions = {
@@ -2249,6 +2251,7 @@
 								});
 								
 								console.log("Checking for duplicates is complete...");
+								$scope.DupeCheckRunning = false;
 								//console.log("$scope.dataSheetDataset (after dupe checks) is next...");
 								//$scope.dataSheetDataset.forEach(function(item){
 								//	console.dir(item);
@@ -2432,6 +2435,7 @@
 							{
 								$scope.duplicateEntry = false;
 							}
+							$scope.DupeCheckRunning = false;
 							//console.log("After the 'if' promise.length...");
 							console.log("$scope.dataSheetDataset is next...");
 							console.dir($scope.dataSheetDataset);
