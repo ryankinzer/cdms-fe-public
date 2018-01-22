@@ -2261,6 +2261,7 @@
 							else
 							{
 								$scope.duplicateEntry = false;
+								$scope.DupeCheckRunning = false;
 							}
 							//console.log("After the 'if' promise.length...");
 							$scope.validateGrid($scope);
