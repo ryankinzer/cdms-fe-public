@@ -51,7 +51,7 @@
 					<!--<div class="header-value" style="margin-left: 250px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">-->
 					<div class="header-value" style="margin-left: 300px; min-height: 24px; border: 1px solid lightgrey; border-radius: 3px;">
 						<!--<button class="right btn btn-xs" ng-click="openFileModal(hi_row, field)">Add</button>-->
-						<button class="right btn btn-xs" ng-click="openFileModal(hi_row, field)">Add/Remove</button>
+						<button class="right btn btn-xs" ng-click="openFileModal(hi_row, 'ItemFiles')">Add/Remove</button>
 						<div ng-bind-html="hi_row['ItemFiles'] | fileNamesFromString">&nbsp;</div>
 					</div>
 					
@@ -66,11 +66,10 @@
 				</form>
 			</div>
 
-
-              <div ng-show="!showFormItems && filesToUpload.Files.length > 0">
+              <div ng-show="!showFormItems && filesToUpload['ItemFiles'].length > 0">
                   <h4>Files to upload:</h4>
                   <table class="table striped">
-                      <tr ng-repeat="file in filesToUpload.Files">
+                      <tr ng-repeat="file in filesToUpload['ItemFiles']">
                           <td class="modal-file-col1">{{file.name}}</td>
                           <td class="modal-file-col2">{{file.success}}</td>
                       </tr>

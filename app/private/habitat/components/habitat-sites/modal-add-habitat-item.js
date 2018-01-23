@@ -6,7 +6,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
 	console.log("Inside ModalAddHabitatItemCtrl...");
 
     //mixin the properties and functions to enable the modal file chooser for this controller...
-    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.hi_row, "ItemFiles", $scope.viewSubproject.Files);
+    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files);
 
 	
     if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
@@ -122,7 +122,7 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
                     $scope.postAddHabitatItemUpdateGrid(save_item_promise);
                 }
 
-                if (!$scope.filesToUpload.Files && !$scope.removedFiles.length > 0) {
+                if (!$scope.filesToUpload[$scope.file_field] && !$scope.removedFiles.length > 0) {
                     $modalInstance.dismiss();
                 }
                

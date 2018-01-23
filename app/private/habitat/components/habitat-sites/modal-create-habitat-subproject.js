@@ -208,7 +208,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 
     //ok, all initialized... now:
     //mixin the properties and functions to enable the modal file chooser for this controller...
-    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.subproject_row, "ItemFiles", $scope.viewSubproject.Files);
+    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files);
 
     //this is called to after the location is saved (if necessary) by the save() function.
     $scope.saveFilesAndParent = function () {

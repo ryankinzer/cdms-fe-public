@@ -6,7 +6,7 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', 
 	console.log("Inside ModalAddCorrespondenceEventCtrl...");
 
     //mixin the properties and functions to enable the modal file chooser for this controller...
-    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.ce_row, "EventFiles", $scope.viewSubproject.Files);
+    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files); //"EventFiles"
 
 
 	if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
@@ -394,7 +394,7 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', 
 
                 console.log("all done saving correspondence event!");
 
-                if (!$scope.filesToUpload.Files && !$scope.removedFiles.length > 0) {
+                if (!$scope.filesToUpload[$scope.file_field] && !$scope.removedFiles.length > 0) {
                     $modalInstance.dismiss();
                 }
 

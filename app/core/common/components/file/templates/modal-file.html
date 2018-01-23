@@ -35,10 +35,10 @@
             </div>
 
 
-            <div ng-show="filesToUpload.Files.length > 0">
+            <div ng-show="filesToUpload[file_field].length > 0">
                 <h4>Files to upload:</h4>
                 <table class="table striped">
-                    <tr ng-repeat="file in filesToUpload.Files">
+                    <tr ng-repeat="file in filesToUpload[file_field]">
                         <td class="modal-file-col1">{{file.name}}</td>
                         <td class="modal-file-col2">{{file.UploadMessage}}</td>
                         <td class="modal-file-col2"><button class="btn btn-xs" ng-click="removeFileFromUpload(file)">Remove</button></td>
@@ -47,7 +47,7 @@
             </div>
 
             <h4>Add file(s):</h4>
-            <input type="file" ng-file-select="onFileSelect(file_field.DbColumnName,$files)" value="Something" multiple>
+            <input type="file" ng-file-select="onFileSelect(file_field,$files)" value="Something" multiple>
 
         </div>
         <div class="modal-footer">

@@ -24,10 +24,9 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
     	//note: files selected for upload are managed by onFileSelect from parent scope, in one of the following places: 
 		// ModalAddCorrespondenceEventCtrl, ModalAddHabitatItemCtrl
 
-        console.log("$scope.file_field.DbColumnName = " + $scope.file_field.DbColumnName);
+        console.log("$scope.file_field = " + $scope.file_field);
 
-        $scope.currentFiles.push("HI");
-
+        //note: we are extending here or clearing with length=0 in order to avoid creating a local copy of this property in our child scope.
         if ($scope.originalExistingFiles) {
             $scope.currentFiles.length = 0;
             $scope.currentFiles = angular.extend($scope.currentFiles, angular.fromJson($scope.originalExistingFiles));
@@ -37,16 +36,9 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 
         //$scope.original_existingFiles = $scope.file_row[$scope.file_field.DbColumnName];
 
-		console.log("$scope.currentFiles (after check) is next...");
-        console.dir($scope.currentFiles);
-        console.log("And original");
-        console.dir($scope.originalExistingFiles);
+		console.log("$scope.currentFiles is : ", $scope.currentFiles);
+        console.log("And originalExistingFiles: ", $scope.originalExistingFiles);
 		
-		//$rootScope.currentFiles = angular.copy($scope.currentFiles);
-		//console.log("$rootScope.currentFiles is next...");
-		//console.dir($rootScope.currentFiles);
-
-
         //removes the file from currentFiles and adds to removedFiles (does NOT actually delete the file) 
         // - fires when user click remove button on current files
     	$scope.removeFile = function(file)
@@ -74,13 +66,13 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
         //remove this file from the $scope.filesToUpload - fires when user clicks "remove" button on file to upload
         $scope.removeFileFromUpload = function (file_to_remove) {
             var remainingFiles = [];
-            $scope.filesToUpload.Files.forEach(function (file) {
+            $scope.filesToUpload[$scope.file_field].forEach(function (file) {
                 if (file.Name !== file_to_remove.Name) {
                     remainingFiles.push(file);
                 }
             });
 
-            $scope.filesToUpload.Files = remainingFiles;
+            $scope.filesToUpload[$scope.file_field] = remainingFiles;
         };
 
         //fires when user clicks "done" button --> doesn't execute upload/removes, just gets everything ready for the host modal
@@ -89,10 +81,10 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 
             var hasFilesToUpload = true;
 
-            if (!Array.isArray($scope.filesToUpload.Files) || $scope.filesToUpload.Files.length == 0)
+            if (!Array.isArray($scope.filesToUpload[$scope.file_field]) || $scope.filesToUpload[$scope.file_field].length == 0)
             {
                 hasFilesToUpload = false;
-                $scope.filesToUpload.Files = undefined;
+                $scope.filesToUpload[$scope.file_field] = undefined;
             }
 
 			$rootScope.viewSubproject = $scope.viewSubproject; // Add this to the $rootScope, so that the filters can see it.
@@ -122,7 +114,7 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
                 var filesReadyToUpload = [];
 
                 //remove any duplicates
-                $scope.filesToUpload.Files.forEach(function (incoming_file, key) {
+                $scope.filesToUpload[$scope.file_field].forEach(function (incoming_file, key) {
                     if (isDuplicateUploadFile(incoming_file, $scope.modalFiles_filesToCheckForDuplicates)) {
                         $scope.foundDuplicate = true;
                         errors.push("Ignoring: " + incoming_file.Name + " - file already exists." + "\n");
@@ -133,7 +125,7 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
                 });
 
                 //set our uploads to only files that are ready.
-                $scope.filesToUpload.Files = filesReadyToUpload;
+                $scope.filesToUpload[$scope.file_field] = filesReadyToUpload;
 
                 // Inform the user we've removed their duplicate files.
                 if ($scope.foundDuplicate) {
@@ -143,11 +135,11 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
             }
             
             // -- i think we always need this...
-            //if ($scope.filesToUpload.Files.length > 0)
+            //if ($scope.filesToUpload[$scope.file_field].length > 0)
 			//{
 				//copy back to the actual row field, whatever the state of currentFiles (maybe removed ones)
-                console.log("$scope.file_field.DbColumnName = " + $scope.file_field.DbColumnName);
-				$scope.file_row[$scope.file_field.DbColumnName] = angular.toJson($scope.currentFiles);
+                console.log("$scope.file_field = " + $scope.file_field);
+				$scope.file_row[$scope.file_field] = angular.toJson($scope.currentFiles);
 				console.log("$scope.file_row is next...");
 				console.dir($scope.file_row);
 				
@@ -167,7 +159,7 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 			//}
 			//else
 		//	{
-			//	$scope.filesToUpload.Files = undefined;
+			//	$scope.filesToUpload[$scope.file_field] = undefined;
 			//}
 
                 console.dir($scope.currentFiles);
@@ -181,7 +173,7 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
         $scope.uploadWaypoints = function(){
             var formData = new FormData();
 
-            angular.forEach($scope.filesToUpload.Files, function(incoming_file, key){
+            angular.forEach($scope.filesToUpload[$scope.file_field], function(incoming_file, key){
                 formData.append('file', incoming_file);
             });
 
@@ -217,8 +209,8 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 
         $scope.cancel = function () {
             $scope.removedFiles.length=0;
-            $scope.file_row[$scope.file_field.DbColumnName] = $scope.originalExistingFiles;
-            $scope.filesToUpload.Files = undefined;
+            $scope.file_row[$scope.file_field] = $scope.originalExistingFiles;
+            $scope.filesToUpload[$scope.file_field] = undefined;
             $modalInstance.dismiss();
         };
 
@@ -238,20 +230,12 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
  *  Sets up the given scope for your host modal with properties and methods it needs to handle uploading
  * @param {scope} $scope scope of your host modal to populate
 *  @param {$modal} $modal modal controller
-*  @param {array} in_row data row 
-*  @param {string} in_DBColumnName DbColumnName to use on the filesToUpload array.
 *  @param {array} in_files_to_check_for_duplicates Array of files to check for duplicates
  */
-function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_row, in_DbColumnName, in_files_to_check_for_duplicates) {
+function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_to_check_for_duplicates) {
     console.log('Setting up controller for file chooser modal...');
 
-    //properties that will be available on your host modal
-    $scope.originalExistingFiles = in_row[in_DbColumnName]; //in case the user cancels, we'll need to reset it
-
-    console.log("------------------------ original ");
-    console.dir($scope.originalExistingFiles);
-
-    $scope.filesToUpload = {}; //populated by file chooser (filesToUpload.Files)
+    $scope.filesToUpload = {}; //populated by file chooser (filesToUpload[$scope.file_field])
     $scope.currentFiles = []; //shown on the file modal
     $scope.removedFiles = []; //gets files if the user removes them from currentFiles using the file modal
     $scope.UploadUserMessage = "saving, please wait...";
@@ -263,25 +247,30 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_row, i
     $scope.fileProgress = 0;
 
     $scope.modalFiles_filesToCheckForDuplicates = in_files_to_check_for_duplicates;
-    $scope.modalFiles_DbColumnName = in_DbColumnName;
     $scope.$modal = $modal;
 
 
-    //opens the file modal
+    //opens the file modal. pass in the datarow and the field that we're managing files for
+    //we set $scope.file_row and $scope.file_field so they are available later while we work with this field.
     $scope.openFileModal = function (row, field) {
 
+        //properties that will be available on your host modal
+        $scope.originalExistingFiles = row[field]; //in case the user cancels, we can reset it
+
+        console.log("------------------------ original files are set to: ", $scope.originalExistingFiles);
         $modal = $scope.$modal; //since we're in a different scope
 
-        console.log("Inside openFileModal...");
-        console.log("row is next...");
-        console.dir(row);
-        console.log("field is next...");
-        console.dir(field);
+                console.log("row is next...", row);
+        console.log("field is next...:", field);
+        
         $scope.file_row = row;
-        //$scope.file_field = field;
-        $scope.file_field = {
-            DbColumnName: $scope.modalFiles_DbColumnName
-        };
+        
+        //$scope.file_field = {
+        //    DbColumnName: field
+        //};
+
+        //lets see if we can do without the .DbColumnName
+        $scope.file_field = field;
 
         var modalInstance = $modal.open({
             templateUrl: 'app/core/common/components/file/templates/modal-file.html',
@@ -295,8 +284,9 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_row, i
     $scope.onFileSelect = function (field, files) {
         console.log("Inside onFileSelect");
         //console.log("file selected! " + field);
-        //console.dir(files);
-        //console.log("what was in there?");
+        
+        console.log("We will set the field to be: ", field);
+        console.log(field);
 
         files.forEach(function (file) {
             if (isDuplicateUploadFile(file, $scope.modalFiles_filesToCheckForDuplicates))
@@ -305,8 +295,8 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_row, i
                 file.UploadMessage = "Ready to upload.";
         });
 
-        $scope.filesToUpload.Files = files;
-        console.dir($scope.filesToUpload);
+        $scope.filesToUpload[field] = files; //probably need this to be [field];
+        console.log("filesToUpload",$scope.filesToUpload);
     };
 
 
@@ -358,7 +348,7 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_row, i
 
 
         // Now let's handle incoming files if we have them.
-        if ($scope.filesToUpload.Files) { 
+        if ($scope.filesToUpload[$scope.file_field]) { 
 
             //ok, setup our watcher that will run when all files are uploaded -------------------------------------
             var fileProgressWatcher = $scope.$watch('fileProgress', function () {
@@ -375,17 +365,17 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_row, i
                 fileProgressWatcher(); //stop the watcher once we're done uploading...
 
                 console.log("before we remove the failed files...");
-                console.log(saveRow[$scope.modalFiles_DbColumnName]);
+                console.log(saveRow[$scope.file_field]);
 
                 //remove any failed files from the saveRow.ItemFiles/EventFiles/etc column
                 var remaining_files = [];
-                var current_files = angular.fromJson(saveRow[$scope.modalFiles_DbColumnName]);
+                var current_files = angular.fromJson(saveRow[$scope.file_field]);
                 if (current_files && Array.isArray(current_files)) {
 
                     current_files.forEach(function (file_to_check) {
                         //then find the file in the uploads... did it fail?
                         var uploading_this_one = false;
-                        $scope.filesToUpload.Files.forEach(function (upload_file) {
+                        $scope.filesToUpload[$scope.file_field].forEach(function (upload_file) {
                             if (upload_file.Name === file_to_check.Name) {
                                 uploading_this_one = true;
                                 if (upload_file.success === "Success")
@@ -397,9 +387,9 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_row, i
                     });
                 }
 
-                saveRow[$scope.modalFiles_DbColumnName] = angular.toJson(remaining_files);
+                saveRow[$scope.file_field] = angular.toJson(remaining_files);
                 console.log("after we remove the failed files...");
-                console.log(saveRow[$scope.modalFiles_DbColumnName]);
+                console.log(saveRow[$scope.file_field]);
 
                 //save the item...
                 $scope.modalFile_saveParentItem(saveRow);
@@ -408,12 +398,12 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_row, i
 
             // --------------------------------------------- end of watcher.
 
-            console.log("incoming files to upload = " + $scope.filesToUpload.Files.length);
-            console.dir($scope.filesToUpload.Files);
+            console.log("incoming files to upload = " + $scope.filesToUpload[$scope.file_field].length);
+            console.dir($scope.filesToUpload[$scope.file_field]);
 
-            $scope.fileCount = $scope.filesToUpload.Files.length;
+            $scope.fileCount = $scope.filesToUpload[$scope.file_field].length;
 
-            $scope.filesToUpload.Files.forEach(function (file) {
+            $scope.filesToUpload[$scope.file_field].forEach(function (file) {
                 console.log("incoming file:");
                 console.dir(file);
 

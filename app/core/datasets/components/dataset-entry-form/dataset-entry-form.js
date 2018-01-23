@@ -98,6 +98,12 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$rootScope.datasetId = " + $rootScope.datasetId);
             $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id); // This will be used for checking for duplicate files, in the dataset files.
 
+            //once the dataset files load, setup our file handler
+            $scope.dataset.Files.$promise.then(function () {
+                //mixin the properties and functions to enable the modal file chooser for this controller...
+                modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
+            });
+
             $scope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             $scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix, "form");  // Pass the TablePrefix (name of the dataset), because it will never change.
@@ -194,6 +200,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
             //console.dir($scope);
         });
 
+        
         //update our location options as soon as our project is loaded.
         // The project gets called/loaded in $scope.$watch('dataset.Fields' (above), so $scope.DatastoreTablePrefix was set there.
         $scope.$watch('project.Name', function () {
