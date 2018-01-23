@@ -1157,3 +1157,20 @@ function isObjectEmpty(obj) {
 	}
 	return true;
 };
+
+// This function expects a string looking like this:  "a;b;c;d;"
+// and converts the string into an array looking like this:  [a,b,c,d].
+function convertStringToArray(aString){
+	console.log("Inside common-functions.js, convertStringToArray...");
+	//console.log("aString = " + aString);
+		
+	var aryItems = aString.split(";");
+	//console.log("aryItems is next...");
+	//console.dir(aryItems);
+	
+	// Next, get rid of that trailing semicolon record.
+	aryItems.splice(-1, 1);
+	//console.dir(aryItems);
+	
+	return aryItems;
+}
