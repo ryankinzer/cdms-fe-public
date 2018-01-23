@@ -111,6 +111,10 @@ projects_module.factory('RemoveProjectFisherman', ['$resource', function ($resou
     return $resource(serviceUrl + '/api/v1/fishermen/removeprojectfisherman');
 }]);
 
+projects_module.factory('GetCrppStaff', ['$resource', function($resource){
+    return $resource(serviceUrl+'/api/v1/user/GetCrppStaff'); // This line will need adjusting.
+}]);
+
 
 /*
 * define the service that can be used by any module in our application to work with projects.
@@ -140,6 +144,7 @@ projects_module.service('ProjectService', ['$q',
     'GetProjectFishermen',
     'RemoveProjectFisherman',
     'RemoveInstrumentAccuracyCheck',
+	'GetCrppStaff',
     function ($q,
         ProjectFunders,
         ProjectCollaborators,
@@ -164,7 +169,9 @@ projects_module.service('ProjectService', ['$q',
         GetFishermen,
         GetProjectFishermen,
         RemoveProjectFisherman,
-        RemoveInstrumentAccuracyCheck) {
+        RemoveInstrumentAccuracyCheck,
+		GetCrppStaff
+		) {
 
         var service = {
             project: null,
@@ -348,7 +355,12 @@ projects_module.service('ProjectService', ['$q',
                 console.dir(file);
                 return DeleteFile.save({ ProjectId: projectId, File: file });
             },
-
+			
+			getCrppStaff: function()
+            {
+				console.log("Inside getCrppStaff...");
+                return GetCrppStaff.query();
+            },
         };
 
         return service;
