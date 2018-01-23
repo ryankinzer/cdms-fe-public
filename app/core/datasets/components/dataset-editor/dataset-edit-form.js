@@ -7,9 +7,9 @@
 //Fieldsheet / form version of the dataentry page
 //was "DataEditCtrl" from DataEditControllers
 var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$modal', '$location', '$rootScope',
-    'ActivityParser', 'DataSheet', 'FileUploadService', '$upload',
+    'ActivityParser', 'DataSheet', '$upload',
     function ($scope, $q, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
-        ActivityParser, DataSheet, UploadService, $upload) {
+        ActivityParser, DataSheet, $upload) {
 
         initEdit(); // stop backspace from ditching in the wrong place.
 
@@ -745,6 +745,8 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             //}
         };
 
+        /*
+
         $scope.viewRelation = function (row, field_name) {
             //console.dir(row.entity);
             var field = $scope.FieldLookup[field_name];
@@ -764,9 +766,11 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                 scope: $scope,
             });
         };
+        */
 
-
+        
         /* -- these functions are for uploading - */
+        /*
         $scope.openFileModal = function (row, field) {
             console.log("Inside DataEditCtrl, openFileModal...");
             //console.log("row is next...");
@@ -814,7 +818,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                 scope: $scope, //scope to make a child of
             });
         };
-
+        */
         $scope.openWaypointFileModal = function (row, field) {
             $scope.file_row = row;
             $scope.file_field = field;
@@ -827,12 +831,15 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
         };
 
         //field = DbColumnName
+        /*
         $scope.onFileSelect = function (field, files) {
             //console.log("file selected! " + field)
             $scope.filesToUpload[field] = files;
         };
+        */
 
-        //this function gets called when a user clicks the "Add" button in a GRID file cell
+
+        //this function gets called when a user clicks the "Add" button in a GRID file cell ------------------------------<<<<<<<<<<<<<<<<< TODO
         $scope.addFiles = function (row, field_name) {
             var field = $scope.FieldLookup[field_name];
 
@@ -845,7 +852,8 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                 $scope.updatedRows.push(row.entity.Id);
 
         };
-        /*  -- */
+        
+        
 
         $scope.saveData = function () {
             console.log("Saving edited data!");
@@ -857,128 +865,27 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                     return;
             }
 
-            var promise = UploadService.uploadFiles($scope.filesToUpload, $scope);
-            if ($scope.foundDuplicate) {
-                alert("One or more of the files to upload is a duplicate!");
-                return;
-            }
-            if ($scope.filesToUpload.FieldSheetFile) {
-                for (var i = 0; i < $scope.filesToUpload.FieldSheetFile.length; i++) {
-                    var file = $scope.filesToUpload.FieldSheetFile[i];
-                    console.log("file is next...");
-                    console.dir(file);
+            //handle saving the files.
+            var data = {
+                ProjectId: $scope.project.Id,
+                DatasetId: $scope.dataset.Id,
+            };
 
-                    var newFileNameLength = file.name.length;
-                    console.log("file name length = " + newFileNameLength);
+            var target = '/api/v1/file/uploaddatasetfile';
 
-                    console.log("file.type = " + file.type);
-                    if ($scope.uploadFileType === "image") {
-                        console.log("We have an image...");
-                        for (var n = 0; n < $scope.project.Images.length; n++) {
-                            var existingFileName = $scope.project.Images[n].Name;
-                            console.log("existingFileName = " + existingFileName);
-                            var existingFileNameLength = existingFileName.length;
-                            if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
-                                $scope.foundDuplicate = true;
-                                console.log(file.name + " already exists in the project file list.");
-                                errors.push(file.name + " already exists in the list of project images.");
-                            }
-                        }
-                    }
-                    else {
-                        console.log("We have something other than an image...");
-                        for (var n = 0; n < $scope.project.Files.length; n++) {
-                            var existingFileName = $scope.project.Files[n].Name;
-                            console.log("existingFileName = " + existingFileName);
-                            var existingFileNameLength = existingFileName.length;
-                            if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
-                                $scope.foundDuplicate = true;
-                                console.log(file.name + " already exists in the project file list.");
-                                errors.push(file.name + " already exists in the list of project Files.");
-                            }
-                        }
-                    }
+            var saveRow = $scope.file_row;
 
-                    console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);
-
-                    if ($scope.foundDuplicate)
-                        alert(errors);
-
-                    // We are uploading a second time?
-					/*
-					else
-					{
-						console.log("Not a duplicate.  Uploading the file...");
-						if(file.success != "Success")
-						{
-							$scope.upload = $upload.upload({
-								url: serviceUrl + '/data/UploadProjectFile',
-								method: "POST",
-								// headers: {'headerKey': 'headerValue'},
-								// withCredential: true,
-								//data: {ProjectId: $scope.project.Id, Description: "Uploaded file " + file.Name, Title: file.Name},
-								data: {ProjectId: $scope.project.Id, Description: "Uploaded file " + file.Name, Title: file.Name, DatastoreTablePrefix: $scope.DatastoreTablePrefix},
-								file: file,
-
-								}).progress(function(evt) {
-									console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-								}).success(function(data, status, headers, config) {
-									config.file.success = "Success";
-								}).error(function(data, status, headers, config) {
-									$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
-									//console.log(file.name + " was error.");
-									config.file.success = "Failed";
-								});		
-						}
-					}
-					*/
-                }
-
-                // The app works without this section.
-				/*
-				//spin through the files that we uploaded
-				angular.forEach($scope.filesToUpload, function(files, field){
-
-					console.log("field is next...");
-					console.dir(field);
-					if(field == "null" || field == "")
-						return;
-
-					var local_files = [];
-
-					//if we have files in this field, copy them in
-					if($scope.file_row[field])
-					{
-						console.log("We already have some files.  Copying those in first.")
-						var current_files = angular.fromJson($scope.file_row[field]); // This line gets stuck, or stops, or something.
-						console.log("current_files is next...");
-						console.dir(current_files);
-						angular.forEach(current_files, function(file){
-							if(file.Id) //our incoming files don't have an id, just actual files.
-								local_files.push(file);		
-						});
-					}
-
-					console.log("local_files is next...");
-					console.dir(local_files);
-					if (local_files.length > 0)
-					{
-						$scope.file_row[field] = angular.toJson(local_files);
-						console.log("$scope.file_row[field] (new list) is next...");
-						console.dir($scope.file_row[field]);
-						//console.log("Ok our new list of files: "+$scope.row[field]);
-					}
-				});
-				*/
-
-                $scope.saveDatasheetData();
-            }
-            else {
-                $scope.saveDatasheetData();
-            }
+            $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+            
         };
 
-        $scope.saveDatasheetData = function () {
+        //remove file from dataset.
+        $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
+            return DatasetService.deleteDatasetFile($scope.projectId, $scope.datasetId, file_to_remove);
+        };
+
+        //was saveDatasheetData
+        $scope.modalFile_saveParentItem = function (saveRow) {
             console.log("Inside saveDatasheetData, $scope is next...");
             //console.dir($scope);
 

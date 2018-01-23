@@ -1,8 +1,8 @@
 ﻿
 var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','SubprojectService','ServiceUtilities',
-	'$filter', 'FileUploadService','$upload','$location', '$anchorScroll',
+	'$filter', '$upload','$location', '$anchorScroll',
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
-	$filter, FileUploadService, $upload, $location, $anchorScroll){
+	$filter, $upload, $location, $anchorScroll){
 	console.log("Inside ModalAddCorrespondenceEventCtrl...");
 
     //mixin the properties and functions to enable the modal file chooser for this controller...

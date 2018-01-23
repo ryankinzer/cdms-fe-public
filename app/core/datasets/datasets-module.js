@@ -29,7 +29,7 @@ require([
     'core/datasets/services/activity-parser',
     'core/datasets/services/convert-status',
     'core/datasets/services/datasheet',
-    'core/datasets/services/file-upload',
+    //'core/datasets/services/file-upload',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!

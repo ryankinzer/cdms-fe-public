@@ -1,11 +1,13 @@
-﻿// was DataEntryFormCtrl from DataEntryControllers
+﻿
+//THIS IS GOING AWAY!
+// was DataEntryFormCtrl from DataEntryControllers
 //Fieldsheet / form version of the dataentry page
 var dataset_entry_form = ['$scope', '$routeParams',
     'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$modal', '$location', '$rootScope',
-    'ActivityParser', 'DataSheet', '$route', 'FileUploadService', '$upload',
+    'ActivityParser', 'DataSheet', '$route', '$upload',
     function ($scope, $routeParams,
         DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
-        ActivityParser, DataSheet, $route, UploadService, $upload) {
+        ActivityParser, DataSheet, $route, $upload) {
 
         initEdit(); // stop backspace from ditching in the wrong place.
 

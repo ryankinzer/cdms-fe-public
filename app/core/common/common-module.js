@@ -25,8 +25,8 @@ require([
     'core/common/components/modals/modal-verify-action',
     'core/common/components/modals/modal-invalid-operation',
 
-    'core/common/components/file/modal-file-add',
-    'core/common/components/file/modal-file-delete',
+    //'core/common/components/file/modal-file-add',
+    //'core/common/components/file/modal-file-delete',
     'core/common/components/file/modal-files',
     'core/common/components/file/modal-exportfile',
     
@@ -56,8 +56,8 @@ require([
     common_module.controller('ModalVerifyActionCtrl', modal_verify_action);
     common_module.controller('ModalInvalidOperation', modal_invalid_operation);
 
-    common_module.controller('FileAddModalCtrl', modal_file_add);
-    common_module.controller('FileDeleteModalCtrl', modal_file_delete);
+    //common_module.controller('FileAddModalCtrl', modal_file_add);
+    //common_module.controller('FileDeleteModalCtrl', modal_file_delete);
     common_module.controller('FileModalCtrl', modal_files); 
     
 });
