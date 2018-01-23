@@ -39,27 +39,61 @@
     </div>
     <!--<div class="header-box" style="margin-top: 20px; width: 550px;">-->
     <div class="header-box" style="margin-top: 20px; width: 600px;">
-            <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
-                <div class="header-label">Location:</div>
-                <div class="header-value">
-                    <!--<select ui-select2="select2Options" data-placeholder="Choose a Location" style="width: 200px; margin-top: 4px;" ng-model="row['locationId']" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
-                    <!--<select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
-                    <select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'" ng-change="onLocationChange()"></select>
-                </div>
-            </div>
-            <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
-                <div class="header-label">Activity Date:</div>
-                <div class="header-value">
-                    <!--<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="aopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
-                    <input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="aopened" datepicker-options="dateOptions" ng-required="false" ng-change="onActivityDateChange()" close-text="Close" />
-                </div>
-            </div>
-            <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('SampleDate')">
-                <div class="header-label">Sample Date:</div>
-                <div class="header-value">
-                    <input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="copened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-                </div>
-            </div>
+		<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
+			<div class="header-label">Location:</div>
+			<div class="header-value">
+				<!--<select ui-select2="select2Options" data-placeholder="Choose a Location" style="width: 200px; margin-top: 4px;" ng-model="row['locationId']" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
+				<!--<select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
+				<select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'" ng-change="onLocationChange()"></select>
+			</div>
+		</div>
+		
+		<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('ProjectLead')">
+			<div class="header-label">Project Lead:</div>
+			<div class="header-value">
+				<table>
+					<tr>
+						<td>
+							<!--<select ui-select2="select2Options" multiple="multiple" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>-->
+							<select ui-select2="select2Options" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>
+						</td>
+						<td><button class="right btn btn-xs" ng-click="addProjectLead()">+</button></td>
+						<td><button class="right btn btn-xs" ng-click="removeProjectLead()">-</button></td>	
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div>
+			<div ng-show="showProjectLeads">
+				<div class="header-label">Selected Project Leads:</div>
+				<div class="header-value">
+					<!--<input class="form-control" type="text" ng-model="subproject_row.txtCounty" />-->
+					<textarea class="form-control" type="text" rows="4"  readonly ng-model="row.strProjectLead" ></textarea>
+				</div>
+			</div>
+		</div>
+		
+		<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
+			<div class="header-label">Activity Date:</div>
+			<div class="header-value">
+				<!--<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="aopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
+				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="aopened" datepicker-options="dateOptions" ng-required="false" ng-change="onActivityDateChange()" close-text="Close" />
+			</div>
+		</div>
+		<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('SampleDate')">
+			<div class="header-label">Sample Date:</div>
+			<div class="header-value">
+				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="copened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+			</div>
+		</div>
+		<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('DateReceived')">
+			<div class="header-label">Date Received:</div>
+			<div class="header-value">
+				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="bopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+			</div>
+		</div>
+		
 		<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Timezone')">
 			<div class="header-label">Reading Timezone:</div>
 			<div class="header-value">
@@ -87,7 +121,7 @@
 			</div>
 		</div>
 
-        <form novalidate class="row-form">
+		<form novalidate class="row-form">
 			<div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
 				<ctuir-text-field ng-switch-when="text"></ctuir-text-field>
 				<ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
@@ -120,7 +154,7 @@
 				</div>  
 			</div>
 
-        </form>
+		</form>
     </div>
 
 	<div ng-hide="dataset.Config && (dataset.Config.DataEntryPage.HiddenFields.indexOf('theDetails') > -1)">
