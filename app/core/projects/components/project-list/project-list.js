@@ -53,7 +53,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
         };
 
         scope.click = function(e){
-			console.log("Inside controllers.js, scope.click...");
+			console.log("Inside project-list.js, scope.click...");
 			// If the user has already clicked on another point, the projects list has been filtered.
 			// We need to set the projects list back to the full list.
 			scope.projects = scope.allProjects;
@@ -89,7 +89,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 		
 		scope.$watch('infoContent', function()
 		{
-			console.log("Inside controllers.js, watch infoContent...");
+			console.log("Inside project-list.js, watch infoContent...");
 			var matchingProjects = [];
 			var html = "";
 			
@@ -98,7 +98,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 			else if(scope.infoContent.length === 0)
 				return;
 			
-			console.log("Inside controllers.js, watch infoContent...");
+			console.log("Inside project-list.js, watch infoContent...");
 			console.log("scope.infoContent is next...");
 			console.dir(scope.infoContent);
 			console.log("scope.mapEvent.mapPoint is next...");
@@ -110,7 +110,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 
         scope.getInfoContent = function(graphic)
         {
-			console.log("Inside controllers.js, getInfoContent...");
+			console.log("Inside project-list.js, getInfoContent...");
 			console.log("graphic is next...");
 			console.dir(graphic);
 			var matchingProjects = [];
@@ -173,7 +173,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
         var project_watcher = scope.$watch('projects',function(){
             if(scope.projects)
             {
-                //console.log("Inside controllers.js, watch projects...");
+                //console.log("Inside project-list.js, watch projects...");
 				////console.log("scope is next...");
 				////console.dir(scope);
 				
@@ -206,8 +206,8 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 				//console.dir(scope.locationObjectIdArray);
 
                 scope.locationObjectIds = scope.locationObjectIdArray.join();
-				console.log("typeof scope.locationObjectId = " + typeof scope.locationObjectId);
-                console.log("In controllers, projects watcher, found project locations: " + scope.locationObjectIds);
+				//console.log("typeof scope.locationObjectId = " + typeof scope.locationObjectId);
+                console.log("In project-list.js, projects watcher, found project locations: " + scope.locationObjectIds);
 
 				//console.log("scope.map is next...");
 				//console.dir(scope.map);
@@ -218,6 +218,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                     scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
 
                 if (scope.agGridOptions === undefined) {
+					console.log("Inside project-list.js...");
                     console.log(" ----------- ok we are defining our grid...");
 
                     //define the cell renderer (template) for our "Project Name" column.
@@ -250,9 +251,9 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                         }
                     };
 
-                    console.log("number of projects: " + scope.projects.length);
+                    console.log("Inside project-list.js, number of projects: " + scope.projects.length);
 
-                    console.log("starting ag-grid");
+                    console.log("Inside project-list.js, starting ag-grid");
                     var ag_grid_div = document.querySelector('#project-list-grid');    //get the container id...
                     scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
 
@@ -261,6 +262,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 
                 } else { 
                     //we didn't need to redefine but do need to redraw
+					console.log("Inside project-list.js...")
                     console.log("----- ok we have projects and are defined -- setting new rowdata  ----");
 
                     console.log("setting number of projects: " + scope.projects.length);

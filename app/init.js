@@ -57,7 +57,7 @@
                     console.log("Booting angular...");
                     setTimeout(function () {
                         angular.bootstrap(document.body, ['app']);
-                        console.log("all systems GO!")
+                        console.log("Inside init.js, all systems GO!")
                     }, 2000);
                 });
                 
