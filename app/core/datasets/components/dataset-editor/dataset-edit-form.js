@@ -138,6 +138,13 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             console.log("$rootScope.datasetId = " + $rootScope.datasetId);
             $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
 
+            //once the dataset files load, setup our file handler
+            $scope.dataset.Files.$promise.then(function () {
+                //mixin the properties and functions to enable the modal file chooser for this controller...
+                console.log("---------------- setting up dataset file chooser ----------------");
+                modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
+            });
+
             $scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             $scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix, "form");  // Pass the TablePrefix (name of the dataset), because it will never change.

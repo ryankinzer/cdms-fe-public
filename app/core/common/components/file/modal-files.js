@@ -21,8 +21,6 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 			$scope.onRow.errors = [];
 		
 		$scope.foundDuplicate = false;
-    	//note: files selected for upload are managed by onFileSelect from parent scope, in one of the following places: 
-		// ModalAddCorrespondenceEventCtrl, ModalAddHabitatItemCtrl
 
         console.log("$scope.file_field = " + $scope.file_field);
 
