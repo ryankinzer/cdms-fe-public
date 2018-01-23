@@ -100,6 +100,13 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$rootScope.datasetId = " + $rootScope.datasetId);
             $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id); // This will be used for checking for duplicate files, in the dataset files.
 
+            //once the dataset files load, setup our file handler
+            $scope.dataset.Files.$promise.then(function () {
+                //mixin the properties and functions to enable the modal file chooser for this controller...
+                console.log("---------------- setting up dataset file chooser ----------------");
+                modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
+            });
+
             $scope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             $scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix, "form");  // Pass the TablePrefix (name of the dataset), because it will never change.
@@ -687,6 +694,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
             $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
         }
 
+        /*
         $scope.viewRelation = function (row, field_name) {
             console.dir(row.entity);
             var field = $scope.FieldLookup[field_name];
@@ -706,8 +714,11 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 scope: $scope,
             });
         };
+        */
+
 
         /* -- these functions are for uploading - */
+        /*
         $scope.openFileModal = function (row, field) {
             console.log("Inside DataEntryFormCtrl, openFileModal");
             //console.dir(row);
@@ -754,7 +765,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 scope: $scope, //scope to make a child of
             });
         };
-
+        */
         $scope.openWaypointFileModal = function (row, field) {
             $scope.file_row = row;
             $scope.file_field = field;
@@ -766,12 +777,13 @@ var dataset_entry_form = ['$scope', '$routeParams',
             });
         };
 
+        /*
         //field = DbColumnName
         $scope.onFileSelect = function (field, files) {
             console.log("Inside DataEntryFormCtrl, onFileSelect");
             console.log("file selected! " + field);
             $scope.filesToUpload[field] = files;
-        };
+        };*/
 
         //this function gets called when a user clicks the "Add" button in a GRID file cell
         $scope.addFiles = function (row, field_name) {
@@ -795,12 +807,9 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			$scope.duplicateEntry = undefined;
 			$scope.saving = true;
 			
-			$scope.checkForDuplicates();
-        };
-		
-		$scope.continueSaving = function(){
-			//console.log("Inside $scope.continueSaving...");
-			
+            $scope.checkForDuplicates();
+
+            //TODO: we should really break this all out somehow so there isn't special handling in here for certain datasets...
             /**** CreeSurvey Header Time Time calculations Start ****/
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 // Headers = row
@@ -872,6 +881,34 @@ var dataset_entry_form = ['$scope', '$routeParams',
             }
             /**** CreeSurvey Header Time Time calculations End ****/
 
+
+            //handle saving the files.
+            var data = {
+                ProjectId: $scope.project.Id,
+                DatasetId: $scope.dataset.Id,
+            };
+
+            var target = '/api/v1/file/uploaddatasetfile';
+
+            var saveRow = $scope.file_row;
+
+            $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+
+
+        };
+
+        //remove file from dataset.
+        $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
+            return DatasetService.deleteDatasetFile($scope.projectId, $scope.datasetId, file_to_remove);
+        };
+		
+
+        /*
+        $scope.continueSaving = function () {
+            //console.log("Inside $scope.continueSaving...");
+			
+           
+
             // Orignal line.  
             //var promise = UploadService.uploadFiles($scope.filesToUpload, $scope);
 			/* Notes:  In the line above, the returned promise is an array.  IE does not handle a promise like that.
@@ -889,6 +926,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
 
             // We need to check for duplicate file names first.
+            /*
             if ($scope.foundDuplicate) {
                 alert("One or more of the files to upload is a duplicate!");
                 return;
@@ -1011,9 +1049,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
 					$scope.saveDatasheetData();
 				}
 			}
-		};
-
-        $scope.saveDatasheetData = function () {
+    };
+*/
+        //was saveDatasheetData - this callback is called once the files are all done saving.
+        $scope.modalFile_saveParentItem = function (saveRow) {
             console.log("Inside saveDatasheetData, $scope is next...");
             //console.dir($scope);
 

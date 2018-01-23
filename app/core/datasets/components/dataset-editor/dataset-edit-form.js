@@ -841,11 +841,11 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
         //this function gets called when a user clicks the "Add" button in a GRID file cell ------------------------------<<<<<<<<<<<<<<<<< TODO
         $scope.addFiles = function (row, field_name) {
-            var field = $scope.FieldLookup[field_name];
+            //var field = $scope.FieldLookup[field_name];
 
             //console.dir(row);
             //console.dir(field);
-            $scope.openFileModal(row.entity, field);
+            $scope.openFileModal(row.entity, field_name);
 
             //go ahead and mark this row as being updated.
             if ($scope.updatedRows)
