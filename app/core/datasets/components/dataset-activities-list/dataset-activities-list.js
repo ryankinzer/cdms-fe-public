@@ -784,6 +784,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
             $location.path("/dataset-details/" + $scope.dataset.Id);
         };
 
+        $scope.openDataEntryWindow = function (p) {
+            $location.path("/dataentryform/" + $scope.dataset.Id);
+        };
+
         $scope.openImportWindow = function () {
             $scope.activities = null; // Dump the activities to free up memory.
             $location.path("/datasetimport/" + $scope.dataset.Id);
