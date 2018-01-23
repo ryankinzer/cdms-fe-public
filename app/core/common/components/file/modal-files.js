@@ -145,6 +145,9 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 				// When first building this, I was working with Harvest, and it had files in "FieldSheetFile".
 				// Later, when working with ScrewTrap, I discovered that it had files in FileTitle.
 				// So, we put whatever the flavor into FieldSheetFile.
+            /*
+            //kb 1/23 - this shouldn't be necessary anymore since it just uses the incoming field name...
+
 				if ($scope.DatastoreTablePrefix === "Harvest")
 					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.FieldSheetFile;
 				else if ($scope.DatastoreTablePrefix === "ScrewTrap")
@@ -154,6 +157,7 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 					console.log("Neither Harvest nor ScrewTrap");
 					$rootScope.FieldSheetFile = $scope.FieldSheetFile = $scope.file_row.FieldSheetFile;
 				}
+            */
 			//}
 			//else
 		//	{
