@@ -128,7 +128,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 
         if ($scope.subproject_row.FeatureImage !== null) {
             $scope.subproject_row.ItemFiles = '[{"Name":"' + $scope.subproject_row.FeatureImage + '"}]';
-        } 
+        }
 
 
         values = null; // Set/reuse this variable.
@@ -201,15 +201,22 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
             //console.log("It was a string.");
         }
         $scope.subproject_row.LimitingFactors = values;
+
+        //ok, all initialized... now:
+        //mixin the properties and functions to enable the modal file chooser for this controller...
+        modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files);
+
+    } else {
+        //mixin the properties and functions to enable the modal file chooser for this controller...
+        modalFiles_setupControllerForFileChooserModal($scope, $modal, []); //last param is files to check for duplicates... we are new, so we don't have any.
     }
 	
 	console.log("inside ModalCreateHabSubprojectCtrl, after initializing");
-	
 
-    //ok, all initialized... now:
-    //mixin the properties and functions to enable the modal file chooser for this controller...
-    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files);
+    
 
+
+    
     //this is called to after the location is saved (if necessary) by the save() function.
     $scope.saveFilesAndParent = function () {
 
