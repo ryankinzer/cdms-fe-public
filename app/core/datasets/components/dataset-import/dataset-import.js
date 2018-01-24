@@ -2048,19 +2048,34 @@
 					//console.dir(row);
 				}
 
-				//var sheetCopy = angular.copy($scope.dataSheetDataset); //causes memory problems on IE for large files.
-	            //$scope.activities = ActivityParser.parseActivitySheet($scope.dataSheetDataset, $scope.fields);
-	            $scope.activities = ActivityParser.parseActivitySheet($scope.dataSheetDataset, $scope.fields, $scope.DatastoreTablePrefix, "Import", $scope.dataset.QAStatuses);
-				console.log("$scope.activities is next...");
-				console.dir($scope.activities);
-	            
-	            if(!$scope.activities.errors)
-	            {				
-	                DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
-	            }
+
+                //handle saving the files.
+                var data = {
+                    ProjectId: $scope.project.Id,
+                    DatasetId: $scope.dataset.Id,
+                };
+
+                var target = '/api/v1/file/uploaddatasetfile';
+
+                var saveRow = $scope.file_row;
+
+                $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
 
 			};
-			
+
+            //this callback is called once the files are all done saving.
+            $scope.modalFile_saveParentItem = function (saveRow) {
+
+                $scope.activities = ActivityParser.parseActivitySheet($scope.dataSheetDataset, $scope.fields, $scope.DatastoreTablePrefix, "Import", $scope.dataset.QAStatuses);
+//                console.log("$scope.activities is next...");
+//                console.dir($scope.activities);
+
+                if (!$scope.activities.errors) {
+                    DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
+                }
+            };
+
+
 			$scope.eventTimer = function(){
 				var d = new Date();
 				console.log(d.toLocaleTimeString(),1000);

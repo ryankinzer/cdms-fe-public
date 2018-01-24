@@ -397,6 +397,9 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                 console.log("after we remove the failed files...");
                 console.log(saveRow[$scope.file_field]);
 
+                //set a scope variable we can use to show our files
+                $scope.filesToUpload_keys = Object.keys($scope.filesToUpload);
+
                 //save the item...
                 $scope.modalFile_saveParentItem(saveRow);
 

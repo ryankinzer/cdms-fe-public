@@ -889,9 +889,6 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             console.log("Inside saveDatasheetData, $scope is next...");
             //console.dir($scope);
 
-            //set a scope variable we can use to show our files
-            $scope.filesToUpload_keys = Object.keys($scope.filesToUpload);
-
             var strYear = null;
             var strMonth = null;
             var intMonth = -1;

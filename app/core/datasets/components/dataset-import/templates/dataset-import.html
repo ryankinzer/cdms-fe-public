@@ -278,7 +278,7 @@
 			</div>
 		</div>
 	</div>
-	<div ng-show="dataSheetDataset.length>0" class="large-graph-box" id="chart-div">
+	<div ng-show="dataSheetDataset.length > 0 && !activities.success" class="large-graph-box" id="chart-div">
 		<ng-include src="'app/core/common/components/chart/templates/view-inset-' + dataset.Datastore.TablePrefix + '.html'"></ng-include>
 	</div>
 <!--</div>--><!--This closing tag is unnecesary, because the opening tag has a closing "/".-->
