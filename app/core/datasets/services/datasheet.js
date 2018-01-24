@@ -539,7 +539,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					
 					/*	Notes are in order here.
 					*	All three items below (row.isValid, row.errors, and scope.gridHasErrors) are necessary to turn the row color red.
-					*	If all three items ARE NOT preset, the error will be flagged, but the color WILL NOT turn red.
+					*	If all three items ARE NOT present, the error will be flagged, but the color WILL NOT turn red.
 					*/
                     if (row_errors.length > 0) {
 						console.log("row_errors.length = " + row_errors.length)
@@ -581,6 +581,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
                 }
 				//console.log("scope.gridHasErrors = " + scope.gridHasErrors);
+				console.log("row is next...");
+				console.dir(row);
             },
 
             //updateHeaderField: function(field_name, scope)
@@ -662,11 +664,16 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                 //console.log("Field changed: " + field_name);
 				console.log("scope is next...");
 				console.dir(scope);
-
+				console.log("scope.row is next...");
+				console.dir(scope.row);			
+				console.log("scope.onRow is next...");
+				console.dir(scope.onRow);	
+				
                 scope.dataChanged = true;
 
                 if (scope.onRow.entity) {
                     var fromValue = scope.onRow.entity[field_name];
+                    //var fromValue = scope.dataSheetDataset[row.rowIndex].[field_name];
                     var toValue = row.entity[field_name];
 
                     //console.log("Changed " + field + " from: " + fromValue + " to: " + toValue);
@@ -862,8 +869,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					});
 					
                     service.validate(data_row, scope);
-					//console.log("data_row (after validate) is next...");
-					//console.dir(data_row);
+					console.log("data_row (after validate) is next...");
+					console.dir(data_row);
                     if (!data_row.isValid)
                         scope.validation_error_count++;
                 });
