@@ -539,7 +539,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					
 					/*	Notes are in order here.
 					*	All three items below (row.isValid, row.errors, and scope.gridHasErrors) are necessary to turn the row color red.
-					*	If all three itesms ARE NOT preset, the error will be flagged, but the color WILL NOT turn red.
+					*	If all three items ARE NOT preset, the error will be flagged, but the color WILL NOT turn red.
 					*/
                     if (row_errors.length > 0) {
 						console.log("row_errors.length = " + row_errors.length)
