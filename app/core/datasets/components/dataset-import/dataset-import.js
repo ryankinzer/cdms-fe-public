@@ -51,6 +51,8 @@
 			$scope.datetimeList = [];
 			$scope.gridHasErrors = false;
 			$scope.weHaveDuplicates = false;
+			$scope.DupeCheckRunning = true;
+			$scope.ValidationCheckRunning = true;
 			
 			//datasheet grid
 			$scope.gridDatasheetOptions = {
@@ -1723,6 +1725,21 @@
 				//console.log("$scope is next");
 				////console.dir($scope);
 				
+				console.log("$scope.dataSheetDataset.length = " + $scope.dataSheetDataset.length);
+				console.dir($scope.dataSheetDataset);
+				console.log("$scope.datetimeList.length = " + $scope.datetimeList.length);
+				//console.dir($scope.datetimeList);
+				
+				//var i = 0;
+				//$scope.datetimeList.forEach(function(item){
+					//if (i % 1000 === 0)
+					//{
+					//	console.log("$scope.dataSheetDataset[" + i + "].ReadingDateTime =" + $scope.dataSheetDataset[i].ReadingDateTime);
+					//	console.log("$scope.datetimeList[" + i + "] =" + $scope.datetimeList[i]);
+					//}
+					//i++;
+				//});
+				
 //***
 				console.log("$scope.dataSheetDataset is nextX...");
 				console.dir($scope.dataSheetDataset);
@@ -2141,7 +2158,8 @@
 								var keepGoing = true;
 								var readingDateTimeIndex = -1;
 								
-								angular.forEach(duplicateItems, function(item){
+								//angular.forEach(duplicateItems, function(item){
+								duplicateItems.forEach(function(item){
 									//intPlaceCount++;
 									// The datetime coming back from the backend has a "T" in it; we must remove it.
 									//item.ReadingDateTime = item.ReadingDateTime.replace("T", " ");
@@ -2195,7 +2213,19 @@
 									strIsoDateTime = item.ReadingDateTime;
 									//console.log("typeof strIsoDateTime = " + typeof strIsoDateTime);
 									strIsoDateTime = strIsoDateTime.replace("T", " ");
-									strIsoDateTime = strIsoDateTime + ".000";
+									
+									// strIsoDateTime starts out like this:  "YYYY-MM-DD HH.MM.SS".
+									// Is the ReadingDateTime in this format "YYYY-MM-DD HH.MM.SS" or this "YYYY-MM-DD HH.MM.SS.mmm"?
+									//console.log("strIsoDateTime = " + strIsoDateTime + ", $scope.datetimeList[0] = " + $scope.datetimeList[0]);
+									if (strIsoDateTime.length < $scope.datetimeList[0].length)
+									{
+										//console.log("item.ReadingDateTime has YYYY-MM-DD HH.MM.SS format.");
+										strIsoDateTime = strIsoDateTime + ".000";
+									}
+									else
+									{
+										//console.log("item.ReadingDateTime has YYYY-MM-DD HH.MM.SS.mmm format.");
+									}
 									//console.log("strIsoDateTime = " + strIsoDateTime);
 									
 									//console.log("$scope.datetimeList is next...");
@@ -2217,17 +2247,29 @@
 									$scope.dataSheetDataset[dateTimeIndex].errors = uniq_fast($scope.dataSheetDataset[dateTimeIndex].errors);
 									$scope.gridHasErrors = true;
 									$scope.weHaveDuplicates = true;
-									
+																	
 								});
-								//console.log("$scope.dataSheetDataset is next...");
-								//console.dir($scope.dataSheetDataset);
+								
+								console.log("Checking for duplicates is complete...");
+								$scope.DupeCheckRunning = false;
+								//console.log("$scope.dataSheetDataset (after dupe checks) is next...");
+								//$scope.dataSheetDataset.forEach(function(item){
+								//	console.dir(item);
+								//});
+								//console.log("$scope.gridHasErrors = " + $scope.gridHasErrors);
 							}
 							else
 							{
 								$scope.duplicateEntry = false;
+								$scope.DupeCheckRunning = false;
 							}
 							//console.log("After the 'if' promise.length...");
 							$scope.validateGrid($scope);
+							
+							//console.log("$scope.dataSheetDataset (after validation checks) is next...");
+							//$scope.dataSheetDataset.forEach(function(item){
+							//	console.dir(item);
+							//});
 						});
 						//console.log("Location after promise.then (but it may not have completed yet)... ");
 					}
@@ -2394,6 +2436,7 @@
 							{
 								$scope.duplicateEntry = false;
 							}
+							$scope.DupeCheckRunning = false;
 							//console.log("After the 'if' promise.length...");
 							console.log("$scope.dataSheetDataset is next...");
 							console.dir($scope.dataSheetDataset);
