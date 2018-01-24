@@ -94,10 +94,14 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
                 //load our project based on the projectid we get back from the dataset
                 $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 				$scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
-                $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id','Name');
+
+                $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
 
 				$rootScope.DatastoreTablePrefix = $scope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
-				console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
+                console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
+
+
+
             });
 			
             $scope.$watch('project.Name', function(){

@@ -847,9 +847,14 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             //console.dir(field);
             $scope.openFileModal(row.entity, field_name);
 
+            console.log("<--------------------------------------- addFiles ----------------");
+            console.dir($scope.updatedRows);
+            console.dir(row);
             //go ahead and mark this row as being updated.
-            if ($scope.updatedRows)
+            if ($scope.updatedRows && row.entity && row.entity.Id) {
+                console.log("ok we have an id so we're pushing -- you must be editing...");
                 $scope.updatedRows.push(row.entity.Id);
+            }
 
         };
         
