@@ -186,7 +186,17 @@
 					return;
 
 				console.log("Inside DatasetImportCtrl, dataset.Fields watcher...");
-				
+
+                //load the files for this dataset so we can check files they want to upload for duplicates
+                $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
+
+                //once the dataset files load, setup our file handler
+                $scope.dataset.Files.$promise.then(function () {
+                    //mixin the properties and functions to enable the modal file chooser for this controller...
+                    console.log("---------------- setting up dataset file chooser ----------------");
+                    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
+                });
+
 				console.log("$scope.dataset is next...");
 				console.dir($scope.dataset);
 				
@@ -1873,7 +1883,7 @@
 			};
 
 
-			$scope.onFileSelect = function($files) {
+			$scope.onUploadFileSelect = function($files) {
 			    //$files: an array of files selected, each file has name, size, and type.
 
 			    $scope.files = $files;

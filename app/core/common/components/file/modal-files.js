@@ -290,14 +290,18 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
         console.log("We will set the field to be: ", field);
         console.log(field);
 
-        files.forEach(function (file) {
-            if (isDuplicateUploadFile(file, $scope.modalFiles_filesToCheckForDuplicates))
-                file.UploadMessage = "DUPLICATE: will not upload.";
-            else
-                file.UploadMessage = "Ready to upload.";
-        });
+        if (files) {
+            files.forEach(function (file) {
+                if (isDuplicateUploadFile(file, $scope.modalFiles_filesToCheckForDuplicates))
+                    file.UploadMessage = "DUPLICATE: will not upload.";
+                else
+                    file.UploadMessage = "Ready to upload.";
+            });
 
-        $scope.filesToUpload[field] = files; //probably need this to be [field];
+            $scope.filesToUpload[field] = files;
+        } else
+            console.log("there were no files on FileSelect")
+        
         console.log("filesToUpload",$scope.filesToUpload);
     };
 
