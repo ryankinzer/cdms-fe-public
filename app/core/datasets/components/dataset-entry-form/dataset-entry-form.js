@@ -173,7 +173,16 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 parseField(field, $scope);
 
                 if (field.FieldRoleId == FIELD_ROLE_HEADER) {
-                    $scope.fields.header.push(field);
+                    //$scope.fields.header.push(field); // original line
+					//console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix + ", PL Loc = " + field.DbColumnName.indexOf("ProjectLead"));
+					if (($scope.DatastoreTablePrefix === "CrppContracts") && (field.DbColumnName.indexOf("ProjectLead") > -1))
+					{
+						// skip this one
+					}
+					else if (($scope.DatastoreTablePrefix === "CrppContracts") && (field.DbColumnName.indexOf("ProjectLead") < 0))
+						$scope.fields.header.push(field);
+					else
+						$scope.fields.header.push(field);
                 }
                 else if (field.FieldRoleId == FIELD_ROLE_DETAIL) {
                     //console.log("Adding to details:  " + field.DbColumnName + ", " + field.Label);
