@@ -104,6 +104,29 @@
 				</select>
 			</div>
 		</div>
+		
+		<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('ProjectLead')">
+			<div class="header-label">Project Lead:</div>
+			<div class="header-value">
+				<table>
+					<tr>
+						<td>
+							<!--<select ui-select2="select2Options" multiple="multiple" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>-->
+							<select ui-select2="select2Options" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>
+						</td>
+						<td><button class="right btn btn-xs" ng-click="addProjectLead()">+</button></td>
+						<td><button class="right btn btn-xs" ng-click="removeProjectLead()">-</button></td>	
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div ng-show="showProjectLeads">
+			<div class="header-label">Selected Project Leads:</div>
+			<div class="header-value">
+				<!--<input class="form-control" type="text" ng-model="subproject_row.txtCounty" />-->
+				<textarea class="form-control" type="text" rows="4"  readonly ng-model="row.strProjectLead" ></textarea>
+			</div>
+		</div>
 
         <form novalidate class="row-form" name="headerForm">
 			<div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
