@@ -345,14 +345,19 @@ function validateField(field, row, key, scope, row_errors) {
     switch (field.ControlType) {
         case 'select':
             //is the value in our list of options?
-            //console.log("scope.CellOptions for " + field.DbColumnName + " are next...");
-            //console.log(scope.CellOptions[field.DbColumnName+'Options']);
+            console.log("scope.CellOptions for " + field.DbColumnName + " are next...");
+            console.log(scope.CellOptions[field.DbColumnName+'Options']);
             if (scope.CellOptions[field.DbColumnName + 'Options']) {
                 if (isInvalidOption(scope, field, value)) // Is value in the option list?
+				{
+					console.log("[" + field.DbColumnName + "] Invalid selection, value = " + value);
                     row_errors.push("[" + field.DbColumnName + "] Invalid selection, value = " + value);
+				}
+				else
+					console.log("[" + field.DbColumnName + "] Valid selection, value = " + value);;
             }
             else {
-                console.log("Error: no cellOptions for " + field.DbColumnName + 'Options');
+                console.log("Error: no CellOptions for " + field.DbColumnName + 'Options');
                 console.dir(scope.CellOptions);
                 console.log("This might be because you're calling a rule wrong?");
             }
