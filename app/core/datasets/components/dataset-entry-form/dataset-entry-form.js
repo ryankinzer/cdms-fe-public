@@ -909,7 +909,14 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 }
             }
             /**** CreeSurvey Header Time Time calculations End ****/
-
+			else if (($scope.DatastoreTablePrefix === "CrppContracts") && ((typeof $scope.row.strProjectLead === 'undefined') || ($scope.row.strProjectLead === null)))
+			{	
+				$scope.errors.push("Selected Project Leads cannot be blank!\nSelect a Project Lead and click the + button.");
+				alert($scope.errors);
+				return;
+			}
+			
+			
             // Orignal line.  
             //var promise = UploadService.uploadFiles($scope.filesToUpload, $scope);
 			/* Notes:  In the line above, the returned promise is an array.  IE does not handle a promise like that.
@@ -973,7 +980,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 								if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
 									$scope.foundDuplicate = true;
 									console.log(file.name + " already exists in the project file list.");
-									errors.push(file.name + " already exists in the list of project images.");
+									$scope.errors.push(file.name + " already exists in the list of project images.");
 								}
 							}
 						}
@@ -981,12 +988,12 @@ var dataset_entry_form = ['$scope', '$routeParams',
 							console.log("We have something other than an image...");
 							for (var n = 0; n < $scope.project.Files.length; n++) {
 								var existingFileName = $scope.project.Files[n].Name;
-								console.log("existingFileName = " + existingFileName);
+								//console.log("existingFileName = " + existingFileName);
 								var existingFileNameLength = existingFileName.length;
 								if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
 									$scope.foundDuplicate = true;
 									console.log(file.name + " already exists in the project file list.");
-									errors.push(file.name + " already exists in the list of project Files.");
+									$scope.errors.push(file.name + " already exists in the list of project Files.");
 								}
 							}
 						}
@@ -1107,7 +1114,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				console.log("$scope.row.strProjectLeads after stripping = " + $scope.row.strProjectLeads);
 				
 				// Note, we still have the trailing semicolon.
-				// Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
+				// Convert the string to an array, so that we can easily remove the applicable ProjectLead from the string.
 				var aryProjectLeads = $scope.row.strProjectLead.split(";");
 				
 				// Next, get rid of that trailing semicolon.
