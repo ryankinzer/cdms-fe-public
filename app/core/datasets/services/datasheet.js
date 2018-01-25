@@ -542,7 +542,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					*	If all three items ARE NOT present, the error will be flagged, but the color WILL NOT turn red.
 					*/
                     if (row_errors.length > 0) {
-						console.log("row_errors.length = " + row_errors.length)
+						//console.log("row_errors.length = " + row_errors.length)
                         row.isValid = false;
                         //row.errors = row_errors;
 						
@@ -581,8 +581,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
                 }
 				//console.log("scope.gridHasErrors = " + scope.gridHasErrors);
-				console.log("row is next...");
-				console.dir(row);
+				//console.log("row is next...");
+				//console.dir(row);
             },
 
             //updateHeaderField: function(field_name, scope)
@@ -666,18 +666,17 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 				console.dir(scope);
 				console.log("scope.row is next...");
 				console.dir(scope.row);			
-				console.log("scope.onRow is next...");
-				console.dir(scope.onRow);	
+				console.log("scope.onRow.entity is next...");
+				console.dir(scope.onRow.entity);	
 				
                 scope.dataChanged = true;
 
                 if (scope.onRow.entity) {
-                    var fromValue = scope.onRow.entity[field_name];
-                    //var fromValue = scope.dataSheetDataset[row.rowIndex].[field_name];
+                    //var fromValue = scope.onRow.entity[field_name];
                     var toValue = row.entity[field_name];
 
                     //console.log("Changed " + field + " from: " + fromValue + " to: " + toValue);
-                    console.log("Changed " + field_name + " from: " + fromValue + " to: " + toValue);
+                    console.log("Changed " + field_name + " to: " + toValue);
 					
 					//scope.removeRowErrorsBeforeRecheck();
                 }
@@ -810,6 +809,9 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					//this is expensive in that it runs every time a value is changed in the grid.
 					scope.validateGrid(scope); //so that number of errors gets calculated properly.
 				}
+				
+				console.log("scope.gridHasErrors = " + scope.gridHasErrors);
+				console.log("scope.onRow")
             },
 
 
@@ -872,16 +874,22 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					}
 					
                     service.validate(data_row, scope);
-					console.log("data_row (after validate) is next...");
-					console.dir(data_row);
+					//console.log("data_row (after validate) is next...");
+					//console.dir(data_row);
+					//console.log("scope.gridHasErrors = " + scope.gridHasErrors);
                     if (!data_row.isValid)
                         scope.validation_error_count++;
                 });
 
                 scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
+				//console.log("scope.gridHasErrors (after resetting) = " + scope.gridHasErrors);
 				if (!scope.gridHasErrors)
 					scope.ValidationCheckRunning = false;
 
+				//console.log("scope.dataSheetDataset[0] is next...");
+				//console.dir(scope.dataSheetDataset[0]);
+				//console.log("scope.onRow.entity is next...");
+				//console.dir(scope.onRow.entity);
             },
 
             getFieldStats: function (scope) {

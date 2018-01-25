@@ -1416,54 +1416,63 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			}
 			else
 			{
-				// Get the ActivityDate
-				var strActivityDate = toExactISOString($scope.row.activityDate);
-				console.log("strActivityDate = " + strActivityDate);
-				
-				strActivityDate = strActivityDate.replace("T", " ");
-				console.log("strActivityDate (without T) = " + strActivityDate);
-				
-				// Convert the single date item to a one element array, because the back end expects an array.
-				var aryActivityDateList = strActivityDate.split(",");
-				console.log("aryActivityDateList is next...");
-				console.dir(aryActivityDateList);
-				
-				var strActivityDateList = uniq_fast(aryActivityDateList); // Removes dupes and converts to a string.
-				console.log("strActivityDateList = " + strActivityDateList);
-				
-				// Get the Locations
-				var intLocationId = $scope.row.locationId;
-				var aryActivityLocationList = intLocationId.split(",");
-				strActivityLocationList = uniq_fast(aryActivityLocationList);
-				console.log("strActivityLocationList = " + strActivityLocationList);
-				
-				//console.log("$scope.datasetId = " + $scope.datasetId + ", $scope.row.locationId = " + $scope.row.locationId + ", $scope.row.activityDate = " + $scope.row.activityDate);
-				console.log("$scope.datasetId = " + $scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
-				//$scope.SpecificActivitiesResults = null;
-				
-				var promise = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
-				
-				//console.log("typeof $promise = " + typeof promise);
-				if (typeof promise !== 'undefined') 
+				if ($scope.DatastoreTablePrefix !== "CrppContracts")
 				{
-					promise.$promise.then(function(list){
-						console.log("promise is next...");
-						console.dir(promise);
-						if (promise.length > 0)
-						{
-							$scope.duplicateEntry = true;
-							if (!$scope.activities.errors)
-								$scope.activities.errors = {};
-							
-							$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
-							$scope.saving = false;
-						}
-						else
-						{
-							$scope.duplicateEntry = false;
-							$scope.activities.errors = undefined;
-						}
-					});
+					// Get the ActivityDate
+					var strActivityDate = toExactISOString($scope.row.activityDate);
+					console.log("strActivityDate = " + strActivityDate);
+					
+					strActivityDate = strActivityDate.replace("T", " ");
+					console.log("strActivityDate (without T) = " + strActivityDate);
+					
+					// Convert the single date item to a one element array, because the back end expects an array.
+					var aryActivityDateList = strActivityDate.split(",");
+					console.log("aryActivityDateList is next...");
+					console.dir(aryActivityDateList);
+					
+					var strActivityDateList = uniq_fast(aryActivityDateList); // Removes dupes and converts to a string.
+					console.log("strActivityDateList = " + strActivityDateList);
+					
+					if ($scope.datastoreTablePre)
+					// Get the Locations
+					var intLocationId = $scope.row.locationId;
+					var aryActivityLocationList = intLocationId.split(",");
+					strActivityLocationList = uniq_fast(aryActivityLocationList);
+					console.log("strActivityLocationList = " + strActivityLocationList);
+					
+					//console.log("$scope.datasetId = " + $scope.datasetId + ", $scope.row.locationId = " + $scope.row.locationId + ", $scope.row.activityDate = " + $scope.row.activityDate);
+					console.log("$scope.datasetId = " + $scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
+					//$scope.SpecificActivitiesResults = null;
+					
+					var promise = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
+					
+					//console.log("typeof $promise = " + typeof promise);
+					if (typeof promise !== 'undefined') 
+					{
+						promise.$promise.then(function(list){
+							console.log("promise is next...");
+							console.dir(promise);
+							if (promise.length > 0)
+							{
+								$scope.duplicateEntry = true;
+								if (!$scope.activities.errors)
+									$scope.activities.errors = {};
+								
+								$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
+								$scope.saving = false;
+							}
+							else
+							{
+								$scope.duplicateEntry = false;
+								$scope.activities.errors = undefined;
+							}
+						});
+					}
+				}
+				else
+				{
+					$scope.duplicateEntry = false;
+					$scope.activities.errors = undefined;
 				}
 			}
 		};
