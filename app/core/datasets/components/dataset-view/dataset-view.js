@@ -234,7 +234,15 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
                     parseField(field, $scope);
 
                     if (field.FieldRoleId == FIELD_ROLE_HEADER) {
-                        $scope.fields.header.push(field);
+                        //$scope.fields.header.push(field); //Original line.
+						console.log("field.DbColumnName = " + field.DbColumnName);
+						if (($scope.DatastoreTablePrefix === "CrppContracts") && (field.DbColumnName === "ProjectLead"))
+						{
+							// Skip it.
+							console.log("Found ProjectLead...");
+						}
+						else
+							$scope.fields.header.push(field);
                     }
                     else if (field.FieldRoleId == FIELD_ROLE_DETAIL) {
                         $scope.fields.detail.push(field);
