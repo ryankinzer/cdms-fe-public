@@ -10,7 +10,7 @@
                         {{error}}
                     </div>
                 </div>
-                <div ng-show="!onRow.errors" class="alert alert-info">
+                <div class="alert alert-info" ng-show="!onRow.errors">
                     Header has no errors.
                 </div>	
                 <div class="alert alert-danger" ng-show="onRow.entity.errors">
@@ -18,7 +18,7 @@
                         {{error}}
                     </div>
                 </div>
-                <div ng-show="!onRow.entity.errors" class="alert alert-info">
+                <div class="alert alert-info" ng-show="!onRow.entity.errors" >
                     Row has no errors.
                 </div>
             </div>
@@ -26,5 +26,5 @@
                 All rows look good.  No validation errors found.
             </div>
     </div>
-    <button ng-show="autoUpdate" style="margin-top: -17px;" class="btn btn-warning right" ng-click="undoAutoUpdate()">Undo cascaded update</button>
+    <button class="btn btn-warning right" ng-show="autoUpdate" style="margin-top: -17px;" ng-click="undoAutoUpdate()">Undo cascaded update</button>
     
