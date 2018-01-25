@@ -26,6 +26,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
         StatusId: 0,
         //OwningDepartmentId: 1,
     };
+    $scope.subprojectId = 0; 
 	
 	// This line pulls in the Projection and the UTMZone
 	$scope.subproject_row = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
@@ -132,17 +133,26 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 
 
         values = null; // Set/reuse this variable.
+        var strFirstFoods = null
         try {
             values = angular.fromJson($scope.subproject_row.FirstFoods);
             //console.log("First Foods was an object.");
             //console.log("First Foods = " + values);
-            var strFirstFoods = values.toString();
+            strFirstFoods = values.toString();
             //console.log("strFirstFoods = " + strFirstFoods);
         }
         catch (e) {
-            values = $scope.subproject_row.FirstFoods.split(",");
+            if ($scope.subproject_row.FirstFoods) {
+                values = $scope.subproject_row.FirstFoods.split(",");
+                strFirstFoods = $scope.subproject_row.FirstFoods.toString();
+            }
+            else {
+                values = "";
+                strFirstFoods = "";
+            }
+                
             //console.log("First Foods was a string.");
-            var strFirstFoods = $scope.subproject_row.FirstFoods.toString();
+            
             //console.log(strFirstFoods);
         }
         $scope.subproject_row.FirstFoods = values;
@@ -228,6 +238,25 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
         console.log("saveRow (after wiping HabitatItems) is next...");
         console.dir(saveRow);
 
+        //if we are saving a new project...
+        if ($scope.subprojectId === 0) {
+            console.log("saveFielsAndParent -- we are creating a new one before we sav so that we have the subprojectId...");
+
+            var save_subproject_promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
+            save_subproject_promise.$promise.then(function () {
+                console.log("Back from save_subproject_promise!");
+                console.log(save_subproject_promise);
+
+                $scope.subprojectId = save_subproject_promise.Id;
+                $scope.subproject_row.Id = save_subproject_promise.Id;
+                $scope.saveFilesAndParent(); //call ourselves again now that our ID is set.
+            }, function (error) {
+                console.error("something went wrong: ", error);
+            });
+            return;
+        }
+
+        //if we are editing a project, we carry on from here...
         var data = {
             ProjectId: $scope.project.Id,
             SubprojectId: $scope.subprojectId,
@@ -249,64 +278,72 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
     //call back from save above once the files are done processing and we're ready to save the item
     $scope.modalFile_saveParentItem = function (saveRow) {
 
-		var promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
+        var promise;
 
-		if (typeof promise !== 'undefined')
-		{
-			promise.$promise.then(function(){
+        //we are always here with a subproject id, so first handle saving the location (if new) so that saveHabSubproject doesn't fail (it requires a valid location)
 
-				// Are we working with a new point, or an existing one?
-				if ($scope.NewPoint)
-                {
-                    console.log(" -------------- creating a new point 000000000000000000 ");
-					// Normally, scope.SdeObjectId is set to 0; if it is > 0, then we just saved a new location and need to handle it.
-					//console.log("promise in $scope.$watch('subproject_row.LocationId' is next...");
-					//console.dir(promise);
-					//console.dir($scope);
-					$scope.subprojectId = $rootScope.subprojectId = promise.Id;
-					console.log("$scope.subprojectId = " + $scope.subprojectId);
-					$scope.locationId = promise.LocationId;
-					console.log("$scope.locationId = " + $scope.locationId);			
-					
-					// Note:  In the Save function, we created a location object, but we had no SubprojectId.
-					// Now we have subprojects, so let's go back right away and update that Location object, providing the new SubprojectId.
-					var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
-					newLocation.Id = $scope.locationId;
-					newLocation.Label = saveRow.ProjectName;
-					newLocation.Description = saveRow.ProjectDescription;
-					newLocation.GPSEasting = saveRow.GPSEasting;
-					newLocation.GPSNorthing = saveRow.GPSNorthing;
-					newLocation.ProjectId = parseInt($scope.projectId);
-					newLocation.SubprojectId = $scope.subprojectId;
-					newLocation.SdeObjectId = $scope.SdeObjectId; // We set this in the $scope.save function.
-					newLocation.LocationTypeId = LOCATION_TYPE_Hab;
-					newLocation.WaterBodyId = saveRow.WaterBodyId;
-					
-					console.log("newLocation is next...");
-					console.dir(newLocation);
-					
-                    var loc_promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
+        // Are we working with a new point, or an existing one?
+        if ($scope.NewPoint) {
+            console.log(" -------------- creating a new point 000000000000000000 ");
+            // Normally, scope.SdeObjectId is set to 0; if it is > 0, then we just saved a new location and need to handle it.
+            //console.log("promise in $scope.$watch('subproject_row.LocationId' is next...");
+            //console.dir(promise);
+            //console.dir($scope);
+            //$scope.subprojectId = $rootScope.subprojectId = promise.Id;
+            console.log("$scope.subprojectId = " + $scope.subprojectId);
+            //$scope.locationId = promise.LocationId;
+            $scope.locationId = $scope.subproject_row.LocationId;
 
-                    loc_promise.$promise.then(function () {
-                        console.log("Adding this to the project locations: ");
-                        console.dir(loc_promise);
-                        console.log(" -- locations after");
-                        console.dir(scope.project.Locations);
-                        scope.project.Locations.push(loc_promise); //add to our list of locations.
+            console.log("$scope.locationId = " + $scope.locationId);
 
-                        $scope.reloadSubprojectLocations(); 
-                    });
+            // Note:  In the Save function, we created a location object, but we had no SubprojectId.
+            // Now we have subprojects, so let's go back right away and update that Location object, providing the new SubprojectId.
+            var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
+            newLocation.Id = $scope.locationId;
+            newLocation.Label = saveRow.ProjectName;
+            newLocation.Description = saveRow.ProjectDescription;
+            newLocation.GPSEasting = saveRow.GPSEasting;
+            newLocation.GPSNorthing = saveRow.GPSNorthing;
+            newLocation.ProjectId = parseInt($scope.projectId);
+            newLocation.SubprojectId = $scope.subprojectId;
+            newLocation.SdeObjectId = $scope.SdeObjectId; // We set this in the $scope.save function.
+            newLocation.LocationTypeId = LOCATION_TYPE_Hab;
+            newLocation.WaterBodyId = saveRow.WaterBodyId;
 
-				}
-				else
-				{
-					console.log("We are working with an existing location...");
-				}
-				
-                //i guess we overwrite the json with the objects...
+            console.log("newLocation is next...");
+            console.dir(newLocation);
+
+            var loc_promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
+
+            loc_promise.$promise.then(function () {
+                console.log("Adding this to the project locations: ");
+                console.dir(loc_promise);
+                console.log(" -- locations after");
+                console.dir($scope.project.Locations);
+                $scope.project.Locations.push(loc_promise); //add to our list of locations.
+
+                $scope.reloadSubprojectLocations();
+
+                //ok once this is done we can save our hab sub project
+                promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
+                $scope.finishAndClose(promise, saveRow);
+            });
+        }
+        else {
+            console.log("We are working with an existing location...");
+            promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
+            $scope.finishAndClose(promise, saveRow);
+        }	
+	};
+
+    $scope.finishAndClose = function (promise, saveRow) {
+        if (typeof promise !== 'undefined') {
+            promise.$promise.then(function () {
+
+                //i guess we overwrite the json we get back with the objects from our saveRow...
                 promise.Collaborators = saveRow.Collaborators;
                 promise.Funding = saveRow.Funding;
-                
+
                 console.log("and here is our final new edited subproject_edited:");
                 $scope.subproject_edited = promise;
                 console.dir($scope.subproject_edited);
@@ -331,11 +368,13 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
                 else
                     $scope.UploadUserMessage = "There was a problem uploading a file.  Please try again or contact the Helpdesk if this issue continues.";
 
-			}); //promise/then - after saving habitat subproject
-		}		
-	};
-        
-			
+            }, function (error) {
+                console.error("something went wrong: ", error);
+            }); //promise/then - after saving habitat subproject
+        } else {
+            console.log("finish and close called without a promise. :( -----------------");
+        }
+    };
 	
 	
 
