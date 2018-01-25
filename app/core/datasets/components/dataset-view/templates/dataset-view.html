@@ -48,7 +48,17 @@
 
                     <div ng-show="grid.Header.Activity.PostAccuracyCheck" class="header-label">Post-Deploy Accuracy: </div>
                     <div ng-show="grid.Header.Activity.PostAccuracyCheck" class="header-value">{{getDataGrade(grid.Header.Activity.PostAccuracyCheck)}} on {{grid.Header.Activity.PostAccuracyCheck.CheckDate | date}}</div>
-                </div>               
+                </div>
+
+				<div>
+					<div ng-show="showProjectLeads">
+						<div class="header-label">Selected Project Leads:</div>
+						<div class="header-value">
+							<!--<input class="form-control" type="text" ng-model="subproject_row.txtCounty" />-->
+							<textarea class="form-control" type="text" rows="4"  readonly ng-model="grid.Header.strProjectLead" ></textarea>
+						</div>
+					</div>
+				</div>					
 
                 <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
                     <div ng-switch-when="multiselect" class="header-column">
