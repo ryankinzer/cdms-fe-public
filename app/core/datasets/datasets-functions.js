@@ -189,6 +189,7 @@ function parseField(field, scope) {
     if (field.Field && field.Field.Validation) {
         try {
             console.log("configuring validation for " + field.DbColumnName);
+			//console.dir(field.Field.Validation);
             field.Field.Validation = angular.fromJson(field.Field.Validation);
         }
         catch (e) {
@@ -201,12 +202,13 @@ function parseField(field, scope) {
             //      when we are going to fail a bunch of times on purpose because we're doing something different
             //      with the whole switch thing below...
 
-            console.log("e string = " + e.message.toString());
+            //console.log("e string = " + e.message.toString());
             var errorDescription = e.message.valueOf();
             if ((field.Field.Validation === "t") ||
                 (field.Field.Validation === "i") ||
                 (field.Field.Validation === "y") ||
-                (field.Field.Validation === "NULL")) {
+                (field.Field.Validation === "NULL")) 
+			{
                 // This could probably be handled a better way...
                 // Do nothing.  The "t" means we are checking a time.
                 // Ken previously used the field validation for checking upper/lower limits on numbers.
