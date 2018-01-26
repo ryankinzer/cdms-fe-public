@@ -121,6 +121,67 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             $scope.finishLocationProcessing();
         });
+		
+		$scope.$watch('projectLeadList.length', function(){
+
+			//if (typeof $scope.fishermenList.$resolved === 'undefined')
+			if (!$scope.projectLeadList)
+			{
+				console.log("$scope.projectLeadList has not loaded.");
+				return;
+			}
+			else if ($scope.projectLeadList.length === 0)
+			{
+				console.log("No CRPP staff found yet...");
+				return;
+			}
+			console.log("Inside watch, projectLeadList");
+			console.dir($scope);
+			
+			console.log("$scope.projectLeadList is next..");
+			console.dir($scope.projectLeadList);		
+		
+			// If we switch the parameters for the makeObjects, like this makeObjects(scope.fishermenList, 'FullName', 'Id'), it will put them in alpha order by name.
+			// However, we must test this first, to verify that it does not mess anything up.
+			$scope.projectLeadOptions = $rootScope.projectLeadOptions = makeObjects($scope.projectLeadList, 'Id','Fullname');
+			
+			// Debug output ... wanted to verify the contents of scope.projectLeadOptions
+			console.log("$scope.projectLeadOptions is next...");
+			console.dir($scope.projectLeadOptions);
+			
+			console.log("We're on CrppContracts...");
+			console.log("$scope.row is next...");
+			console.dir($scope.row);
+			if ($scope.row.ProjectLead)
+			{
+				var pLeadList = $scope.row.ProjectLead.split(";");
+				console.log("pLeadList is next...");
+				console.dir(pLeadList);
+				
+				// Next, get rid of that trailing semicolon.
+				pLeadList.splice(-1, 1);
+				console.log("pLeadList is next...");
+				console.dir(pLeadList);
+				
+				var strProjectLead = "";
+				
+				// Locate the ProjectLead Id and get the Fullname
+				angular.forEach($scope.projectLeadList, function(staffMember){
+					
+					angular.forEach(pLeadList, function(pLead){
+						console.log("pLead = " + pLead + ", staffMember = " + staffMember.Id);
+						if (parseInt(pLead) === parseInt(staffMember.Id))
+						{
+							console.log("Matched...");
+							strProjectLead += staffMember.Fullname + ";\n";
+							$scope.showProjectLeads = true;
+						}
+					});
+				});
+				$scope.row.strProjectLead = strProjectLead;
+				$scope.row.ProjectLead = undefined;
+			}
+		});
 
         $scope.$watch('dataset_activities.Dataset.Id', function () {
             if (!$scope.dataset_activities.Dataset)
@@ -189,6 +250,13 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 				}
 				*/
             }
+			else if ($scope.DatastoreTablePrefix === "CrppContracts")
+			{
+				$scope.projectLeadList = ProjectService.getCrppStaff(); // Get all CRPP staff.
+				
+				if ($scope.row.ProjectLead)
+					$scope.showProjectLeads = true;
+			}
             console.log("$scope.row is next...");
             console.dir($scope.row);
 
@@ -275,7 +343,14 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             angular.forEach($scope.dataset.Fields.sort(orderByIndex), function (field) {
                 parseField(field, $scope);
                 if (field.FieldRoleId == FIELD_ROLE_HEADER) {
-                    $scope.fields.header.push(field);
+                    //$scope.fields.header.push(field); // Original line.
+					if (($scope.DatastoreTablePrefix === "CrppContracts") && (field.DbColumnName === "ProjectLead"))
+					{
+						// Skip it.
+					}
+					else
+						$scope.fields.header.push(field);
+					
                     //also copy the value to row
                     if (field.ControlType == "multiselect") {
                         //console.dir($scope.dataset_activities.Header[field.DbColumnName]);
@@ -737,6 +812,96 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 			*/
             //}
         };
+		
+		$scope.addProjectLead = function() {
+			console.log("+C clicked...");
+			console.dir($scope);
+			console.log("$scope.row.strProjectLead (before adding) = " + $scope.row.strProjectLead);	
+			
+			if (!$scope.row.ProjectLead)
+				return;
+			
+			if (typeof $scope.row.strProjectLead === 'undefined')
+				$scope.row.strProjectLead = "";				
+
+			// We will add a new line at the end, so that the string presents well on the page.
+			angular.forEach($scope.projectLeadList, function(staffMember){
+				if (staffMember.Id.toString() === $scope.row.ProjectLead)
+				{
+					$scope.row.strProjectLead += staffMember.Fullname + ";\n";
+				}
+			});
+			
+			$scope.showProjectLeads = true;
+			
+			console.log("$scope.row.strProjectLead (after adding) = " + $scope.row.strProjectLead);		
+		};
+		
+		$scope.removeProjectLead = function() {
+			console.log("-C clicked...");
+			console.dir($scope);
+			//console.log("$scope.row.strProjectLead before stripping = " + $scope.row.strProjectLead);
+			
+			if (!$scope.row.ProjectLead)
+				return;
+			
+			// First, strip out the new line characters.
+			$scope.row.strProjectLead = $scope.row.strProjectLead.replace(/(\r\n|\r|\n)/gm, "");
+			console.log("$scope.row.strProjectLead after stripping = " + $scope.row.strProjectLead);
+			
+			// Note, we still have the trailing semicolon.
+			// Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
+			var aryProjectLeads = $scope.row.strProjectLead.split(";");
+			
+			// Next, get rid of that trailing semicolon.
+			aryProjectLeads.splice(-1, 1);
+			console.dir(aryProjectLeads);
+			
+			//var staffMemberId = -1;
+			var staffMemberFullname = "";
+			angular.forEach($scope.projectLeadList, function(staffMember){
+				//console.log("staffMember.Id = " + staffMember.Id + ", $scope.row.ProjectLead = " + $scope.row.ProjectLead);
+				if (staffMember.Id === parseInt($scope.row.ProjectLead))
+				{
+					//console.log("Matched...");
+					staffMemberFullname = staffMember.Fullname;
+				}
+			});
+			console.log("We want to remove " + staffMemberFullname + " from the list...");
+			
+			// Now we can continue with the delete action.
+			var aryProjectLeadsLength = aryProjectLeads.length;
+			console.log("aryProjectLeadsLength = " + aryProjectLeadsLength);
+
+			for (var i = 0; i < aryProjectLeadsLength; i++)
+			{
+				console.log("aryProjectLeads[i] = " + aryProjectLeads[i]);
+				
+				if (aryProjectLeads[i].indexOf(staffMemberFullname) > -1)
+				{
+					console.log("Found the item...");
+					aryProjectLeads.splice(i,1);
+					console.log("Removed the item.");
+					
+					$scope.row.strProjectLead = "";
+					console.log("Wiped $scope.row.strProjectLeads...");
+					
+					// Rebuild the string now, adding the semicolon and newline after every line.
+					angular.forEach(aryProjectLeads, function(item){
+						$scope.row.strProjectLead += item + ";\n";
+						console.log("Added item...");
+					});
+					
+					// Since we found the item, skip to then end to exit.
+					i = aryProjectLeadsLength;
+				}
+			}
+			
+			if (aryProjectLeadsLength === 0)
+				$scope.showProjectLeads = false;
+			
+			//console.log("Finished.");
+		};
 
         $scope.viewRelation = function (row, field_name) {
             //console.dir(row.entity);
@@ -1083,7 +1248,48 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                 }
             }
             /**** CreeSurvey Detail Time Time calculations End ****/
-
+			else if ($scope.DatastoreTablePrefix === "CrppContracts")
+			{
+				// For CRPP, the location is NOT on the form, so we add it here.
+				$scope.row.locationId = $scope.project.Locations[0].Id;
+				
+				// First, strip out the new line characters.
+				$scope.row.strProjectLead = $scope.row.strProjectLead.replace(/(\r\n|\r|\n)/gm, "");
+				console.log("$scope.row.strProjectLeads after stripping = " + $scope.row.strProjectLeads);
+				
+				// Note, we still have the trailing semicolon.
+				// Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
+				var aryProjectLeads = $scope.row.strProjectLead.split(";");
+				
+				// Next, get rid of that trailing semicolon.
+				aryProjectLeads.splice(-1, 1);
+				console.dir(aryProjectLeads);
+				
+				// Match the names in aryProjectLeads to the one in $scope.projectLeadList, and retrieve the Id.
+				var pLeadIdList = [];
+				angular.forEach($scope.projectLeadList, function(pLeader){
+					
+					angular.forEach(aryProjectLeads, function(aLead){
+						if (pLeader.Fullname === aLead)
+						{
+							console.log("Matched...");
+							pLeadIdList.push(pLeader.Id);
+						}
+					});
+				});
+				console.log("pLeadIdList is next...");
+				console.dir(pLeadIdList);
+				
+				// Convert the list to a string, in the format we want.
+				var strProjLeads = "";
+				angular.forEach(pLeadIdList, function(Id){
+					strProjLeads += Id + ";";
+				});
+				console.log("strProjLeads = " + strProjLeads);
+				
+				$scope.row.ProjectLead = strProjLeads;
+			}
+			
             if ((typeof $scope.dataSheetDataset !== 'undefined') && ($scope.dataSheetDataset !== null)) {
                 for (var i = 0; i < $scope.dataSheetDataset.length; i++) {
                     if ((typeof $scope.dataSheetDataset[i].TotalTimeFished !== 'undefined') && ($scope.dataSheetDataset[i].TotalTimeFished != null)) {
