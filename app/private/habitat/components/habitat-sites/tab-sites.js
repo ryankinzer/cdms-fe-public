@@ -794,7 +794,8 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
             //console.log("Inside editHabitatSubproject...");
 
-            scope.viewSubproject = subproject; //set this var for the modal controller.
+            $rootScope.viewSubproject = scope.viewSubproject = subproject; //set this var for the modal controller and file filter
+            $rootScope.subprojectId = subproject.Id; //also for file filter. :/
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
