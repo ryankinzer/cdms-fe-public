@@ -576,7 +576,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
                     if ($scope.addNewSectionWatcherCount === 0) {
                         console.log("Resetting the page.")
                         // Reset the content of specific fields, to blank, null, or 0.
-                        $scope.row.locationId = 59; // Blank
+                        $scope.row.locationId = 60; //59; // Blank
                         $scope.row.TimeStart = null;
                         $scope.row.TimeEnd = null;
                         $scope.row.NumberAnglersObserved = 0;
@@ -911,8 +911,9 @@ var dataset_entry_form = ['$scope', '$routeParams',
             /**** CreeSurvey Header Time Time calculations End ****/
 			else if (($scope.DatastoreTablePrefix === "CrppContracts") && ((typeof $scope.row.strProjectLead === 'undefined') || ($scope.row.strProjectLead === null)))
 			{	
-				$scope.errors.push("Selected Project Leads cannot be blank!\nSelect a Project Lead and click the + button.");
-				alert($scope.errors);
+				var strErrorMessage = "Selected Project Leads cannot be blank!\nSelect a Project Lead and click the + button.";
+				$scope.errors.heading.push(strErrorMessage);
+				alert(strErrorMessage);
 				return;
 			}
 			
