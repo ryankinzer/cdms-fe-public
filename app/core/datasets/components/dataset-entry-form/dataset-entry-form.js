@@ -30,6 +30,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.sortedLocations = [];
         $scope.errors = { heading: [] };
 		$scope.activities = {};
+		
+        $scope.cellSelectEditableTemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'QAStatusId\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in RowQAStatuses"/>';
 
         $scope.addNewSection = false; // This is a flag.  On Creel Survey, a user may add a new section, which saves the section, but the page remains on the activity.
         $scope.dataEntryPage = true;  // This is s flag, telling the app that we are on the Data Entry Page, to make the Add Section button show only on the Data Entry page.	
@@ -221,7 +223,22 @@ var dataset_entry_form = ['$scope', '$routeParams',
             });
 
             $scope.row.ActivityQAStatus.QAStatusId = "" + $scope.dataset.DefaultActivityQAStatusId;
+			
+            $scope.RowQAStatuses = $rootScope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  //Row qa status ids
 
+            //if($scope.dataset.RowQAStatuses.length > 1)
+            if (($scope.DatastoreTablePrefix === "WaterTemp") && ($scope.dataset.RowQAStatuses.length > 1)) {
+                $scope.datasheetColDefs.push(
+                    {
+                        field: "QAStatusId", //QARowStatus
+                        displayName: "QA",
+                        minWidth: 50, maxWidth: 180,
+                        enableCellEditOnFocus: true,
+                        editableCellTemplate: $scope.cellSelectEditableTemplate,
+                        cellFilter: 'RowQAStatusFilter'
+                    });
+            }
+			
             $scope.recalculateGridWidth($scope.fields.detail.length);
 
             $scope.validateGrid($scope);
@@ -1505,6 +1522,21 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			$scope.activities.errors = undefined;
 			$scope.duplicateEntry = undefined;
 			$scope.checkForDuplicates();
+		};
+		
+		$scope.rebuildDateTimeList = function()
+		{
+			$scope.datetimeList = [];
+			var strIsoDateTime = null;
+			
+			angular.forEach($scope.dataSheetDataset, function(item){
+				if ($scope.DatastoreTablePrefix === "WaterTemp")
+					strIsoDateTime = convertDateFromUnknownStringToUTC(item.ReadingDateTime);
+				else
+					strIsoDateTime = item.activityDate;
+				
+				$scope.datetimeList.push(strIsoDateTime);
+			});
 		};
 		
 		$scope.removeRowErrorsBeforeRecheck = function()
