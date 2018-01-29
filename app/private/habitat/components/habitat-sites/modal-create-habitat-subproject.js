@@ -224,9 +224,6 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	console.log("inside ModalCreateHabSubprojectCtrl, after initializing");
 
     
-
-
-    
     //this is called to after the location is saved (if necessary) by the save() function.
     $scope.saveFilesAndParent = function () {
 
