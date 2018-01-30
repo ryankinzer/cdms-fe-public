@@ -847,9 +847,9 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             //console.dir(field);
             $scope.openFileModal(row.entity, field_name);
 
-            console.log("<--------------------------------------- addFiles ----------------");
-            console.dir($scope.updatedRows);
-            console.dir(row);
+            console.log("<--------------------------------------- addFiles called for GRID file item ----------------");
+            //console.dir($scope.updatedRows);
+            //console.dir(row);
             //go ahead and mark this row as being updated.
             if ($scope.updatedRows && row.entity && row.entity.Id) {
                 console.log("ok we have an id so we're pushing -- you must be editing...");
@@ -1026,12 +1026,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             }
 
             var sheetCopy = angular.copy($scope.dataSheetDataset);
-            console.log("The following items are next: $scope.row, sheetCopy, $scope.fields");
-            console.dir($scope.row);
-            console.dir(sheetCopy);
-            console.dir($scope.fields);
-            //throw "Stopping right here...";
-
+            
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             if ($scope.DatastoreTablePrefix == "FishScales") {
                 console.log("$scope.primaryDatasetLocation = " + $scope.primaryDatasetLocation);
