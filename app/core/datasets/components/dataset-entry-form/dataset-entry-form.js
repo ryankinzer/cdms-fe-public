@@ -425,7 +425,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
                     //	}
                     //}
 
-                    console.log("$scope.project.Locations[i].LocationTypeId = " + $scope.project.Locations[i].LocationTypeId + ", $scope.datasetLocationType = " + $scope.datasetLocationType);
+                    //console.log("$scope.project.Locations[i].LocationTypeId = " + $scope.project.Locations[i].LocationTypeId + ", $scope.datasetLocationType = " + $scope.datasetLocationType);
                     if (($scope.DatastoreTablePrefix === "Metrics") ||
                         ($scope.DatastoreTablePrefix === "Benthic") ||
                         ($scope.DatastoreTablePrefix === "Drift")
