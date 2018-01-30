@@ -99,11 +99,13 @@
 			<div><img ng-show="loading" src="assets/images/FishLoading.gif"/>{{ReadyToClose}}</div>
 
         </div>
-		<div ng-show="showCloseButton" class="modal-footer-center" style="margin-top: 30px;">
-			<label>{{UploadUserMessage}}</label>
-			<br>
-			<button class="btn btn-primary" style="margin: 10px;" ng-click="close()">Close</button>
+        <div ng-show="!showFormItems" class="modal-footer-center" style="margin-top: 30px;">
+            <label>{{UploadUserMessage}}</label>
+            <br>
+            <div ng-show="showCloseButton">
+			    <button class="btn btn-primary" style="margin: 10px;" ng-click="close()">Close</button>
+            </div>
 		</div>
 
-  </div>
+        </div>
 </div>

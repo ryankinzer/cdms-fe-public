@@ -155,7 +155,9 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
         //if they've made file changes, the files appear as if they are existing files in the ItemFiles array... 
         // we need to reset it back to the real, actual existing files.
 
-        $scope.hi_row.ItemFiles = $scope.originalExistingFiles;
+        if ($scope.originalExistingFiles && $scope.originalExistingFiles.hasOwnProperty($scope.file_field)) {
+            $scope.hi_row.ItemFiles = $scope.originalExistingFiles[$scope.file_field];
+        }
 		$modalInstance.dismiss();
     };
   }

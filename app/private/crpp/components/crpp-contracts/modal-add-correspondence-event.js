@@ -482,7 +482,12 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', 
 	};
 
     $scope.cancel = function () {
-        $scope.ce_row.EventFiles = $scope.originalExistingFiles;
+        
+        if ($scope.originalExistingFiles && $scope.originalExistingFiles.hasOwnProperty($scope.file_field)) {
+            $scope.ce_row.EventFiles = $scope.originalExistingFiles[$scope.file_field];
+            //console.log("setting EventFiles to " + $scope.originalExistingFiles[$scope.file_field]);
+        }
+        
 		$modalInstance.dismiss();
     };
   }
