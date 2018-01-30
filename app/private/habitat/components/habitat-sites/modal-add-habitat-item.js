@@ -58,25 +58,6 @@ var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$modal', 'Da
     //callback that is called from modalFile to do the actual file removal (varies by module)
     $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
         return SubprojectService.deleteHabitatItemFile($scope.projectId, $scope.subprojectId, saveRow.Id, file_to_remove);
-
-        // might need some of this???:
-        /*
-                        if ((typeof saveRow !== 'undefined') && (saveRow.Id !== null)) {
-                    console.log("We want to delete a Habitat Item file...");
-                    remove_file_promise = $scope.modalFile_doRemoveFile(file_to_remove);
-                        //SubprojectService.deleteHabitatItemFile($scope.projectId, $scope.subprojectId, saveRow.Id, file_to_remove);
-                }
-        */
-                /* -- TODO *************** ??????
-
-                else {
-                    console.log("We want to delete a Subproject file...");
-                    remove_file_promise = SubprojectService.deleteHabSubprojectFile($scope.projectId, $scope.subprojectId, file_to_remove);
-                }
-                */
-
-
-
     };
 	
     $scope.save = function () {
