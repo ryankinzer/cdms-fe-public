@@ -384,6 +384,8 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
         //$scope.showCloseButton = true;
         $scope.showCancelButton = false;
         $scope.showFormItems = false;
+
+        $scope.file_row = saveRow; //important! otherwise our filerow is set to the last thing (which is only a problem when we have files in the grid)
        
         $scope.filesWithErrors = 0;
         var save_item_promise = null; //will get setup later
@@ -465,27 +467,35 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                 console.log(saveRow[in_file_field]);
 
 
-                //remove any failed files from the saveRow.ItemFiles/EventFiles/etc column
-                var remaining_files = [];
-                var current_files = angular.fromJson(saveRow[in_file_field]);
-                if (current_files && Array.isArray(current_files) && $scope.filesToUpload && $scope.filesToUpload[in_file_field]) {
+                //TODO: save a reference to the row somehow so that we can remove file links if they fail...
+                //when we save a file in the grid, we don't have a reference to the grid row,
+                // this means we can't remove files that fail from the list of files.
+                if (saveRow.hasOwnProperty(in_file_field)) {
 
-                    current_files.forEach(function (file_to_check) {
-                        //then find the file in the uploads... did it fail?
-                        var uploading_this_one = false;
-                        $scope.filesToUpload[in_file_field].forEach(function (upload_file) {
-                            if (upload_file.Name === file_to_check.Name) {
-                                uploading_this_one = true;
-                                if (upload_file.success === "Success")
-                                    remaining_files.push(file_to_check);
-                            }
+                    //remove any failed files from the saveRow.ItemFiles/EventFiles/etc column
+                    var remaining_files = [];
+                    var current_files = angular.fromJson(saveRow[in_file_field]);
+                    if (current_files && Array.isArray(current_files) && $scope.filesToUpload && $scope.filesToUpload[in_file_field]) {
+
+                        current_files.forEach(function (file_to_check) {
+                            //then find the file in the uploads... did it fail?
+                            var uploading_this_one = false;
+                            $scope.filesToUpload[in_file_field].forEach(function (upload_file) {
+                                if (upload_file.Name === file_to_check.Name) {
+                                    uploading_this_one = true;
+                                    if (upload_file.success === "Success")
+                                        remaining_files.push(file_to_check);
+                                }
+                            });
+                            if (!uploading_this_one) //means this was an existing file so leave it.
+                                remaining_files.push(file_to_check);
                         });
-                        if (!uploading_this_one) //means this was an existing file so leave it.
-                            remaining_files.push(file_to_check);
-                    });
-                }
+                    }
 
-                saveRow[in_file_field] = angular.toJson(remaining_files);
+                    saveRow[in_file_field] = angular.toJson(remaining_files);
+                } else {
+                    console.log(" -- ignoring this step because the field was undefined -- assuming this is a grid file and we don't have the right saverow...");
+                }
 
                 console.log("after we remove the failed files...");
                 console.log(saveRow[in_file_field]);

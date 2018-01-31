@@ -859,7 +859,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
         };
         
         
-
+        //click "save" on dataset edit form
         $scope.saveData = function () {
             console.log("Saving edited data!");
 
@@ -878,7 +878,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             var target = '/api/v1/file/uploaddatasetfile';
 
-            var saveRow = $scope.file_row;
+            var saveRow = $scope.row;
 
             $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
             
