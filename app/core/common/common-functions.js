@@ -275,6 +275,14 @@ function array_count(the_array) {
 }
 
 
+function arrayRemoveElement(theArray, theElement){
+	const index = theArray.indexOf(element);
+	
+	if (index !== -1)
+	{
+		theArray.splice(index, 1);
+	}
+}
 
 
 function stringIsNumber(s) {

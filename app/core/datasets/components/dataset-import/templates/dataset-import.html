@@ -269,7 +269,8 @@
 						<button ng-show="deletedRows.length" class="btn" ng-click="undoRemoveRow()">Undo</button>
 
 						<div class="right" style="margin-top: 3px; margin-left: 5px;"><img ng-show="activities.saving" src="assets/images/FishLoading.gif"></div>
-						<button class="btn right" ng-disabled="activities.saving" ng-click="saveDataSheet()" style="margin-left: 5px;">Import</button>
+						<!--<button class="btn right" ng-disabled="activities.saving" ng-click="saveDataSheet()" style="margin-left: 5px;">Import</button>-->
+						<button class="btn right" ng-disabled="(activities.saving || DupeCheckRunning || gridHasErrors)" ng-click="saveDataSheet()" style="margin-left: 5px;">Import</button>
 						<button class="btn btn-warning right" ng-click="cancel()">Cancel</button>
 						<br/>
 						<div ng-show="activities.saving" style="float: right;margin-right: 20px;" class="alert alert-success">Saving...</div>
