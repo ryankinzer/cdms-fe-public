@@ -6,11 +6,24 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 
 		$scope.header_message = "Add file(s) to "+$scope.project.Name;
 
-		$scope.onFileSelect = function($files)
+        $scope.readyToUpload = true;
+
+		$scope.onFileSelect = function(files)
 		{
-			console.log("Inside ModalNewFileCtrl, file selected! " + $files);
-			$scope.uploadFiles = $files;
-			//console.dir($scope.uploadFiles);
+            console.log("Inside ModalNewFileCtrl, file selected! " + files);
+
+            //check for duplicates
+            if (files) {
+                files.forEach(function (file) {
+                    if (isDuplicateUploadFile(file, $scope.project.Files))
+                        file.success = "DUPLICATE";
+                });
+            } else
+                console.log("there were no files on FileSelect")
+
+            $scope.uploadFiles = files;
+            
+			console.dir($scope.uploadFiles);
 		};
 
 		$scope.save = function(){
@@ -23,6 +36,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 				console.log("No file selected; do nothing...");
 				return;
 			}
+
+            $scope.readyToUpload = false;
 
 			$scope.foundDuplicate = false;		
 			$scope.uploadErrorMessage = undefined;
@@ -37,6 +52,12 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 				var newFileNameLength = file.name.length;
 				console.log("file name length = " + newFileNameLength);
 
+                if (file.success == "DUPLICATE") {
+                    console.log("Duplicate -- ignoring: ", file.Name);
+                    continue;
+                }
+
+                /*
 				// $scope.uploadFileType gets set when the user clicks on the new button, 
 				// and it determined whether they are in the Project gallery, or Project Documents.
 				console.log("$scope.uploadFileType = " + $scope.uploadFileType);
@@ -72,13 +93,14 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 						}
 					}
 				}
+                */
 				
-				console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);
+				//console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);
 				// Inform the user immediately, if there are duplicate files.
-				if ($scope.foundDuplicate)
-					alert(errors);
-				else
-				{
+				//if ($scope.foundDuplicate)
+				//	alert(errors);
+				//else
+				//{
 					console.log("file is next...");
 					console.dir(file);
 					//if(file.success != "Success")
@@ -94,19 +116,9 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 							file: file,
 
 							}).progress(function(evt) {
-								console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                                config.file.success = "Working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
 							}).success(function(data, status, headers, config) {
                                 config.file.success = "Success";
-                                /*
-                                console.log("Back from save = data");
-                                console.dir(data);
-                                console.log("Back from save = config");
-                                console.dir(config);
-                                console.log("Back from save = status");
-                                console.dir(status);
-                                console.log("Back from save = headers");
-                                console.dir(headers);
-                                */
                                 $scope.callback(data);
 							})
 							.error(function(data, status, headers, config) {
@@ -115,8 +127,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 								config.file.success = "Failed";
 							});
 					}
-				}
-			}
+				//}
+            }//loop
 
 		};
 
