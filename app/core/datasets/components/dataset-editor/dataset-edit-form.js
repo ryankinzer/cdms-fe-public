@@ -999,8 +999,11 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             $scope.openFileModal(row.entity, field);
 
             //go ahead and mark this row as being updated.
-            if ($scope.updatedRows)
+            //if ($scope.updatedRows)
+			if ($scope.updatedRows) && row.entity && row.entity.Id){
+				console.log("ok we have an id so we're pushing -- you must be editing...");
                 $scope.updatedRows.push(row.entity.Id);
+			}
 
         };
         /*  -- */
