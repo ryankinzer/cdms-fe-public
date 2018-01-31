@@ -31,6 +31,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.errors = { heading: [] };
 		$scope.activities = {};
 
+        $scope.waypoints = {};
+
         $scope.addNewSection = false; // This is a flag.  On Creel Survey, a user may add a new section, which saves the section, but the page remains on the activity.
         $scope.dataEntryPage = true;  // This is s flag, telling the app that we are on the Data Entry Page, to make the Add Section button show only on the Data Entry page.	
 
@@ -677,6 +679,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
         };
 
         //overriding the one in our service because we don't want to allow removing of a blank row.
+        //TODO: files need to be removed?
         $scope.removeRow = function () {
             if ($scope.dataSheetDataset.length > 1)
                 DataSheet.removeOnRow($scope);
@@ -696,12 +699,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
       
         $scope.openWaypointFileModal = function (row, field) {
-            $scope.file_row = row;
             $scope.file_field = field;
-
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
-                controller: 'FileModalCtrl',
+                controller: 'WaypointFileModalCtrl',
                 scope: $scope, //scope to make a child of
             });
         };
@@ -716,7 +717,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
             $scope.openFileModal(row.entity, field);
 
             //go ahead and mark this row as being updated.
-            if ($scope.updatedRows)
+            if (row && row.entity && row.entity.Id && $scope.updatedRows)
                 $scope.updatedRows.push(row.entity.Id);
 
         };
@@ -817,7 +818,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
             var target = '/api/v1/file/uploaddatasetfile';
 
-            var saveRow = $scope.file_row;
+            var saveRow = $scope.row;
 
             $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
 

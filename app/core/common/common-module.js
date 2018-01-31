@@ -29,6 +29,7 @@ require([
     //'core/common/components/file/modal-file-delete',
     'core/common/components/file/modal-files',
     'core/common/components/file/modal-exportfile',
+    'core/common/components/file/modal-waypoint-file',
     
     //load other common directives
     'core/common/directives/checklists',
@@ -59,6 +60,7 @@ require([
     //common_module.controller('FileAddModalCtrl', modal_file_add);
     //common_module.controller('FileDeleteModalCtrl', modal_file_delete);
     common_module.controller('FileModalCtrl', modal_files); 
+    common_module.controller('WaypointFileModalCtrl', modal_waypoint_files);
     
 });
 
