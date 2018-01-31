@@ -359,8 +359,13 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                     file.UploadMessage = "Ready to upload.";
 
                 //add to the scope and to our own list
-                $scope.filesToUpload[field].push(file);
-                $scope.file_row.fieldFilesToUpload[field].push(file);
+                if (!isFileInList(file, $scope.filesToUpload[field])) {
+                    $scope.filesToUpload[field].push(file);
+                    $scope.file_row.fieldFilesToUpload[field].push(file);
+                } else {
+                    console.log(">> that file is already in our upload list... ignoring...");
+                }
+                
             });
         } else
             console.log("there were no files on FileSelect")
