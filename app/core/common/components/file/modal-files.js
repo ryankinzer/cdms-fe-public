@@ -3,26 +3,17 @@
 /*
 * below the modal's controller function below, there are mixin properties and functions
 *  that will need to be present on your controller in order for the uploading to work.
-*  
-* you simply call the setup function (modalFiles_setupControllerForFileChooserModal)
-*  and pass in the necessary setup objects and it will expand the controller
-*  so that it has all the new nifty file uploading capability.
+*  see dataset-edit-form.js or modal-add-correspondence-event.js (etc) for example use.
 */
 
 //handles managing file controltypes
 var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectService','$rootScope',
     function ($scope, $modalInstance, DatasetService, SubprojectService, $rootScope){
-		// This controller is for the Dataset Activity / Subproject File modal.
-		console.log("Inside modals-controller.js, FileModalCtrl");
-		//console.log("$scope is next...");
-		//console.dir($scope);
 		
 		if (typeof $scope.onRow !== 'undefined')
 			$scope.onRow.errors = [];
 		
 		$scope.foundDuplicate = false;
-
-        console.log("FILE MODAL setup!");
 
         //note: we are extending here or clearing with length=0 in order to avoid creating a local copy of this property in our child scope.
         if ($scope.file_row[$scope.file_field]) {
@@ -43,29 +34,20 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
             $scope.currentFiles.length = 0;
         }
 
-        /* what we had: 
-        if ($scope.originalExistingFiles[$scope.file_field]) {
-            $scope.currentFiles.length = 0;
-            $scope.currentFiles = angular.extend($scope.currentFiles, angular.fromJson($scope.originalExistingFiles[$scope.file_field]));
-        }
-    	else
-            $scope.currentFiles.length = 0;
-        */
-
-        console.log("$scope.currentFiles is : ", $scope.currentFiles, "for field", $scope.file_field);
-        console.log("And originalExistingFiles: ", $scope.originalExistingFiles);
+        //console.log("$scope.currentFiles is : ", $scope.currentFiles, "for field", $scope.file_field);
+        //console.log("And originalExistingFiles: ", $scope.originalExistingFiles);
 		
         //removes the file from currentFiles and adds to removedFiles (does NOT actually delete the file) 
         // - fires when user click remove button on current files
     	$scope.removeFile = function(file)
     	{
-			console.log("Inside FileModalCtrl, removeFile...");
-			console.dir(file);			
-			console.dir($scope.currentFiles);
+			//console.log("Inside FileModalCtrl, removeFile...");
+			//console.dir(file);			
+			//console.dir($scope.currentFiles);
 
             //find the file in our current files (match by name)
 			angular.forEach($scope.currentFiles, function(existing_file, key){
-				console.log("existing_file.Name = " + existing_file.Name + ", file.Name = " + file.Name);
+				//console.log("existing_file.Name = " + existing_file.Name + ", file.Name = " + file.Name);
 
                 if (existing_file.Name === file.Name)
                 {
@@ -79,7 +61,7 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
                 
             });
 
-            console.dir($scope.removedFiles);
+            console.log("now removedFiles = ",$scope.removedFiles);
     	}
 
         //remove this file from the $scope.filesToUpload - fires when user clicks "remove" button on file to upload
@@ -108,7 +90,7 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 
         //fires when user clicks "done" button --> doesn't execute upload/removes, just gets everything ready for the host modal
         $scope.save = function(){
-            console.log(" -- DONE -- clicked ---...");
+            console.log(" -- DONE -- clicked --- prepping and closing file modal");
 
             var hasFilesToUpload = true;
 
@@ -123,6 +105,7 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 
 			var errors = [];
 
+            
 			console.log("$scope.filesToUpload is next...");
             console.dir($scope.filesToUpload);
             console.dir($scope.currentFiles);
@@ -130,10 +113,10 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
 
             console.log("-- file row -- ");
             console.dir($scope.file_row);
-
+            
 
             if (hasFilesToUpload) {
-
+                console.log(" --> we have files to upload <--");
                 var filesReadyToUpload = [];
 
                 //remove any duplicates
@@ -164,56 +147,18 @@ var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectServi
             
             
 				//copy back to the actual row field, whatever the state of currentFiles (maybe removed ones)
+                $scope.file_row[$scope.file_field] = angular.toJson($scope.currentFiles);
+
                 console.log("$scope.file_field = " + $scope.file_field);
-				$scope.file_row[$scope.file_field] = angular.toJson($scope.currentFiles);
-				console.log("$scope.file_row is next...");
+				console.log("$scope.file_row = ");
 				console.dir($scope.file_row);
-				
                 console.dir($scope.currentFiles);
 
             $modalInstance.dismiss();
 			
-			//ServiceUtilities.setFileName($scope.file_row.FieldSheetFile, $scope) //<-- not sure why this is commented out? kb
         };
 
-
-        $scope.uploadWaypoints = function(){
-            var formData = new FormData();
-
-            angular.forEach($scope.filesToUpload[$scope.file_field], function(incoming_file, key){
-                formData.append('file', incoming_file);
-            });
-
-            $.ajax({
-                url: serviceUrl + '/api/v1/file/handlewaypoints',
-                type : 'POST',
-                data : formData,
-                processData: false,  // tell jQuery not to process the data
-                contentType: false,  // tell jQuery not to set contentType
-                success : function(data) {
-                    
-                    var waypoints = eval("(" + data + ")");
-                    var size = 0, key;
-
-                    for (key in waypoints)
-                        size++;
-
-                    alert(size + " waypoints loaded");
-
-                    $scope.__proto__.waypoints = waypoints;     // This is probably not right, but not sure how else to get the outer scope object
-                },
-                error: function(jqXHR, error, errorThrown) {
-                    if(jqXHR.status&&jqXHR.status == 400) {
-                        alert(jqXHR.responseText + "\n\n" + "Waypoints not loaded!");
-                    } else{
-                        alert("Error uploading file!");
-                    }
-                }
-            });
-
-            $modalInstance.dismiss();
-        };
-
+        //cancel clicked
         $scope.cancel = function () {
             //remove the files that are in my row removed files,
             //$scope.removedFiles.length = 0;
@@ -427,7 +372,7 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
 
         //in filesToUpload there might be several fields with files to handle.
         var file_fields = Object.keys($scope.filesToUpload);
-        console.log("Fields that have files in them: ", file_fields);
+        console.log("Fields that have files in them to upload: ", file_fields);
 
         //if there are no files being uploaded for any field then carry on.
         if (file_fields.length === 0) {
@@ -443,7 +388,7 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
             });
         });
 
-        console.log(" >> total of " + $scope.fileCount + " files to upload.");
+        console.log(" >> total of " + $scope.fileCount + " files to upload <<");
 
         //this watcher will only run once after all files are uploaded.
         var fileProgressWatcher = $scope.$watch('fileProgress', function () {
@@ -474,7 +419,7 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
 
                 //TODO: save a reference to the row somehow so that we can remove file links if they fail...
                 //when we save a file in the grid, we don't have a reference to the grid row,
-                // this means we can't remove files that fail from the list of files.
+                // this means we can't remove files that fail from the list of files (just for grid row file fields).
                 if (saveRow.hasOwnProperty(in_file_field)) {
 
                     //remove any failed files from the saveRow.ItemFiles/EventFiles/etc column
@@ -525,9 +470,8 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                 console.dir(file);
                 console.log("for field: ", in_file_field);
 
-                console.log("file.success = " + file.success);
                 if (file.success != "Success") {
-                    console.log("No file.success, so let's save the file...");
+                    console.log("Let's save the file...");
 
                     //update our incoming data with some file info
                     in_data.Description = "Uploaded file " + file.Name;
@@ -536,26 +480,24 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                     $scope.upload = $upload.upload({
                         url: serviceUrl + in_target,
                         method: "POST",
-                        // headers: {'headerKey': 'headerValue'},
-                        // withCredential: true,
-                        //data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name},
-                        //data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, DatastoreTablePrefix: $scope.DatastoreTablePrefix},
                         data: in_data,
                         file: file,
 
                     }).progress(function (evt) {
                         console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                         file.success = "working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
-                    }).success(function (data, status, headers, config) {
+                        }).success(function (data, status, headers, config) {
+
+                        /*
                         console.log("The following are next:  data, status, headers, config, file");
-                        //console.log("file is next...");
                         console.dir(data); //this is what we get back... it should be an array with our saved file
                         console.dir(status);
                         console.dir(headers);
                         console.dir(config);
                         console.dir(file);
+                        */
 
-                        console.log("done and success!");
+                        console.log("done saving and success!");
                             
 
                         if (data.length == 0) //means the backend actually failed to create our object. We need an error message!
@@ -563,16 +505,12 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                             $scope.filesWithErrors++;
                             file.success = "Failed (unknown error)"
                         } else {
-                            $scope.modalFiles_filesToCheckForDuplicates.push(data[0]); //add this file to the file list
+                            $scope.modalFiles_filesToCheckForDuplicates.push(data[0]); //add this file to the duplicate file list
                             file.success = "Success";
-
-                            //where it was
-
-
                         }
 
-
                         $scope.fileProgress++;
+
                     }).error(function (data, status, headers, config) {
                         $scope.filesWithErrors++;
                         console.error(file.name + " failed to upload.");
