@@ -115,6 +115,16 @@
 				
 			];
 			*/
+
+
+            $scope.openWaypointFileModal = function (row, field) {
+                $scope.file_field = field;
+                var modalInstance = $modal.open({
+                    templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
+                    controller: 'WaypointFileModalCtrl',
+                    scope: $scope, //scope to make a child of
+                });
+            };
 			
 			$scope.$watch('subprojectList.length', function(){
 				if ($scope.subprojectList === null)
@@ -2074,7 +2084,7 @@
 
                 var target = '/api/v1/file/uploaddatasetfile';
 
-                var saveRow = $scope.file_row;
+                var saveRow = $scope.row;
 
                 $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
 

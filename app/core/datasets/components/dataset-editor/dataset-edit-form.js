@@ -723,120 +723,24 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                     ($scope.datasheetColDefs[i].field === "TotalTimeFished")
                 ) {
                     $scope.datasheetColDefs[i].enableCellEdit = false;
-                    //$scope.datasheetColDefs[i].cellEditableCondition = false;
-                    //$scope.disabledFont();
+
                 }
 
             }
 
             console.log("$scope after copy is next...");
-            //console.dir($scope);
 
-            //$scope.reloadProject();
-
-			/*
-			$scope.onRow.entity.InterviewTime = interviewTime;
-			$scope.onRow.entity.GPSEasting = gpsEasting;
-			$scope.onRow.entity.GPSNorthing = gpsNorthing;
-			$scope.onRow.entity.CarcassComments = carcassComments;
-			$scope.onRow.entity.TotalTimeFished = totalTimeFished;
-			$scope.onRow.entity.NumberFishCaught = numberFishCaught;
-			*/
-            //}
         };
 
-        /*
-
-        $scope.viewRelation = function (row, field_name) {
-            //console.dir(row.entity);
-            var field = $scope.FieldLookup[field_name];
-            //console.dir(field);
-
-            $scope.openRelationEditGridModal(row.entity, field);
-        }
-
-
-        $scope.openRelationEditGridModal = function (row, field) {
-            $scope.relationgrid_row = row;
-            $scope.relationgrid_field = field;
-            $scope.isEditable = true;
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/datasets/components/dataset-relationgrid/templates/relationgrid-edit-modal.html',
-                controller: 'RelationGridModalCtrl',
-                scope: $scope,
-            });
-        };
-        */
-
-        
-        /* -- these functions are for uploading - */
-        /*
-        $scope.openFileModal = function (row, field) {
-            console.log("Inside DataEditCtrl, openFileModal...");
-            //console.log("row is next...");
-            //console.dir(row);
-            //console.dir(field);
-            $scope.file_row = row;
-            $scope.file_field = field;
-            $rootScope.FieldSheetFile = "";
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/common/components/file/templates/modal-file.html',
-                controller: 'FileModalCtrl',
-                scope: $scope, //scope to make a child of
-            });
-        };
-
-        $scope.openFileAddModal = function (row, field) {
-            console.log("Inside DataEditCtrl, openFileAddModal...");
-            //console.log("row is next...");
-            //console.dir(row);
-            //console.log("field is next...");
-            //console.dir(field);
-            $scope.file_row = row;
-            $scope.file_field = field;
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/common/components/file/templates/modal-file-add.html',
-                controller: 'FileAddModalCtrl',
-                scope: $scope, //scope to make a child of
-            });
-        };
-
-        $scope.openFileDeleteModal = function (row, field) {
-            console.log("Inside DataEditCtrl, openFileDeleteModal...");
-            console.log("row is next...");
-            console.dir(row);
-            console.log("field is next...");
-            console.dir(field);
-            $scope.file_row = row;
-            $scope.file_field = field;
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/common/components/file/templates/modal-file-delete.html',
-                controller: 'FileDeleteModalCtrl',
-                scope: $scope, //scope to make a child of
-            });
-        };
-        */
+     
         $scope.openWaypointFileModal = function (row, field) {
-            $scope.file_row = row;
             $scope.file_field = field;
-
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
-                controller: 'FileModalCtrl',
+                controller: 'WaypointFileModalCtrl',
                 scope: $scope, //scope to make a child of
             });
         };
-
-        //field = DbColumnName
-        /*
-        $scope.onFileSelect = function (field, files) {
-            //console.log("file selected! " + field)
-            $scope.filesToUpload[field] = files;
-        };
-        */
 
 
         //this function gets called when a user clicks the "Add" button in a GRID file cell ------------------------------<<<<<<<<<<<<<<<<< TODO

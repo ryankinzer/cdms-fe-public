@@ -544,7 +544,7 @@ function getPopulatedUploadKeys(files) {
 
     var all_keys = Object.keys(files);
     all_keys.forEach(function (key) {
-        if (files[key] && Array.isArray(files[key]) && files[key].length > 0)
+        if (files[key] && Array.isArray(files[key]) && files[key].length > 0 && key != "Waypoints") //ignore waypoints file
             keys.push(key);
     });
 
