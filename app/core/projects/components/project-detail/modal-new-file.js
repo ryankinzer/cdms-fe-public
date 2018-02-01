@@ -4,9 +4,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 		// This controller is for the Project File (Documents tab) modal.
 		// note: file selected for upload in this controller are managed by onFileSelect in this controller (see below).
 
-		$scope.header_message = "Add file(s) to "+$scope.project.Name;
-
-        $scope.readyToUpload = true;
+        $scope.header_message = "Add file(s) to " + $scope.project.Name;
+        $scope.doneUploading = false;
 
 		$scope.onFileSelect = function(files)
 		{
@@ -23,7 +22,15 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 
             $scope.uploadFiles = files;
             
-			console.dir($scope.uploadFiles);
+            console.dir($scope.uploadFiles);
+
+            if ($scope.uploadFiles.length > 0)
+                $scope.readyToUpload = true;
+            else
+                $scope.readyToUpload = false;
+
+
+
 		};
 
 		$scope.save = function(){
@@ -38,7 +45,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 			}
 
             $scope.readyToUpload = false;
-
+            $scope.doneUploading = true;
+            
 			$scope.foundDuplicate = false;		
 			$scope.uploadErrorMessage = undefined;
 			var errors = [];

@@ -9,7 +9,7 @@
   		</div>
   		<div class="modal-body">
 
-        <input ng-disabled="!readyToUpload" type="file" ng-file-select="onFileSelect($files)" multiple>
+        <input ng-disabled="doneUploading" type="file" ng-file-select="onFileSelect($files)" multiple>
 
         <table ng-show="uploadFiles" class="table table-striped">
           <tr><th>Filename</th><th>Title</th><th>Description</th><th>Results</th></tr>
@@ -24,7 +24,7 @@
   		</div>
 		<div class="modal-footer">
             <button class="btn btn-warning" ng-click="cancel()">Close</button>
-            <button ng-disabled="!readyToUpload" class="btn btn-primary" ng-click="save()">Upload</button>
+            <button ng-show="readyToUpload" class="btn btn-primary" ng-click="save()">Upload</button>
         </div>
 
   </div>
