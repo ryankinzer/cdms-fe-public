@@ -814,12 +814,52 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
 
             removeOnRow: function (scope) {
+
+                console.log("-------------------------------- ROW ---------",scope.onRow);
+                console.log("dataset: ", scope.dataset);
+                console.log(scope.filesToUpload);
+
+                //see if there are any files in this row, if so, give a confirmation message
+                var file_fields = getFileFields(scope.dataset);
+
+                console.log("File_Fields ", file_fields);
+
+                var files_to_delete = [];
+
+                //spin through all of the detail file fields and gather the files (that we aren't uploading) so we can confirm the user wants to delete them.
+                file_fields.Details.forEach(function (field) {
+                    var file_json = scope.onRow.entity[field.DbColumnName];
+                    if (file_json) {
+                        var file_obj = angular.fromJson(file_json);
+                        if (file_obj && Array.isArray(file_obj)) {
+                            file_obj.forEach(function (file) {
+                                if (scope.filesToUpload[field.DbColumnName]) {
+                                    if (!isFileInList(file, scope.filesToUpload[field.DbColumnName])) {
+                                        files_to_delete.push(file.Name); //add to our list of files to delete since we aren't uploading it, it must exist already.
+                                    } else {
+                                        removeFileFromList(file, scope.filesToUpload[field.DbColumnName]); //remove from the list of uploading files since we're dropping the row.
+                                    }
+                                } else {
+                                    files_to_delete.push(file.Name);
+                                }
+                            });
+                        }
+                    }
+                });
+
+
+                if (files_to_delete.length > 0) {
+                    if (!confirm("This row has files that will also be permanently deleted when you save! (" + files_to_delete.join(", ") + "). Are you sure?"))
+                        return;
+                }
+
                 scope.dataChanged = true;
                 scope.deletedRows.push(scope.onRow.entity);
                 var index = scope.dataSheetDataset.indexOf(scope.onRow.entity);
                 scope.dataSheetDataset.splice(index, 1);
                 scope.onRow = undefined;
                 scope.validateGrid(scope);
+                
             },
 
 

@@ -523,17 +523,7 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
     };
 };
 
-//remove file from the list (otherwise our duplicate checking will have false positives.)
-function removeFileFromList (in_file, in_list) {
-    in_list.forEach(function (list_file, index) {
-        if (list_file.Name === in_file.Name) {
-            in_list.splice(index, 1);
-            console.log(" -- removing " + list_file.Name);
-        } else {
-            console.log(" -- keeping " + list_file.Name);
-        }
-    });    
-};
+
 
 //return just the keys that have files in them
 function getPopulatedUploadKeys(files) {
@@ -549,16 +539,4 @@ function getPopulatedUploadKeys(files) {
     });
 
     return keys;
-}
-
-//return whether or not the file given is in the list given (checks by the Name matching)
-function isFileInList(in_file, in_list) {
-    var isInList = false;
-
-    in_list.forEach(function (list_file, index) {
-        if (list_file.Name === in_file.Name)
-            isInList = true;
-    });
-
-    return isInList;
 }

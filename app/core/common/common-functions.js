@@ -1226,24 +1226,13 @@ function getFilenamesForTheseActivities(dataset, activities) {
     var files = [];
     var file_names = [];
 
-    var header_fields_with_files = [];
-    var detail_fields_with_files = [];
-
-    //gather our fields that are files and separate into header/detail
-    dataset.Fields.forEach(function (field) {
-        if (field.ControlType == "file") {
-            if (field.FieldRoleId == 1)
-                header_fields_with_files.push(field);
-            else
-                detail_fields_with_files.push(field);
-        }
-    });
+    var file_fields = getFileFields(dataset);
 
     //get the files out of each file field for each activity
     activities.forEach(function (activity) {
 
         //for each header file field
-        header_fields_with_files.forEach(function (header_file_field) {
+        file_fields.Header.forEach(function (header_file_field) {
             var file_json = activity.Header[header_file_field.DbColumnName]; //like "FarmingLeaseFiles"
             if (file_json) {
                 var file_obj = angular.fromJson(file_json); //the files turned into the array in the file field, e.g. "FarmingLeaseFiles"
@@ -1258,7 +1247,7 @@ function getFilenamesForTheseActivities(dataset, activities) {
 
         //for each detail row, do the same thing
         activity.Details.forEach(function (detail) {
-            detail_fields_with_files.forEach(function (detail_file_field) {
+            file_fields.Details.forEach(function (detail_file_field) {
                 var file_json = detail[detail_file_field.DbColumnName]; //like "AppraisalFiles"
                 if (file_json) {
                     var file_obj = angular.fromJson(file_json); //the files turned into the array in the file field, e.g. "AppraisalFiles"
@@ -1280,4 +1269,53 @@ function getFilenamesForTheseActivities(dataset, activities) {
     return result;
 
 
+}
+
+
+//compiles all of the file fields for header/detail and 
+//returns an object with {Header: [header_file_filds,...], Details: [detail_file_fields,...]}
+function getFileFields(dataset) {
+
+    var file_fields = {
+        Header: [],
+        Details: []
+    };
+
+    //gather our fields that are files and separate into header/detail
+    dataset.Fields.forEach(function (field) {
+        if (field.ControlType == "file") {
+            if (field.FieldRoleId == 1)
+                file_fields["Header"].push(field);
+            else
+                file_fields["Details"].push(field);
+        }
+    });
+
+    return file_fields;
+
+}
+
+//remove file from the list (otherwise our duplicate checking will have false positives.)
+function removeFileFromList(in_file, in_list) {
+    in_list.forEach(function (list_file, index) {
+        if (list_file.Name === in_file.Name) {
+            in_list.splice(index, 1);
+            console.log(" -- removing " + list_file.Name);
+        } else {
+            console.log(" -- keeping " + list_file.Name);
+        }
+    });
+};
+
+
+//return whether or not the file given is in the list given (checks by the Name matching)
+function isFileInList(in_file, in_list) {
+    var isInList = false;
+
+    in_list.forEach(function (list_file, index) {
+        if (list_file.Name === in_file.Name)
+            isInList = true;
+    });
+
+    return isInList;
 }
