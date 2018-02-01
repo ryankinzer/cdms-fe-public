@@ -795,10 +795,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.deleteActivities = function () {
 
+            $scope.saveResults = {};
+
             if (!confirm("Are you sure you want to delete " + $scope.agGridOptions.selectedItems.length + " activities (and all associated files)?  There is no undo for this operation."))
                 return;
-
-            $scope.saveResults = {};
 
             //ok, well lets give them a list of all files that will be deleted along with this activity... just to make sure!
             var activities_to_delete = [];
@@ -893,7 +893,15 @@ var dataset_activities_list = ['$scope', '$routeParams',
             }, true);
         };
 
-        $scope.openDataEntry = function (p) { $location.path("/dataentry/" + $scope.dataset.Id); };
+
+
+
+
+
+        $scope.openDataEntry = function (p) {
+            $location.path("/dataentry/" + $scope.dataset.Id);
+        };
+
 
         //Ok -- this is pretty ugly and non-angular-ish.  This is because in the context of a dijit I'm not sure
         //  how to get angular to process any content here... so we'll have to compose the content " by hand "

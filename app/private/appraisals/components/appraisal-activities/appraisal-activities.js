@@ -410,10 +410,45 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
             
             $scope.deleteActivities = function() {
                 $scope.saveResults = {};
-                if(!confirm("Are you sure you want to delete this allotment?  There is no undo for this operation."))
+                if(!confirm("Are you sure you want to delete this allotment (and all associated files)?  There is no undo for this operation."))
                     return;
 
-                DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.gridOptions, $scope.saveResults);
+                //ok, well lets give them a list of all files that will be deleted along with this activity... just to make sure!
+                var activities_to_delete = [];
+                var num_activities = $scope.gridOptions.selectedItems.length;
+                $scope.loading_progress = 0;
+
+                angular.forEach($scope.gridOptions.selectedItems, function (activity) {
+                    //console.log("loading activity : " + activity.Id);
+                    DatasetService.getActivityData(activity.Id).$promise.then(function (in_activity) {
+                        //console.log(" loaded! adding: ", in_activity);
+                        activities_to_delete.push(in_activity);
+                        $scope.loading_progress++;
+                    });
+                });
+
+                var progress_watcher = $scope.$watch('loading_progress', function () {
+
+                    //console.log("Progress watcher: " + num_activities + " + " + $scope.loading_progress);
+
+                    if ($scope.loading_progress < num_activities)
+                        return;
+
+                    progress_watcher();
+
+                    var files_to_delete = getFilenamesForTheseActivities($scope.dataset, activities_to_delete);
+                    //console.log("ok! files we got back: " + files_to_delete);
+
+                    //if there are no files to delete, just go ahead, otherwise confirm
+                    if (files_to_delete != null)
+                        if (!confirm("Last chance! - Deleting this allotment will also permanently delete the following files: " + files_to_delete))
+                            return;
+
+                    DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.gridOptions, $scope.saveResults);
+
+                });
+
+                
                 var deleteWatcher = $scope.$watch('saveResults', function(){
                     if($scope.saveResults.success)
                     {
@@ -428,7 +463,10 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
                 },true);
             };
 
-			$scope.openDataEntry = function (p) { $location.path("/dataentry/"+$scope.dataset.Id);	};
+
+            $scope.openDataEntry = function (p) {
+                $location.path("/dataentry/" + $scope.dataset.Id);
+            };
 
             
 
