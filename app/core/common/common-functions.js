@@ -1205,3 +1205,79 @@ function isDuplicateUploadFile(incoming_file, files_to_check) {
 
     return foundDuplicate;
 }
+
+
+
+
+//helper function that aggregates the filenames for a list of activities
+// returns null if there are none.
+
+//the activities are an array of 
+// results that come from http://localhost/services/api/v1/activity/getdatasetactivitydata?id=18887 (for example)
+//so the structure is var activity = {Dataset: obj, Header: obj, Details: [obj,...]}
+function getFilenamesForTheseActivities(dataset, activities) {
+
+    console.log(" compiling filenames for " + activities.length + " activities.");
+
+    //early return if incoming variables aren't setup for us.
+    if (!activities || !dataset || !Array.isArray(activities))
+        return null;
+
+    var files = [];
+    var file_names = [];
+
+    var header_fields_with_files = [];
+    var detail_fields_with_files = [];
+
+    //gather our fields that are files and separate into header/detail
+    dataset.Fields.forEach(function (field) {
+        if (field.ControlType == "file") {
+            if (field.FieldRoleId == 1)
+                header_fields_with_files.push(field);
+            else
+                detail_fields_with_files.push(field);
+        }
+    });
+
+    //get the files out of each file field for each activity
+    activities.forEach(function (activity) {
+
+        //for each header file field
+        header_fields_with_files.forEach(function (header_file_field) {
+            var file_json = activity.Header[header_file_field.DbColumnName]; //like "FarmingLeaseFiles"
+            if (file_json) {
+                var file_obj = angular.fromJson(file_json); //the files turned into the array in the file field, e.g. "FarmingLeaseFiles"
+                if (Array.isArray(file_obj)) {
+                    file_obj.forEach(function (file_to_add) {
+                        files.push(file_to_add);
+                        file_names.push(file_to_add.Name);
+                    });
+                }
+            }
+        });
+
+        //for each detail row, do the same thing
+        activity.Details.forEach(function (detail) {
+            detail_fields_with_files.forEach(function (detail_file_field) {
+                var file_json = detail[detail_file_field.DbColumnName]; //like "AppraisalFiles"
+                if (file_json) {
+                    var file_obj = angular.fromJson(file_json); //the files turned into the array in the file field, e.g. "AppraisalFiles"
+                    if (Array.isArray(file_obj)) {
+                        file_obj.forEach(function (file_to_add) {
+                            files.push(file_to_add);
+                            file_names.push(file_to_add.Name);
+                        });
+                    }
+                }
+            });
+        });
+    });
+
+    //so when we're done we should have a list of all the files and the filenames.
+    var result = (file_names.length > 0) ? file_names.join(", ") : null;
+    console.log("done! we found " + files.length + " files: ", result);
+
+    return result;
+
+
+}
