@@ -679,7 +679,6 @@ var dataset_entry_form = ['$scope', '$routeParams',
         };
 
         //overriding the one in our service because we don't want to allow removing of a blank row.
-        //TODO: files need to be removed?
         $scope.removeRow = function () {
             if ($scope.dataSheetDataset.length > 1)
                 DataSheet.removeOnRow($scope);
