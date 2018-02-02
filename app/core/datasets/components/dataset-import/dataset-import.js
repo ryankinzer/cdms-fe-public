@@ -449,6 +449,8 @@
 	        	//setup locationOptions dropdown
 				//$scope.locationOptions = $rootScope.locationOptions = makeObjects(getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId"), 'Id','Label') ;  // Original code
 				$scope.instrumentOptions = $rootScope.instrumentOptions = makeObjects($scope.project.Instruments, 'Id','Name');
+				console.log("$scope.instrumentOptions is next...");
+				console.dir($scope.instrumentOptions);
 				
 				//setup location field to participate in validation
 				$scope.FieldLookup['locationId'] = { DbColumnName: 'locationId', ControlType: "select" };
