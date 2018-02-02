@@ -633,6 +633,14 @@
 				$scope.ActivityFields.Location = getByField($scope.project.Locations, $scope.ActivityFields.LocationId, "Id");
 			};
 			
+			$scope.setInstrument = function()
+			{
+				console.log("$scope is next...");
+				//console.dir($scope);
+				$scope.ActivityFields.Instrument = getByField($scope.project.Instruments, $scope.ActivityFields.InstrumentId, "Id");
+				console.dir($scope);
+			};
+			
 			$scope.onLocationChange = function()
 			{
 				console.log("Inside $scope.onLocationChange...");
