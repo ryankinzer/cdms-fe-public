@@ -58,33 +58,64 @@ datasets_module.service('FileUploadService', ['$q', '$upload', function ($q, $up
                         if (($scope.foundDuplicate === false) && (file.success != "Success")) {
 
                             var deferred = $q.defer();
-
+							
                             if ($scope.DatastoreTablePrefix === "CrppContracts") {
-                                $upload.upload({
-                                    url: serviceUrl + '/api/v1/crppsubproject/uploadcrppsubprojectfile',
-                                    method: "POST",
-                                    // headers: {'headerKey': 'headerValue'},
-                                    // withCredential: true,
-                                    data: { ProjectId: $scope.project.Id, SubprojectId: $scope.viewSubproject.Id, Description: "Uploaded file for: " + file.Name, Title: file.Name },
-                                    file: file,
+								if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
+								{
+									$upload.upload({
+										url: serviceUrl + '/api/v1/crppsubproject/uploadcrppsubprojectfile',
+										method: "POST",
+										// headers: {'headerKey': 'headerValue'},
+										// withCredential: true,
+										data: { ProjectId: $scope.project.Id, SubprojectId: $scope.viewSubproject.Id, Description: "Uploaded file for: " + file.Name, Title: file.Name },
+										file: file,
 
-                                }).progress(function (evt) {
-                                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+									}).progress(function (evt) {
+										console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
 
-                                }).success(function (data, status, headers, config) {
-                                    //console.dir(data);
-                                    config.file.success = "Success";
-                                    config.file.data = data;
-                                    deferred.resolve(data);
+									}).success(function (data, status, headers, config) {
+										//console.dir(data);
+										config.file.success = "Success";
+										config.file.data = data;
+										deferred.resolve(data);
 
-                                })
-                                    .error(function (data, status, headers, config) {
-                                        $scope.uploadErrorMessage = "There was a problem uploading your file for the subproject.  Please try again or contact the Helpdesk if this issue continues.";
-                                        console.log(" error.");
-                                        config.file.success = "Failed";
-                                        deferred.reject();
+									})
+										.error(function (data, status, headers, config) {
+											$scope.uploadErrorMessage = "There was a problem uploading your file for the subproject.  Please try again or contact the Helpdesk if this issue continues.";
+											console.log(" error.");
+											config.file.success = "Failed";
+											deferred.reject();
 
-                                    });
+										});
+								}
+								else
+								{
+									$upload.upload({
+										url: serviceUrl + '/api/v1/crppsubproject/uploadcrppsubprojectfile',
+										method: "POST",
+										// headers: {'headerKey': 'headerValue'},
+										// withCredential: true,
+										data: { ProjectId: $scope.project.Id, SubprojectId: null, Description: "Uploaded file for: " + file.Name, Title: file.Name },
+										file: file,
+
+									}).progress(function (evt) {
+										console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+
+									}).success(function (data, status, headers, config) {
+										//console.dir(data);
+										config.file.success = "Success";
+										config.file.data = data;
+										deferred.resolve(data);
+
+									})
+										.error(function (data, status, headers, config) {
+											$scope.uploadErrorMessage = "There was a problem uploading your file for the subproject.  Please try again or contact the Helpdesk if this issue continues.";
+											console.log(" error.");
+											config.file.success = "Failed";
+											deferred.reject();
+
+										});
+								}
 
                                 promises.push(deferred.promise);
                             }
