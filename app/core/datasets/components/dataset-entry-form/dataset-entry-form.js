@@ -987,18 +987,17 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
 						var newFileNameLength = file.name.length;
 						console.log("file name length = " + newFileNameLength);
-
 						console.log("file.type = " + file.type);
 						if ($scope.uploadFileType === "image") {
 							console.log("We have an image...");
 							for (var n = 0; n < $scope.project.Images.length; n++) {
 								var existingFileName = $scope.project.Images[n].Name;
-								console.log("existingFileName = " + existingFileName);
+								//console.log("existingFileName = " + existingFileName);
 								var existingFileNameLength = existingFileName.length;
 								if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
 									$scope.foundDuplicate = true;
-									console.log(file.name + " already exists in the project file list.");
-									$scope.errors.push(file.name + " already exists in the list of project images.");
+									console.log(file.name + " already exists in the project image list.");
+									$scope.errors.heading.push(file.name + " already exists in the list of project images.");
 								}
 							}
 						}
