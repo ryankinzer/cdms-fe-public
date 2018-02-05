@@ -38,20 +38,20 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 				console.log("file name length = " + newFileNameLength);
 
 				// $scope.uploadFileType gets set when the user clicks on the new button, 
-				// and it determined whether they are in the Project gallery, or Project Documents.
-				console.log("$scope.uploadFileType = " + $scope.uploadFileType);
+				// and it determines whether they are in the Project gallery, or Project Documents.
+				//console.log("$scope.uploadFileType = " + $scope.uploadFileType);
 				if ($scope.uploadFileType === "image")
 				{
 					console.log("We have an image...");
 					for(var n = 0; n < $scope.project.Images.length; n++)
 					{
 						var existingFileName = $scope.project.Images[n].Name;
-						console.log("existingFileName = " + existingFileName);
+						//console.log("existingFileName = " + existingFileName);
 						var existingFileNameLength = existingFileName.length;
 						if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1))
 						{
 								$scope.foundDuplicate = true;
-								console.log(file.name + " already exists in the project file list.");
+								console.log(file.name + " already exists in the project images list.");
 								errors.push(file.name + " already exists in the list of project images.");						
 						}
 					}
