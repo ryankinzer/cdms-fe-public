@@ -803,8 +803,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             }
 
-            console.log("$scope after copy is next...");
-<<<<<<< HEAD
+            //console.log("$scope after copy is next...");
             //console.dir($scope);
 
             //$scope.reloadProject();
@@ -932,18 +931,10 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             //console.dir($scope.updatedRows);
             //console.dir(row);
             //go ahead and mark this row as being updated.
-<<<<<<< HEAD
-            //if ($scope.updatedRows)
-			if ($scope.updatedRows && row.entity && row.entity.Id){
-				console.log("ok we have an id so we're pushing -- you must be editing...");
-                $scope.updatedRows.push(row.entity.Id);
-			}
-=======
             if ($scope.updatedRows && row.entity && row.entity.Id) {
                 console.log("ok we have an id so we're pushing -- you must be editing...");
                 $scope.updatedRows.push(row.entity.Id);
             }
->>>>>>> file_upload_fixes
 
         };
         
