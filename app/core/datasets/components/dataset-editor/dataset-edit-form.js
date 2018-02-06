@@ -267,12 +267,22 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             console.log("$scope.row is next...");
             console.dir($scope.row);
 
+            //if the activity qa status is already set in the header, copy it in to this row's activityqastatus (this should really always be the case)
             if ($scope.dataset_activities.Header.Activity.ActivityQAStatus) {
                 $scope.row.ActivityQAStatus = {
                     QAStatusId: "" + $scope.dataset_activities.Header.Activity.ActivityQAStatus.QAStatusId,
                     Comments: $scope.dataset_activities.Header.Activity.ActivityQAStatus.Comments,
                 }
             }
+            //otherwise, set it to the default.
+            else {
+                console.warn("The ActivityQAStatus for this activity is not set, setting to default.");
+                $scope.row.ActivityQAStatus = {
+                    QAStatusId: "" + $scope.dataset.DefaultRowQAStatusId,
+                    Comments: ""
+                }
+            }
+
 
             if ($scope.dataset_activities.Header.Activity.Timezone)
                 $scope.row.Timezone = getByField($scope.SystemTimezones, angular.fromJson($scope.dataset_activities.Header.Activity.Timezone).Name, "Name"); //set default timezone
