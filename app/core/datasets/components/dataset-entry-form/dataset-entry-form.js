@@ -1275,9 +1275,9 @@ var dataset_entry_form = ['$scope', '$routeParams',
 					var strActivityDateList = uniq_fast(aryActivityDateList); // Removes dupes and converts to a string.
 					console.log("strActivityDateList = " + strActivityDateList);
 					
-					if ($scope.datastoreTablePre)
-					// Get the Locations
-					var intLocationId = $scope.row.locationId;
+				    // Get the Locations
+                    var intLocationId = $scope.row.locationId;
+
 					var aryActivityLocationList = intLocationId.split(",");
 					strActivityLocationList = uniq_fast(aryActivityLocationList);
 					console.log("strActivityLocationList = " + strActivityLocationList);
