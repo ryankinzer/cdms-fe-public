@@ -115,13 +115,14 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             scope.mapHtml = $sce.trustAsHtml(scope.project.MetadataValue[25]);
             scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
 
-            //load the project's files
+            //load all of the project's files
             scope.project.Files = ProjectService.getProjectFiles(scope.project.Id);
 
             //since we want a tab of images and a tab of other files, 
-            // split them out into two arrays we will use to populate the two grids.
+            // sort them out into three arrays we will use to populate the tabs.
             scope.project.Images = [];
             scope.project.Docs = [];
+            scope.project.SubprojectFiles = [];
 
             //once they load... (the docs and gallery tabs listen for this and then handle their grids.)
             var file_watcher = scope.$watch('project.Files', function () {
@@ -138,6 +139,11 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     file.Title = (!file.Title || file.Title === 'undefined' || typeof file.Title === 'undefined') ? "" : file.Title;
                     file.Description = (!file.Description || file.Description === 'undefined' || typeof file.Description === 'undefined') ? "" : file.Description;
 
+                    //here we'll sort the files into some arrays...
+                    // scope.project.Docs = document tab
+                    // scope.project.Images = images tab
+                    // scope.project.SubprojectFiles = subproject files <-- TODO: someday refactor this away so that projects are just nested...
+
                     //note: Subproject_CrppId indicates the file belongs to a subproject (not just crpp)
                     if (file.DatasetId === null && file.Subproject_CrppId === null)
                     {
@@ -146,11 +152,12 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                         } else { //everything else goes to 'Documents' tab
                             scope.project.Docs.push(file);
                         }
+                    } else {
+                        scope.project.SubprojectFiles.push(file);
                     }
                 });
                 console.log("OK! Done loading files... ");
-                //console.dir(scope.project.Images);
-                //console.dir(scope.project.Docs);
+                console.dir(scope.project);
 
             }, true); //end after files load watcher.
             
@@ -478,7 +485,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         scope.canEdit = function (project) {
             return $rootScope.Profile.canEdit(project);
         };
-
+        
     }
 
 ];

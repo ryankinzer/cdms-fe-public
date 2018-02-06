@@ -40,15 +40,8 @@
             </div>
             
             <h4>{{dataset.Name}}</h4>
-            <div ng-show="selectedLocation"><i>Filtering by location: <b>{{selectedLocation.Label}}</b></i>  <button ng-click="removeFilter()" class="btn btn-xs">clear</button><br/><br/></div>
-            <div class="btn-group" dropdown project-role="editor">
-                <button type="button" class="btn dropdown-toggle">Data Entry <span class="caret"></span></button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#/dataentryform/{{dataset.Id}}">Data Entry Form</a></li>
-                    <!--<li><a href="#/dataentry/{{dataset.Id}}">Data Entry Sheet</a></li>-->
-					<li ng-show="showDataEntrySheetButton"><a href="#/dataentry/{{dataset.Id}}">Data Entry Sheet</a></li>
-                </ul>
-            </div>
+            
+            <button project-role="editor" type="button" ng-click="openDataEntryWindow()" class="btn dropdown-toggle">Data Entry</button>
             <button project-role="editor" class="btn" ng-click="openImportWindow()">Import data</button>
             <button class="btn" ng-click="openQueryWindow()">Query/Export data</button>
             <button class="btn" ng-click="openDetailsWindow()">Metadata</button>

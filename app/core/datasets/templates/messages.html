@@ -1,10 +1,26 @@
 <div ng-show="activities.success" style="margin-bottom: 50px;">
     <div class="alert alert-success" ng-show="activities.success">
-    <h4 class="alert-heading">Success!</h4>
-    {{activities.success}}
+        <h4 class="alert-heading">Success!</h4>
+        {{activities.success}}
     </div>
     <button style="margin-left: 3px;" class="btn right" ng-click="doneButton()">Done</button>
     <button style="margin-left: 3px;" class="btn right" ng-click="viewButton()">Back to list</button>
+
+
+    <div style="margin-top: 75px;" ng-show="filesToUpload_keys.length > 0">
+        <h4>Files to upload:</h4>
+        <div ng-repeat="fieldFile in filesToUpload_keys">
+            For field: {{fieldFile}}
+            <table class="table striped">
+                <tr ng-repeat="file in filesToUpload[fieldFile]">
+                    <td class="modal-file-col1">{{file.name}}</td>
+                    <td class="modal-file-col2">{{file.success}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
 </div>
 <div>
     <p ng-show="activities.errors.saveError" class="alert alert-danger">{{activities.errors.saveError}}</p>

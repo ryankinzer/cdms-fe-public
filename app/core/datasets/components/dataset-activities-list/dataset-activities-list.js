@@ -784,17 +784,57 @@ var dataset_activities_list = ['$scope', '$routeParams',
             $location.path("/dataset-details/" + $scope.dataset.Id);
         };
 
+        $scope.openDataEntryWindow = function (p) {
+            $location.path("/dataentryform/" + $scope.dataset.Id);
+        };
+
         $scope.openImportWindow = function () {
             $scope.activities = null; // Dump the activities to free up memory.
             $location.path("/datasetimport/" + $scope.dataset.Id);
         };
 
         $scope.deleteActivities = function () {
+
             $scope.saveResults = {};
-            if (!confirm("Are you sure you want to delete " + $scope.agGridOptions.selectedItems.length + " activities?  There is no undo for this operation."))
+
+            if (!confirm("Are you sure you want to delete " + $scope.agGridOptions.selectedItems.length + " activities (and all associated files)?  There is no undo for this operation."))
                 return;
 
-            DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.agGridOptions, $scope.saveResults);
+            //ok, well lets give them a list of all files that will be deleted along with this activity... just to make sure!
+            var activities_to_delete = [];
+            var num_activities = $scope.agGridOptions.selectedItems.length;
+            $scope.loading_progress = 0;
+            
+            angular.forEach($scope.agGridOptions.selectedItems, function (activity) {
+                //console.log("loading activity : " + activity.Id);
+                DatasetService.getActivityData(activity.Id).$promise.then(function (in_activity) {
+                    //console.log(" loaded! adding: ", in_activity);
+                    activities_to_delete.push(in_activity);
+                    $scope.loading_progress++;
+                });
+            });
+
+            var progress_watcher = $scope.$watch('loading_progress', function () {
+
+                //console.log("Progress watcher: " + num_activities + " + " + $scope.loading_progress);
+
+                if ($scope.loading_progress < num_activities)
+                    return;
+
+                progress_watcher();
+
+                var files_to_delete = getFilenamesForTheseActivities($scope.dataset, activities_to_delete);
+                //console.log("ok! files we got back: " + files_to_delete);
+
+                //if there are no files to delete, just go ahead, otherwise confirm
+                if (files_to_delete != null)
+                    if(!confirm("Last chance! - Deleting this activity will also permanently delete the following files: " + files_to_delete))
+                        return;
+
+                DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.agGridOptions, $scope.saveResults);
+                
+            });
+            
             var deleteWatcher = $scope.$watch('saveResults', function () {
                 if ($scope.saveResults.success) {
                     //great! so remove those from the grid; no sense reloading
@@ -853,7 +893,15 @@ var dataset_activities_list = ['$scope', '$routeParams',
             }, true);
         };
 
-        $scope.openDataEntry = function (p) { $location.path("/dataentry/" + $scope.dataset.Id); };
+
+
+
+
+
+        $scope.openDataEntry = function (p) {
+            $location.path("/dataentry/" + $scope.dataset.Id);
+        };
+
 
         //Ok -- this is pretty ugly and non-angular-ish.  This is because in the context of a dijit I'm not sure
         //  how to get angular to process any content here... so we'll have to compose the content " by hand "
@@ -900,3 +948,5 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
    
 ];
+
+

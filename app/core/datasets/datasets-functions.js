@@ -245,7 +245,10 @@ function parseField(field, scope) {
         //console.dir(e);
 
         //console.log("e string = " + e.description.toString());
-        var errorDescription = e.description.valueOf();
+        var errorDescription = "";
+        if (e && e.hasOwnProperty('description'))
+            errorDescription = e.description.valueOf();
+
         if ((field.Field.Validation === "t") ||
             (field.Field.Validation === "i") ||
             (field.Field.Validation === "NULL")) {
@@ -260,9 +263,9 @@ function parseField(field, scope) {
             // Do nothing.  We handle checking the value in the ValidateField function.
         }
         else {
-            console.log("** There is an error parsing the validation for: " + field.Field.Name + " **");
+            console.error("** There is an error parsing the validation for: " + field.Field.Name + " **");
             console.dir(e);
-            console.log("Validation == " + field.Field.Validation);
+            console.error("Validation == " + field.Field.Validation);
         }
     }
 

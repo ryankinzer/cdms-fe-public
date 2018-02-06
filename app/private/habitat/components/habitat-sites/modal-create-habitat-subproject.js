@@ -1,4 +1,5 @@
-﻿
+﻿//controller for modal-create-habSubproject.html
+// create/edit habitat subproject
 
 var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','CommonService','SubprojectService', 'ServiceUtilities', 
 	'$timeout', '$location', '$anchorScroll', '$document', '$upload', 
@@ -7,7 +8,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	console.log("Inside ModalCreateHabSubprojectCtrl...");
 
     initEdit(); //prevent backspace
-	
+
     $scope.header_message = "Create new Habitat project";
 	$rootScope.newSubproject = $scope.newSubproject = true;
     $scope.waterbodies = CommonService.getWaterBodies();
@@ -21,11 +22,11 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	$scope.fundersPresent = false;
 	$scope.collaboratorPresent = false;
 	$scope.featureImagePresent = false;
-	
     $scope.subproject_row = {
         StatusId: 0,
         //OwningDepartmentId: 1,
     };
+    $scope.subprojectId = 0; 
 	
 	// This line pulls in the Projection and the UTMZone
 	$scope.subproject_row = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
@@ -92,532 +93,256 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 	//console.log("$scope.subproject_row (after initialization) is next...");
 	//console.dir($scope.subproject_row);
 	
-	//if we are editing, this will be set.
-    if($scope.viewSubproject)
-    {
+	//if we are editing, viewSubproject will be set. -- prepare scope for editing...
+    if ($scope.viewSubproject) {
         $scope.header_message = "Edit Habitat project: " + $scope.viewSubproject.ProjectName;
-		$rootScope.newSubproject = $scope.newSubproject = false;
-		$scope.subprojectFileList = $rootScope.subprojectFileList;
-		
+        $rootScope.newSubproject = $scope.newSubproject = false;
+        $scope.subprojectFileList = $rootScope.subprojectFileList;
+
         $scope.subproject_row = angular.copy($scope.viewSubproject);
-		
-		//console.log("$scope.subproject_row (in viewSubproject) is next...");
-		//console.dir($scope.subproject_row);
-		
-		$scope.showAddDocument = false;
+        $scope.subprojectId = $scope.subproject_row.Id;
+
+        $scope.showAddDocument = false;
 
         /* kb commented out 11/21 - not used?
-		if ((typeof $scope.subproject_row.Collaborators !== 'undefined') && ($scope.subproject_row.Collaborators !== null))
-		{
-			//console.log("$scope.subproject_row.Collaborators is next...");
-			//console.dir($scope.subproject_row.Collaborators);
-			
-			var strCollaborators = $scope.subproject_row.Collaborators;
-			strCollaborators = strCollaborators.replace(/(\r\n|\r|\n)/gm, ""); // Remove any newlines
-			strCollaborators = strCollaborators.replace(/["\[\]]+/g, ''); // Remove any brackets []
-			strCollaborators = strCollaborators.trim();
-			console.log("strCollaborators = " + strCollaborators);
-			
-			//$scope.subproject_row.strCollaborators = null; // dump the previous contents.
-			$scope.subproject_row.strCollaborators = strCollaborators; // reset its value
-			//console.log("$scope.subproject_row.strCollaborators = " + $scope.subproject_row.strCollaborators);
-			if ($scope.subproject_row.strCollaborators.indexOf("Other") > -1)
-				$scope.showOtherCollaborators = true;
-			
-			$scope.subproject_row.strCollaborators = strCollaborators;
-			
-		}
+        if ((typeof $scope.subproject_row.Collaborators !== 'undefined') && ($scope.subproject_row.Collaborators !== null))
+        {
+            //console.log("$scope.subproject_row.Collaborators is next...");
+            //console.dir($scope.subproject_row.Collaborators);
+            	
+            var strCollaborators = $scope.subproject_row.Collaborators;
+            strCollaborators = strCollaborators.replace(/(\r\n|\r|\n)/gm, ""); // Remove any newlines
+            strCollaborators = strCollaborators.replace(/["\[\]]+/g, ''); // Remove any brackets []
+            strCollaborators = strCollaborators.trim();
+            console.log("strCollaborators = " + strCollaborators);
+            	
+            //$scope.subproject_row.strCollaborators = null; // dump the previous contents.
+            $scope.subproject_row.strCollaborators = strCollaborators; // reset its value
+            //console.log("$scope.subproject_row.strCollaborators = " + $scope.subproject_row.strCollaborators);
+            if ($scope.subproject_row.strCollaborators.indexOf("Other") > -1)
+                $scope.showOtherCollaborators = true;
+            	
+            $scope.subproject_row.strCollaborators = strCollaborators;
+            	
+        }
         */
-		
-		//if ((typeof $scope.subproject_row.OtherCollaborators !== 'undefined') && ($scope.subproject_row.OtherCollaborators !== null))
-		//	$scope.showOtherCollaborators = true;
-		
-		if ($scope.subproject_row.FeatureImage !== null)
-		{
-			$scope.subproject_row['ItemFiles'] = '[{"Name":"' + $scope.subproject_row.FeatureImage + '"}]';
-		}
-				
-		values = null; // Set/reuse this variable.
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.FirstFoods);
-			//console.log("First Foods was an object.");
-			//console.log("First Foods = " + values);
-			var strFirstFoods = values.toString();
-			//console.log("strFirstFoods = " + strFirstFoods);
-		}
-		catch(e)
-		{
-			values = $scope.subproject_row.FirstFoods.split(",");
-			//console.log("First Foods was a string.");
-			var strFirstFoods = $scope.subproject_row.FirstFoods.toString();
-			//console.log(strFirstFoods);
-		}
-		$scope.subproject_row.FirstFoods = values;
-		
-		values = null; // Set/reuse this variable.		
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.RiverVisionTouchstone);
-			//console.log("It was an object.");
-		}
-		catch(e)
-		{
-			values = $scope.subproject_row.RiverVisionTouchstone.split(",");
-			//console.log("It was a string.");
-		}
-		$scope.subproject_row.RiverVisionTouchstone = values;
-		
-		values = null; // Set/reuse this variable.
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.HabitatObjectives);
-			//console.log("It was an object.");
-		}
-		catch(e)
-		{
-			values = $scope.subproject_row.HabitatObjectives.split(",");
-			//console.log("It was a string.");
-		}
-		$scope.subproject_row.HabitatObjectives = values;
-		
-		values = null; // Set/reuse this variable.
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcerns);
-			//console.log("It was an object.");
-		}
-		catch(e)
-		{
-			values = $scope.subproject_row.NoaaEcologicalConcerns.split(",");
-			//console.log("It was a string.");
-		}
-		$scope.subproject_row.NoaaEcologicalConcerns = values;
-		
-		values = null; // Set/reuse this variable.
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcernsSubcategories);
-			//console.log("It was an object.");
-		}
-		catch(e)
-		{
-			values = $scope.subproject_row.NoaaEcologicalConcernsSubcategories.split(",");
-			//console.log("It was a string.");
-		}
-		$scope.subproject_row.NoaaEcologicalConcernsSubcategories = values;
 
-		values = null; // Set/reuse this variable.
-		try
-		{
-			values = angular.fromJson($scope.subproject_row.LimitingFactors);
-			//console.log("It was an object.");
-		}
-		catch(e)
-		{
-			values = $scope.subproject_row.LimitingFactors.split(",");
-			//console.log("It was a string.");
-		}
-		$scope.subproject_row.LimitingFactors = values;
-		
+        if ($scope.subproject_row.FeatureImage !== null) {
+            $scope.subproject_row.ItemFiles = '[{"Name":"' + $scope.subproject_row.FeatureImage + '"}]';
+        }
+
+
+        values = null; // Set/reuse this variable.
+        var strFirstFoods = null
+        try {
+            values = angular.fromJson($scope.subproject_row.FirstFoods);
+            //console.log("First Foods was an object.");
+            //console.log("First Foods = " + values);
+            strFirstFoods = values.toString();
+            //console.log("strFirstFoods = " + strFirstFoods);
+        }
+        catch (e) {
+            if ($scope.subproject_row.FirstFoods) {
+                values = $scope.subproject_row.FirstFoods.split(",");
+                strFirstFoods = $scope.subproject_row.FirstFoods.toString();
+            }
+            else {
+                values = "";
+                strFirstFoods = "";
+            }
+                
+            //console.log("First Foods was a string.");
+            
+            //console.log(strFirstFoods);
+        }
+        $scope.subproject_row.FirstFoods = values;
+
+        values = null; // Set/reuse this variable.		
+        try {
+            values = angular.fromJson($scope.subproject_row.RiverVisionTouchstone);
+            //console.log("It was an object.");
+        }
+        catch (e) {
+            values = $scope.subproject_row.RiverVisionTouchstone.split(",");
+            //console.log("It was a string.");
+        }
+        $scope.subproject_row.RiverVisionTouchstone = values;
+
+        values = null; // Set/reuse this variable.
+        try {
+            values = angular.fromJson($scope.subproject_row.HabitatObjectives);
+            //console.log("It was an object.");
+        }
+        catch (e) {
+            values = $scope.subproject_row.HabitatObjectives.split(",");
+            //console.log("It was a string.");
+        }
+        $scope.subproject_row.HabitatObjectives = values;
+
+        values = null; // Set/reuse this variable.
+        try {
+            values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcerns);
+            //console.log("It was an object.");
+        }
+        catch (e) {
+            values = $scope.subproject_row.NoaaEcologicalConcerns.split(",");
+            //console.log("It was a string.");
+        }
+        $scope.subproject_row.NoaaEcologicalConcerns = values;
+
+        values = null; // Set/reuse this variable.
+        try {
+            values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcernsSubcategories);
+            //console.log("It was an object.");
+        }
+        catch (e) {
+            values = $scope.subproject_row.NoaaEcologicalConcernsSubcategories.split(",");
+            //console.log("It was a string.");
+        }
+        $scope.subproject_row.NoaaEcologicalConcernsSubcategories = values;
+
+        values = null; // Set/reuse this variable.
+        try {
+            values = angular.fromJson($scope.subproject_row.LimitingFactors);
+            //console.log("It was an object.");
+        }
+        catch (e) {
+            values = $scope.subproject_row.LimitingFactors.split(",");
+            //console.log("It was a string.");
+        }
+        $scope.subproject_row.LimitingFactors = values;
+
+        //ok, all initialized... now:
+        //mixin the properties and functions to enable the modal file chooser for this controller...
+        modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files);
+
+    } else {
+        //mixin the properties and functions to enable the modal file chooser for this controller...
+        modalFiles_setupControllerForFileChooserModal($scope, $modal, []); //last param is files to check for duplicates... we are new, so we don't have any.
     }
 	
-	console.log("$scope inside ModalCreateHabSubprojectCtrl, after initializing, is next...");
-	//console.dir($scope);
+	console.log("inside ModalCreateHabSubprojectCtrl, after initializing");
 
-    //var uploadWatch = $scope.$watch('uploadComplete', function(){
-    $scope.$watch('uploadComplete', function(){
-		if (!$scope.uploadComplete)
-			return;
-		
-		console.log("Inside watch uploadComplete...");
-		angular.forEach($scope.filesToUpload, function(files, field){
+    
+    //this is called to after the location is saved (if necessary) by the save() function.
+    $scope.saveFilesAndParent = function () {
 
-			if(field == "null" || field == "")
-				return;
-			
-			var local_files = [];
+        var saveRow = angular.copy($scope.subproject_row);
+        console.log("saveRow (before wiping HabitatItems) is next..");
+        console.dir(saveRow);
 
-			for(var i = 0; i < files.length; i++)
-			{
-				console.log("$scope is next...")
-				//console.dir($scope);
-			  
-				var file = files[i];
-				console.log("Reviewing results on file " + file.Name);
-				console.dir(file);
-			  
-				console.log("$scope.errors is next...");
-				console.dir($scope.errors);
-				console.log("typeof $scope.errors = " + typeof $scope.errors);
-				if(file.data && file.data.length == 1) //since we only upload one at a time...
-				{
-					//console.dir(file.data);
-					local_files.push(file.data[0]); //only ever going to be one if there is any...
-					//console.log("file id = "+file.data[0].Id);
-				}
-				else if (typeof $scope.errors === 'undefined')
-				{
-					console.log("No errors...");
-				}
-				else
-				{
-					//console.log("no file id.");
-					$scope.foundDuplicate = true;
-					$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-					//console.log("$scope is next...");
-					//console.dir($scope);
-					throw "Problem saving file: " + file.Name;
-				}
-			}
+        saveRow.HabitatItems = undefined;
+        console.log("saveRow (after wiping HabitatItems) is next...");
+        console.dir(saveRow);
 
-			console.log("$scope.subproject_row is next...");
-			console.dir($scope.subproject_row);
-			console.log("field = " + field);
-			//if we already had actual files in this field, copy them in
-			if($scope.subproject_row[field])
-			{
-				console.log("On Files field...");
-				var current_files = angular.fromJson($scope.subproject_row[field]);
-				angular.forEach(current_files, function(file){
-					if(file.Id) //our incoming files don't have an id, just actual files.
-						local_files.push(file);		
-				});
-			}
+        //if we are saving a new project...
+        if ($scope.subprojectId === 0) {
+            console.log("saveFielsAndParent -- we are creating a new one before we sav so that we have the subprojectId...");
 
-			$scope.subproject_row[field] = angular.toJson(local_files);
-			//console.log("Ok our new list of files: "+$scope.row[field]);
-			
-			if ($scope.addDocument === "Yes")
-			{
-				console.log("$scope.addDocument = Yes...");
-				
-				// If the user wishes to add a Correspondence Event right away, we must wait to get the ID of the new subproject, before we can continue.
-				//$scope.reloadSubproject(promise.Id);
-				//var promise2 = $scope.reloadSubproject(promise.Id);
-				//console.log("Inside reloadSubproject...");
-				//SubprojectService.clearSubproject();
-				//DatasetService.clearHabSubproject(); // Commented out in services.js
-				//$scope.reloadSubproject($scope.subprojectId);
-				//$modalInstance.dismiss();	
-				$scope.openHabitatItemForm();
-				//$scope.subproject = SubprojectService.getSubproject(id);
-			}
-			else
-			{
-				console.log("$scope.addDocument != Yes");
-				
-				// If the user just wants to create the Subproject, we can continue without waiting.
-				//$scope.reloadSubproject($scope.subprojectId);
-				//$modalInstance.dismiss();
-			}
-			
-			SubprojectService.clearSubproject();
-			if (($scope.filesToUpload.ItemFiles) || ($scope.NewPoint)) // No new files to upload, and using an existing point.
-			{
-				console.log("Reloading the whole project, because we have a new location or file...");
-				$scope.reloadThisProject();
-			}
-			else
-			{
-				console.log("Just reloading the subproject...");
-				$scope.reloadSubproject($scope.subprojectId);
-			}
-		});
-		
-		//uploadWatch();
-	});
-	
-    $scope.$watch('savingHabSubproject', function(){
-		console.log("Inside ModalCreateHabSubprojectCtrl, watch savingHabSubproject...");
-		console.log("$scope.savingHabSubproject = " + $scope.savingHabSubproject);
+            var save_subproject_promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
+            save_subproject_promise.$promise.then(function () {
+                console.log("Back from save_subproject_promise!");
+                console.log(save_subproject_promise);
 
-		// The save function saved the location associated to this subproject.
-		// This watch saves the actual subproject, and any files associated to it.
-		
-		//if ((!$scope.subproject_row.LocationId) || ($scope.subproject_row.LocationId === null))
-		if ($scope.savingHabSubproject === false)
-			return;
-		
-		var fileAlreadySaved = false;
-		// Now begin saving the subproject.
-		console.log("$scope.subproject_row.LocationId (in watch) = " + $scope.subproject_row.LocationId);
-		
-		var saveRow = angular.copy($scope.subproject_row);
-		console.log("saveRow (before wiping HabitatItems) is next..");
-		console.dir(saveRow);
+                $scope.subprojectId = save_subproject_promise.Id;
+                $scope.subproject_row.Id = save_subproject_promise.Id;
+                $scope.saveFilesAndParent(); //call ourselves again now that our ID is set.
+            }, function (error) {
+                console.error("something went wrong: ", error);
+            });
+            return;
+        }
 
-		saveRow.HabitatItems = undefined;
-		console.log("saveRow (after wiping HabitatItems) is next...");
-		console.dir(saveRow);
-		
-		var promise = null;		
-		promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
-		
-		if (typeof promise !== 'undefined')
-		{
-			promise.$promise.then(function(){
-				//window.location.reload();
+        //if we are editing a project, we carry on from here...
+        var data = {
+            ProjectId: $scope.project.Id,
+            SubprojectId: $scope.subprojectId,
+            SubprojectType: "Hab",
+            FeatureImage: 1
+        };
 
-                
-				// Are we working with a new point, or an existing one?
-				if ($scope.NewPoint)
-				{
-					// Normally, scope.SdeObjectId is set to 0; if it is > 0, then we just saved a new location and need to handle it.
-					//console.log("promise in $scope.$watch('subproject_row.LocationId' is next...");
-					//console.dir(promise);
-					//console.dir($scope);
-					$scope.subprojectId = $rootScope.subprojectId = promise.Id;
-					console.log("$scope.subprojectId = " + $scope.subprojectId);
-					$scope.locationId = promise.LocationId;
-					console.log("$scope.locationId = " + $scope.locationId);			
-					
-					// Note:  In the Save function, we created a location object, but we had no SubprojectId.
-					// Now we have subprojects, so let's go back right away and update that Location object, providing the new SubprojectId.
-					var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
-					newLocation.Id = $scope.locationId;
-					newLocation.Label = saveRow.ProjectName;
-					newLocation.Description = saveRow.ProjectDescription;
-					newLocation.GPSEasting = saveRow.GPSEasting;
-					newLocation.GPSNorthing = saveRow.GPSNorthing;
-					newLocation.ProjectId = parseInt($scope.projectId);
-					newLocation.SubprojectId = $scope.subprojectId;
-					newLocation.SdeObjectId = $scope.SdeObjectId; // We set this in the $scope.save function.
-					newLocation.LocationTypeId = LOCATION_TYPE_Hab;
-					newLocation.WaterBodyId = saveRow.WaterBodyId;
-					
-					console.log("newLocation is next...");
-					console.dir(newLocation);
-					
-                    var loc_promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
+        var target = '/api/v1/habsubproject/uploadhabitatfile';
 
-                    loc_promise.$promise.then(function () {
-                        console.log("Adding this to the project locations: ");
-                        console.dir(loc_promise);
-                        console.log(" -- locations after");
-                        console.dir(scope.project.Locations);
-                        scope.project.Locations.push(loc_promise); //add to our list of locations.
-                    });
+        $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
 
-				}
-				else
-				{
-					console.log("We are working with an existing location...");
-				}
-				
-				var i = 0;  // Number of files.
-				var fileSize = 1;
-				// Check if we updated the file list.
-				if ($scope.filesToUpload.ItemFiles)
-				{
-					console.log("$scope.filesToUpload.ItemFiles is next...");
-					console.dir($scope.filesToUpload.ItemFiles);
-					$rootScope.featureImagePresent = $scope.featureImagePresent = true;
-					//var i = 0;
-					for(i = 0; i < $scope.filesToUpload.ItemFiles.length; i++)
-					{
-						var file = $scope.filesToUpload.ItemFiles[i];
-						console.log("file is next...");
-						console.dir(file);
-						
-						var newFileNameLength = file.name.length;
-						console.log("file name length = " + newFileNameLength);
+    }
 
-						// Inform the user immediately, if there are duplicate files.
-						if ($scope.foundDuplicate)
-							alert(errors);
-						else
-						{
-							console.log("file is next again...");
-							console.dir(file);
-							console.log("file.success = " + file.success);
-							if(file.success != "Success")
-							{
-								console.log("No file.success means we have not saved the file yet, so let's save it...");
-								// *** Note:  Timing issue.  After the upload kicks off, JavaScript goes on, running the stuff that follows, and then this completes. ***
-								$scope.upload = $upload.upload({
-                                    url: serviceUrl + '/api/v1/habsubproject/uploadhabitatfile',
-									method: "POST",
-									// headers: {'headerKey': 'headerValue'},
-									// withCredential: true,
-									//data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name},
-									//data: {ProjectId: $scope.project.Id, SubprojectId: subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, DatastoreTablePrefix: $scope.DatastoreTablePrefix},
-									//data: {ProjectId: $scope.project.Id, SubprojectId: $scope.subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, SubprojectType: "Hab"},
-									
-									// FeatureImage of 1 = Yes
-									// FeatureImage of 0 = No, HabitatItem file
-									data: {ProjectId: $scope.project.Id, SubprojectId: $scope.subprojectId, Description: "Uploaded file " + file.Name, Title: file.Name, SubprojectType: "Hab", FeatureImage: 1},
-									file: file,
+    //callback that is called from modalFile to do the actual file removal (varies by module)
+    $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
+        return SubprojectService.deleteHabitatItemFile($scope.projectId, $scope.subprojectId, saveRow.Id, file_to_remove);
+    }
+    
+    //call back from save above once the files are done processing and we're ready to save the item
+    $scope.modalFile_saveParentItem = function (saveRow) {
 
-									}).progress(function(evt) {
-										console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-									}).success(function(data, status, headers, config) {
-										//console.log("The following are next:  data, status, headers, config, file");
-										console.log("file is next...");
-										//console.dir(data);
-										//console.dir(status);
-										//console.dir(headers);
-										//console.dir(config);
-										console.dir(file);
-										config.file.success = "Success";
-										
-										console.log("file is next...");
-										console.dir(file);
-										//var promise = SubprojectService.saveSubprojectFile($scope.project.Id, "Hab", $scope.subprojectId, file);
-										//promise.$promise.then(function(){
-											console.log("done and success!");
-											//reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
-											$scope.refreshProjectLocations();
-											//$modalInstance.dismiss();
-										//});
-										
-										//$scope.uploadComplete = true;
-										
-									}).error(function(data, status, headers, config) {
-										$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
-										//console.log(file.name + " was error.");
-										config.file.success = "Failed";
-										
-									});
-									
-								//console.log("$scope.upload is next...");
-								//console.dir($scope.upload);
+        var promise;
 
-							}
-							else
-							{
-								console.log("We have already saved this file...");
-								fileAlreadySaved = true;
-							}
-							
-						}
-					}
-					if (i === 0)
-						$rootScope.featureImagePresent = $scope.featureImagePresent = false;
-					
-					if (!fileAlreadySaved)
-						setTimeout($scope.fileUploadResultsReviewer, (i*1000));
-					
-					/*angular.forEach($scope.filesToUpload, function(files, field){
+        //we are always here with a subproject id, so first handle saving the location (if new) so that saveHabSubproject doesn't fail (it requires a valid location)
 
-						if(field == "null" || field == "")
-							return;
-						
-						var local_files = [];
+        // Are we working with a new point, or an existing one?
+        if ($scope.NewPoint) {
+            console.log(" -------------- creating a new point 000000000000000000 ");
+            // Normally, scope.SdeObjectId is set to 0; if it is > 0, then we just saved a new location and need to handle it.
+            //console.log("promise in $scope.$watch('subproject_row.LocationId' is next...");
+            //console.dir(promise);
+            //console.dir($scope);
+            //$scope.subprojectId = $rootScope.subprojectId = promise.Id;
+            console.log("$scope.subprojectId = " + $scope.subprojectId);
+            //$scope.locationId = promise.LocationId;
+            $scope.locationId = $scope.subproject_row.LocationId;
 
-						for(var i = 0; i < files.length; i++)
-						{
-							console.log("$scope is next...")
-							//console.dir($scope);
-						  
-							var file = files[i];
-							console.log("Reviewing results on file " + file.Name);
-							console.dir(file);
-						  
-							console.log("$scope.errors is next...");
-							console.dir($scope.errors);
-							console.log("typeof $scope.errors = " + typeof $scope.errors);
-							if(file.data && file.data.length == 1) //since we only upload one at a time...
-							{
-								//console.dir(file.data);
-								local_files.push(file.data[0]); //only ever going to be one if there is any...
-								//console.log("file id = "+file.data[0].Id);
-							}
-							else if (typeof $scope.errors === 'undefined')
-							{
-								console.log("No errors...");
-							}
-							else
-							{
-								//console.log("no file id.");
-								$scope.foundDuplicate = true;
-								$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-								//console.log("$scope is next...");
-								//console.dir($scope);
-								throw "Problem saving file: " + file.Name;
-							}
-						}
+            console.log("$scope.locationId = " + $scope.locationId);
 
-						console.log("$scope.subproject_row is next...");
-						console.dir($scope.subproject_row);
-						console.log("field = " + field);
-						//if we already had actual files in this field, copy them in
-						if($scope.subproject_row[field])
-						{
-							console.log("On Files field...");
-							var current_files = angular.fromJson($scope.subproject_row[field]);
-							angular.forEach(current_files, function(file){
-								if(file.Id) //our incoming files don't have an id, just actual files.
-									local_files.push(file);		
-							});
-						}
+            // Note:  In the Save function, we created a location object, but we had no SubprojectId.
+            // Now we have subprojects, so let's go back right away and update that Location object, providing the new SubprojectId.
+            var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
+            newLocation.Id = $scope.locationId;
+            newLocation.Label = saveRow.ProjectName;
+            newLocation.Description = saveRow.ProjectDescription;
+            newLocation.GPSEasting = saveRow.GPSEasting;
+            newLocation.GPSNorthing = saveRow.GPSNorthing;
+            newLocation.ProjectId = parseInt($scope.projectId);
+            newLocation.SubprojectId = $scope.subprojectId;
+            newLocation.SdeObjectId = $scope.SdeObjectId; // We set this in the $scope.save function.
+            newLocation.LocationTypeId = LOCATION_TYPE_Hab;
+            newLocation.WaterBodyId = saveRow.WaterBodyId;
 
-						$scope.subproject_row[field] = angular.toJson(local_files);
-						//console.log("Ok our new list of files: "+$scope.row[field]);
-					});
-					*/
-				}
-				else
-				{
-					console.log("Not uploading any new files...");
-				}
-				
-				setTimeout($scope.finalPart, ((i+1)*1000));
-				
-				//$scope.reloadThisProject(); // Reload the project, to reload the project locations (what shows on the map); this will also reload the subprojects.
-				//$scope.reloadSubprojects(); // Reload the subprojects, 
-				
-				
-				/*if ($scope.addDocument === "Yes")
-				{
-					console.log("$scope.addDocument = Yes...");
-					
-					// If the user wishes to add a Correspondence Event right away, we must wait to get the ID of the new subproject, before we can continue.
-					//$scope.reloadSubproject(promise.Id);
-					//var promise2 = $scope.reloadSubproject(promise.Id);
-					//console.log("Inside reloadSubproject...");
-					//SubprojectService.clearSubproject();
-					//DatasetService.clearHabSubproject(); // Commented out in services.js
-					//$scope.reloadSubproject($scope.subprojectId);
-					$modalInstance.dismiss();	
-					$scope.openHabitatItemForm();
-					//$scope.subproject = SubprojectService.getSubproject(id);
-				}
-				else
-				{
-					console.log("$scope.addDocument != Yes");
-					
-					// If the user just wants to create the Subproject, we can continue without waiting.
-					//$scope.reloadSubproject($scope.subprojectId);
-					$modalInstance.dismiss();
-				}
-				
-				SubprojectService.clearSubproject();
-				if (($scope.filesToUpload.ItemFiles) || ($scope.NewPoint)) // No new files to upload, and using an existing point.
-				{
-					console.log("Reloading the whole project, because we have a new location or file...");
-					$scope.reloadThisProject();
-				}
-				else
-				{
-					console.log("Just reloading the subproject...");
-					$scope.reloadSubproject($scope.subprojectId);
-				}*/
+            console.log("newLocation is next...");
+            console.dir(newLocation);
 
-                console.log("----------------------- ***************** ------------ PROMISE return from hab");
-                console.log("promise");
-                console.dir(promise);
+            var loc_promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
 
-                console.log("and the saverow");
-                console.dir(saveRow);
+            loc_promise.$promise.then(function () {
+                console.log("Adding this to the project locations: ");
+                console.dir(loc_promise);
+                console.log(" -- locations after");
+                console.dir($scope.project.Locations);
+                $scope.project.Locations.push(loc_promise); //add to our list of locations.
 
+                $scope.reloadSubprojectLocations();
+
+                //ok once this is done we can save our hab sub project
+                promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
+                $scope.finishAndClose(promise, saveRow);
+            });
+        }
+        else {
+            console.log("We are working with an existing location...");
+            promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
+            $scope.finishAndClose(promise, saveRow);
+        }	
+	};
+
+    $scope.finishAndClose = function (promise, saveRow) {
+        if (typeof promise !== 'undefined') {
+            promise.$promise.then(function () {
+
+                //i guess we overwrite the json we get back with the objects from our saveRow...
                 promise.Collaborators = saveRow.Collaborators;
                 promise.Funding = saveRow.Funding;
-                
-                console.log("and here is our final:");
 
+                console.log("and here is our final new edited subproject_edited:");
                 $scope.subproject_edited = promise;
-
                 console.dir($scope.subproject_edited);
 
 
@@ -625,127 +350,30 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
                 var extended = angular.extend({}, saveRow, promise); //empty + saveRow + promise -- in that order
                 console.dir(extended);
 
+                $scope.postSaveHabitatSubprojectUpdateGrid($scope.subproject_edited);
 
-			});
-		}		
-	});
+                console.log("1 typeof $scope.errors = " + typeof $scope.errors + ", $scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
+                if ($scope.fileCount === 0) {
+                    $scope.loading = false; // Stop the fish spinner.
+                    $scope.showCloseButton = true;
+                    $scope.showCancelButton = false;
+                    $scope.showFormItems = false;
+                }
 
-	$scope.fileUploadResultsReviewer = function(){
-		console.log("Inside $scope.fileUploadResultsReviewer...");
-		//angular.forEach($scope.filesToUpload, function(files, field){
-		angular.forEach($scope.filesToUpload, function(files, field){
+                if ($scope.filesWithErrors == 0)
+                    $scope.UploadUserMessage = "All actions successful.";
+                else
+                    $scope.UploadUserMessage = "There was a problem uploading a file.  Please try again or contact the Helpdesk if this issue continues.";
 
-			if(field == "null" || field == "")
-				return;
-			
-			var local_files = [];
-			console.log("$scope is next...")
-			//console.dir($scope);
-			
-			for(var i = 0; i < files.length; i++)
-			{ 
-				var file = files[i];
-				console.log("Reviewing results on file " + file.Name);
-				console.dir(file);
-			  
-				console.log("$scope.errors is next...");
-				console.dir($scope.errors);
-				console.log("typeof $scope.errors = " + typeof $scope.errors);
-				if(file.data && file.data.length == 1) //since we only upload one at a time...
-				{
-					//console.dir(file.data);
-					local_files.push(file.data[0]); //only ever going to be one if there is any...
-					//console.log("file id = "+file.data[0].Id);
-				}
-				else if (typeof $scope.errors === 'undefined')
-				{
-					console.log("No errors...");
-				}
-				else
-				{
-					//console.log("no file id.");
-					$scope.foundDuplicate = true;
-					$scope.errors.heading.push("There was a problem saving file: " + file.Name + " - Try a unique filename.");
-					//console.log("$scope is next...");
-					//console.dir($scope);
-					throw "Problem saving file: " + file.Name;
-				}
-			}
-
-			console.log("$scope.subproject_row is next...");
-			console.dir($scope.subproject_row);
-			console.log("field = " + field);
-			//if we already had actual files in this field, copy them in
-			if($scope.subproject_row[field])
-			{
-				console.log("On Files field...");
-				var current_files = angular.fromJson($scope.subproject_row[field]);
-				console.log("var current_files is next...");
-				console.dir(current_files);
-				angular.forEach(current_files, function(file){
-					if(file.Id) //our incoming files don't have an id, just actual files.
-						local_files.push(file);		
-				});
-			}
-
-			$scope.subproject_row[field] = angular.toJson(local_files);
-			//console.log("Ok our new list of files: "+$scope.row[field]);
-		});
-	};
+            }, function (error) {
+                console.error("something went wrong: ", error);
+            }); //promise/then - after saving habitat subproject
+        } else {
+            console.log("finish and close called without a promise. :( -----------------");
+        }
+    };
 	
-	$scope.finalPart = function(){
-        console.log("Inside $scope.finalPart...");
-
-        $scope.postSaveHabitatSubprojectUpdateGrid($scope.subproject_edited);
-
-		if ($scope.addDocument === "Yes")
-		{
-			console.log("$scope.addDocument = Yes...");
-			
-			// If the user wishes to add a Habitat Item right away, we must wait to get the ID of the new subproject, before we can continue.
-			//$scope.reloadSubproject(promise.Id);
-			//var promise2 = $scope.reloadSubproject(promise.Id);
-			//console.log("Inside reloadSubproject...");
-			//SubprojectService.clearSubproject();
-			//DatasetService.clearHabSubproject(); // Commented out in services.js
-			//$scope.reloadSubproject($scope.subprojectId);
-			$modalInstance.dismiss();	
-			$scope.openHabitatItemForm();
-			//$scope.subproject = SubprojectService.getSubproject(id);
-		}
-		else
-		{
-			console.log("$scope.addDocument != Yes");
-			
-			// If the user just wants to create the Subproject, we can continue without waiting.
-			//$scope.reloadSubproject($scope.subprojectId);
-			
-			//$scope.subprojects = null;
-			//$scope.reloadSubprojects();
-			$scope.reloadSubprojectLocations();
-			
-			$modalInstance.dismiss();
-		}
-		
-		//SubprojectService.clearSubproject();
-
-		//console.log("Reload the whole project; this is the easiest way to capture the updates.");
-		// If we use services.js, service.getSubproject, it only reloads what we already had, before the changes.
-		// The save action puts the updates in the database, so we must pull the updates (and update our variables in the process) from the database.
-		//$scope.reloadThisProject();
-	};
 	
-	//$scope.showStartDate = function(){
-	//	console.log("$scope.subproject_row.ProjectStartDate (before conversion) = " + $scope.subproject_row.ProjectStartDate);		
-		//$scope.subproject_row.ProjectStartDate = setDateTo0000($scope.subproject_row.ProjectStartDate);
-	//	console.log("$scope.subproject_row.ProjectStartDate (after conversion) = " + $scope.subproject_row.ProjectStartDate);
-	//};
-	
-	//$scope.showEndDate = function(){
-	//	console.log("$scope.subproject_row.ProjectEndDate (before conversion) = " + $scope.subproject_row.ProjectEndDate);		
-		//$scope.subproject_row.ProjectEndDate = setDateTo0000($scope.subproject_row.ProjectEndDate);
-	//	console.log("$scope.subproject_row.ProjectEndDate (after conversion) = " + $scope.subproject_row.ProjectEndDate);
-	//};
 
 	$scope.selectFunder = function () {
 		console.log("Inside selectFunder...");
@@ -1050,49 +678,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 		console.log("Finished.");
 	};
 	
-	$scope.openFileModal = function(row, field)
-	{
-		console.log("Inside ModalCreateHabSubprojectCtrl, openFileModal...");
-		console.log("row is next...");
-		console.dir(row);
-		console.log("field is next...");
-		console.dir(field);
-		$scope.file_row = row;
-		//$scope.file_field = field;
-		$scope.file_field = {
-			DbColumnName: "ItemFiles"
-		};
-		
-		var modalInstance = $modal.open({
-			templateUrl: 'app/core/common/components/file/templates/modal-file.html',
-			controller: 'FileModalCtrl',
-			scope: $scope, //scope to make a child of
-		});
-	};
-	
-	$scope.onFileSelect = function(field, files)
-	{
-		console.log("Inside ModalCreateHabSubprojectCtrl, onFileSelect");
-		console.log("file selected! " + field);
-		$scope.filesToUpload[field] = files;
-	};
-	
-	/*$scope.$watch('fileProgress', function(){
-		console.log("Inside watch fileProgress...");
-		console.log("$scope.fileCount = " + $scope.fileCount + ", $scope.fileProgress = " + $scope.fileProgress);
-		if($scope.fileProgress < $scope.fileCount)
-			return;
-		
-		if ($scope.saving)
-		{
-			$scope.loading = false; // Stop the fish spinner.
-			$scope.showCloseButton = true;
-			$scope.showCancelButton = false;
-			$scope.showFormItems = false;
-		}
-	});
-	*/
-	
+
+    //kick off saving the project.
+    //  if there is a location, saves it
+    //  then hands off to saveFilesAndParent
     $scope.save = function(){
 		console.log("Inside ModalCreateHabSubprojectCtrl, save...");
 		$scope.subprojectSave = undefined;
@@ -1106,10 +695,6 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 		//$scope.featureImage = null;
 		$scope.locationId = 0;
 		$scope.NewPoint = false;
-		//$scope.subproject_row.LocationTypeId = 112; // Metrics
-		
-		// Note:  The main thing that we do in this function is save the new location for the Subproject.
-		// After we save the location, the watch for $scope.savingHabSubproject run, and it saves the subproject.
 		
 		if ((typeof $scope.subproject_row.ProjectName === 'undefined') || ($scope.subproject_row.ProjectName === null))
 		{
@@ -1125,11 +710,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 			$scope.subprojectSave.errorMessage += "Easting and Northing cannot be blank!  ";
 		}
 		
-		//console.log("$scope is next...");
-		//console.dir($scope);
-		
-		if (!$scope.subprojectSave.error)
-		{
+            if ($scope.subprojectSave.error)
+                return;
+
+
 			console.log("$scope.subproject_row, full is next...");
 			console.dir($scope.subproject_row);
 
@@ -1173,17 +757,6 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 			// First, a little cleanup.
 			$scope.subprojectSave.error = false;
 			$scope.subprojectSave.errorMessage = "";
-			
-			// Check the Feature Image box.
-			/*if ((typeof $scope.subproject_row['ItemFiles'] !== 'undefined') && (typeof $scope.subproject_row['ItemFiles'] !== 'undefined'))
-			{
-				$scope.subproject_row.featureImage = 1;
-			}
-			else
-			{
-				$scope.subproject_row.featureImage = null;
-			}
-			*/
 			
 			// First Foods
 			console.log("First Foods = " + $scope.subproject_row.FirstFoods);
@@ -1264,7 +837,6 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 				});
 				$scope.subproject_row.strCollaborators = undefined;
 			}
-			//$scope.savingHabSubproject = true;
 			
 			var subprojectId = 0;
 			// Are we creating a new Subproject, or editing an existing one?
@@ -1273,8 +845,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 				console.log("We are editing an existing subproject; no new location needed...");
 				subprojectId = $scope.viewSubproject.Id
 				
-				// We put this inside both branches of the if, because we need the branch to complete, before the watch triggers.
-				$scope.savingHabSubproject = true;
+				//ok -- everything is set to save; we are editing a subproject don't have a new location to save; hand off to next step.
+                $scope.saveFilesAndParent();
 			}
 			else
 			{
@@ -1338,9 +910,9 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 										//$scope.locationId = promise.LocationId;
 										$scope.subproject_row.LocationId = item;
 										console.log("$scope.subproject_row.LocationId = " + $scope.subproject_row.LocationId);
-										
-										// We put this inside both branches of the if ($scope.viewSubproject), because we need the branch to complete, before the watch triggers. ...Obsolete?
-										$scope.savingHabSubproject = true;
+
+                                        //ok - new location is saved and we are prepped to save the subproject so handoff to next step:
+                                        $scope.saveFilesAndParent();
 									}
 								});
 						
@@ -1365,14 +937,25 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance',
 				console.log("Had a problem saving the location.  Stopping the save...");
 				return;
 			}
-		}
+		
     };
 
-    $scope.cancel = function(){	
-		$scope.subproject_row = 'undefined';
+
+    $scope.close = function () {
+        console.log("Inside $scope.close...");
         $modalInstance.dismiss();
-		//$scope.reloadSubprojects();
-
     };
+
+    $scope.cancel = function () {
+        //if they've made file changes, the files appear as if they are existing files in the ItemFiles array... 
+        // we need to reset it back to the real, actual existing files.
+
+        if ($scope.originalExistingFiles && $scope.originalExistingFiles.hasOwnProperty($scope.file_field)) {
+            $scope.subproject_row.ItemFiles = $scope.originalExistingFiles[$scope.file_field];
+        }
+        $modalInstance.dismiss();
+    };
+
+
   }
 ];

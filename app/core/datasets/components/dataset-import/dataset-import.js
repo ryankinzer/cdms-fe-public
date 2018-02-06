@@ -115,6 +115,16 @@
 				
 			];
 			*/
+
+
+            $scope.openWaypointFileModal = function (row, field) {
+                $scope.file_field = field;
+                var modalInstance = $modal.open({
+                    templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
+                    controller: 'WaypointFileModalCtrl',
+                    scope: $scope, //scope to make a child of
+                });
+            };
 			
 			$scope.$watch('subprojectList.length', function(){
 				if ($scope.subprojectList === null)
@@ -188,7 +198,17 @@
 					return;
 
 				console.log("Inside DatasetImportCtrl, dataset.Fields watcher...");
-				
+
+                //load the files for this dataset so we can check files they want to upload for duplicates
+                $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
+
+                //once the dataset files load, setup our file handler
+                $scope.dataset.Files.$promise.then(function () {
+                    //mixin the properties and functions to enable the modal file chooser for this controller...
+                    console.log("---------------- setting up dataset file chooser ----------------");
+                    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
+                });
+
 				console.log("$scope.dataset is next...");
 				console.dir($scope.dataset);
 				
@@ -1900,7 +1920,7 @@
 			};
 
 
-			$scope.onFileSelect = function($files) {
+			$scope.onUploadFileSelect = function($files) {
 			    //$files: an array of files selected, each file has name, size, and type.
 
 			    $scope.files = $files;
@@ -2065,19 +2085,34 @@
 					//console.dir(row);
 				}
 
-				//var sheetCopy = angular.copy($scope.dataSheetDataset); //causes memory problems on IE for large files.
-	            //$scope.activities = ActivityParser.parseActivitySheet($scope.dataSheetDataset, $scope.fields);
-	            $scope.activities = ActivityParser.parseActivitySheet($scope.dataSheetDataset, $scope.fields, $scope.DatastoreTablePrefix, "Import", $scope.dataset.QAStatuses);
-				console.log("$scope.activities is next...");
-				console.dir($scope.activities);
-	            
-	            if(!$scope.activities.errors)
-	            {				
-	                DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
-	            }
+
+                //handle saving the files.
+                var data = {
+                    ProjectId: $scope.project.Id,
+                    DatasetId: $scope.dataset.Id,
+                };
+
+                var target = '/api/v1/file/uploaddatasetfile';
+
+                var saveRow = $scope.row;
+
+                $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
 
 			};
-			
+
+            //this callback is called once the files are all done saving.
+            $scope.modalFile_saveParentItem = function (saveRow) {
+
+                $scope.activities = ActivityParser.parseActivitySheet($scope.dataSheetDataset, $scope.fields, $scope.DatastoreTablePrefix, "Import", $scope.dataset.QAStatuses);
+//                console.log("$scope.activities is next...");
+//                console.dir($scope.activities);
+
+                if (!$scope.activities.errors) {
+                    DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
+                }
+            };
+
+
 			$scope.eventTimer = function(){
 				var d = new Date();
 				console.log(d.toLocaleTimeString(),1000);

@@ -29,7 +29,7 @@
 					<br/>
 
 					<!--<input type="file" ng-file-select="onFileSelect($files)" value="{{file.name}}">-->
-					<input type="file" ng-file-select="onFileSelect($files)" value="{{file.name}}" id="uploadDataFile"/>
+					<input type="file" ng-file-select="onUploadFileSelect($files)" value="{{file.name}}" id="uploadDataFile"/>
 					
 					<div style="margin-top: 15px;">
 						<div class="right" style="margin-right: 10px; ">
@@ -224,19 +224,25 @@
 					</div>
 
 					<form novalidate class="row-form">
-						<div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
-							<ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-							<ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
-							<ctuir-number-field ng-switch-when="number"></ctuir-number-field>    
-							<ctuir-date-field ng-switch-when="date"></ctuir-date-field>
-							<ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
-							<ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
-							<ctuir-select-field ng-switch-when="select"></ctuir-select-field>
-							<ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-							<ctuir-lookup-field ng-switch-when="lookup"></ctuir-lookup-field>
-							<ctuir-multilookup-field ng-switch-when="multilookup"></ctuir-multilookup-field>
-							<ctuir-text-field ng-switch-default></ctuir-text-field>
-						</div>
+                        <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
+                            <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                            <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                            <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                            <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                            <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                            <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
+                            <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
+                            <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
+                            <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                            <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                            <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
+                            <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
+                            <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                            <ctuir-lookup-field ng-switch-when="lookup"></ctuir-lookup-field>
+                            <ctuir-multilookup-field ng-switch-when="multilookup"></ctuir-multilookup-field>
+                            <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
+                            <ctuir-text-field ng-switch-default></ctuir-text-field>
+                        </div>
 
 						<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
 							<div class="header-label">QA Status:</div>
@@ -281,7 +287,7 @@
 			</div>
 		</div>
 	</div>
-	<div ng-show="dataSheetDataset.length>0" class="large-graph-box" id="chart-div">
+	<div ng-show="dataSheetDataset.length > 0 && !activities.success" class="large-graph-box" id="chart-div">
 		<ng-include src="'app/core/common/components/chart/templates/view-inset-' + dataset.Datastore.TablePrefix + '.html'"></ng-include>
 	</div>
 <!--</div>--><!--This closing tag is unnecesary, because the opening tag has a closing "/".-->

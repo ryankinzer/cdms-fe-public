@@ -5,55 +5,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
         $timeout, $location, $anchorScroll, $document) {
         console.log("Inside ModalCreateSubprojectCtrl...");
 
-        //$scope.agencyInfo = [[]];
-
-        $document.on('keydown', function (e) {
-            //console.log("Inside document.on keydown...");
-            //console.log("e is next...");
-            //console.dir(e);
-            //console.log("e.target.nodeName = " + e.target.nodeName);
-
-            // Note:  keyCode 8 = Backspace; the nodeName value is in uppercase, so we must check for that here.
-            if ((e.keyCode === 8) && (e.target.nodeName === "TEXTAREA")) {
-                //console.log("  Backspace pressed...and we are in a TEXTAREA");
-                //e.preventDefault();
-
-                var keyboardEvent = $document[0].createEvent("KeyboardEvent");
-                var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
-
-                keyboardEvent[initMethod](
-                    "keydown", // event type : keydown, keyup, keypress
-                    true, // bubbles
-                    true, // cancelable
-                    window, // viewArg: should be window
-                    false, // ctrlKeyArg
-                    false, // altKeyArg
-                    false, // shiftKeyArg
-                    false, // metaKeyArg
-                    37, // keyCodeArg : unsigned long the virtual key code, else 0.  37 = Left Arrow key
-                    0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0				
-                );
-                //console.log("Just did left arrow...");
-
-                document.dispatchEvent(keyboardEvent);
-
-                keyboardEvent[initMethod](
-                    "keydown", // event type : keydown, keyup, keypress
-                    true, // bubbles
-                    true, // cancelable
-                    window, // viewArg: should be window
-                    false, // ctrlKeyArg
-                    false, // altKeyArg
-                    false, // shiftKeyArg
-                    false, // metaKeyArg
-                    46, // keyCodeArg : unsigned long the virtual key code, else 0.  46 = Delete key
-                    0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0				
-                );
-
-                //console.log("Doing delete...");			
-                return document.dispatchEvent(keyboardEvent);
-            }
-        });
+        initEdit();
 
         $scope.header_message = "Create new CRPP project";
         $rootScope.crppProjectName = $scope.crppProjectName = "";

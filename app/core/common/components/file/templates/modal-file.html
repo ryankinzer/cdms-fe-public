@@ -2,24 +2,52 @@
 	<div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-            <h3>Manage: {{file_field.Label}}</h3>
+            <h3>Add/Remove files for: {{file_field}}</h3>
             Add or remove files using the form below.  Note that changes and files are not actually uploaded or saved  until you save the parent record.
             <div>    
                 <p ng-show="errorMessage" class="alert alert-danger">{{locationErrorMessage}}</p>
             </div>
         </div>
         <div class="modal-body">
-            <h4>Existing file(s):</h4>
-            <div ng-show="currentFiles.length == 0">None</div>
-            <table class="table striped">
-                <tr ng-repeat="file in currentFiles">
-                    <td>{{file.Name}}</td><td><button class="btn btn-xs" ng-click="removeFile(file)">Remove</button></td>
-                </tr>
-            </table>
+            
+            <div ng-show="currentFiles.length>0">
+                <h4>Existing files:</h4>
+                <div ng-show="currentFiles.length == 0">None</div>
+
+                <table class="table striped">
+                    <tr ng-repeat="file in currentFiles">
+                        <td class="modal-file-col1">{{file.Name}}</td>
+                        <td class="modal-file-col2">&nbsp;</td>
+                        <td class="modal-file-col2"><button class="btn btn-xs" ng-click="removeFile(file)">Remove</button></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div ng-show="removedFiles.length>0">
+                <h4>Removing files:</h4>
+                <table class="table striped">
+                    <tr ng-repeat="file in removedFiles">
+                        <td class="modal-file-col1">{{file.Name}}</td>
+                        <td class="modal-file-col2">&nbsp;</td>
+                        <td class="modal-file-col2">Click cancel to abort.</td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <div ng-show="filesToUpload[file_field].length > 0">
+                <h4>Files to upload:</h4>
+                <table class="table striped">
+                    <tr ng-repeat="file in filesToUpload[file_field]">
+                        <td class="modal-file-col1">{{file.name}}</td>
+                        <td class="modal-file-col2">{{file.UploadMessage}}</td>
+                        <td class="modal-file-col2"><button class="btn btn-xs" ng-click="removeFileFromUpload(file)">Remove</button></td>
+                    </tr>
+                </table>
+            </div>
 
             <h4>Add file(s):</h4>
-            <input type="file" ng-file-select="onFileSelect(file_field.DbColumnName,$files)" value="Something" multiple>
-
+            <input type="file" ng-file-select="onFileSelect(file_field,$files)" value="Something" multiple>
 
         </div>
         <div class="modal-footer">

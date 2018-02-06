@@ -14,7 +14,7 @@ require([
     'core/datasets/components/dataset-detail/dataset-detail',
     'core/datasets/components/dataset-editor/dataset-edit-form',
     'core/datasets/components/dataset-entry-form/dataset-entry-form',
-    'core/datasets/components/dataset-entry-sheet/dataset-entry-sheet',
+    //'core/datasets/components/dataset-entry-sheet/dataset-entry-sheet',
     'core/datasets/components/dataset-view/dataset-view',
     'core/datasets/components/dataset-view/modal-qa-update',
     'core/datasets/components/dataset-view/modal-data-entry',
@@ -29,7 +29,7 @@ require([
     'core/datasets/services/activity-parser',
     'core/datasets/services/convert-status',
     'core/datasets/services/datasheet',
-    'core/datasets/services/file-upload',
+    //'core/datasets/services/file-upload',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!
@@ -39,7 +39,7 @@ require([
     datasets_module.controller('DatasetDetailsCtrl', dataset_detail);
     datasets_module.controller('DataEditCtrl', dataset_edit_form);
     datasets_module.controller('DataEntryFormCtrl', dataset_entry_form);
-    datasets_module.controller('DataEntryDatasheetCtrl', dataset_entry_sheet);
+    //datasets_module.controller('DataEntryDatasheetCtrl', dataset_entry_sheet);
     datasets_module.controller('DatasetViewCtrl', dataset_view);
     datasets_module.controller('ModalQaUpdateCtrl', modal_qa_update);
     datasets_module.controller('ModalDataEntryCtrl', modal_data_entry);

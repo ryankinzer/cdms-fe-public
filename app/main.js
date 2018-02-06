@@ -88,13 +88,22 @@ define([
 
     //Fire analytics call on location change in URL for SPA.
       $rootScope.$on('$locationChangeSuccess', function () {
-          if(ENVIRONMENT != "prod") return; 
+
+          //clear out the $rootScope variables that control the file path filter...
+          $rootScope.viewSubproject = null;
+          $rootScope.datasetId = null;
+          $rootScope.newSubproject = null;
+
+          if (ENVIRONMENT != "prod") return; 
+
           console.log("Sending "+ $location.url() +" to: "+ANALYTICS_CODE);
           $window.ga('send', {
             'hitType': 'screenview',
             'appName' : 'CDMS',
             'screenName' : $location.url()
           });
+
+          
     });
   });
 
