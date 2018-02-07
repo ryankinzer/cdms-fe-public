@@ -67,6 +67,24 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         };
 
 
+        var LinkListCellTemplate = function (params) {
+            if (!params.node.data.ExternalLinks)
+                return;
+
+            var list = '<div class="event-link-list"><ul>';
+
+            var links = angular.fromJson(params.node.data.ExternalLinks);
+            if (Array.isArray(links)) {
+                links.forEach(function (link) {
+                    list += '<li><a href="' + link.Link + '" target="_blank">' + link.Name + '</a></li>';
+                });
+            }
+            
+            list += '</ul></div>';
+
+            return list;
+        }
+
         //this template gives the Edit|Delete|Add for the detail.
         var EditDetailLinksTemplate = function (detailparam) {
             var subproject = getById(scope.subprojectList, detailparam.data.SubprojectId);
@@ -100,13 +118,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             div.appendChild(addBtn);
 
             return div;
-            /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
-            return '<div project-role="editor">' +
-                        '<a ng-click="editViewSubproject();">Edit</a>|' +
-                        '<a ng-click="removeViewSubproject();">Delete</div>|' + 
-                        '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
-                '</div>';
-                */
+
         };
 
 
@@ -168,7 +180,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             { headerName: 'Item Type', field: 'ItemType', cellClass: 'item-record-cell', width: 100, menuTabs: ['filterMenuTab'], },
             { headerName: 'Item Name', field: 'ItemName', cellClass: 'item-record-cell', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: 'Documents', field: 'ItemFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: [], },
-            { headerName: 'External Links', field: 'ExternalLinks', cellClass: 'item-record-cell', width: 250, menuTabs: [], },
+            { headerName: 'External Links', field: 'ExternalLinks', cellRenderer: LinkListCellTemplate, cellClass: 'item-record-cell', width: 250, menuTabs: [], },
             {
                 field: 'EffDt',
                 headerName: 'Updated',
@@ -304,20 +316,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             },
         };
 
-
-
-
-        //do we need this? was set when the project was loaded
-        /*************************************************************/
-        // Need this section for the subprojects in Habitat and CRPP to work properly.
-        //scope.subprojectType = $rootScope.subprojectType = ProjectService.getProjectType(scope.project.Id);
-        //console.log("scope.subprojectType = " + scope.subprojectType);
-        //SubprojectService.setServiceSubprojectType(scope.subprojectType);
-		/*************************************************************/
-
-
-
-
+        
         //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
         var sites_ds_watcher = scope.$parent.$watch('project', function () {
             //console.log("Inside TAB SITES watch project... --------------------------");

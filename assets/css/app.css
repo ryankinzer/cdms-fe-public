@@ -680,7 +680,7 @@ table.metadata td
     white-space: normal;
 }
 
-.event-file-list ul {
+.event-file-list ul, .event-link-list ul {
     padding-left: 15px;
     list-style-type: circle;
 }

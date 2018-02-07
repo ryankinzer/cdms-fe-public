@@ -332,7 +332,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             return retval;
         }
 
-		
 		scope.refreshProjectLocations = function(){
 			//console.log("Inside controllers.js, refreshProjectLocations...");
 			ProjectService.clearProject();
