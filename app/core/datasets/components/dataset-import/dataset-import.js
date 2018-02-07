@@ -2319,10 +2319,12 @@
 						//console.log("Location after promise.then (but it may not have completed yet)... ");
 					}
 				}
-				else if ($scope.DatastoreTablePrefix === "WaterQuality")
+				
+				else if (($scope.DatastoreTablePrefix === "WaterQuality") || ($scope.DatastoreTablePrefix === "CrppContracts"))
 				{
 					// We do not check for duplicates with WaterQuality, because it is possible for multiple identical non-duplicate records
 					// to exist, and be incorrectly flagged as duplicate.  The task for catching the dupes with WaterQuality is on the user.
+					console.log("This dtaset is WaterQuality...");
 					$scope.duplicateEntry = false;
 					$scope.DupeCheckRunning = false;
 					$scope.validateGrid($scope);

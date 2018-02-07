@@ -1259,7 +1259,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			else
 			{
 				//if ($scope.DatastoreTablePrefix !== "CrppContracts")
-				if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix === "WaterQuality"))
+				if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
 				{
 					// Get the ActivityDate
 					var strActivityDate = toExactISOString($scope.row.activityDate);
@@ -1314,6 +1314,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				}
 				else
 				{
+					console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
 					$scope.duplicateEntry = false;
 					$scope.activities.errors = undefined;
 				}
