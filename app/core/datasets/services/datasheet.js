@@ -798,8 +798,12 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					//scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
 					
 					scope.removeRowErrorsBeforeRecheck();
-					scope.rebuildDateTimeList();
-					scope.checkForDuplicates();
+					//if (scope.DatastoreTablePrefix !== "WaterQuality")
+					if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+					{
+						scope.rebuildDateTimeList();
+						scope.checkForDuplicates();
+					}
 					
 					//this is expensive in that it runs every time a value is changed in the grid.
 					scope.validateGrid(scope); //so that number of errors gets calculated properly.

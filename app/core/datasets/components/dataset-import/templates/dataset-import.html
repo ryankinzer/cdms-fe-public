@@ -184,7 +184,8 @@
 						</div>
 					</div>
 					
-					<div ng-show="project.Instruments.length > 0 && !dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >
+					<!--<div ng-show="project.Instruments.length > 0 && !dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >-->
+					<div ng-show="project.Instruments.length > 0 && !dataset.Config.DataEntryPage.ShowFields.contains('Instrument')" >
 						<div style="display: inline-flex;">
 							<div class="header-label">Instrument: </div>
 							<div class="header-value">                            
