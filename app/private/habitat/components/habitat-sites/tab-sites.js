@@ -498,7 +498,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             //console.log("Inside openHabitatItemForm...")
             //console.dir(scope);
 
-            scope.viewSubproject = subproject;
+            $rootScope.viewSubproject = scope.viewSubproject = subproject;
             scope.hi_row = hi_row;
 
             var modalInstance = $modal.open({

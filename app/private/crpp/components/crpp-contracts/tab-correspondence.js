@@ -5,9 +5,9 @@
 
 
 var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
-    '$modal', 'ServiceUtilities', 'ConvertStatus',
+    '$modal', 'ServiceUtilities', 'ConvertStatus', '$rootScope',
     function (scope, $timeout, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $modal,
-        ServiceUtilities, ConvertStatus) {
+        ServiceUtilities, ConvertStatus, $rootScope) {
         //console.log("Inside tab correspondence controller...");
 
        
@@ -396,7 +396,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
         scope.openCorrespondenceEventForm = function (subproject, ce_row) {
             //console.log("Inside openCorrespondenceEventForm...")
 
-            scope.viewSubproject = subproject;
+            $rootScope.viewSubproject = scope.viewSubproject = subproject;
             //console.log("ok subproject set: ");
             //console.dir(scope.viewSubproject);
 
@@ -603,7 +603,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
         scope.editCrppSubproject = function (subproject) {
             //console.log("editCrppSubproject...");
 
-            scope.viewSubproject = subproject;
+            $rootScope.viewSubproject = scope.viewSubproject = subproject;
 
             var modalInstance = $modal.open({
                     templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
