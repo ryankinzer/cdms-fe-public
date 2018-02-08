@@ -157,7 +157,9 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                     if (params.node.data.ProjectStartDate !== undefined && params.node.data.ProjectStartDate !== null)
                         return moment(params.node.data.ProjectStartDate).format('L');
                 },
-                valueGetter: function (params) { return moment(params.node.data.ProjectStartDate) }, //date filter needs js date object			
+                valueGetter: function (params) {
+                    return (params.node.data.ProjectStartDate) ? moment(params.node.data.ProjectStartDate) : null
+                }, 
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],
 
