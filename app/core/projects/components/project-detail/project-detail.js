@@ -295,7 +295,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         
 
         scope.reloadProject = function () {
-            console.log(" --- *** --- *** Reloading project... are you sure you want this?!!  *****************");
             ProjectService.clearProject();
             scope.project = ProjectService.getProject(routeParams.Id);
         };

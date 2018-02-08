@@ -10,10 +10,12 @@
 
 //anything we might need to do in initializing edit/entry pages.
 function initEdit() {
-    // Prevent the backspace key from navigating back.
-    //http://stackoverflow.com/questions/1495219/how-can-i-prevent-the-backspace-key-from-navigating-back/1495435#1495435
+    
     $(document).unbind('keydown').bind('keydown', function (event) {
         var doPrevent = false;
+
+        //backspace key intercepted to prevent navigating back a page
+        //http://stackoverflow.com/questions/1495219/how-can-i-prevent-the-backspace-key-from-navigating-back/1495435#1495435
         if (event.keyCode === 8) {
             var d = event.srcElement || event.target;
             if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE'))
@@ -25,7 +27,19 @@ function initEdit() {
             }
         }
 
+        //enter key intercepted in order to prevent the form submit
+        if (event.keyCode == 13) {
+            var d = event.srcElement || event.target;
+            console.log(d);
+            if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE'))) {
+                doPrevent = true;
+            }
+        }
+
+        //console.log("do prevent = " + doPrevent);
+
         if (doPrevent) {
+            //console.log("-- prevented that key from doing anything --");
             event.preventDefault();
         }
     });
