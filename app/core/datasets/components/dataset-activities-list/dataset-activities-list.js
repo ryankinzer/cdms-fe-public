@@ -87,7 +87,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         // but if there is a config, spin through the list and add all the dataset config's SHOWFIELDS and display those.
 
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
-            { field: 'EditLinks', headerName: '', cellRenderer: editButtonTemplate, minWidth: 40, alwaysShowField: true, menuTabs: [], hide: true },
+            { field: 'EditLinks', headerName: '', cellRenderer: editButtonTemplate, width: 40, alwaysShowField: true, menuTabs: [], hide: true },
             { field: 'ActivityDate', 
 				headerName: 'Activity Date',
 				valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object				
@@ -104,11 +104,11 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 headerName: 'Time Start',
                 width: 80,
                 valueFormatter: function (params) {
-                    if (params.node.data.headerdata.TimeStart !== undefined)
+                    if (params.node.data.headerdata.TimeStart && params.node.data.headerdata.TimeStart !== undefined )
                         return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
                 }, 
-                //filter: 'date', //'time' does not exist yet
-                menuTabs: [],
+                filter: 'text', //'time' does not exist yet
+                menuTabs: ['filterMenuTab'],
             },
             { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, minWidth: 100, menuTabs: ['filterMenuTab'] }, //appraisal
             { field: 'headerdata.AllotmentStatus', headerName: 'Status', minWidth: 120, menuTabs: ['filterMenuTab'] },
