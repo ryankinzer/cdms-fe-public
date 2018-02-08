@@ -128,9 +128,10 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
         $scope.agencyList.push({ Id: 108, Label: "Western Federal Lands Highway Division" });
         $scope.agencyList.push({ Id: 109, Label: "Whitman Mission (NPS)" });
         $scope.agencyList.push({ Id: 110, Label: "Whitman Unit" });
-        $scope.agencyList.push({ Id: 111, Label: "Wildlife" });
-        $scope.agencyList.push({ Id: 112, Label: "WSDOT" });
-        $scope.agencyList.push({ Id: 113, Label: "Yellowstone National Park" });
+        $scope.agencyList.push({ Id: 111, Label: "Wildhorse Resort and Casino (WRC)" });
+        $scope.agencyList.push({ Id: 112, Label: "Wildlife" });
+        $scope.agencyList.push({ Id: 113, Label: "WSDOT" });
+        $scope.agencyList.push({ Id: 114, Label: "Yellowstone National Park" });
 
         console.log("$scope.agencyList is next...");
         console.dir($scope.agencyList);
