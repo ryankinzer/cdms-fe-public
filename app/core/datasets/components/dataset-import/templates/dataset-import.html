@@ -92,7 +92,7 @@
 						<!--<tr ng-hide="dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >-->
 						<!--<tr ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">-->
 						<!--<tr ng-show="ShowInstrument">-->
-						<tr ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Instrument')">
+						<tr ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
 							<td>Instrument: </td>
 							<td>
 								<!-- This version is harder to read but easier to use for power users. -->
