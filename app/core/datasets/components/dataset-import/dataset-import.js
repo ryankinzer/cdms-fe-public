@@ -67,18 +67,7 @@
 
 			};
 			
-			/*$scope.chartConfig = {
-    			  title : 'Fish by Species x',
-				  tooltips: true,
-				  labels : false,
-				  
-				  legend: {
-				    display: true,
-				    position: 'right'
-				  }
-    		};*/
-    		//$scope.chartData = {"series": [], "data":[{ "x": "Loading...", "y": [0],"tooltip": ""}]}; //default
-			
+						
 			$scope.importing = false;
 			$scope.UploadResults.showPreview = false;
 			$scope.Logger = Logger;
@@ -92,30 +81,6 @@
 			DataSheet.initScope($scope);
 
 			$scope.cellRowQATemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'RowQAStatusId\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in RowQAStatuses"/>';
-
-			// Original code
-			/*$scope.mappableFields = [
-				{
-					Label: "[-- Do not map --]"
-				},
-				{
-					Label: "[-- Activity Date --]"
-				},
-				{
-					Label: "[-- Index Field --]"
-				},
-				{
-					Label: "[-- QA Row Status Id --]"
-				},
-
-				
-				//{
-				//	Label: "[-- Location Id --]"
-				//},
-				
-			];
-			*/
-
 
             $scope.openWaypointFileModal = function (row, field) {
                 $scope.file_field = field;
@@ -164,32 +129,6 @@
 				$scope.finishLocationProcessing();
 			});
 
-			/*$scope.$watch('dataset.Id', function(){
-				if (!$scope.dataset.Id) return;
-				
-				console.log("Inside DatasetImportCtrl, dataset.Id watcher...");
-				
-				console.log("$scope.dataset is next...");
-				console.dir($scope.dataset);
-				
-				$rootScope.datasetId = $scope.datasetId = $scope.dataset.Id;
-				console.log("$rootScope.datasetId = " + $rootScope.datasetId);
-				
-				//if (($scope.dataset.Config !== "NULL") && ($scope.dataset.Config.DataEntryPage.ShowFields.contains('Instrument')))
-				if (((typeof $scope.dataset.Config !== 'undefined') && 
-					($scope.dataset.Config !== null) && 
-					($scope.dataset.Config !== "NULL")) && 
-					($scope.dataset.Config.DataEntryPage.HiddenFields) &&
-					($scope.dataset.Config.DataEntryPage.HiddenFields.indexOf("Instrument") > -1))
-						console.log("Found instrument");
-				
-				$scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
-				$scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);				
-				console.log("LocationType = " + $scope.datasetLocationType);				
-				$scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix);  // Pass the TablePrefix (name of the dataset), because it will never change.
-				$scope.mappableFields = $scope.setMappableFields($scope.DatastoreTablePrefix);				
-			});
-			*/
 			
 			//setup our mappableFields list
     		//$scope.$watch('dataset.Name', function(){
