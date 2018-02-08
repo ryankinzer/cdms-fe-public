@@ -27,7 +27,7 @@ var modal_edit_project = ['$scope', '$modalInstance', 'ProjectService',
                 //flatten multiselect values into an json array string
                 if (md.Values && md.controlType == "multiselect") {
                     md = angular.copy(md);
-                    md.Values = angular.toJson(md.Values).toString(); //wow, definitely need tostring here!
+                    md.Values = angular.toJson(md.Values).toString(); 
                 }
 
                 $scope.row.Metadata.push(md);

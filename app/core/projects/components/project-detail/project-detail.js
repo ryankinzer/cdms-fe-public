@@ -88,12 +88,12 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         },true);
 
 		//once the project loads...
-        var project_watcher = scope.$watch('project', function () {
+        var project_watcher = scope.$watch('project.Id', function () {
 
             if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
                 return;
 
-            project_watcher();
+            //project_watcher();
 
 			console.log("Inside project-detail -- our project just loaded...");
 			console.log("scope.project.Id = " + scope.project.Id);
