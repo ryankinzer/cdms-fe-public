@@ -194,8 +194,8 @@
 
 	<div style="margin-top: 10px;">&nbsp;</div>
 	<button class="btn btn-sm" ng-click="showFilter= !showFilter">Filter</button>    
-	<button ng-show="dataset.RowQAStatuses.length > 1" class="btn btn-sm" ng-click="clearSelections()">Clear selections</button>
-	<button ng-show="dataset.RowQAStatuses.length > 1" class="btn btn-sm" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
+	<button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="clearSelections()">Clear selections</button>
+	<button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
 
 
 	<div ng-show="showFilter" style="padding: 8px; width: 260px;">
@@ -209,5 +209,4 @@
 	<div ng-include="'app/core/datasets/templates/bottom-bar.html'"/>
 
 	<div ng-include="'app/core/datasets/templates/buttons.html'">&nbsp;</div>
-
 </div>
