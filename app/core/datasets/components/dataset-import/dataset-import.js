@@ -1714,7 +1714,17 @@
 				console.log("$scope.dataSheetDataset is nextX...");
 				console.dir($scope.dataSheetDataset);
 				//throw "Stopping right here.";
-				$scope.checkForDuplicates();
+				if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+				{
+					$scope.checkForDuplicates();
+				}
+				else
+				{
+					console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
+					$scope.DupeCheckRunning = false;
+					$scope.duplicateEntry = false;
+					$scope.weHaveDuplicates = false;
+				}
 //***
 				console.log("$scope.gridHasErrors (after checkForDuplicates, bef validateGrid) = " + $scope.gridHasErrors);
 				$scope.UploadResults.showPreview = true;
@@ -2247,6 +2257,7 @@
 							{
 								$scope.duplicateEntry = false;
 								$scope.DupeCheckRunning = false;
+								$scope.weHaveDuplicates = false;
 							}
 							//console.log("After the 'if' promise.length...");
 							$scope.validateGrid($scope);
@@ -2273,8 +2284,8 @@
 				{
 					var strActivityDateList = "";
 					
-					if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
-					{
+					//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+					//{
 					
 						count = 0;
 						angular.forEach($scope.dataSheetDataset, function(item){
@@ -2433,6 +2444,7 @@
 								else
 								{
 									$scope.duplicateEntry = false;
+									$scope.weHaveDuplicates = false;
 								}
 								$scope.DupeCheckRunning = false;
 								//console.log("After the 'if' promise.length...");
@@ -2442,14 +2454,14 @@
 							});
 							console.log("Location after promise.then (but it may not have completed yet)... ");
 						}
-					}
-					else
-					{
-						console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
-						$scope.DupeCheckRunning = false;
-						$scope.duplicateEntry = false;
-						$scope.validateGrid($scope);
-					}
+					//}
+					//else
+					//{
+					//	console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
+					//	$scope.DupeCheckRunning = false;
+					//	$scope.duplicateEntry = false;
+					//	$scope.validateGrid($scope);
+					//}
 				}
 				console.log("$scope.dataSheetDataset is next...");
 				console.dir($scope.dataSheetDataset);
