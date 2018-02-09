@@ -563,9 +563,12 @@ var dataset_entry_form = ['$scope', '$routeParams',
             if ($scope.row.LastAccuracyCheck)
                 $scope.row.AccuracyCheckId = $scope.row.LastAccuracyCheck.Id;
 			
-			$scope.activities.errors = undefined;
-			$scope.removeRowErrorsBeforeRecheck();
-			$scope.checkForDuplicates();
+			if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+			{
+				$scope.activities.errors = undefined;
+				$scope.removeRowErrorsBeforeRecheck();
+				$scope.checkForDuplicates();
+			}
         };
 
         $scope.cancel = function () {
@@ -786,8 +789,17 @@ var dataset_entry_form = ['$scope', '$routeParams',
             $scope.duplicateEntry = undefined;
             $scope.saving = true;
 
-            $scope.checkForDuplicates(); //this will call continueSaving when it is ready...
-
+			if (($scope.DatastoreTablePrefix === "CrppContracts") || ($scope.DatastoreTablePrefix === "WaterQuality"))
+			{
+				console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
+				$scope.duplicateEntry = false;
+				$scope.activities.errors = undefined;
+				$scope.continueSaving();
+			}
+			else
+			{
+				$scope.checkForDuplicates(); //this will call continueSaving when it is ready...
+			}
         };
 
         //called after the duplicate checking finishes...
@@ -1258,65 +1270,55 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			}
 			else
 			{
-				//if ($scope.DatastoreTablePrefix !== "CrppContracts")
-				if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
-				{
-					// Get the ActivityDate
-					var strActivityDate = toExactISOString($scope.row.activityDate);
-					console.log("strActivityDate = " + strActivityDate);
-					
-					strActivityDate = strActivityDate.replace("T", " ");
-					console.log("strActivityDate (without T) = " + strActivityDate);
-					
-					// Convert the single date item to a one element array, because the back end expects an array.
-					var aryActivityDateList = strActivityDate.split(",");
-					console.log("aryActivityDateList is next...");
-					console.dir(aryActivityDateList);
-					
-					var strActivityDateList = uniq_fast(aryActivityDateList); // Removes dupes and converts to a string.
-					console.log("strActivityDateList = " + strActivityDateList);
-					
-				    // Get the Locations
-                    var intLocationId = $scope.row.locationId;
+				// Get the ActivityDate
+				var strActivityDate = toExactISOString($scope.row.activityDate);
+				console.log("strActivityDate = " + strActivityDate);
+				
+				strActivityDate = strActivityDate.replace("T", " ");
+				console.log("strActivityDate (without T) = " + strActivityDate);
+				
+				// Convert the single date item to a one element array, because the back end expects an array.
+				var aryActivityDateList = strActivityDate.split(",");
+				console.log("aryActivityDateList is next...");
+				console.dir(aryActivityDateList);
+				
+				var strActivityDateList = uniq_fast(aryActivityDateList); // Removes dupes and converts to a string.
+				console.log("strActivityDateList = " + strActivityDateList);
+				
+				// Get the Locations
+				var intLocationId = $scope.row.locationId;
 
-					var aryActivityLocationList = intLocationId.split(",");
-					strActivityLocationList = uniq_fast(aryActivityLocationList);
-					console.log("strActivityLocationList = " + strActivityLocationList);
-					
-					//console.log("$scope.datasetId = " + $scope.datasetId + ", $scope.row.locationId = " + $scope.row.locationId + ", $scope.row.activityDate = " + $scope.row.activityDate);
-					console.log("$scope.datasetId = " + $scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
-					//$scope.SpecificActivitiesResults = null;
-					
-					var promise = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
-					
-					//console.log("typeof $promise = " + typeof promise);
-					if (typeof promise !== 'undefined') 
-					{
-						promise.$promise.then(function(list){
-							console.log("promise is next...");
-							console.dir(promise);
-							if (promise.length > 0)
-							{
-								$scope.duplicateEntry = true;
-								if (!$scope.activities.errors)
-									$scope.activities.errors = {};
-								
-								$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
-								$scope.saving = false;
-							}
-							else
-							{
-								$scope.duplicateEntry = false;
-								$scope.activities.errors = undefined;
-							}
-						});
-					}
-				}
-				else
+				var aryActivityLocationList = intLocationId.split(",");
+				strActivityLocationList = uniq_fast(aryActivityLocationList);
+				console.log("strActivityLocationList = " + strActivityLocationList);
+				
+				//console.log("$scope.datasetId = " + $scope.datasetId + ", $scope.row.locationId = " + $scope.row.locationId + ", $scope.row.activityDate = " + $scope.row.activityDate);
+				console.log("$scope.datasetId = " + $scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
+				//$scope.SpecificActivitiesResults = null;
+				
+				var promise = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
+				
+				//console.log("typeof $promise = " + typeof promise);
+				if (typeof promise !== 'undefined') 
 				{
-					console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
-					$scope.duplicateEntry = false;
-					$scope.activities.errors = undefined;
+					promise.$promise.then(function(list){
+						console.log("promise is next...");
+						console.dir(promise);
+						if (promise.length > 0)
+						{
+							$scope.duplicateEntry = true;
+							if (!$scope.activities.errors)
+								$scope.activities.errors = {};
+							
+							$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
+							$scope.saving = false;
+						}
+						else
+						{
+							$scope.duplicateEntry = false;
+							$scope.activities.errors = undefined;
+						}
+					});
 				}
 			}
 		};
@@ -1327,16 +1329,20 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
 			console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);
 			
-			//$scope.activities.errors = {};
-			$scope.activities.errors = undefined;
-			//$scope.errors = { heading: [] };
-			$scope.removeRowErrorsBeforeRecheck();
-			$scope.checkForDuplicates();
+			if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+			{
+				//$scope.activities.errors = {};
+				$scope.activities.errors = undefined;
+				//$scope.errors = { heading: [] };
+				$scope.removeRowErrorsBeforeRecheck();
+				$scope.checkForDuplicates();
+			}
 		};
 		
 		$scope.onActivityDateChange = function()
 		{
 			console.log("Inside $scope.onActivityDateChange...");
+			
 			//$scope.activities.errors = {};
 			$scope.activities.errors = undefined;
 			$scope.duplicateEntry = undefined;
