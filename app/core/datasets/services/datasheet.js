@@ -799,7 +799,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					
 					scope.removeRowErrorsBeforeRecheck();
 					//if (scope.DatastoreTablePrefix !== "WaterQuality")
-					if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+					if ((scope.DatastoreTablePrefix !== "CrppContracts") && (scope.DatastoreTablePrefix !== "WaterQuality"))
 					{
 						scope.rebuildDateTimeList();
 						scope.checkForDuplicates();
