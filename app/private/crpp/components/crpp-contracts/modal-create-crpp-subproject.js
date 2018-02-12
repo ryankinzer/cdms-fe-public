@@ -179,6 +179,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
         $scope.showOtherCounty = false;
         $scope.showCountyOptions = false;
         $scope.showAddDocument = true;
+		$scope.countyPresent = false;
 
         $scope.example1model = [];
         $scope.example1data = [{ id: 1, label: "David" }, { id: 2, label: "Jhon" }, { id: 3, label: "Danny" }];
@@ -278,7 +279,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 $scope.subproject_row.County = strCounty;
                 console.log("$scope.subproject_row.County = " + $scope.subproject_row.County);
 
-                $scope.subproject_row.txtCounty = strCounty;
+                $scope.subproject_row.strCounties = strCounty;
             }
 
             if ((typeof $scope.subproject_row.OtherCounty !== 'undefined') && ($scope.subproject_row.OtherCounty !== null))
@@ -510,6 +511,26 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
             console.log("$scope.showOtherProjectProponent = " + $scope.showOtherProjectProponent);
         };
         */
+		
+		$scope.selectCounty = function () {
+			console.log("Inside selectCounty...");
+			//console.dir($scope);
+			console.log("$scope.subproject_row is next...");
+			console.dir($scope.subproject_row);
+							
+			if ($scope.subproject_row.County === "Other")
+			{
+				$scope.showOtherCounty = true;
+				$scope.subproject_row.OtherCounty = "";
+			}
+			else
+			{
+				$scope.showOtherCounty = false;
+				$scope.subproject_row.OtherCounty = 'undefined';
+			}
+			
+			console.log("$scope.subproject_row.OtherCounty = " + $scope.subproject_row.OtherCounty);
+		};
 
         $scope.enteredSelectedCounties = function () {
             $scope.showCountyOptions = true;
@@ -524,8 +545,8 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
             console.log("$scope.subproject_row is next...");
             console.dir($scope.subproject_row);
 
-            $scope.subproject_row.txtCounty = $scope.subproject_row.County.toString();
-            if ($scope.subproject_row.txtCounty.indexOf("Other") > -1) {
+            $scope.subproject_row.strCounties = $scope.subproject_row.County.toString();
+            if ($scope.subproject_row.strCounties.indexOf("Other") > -1) {
                 $scope.showOtherCounty = true;
             }
             else {
@@ -565,6 +586,99 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
             }
         };
         */
+		
+	$scope.addCounty = function() {
+		console.log("+C clicked...");
+		console.log("$scope.subproject_row.strCounties = " + $scope.subproject_row.strCounties);	
+		
+		if (typeof $scope.subproject_row.strCounties === 'undefined')
+			$scope.subproject_row.strCounties = "";
+
+		// We will add a new line at the end, so that the string presents well on the page.
+		if ($scope.subproject_row.County === "Other")
+		{
+			$scope.subproject_row.strCounties += $scope.subproject_row.OtherCounty + ";\n";			
+		}
+		else
+		{
+			$scope.subproject_row.strCounties += $scope.subproject_row.County + ";\n";
+		}
+		
+		console.log("$scope.subproject_row.strCounties = " + $scope.subproject_row.strCounties);		
+	};
+	
+	$scope.removeCounty = function() {
+		console.log("-C clicked...");
+		console.log("$scope.subproject_row.strCounties before stripping = " + $scope.subproject_row.strCounties);
+		
+		// First, strip out the new line characters.
+		$scope.subproject_row.strCounties = $scope.subproject_row.strCounties.replace(/(\r\n|\r|\n)/gm, "");
+		console.log("$scope.subproject_row.strCounties after stripping = " + $scope.subproject_row.strCounties);
+		
+		// Note, we still have the trailing semicolon.
+		// Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
+		var aryCounties = $scope.subproject_row.strCounties.split(";");
+		
+		// Next, get rid of that trailing semicolon.
+		aryCounties.splice(-1, 1);
+		console.dir(aryCounties);
+		
+		// Now we can continue with the delete action.
+		var aryCountiesLength = aryCounties.length;
+		
+		// First check if the user entered an "other" funder.
+		if (($scope.subproject_row.County === "Other") && ($scope.subproject_row.OtherCounty))
+		{	
+			for (var i = 0; i < aryCountiesLength; i++)
+			{
+				console.log("aryCounties[i] = " + aryCounties[i]);
+				if (aryCounties[i].indexOf($scope.subproject_row.OtherCounty) > -1)
+				{
+					console.log("Found the item...");
+					aryCounties.splice(i,1);
+					console.log("Removed the item.");
+					
+					$scope.subproject_row.strCounties = "";
+					console.log("Wiped $scope.subproject_row.strCounties...");
+					
+					// Rebuild the string now, adding the semicolon and newline after every line.
+					angular.forEach(aryCounties, function(item){
+						$scope.subproject_row.strCounties += item + ";\n";
+						console.log("Added item...");
+					});
+					
+					// Since we found the item, skip to then end to exit.
+					i = aryCountiesLength;
+				}
+			}
+		}
+		else
+		{
+			for (var i = 0; i < aryCountiesLength; i++)
+			{
+				console.log("aryCounties[i] = " + aryCounties[i]);
+				if (aryCounties[i].indexOf($scope.subproject_row.County) > -1)
+				{
+					console.log("Found the item...");
+					aryCounties.splice(i,1);
+					console.log("Removed the item.");
+					
+					$scope.subproject_row.strCounties = "";
+					console.log("Wiped $scope.subproject_row.strCounties...");
+					
+					// Rebuild the string now, adding the semicolon and newline after every line.
+					angular.forEach(aryCounties, function(item){
+						$scope.subproject_row.strCounties += item + ";\n";
+						console.log("Added item...");
+					});
+					
+					// Since we found the item, skip to then end to exit.
+					i = aryCountiesLength;
+				}
+			}
+		}
+		console.log("Finished.");
+	};
 
         $scope.save = function () {
             console.log("Inside ModalCreateSubprojectCtrl, save...");
@@ -651,7 +765,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 // Convert the multiselect (array) values into a json array string.
                 //saveRow.County = angular.toJson(saveRow.County).toString();
                 //var strCounty = "[";
-                saveRow.County = saveRow.txtCounty;
+                //saveRow.County = saveRow.strCounties;
                 //angular.forEach(saveRow.County, function(county){
                 //	strCounty += '"' + county + '",'; // Use single-quotes and double-quotes, so that JavaScript does not get confused.
                 //});
@@ -684,6 +798,43 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                     //saveRow.TrackingNumber = saveRow.YearDate
                 }
                 console.log("saveRow.TrackingNumber = " + saveRow.TrackingNumber);
+				
+				// Counties
+				console.log("$scope.subproject_row.strCounties = " + $scope.subproject_row.strCounties);
+				console.log("type of $scope.subproject_row.strCounties = " + typeof $scope.subproject_row.strCounties);
+		
+				if ((typeof $scope.subproject_row.strCounties !== 'undefined') && ($scope.subproject_row.strCounties !== null) && ($scope.subproject_row.strCounties.length > 0))
+				{
+					$rootScope.countyPresent = $scope.countyPresent = true;
+					var strCounties = $scope.subproject_row.strCounties.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
+					console.log("strCounties = " + strCounties);
+					var aryCollaborators = $scope.subproject_row.strCounties.split(";");  // 
+					//strCounties.splice(-1, 1);
+					
+					angular.forEach(aryCollaborators, function(item) {
+						//After the split on ";", one of the lines is a newline.  We need to watch for and omit that line.
+						//console.log("item = X" + item + "X");
+						//item = item.replace(/(\r\n|\r|\n)/gm, "");
+						item = item.replace(/\n/g, "");
+						//console.log("item = X" + item + "X");
+						
+						if (item.length > 0)
+						{
+							var countyOption = new Object();
+							countyOption.Id = 0;
+							countyOption.Name = "";
+							
+							countyOption.Name = item.trim();
+							//console.log("collaboratorOption.Name = " + collaboratorOption.Name);.
+							
+							countyOption.ProjectId = $scope.project.Id;
+							
+							
+							$scope.subproject_row.County.push(collaboratorOption);
+						}
+					});
+					$scope.subproject_row.strCollaborators = undefined;
+				}
 
                 //if(!saveRow.CompleteDate)
                 //	saveRow.CompleteDate = null;
