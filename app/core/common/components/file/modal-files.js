@@ -488,17 +488,7 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                         file.success = "working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
                         }).success(function (data, status, headers, config) {
 
-                        /*
-                        console.log("The following are next:  data, status, headers, config, file");
-                        console.dir(data); //this is what we get back... it should be an array with our saved file
-                        console.dir(status);
-                        console.dir(headers);
-                        console.dir(config);
-                        console.dir(file);
-                        */
-
                         console.log("done saving and success!");
-                            
 
                         if (data.length == 0) //means the backend actually failed to create our object. We need an error message!
                         {
@@ -514,7 +504,9 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                     }).error(function (data, status, headers, config) {
                         $scope.filesWithErrors++;
                         console.error(file.name + " failed to upload.");
-                        file.success = "Failed";
+                        console.dir(data);
+                        file.success = "Failed (" + data.ExceptionMessage + ")";
+                        $scope.fileProgress++; //even if there is an error, we are done processing it...
                     });
 
                 }
