@@ -1,7 +1,4 @@
-﻿
-//THIS IS GOING AWAY!
-// was DataEntryFormCtrl from DataEntryControllers
-//Fieldsheet / form version of the dataentry page
+﻿// Data entry page
 var dataset_entry_form = ['$scope', '$routeParams',
     'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$modal', '$location', '$rootScope',
     'ActivityParser', 'DataSheet', '$route', '$upload',
@@ -9,7 +6,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
         DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
         ActivityParser, DataSheet, $route, $upload) {
 
-        initEdit(); // stop backspace from ditching in the wrong place.
+        initEdit(); // stop backspace/enter from misbehaving in forms
 
         $scope.userId = $rootScope.Profile.Id;
         $scope.fields = { header: [], detail: [], relation: [] };
@@ -21,7 +18,6 @@ var dataset_entry_form = ['$scope', '$routeParams',
         // $scope.row = {ActivityQAStatus: {}, activityDate: new Date()}; //header field values get attached here by dbcolumnname
 
         $scope.datastoreLocations = CommonService.getLocations($routeParams.Id);
-        //$scope.fishermenList = ProjectService.getFishermen();
         $scope.fishermenList = null;  // Set this to null first, so that we can monitor it later.
         $scope.subprojectList = null;  // Set this to null first, so that we can monitor it later.
 		$scope.projectLeadList = null; 
@@ -794,7 +790,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
 				$scope.duplicateEntry = false;
 				$scope.activities.errors = undefined;
-				$scope.continueSaving();
+				//$scope.continueSaving();
 			}
 			else
 			{
