@@ -15,9 +15,41 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		scope.activities = null;
 		
 		scope.datasets = ProjectService.getProjectDatasets(routeParams.Id);
-		scope.project = ProjectService.getProject(routeParams.Id);
+        scope.project = ProjectService.getProject(routeParams.Id);
+        scope.status = {
+            DoneLoadingProject: false,
+            DoneLoadingMetadata: false,
+        }; 
 		scope.currentUserId = $rootScope.Profile.Id;
         scope.filteredUsers = false;
+        
+        scope.metadataList = {};
+        
+        scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID); //load all the possible mdp 
+        scope.metadataPropertiesPromise.promise.then(function (list) {
+            console.error("MDP now loaded -- adding the big list");
+            addMetadataProperties(list, scope.metadataList, scope, CommonService); //add in all the mdp
+            console.error("Done setting up the full mdp list");
+            scope.status.DoneLoadingMetadata = true;    
+        });
+
+        
+        scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID); //gets all the possible properties
+        scope.habitatPropertiesPromise.promise.then(function (hab_mdp_list) {
+            console.error("got 'em now add in the big list and fire off the request for the values.")
+            addMetadataProperties(hab_mdp_list, scope.metadataList, scope, CommonService);
+
+            var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID); //gets the values
+
+            habitatProjectMetadataPromise.$promise.then(function (hab_proj_mdp_list) {
+                console.error("ok, we have the values, adding them in (for habitat)");
+                addMetadataProperties(hab_proj_mdp_list, scope.metadataList, scope, CommonService);
+                console.error("all done with habitat mdp");
+                scope.status.DoneLoadingProject = true;
+
+            });
+        });
+        
 
         //conditional tabs on the project detail page
         scope.ShowInstruments = false; //water temp only
@@ -51,10 +83,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		scope.CellOptions = {}; //for metadata dropdown options
 		scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
 
-		scope.metadataList = {};
-		scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID);
-		scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID);
-        
         scope.users = [];
 		scope.thisProjectsLocationObjects = [];
         
@@ -95,22 +123,38 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
             //project_watcher();
 
-			console.log("Inside project-detail -- our project just loaded...");
+            console.log("Inside project-detail -- our project just loaded...");
+            console.log(" -  - - - - - - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> project load only on change");
 			console.log("scope.project.Id = " + scope.project.Id);
 			$rootScope.projectId = scope.project.Id;
 				
 			scope.editors = scope.project.Editors;
             scope.users = CommonService.getUsers();
-            scope.project.MetadataValue = {};
-                              
-            //add in the metadata to our metadataList that came with this dataset
-            addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService);
 
-            //get habitat (and possibly other?) metadata values for this project.  they don't come with project metadata as they are their own category.
-            var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID);
-            habitatProjectMetadataPromise.$promise.then(function(list){
-                addMetadataProperties(list, scope.metadataList, scope, CommonService);
-            });
+            //add in the metadata to our metadataList that came with this dataset
+            console.error("setup the metadata for this project");
+
+            scope.project.MetadataValue = {};
+
+            if (scope.status.DoneLoadingMetadata) {
+                addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
+                scope.status.DoneLoadingProject = true;
+                console.error("loaded values direction for mpd -- we were alrady done...");
+            } else {
+                //only setup the mdp values when we're done loading the whole list...
+                var mdpload_watcher = scope.$watch('status.DoneLoadingMetadata', function () {
+
+                    if (!scope.status.DoneLoadingMetadata)
+                        return;
+
+                    console.error("loading values for mdp now from watcher!");
+                    addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
+                    scope.status.DoneLoadingProject = true;
+                    mdpload_watcher();
+                });
+                
+            }
+            
 
             scope.mapHtml = $sce.trustAsHtml(scope.project.MetadataValue[25]);
             scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
@@ -160,7 +204,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                 console.dir(scope.project);
 
             }, true); //end after files load watcher.
-            
+
         }, true); //end after project load watcher.
 
 		scope.ShowMap = {
@@ -233,21 +277,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
 		};
 		
-
-        //metadata -- we have a list of metadata properties that are configured for "project" entities.
-        //  any metadata already associated with a project come in teh project's Metadata array, but ones that haven't
-        //  been given a value yet on a specific project won't appear and need to be added in separately.
-
-
-        scope.metadataPropertiesPromise.promise.then(function(list){
-            addMetadataProperties(list, scope.metadataList, scope, CommonService);
-        });
-
-        scope.habitatPropertiesPromise.promise.then(function(list){
-            addMetadataProperties(list, scope.metadataList, scope, CommonService);
-        });
-
-
         scope.openChooseMapImage = function(){
             var modalInstance = $modal.open({
               templateUrl: 'app/core/projects/components/project-detail/templates/modal-choosemap.html',
@@ -295,6 +324,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         
 
         scope.reloadProject = function () {
+            scope.LoadingProject = true;
             ProjectService.clearProject();
             scope.project = ProjectService.getProject(routeParams.Id);
         };
@@ -487,6 +517,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
     }
 
 ];
+
+
 
 
 

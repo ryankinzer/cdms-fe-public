@@ -1078,7 +1078,12 @@ if (!Array.prototype.containsInt) {
 
 //might be a list of metadata values from project.Metadata or a list of actual properties.
 function addMetadataProperties(metadata_list, all_metadata, scope, CommonService) {
-    angular.forEach(metadata_list, function (i_property, key) {
+
+    console.log("--- running addMetadataProperties --- ");
+    console.log("metadata_list : " + metadata_list.length, metadata_list);
+    console.log("all_metadata : " + angular.toJson(all_metadata), all_metadata);
+
+    metadata_list.forEach( function (i_property, key) {
 
         var property = i_property;
         if (i_property.MetadataPropertyId) //is it a value from project.Metadata? if so then grab the property.
@@ -1095,7 +1100,8 @@ function addMetadataProperties(metadata_list, all_metadata, scope, CommonService
         //if it isn't already there, add it as an available option
         //if(!(property.Name in all_metadata))
         if ((typeof property.Name !== 'undefined') && (property.Name !== null) && !(property.Name in all_metadata)) {
-            scope.metadataList[property.Name] =
+            //scope.metadataList[property.Name] =
+            all_metadata[property.Name] =
                 {
                     field: property.Name,
                     MetadataPropertyId: property.Id,
@@ -1125,8 +1131,13 @@ function addMetadataProperties(metadata_list, all_metadata, scope, CommonService
             if (scope.project)
                 scope.project.MetadataValue[property.Id] = all_metadata[property.Name].Values; //make it easy to get values by metadata id.
         }
-        else
+        else {
             all_metadata[property.Name].Values = "";
+            console.log(" --->>> setting property to empty: ", property.Name);
+        }
+
+        console.log(" and in the end: " + property.Name + ".Values is ", all_metadata[property.Name].Values);
+            
 
 
 

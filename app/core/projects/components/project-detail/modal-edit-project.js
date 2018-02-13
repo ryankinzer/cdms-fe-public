@@ -2,6 +2,8 @@
 var modal_edit_project = ['$scope', '$modalInstance', 'ProjectService', 
     function ($scope, $modalInstance, ProjectService) {
 
+        console.dir($scope);
+        
         if ($scope.row && $scope.row.Id) {
             $scope.header_message = "Edit project: " + $scope.project.Name;
         }
@@ -21,7 +23,7 @@ var modal_edit_project = ['$scope', '$modalInstance', 'ProjectService',
             }
 
             $scope.row.Metadata = [];
-
+            
             //need to make multi-selects into json objects
             angular.forEach($scope.metadataList, function (md) {
                 //flatten multiselect values into an json array string
