@@ -15,6 +15,8 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
             StatusId: 0,
             //OwningDepartmentId: 1,
         };
+		$scope.subproject_row.strCounties = "";
+		$scope.subproject_row.County = [];
 
         $scope.agencyList = [];
         $scope.agencyList.push({ Id: 0, Label: "ACHP" });
@@ -800,23 +802,29 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 console.log("saveRow.TrackingNumber = " + saveRow.TrackingNumber);
 				
 				// Counties
-				console.log("$scope.subproject_row.strCounties = " + $scope.subproject_row.strCounties);
-				console.log("type of $scope.subproject_row.strCounties = " + typeof $scope.subproject_row.strCounties);
+				console.log("saveRow.strCounties = " + saveRow.strCounties);
+				console.log("type of saveRow.strCounties = " + typeof saveRow.strCounties);
 		
-				if ((typeof $scope.subproject_row.strCounties !== 'undefined') && ($scope.subproject_row.strCounties !== null) && ($scope.subproject_row.strCounties.length > 0))
+				if ((typeof saveRow.strCounties !== 'undefined') && 
+					(saveRow.strCounties !== null) && 
+					(saveRow.strCounties.length > 0)
+					)
 				{
 					$rootScope.countyPresent = $scope.countyPresent = true;
-					var strCounties = $scope.subproject_row.strCounties.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
+					var strCounties = saveRow.strCounties.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
 					console.log("strCounties = " + strCounties);
-					var aryCollaborators = $scope.subproject_row.strCounties.split(";");  // 
+					var aryCounties = strCounties.split(";");  // 
 					//strCounties.splice(-1, 1);
+	
+					// $scope.saveRow.County is probably a string right now, so re-define it as an array for the save.
+					saveRow.CountyAry = [];
 					
-					angular.forEach(aryCollaborators, function(item) {
+					angular.forEach(aryCounties, function(item) {
 						//After the split on ";", one of the lines is a newline.  We need to watch for and omit that line.
-						//console.log("item = X" + item + "X");
+						console.log("item = X" + item + "X");
 						//item = item.replace(/(\r\n|\r|\n)/gm, "");
 						item = item.replace(/\n/g, "");
-						//console.log("item = X" + item + "X");
+						console.log("item = X" + item + "X");
 						
 						if (item.length > 0)
 						{
@@ -825,16 +833,22 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
 							countyOption.Name = "";
 							
 							countyOption.Name = item.trim();
-							//console.log("collaboratorOption.Name = " + collaboratorOption.Name);.
+							console.log("countyOption.Name = " + countyOption.Name);
 							
-							countyOption.ProjectId = $scope.project.Id;
+							//countyOption.ProjectId = $scope.project.Id;
 							
-							
-							$scope.subproject_row.County.push(collaboratorOption);
+							saveRow.CountyAry.push(countyOption);
 						}
 					});
-					$scope.subproject_row.strCollaborators = undefined;
+					// Convert the array of County objects, to string.
+					//saveRow.County = angular.toJson(saveRow.County);
+					
+					saveRow.strCounties = undefined;
+					saveRow.County = undefined;
+					console.log("saveRow.CountyAry is next...");
+					console.dir(saveRow.CountyAry);
 				}
+				//throw "Stopping right here...";
 
                 //if(!saveRow.CompleteDate)
                 //	saveRow.CompleteDate = null;
@@ -847,43 +861,62 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 //console.dir($scope);
                 //var promise = SubprojectService.saveSubproject($scope.project.Id, saveRow, $scope.saveResults);
                 var promise = SubprojectService.saveCrppSubproject($scope.project.Id, saveRow, $scope.saveResults);
-                if (typeof promise !== 'undefined') {
-                    promise.$promise.then(function () {
-                        //window.location.reload();
-                        console.log("promise is next...");
-                        console.dir(promise);
-                        $scope.subprojectId = $rootScope.subprojectId = promise.Id;
-                        console.log("$scope.subprojectId = " + $scope.subprojectId);
+				//$scope.finishAndClose(promise, saveRow);
+			//}
+		//};
+		
+		//$scope.finishAndClose = function (promise, saveRow) {
+				
+				if (typeof promise !== 'undefined') {
+					promise.$promise.then(function () {
+						//window.location.reload();
+						console.log("promise is next...");
+						console.dir(promise);
+						$scope.subprojectId = $rootScope.subprojectId = promise.Id;
+						console.log("$scope.subprojectId = " + $scope.subprojectId);
+						
+						//promise.County = saveRow.County;
+						/*
+						console.log("and here is our final new edited subproject_edited:");
+						$scope.subproject_edited = promise;
+						console.dir($scope.subproject_edited);
+						
+						console.log("and if we do the extends thing:")
+						var extended = angular.extend({}, saveRow, promise); //empty + saveRow + promise -- in that order
+						console.dir(extended);
+						
+						$scope.postSaveSubprojectUpdateGrid($scope.subproject_edited);
+						*/
+						
+						$scope.subproject_row = 'undefined';
+						$scope.crppProjectName = saveRow.ProjectName;
 
-                        $scope.subproject_row = 'undefined';
-                        $scope.crppProjectName = saveRow.ProjectName;
+						//$scope.reloadSubprojects();
+						$scope.postSaveSubprojectUpdateGrid(promise);
 
-                        //$scope.reloadSubprojects();
-                        $scope.postSaveSubprojectUpdateGrid(promise);
+						if (addDocument === "Yes") {
+							console.log("addDocument = Yes...");
 
-                        if (addDocument === "Yes") {
-                            console.log("addDocument = Yes...");
+							// If the user wishes to add a Correspondence Event right away, we must wait to get the ID of the new subproject, before we can continue.
+							//$scope.reloadSubproject(promise.Id);
+							//var promise2 = $scope.reloadSubproject(promise.Id);
+							//console.log("Inside reloadSubproject...");
+							//SubprojectService.clearSubproject();
+							//$scope.reloadSubproject($scope.subprojectId);
+							$modalInstance.dismiss();
+							$scope.openCorrespondenceEventForm(promise, {});
+							//$scope.subproject = SubprojectService.getSubproject(id);
+						}
+						else {
+							console.log("addDocument != Yes");
 
-                            // If the user wishes to add a Correspondence Event right away, we must wait to get the ID of the new subproject, before we can continue.
-                            //$scope.reloadSubproject(promise.Id);
-                            //var promise2 = $scope.reloadSubproject(promise.Id);
-                            //console.log("Inside reloadSubproject...");
-                            //SubprojectService.clearSubproject();
-                            //$scope.reloadSubproject($scope.subprojectId);
-                            $modalInstance.dismiss();
-                            $scope.openCorrespondenceEventForm(promise, {});
-                            //$scope.subproject = SubprojectService.getSubproject(id);
-                        }
-                        else {
-                            console.log("addDocument != Yes");
-
-                            // If the user just wants to create the Subproject, we can continue without waiting.
-                            //$scope.reloadSubproject($scope.subprojectId);
-                            $modalInstance.dismiss();
-                        }
-                    });
-                }
-            }
+							// If the user just wants to create the Subproject, we can continue without waiting.
+							//$scope.reloadSubproject($scope.subprojectId);
+							$modalInstance.dismiss();
+						}
+					});
+				}
+			}
         };
 
         $scope.cancel = function () {
