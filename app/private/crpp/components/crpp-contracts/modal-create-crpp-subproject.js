@@ -15,7 +15,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
             StatusId: 0,
             //OwningDepartmentId: 1,
         };
-		$scope.subproject_row.strCounties = "";
+		//$scope.subproject_row.strCounties = "";
 		$scope.subproject_row.County = [];
 
         $scope.agencyList = [];
@@ -151,26 +151,26 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
         $scope.countyList.push({ Id: 3, Label: "Clark" });
         $scope.countyList.push({ Id: 4, Label: "Columbia" });
         $scope.countyList.push({ Id: 5, Label: "Franklin" });
-        $scope.countyList.push({ Id: 7, Label: "Garfield" });
-        $scope.countyList.push({ Id: 8, Label: "Gilliam" });
-        $scope.countyList.push({ Id: 9, Label: "Garfield" });
-        $scope.countyList.push({ Id: 10, Label: "Grant, WA" });
-        $scope.countyList.push({ Id: 11, Label: "Grant, OR" });
-        $scope.countyList.push({ Id: 12, Label: "Hood River" });
-        $scope.countyList.push({ Id: 13, Label: "Klickitat" });
-        $scope.countyList.push({ Id: 14, Label: "Malheur" });
-        $scope.countyList.push({ Id: 15, Label: "Morrow" });
-        $scope.countyList.push({ Id: 16, Label: "Multnomah" });
-        $scope.countyList.push({ Id: 17, Label: "Other" });
-        $scope.countyList.push({ Id: 18, Label: "Sherman" });
-        $scope.countyList.push({ Id: 19, Label: "Skamania" });
-        $scope.countyList.push({ Id: 20, Label: "Umatilla" });
-        $scope.countyList.push({ Id: 21, Label: "Union" });
-        $scope.countyList.push({ Id: 22, Label: "Walla Walla" });
-        $scope.countyList.push({ Id: 23, Label: "Wallowa" });
-        $scope.countyList.push({ Id: 24, Label: "Wasco" });
-        $scope.countyList.push({ Id: 25, Label: "Wheeler" });
-        $scope.countyList.push({ Id: 26, Label: "Whitman" });
+        $scope.countyList.push({ Id: 6, Label: "Garfield" });
+        $scope.countyList.push({ Id: 7, Label: "Gilliam" });
+        $scope.countyList.push({ Id: 8, Label: "Garfield" });
+        $scope.countyList.push({ Id: 9, Label: "Grant, WA" });
+        $scope.countyList.push({ Id: 10, Label: "Grant, OR" });
+        $scope.countyList.push({ Id: 11, Label: "Hood River" });
+        $scope.countyList.push({ Id: 12, Label: "Klickitat" });
+        $scope.countyList.push({ Id: 13, Label: "Malheur" });
+        $scope.countyList.push({ Id: 14, Label: "Morrow" });
+        $scope.countyList.push({ Id: 15, Label: "Multnomah" });
+        $scope.countyList.push({ Id: 16, Label: "Other" });
+        $scope.countyList.push({ Id: 17, Label: "Sherman" });
+        $scope.countyList.push({ Id: 18, Label: "Skamania" });
+        $scope.countyList.push({ Id: 19, Label: "Umatilla" });
+        $scope.countyList.push({ Id: 20, Label: "Union" });
+        $scope.countyList.push({ Id: 21, Label: "Walla Walla" });
+        $scope.countyList.push({ Id: 22, Label: "Wallowa" });
+        $scope.countyList.push({ Id: 23, Label: "Wasco" });
+        $scope.countyList.push({ Id: 24, Label: "Wheeler" });
+        $scope.countyList.push({ Id: 25, Label: "Whitman" });
 
         console.log("$scope.countyList is next...");
         console.dir($scope.countyList);
@@ -186,8 +186,15 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
         $scope.example1model = [];
         $scope.example1data = [{ id: 1, label: "David" }, { id: 2, label: "Jhon" }, { id: 3, label: "Danny" }];
 
+		console.log("$scope is next...");
+		console.dir($scope);
+		
         if ($scope.viewSubproject) {
             $scope.header_message = "Edit CRPP project: " + $scope.viewSubproject.ProjectName;
+			
+			console.log("$scope.viewSubproject is next...");
+			console.dir($scope.viewSubproject);
+			
             $scope.subproject_row = angular.copy($scope.viewSubproject);
             console.log("$scope.subproject_row is next...");
             console.dir($scope.subproject_row);
@@ -273,6 +280,10 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
             console.log("strCounty = " + strCounty);
             */
 
+			console.log("$scope.subproject_row.strCounties = " + $scope.subproject_row.strCounties);
+			console.log("$scope.subproject_row.County is next...");
+			console.dir($scope.subproject_row.County);
+			
             // Now, strip off the "[]".
             if ((typeof $scope.subproject_row.County !== 'undefined') && ($scope.subproject_row.County !== null)) {
                 var strCounty = $scope.subproject_row.County;
@@ -388,7 +399,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
             console.log("$scope.subproject_row.County is next...");
             console.dir($scope.subproject_row.County);
 
-            angular.forEach($scope.countyList, function (option) {
+            /*angular.forEach($scope.countyList, function (option) {
                 //console.log("option.Label = x" + option.Label + "x, $scope.subproject_row.County = x" + $scope.subproject_row.County + "x.");
                 if ((keepGoing) && (option.Label === $scope.subproject_row.County)) {
                     //console.log("option.Label = " + option.Label);
@@ -409,6 +420,29 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
                 $scope.subproject_row.County = "Other";
                 $scope.showOtherCounty = true;
             }
+			*/
+			
+			if ((typeof $scope.subproject_row.strCounties !== 'undefined') && ($scope.subproject_row.strCounties !== null))
+			{
+				//console.log("$scope.subproject_row.Collaborators is next...");
+				//console.dir($scope.subproject_row.Collaborators);
+					
+				var strCounties = $scope.subproject_row.strCounties;
+				//strCounties = strCounties.replace(/(\r\n|\r|\n)/gm, ""); // Remove any newlines
+				strCounties = strCounties.replace(/["\[\]]+/g, ''); // Remove any brackets []
+				strCounties = strCounties.trim();
+				strCounties += "\n";
+				console.log("strCounties = " + strCounties);
+					
+				//$scope.subproject_row.strCounties = null; // dump the previous contents.
+				$scope.subproject_row.strCounties = strCounties; // reset its value
+				//console.log("$scope.subproject_row.strCounties = " + $scope.subproject_row.strCounties);
+				if ($scope.subproject_row.strCounties.indexOf("Other") > -1)
+					$scope.showOtherCollaborators = true;
+					
+				$scope.subproject_row.strCounties = strCounties;
+				
+			}
         }
 
         console.log("$scope inside ModalCreateSubprojectCtrl, after initializing, is next...");

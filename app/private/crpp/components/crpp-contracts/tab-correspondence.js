@@ -378,6 +378,8 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
 
                         console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
                         scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+						
+						scope.refreshSubprojectLists();
 
                         watcher();
                     });
@@ -603,6 +605,8 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
 		
         //refresh all of the project match lists
         scope.refreshSubprojectLists = function () {
+			console.log("Inside tab-correspondence.js, scope.refreshSubprojectList...");
+			
             // Call the functions that will build the list of funders, and list of files related to the project.
             // We add the items from these lists to the subproject -- as the data comes in.
             //scope.project.SubprojectFileList = SubprojectService.getSubprojectFiles(scope.projectId); //TODO: we already have this as scope.project.SubprojectFiles once the files load in project-detail.js
@@ -636,8 +640,8 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
         };
 		
         scope.matchCountyToSubproject = function () {
-            //console.log("Inside controllers.js, scope.matchCountyToSubproject...");
-            //console.dir(scope.project.CollaboratorList);
+            console.log("Inside controllers.js, scope.matchCountyToSubproject...");
+            console.dir(scope.project.CountyList);
 
             var strCounties = "";
             angular.forEach(scope.subprojectList, function (subproject) {
@@ -649,6 +653,8 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 });
                 subproject.strCounties = strCounties;
             });
+			console.log("scope.subprojectList is next...");
+			console.dir(scope.subprojectList);
         };
 
         scope.redrawRows = function () {
