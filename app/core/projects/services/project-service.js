@@ -235,7 +235,7 @@ projects_module.service('ProjectService', ['$q',
                 //if(service.project && service.project.Id == id)
                 if (service.project && service.project.Id == id && service.subprojectType !== "Habitat") // Not Habitat
                 {
-                    console.log("service.project.Id = " + service.project.Id);
+                    console.log("returning cached service.project.Id = " + service.project.Id);
                     return service.project;
                 }
 

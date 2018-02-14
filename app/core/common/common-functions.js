@@ -1077,11 +1077,11 @@ if (!Array.prototype.containsInt) {
 }
 
 //might be a list of metadata values from project.Metadata or a list of actual properties.
-function addMetadataProperties(metadata_list, all_metadata, scope, CommonService) {
+function addMetadataProperties(metadata_list, ignored, scope, CommonService) {
 
-    console.log("--- running addMetadataProperties --- ");
-    console.log("metadata_list : " + metadata_list.length, metadata_list);
-    console.log("all_metadata : " + angular.toJson(all_metadata), all_metadata);
+    //console.log("--- running addMetadataProperties --- ");
+    //console.log("metadata_list : " + metadata_list.length, metadata_list);
+    //console.log("scope.metadataList : " + angular.toJson(scope.metadataList), scope.metadataList);
 
     metadata_list.forEach( function (i_property, key) {
 
@@ -1098,10 +1098,10 @@ function addMetadataProperties(metadata_list, all_metadata, scope, CommonService
         //	console.log("property.Name = " + "'undefined'");
 
         //if it isn't already there, add it as an available option
-        //if(!(property.Name in all_metadata))
-        if ((typeof property.Name !== 'undefined') && (property.Name !== null) && !(property.Name in all_metadata)) {
+        //if(!(property.Name in scope.metadataList))
+        if ((typeof property.Name !== 'undefined') && (property.Name !== null) && !(property.Name in scope.metadataList)) {
             //scope.metadataList[property.Name] =
-            all_metadata[property.Name] =
+            scope.metadataList[property.Name] =
                 {
                     field: property.Name,
                     MetadataPropertyId: property.Id,
@@ -1122,32 +1122,35 @@ function addMetadataProperties(metadata_list, all_metadata, scope, CommonService
                     values = i_property.Values.split(",")
                 }
 
-                all_metadata[property.Name].Values = values;
+                scope.metadataList[property.Name].Values = values;
             }
             else {
-                all_metadata[property.Name].Values = i_property.Values;
+                scope.metadataList[property.Name].Values = i_property.Values;
             }
 
             if (scope.project)
-                scope.project.MetadataValue[property.Id] = all_metadata[property.Name].Values; //make it easy to get values by metadata id.
+                scope.project.MetadataValue[property.Id] = scope.metadataList[property.Name].Values; //make it easy to get values by metadata id.
         }
         else {
-            all_metadata[property.Name].Values = "";
-            console.log(" --->>> setting property to empty: ", property.Name);
+            scope.metadataList[property.Name].Values = "";
+            //console.log(" --->>> setting property VALUES to empty: ", property.Name);
         }
 
-        console.log(" and in the end: " + property.Name + ".Values is ", all_metadata[property.Name].Values);
+        //console.log(" and in the end: " + property.Name + ".Values is ", scope.metadataList[property.Name].Values);
             
-
-
-
         if (property.PossibleValues) {
             populateMetadataDropdowns(scope, property); //setup the dropdown
-            all_metadata[property.Name].options = scope.CellOptions[property.Id + "_Options"];
+            scope.metadataList[property.Name].options = scope.CellOptions[property.Id + "_Options"];
         }
 
 
-    });
+
+    });//foreach
+
+    //console.error("  >>>>>>>>>>>>>>>>>>>>>>>>>>>>   at the end of adding: scope.metadataList ");
+    //console.dir(scope.metadataList);
+
+
 };
 
 // This function takes an array that may have duplicate entries, and removes the duplicates.

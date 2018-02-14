@@ -24,28 +24,38 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         scope.filteredUsers = false;
         
         scope.metadataList = {};
-        
+
+        //project metadata
         scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID); //load all the possible mdp 
         scope.metadataPropertiesPromise.promise.then(function (list) {
-            console.error("MDP now loaded -- adding the big list");
+            //console.error("MDP now loaded -- adding the big list");
             addMetadataProperties(list, scope.metadataList, scope, CommonService); //add in all the mdp
-            console.error("Done setting up the full mdp list");
+            //console.error("Done setting up the full mdp list");
             scope.status.DoneLoadingMetadata = true;    
         });
 
-        
+
+        //habitat metadata
         scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID); //gets all the possible properties
         scope.habitatPropertiesPromise.promise.then(function (hab_mdp_list) {
-            console.error("got 'em now add in the big list and fire off the request for the values.")
+            //console.error("got 'em now add in the big list and fire off the request for the values.")
             addMetadataProperties(hab_mdp_list, scope.metadataList, scope, CommonService);
 
-            //TODO:: the project might not be loaded yet which causes a 500 error... fix me. kb 2/13/18 ********
-            var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID); //gets the values
+            //load the habitat metadata values once the project is loaded...
+            var mdpproject_watcher = scope.$watch('status.DoneLoadingProject', function () {
 
-            habitatProjectMetadataPromise.$promise.then(function (hab_proj_mdp_list) {
-                console.error("ok, we have the values, adding them in (for habitat)");
-                addMetadataProperties(hab_proj_mdp_list, scope.metadataList, scope, CommonService);
-                console.error("all done with habitat mdp");
+                if (!scope.status.DoneLoadingProject)
+                    return;
+
+                mdpproject_watcher();
+
+                var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID); //gets the values
+
+                habitatProjectMetadataPromise.$promise.then(function (hab_proj_mdp_list) {
+                    //console.error("ok, we have the values, adding them in (for habitat)");
+                    addMetadataProperties(hab_proj_mdp_list, scope.metadataList, scope, CommonService);
+                    //console.error("all done with habitat mdp");
+                });
             });
         });
         
@@ -73,7 +83,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		
 		// Get the project ID from the url.
 		var theUrl = window.location.href;
-		console.log("theUrl = " + theUrl);
+		//console.log("theUrl = " + theUrl);
 		var theLastSlashLoc = theUrl.lastIndexOf("/");
 		scope.projectId = theUrl.substring(theLastSlashLoc + 1);
 		console.log("scope.projectId = " + scope.projectId);
@@ -120,25 +130,23 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
                 return;
 
-            //project_watcher();
-
-            console.log("Inside project-detail -- our project just loaded...");
-            console.log(" -  - - - - - - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> project load only on change");
-			console.log("scope.project.Id = " + scope.project.Id);
+            console.log("Inside project-detail -- our project just loaded..." + scope.project.Id);
+            //console.log(" -  - - - - - - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> project load only on change");
+			
 			$rootScope.projectId = scope.project.Id;
 				
 			scope.editors = scope.project.Editors;
             scope.users = CommonService.getUsers();
 
             //add in the metadata to our metadataList that came with this dataset
-            console.error("setup the metadata for this project");
+            //console.error("setup the metadata for this project");
 
             scope.project.MetadataValue = {};
 
             if (scope.status.DoneLoadingMetadata) {
                 addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
                 scope.status.DoneLoadingProject = true;
-                console.error("loaded values direction for mpd -- we were alrady done...");
+                //console.error("loaded values direction for mpd -- we were alrady done...");
             } else {
                 //only setup the mdp values when we're done loading the whole list...
                 var mdpload_watcher = scope.$watch('status.DoneLoadingMetadata', function () {
@@ -146,7 +154,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     if (!scope.status.DoneLoadingMetadata)
                         return;
 
-                    console.error("loading values for mdp now from watcher!");
+                    //console.error("loading values for mdp now from watcher!");
                     addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
                     scope.status.DoneLoadingProject = true;
                     mdpload_watcher();
@@ -174,7 +182,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
                 file_watcher();
                 console.log('-------------- project FILES are loaded >>>>>>>>>>>>>>>> ');
-                console.dir(scope.project.Files);
+                //console.dir(scope.project.Files);
                 
                 scope.project.Files.forEach(function (file, key) {
                     // If the user created a document and left the Title or Description blank, those fields were saved as "undefined" in the database.
@@ -199,8 +207,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                         scope.project.SubprojectFiles.push(file);
                     }
                 });
-                console.log("OK! Done loading files... ");
-                console.dir(scope.project);
+                console.log("OK! Done loading files for project");
+                //console.dir(scope.project);
 
             }, true); //end after files load watcher.
 
@@ -362,7 +370,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         }
 
 		scope.refreshProjectLocations = function(){
-			//console.log("Inside controllers.js, refreshProjectLocations...");
+			console.log("refreshProjectLocations...");
 			ProjectService.clearProject();
 			scope.project = null;
 			scope.project = ProjectService.getProject(parseInt(scope.projectId));
