@@ -39,14 +39,13 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             console.error("got 'em now add in the big list and fire off the request for the values.")
             addMetadataProperties(hab_mdp_list, scope.metadataList, scope, CommonService);
 
+            //TODO:: the project might not be loaded yet which causes a 500 error... fix me. kb 2/13/18 ********
             var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID); //gets the values
 
             habitatProjectMetadataPromise.$promise.then(function (hab_proj_mdp_list) {
                 console.error("ok, we have the values, adding them in (for habitat)");
                 addMetadataProperties(hab_proj_mdp_list, scope.metadataList, scope, CommonService);
                 console.error("all done with habitat mdp");
-                scope.status.DoneLoadingProject = true;
-
             });
         });
         
@@ -324,8 +323,9 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         
 
         scope.reloadProject = function () {
-            scope.LoadingProject = true;
+            scope.status.DoneLoadingProject = false;
             ProjectService.clearProject();
+            //CommonService.clearMetadataProperties();
             scope.project = ProjectService.getProject(routeParams.Id);
         };
 

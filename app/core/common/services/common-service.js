@@ -90,6 +90,10 @@ common_module.service('CommonService', ['$q',
             datastoreId: null,
             metadataProperties: null,
 
+            clearMetadataProperties: function () {
+                service.metadataProperties = null;
+            },
+
             getLocations: function(id)
             {
                 service.datastoreId = id;

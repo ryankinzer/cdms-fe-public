@@ -93,7 +93,7 @@ var tab_fishermen = ['$scope', '$timeout', '$routeParams', 'SubprojectService', 
 
 
         //watch the datasets on the parent-detail page to load... once they do, check to see if we should show our tab
-        var f_ds_watcher = scope.$parent.$watch('project', function () {
+        var f_ds_watcher = scope.$parent.$watch('project.Id', function () {
 
             if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
                 return;

@@ -341,13 +341,13 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
         };
 
         //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
-        var crpp_ds_watcher = scope.$parent.$watch('project', function () {
+        var crpp_ds_watcher = scope.$parent.$watch('status.DoneLoadingProject', function () {
             //console.log("Inside TAB CORRESPONDENCE watch project... --------------------------");
 
             if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
                 return;
 
-            //console.log("OK TAB CORRESPONDNEC .  The project is loaded...");
+            console.log("OK TAB CORRESPONDENCE .  The project is loaded...");
 
             crpp_ds_watcher(); //turn off watcher
 

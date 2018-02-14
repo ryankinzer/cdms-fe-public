@@ -320,8 +320,8 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         
         //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
-        var sites_ds_watcher = scope.$parent.$watch('project', function () {
-            //console.log("Inside TAB SITES watch project... --------------------------");
+        var sites_ds_watcher = scope.$parent.$watch('status.DoneLoadingProject', function () {
+            console.log("Inside TAB SITES watch project... --------------------------");
 
             if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
                 return;
