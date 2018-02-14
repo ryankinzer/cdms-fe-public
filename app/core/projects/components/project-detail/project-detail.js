@@ -157,15 +157,15 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     //console.error("loading values for mdp now from watcher!");
                     addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
                     scope.status.DoneLoadingProject = true;
+
+                    scope.mapHtml = $sce.trustAsHtml(scope.project.MetadataValue[25]);
+                    scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
+
                     mdpload_watcher();
                 });
                 
             }
             
-
-            scope.mapHtml = $sce.trustAsHtml(scope.project.MetadataValue[25]);
-            scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
-
             //load all of the project's files
             scope.project.Files = ProjectService.getProjectFiles(scope.project.Id);
 
@@ -331,11 +331,32 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         
 
         scope.reloadProject = function () {
+
             console.error("reloading project");
-            scope.status.DoneLoadingProject = false;
+
             ProjectService.clearProject();
-            console.log("-- calling get project --");
-            scope.project = ProjectService.getProject(routeParams.Id);
+            CommonService.clearMetadataProperties();
+
+            scope.project = {};
+            scope.metadataList = {};
+            
+            scope.status.DoneLoadingMetadata = true;
+            scope.status.DoneLoadingProject = false;
+
+            //reload all project metadata
+            scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID); //load all the possible mdp 
+
+            scope.metadataPropertiesPromise.promise.then(function (list) {
+                console.error("MDP now loaded -- adding the big list");
+                addMetadataProperties(list, scope.metadataList, scope, CommonService); //add in all the mdp
+                console.error("Done setting up the full mdp list");
+                scope.status.DoneLoadingMetadata = true;
+
+                console.log("-- NOW calling get project --");
+                scope.project = ProjectService.getProject(routeParams.Id);
+
+            });
+            
         };
 
 
