@@ -15,6 +15,12 @@ projects_module.factory('ProjectCollaborators', ['$resource', function ($resourc
     });
 }]);
 
+projects_module.factory('ProjectCounties', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/getprojectcounties', {}, {
+        query: { method: 'GET', params: { id: 'projectId' }, isArray: true }
+    });
+}]);
+
 projects_module.factory('ProjectFiles', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/file/getprojectfiles', {}, {
         query: { method: 'GET', params: { id: 'projectId' }, isArray: true }
@@ -122,6 +128,7 @@ projects_module.factory('GetCrppStaff', ['$resource', function($resource){
 projects_module.service('ProjectService', ['$q', 
     'ProjectFunders',
     'ProjectCollaborators',
+	'ProjectCounties',
     'Projects',
     'Project',
     'ProjectFiles',
@@ -148,6 +155,7 @@ projects_module.service('ProjectService', ['$q',
     function ($q,
         ProjectFunders,
         ProjectCollaborators,
+		ProjectCounties,
         Projects,
         Project,
         ProjectFiles,
@@ -204,6 +212,12 @@ projects_module.service('ProjectService', ['$q',
                 console.log("Inside getProjectCollaborators...");
                 this.getProject(projectId); //set our local project to the one selected
                 return ProjectCollaborators.query({ id: projectId });
+            },
+			
+            getProjectCounties: function (projectId) {
+                console.log("Inside getProjectCounties...");
+                this.getProject(projectId); //set our local project to the one selected
+                return ProjectCounties.query({ id: projectId });
             },
 
             saveProject: function (project) {
