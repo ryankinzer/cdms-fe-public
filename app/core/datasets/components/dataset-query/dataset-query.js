@@ -148,70 +148,13 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 	        	$scope.QAStatusOptions["all"] = "- All -";
 	        	$scope.Criteria.ParamQAStatusId = "all";
 
-				//var fieldIndex = 0;
 				$scope.fieldIndex = 0;
 
-				// Original code
-				/*angular.forEach($scope.dataset.Fields.sort(orderByIndex), function(field){
-					parseField(field, $scope);
-					if(field.FieldRoleId == FIELD_ROLE_HEADER)
-					{
-						$scope.headerFields.push(field);
-					}
-					else if(field.FieldRoleId == FIELD_ROLE_DETAIL)
-					{
-						$scope.detailFields.push(field);
-					}
-
-					//create a javascript list from our possible values (if any)
-					if(field.Field.PossibleValues)
-					{
-						
-		                field.PossibleValuesList = makeObjectsFromValues(field.DbColumnName, field.Field.PossibleValues); //set this into our object
-	
-						fieldIndex ++;
-
-					}
-
-					$scope.datasheetColDefs.push(makeFieldColDef(field, $scope));
-
-					$scope.dataFields.push(field);
-
-	    		});*/
 				
-				// New code
-				/*angular.forEach($scope.dataset.Fields.sort(orderByIndex), function(field){
-					//console.log("field.DbColumnName = " + field.DbColumnName);
-					//console.log("field.FieldRoleId = " + field.FieldRoleId);
-					if(field.FieldRoleId === FIELD_ROLE_HEADER)
-					{
-						//console.log("Found a header...field.DbColumnName = " + field.DbColumnName);
-						parseField(field, $scope);
-						$scope.headerFields.push(field);
-						
-						//create a javascript list from our possible values (if any)
-						if(field.Field.PossibleValues)
-						{
-							
-							field.PossibleValuesList = makeObjectsFromValues(field.DbColumnName, field.Field.PossibleValues); //set this into our object
-		
-							fieldIndex ++;
-
-						}
-
-						$scope.datasheetColDefs.push(makeFieldColDef(field, $scope));
-
-						$scope.dataFields.push(field);
-						//console.log("Just added " + field.DbColumnName + " to dataFields");
-					}
-	    		});
-				*/
-
 				// For CreelSurvey, we must add the Fisherman field.
 				if ($scope.DatastoreTablePrefix === "CreelSurvey")
 				{
 					console.log("Dataset is Creelsurvey, adding Fisherman field...");
-					$scope.addHeaders();
 					$scope.detailFields.push($scope.datasheetColDefs2);
 					//console.log("$scope.detailFields is next...");
 					//console.dir($scope.detailFields);
@@ -235,7 +178,6 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 					$scope.Criteria.paramActivityDateType = "singleYear";
 					$scope.migrationYearsList = DatasetService.getMigrationYears($scope.dataset.Id);
 				}
-				//else if ($scope.DatastoreTablePrefix === "Metrics")
 				else if (($scope.DatastoreTablePrefix === "Metrics") || 
 					($scope.DatastoreTablePrefix === "Benthic") ||
 					($scope.DatastoreTablePrefix === "Drift")
@@ -349,34 +291,10 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 							cellFilter: 'RowQAStatusFilter',
 							visible: false,  //start off hidden -- show only if relevant
 						}
-
 					];
-					
-					$scope.addHeaders();
 				}
 				
-				/*angular.forEach($scope.dataset.Fields.sort(orderByIndex), function(field){
-						
-					if(field.FieldRoleId == FIELD_ROLE_DETAIL)
-					{
-						parseField(field, $scope);
-						//console.log("The field = " + field.DbColumnName);
-						$scope.detailFields.push(field);
-						
-						//create a javascript list from our possible values (if any)
-						if(field.Field.PossibleValues)
-						{
-							field.PossibleValuesList = makeObjectsFromValues(field.DbColumnName, field.Field.PossibleValues); //set this into our object
-		
-							fieldIndex ++;
-						}
-
-						$scope.datasheetColDefs.push(makeFieldColDef(field, $scope));
-
-						$scope.dataFields.push(field);
-					}
-	    		});				
-				*/
+                $scope.addHeaders();
 				$scope.addDetails();
 				
 	    		$scope.dataFields = $scope.dataFields.sort(orderByAlpha);
@@ -979,7 +897,11 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 			
 			$scope.addHeaders = function(){
 				console.log("Inside dataset-query.js, addHeaders...");
-				angular.forEach($scope.dataset.Fields.sort(orderByIndex), function(field){
+                angular.forEach($scope.dataset.Fields.sort(orderByIndex), function (field) {
+
+                    if (field.ControlType === "file")
+                        return;
+
 					//console.log("field.DbColumnName = " + field.DbColumnName);
 					//console.log("field.FieldRoleId = " + field.FieldRoleId);
 					if(field.FieldRoleId === FIELD_ROLE_HEADER)
