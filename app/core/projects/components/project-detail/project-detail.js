@@ -331,9 +331,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         
 
         scope.reloadProject = function () {
+            console.error("reloading project");
             scope.status.DoneLoadingProject = false;
             ProjectService.clearProject();
-            //CommonService.clearMetadataProperties();
+            console.log("-- calling get project --");
             scope.project = ProjectService.getProject(routeParams.Id);
         };
 
