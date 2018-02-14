@@ -153,24 +153,23 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
         $scope.countyList.push({ Id: 5, Label: "Franklin" });
         $scope.countyList.push({ Id: 6, Label: "Garfield" });
         $scope.countyList.push({ Id: 7, Label: "Gilliam" });
-        $scope.countyList.push({ Id: 8, Label: "Garfield" });
-        $scope.countyList.push({ Id: 9, Label: "Grant, WA" });
-        $scope.countyList.push({ Id: 10, Label: "Grant, OR" });
-        $scope.countyList.push({ Id: 11, Label: "Hood River" });
-        $scope.countyList.push({ Id: 12, Label: "Klickitat" });
-        $scope.countyList.push({ Id: 13, Label: "Malheur" });
-        $scope.countyList.push({ Id: 14, Label: "Morrow" });
-        $scope.countyList.push({ Id: 15, Label: "Multnomah" });
-        $scope.countyList.push({ Id: 16, Label: "Other" });
-        $scope.countyList.push({ Id: 17, Label: "Sherman" });
-        $scope.countyList.push({ Id: 18, Label: "Skamania" });
-        $scope.countyList.push({ Id: 19, Label: "Umatilla" });
-        $scope.countyList.push({ Id: 20, Label: "Union" });
-        $scope.countyList.push({ Id: 21, Label: "Walla Walla" });
-        $scope.countyList.push({ Id: 22, Label: "Wallowa" });
-        $scope.countyList.push({ Id: 23, Label: "Wasco" });
-        $scope.countyList.push({ Id: 24, Label: "Wheeler" });
-        $scope.countyList.push({ Id: 25, Label: "Whitman" });
+        $scope.countyList.push({ Id: 8, Label: "Grant, WA" });
+        $scope.countyList.push({ Id: 9, Label: "Grant, OR" });
+        $scope.countyList.push({ Id: 10, Label: "Hood River" });
+        $scope.countyList.push({ Id: 11, Label: "Klickitat" });
+        $scope.countyList.push({ Id: 12, Label: "Malheur" });
+        $scope.countyList.push({ Id: 13, Label: "Morrow" });
+        $scope.countyList.push({ Id: 14, Label: "Multnomah" });
+        $scope.countyList.push({ Id: 15, Label: "Other" });
+        $scope.countyList.push({ Id: 16, Label: "Sherman" });
+        $scope.countyList.push({ Id: 17, Label: "Skamania" });
+        $scope.countyList.push({ Id: 18, Label: "Umatilla" });
+        $scope.countyList.push({ Id: 19, Label: "Union" });
+        $scope.countyList.push({ Id: 20, Label: "Walla Walla" });
+        $scope.countyList.push({ Id: 21, Label: "Wallowa" });
+        $scope.countyList.push({ Id: 22, Label: "Wasco" });
+        $scope.countyList.push({ Id: 23, Label: "Wheeler" });
+        $scope.countyList.push({ Id: 24, Label: "Whitman" });
 
         console.log("$scope.countyList is next...");
         console.dir($scope.countyList);
@@ -633,7 +632,8 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
 		// We will add a new line at the end, so that the string presents well on the page.
 		if ($scope.subproject_row.County === "Other")
 		{
-			$scope.subproject_row.strCounties += $scope.subproject_row.OtherCounty + ";\n";			
+			//scope.subproject_row.strCounties += $scope.subproject_row.OtherCounty + ";\n";	
+			$scope.subproject_row.strCounties += "Other;\n";				
 		}
 		else
 		{
@@ -882,14 +882,14 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
 					console.log("saveRow.CountyAry is next...");
 					console.dir(saveRow.CountyAry);
 				}
-				//throw "Stopping right here...";
 
                 //if(!saveRow.CompleteDate)
                 //	saveRow.CompleteDate = null;
                 saveRow.CorrespondenceEvents = undefined;
                 console.log("saveRow is next...");
                 console.dir(saveRow);
-
+				//throw "Stopping right here...";
+				
                 $scope.saveResults = {};
                 //console.log("$scope is next...");
                 //console.dir($scope);
