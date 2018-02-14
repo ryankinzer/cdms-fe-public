@@ -378,6 +378,8 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
 
                         console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
                         scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+						
+						scope.refreshSubprojectLists();
 
                         watcher();
                     });
@@ -547,22 +549,6 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             }
         };
 
-
-        //opens create crpp subproject modal
-        scope.createCrppSubproject = function () {
-            scope.viewSubproject = null;
-            scope.createNewSubproject = true;
-            //scope.subprojectList = null;
-            scope.subprojectOptions = null;
-            //console.log("scope.createNewSubproject = " + scope.createNewSubproject);
-            var modalInstance = $modal.open({
-                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
-                controller: 'ModalCreateSubprojectCtrl',
-                scope: scope, //very important to pass the scope along...
-            });
-        };
-
-
         //fired after a user saves a new or edited project.
         // we update the item in the main subproject array and then refresh the grid.
         scope.postSaveSubprojectUpdateGrid = function (the_promise) {
@@ -598,6 +584,47 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                     //console.log("done reloading grid.");
                 }
             });
+			
+            console.log("updated the list and the grid... now refreshing the CRPP lists");
+            scope.refreshSubprojectLists(); //counties, etc.
+        };
+
+        //opens create crpp subproject modal
+        scope.createCrppSubproject = function () {
+            scope.viewSubproject = null;
+            scope.createNewSubproject = true;
+            //scope.subprojectList = null;
+            scope.subprojectOptions = null;
+            //console.log("scope.createNewSubproject = " + scope.createNewSubproject);
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
+                controller: 'ModalCreateSubprojectCtrl',
+                scope: scope, //very important to pass the scope along...
+            });
+        };
+		
+        //refresh all of the project match lists
+        scope.refreshSubprojectLists = function () {
+			console.log("Inside tab-correspondence.js, scope.refreshSubprojectList...");
+			
+            // Call the functions that will build the list of funders, and list of files related to the project.
+            // We add the items from these lists to the subproject -- as the data comes in.
+            //scope.project.SubprojectFileList = SubprojectService.getSubprojectFiles(scope.projectId); //TODO: we already have this as scope.project.SubprojectFiles once the files load in project-detail.js
+            scope.project.CountyList = ProjectService.getProjectCounties(scope.projectId);
+
+            //this one we can start right away since project locations are loaded with the project.
+            //scope.matchLocationsToSubprojects();
+
+            //do each match as the list finishes loading...
+            //scope.project.SubprojectFileList.$promise.then(function () {
+                //console.log(" -- ok done loading now matching SubprojectFileList for " + scope.project.SubprojectFileList.length);
+                //scope.matchFilesToSubproject();
+            //});
+
+            scope.project.CountyList.$promise.then(function () {
+                //console.log(" -- ok done loading now matching CollaboratorList for " + scope.project.CollaboratorList.length);
+                scope.matchCountyToSubproject();
+            });
         };
 
         scope.editCrppSubproject = function (subproject) {
@@ -610,6 +637,24 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                     controller: 'ModalCreateSubprojectCtrl',
                     scope: scope, //very important to pass the scope along...
             });
+        };
+		
+        scope.matchCountyToSubproject = function () {
+            console.log("Inside controllers.js, scope.matchCountyToSubproject...");
+            console.dir(scope.project.CountyList);
+
+            var strCounties = "";
+            angular.forEach(scope.subprojectList, function (subproject) {
+                strCounties = "";
+                angular.forEach(scope.project.CountyList, function (county) {
+                    if (county.SubprojectId === subproject.Id) {
+                        strCounties += county.Name + ";\n";
+                    }
+                });
+                subproject.strCounties = strCounties;
+            });
+			console.log("scope.subprojectList is next...");
+			console.dir(scope.subprojectList);
         };
 
         scope.redrawRows = function () {
