@@ -722,3 +722,9 @@ a {
     color: #D8000C;
     background-color: #FFBABA;
 }
+
+#footer {
+    margin-top: 20px;
+    color: darkslategrey;
+    float: right;
+}

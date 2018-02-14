@@ -6,6 +6,8 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', ANALYTICS_CODE, 'auto');
 ga('send', 'pageview');
 
+var BUILD_VERSION = "1.2.252"; //increment the last number as desired to show in the footer
+
 define([
   'angular'
 ], function(angular){
@@ -71,7 +73,8 @@ define([
 	app.run(function($rootScope,$window, $location) {
 	  $rootScope.config = {
 	      version: CURRENT_VERSION,
-	      CDMS_DOCUMENTATION_URL: CDMS_DOCUMENTATION_URL,
+          CDMS_DOCUMENTATION_URL: CDMS_DOCUMENTATION_URL,
+          build_version: BUILD_VERSION,
 	  };
 
 	  $rootScope.Cache = {};

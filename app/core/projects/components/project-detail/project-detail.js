@@ -15,9 +15,50 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		scope.activities = null;
 		
 		scope.datasets = ProjectService.getProjectDatasets(routeParams.Id);
-		scope.project = ProjectService.getProject(routeParams.Id);
+        scope.project = ProjectService.getProject(routeParams.Id);
+        scope.status = {
+            DoneLoadingProject: false,
+            DoneLoadingMetadata: false,
+        }; 
 		scope.currentUserId = $rootScope.Profile.Id;
         scope.filteredUsers = false;
+        
+        scope.metadataList = {};
+
+        //project metadata
+        scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID); //load all the possible mdp 
+        scope.metadataPropertiesPromise.promise.then(function (list) {
+            //console.error("MDP now loaded -- adding the big list");
+            addMetadataProperties(list, scope.metadataList, scope, CommonService); //add in all the mdp
+            //console.error("Done setting up the full mdp list");
+            scope.status.DoneLoadingMetadata = true;    
+        });
+
+
+        //habitat metadata
+        scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID); //gets all the possible properties
+        scope.habitatPropertiesPromise.promise.then(function (hab_mdp_list) {
+            //console.error("got 'em now add in the big list and fire off the request for the values.")
+            addMetadataProperties(hab_mdp_list, scope.metadataList, scope, CommonService);
+
+            //load the habitat metadata values once the project is loaded...
+            var mdpproject_watcher = scope.$watch('status.DoneLoadingProject', function () {
+
+                if (!scope.status.DoneLoadingProject)
+                    return;
+
+                mdpproject_watcher();
+
+                var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID); //gets the values
+
+                habitatProjectMetadataPromise.$promise.then(function (hab_proj_mdp_list) {
+                    //console.error("ok, we have the values, adding them in (for habitat)");
+                    addMetadataProperties(hab_proj_mdp_list, scope.metadataList, scope, CommonService);
+                    //console.error("all done with habitat mdp");
+                });
+            });
+        });
+        
 
         //conditional tabs on the project detail page
         scope.ShowInstruments = false; //water temp only
@@ -42,7 +83,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		
 		// Get the project ID from the url.
 		var theUrl = window.location.href;
-		console.log("theUrl = " + theUrl);
+		//console.log("theUrl = " + theUrl);
 		var theLastSlashLoc = theUrl.lastIndexOf("/");
 		scope.projectId = theUrl.substring(theLastSlashLoc + 1);
 		console.log("scope.projectId = " + scope.projectId);
@@ -51,10 +92,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		scope.CellOptions = {}; //for metadata dropdown options
 		scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
 
-		scope.metadataList = {};
-		scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID);
-		scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID);
-        
         scope.users = [];
 		scope.thisProjectsLocationObjects = [];
         
@@ -90,77 +127,19 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 		//once the project loads...
         var project_watcher = scope.$watch('project.Id', function () {
 
-            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
-                return;
-
-            //project_watcher();
-
-			console.log("Inside project-detail -- our project just loaded...");
-			console.log("scope.project.Id = " + scope.project.Id);
-			$rootScope.projectId = scope.project.Id;
-				
-			scope.editors = scope.project.Editors;
-            scope.users = CommonService.getUsers();
-            scope.project.MetadataValue = {};
-                              
-            //add in the metadata to our metadataList that came with this dataset
-            addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService);
-
-            //get habitat (and possibly other?) metadata values for this project.  they don't come with project metadata as they are their own category.
-            var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID);
-            habitatProjectMetadataPromise.$promise.then(function(list){
-                addMetadataProperties(list, scope.metadataList, scope, CommonService);
-            });
-
-            scope.mapHtml = $sce.trustAsHtml(scope.project.MetadataValue[25]);
-            scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
-
-            //load all of the project's files
-            scope.project.Files = ProjectService.getProjectFiles(scope.project.Id);
-
-            //since we want a tab of images and a tab of other files, 
-            // sort them out into three arrays we will use to populate the tabs.
-            scope.project.Images = [];
-            scope.project.Docs = [];
-            scope.project.SubprojectFiles = [];
-
-            //once they load... (the docs and gallery tabs listen for this and then handle their grids.)
-            var file_watcher = scope.$watch('project.Files', function () {
-                if (typeof scope.project.Files === 'undefined' || scope.project.Files.length === 0)
-                    return;
-
-                file_watcher();
-                console.log('-------------- project FILES are loaded >>>>>>>>>>>>>>>> ');
-                console.dir(scope.project.Files);
-                
-                scope.project.Files.forEach(function (file, key) {
-                    // If the user created a document and left the Title or Description blank, those fields were saved as "undefined" in the database.
-                    // When we read the list of files back in, the "undefined" shows on the page, and the user would rather have a blank show instead.
-                    file.Title = (!file.Title || file.Title === 'undefined' || typeof file.Title === 'undefined') ? "" : file.Title;
-                    file.Description = (!file.Description || file.Description === 'undefined' || typeof file.Description === 'undefined') ? "" : file.Description;
-
-                    //here we'll sort the files into some arrays...
-                    // scope.project.Docs = document tab
-                    // scope.project.Images = images tab
-                    // scope.project.SubprojectFiles = subproject files <-- TODO: someday refactor this away so that projects are just nested...
-
-                    //note: Subproject_CrppId indicates the file belongs to a subproject (not just crpp)
-                    if (file.DatasetId === null && file.Subproject_CrppId === null)
-                    {
-                        if (file.FileType.Name === "Image") { //images go to 'Gallery' tab
-                            scope.project.Images.push(file);
-                        } else { //everything else goes to 'Documents' tab
-                            scope.project.Docs.push(file);
-                        }
-                    } else {
-                        scope.project.SubprojectFiles.push(file);
-                    }
-                });
-                console.log("OK! Done loading files... ");
+            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined') {
+                console.log("not ready yet! --> project loading --> ");
                 console.dir(scope.project);
+                return;
+            }
 
-            }, true); //end after files load watcher.
-            
+            console.log("Inside project-detail -- our project just loaded..." + scope.project.Id);
+            //console.log(" -  - - - - - - >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> project load only on change");
+			
+            scope.setupLoadedProjectForUse();
+
+            project_watcher();
+
         }, true); //end after project load watcher.
 
 		scope.ShowMap = {
@@ -233,21 +212,6 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
 		};
 		
-
-        //metadata -- we have a list of metadata properties that are configured for "project" entities.
-        //  any metadata already associated with a project come in teh project's Metadata array, but ones that haven't
-        //  been given a value yet on a specific project won't appear and need to be added in separately.
-
-
-        scope.metadataPropertiesPromise.promise.then(function(list){
-            addMetadataProperties(list, scope.metadataList, scope, CommonService);
-        });
-
-        scope.habitatPropertiesPromise.promise.then(function(list){
-            addMetadataProperties(list, scope.metadataList, scope, CommonService);
-        });
-
-
         scope.openChooseMapImage = function(){
             var modalInstance = $modal.open({
               templateUrl: 'app/core/projects/components/project-detail/templates/modal-choosemap.html',
@@ -294,9 +258,101 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         };
         
 
-        scope.reloadProject = function () {
+        scope.resetProject = function (project) {
+
+            console.error("reloaded project");
+
             ProjectService.clearProject();
-            scope.project = ProjectService.getProject(routeParams.Id);
+            scope.status.DoneLoadingProject = false;
+
+            scope.project = project;
+            console.log("Just set project to : ");
+            console.dir(project);
+
+            scope.setupLoadedProjectForUse();
+
+        };
+
+        //handles setting up the project initially and anytime we reload project
+        scope.setupLoadedProjectForUse = function () {
+
+            $rootScope.projectId = scope.project.Id;
+
+            scope.editors = scope.project.Editors;
+            scope.users = CommonService.getUsers();
+
+            //add in the metadata to our metadataList that came with this dataset
+            //console.error("setup the metadata for this project");
+
+            scope.project.MetadataValue = {};
+
+            if (scope.status.DoneLoadingMetadata) {
+                addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
+                scope.status.DoneLoadingProject = true;
+                //console.error("loaded values direction for mpd -- we were alrady done...");
+            } else {
+                //only setup the mdp values when we're done loading the whole list...
+                var mdpload_watcher = scope.$watch('status.DoneLoadingMetadata', function () {
+
+                    if (!scope.status.DoneLoadingMetadata)
+                        return;
+
+                    //console.error("loading values for mdp now from watcher!");
+                    addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
+                    scope.status.DoneLoadingProject = true;
+
+                    scope.mapHtml = $sce.trustAsHtml(scope.project.MetadataValue[25]);
+                    scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
+
+                    mdpload_watcher();
+                });
+
+            }
+
+            //load all of the project's files
+            scope.project.Files = ProjectService.getProjectFiles(scope.project.Id);
+
+            //since we want a tab of images and a tab of other files, 
+            // sort them out into three arrays we will use to populate the tabs.
+            scope.project.Images = [];
+            scope.project.Docs = [];
+            scope.project.SubprojectFiles = [];
+
+            //once they load... (the docs and gallery tabs listen for this and then handle their grids.)
+            var file_watcher = scope.$watch('project.Files', function () {
+                if (typeof scope.project.Files === 'undefined' || scope.project.Files.length === 0)
+                    return;
+
+                file_watcher();
+                console.log('-------------- project FILES are loaded >>>>>>>>>>>>>>>> ');
+                //console.dir(scope.project.Files);
+
+                scope.project.Files.forEach(function (file, key) {
+                    // If the user created a document and left the Title or Description blank, those fields were saved as "undefined" in the database.
+                    // When we read the list of files back in, the "undefined" shows on the page, and the user would rather have a blank show instead.
+                    file.Title = (!file.Title || file.Title === 'undefined' || typeof file.Title === 'undefined') ? "" : file.Title;
+                    file.Description = (!file.Description || file.Description === 'undefined' || typeof file.Description === 'undefined') ? "" : file.Description;
+
+                    //here we'll sort the files into some arrays...
+                    // scope.project.Docs = document tab
+                    // scope.project.Images = images tab
+                    // scope.project.SubprojectFiles = subproject files <-- TODO: someday refactor this away so that projects are just nested...
+
+                    //note: Subproject_CrppId indicates the file belongs to a subproject (not just crpp)
+                    if (file.DatasetId === null && file.Subproject_CrppId === null) {
+                        if (file.FileType.Name === "Image") { //images go to 'Gallery' tab
+                            scope.project.Images.push(file);
+                        } else { //everything else goes to 'Documents' tab
+                            scope.project.Docs.push(file);
+                        }
+                    } else {
+                        scope.project.SubprojectFiles.push(file);
+                    }
+                });
+                console.log("OK! Done loading files for project");
+                //console.dir(scope.project);
+
+            }, true); //end after files load watcher.
         };
 
 
@@ -332,7 +388,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         }
 
 		scope.refreshProjectLocations = function(){
-			//console.log("Inside controllers.js, refreshProjectLocations...");
+			console.log("refreshProjectLocations...");
 			ProjectService.clearProject();
 			scope.project = null;
 			scope.project = ProjectService.getProject(parseInt(scope.projectId));
@@ -487,6 +543,8 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
     }
 
 ];
+
+
 
 
 
