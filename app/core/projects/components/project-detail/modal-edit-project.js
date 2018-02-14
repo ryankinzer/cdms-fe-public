@@ -39,9 +39,9 @@ var modal_edit_project = ['$scope', '$modalInstance', 'ProjectService',
             var promise = ProjectService.saveProject($scope.row);
             console.log("Just called save...");
             promise.$promise.then(function (saved_project) {
-                console.log("saving is complete");
+                console.log("saving is complete. here is the saved project back again. ");
                 console.dir(saved_project);
-                $scope.reloadProject();
+                $scope.resetProject(saved_project);
                 $modalInstance.dismiss();
             });
 
