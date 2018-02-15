@@ -6,7 +6,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', ANALYTICS_CODE, 'auto');
 ga('send', 'pageview');
 
-var BUILD_VERSION = "1.2.252"; //increment the last number as desired to show in the footer
+var BUILD_VERSION = "1.2.253"; //increment the last number as desired to show in the footer
 
 define([
   'angular'

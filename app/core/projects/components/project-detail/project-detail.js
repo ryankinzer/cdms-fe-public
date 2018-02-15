@@ -4,10 +4,10 @@
 *
 */
 
-var project_detail = ['$scope', '$routeParams', '$route','SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, $route, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 		//console.log("Inside controllers.js, projectDatasetsController...");
 		//console.log("routeParams.Id = " + routeParams.Id);
@@ -267,9 +267,9 @@ var project_detail = ['$scope', '$routeParams', '$route','SubprojectService', 'P
 
             //this is horrible but the server is sending the pre-save data back (on TEST) so
             // lets try just reloading the page. I am ashamed.
-            $route.reload();
+            //$route.reload();
             //or
-            //$window.location.reload();
+            $window.location.reload();
 
             /*
             scope.project = project;
