@@ -4,10 +4,10 @@
 *
 */
 
-var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var project_detail = ['$scope', '$routeParams', '$route','SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
     '$rootScope', '$modal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, routeParams, $route, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 		//console.log("Inside controllers.js, projectDatasetsController...");
 		//console.log("routeParams.Id = " + routeParams.Id);
@@ -265,6 +265,13 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             ProjectService.clearProject();
             scope.status.DoneLoadingProject = false;
 
+            //this is horrible but the server is sending the pre-save data back (on TEST) so
+            // lets try just reloading the page. I am ashamed.
+            $route.reload();
+            //or
+            //$window.location.reload();
+
+            /*
             scope.project = project;
             console.log("Just set project to : ");
             console.dir(project);
@@ -273,6 +280,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
             console.dir(scope.project);
             console.error(scope.project.MetadataValue[9]);
+            */
 
         };
 
