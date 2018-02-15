@@ -259,7 +259,7 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
         
 
         scope.resetProject = function (project) {
-
+            console.error(scope.project.MetadataValue[9]);
             console.error("reloaded project");
 
             ProjectService.clearProject();
@@ -271,10 +271,17 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
             scope.setupLoadedProjectForUse();
 
+            console.dir(scope.project);
+            console.error(scope.project.MetadataValue[9]);
+
         };
 
         //handles setting up the project initially and anytime we reload project
         scope.setupLoadedProjectForUse = function () {
+
+            scope.project.MetadataValue = {};
+
+            console.error(scope.project.MetadataValue[9]);
 
             $rootScope.projectId = scope.project.Id;
 
@@ -284,12 +291,14 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
             //add in the metadata to our metadataList that came with this dataset
             //console.error("setup the metadata for this project");
 
-            scope.project.MetadataValue = {};
 
             if (scope.status.DoneLoadingMetadata) {
                 addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
                 scope.status.DoneLoadingProject = true;
-                //console.error("loaded values direction for mpd -- we were alrady done...");
+
+                console.error("loaded values direction for mpd -- we were alrady done...");
+                console.dir(scope.project);
+                console.error(scope.project.MetadataValue[9]);
             } else {
                 //only setup the mdp values when we're done loading the whole list...
                 var mdpload_watcher = scope.$watch('status.DoneLoadingMetadata', function () {
@@ -305,6 +314,9 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
                     scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
 
                     mdpload_watcher();
+
+                    console.dir(scope.project);
+                    console.error(scope.project.MetadataValue[9]);
                 });
 
             }
@@ -483,6 +495,10 @@ var project_detail = ['$scope', '$routeParams', 'SubprojectService', 'ProjectSer
 
         scope.openProjectEditor = function () {
             scope.row = scope.project; //
+
+            console.dir(scope.project);
+            console.error(scope.project.MetadataValue[9]);
+
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
                 controller: 'ModalProjectEditorCtrl',
