@@ -104,8 +104,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 headerName: 'Time Start',
                 width: 80,
                 valueFormatter: function (params) {
-                    if (params.node.data.headerdata.TimeStart && params.node.data.headerdata.TimeStart !== undefined )
-                        return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
+                    //if (params.node.data.headerdata.TimeStart && params.node.data.headerdata.TimeStart !== undefined )
+                    //    return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
                 }, 
                 filter: 'text', //'time' does not exist yet
                 menuTabs: ['filterMenuTab'],
@@ -162,9 +162,13 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.activities.$promise.then( function () {
 
             console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
+			
+			console.log("$scope.activities is next...");
+			console.dir($scope.activities);
 
             $scope.loading = true;
 
+			// The slow-down happens in here somewhere...start
             $scope.headerdata.$promise.then(function () {
                 angular.forEach($scope.activities, function (activity, key) {
                     activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
@@ -175,12 +179,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
                 console.log("autosizing columns");
                 var allColumnIds = [];
-                $scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
-                    allColumnIds.push(column.colId);
-                });
+                //$scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
+                //    allColumnIds.push(column.colId);
+                //});
                 //$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
                 
             });
+			// The slow-down happens in here somewhere...end
+			
             console.log("$scope at end of $scope.activities.$promise is next...");
             //console.dir($scope);
 
