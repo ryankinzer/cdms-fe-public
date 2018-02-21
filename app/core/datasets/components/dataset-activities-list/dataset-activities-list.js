@@ -22,6 +22,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
         $scope.thisDatasetLocationObjects = [];
         $scope.showDataEntrySheetButton = true; //by default - can change in config
+		
+		$scope.activityIdList = [];
+		$scope.headerdataList = [];
 
         //this is the default columns (fields) to show in the activities grid, 
         //  but it will be overridden if there is one configured in the dataset.
@@ -104,8 +107,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 headerName: 'Time Start',
                 width: 80,
                 valueFormatter: function (params) {
-                    //if (params.node.data.headerdata.TimeStart && params.node.data.headerdata.TimeStart !== undefined )
-                    //    return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
+                    if (params.node.data.headerdata.TimeStart && params.node.data.headerdata.TimeStart !== undefined )
+                        return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
                 }, 
                 filter: 'text', //'time' does not exist yet
                 menuTabs: ['filterMenuTab'],
@@ -158,21 +161,46 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.agGridOptions); //bind the grid to it.
         $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
 
-
+		// After $scope.activities fills, to this...
         $scope.activities.$promise.then( function () {
 
             console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
 			
 			console.log("$scope.activities is next...");
 			console.dir($scope.activities);
+			
+			// Try this to increase speed.
+			// First build a list of our ActivityIds that matches the Activities.
+			$scope.activities.forEach(function(activity){
+				$scope.activityIdList.push(activity.Id);
+			});
 
             $scope.loading = true;
 
+			// After $scope.headerdata fills, continue on in here...
 			// The slow-down happens in here somewhere...start
             $scope.headerdata.$promise.then(function () {
-                angular.forEach($scope.activities, function (activity, key) {
-                    activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
-                });
+				// The ActivityId is not necessary in sequential order, so this is unnecessary at this point.
+				//$scope.headerdata.forEach(header){
+				//	$scope.headerdataList.push()
+				//}
+				
+				// Angular kicks off the function for each record in $scope.activities,
+				// and each one then iterates through $scope.headerdata, looking for a matching
+				// ActivityId.
+                //angular.forEach($scope.activities, function (activity, key) {
+                    //activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
+                //});
+				
+				// Instead, let's try this...
+				// Iterate through the headerdata, but check the activities via IndexOf on the ActivityId.
+				angular.forEach($scope.headerdata, function (header){
+					var theActivityId = $scope.activityIdList.indexOf(header.ActivityId);
+					console.log("Found activity " + theActivityId);
+					$scope.activities[theActivityId].headerdata = header;
+					console.dir($scope.activities[theActivityId]);
+				});
+				
 
                 //now that the activities are loaded, tell the grid so that it can refresh.
                 $scope.agGridOptions.api.setRowData($scope.activities);

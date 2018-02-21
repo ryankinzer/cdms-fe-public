@@ -60,13 +60,23 @@ function getByName(list, search_name) {
 
 //returns single match in any fieldname
 function getByField(list, search, field) {
-    for (var i = 0; i < list.length; i++) {
+    
+	// This loop iterates through the list sequentially.
+	for (var i = 0; i < list.length; i++) {
         var pref = list[i];
         if (pref[field] == search)
             return pref;
     };
 
     return null;
+}
+
+function binIdSearch(list, search, field){
+
+	var listLength = list.length;
+	if (binIdSearch())
+	
+	return -1;
 }
 
 //returns array with matching field value
