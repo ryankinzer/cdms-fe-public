@@ -207,9 +207,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
                 console.log("autosizing columns");
                 var allColumnIds = [];
-                //$scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
-                //    allColumnIds.push(column.colId);
-                //});
+                $scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
+                    allColumnIds.push(column.colId);
+                });
                 //$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
                 
             });
