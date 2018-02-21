@@ -84,7 +84,7 @@ define([
 
         map.updateLayers = function(){
 
-            console.log("Changing Layer: "+map.selectedBasemap);
+            console.log("Inside map.js, Changing Layer: "+map.selectedBasemap);
 
             try{
 				//console.log("Loading layer: " + datasetActivitiesBasemapConfig[map.selectedBasemap].ServiceURL);      
@@ -164,7 +164,7 @@ define([
 					console.log("locationObjectIds has something; pull only those points...");
 					definitionExpression = "OBJECTID IN (" + locationObjectIds + ")";
 				}
-                console.log("Definition expression: " + definitionExpression);
+                console.log("Inside map.js, Definition expression: " + definitionExpression);
                 //console.log("In Map.js, definitionExpression: ...");
 				
                 this.setDefinitionExpression(definitionExpression);

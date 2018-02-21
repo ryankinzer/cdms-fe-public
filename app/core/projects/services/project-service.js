@@ -15,6 +15,12 @@ projects_module.factory('ProjectCollaborators', ['$resource', function ($resourc
     });
 }]);
 
+projects_module.factory('ProjectCounties', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/crppsubproject/getprojectcounties', {}, {
+        query: { method: 'GET', params: { id: 'projectId' }, isArray: true }
+    });
+}]);
+
 projects_module.factory('ProjectFiles', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/file/getprojectfiles', {}, {
         query: { method: 'GET', params: { id: 'projectId' }, isArray: true }
@@ -111,6 +117,10 @@ projects_module.factory('RemoveProjectFisherman', ['$resource', function ($resou
     return $resource(serviceUrl + '/api/v1/fishermen/removeprojectfisherman');
 }]);
 
+projects_module.factory('GetCrppStaff', ['$resource', function($resource){
+    return $resource(serviceUrl+'/api/v1/user/GetCrppStaff'); // This line will need adjusting.
+}]);
+
 
 /*
 * define the service that can be used by any module in our application to work with projects.
@@ -118,6 +128,7 @@ projects_module.factory('RemoveProjectFisherman', ['$resource', function ($resou
 projects_module.service('ProjectService', ['$q', 
     'ProjectFunders',
     'ProjectCollaborators',
+	'ProjectCounties',
     'Projects',
     'Project',
     'ProjectFiles',
@@ -140,9 +151,11 @@ projects_module.service('ProjectService', ['$q',
     'GetProjectFishermen',
     'RemoveProjectFisherman',
     'RemoveInstrumentAccuracyCheck',
+	'GetCrppStaff',
     function ($q,
         ProjectFunders,
         ProjectCollaborators,
+		ProjectCounties,
         Projects,
         Project,
         ProjectFiles,
@@ -164,7 +177,9 @@ projects_module.service('ProjectService', ['$q',
         GetFishermen,
         GetProjectFishermen,
         RemoveProjectFisherman,
-        RemoveInstrumentAccuracyCheck) {
+        RemoveInstrumentAccuracyCheck,
+		GetCrppStaff
+		) {
 
         var service = {
             project: null,
@@ -198,6 +213,12 @@ projects_module.service('ProjectService', ['$q',
                 this.getProject(projectId); //set our local project to the one selected
                 return ProjectCollaborators.query({ id: projectId });
             },
+			
+            getProjectCounties: function (projectId) {
+                console.log("Inside getProjectCounties...");
+                this.getProject(projectId); //set our local project to the one selected
+                return ProjectCounties.query({ id: projectId });
+            },
 
             saveProject: function (project) {
                 return SaveProject.save({ Project: project });
@@ -228,7 +249,7 @@ projects_module.service('ProjectService', ['$q',
                 //if(service.project && service.project.Id == id)
                 if (service.project && service.project.Id == id && service.subprojectType !== "Habitat") // Not Habitat
                 {
-                    console.log("service.project.Id = " + service.project.Id);
+                    console.log("returning cached service.project.Id = " + service.project.Id);
                     return service.project;
                 }
 
@@ -348,7 +369,12 @@ projects_module.service('ProjectService', ['$q',
                 console.dir(file);
                 return DeleteFile.save({ ProjectId: projectId, File: file });
             },
-
+			
+			getCrppStaff: function()
+            {
+				console.log("Inside getCrppStaff...");
+                return GetCrppStaff.query();
+            },
         };
 
         return service;

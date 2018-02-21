@@ -48,7 +48,9 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 			$scope.reportYearsList = [];
 			$scope.spawningYearsList = [];
 			$scope.broodYearsList = [];
-			$scope.outmigrationYearsList = [];			
+			$scope.outmigrationYearsList = [];	
+
+			$scope.fieldIndex = 0;
 
     		$scope.gridDatasheetOptions = { 
     			data: 'dataSheetDataset', 
@@ -80,28 +82,28 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
 			$scope.datasheetColDefs = [{   
 										field: 'LocationId', 
-                                        displayName: 'Location', 
-                                        cellFilter: 'locationNameFilter'
-                                    },
-                                    {
-                                        field: 'ActivityDate', 
-                                        displayName: 'Activity Date',
-                                        cellFilter: 'date: \'MM/dd/yyyy\'',
-                                    },
-                                    {
-                                        field: 'ActivityQAStatusId',
-                                        displayName: 'QA Status',
-                                        cellFilter: 'QAStatusFilter'
-                                    },
-                                    {
-					    				field: "QAStatusId", //QARowStatus
-					    				displayName: "QA",
-					    				minWidth: 50, maxWidth: 200,
-					 					cellFilter: 'RowQAStatusFilter',
-					 					visible: false,  //start off hidden -- show only if relevant
-					    			}
+										displayName: 'Location', 
+										cellFilter: 'locationNameFilter'
+									},
+									{
+										field: 'ActivityDate', 
+										displayName: 'Activity Date',
+										cellFilter: 'date: \'MM/dd/yyyy\'',
+									},
+									{
+										field: 'ActivityQAStatusId',
+										displayName: 'QA Status',
+										cellFilter: 'QAStatusFilter'
+									},
+									{
+										field: "QAStatusId", //QARowStatus
+										displayName: "QA",
+										minWidth: 50, maxWidth: 200,
+										cellFilter: 'RowQAStatusFilter',
+										visible: false,  //start off hidden -- show only if relevant
+									}
 
-                                ];
+								];
 									
 			$scope.datasheetColDefs2 = [ 
 									{
@@ -146,63 +148,9 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 	        	$scope.QAStatusOptions["all"] = "- All -";
 	        	$scope.Criteria.ParamQAStatusId = "all";
 
-				var fieldIndex = 0;
+				$scope.fieldIndex = 0;
 
-				// Original code
-				/*angular.forEach($scope.dataset.Fields.sort(orderByIndex), function(field){
-					parseField(field, $scope);
-					if(field.FieldRoleId == FIELD_ROLE_HEADER)
-					{
-						$scope.headerFields.push(field);
-					}
-					else if(field.FieldRoleId == FIELD_ROLE_DETAIL)
-					{
-						$scope.detailFields.push(field);
-					}
-
-					//create a javascript list from our possible values (if any)
-					if(field.Field.PossibleValues)
-					{
-						
-		                field.PossibleValuesList = makeObjectsFromValues(field.DbColumnName, field.Field.PossibleValues); //set this into our object
-	
-						fieldIndex ++;
-
-					}
-
-					$scope.datasheetColDefs.push(makeFieldColDef(field, $scope));
-
-					$scope.dataFields.push(field);
-
-	    		});*/
 				
-				// New code
-				angular.forEach($scope.dataset.Fields.sort(orderByIndex), function(field){
-					//console.log("field.DbColumnName = " + field.DbColumnName);
-					//console.log("field.FieldRoleId = " + field.FieldRoleId);
-					if(field.FieldRoleId === FIELD_ROLE_HEADER)
-					{
-						//console.log("Found a header...field.DbColumnName = " + field.DbColumnName);
-						parseField(field, $scope);
-						$scope.headerFields.push(field);
-						
-						//create a javascript list from our possible values (if any)
-						if(field.Field.PossibleValues)
-						{
-							
-							field.PossibleValuesList = makeObjectsFromValues(field.DbColumnName, field.Field.PossibleValues); //set this into our object
-		
-							fieldIndex ++;
-
-						}
-
-						$scope.datasheetColDefs.push(makeFieldColDef(field, $scope));
-
-						$scope.dataFields.push(field);
-						//console.log("Just added " + field.DbColumnName + " to dataFields");
-					}
-	    		});
-
 				// For CreelSurvey, we must add the Fisherman field.
 				if ($scope.DatastoreTablePrefix === "CreelSurvey")
 				{
@@ -230,7 +178,6 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 					$scope.Criteria.paramActivityDateType = "singleYear";
 					$scope.migrationYearsList = DatasetService.getMigrationYears($scope.dataset.Id);
 				}
-				//else if ($scope.DatastoreTablePrefix === "Metrics")
 				else if (($scope.DatastoreTablePrefix === "Metrics") || 
 					($scope.DatastoreTablePrefix === "Benthic") ||
 					($scope.DatastoreTablePrefix === "Drift")
@@ -321,28 +268,34 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 				{
 					$scope.showActivitiesWhereAll = true;
 				}
-
-				angular.forEach($scope.dataset.Fields.sort(orderByIndex), function(field){
-						
-					if(field.FieldRoleId == FIELD_ROLE_DETAIL)
-					{
-						parseField(field, $scope);
-						//console.log("The field = " + field.DbColumnName);
-						$scope.detailFields.push(field);
-						
-						//create a javascript list from our possible values (if any)
-						if(field.Field.PossibleValues)
+				else if ($scope.DatastoreTablePrefix === "CrppContracts") 
+				{
+					$scope.projectLeadList = ProjectService.getCrppStaff(); // Get all CRPP staff.
+					$scope.showActivitiesWhereAll = false;
+					$scope.datasheetColDefs = [];
+					$scope.datasheetColDefs = [
 						{
-							field.PossibleValuesList = makeObjectsFromValues(field.DbColumnName, field.Field.PossibleValues); //set this into our object
-		
-							fieldIndex ++;
+							field: 'ActivityDate', 
+							displayName: 'Activity Date',
+							cellFilter: 'date: \'MM/dd/yyyy\'',
+						},
+						{
+							field: 'ActivityQAStatusId',
+							displayName: 'QA Status',
+							cellFilter: 'QAStatusFilter'
+						},
+						{
+							field: "QAStatusId", //QARowStatus
+							displayName: "QA",
+							minWidth: 50, maxWidth: 200,
+							cellFilter: 'RowQAStatusFilter',
+							visible: false,  //start off hidden -- show only if relevant
 						}
-
-						$scope.datasheetColDefs.push(makeFieldColDef(field, $scope));
-
-						$scope.dataFields.push(field);
-					}
-	    		});				
+					];
+				}
+				
+                $scope.addHeaders();
+				$scope.addDetails();
 				
 	    		$scope.dataFields = $scope.dataFields.sort(orderByAlpha);
 
@@ -833,8 +786,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 				
 				console.log("Inside DataQueryCtrl.query.loading watch -- gathering graph data");
 				// Only for debug; causes front end to run out of memory.
-				//console.log("query.results is next...");
-				//console.dir($scope.query.results);
+				console.log("query.results is next...");
+				console.dir($scope.query.results);
 				
 				$scope.dataSheetDataset = null; // Reset this, just so that it does not take up a bunch of memory.
 	    		$scope.dataSheetDataset = $scope.query.results;
@@ -884,7 +837,37 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 							}
 						}
 					}
-					
+					else if ($scope.DatastoreTablePrefix === "CrppContracts")
+					{
+						for (var i = 0; i < $scope.dataSheetDataset.length; i++)
+						{
+							var pLeadList = $scope.dataSheetDataset[i].ProjectLead.split(";");
+							console.log("pLeadList is next...");
+							console.dir(pLeadList);
+							
+							// Next, get rid of that trailing semicolon.
+							pLeadList.splice(-1, 1);
+							console.log("pLeadList is next...");
+							console.dir(pLeadList);
+							
+							var strProjectLead = "";
+							
+							// Locate the ProjectLead Id and get the Fullname
+							angular.forEach($scope.projectLeadList, function(staffMember){
+								
+								angular.forEach(pLeadList, function(pLead){
+									//console.log("pLead = " + pLead + ", staffMember = " + staffMember.Id);
+									if (parseInt(pLead) === parseInt(staffMember.Id))
+									{
+										//console.log("Matched...");
+										strProjectLead += staffMember.Fullname + ";\n";
+										//$scope.showProjectLeads = true;
+									}
+								});
+							});
+							$scope.dataSheetDataset[i].ProjectLead = strProjectLead;
+						}
+					}
 					//console.log("$scope in watch query.loading is next...");
 					////console.dir($scope);
 					//ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {height: 360, width: 800});
@@ -910,6 +893,65 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 					scope: $scope, //very important to pass the scope along... -- TODO: but we don't want to pass in the whole $scope...
 					//resolve: { files: function() { return $scope.files; } }
 				});
+			}
+			
+			$scope.addHeaders = function(){
+				console.log("Inside dataset-query.js, addHeaders...");
+                angular.forEach($scope.dataset.Fields.sort(orderByIndex), function (field) {
+
+                    if (field.ControlType === "file")
+                        return;
+
+					//console.log("field.DbColumnName = " + field.DbColumnName);
+					//console.log("field.FieldRoleId = " + field.FieldRoleId);
+					if(field.FieldRoleId === FIELD_ROLE_HEADER)
+					{
+						//console.log("Found a header...field.DbColumnName = " + field.DbColumnName);
+						parseField(field, $scope);
+						$scope.headerFields.push(field);
+						
+						//create a javascript list from our possible values (if any)
+						if(field.Field.PossibleValues)
+						{
+							
+							field.PossibleValuesList = makeObjectsFromValues(field.DbColumnName, field.Field.PossibleValues); //set this into our object
+		
+							//fieldIndex ++;
+							$scope.fieldIndex++
+						}
+
+						$scope.datasheetColDefs.push(makeFieldColDef(field, $scope));
+
+						$scope.dataFields.push(field);
+						//console.log("Just added " + field.DbColumnName + " to dataFields");
+					}
+	    		});
+			}
+			
+			$scope.addDetails = function(){
+				console.log("Inside dataset-query.js, addDetails...");
+				angular.forEach($scope.dataset.Fields.sort(orderByIndex), function(field){
+						
+					if(field.FieldRoleId == FIELD_ROLE_DETAIL)
+					{
+						parseField(field, $scope);
+						//console.log("The field = " + field.DbColumnName);
+						$scope.detailFields.push(field);
+						
+						//create a javascript list from our possible values (if any)
+						if(field.Field.PossibleValues)
+						{
+							field.PossibleValuesList = makeObjectsFromValues(field.DbColumnName, field.Field.PossibleValues); //set this into our object
+		
+							//fieldIndex ++;
+							$scope.fieldIndex++;
+						}
+
+						$scope.datasheetColDefs.push(makeFieldColDef(field, $scope));
+
+						$scope.dataFields.push(field);
+					}
+	    		});	
 			}
     	}
 ];

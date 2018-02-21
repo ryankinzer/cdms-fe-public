@@ -10,10 +10,12 @@
 
 //anything we might need to do in initializing edit/entry pages.
 function initEdit() {
-    // Prevent the backspace key from navigating back.
-    //http://stackoverflow.com/questions/1495219/how-can-i-prevent-the-backspace-key-from-navigating-back/1495435#1495435
+    
     $(document).unbind('keydown').bind('keydown', function (event) {
         var doPrevent = false;
+
+        //backspace key intercepted to prevent navigating back a page
+        //http://stackoverflow.com/questions/1495219/how-can-i-prevent-the-backspace-key-from-navigating-back/1495435#1495435
         if (event.keyCode === 8) {
             var d = event.srcElement || event.target;
             if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE'))
@@ -25,7 +27,19 @@ function initEdit() {
             }
         }
 
+        //enter key intercepted in order to prevent the form submit
+        if (event.keyCode == 13) {
+            var d = event.srcElement || event.target;
+            console.log(d);
+            if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE'))) {
+                doPrevent = true;
+            }
+        }
+
+        //console.log("do prevent = " + doPrevent);
+
         if (doPrevent) {
+            //console.log("-- prevented that key from doing anything --");
             event.preventDefault();
         }
     });
@@ -1063,8 +1077,13 @@ if (!Array.prototype.containsInt) {
 }
 
 //might be a list of metadata values from project.Metadata or a list of actual properties.
-function addMetadataProperties(metadata_list, all_metadata, scope, CommonService) {
-    angular.forEach(metadata_list, function (i_property, key) {
+function addMetadataProperties(metadata_list, ignored, scope, CommonService) {
+
+    //console.log("--- running addMetadataProperties --- ");
+    //console.log("metadata_list : " + metadata_list.length, metadata_list);
+    //console.log("scope.metadataList : " + angular.toJson(scope.metadataList), scope.metadataList);
+
+    metadata_list.forEach( function (i_property, key) {
 
         var property = i_property;
         if (i_property.MetadataPropertyId) //is it a value from project.Metadata? if so then grab the property.
@@ -1079,8 +1098,9 @@ function addMetadataProperties(metadata_list, all_metadata, scope, CommonService
         //	console.log("property.Name = " + "'undefined'");
 
         //if it isn't already there, add it as an available option
-        //if(!(property.Name in all_metadata))
-        if ((typeof property.Name !== 'undefined') && (property.Name !== null) && !(property.Name in all_metadata)) {
+        //if(!(property.Name in scope.metadataList))
+        if ((typeof property.Name !== 'undefined') && (property.Name !== null) && !(property.Name in scope.metadataList)) {
+            //scope.metadataList[property.Name] =
             scope.metadataList[property.Name] =
                 {
                     field: property.Name,
@@ -1102,27 +1122,35 @@ function addMetadataProperties(metadata_list, all_metadata, scope, CommonService
                     values = i_property.Values.split(",")
                 }
 
-                all_metadata[property.Name].Values = values;
+                scope.metadataList[property.Name].Values = values;
             }
             else {
-                all_metadata[property.Name].Values = i_property.Values;
+                scope.metadataList[property.Name].Values = i_property.Values;
             }
 
             if (scope.project)
-                scope.project.MetadataValue[property.Id] = all_metadata[property.Name].Values; //make it easy to get values by metadata id.
+                scope.project.MetadataValue[property.Id] = scope.metadataList[property.Name].Values; //make it easy to get values by metadata id.
         }
-        else
-            all_metadata[property.Name].Values = "";
+        else {
+            scope.metadataList[property.Name].Values = "";
+            //console.log(" --->>> setting property VALUES to empty: ", property.Name);
+        }
 
-
-
+        //console.log(" and in the end: " + property.Name + ".Values is ", scope.metadataList[property.Name].Values);
+            
         if (property.PossibleValues) {
             populateMetadataDropdowns(scope, property); //setup the dropdown
-            all_metadata[property.Name].options = scope.CellOptions[property.Id + "_Options"];
+            scope.metadataList[property.Name].options = scope.CellOptions[property.Id + "_Options"];
         }
 
 
-    });
+
+    });//foreach
+
+    //console.error("  >>>>>>>>>>>>>>>>>>>>>>>>>>>>   at the end of adding: scope.metadataList ");
+    //console.dir(scope.metadataList);
+
+
 };
 
 // This function takes an array that may have duplicate entries, and removes the duplicates.
@@ -1165,3 +1193,173 @@ function isObjectEmpty(obj) {
 	}
 	return true;
 };
+
+// This function expects a string looking like this:  "a;b;c;d;"
+// and converts the string into an array looking like this:  [a,b,c,d].
+function convertStringToArray(aString){
+	console.log("Inside common-functions.js, convertStringToArray...");
+	//console.log("aString = " + aString);
+		
+	var aryItems = aString.split(";");
+	//console.log("aryItems is next...");
+	//console.dir(aryItems);
+	
+	// Next, get rid of that trailing semicolon record.
+	aryItems.splice(-1, 1);
+	//console.dir(aryItems);
+	
+	return aryItems;
+}
+
+//looks at the metadata setting to see if it is a habitat project
+function isHabitatProject (a_project) {
+    return (a_project.MetadataValue[METADATA_PROPERTY_SUBPROGRAM]) === "Habitat";
+};
+
+//looks at the metadata setting to see if it is a crpp project
+function isCRPPProject (a_project) {
+    return (a_project.MetadataValue[METADATA_PROPERTY_PROGRAM]) === "CRPP";
+}
+
+
+//checks to see if the uploading file already exists
+//takes the incoming file to check and a reference to the files
+//returns boolean
+function isDuplicateUploadFile(incoming_file, files_to_check) {
+    var foundDuplicate = false;
+
+    incoming_file.Name = incoming_file.name; //copy this value into "Name" property to avoid confusion!
+
+    console.log("checking for duplicates: incoming_file.Name = " + incoming_file.Name);
+
+    if (files_to_check && Array.isArray(files_to_check)) {
+
+        console.log(" -- checking in " + files_to_check.length + " files... ");
+        //console.dir(files_to_check);
+
+        files_to_check.forEach(function (existing_file) {
+            if (existing_file.Name === incoming_file.Name) {
+                console.log(" -- found a duplicate: " + incoming_file.Name + " already exists in the incoming files_to_check.");
+                foundDuplicate = true;
+            }
+        });
+    }
+    else
+        console.log(" -- no  files given... i guess there can't be any duplicates!");
+
+    return foundDuplicate;
+}
+
+
+
+
+//helper function that aggregates the filenames for a list of activities
+// returns null if there are none.
+
+//the activities are an array of 
+// results that come from http://localhost/services/api/v1/activity/getdatasetactivitydata?id=18887 (for example)
+//so the structure is var activity = {Dataset: obj, Header: obj, Details: [obj,...]}
+function getFilenamesForTheseActivities(dataset, activities) {
+
+    console.log(" compiling filenames for " + activities.length + " activities.");
+
+    //early return if incoming variables aren't setup for us.
+    if (!activities || !dataset || !Array.isArray(activities))
+        return null;
+
+    var files = [];
+    var file_names = [];
+
+    var file_fields = getFileFields(dataset);
+
+    //get the files out of each file field for each activity
+    activities.forEach(function (activity) {
+
+        //for each header file field
+        file_fields.Header.forEach(function (header_file_field) {
+            var file_json = activity.Header[header_file_field.DbColumnName]; //like "FarmingLeaseFiles"
+            if (file_json) {
+                var file_obj = angular.fromJson(file_json); //the files turned into the array in the file field, e.g. "FarmingLeaseFiles"
+                if (Array.isArray(file_obj)) {
+                    file_obj.forEach(function (file_to_add) {
+                        files.push(file_to_add);
+                        file_names.push(file_to_add.Name);
+                    });
+                }
+            }
+        });
+
+        //for each detail row, do the same thing
+        activity.Details.forEach(function (detail) {
+            file_fields.Details.forEach(function (detail_file_field) {
+                var file_json = detail[detail_file_field.DbColumnName]; //like "AppraisalFiles"
+                if (file_json) {
+                    var file_obj = angular.fromJson(file_json); //the files turned into the array in the file field, e.g. "AppraisalFiles"
+                    if (Array.isArray(file_obj)) {
+                        file_obj.forEach(function (file_to_add) {
+                            files.push(file_to_add);
+                            file_names.push(file_to_add.Name);
+                        });
+                    }
+                }
+            });
+        });
+    });
+
+    //so when we're done we should have a list of all the files and the filenames.
+    var result = (file_names.length > 0) ? file_names.join(", ") : null;
+    console.log("done! we found " + files.length + " files: ", result);
+
+    return result;
+
+
+}
+
+
+//compiles all of the file fields for header/detail and 
+//returns an object with {Header: [header_file_filds,...], Details: [detail_file_fields,...]}
+function getFileFields(dataset) {
+
+    var file_fields = {
+        Header: [],
+        Details: []
+    };
+
+    //gather our fields that are files and separate into header/detail
+    dataset.Fields.forEach(function (field) {
+        if (field.ControlType == "file") {
+            if (field.FieldRoleId == 1)
+                file_fields["Header"].push(field);
+            else
+                file_fields["Details"].push(field);
+        }
+    });
+
+    return file_fields;
+
+}
+
+//remove file from the list (otherwise our duplicate checking will have false positives.)
+function removeFileFromList(in_file, in_list) {
+    in_list.forEach(function (list_file, index) {
+        if (list_file.Name === in_file.Name) {
+            in_list.splice(index, 1);
+            console.log(" -- removing " + list_file.Name);
+        } else {
+            console.log(" -- keeping " + list_file.Name);
+        }
+    });
+};
+
+
+//return whether or not the file given is in the list given (checks by the Name matching)
+function isFileInList(in_file, in_list) {
+    var isInList = false;
+
+    in_list.forEach(function (list_file, index) {
+        if (list_file.Name === in_file.Name)
+            isInList = true;
+    });
+
+    return isInList;
+}

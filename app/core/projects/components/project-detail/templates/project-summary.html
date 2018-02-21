@@ -48,7 +48,7 @@
                         <div class="quad-images" ng-bind-html="imagesHtml"></div>
 
                         <div project-role="editor">
-                            <button ng-click="openProjectEditor()" class="btn" >Edit Project</button>
+                            <button ng-disabled="!status.DoneLoadingProject" ng-click="openProjectEditor()" class="btn" >Edit Project</button>
                             <button ng-click="openChooseSummaryImages()" class="btn" >Choose Images</button>
                             <button ng-click="openPrintWindow()" class="btn">Quad Report</button>
                         </div>

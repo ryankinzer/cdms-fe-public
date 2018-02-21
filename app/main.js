@@ -6,6 +6,8 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', ANALYTICS_CODE, 'auto');
 ga('send', 'pageview');
 
+var BUILD_VERSION = "1.2.253"; //increment the last number as desired to show in the footer
+
 define([
   'angular'
 ], function(angular){
@@ -60,7 +62,7 @@ define([
 
 	        //custom routes for datasets that require custom controller+pages
             $routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
-            //$routeProvider.when('/crpp/:Id', { templateUrl: 'private/crpp/components/crpp-contracts/templates/Crpp-contracts.html', controller: 'CrppContractsCtrl'});
+            //$routeProvider.when('/crpp/:Id', { templateUrl: 'app/private/crpp/components/crpp-contracts/templates/Crpp-contracts.html', controller: 'CrppContractsCtrl'});
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
 
 	        //when all else fails...
@@ -71,7 +73,8 @@ define([
 	app.run(function($rootScope,$window, $location) {
 	  $rootScope.config = {
 	      version: CURRENT_VERSION,
-	      CDMS_DOCUMENTATION_URL: CDMS_DOCUMENTATION_URL,
+          CDMS_DOCUMENTATION_URL: CDMS_DOCUMENTATION_URL,
+          build_version: BUILD_VERSION,
 	  };
 
 	  $rootScope.Cache = {};
@@ -88,13 +91,22 @@ define([
 
     //Fire analytics call on location change in URL for SPA.
       $rootScope.$on('$locationChangeSuccess', function () {
-          if(ENVIRONMENT != "prod") return; 
+
+          //clear out the $rootScope variables that control the file path filter...
+          $rootScope.viewSubproject = null;
+          $rootScope.datasetId = null;
+          $rootScope.newSubproject = null;
+
+          if (ENVIRONMENT != "prod") return; 
+
           console.log("Sending "+ $location.url() +" to: "+ANALYTICS_CODE);
           $window.ga('send', {
             'hitType': 'screenview',
             'appName' : 'CDMS',
             'screenName' : $location.url()
           });
+
+          
     });
   });
 

@@ -217,6 +217,12 @@ datasets_module.service('ActivityParser', ['Logger',
             //addActivity: function(activities, key, row, fields){
             addActivity: function (activities, key, row, fields, qaStatuses) {
                 //console.log("Inside services, addActivity...");
+				//console.log("activities is next...");
+				//console.dir(activities);
+				//console.log("key is next...");
+				//console.dir(key);
+				//console.log("row is next...");
+				//console.dir(row);
                 //console.log("qaStatuses is next...");
                 //console.dir(qaStatuses);
                 if (row.Timezone)
@@ -322,6 +328,9 @@ datasets_module.service('ActivityParser', ['Logger',
 
                         activities.activities[key].Header[field.DbColumnName] = row[field.DbColumnName];
                     });
+					// For CRPP, ProjectLead is not in the list of dataset fields, so we must add it.
+					if (row.ProjectLead)
+						activities.activities[key].Header["ProjectLead"] = row.ProjectLead;
 
                 }
 

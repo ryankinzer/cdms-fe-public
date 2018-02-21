@@ -122,46 +122,6 @@
 
 			</tab>
 
-			<tab ng-show="metadataList['Sub-program'].Values=='Habitat'" heading="Habitat">
-				
-				<div class="header-label">Habitat Objectives:</div>
-	  			<div class="header-value">
-		  			<div class="checkbox-itemlist">
-		  				<div ng-repeat="item in metadataList['Habitat Objectives'].options">
-		  					<input type="checkbox" checklist-model="metadataList['Habitat Objectives'].Values" checklist-value="item"/> {{item}}
-		  				</div>
-	  				</div>	
-		  		</div>
-
-				<div class="header-label">NOAA Ecological Concerns</div>
-		  		<div class="header-value">
-		  			<div class="checkbox-itemlist">
-		  				<div ng-repeat="item in metadataList['NOAA Ecological Concerns'].options">
-		  					<input type="checkbox" checklist-model="metadataList['NOAA Ecological Concerns'].Values" checklist-value="item"/> {{item}}
-		  				</div>
-	  				</div>	
-				</div>
-
-				<div class="header-label">NOAA Ecological Concerns: Sub-categories</div>
-		  		<div class="header-value">
-		  			<div class="checkbox-itemlist">
-		  				<div ng-repeat="item in metadataList['NOAA Ecological Concerns: Sub-categories'].options">
-		  					<input type="checkbox" checklist-model="metadataList['NOAA Ecological Concerns: Sub-categories'].Values" checklist-value="item"/> {{item}}
-		  				</div>
-	  				</div>
-				</div>
-
-				<div class="header-label">Limiting Factors</div>
-		  		<div class="header-value">
-		  			<div class="checkbox-itemlist">
-		  				<div ng-repeat="item in metadataList['Limiting Factors'].options">
-		  					<input type="checkbox" checklist-model="metadataList['Limiting Factors'].Values" checklist-value="item"/> {{item}}
-		  				</div>
-	  				</div>
-				</div>
-
-
-			</tab>
 
 		</tabset>
   		

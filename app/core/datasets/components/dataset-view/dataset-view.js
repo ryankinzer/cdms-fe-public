@@ -128,6 +128,53 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
             console.log("$scope at end of watch dataset.ProjectId is next...");
             //console.dir($scope);
         });
+		
+		$scope.$watch('projectLeadList.length', function(){
+			
+			if ((typeof $scope.projectLeadList !== 'undefined') && ($scope.projectLeadList !== null))
+			{
+				if ($scope.projectLeadList.length > 0)
+				{
+					$scope.projectLeadOptions = $rootScope.projectLeadOptions = makeObjects($scope.projectLeadList, 'Id','FullName');
+					console.log("$scope.projectLeadOptions is next...");
+					console.dir($scope.projectLeadOptions);
+
+					console.log("We're on CrppContracts...");
+					console.log("$scope.grid.Header is next...");
+					console.dir($scope.grid.Header);
+					if ($scope.grid.Header.ProjectLead)
+					{
+						
+						var pLeadList = $scope.grid.Header.ProjectLead.split(";");
+						console.log("pLeadList is next...");
+						console.dir(pLeadList);
+						
+						// Next, get rid of that trailing semicolon.
+						pLeadList.splice(-1, 1);
+						console.log("pLeadList is next...");
+						console.dir(pLeadList);
+						
+						var strProjectLead = "";
+						
+						// Locate the ProjectLead Id and get the Fullname
+						angular.forEach($scope.projectLeadList, function(staffMember){
+							
+							angular.forEach(pLeadList, function(pLead){
+								//console.log("pLead = " + pLead + ", staffMember = " + staffMember.Id);
+								if (parseInt(pLead) === parseInt(staffMember.Id))
+								{
+									//console.log("Matched...");
+									strProjectLead += staffMember.Fullname + ";\n";
+									$scope.showProjectLeads = true;
+								}
+							});
+						});
+						$scope.grid.Header.strProjectLead = strProjectLead;
+						$scope.grid.Header.ProjectLead = undefined;
+					}						
+				}
+			}
+		});
 
         //setup a listener to populate column headers on the grid
         $scope.$watch('grid.Dataset', function () {
@@ -174,6 +221,10 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
                     $scope.grid.Details[i].InterviewTime = strInterviewTime
                 }
             }
+			else if ($scope.DatastoreTablePrefix === "CrppContracts")
+			{
+				$scope.projectLeadList = ProjectService.getCrppStaff(); // Get all CRPP staff.
+			}
 
             console.log("$scope.fieldsloaded = " + $scope.fieldsloaded);
             $scope.fields.header = [];
@@ -183,7 +234,15 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
                     parseField(field, $scope);
 
                     if (field.FieldRoleId == FIELD_ROLE_HEADER) {
-                        $scope.fields.header.push(field);
+                        //$scope.fields.header.push(field); //Original line.
+						console.log("field.DbColumnName = " + field.DbColumnName);
+						if (($scope.DatastoreTablePrefix === "CrppContracts") && (field.DbColumnName === "ProjectLead"))
+						{
+							// Skip it.
+							console.log("Found ProjectLead...");
+						}
+						else
+							$scope.fields.header.push(field);
                     }
                     else if (field.FieldRoleId == FIELD_ROLE_DETAIL) {
                         $scope.fields.detail.push(field);

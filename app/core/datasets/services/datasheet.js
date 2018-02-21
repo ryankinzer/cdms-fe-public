@@ -539,10 +539,10 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					
 					/*	Notes are in order here.
 					*	All three items below (row.isValid, row.errors, and scope.gridHasErrors) are necessary to turn the row color red.
-					*	If all three itesms ARE NOT preset, the error will be flagged, but the color WILL NOT turn red.
+					*	If all three items ARE NOT present, the error will be flagged, but the color WILL NOT turn red.
 					*/
                     if (row_errors.length > 0) {
-						console.log("row_errors.length = " + row_errors.length)
+						//console.log("row_errors.length = " + row_errors.length)
                         row.isValid = false;
                         //row.errors = row_errors;
 						
@@ -581,6 +581,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
                 }
 				//console.log("scope.gridHasErrors = " + scope.gridHasErrors);
+				//console.log("row is next...");
+				//console.dir(row);
             },
 
             //updateHeaderField: function(field_name, scope)
@@ -662,15 +664,19 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                 //console.log("Field changed: " + field_name);
 				console.log("scope is next...");
 				console.dir(scope);
-
+				console.log("scope.row is next...");
+				console.dir(scope.row);			
+				console.log("scope.onRow.entity is next...");
+				console.dir(scope.onRow.entity);	
+				
                 scope.dataChanged = true;
 
                 if (scope.onRow.entity) {
-                    var fromValue = scope.onRow.entity[field_name];
+                    //var fromValue = scope.onRow.entity[field_name];
                     var toValue = row.entity[field_name];
 
                     //console.log("Changed " + field + " from: " + fromValue + " to: " + toValue);
-                    console.log("Changed " + field_name + " from: " + fromValue + " to: " + toValue);
+                    console.log("Changed " + field_name + " to: " + toValue);
 					
 					//scope.removeRowErrorsBeforeRecheck();
                 }
@@ -792,8 +798,12 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					//scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
 					
 					scope.removeRowErrorsBeforeRecheck();
-					scope.rebuildDateTimeList();
-					scope.checkForDuplicates();
+					//if (scope.DatastoreTablePrefix !== "WaterQuality")
+					if ((scope.DatastoreTablePrefix !== "CrppContracts") && (scope.DatastoreTablePrefix !== "WaterQuality"))
+					{
+						scope.rebuildDateTimeList();
+						scope.checkForDuplicates();
+					}
 					
 					//this is expensive in that it runs every time a value is changed in the grid.
 					scope.validateGrid(scope); //so that number of errors gets calculated properly.
@@ -803,6 +813,9 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 					//this is expensive in that it runs every time a value is changed in the grid.
 					scope.validateGrid(scope); //so that number of errors gets calculated properly.
 				}
+				
+				console.log("scope.gridHasErrors = " + scope.gridHasErrors);
+				console.log("scope.onRow")
             },
 
 
@@ -814,12 +827,52 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 
 
             removeOnRow: function (scope) {
+
+                console.log("-------------------------------- ROW ---------",scope.onRow);
+                console.log("dataset: ", scope.dataset);
+                console.log(scope.filesToUpload);
+
+                //see if there are any files in this row, if so, give a confirmation message
+                var file_fields = getFileFields(scope.dataset);
+
+                console.log("File_Fields ", file_fields);
+
+                var files_to_delete = [];
+
+                //spin through all of the detail file fields and gather the files (that we aren't uploading) so we can confirm the user wants to delete them.
+                file_fields.Details.forEach(function (field) {
+                    var file_json = scope.onRow.entity[field.DbColumnName];
+                    if (file_json) {
+                        var file_obj = angular.fromJson(file_json);
+                        if (file_obj && Array.isArray(file_obj)) {
+                            file_obj.forEach(function (file) {
+                                if (scope.filesToUpload[field.DbColumnName]) {
+                                    if (!isFileInList(file, scope.filesToUpload[field.DbColumnName])) {
+                                        files_to_delete.push(file.Name); //add to our list of files to delete since we aren't uploading it, it must exist already.
+                                    } else {
+                                        removeFileFromList(file, scope.filesToUpload[field.DbColumnName]); //remove from the list of uploading files since we're dropping the row.
+                                    }
+                                } else {
+                                    files_to_delete.push(file.Name);
+                                }
+                            });
+                        }
+                    }
+                });
+
+
+                if (files_to_delete.length > 0) {
+                    if (!confirm("This row has files that will also be permanently deleted when you save! (" + files_to_delete.join(", ") + "). Are you sure?"))
+                        return;
+                }
+
                 scope.dataChanged = true;
                 scope.deletedRows.push(scope.onRow.entity);
                 var index = scope.dataSheetDataset.indexOf(scope.onRow.entity);
                 scope.dataSheetDataset.splice(index, 1);
                 scope.onRow = undefined;
                 scope.validateGrid(scope);
+                
             },
 
 
@@ -867,14 +920,20 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
                     service.validate(data_row, scope);
 					//console.log("data_row (after validate) is next...");
 					//console.dir(data_row);
+					//console.log("scope.gridHasErrors = " + scope.gridHasErrors);
                     if (!data_row.isValid)
                         scope.validation_error_count++;
                 });
 
                 scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
+				//console.log("scope.gridHasErrors (after resetting) = " + scope.gridHasErrors);
 				if (!scope.gridHasErrors)
 					scope.ValidationCheckRunning = false;
 
+				//console.log("scope.dataSheetDataset[0] is next...");
+				//console.dir(scope.dataSheetDataset[0]);
+				//console.log("scope.onRow.entity is next...");
+				//console.dir(scope.onRow.entity);
             },
 
             getFieldStats: function (scope) {

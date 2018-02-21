@@ -189,6 +189,7 @@ function parseField(field, scope) {
     if (field.Field && field.Field.Validation) {
         try {
             console.log("configuring validation for " + field.DbColumnName);
+			//console.dir(field.Field.Validation);
             field.Field.Validation = angular.fromJson(field.Field.Validation);
         }
         catch (e) {
@@ -201,12 +202,13 @@ function parseField(field, scope) {
             //      when we are going to fail a bunch of times on purpose because we're doing something different
             //      with the whole switch thing below...
 
-            console.log("e string = " + e.message.toString());
+            //console.log("e string = " + e.message.toString());
             var errorDescription = e.message.valueOf();
             if ((field.Field.Validation === "t") ||
                 (field.Field.Validation === "i") ||
                 (field.Field.Validation === "y") ||
-                (field.Field.Validation === "NULL")) {
+                (field.Field.Validation === "NULL")) 
+			{
                 // This could probably be handled a better way...
                 // Do nothing.  The "t" means we are checking a time.
                 // Ken previously used the field validation for checking upper/lower limits on numbers.
@@ -243,7 +245,10 @@ function parseField(field, scope) {
         //console.dir(e);
 
         //console.log("e string = " + e.description.toString());
-        var errorDescription = e.description.valueOf();
+        var errorDescription = "";
+        if (e && e.hasOwnProperty('description'))
+            errorDescription = e.description.valueOf();
+
         if ((field.Field.Validation === "t") ||
             (field.Field.Validation === "i") ||
             (field.Field.Validation === "NULL")) {
@@ -258,9 +263,9 @@ function parseField(field, scope) {
             // Do nothing.  We handle checking the value in the ValidateField function.
         }
         else {
-            console.log("** There is an error parsing the validation for: " + field.Field.Name + " **");
+            console.error("** There is an error parsing the validation for: " + field.Field.Name + " **");
             console.dir(e);
-            console.log("Validation == " + field.Field.Validation);
+            console.error("Validation == " + field.Field.Validation);
         }
     }
 
@@ -345,14 +350,19 @@ function validateField(field, row, key, scope, row_errors) {
     switch (field.ControlType) {
         case 'select':
             //is the value in our list of options?
-            //console.log("scope.CellOptions for " + field.DbColumnName + " are next...");
-            //console.log(scope.CellOptions[field.DbColumnName+'Options']);
+            console.log("scope.CellOptions for " + field.DbColumnName + " are next...");
+            console.log(scope.CellOptions[field.DbColumnName+'Options']);
             if (scope.CellOptions[field.DbColumnName + 'Options']) {
                 if (isInvalidOption(scope, field, value)) // Is value in the option list?
+				{
+					console.log("[" + field.DbColumnName + "] Invalid selection, value = " + value);
                     row_errors.push("[" + field.DbColumnName + "] Invalid selection, value = " + value);
+				}
+				else
+					console.log("[" + field.DbColumnName + "] Valid selection, value = " + value);;
             }
             else {
-                console.log("Error: no cellOptions for " + field.DbColumnName + 'Options');
+                console.log("Error: no CellOptions for " + field.DbColumnName + 'Options');
                 console.dir(scope.CellOptions);
                 console.log("This might be because you're calling a rule wrong?");
             }

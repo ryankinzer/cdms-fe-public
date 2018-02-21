@@ -6,15 +6,43 @@
     <li class="active">Edit data</li>
 </ul>
 <h4>Editing activity in: {{dataset.Name}}</h4>
- 
+<br/>
 
-<div ng-show="activities.success" style="margin-bottom: 50px;">
-    <div class="alert alert-success" ng-show="activities.success">
-    <h4 class="alert-heading">Success!</h4>
-    {{activities.success}}
-    </div>
-    <button style="margin-left: 3px;" class="btn right" ng-click="doneButton()">Back to list</button>
-</div>
+     <div ng-show="activities.success" style="margin-bottom: 50px;">
+
+         <div class="alert alert-success">
+             <h4 class="alert-heading">Success!</h4>
+             {{activities.success}}
+
+         </div>
+         <button style="margin-left: 3px;" class="btn right" ng-click="doneButton()">Back to list</button>
+
+         <div style="margin-top: 75px;" ng-show="filesToUpload_keys.length > 0">
+             <h4>Files to upload:</h4>
+             <div ng-repeat="fieldFile in filesToUpload_keys">
+                 For field: {{fieldFile}}
+                 <table class="table striped">
+                     <tr ng-repeat="file in filesToUpload[fieldFile]">
+                         <td class="modal-file-col1">{{file.name}}</td>
+                         <td class="modal-file-col2">{{file.success}}</td>
+                     </tr>
+                 </table>
+             </div>
+         </div>
+
+         <div ng-show="removedFiles.length>0">
+             <hr />
+             <h4>Removing files:</h4>
+             <table class="table striped">
+                 <tr ng-repeat="file in removedFiles">
+                     <td class="modal-file-col1">{{file.Name}}</td>
+                     <td class="modal-file-col2">{{file.success}}</td>
+                 </tr>
+             </table>
+         </div>
+
+
+     </div>
 <div>
     <p ng-show="activities.errors.saveError" class="alert alert-danger">{{activities.errors.saveError}}</p>
 </div>
@@ -104,6 +132,29 @@
 				</select>
 			</div>
 		</div>
+		
+		<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('ProjectLead')">
+			<div class="header-label">Project Lead:</div>
+			<div class="header-value">
+				<table>
+					<tr>
+						<td>
+							<!--<select ui-select2="select2Options" multiple="multiple" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>-->
+							<select ui-select2="select2Options" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>
+						</td>
+						<td><button class="right btn btn-xs" ng-click="addProjectLead()">+</button></td>
+						<td><button class="right btn btn-xs" ng-click="removeProjectLead()">-</button></td>	
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div ng-show="showProjectLeads">
+			<div class="header-label">Selected Project Leads:</div>
+			<div class="header-value">
+				<!--<input class="form-control" type="text" ng-model="subproject_row.txtCounty" />-->
+				<textarea class="form-control" type="text" rows="4"  readonly ng-model="row.strProjectLead" ></textarea>
+			</div>
+		</div>
 
         <form novalidate class="row-form" name="headerForm">
 			<div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
@@ -143,8 +194,8 @@
 
 	<div style="margin-top: 10px;">&nbsp;</div>
 	<button class="btn btn-sm" ng-click="showFilter= !showFilter">Filter</button>    
-	<button ng-show="dataset.RowQAStatuses.length > 1" class="btn btn-sm" ng-click="clearSelections()">Clear selections</button>
-	<button ng-show="dataset.RowQAStatuses.length > 1" class="btn btn-sm" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
+	<button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="clearSelections()">Clear selections</button>
+	<button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
 
 
 	<div ng-show="showFilter" style="padding: 8px; width: 260px;">
@@ -158,5 +209,4 @@
 	<div ng-include="'app/core/datasets/templates/bottom-bar.html'"/>
 
 	<div ng-include="'app/core/datasets/templates/buttons.html'">&nbsp;</div>
-
 </div>

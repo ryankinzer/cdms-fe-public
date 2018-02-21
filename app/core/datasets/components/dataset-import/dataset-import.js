@@ -67,18 +67,7 @@
 
 			};
 			
-			/*$scope.chartConfig = {
-    			  title : 'Fish by Species x',
-				  tooltips: true,
-				  labels : false,
-				  
-				  legend: {
-				    display: true,
-				    position: 'right'
-				  }
-    		};*/
-    		//$scope.chartData = {"series": [], "data":[{ "x": "Loading...", "y": [0],"tooltip": ""}]}; //default
-			
+						
 			$scope.importing = false;
 			$scope.UploadResults.showPreview = false;
 			$scope.Logger = Logger;
@@ -93,28 +82,14 @@
 
 			$scope.cellRowQATemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'RowQAStatusId\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in RowQAStatuses"/>';
 
-			// Original code
-			/*$scope.mappableFields = [
-				{
-					Label: "[-- Do not map --]"
-				},
-				{
-					Label: "[-- Activity Date --]"
-				},
-				{
-					Label: "[-- Index Field --]"
-				},
-				{
-					Label: "[-- QA Row Status Id --]"
-				},
-
-				
-				//{
-				//	Label: "[-- Location Id --]"
-				//},
-				
-			];
-			*/
+            $scope.openWaypointFileModal = function (row, field) {
+                $scope.file_field = field;
+                var modalInstance = $modal.open({
+                    templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
+                    controller: 'WaypointFileModalCtrl',
+                    scope: $scope, //scope to make a child of
+                });
+            };
 			
 			$scope.$watch('subprojectList.length', function(){
 				if ($scope.subprojectList === null)
@@ -154,32 +129,6 @@
 				$scope.finishLocationProcessing();
 			});
 
-			/*$scope.$watch('dataset.Id', function(){
-				if (!$scope.dataset.Id) return;
-				
-				console.log("Inside DatasetImportCtrl, dataset.Id watcher...");
-				
-				console.log("$scope.dataset is next...");
-				console.dir($scope.dataset);
-				
-				$rootScope.datasetId = $scope.datasetId = $scope.dataset.Id;
-				console.log("$rootScope.datasetId = " + $rootScope.datasetId);
-				
-				//if (($scope.dataset.Config !== "NULL") && ($scope.dataset.Config.DataEntryPage.ShowFields.contains('Instrument')))
-				if (((typeof $scope.dataset.Config !== 'undefined') && 
-					($scope.dataset.Config !== null) && 
-					($scope.dataset.Config !== "NULL")) && 
-					($scope.dataset.Config.DataEntryPage.HiddenFields) &&
-					($scope.dataset.Config.DataEntryPage.HiddenFields.indexOf("Instrument") > -1))
-						console.log("Found instrument");
-				
-				$scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
-				$scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);				
-				console.log("LocationType = " + $scope.datasetLocationType);				
-				$scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix);  // Pass the TablePrefix (name of the dataset), because it will never change.
-				$scope.mappableFields = $scope.setMappableFields($scope.DatastoreTablePrefix);				
-			});
-			*/
 			
 			//setup our mappableFields list
     		//$scope.$watch('dataset.Name', function(){
@@ -188,7 +137,17 @@
 					return;
 
 				console.log("Inside DatasetImportCtrl, dataset.Fields watcher...");
-				
+
+                //load the files for this dataset so we can check files they want to upload for duplicates
+                $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
+
+                //once the dataset files load, setup our file handler
+                $scope.dataset.Files.$promise.then(function () {
+                    //mixin the properties and functions to enable the modal file chooser for this controller...
+                    console.log("---------------- setting up dataset file chooser ----------------");
+                    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
+                });
+
 				console.log("$scope.dataset is next...");
 				console.dir($scope.dataset);
 				
@@ -361,6 +320,7 @@
 
 				console.log("ProjectLocations is next...");
 				console.dir($scope.project.Locations);
+				console.dir($scope);
 				//var locInd = 0;
 				if ($scope.project.Locations)
 				{
@@ -449,6 +409,8 @@
 	        	//setup locationOptions dropdown
 				//$scope.locationOptions = $rootScope.locationOptions = makeObjects(getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId"), 'Id','Label') ;  // Original code
 				$scope.instrumentOptions = $rootScope.instrumentOptions = makeObjects($scope.project.Instruments, 'Id','Name');
+				console.log("$scope.instrumentOptions is next...");
+				console.dir($scope.instrumentOptions);
 				
 				//setup location field to participate in validation
 				$scope.FieldLookup['locationId'] = { DbColumnName: 'locationId', ControlType: "select" };
@@ -629,6 +591,14 @@
 			$scope.setLocation = function()
 			{
 				$scope.ActivityFields.Location = getByField($scope.project.Locations, $scope.ActivityFields.LocationId, "Id");
+			};
+			
+			$scope.setInstrument = function()
+			{
+				console.log("$scope is next...");
+				//console.dir($scope);
+				$scope.ActivityFields.Instrument = getByField($scope.project.Instruments, $scope.ActivityFields.InstrumentId, "Id");
+				console.dir($scope);
 			};
 			
 			$scope.onLocationChange = function()
@@ -1744,7 +1714,17 @@
 				console.log("$scope.dataSheetDataset is nextX...");
 				console.dir($scope.dataSheetDataset);
 				//throw "Stopping right here.";
-				$scope.checkForDuplicates();
+				if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+				{
+					$scope.checkForDuplicates();
+				}
+				else
+				{
+					console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
+					$scope.DupeCheckRunning = false;
+					$scope.duplicateEntry = false;
+					$scope.weHaveDuplicates = false;
+				}
 //***
 				console.log("$scope.gridHasErrors (after checkForDuplicates, bef validateGrid) = " + $scope.gridHasErrors);
 				$scope.UploadResults.showPreview = true;
@@ -1890,7 +1870,7 @@
 			};
 
 
-			$scope.onFileSelect = function($files) {
+			$scope.onUploadFileSelect = function($files) {
 			    //$files: an array of files selected, each file has name, size, and type.
 
 			    $scope.files = $files;
@@ -2055,19 +2035,34 @@
 					//console.dir(row);
 				}
 
-				//var sheetCopy = angular.copy($scope.dataSheetDataset); //causes memory problems on IE for large files.
-	            //$scope.activities = ActivityParser.parseActivitySheet($scope.dataSheetDataset, $scope.fields);
-	            $scope.activities = ActivityParser.parseActivitySheet($scope.dataSheetDataset, $scope.fields, $scope.DatastoreTablePrefix, "Import", $scope.dataset.QAStatuses);
-				console.log("$scope.activities is next...");
-				console.dir($scope.activities);
-	            
-	            if(!$scope.activities.errors)
-	            {				
-	                DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
-	            }
+
+                //handle saving the files.
+                var data = {
+                    ProjectId: $scope.project.Id,
+                    DatasetId: $scope.dataset.Id,
+                };
+
+                var target = '/api/v1/file/uploaddatasetfile';
+
+                var saveRow = $scope.row;
+
+                $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
 
 			};
-			
+
+            //this callback is called once the files are all done saving.
+            $scope.modalFile_saveParentItem = function (saveRow) {
+
+                $scope.activities = ActivityParser.parseActivitySheet($scope.dataSheetDataset, $scope.fields, $scope.DatastoreTablePrefix, "Import", $scope.dataset.QAStatuses);
+//                console.log("$scope.activities is next...");
+//                console.dir($scope.activities);
+
+                if (!$scope.activities.errors) {
+                    DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
+                }
+            };
+
+
 			$scope.eventTimer = function(){
 				var d = new Date();
 				console.log(d.toLocaleTimeString(),1000);
@@ -2262,6 +2257,7 @@
 							{
 								$scope.duplicateEntry = false;
 								$scope.DupeCheckRunning = false;
+								$scope.weHaveDuplicates = false;
 							}
 							//console.log("After the 'if' promise.length...");
 							$scope.validateGrid($scope);
@@ -2274,176 +2270,198 @@
 						//console.log("Location after promise.then (but it may not have completed yet)... ");
 					}
 				}
+				
+				/*else if (($scope.DatastoreTablePrefix === "WaterQuality") || ($scope.DatastoreTablePrefix === "CrppContracts"))
+				{
+					// We do not check for duplicates with WaterQuality, because it is possible for multiple identical non-duplicate records
+					// to exist, and be incorrectly flagged as duplicate.  The task for catching the dupes with WaterQuality is on the user.
+					console.log("This dtaset is WaterQuality...");
+					$scope.duplicateEntry = false;
+					$scope.DupeCheckRunning = false;
+					$scope.validateGrid($scope);
+				}*/	
 				else
 				{
 					var strActivityDateList = "";
 					
-					count = 0;
-					angular.forEach($scope.dataSheetDataset, function(item){
-						//console.log("item is next...");//***
-						//console.dir(item);//***
-						
-						//console.log("typeof item.activityDate = " + typeof item.activityDate);//***
-						var strIsoDataTime = "";
-						if (typeof item.activityDate === "string")
-						{
-							var slashLoc = item.activityDate.indexOf("/");
-							//console.log("slashLoc = " + slashLoc);
+					//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+					//{
+					
+						count = 0;
+						angular.forEach($scope.dataSheetDataset, function(item){
+							//console.log("item is next...");//***
+							//console.dir(item);//***
 							
-							if (slashLoc > -1)
+							//console.log("typeof item.activityDate = " + typeof item.activityDate);//***
+							var strIsoDataTime = "";
+							if (typeof item.activityDate === "string")
 							{
-								//console.log("The date is in friendly format; need to convert...");
-								strIsoDateTime = formatDateFromFriendlyToUtc(item.activityDate);
-								item.activityDate = strIsoDateTime.replace(" ", "T");
-								var periodLoc = strIsoDateTime.indexOf(".");
-								strIsoDateTime = strIsoDateTime.substring(0, periodLoc);
-							}	
+								var slashLoc = item.activityDate.indexOf("/");
+								//console.log("slashLoc = " + slashLoc);
+								
+								if (slashLoc > -1)
+								{
+									//console.log("The date is in friendly format; need to convert...");
+									strIsoDateTime = formatDateFromFriendlyToUtc(item.activityDate);
+									item.activityDate = strIsoDateTime.replace(" ", "T");
+									var periodLoc = strIsoDateTime.indexOf(".");
+									strIsoDateTime = strIsoDateTime.substring(0, periodLoc);
+								}	
+								else
+								{
+									//console.log("The date is in UTC; OK...");
+									strIsoDateTime = item.activityDate.replace("T", " ");
+								}
+							}
+							else // date object
+							{
+								// Use our toolbox of functions to get the date into the format we need.
+								var dtActivityDate = formatDate(item.activityDate); // Take the date object and put it in friendly format (dd/mm/yyyy ...) first;
+								console.log("dtActivityDate = " + dtActivityDate);
+								strIsoDateTime = formatDateFromFriendlyToUtc(dtActivityDate); // Now take the date and put it in ISO format (yyyy-mm-dd ...);
+								console.log("strIsoDateTime = " + strIsoDateTime);
+							}
+							
+							if (count === 0)
+							{
+								strActivityDateList = strIsoDateTime;
+								strActivityLocationList = item.locationId;
+							}
 							else
 							{
-								//console.log("The date is in UTC; OK...");
-								strIsoDateTime = item.activityDate.replace("T", " ");
-							}
-						}
-						else // date object
-						{
-							// Use our toolbox of functions to get the date into the format we need.
-							var dtActivityDate = formatDate(item.activityDate); // Take the date object and put it in friendly format (dd/mm/yyyy ...) first;
-							console.log("dtActivityDate = " + dtActivityDate);
-							strIsoDateTime = formatDateFromFriendlyToUtc(dtActivityDate); // Now take the date and put it in ISO format (yyyy-mm-dd ...);
-							console.log("strIsoDateTime = " + strIsoDateTime);
-						}
-						
-						if (count === 0)
-						{
-							strActivityDateList = strIsoDateTime;
-							strActivityLocationList = item.locationId;
-						}
-						else
-						{
-							// If we are on a datasheet form (not header form), each line could have a different location.
-							if (!$scope.showHeaderForm)
-							{
-								strActivityDateList += "," + strIsoDateTime; // Note the leading comma.
-								strActivityLocationList += "," + item.locationId;
-							}
-						}
-						count++;
-					});
-					
-					console.log("strActivityDateList (with dupes) = " + strActivityDateList);
-					var aryActivityDateList = strActivityDateList.split(",");
-					strActivityDateList = uniq_fast(aryActivityDateList);
-					console.log("strActivityDateList (without dupes) = " + strActivityDateList);
-					
-					var aryActivityLocationList = strActivityLocationList.split(",");
-					strActivityLocationList = uniq_fast(aryActivityLocationList);
-					console.log("strActivityLocationList = " + strActivityLocationList);
-					
-					//console.log("$scope.datasetId = " + $scope.datasetId + ", $scope.row.locationId = " + $scope.row.locationId + ", $scope.row.activityDate = " + $scope.row.activityDate);
-					console.log("$scope.datasetId = " + $scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
-					var promise = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
-					
-					console.log("typeof $promise = " + typeof promise);
-					if (typeof promise !== 'undefined') 
-					{
-						console.log("promise is exists, but has no results yet...")
-						console.dir(promise);
-						
-						promise.$promise.then(function(list){
-							console.log("promise received its results and is next...");
-							console.dir(promise);
-							//console.log("list is next...");
-							//console.dir(list);
-							if (promise.length > 0)
-							{
-								$scope.duplicateEntry = true;
-								var duplicateItems = angular.copy(promise);								
-								
-								if ($scope.showHeaderForm)
+								// If we are on a datasheet form (not header form), each line could have a different location.
+								if (!$scope.showHeaderForm)
 								{
-									$scope.activities.errors = {};
-									$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
+									strActivityDateList += "," + strIsoDateTime; // Note the leading comma.
+									strActivityLocationList += "," + item.locationId;
+								}
+							}
+							count++;
+						});
+						
+						console.log("strActivityDateList (with dupes) = " + strActivityDateList);
+						var aryActivityDateList = strActivityDateList.split(",");
+						strActivityDateList = uniq_fast(aryActivityDateList);
+						console.log("strActivityDateList (without dupes) = " + strActivityDateList);
+						
+						var aryActivityLocationList = strActivityLocationList.split(",");
+						strActivityLocationList = uniq_fast(aryActivityLocationList);
+						console.log("strActivityLocationList = " + strActivityLocationList);
+						
+						//console.log("$scope.datasetId = " + $scope.datasetId + ", $scope.row.locationId = " + $scope.row.locationId + ", $scope.row.activityDate = " + $scope.row.activityDate);
+						console.log("$scope.datasetId = " + $scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
+						var promise = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
+						
+						console.log("typeof $promise = " + typeof promise);
+						if (typeof promise !== 'undefined') 
+						{
+							console.log("promise is exists, but has no results yet...")
+							console.dir(promise);
+							
+							promise.$promise.then(function(list){
+								console.log("promise received its results and is next...");
+								console.dir(promise);
+								//console.log("list is next...");
+								//console.dir(list);
+								if (promise.length > 0)
+								{
+									$scope.duplicateEntry = true;
+									var duplicateItems = angular.copy(promise);								
+									
+									if ($scope.showHeaderForm)
+									{
+										$scope.activities.errors = {};
+										$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
+									}
+									else
+									{
+										console.log("$scope.datetimeList is next..");
+										console.dir($scope.datetimeList);
+										
+										console.log("duplicateItems.length = " + duplicateItems.length);
+										count = 1;
+										angular.forEach(duplicateItems, function(item){
+											//console.log("item is next...");
+											//console.dir(item);
+											// The datetime coming back from the backend has a "T" in it; we must remove it.
+											//item.ActivityDate = item.ActivityDate.replace("T", " ");
+											//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
+											
+											//keepGoing = true;
+											//***
+											//DateTimeIndex = $scope.datetimeList.indexOf(item.ActivityDate);
+											//console.log("DateTimeIndex = " + DateTimeIndex);
+											
+											//console.log("$scope.dataSheetDataset[DateTimeIndex] is next...");
+											//console.dir($scope.dataSheetDataset[DateTimeIndex]);
+											//if (typeof $scope.dataSheetDataset[DateTimeIndex].errors === 'undefined')
+											//	$scope.dataSheetDataset[DateTimeIndex].errors = [];
+											
+											//$scope.dataSheetDataset[DateTimeIndex].isValid = false;
+											//$scope.dataSheetDataset[DateTimeIndex].errors.push("Duplicate:  a record with this ActivityDate and Location already exists.");
+											//$scope.dataSheetDataset[DateTimeIndex].errors = uniq_fast($scope.dataSheetDataset[DateTimeIndex].errors);
+											//$scope.gridHasErrors = true;
+											
+											//console.log(count);
+											//console.log("...");
+											//count++;
+											//***
+											
+											angular.forEach($scope.dataSheetDataset, function(detailRecord){
+												// In order to compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
+												//strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.activityDate);
+												strIsoDateTime = detailRecord.activityDate;
+												//strIsoDateTime = strIsoDateTime.replace("T", " ");
+												
+												// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
+												strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
+												//console.log("item.ActivityDate = " + item.ActivityDate + ", strIsoDateTime = " + strIsoDateTime);
+												if (item.ActivityDate === strIsoDateTime)
+												{
+													//console.log("Found dupe...");
+													if (!detailRecord.errors)
+														detailRecord.errors = [];
+													
+													// All three of these are required to turn the lines with errors red.
+													detailRecord.isValid = false;
+													detailRecord.errors.push("Duplicate:  a record with this Dataset, Location, and ActivityDate already exists.");
+													//$scope.validation_error_count++;
+													
+													// During the (angular?) cycle, checkForDuplicates ends up running twice, so we get duplicate error entries.
+													// Therefore, clean out the duplicate entries from the error array.
+													detailRecord.errors = uniq_fast(detailRecord.errors);
+													$scope.gridHasErrors = true;
+													$scope.weHaveDuplicates = true;
+												}
+											});
+											
+											//console.log("Finished inside looping through $scope.dataSheetDataset for ActivityDate errors...");
+										});
+										//console.log("Finished outside looping through duplicateItems for ActivityDate errors...");
+									}
+									//console.log("After 'if' checking for duplicates...");
 								}
 								else
 								{
-									console.log("$scope.datetimeList is next..");
-									console.dir($scope.datetimeList);
-									
-									console.log("duplicateItems.length = " + duplicateItems.length);
-									count = 1;
-									angular.forEach(duplicateItems, function(item){
-										//console.log("item is next...");
-										//console.dir(item);
-										// The datetime coming back from the backend has a "T" in it; we must remove it.
-										//item.ActivityDate = item.ActivityDate.replace("T", " ");
-										//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
-										
-										//keepGoing = true;
-										//***
-										//DateTimeIndex = $scope.datetimeList.indexOf(item.ActivityDate);
-										//console.log("DateTimeIndex = " + DateTimeIndex);
-										
-										//console.log("$scope.dataSheetDataset[DateTimeIndex] is next...");
-										//console.dir($scope.dataSheetDataset[DateTimeIndex]);
-										//if (typeof $scope.dataSheetDataset[DateTimeIndex].errors === 'undefined')
-										//	$scope.dataSheetDataset[DateTimeIndex].errors = [];
-										
-										//$scope.dataSheetDataset[DateTimeIndex].isValid = false;
-										//$scope.dataSheetDataset[DateTimeIndex].errors.push("Duplicate:  a record with this ActivityDate and Location already exists.");
-										//$scope.dataSheetDataset[DateTimeIndex].errors = uniq_fast($scope.dataSheetDataset[DateTimeIndex].errors);
-										//$scope.gridHasErrors = true;
-										
-										//console.log(count);
-										//console.log("...");
-										//count++;
-										//***
-										
-										angular.forEach($scope.dataSheetDataset, function(detailRecord){
-											// In order to compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
-											//strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.activityDate);
-											strIsoDateTime = detailRecord.activityDate;
-											//strIsoDateTime = strIsoDateTime.replace("T", " ");
-											
-											// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
-											strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
-											//console.log("item.ActivityDate = " + item.ActivityDate + ", strIsoDateTime = " + strIsoDateTime);
-											if (item.ActivityDate === strIsoDateTime)
-											{
-												//console.log("Found dupe...");
-												if (!detailRecord.errors)
-													detailRecord.errors = [];
-												
-												// All three of these are required to turn the lines with errors red.
-												detailRecord.isValid = false;
-												detailRecord.errors.push("Duplicate:  a record with this Dataset, Location, and ActivityDate already exists.");
-												//$scope.validation_error_count++;
-												
-												// During the (angular?) cycle, checkForDuplicates ends up running twice, so we get duplicate error entries.
-												// Therefore, clean out the duplicate entries from the error array.
-												detailRecord.errors = uniq_fast(detailRecord.errors);
-												$scope.gridHasErrors = true;
-												$scope.weHaveDuplicates = true;
-											}
-										});
-										
-										//console.log("Finished inside looping through $scope.dataSheetDataset for ActivityDate errors...");
-									});
-									//console.log("Finished outside looping through duplicateItems for ActivityDate errors...");
+									$scope.duplicateEntry = false;
+									$scope.weHaveDuplicates = false;
 								}
-								//console.log("After 'if' checking for duplicates...");
-							}
-							else
-							{
-								$scope.duplicateEntry = false;
-							}
-							$scope.DupeCheckRunning = false;
-							//console.log("After the 'if' promise.length...");
-							console.log("$scope.dataSheetDataset is next...");
-							console.dir($scope.dataSheetDataset);
-							$scope.validateGrid($scope);
-						});
-						console.log("Location after promise.then (but it may not have completed yet)... ");
-					}
+								$scope.DupeCheckRunning = false;
+								//console.log("After the 'if' promise.length...");
+								console.log("$scope.dataSheetDataset is next...");
+								console.dir($scope.dataSheetDataset);
+								$scope.validateGrid($scope);
+							});
+							console.log("Location after promise.then (but it may not have completed yet)... ");
+						}
+					//}
+					//else
+					//{
+					//	console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
+					//	$scope.DupeCheckRunning = false;
+					//	$scope.duplicateEntry = false;
+					//	$scope.validateGrid($scope);
+					//}
 				}
 				console.log("$scope.dataSheetDataset is next...");
 				console.dir($scope.dataSheetDataset);

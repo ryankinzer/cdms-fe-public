@@ -29,7 +29,7 @@
 					<br/>
 
 					<!--<input type="file" ng-file-select="onFileSelect($files)" value="{{file.name}}">-->
-					<input type="file" ng-file-select="onFileSelect($files)" value="{{file.name}}" id="uploadDataFile"/>
+					<input type="file" ng-file-select="onUploadFileSelect($files)" value="{{file.name}}" id="uploadDataFile"/>
 					
 					<div style="margin-top: 15px;">
 						<div class="right" style="margin-right: 10px; ">
@@ -68,7 +68,6 @@
 					<table ng-show="fileFields">
 						<tr ng-hide="dataset.Config && dataset.Config.ImportPage.HiddenFields.contains('Location')">
 							<td>Location:</td><td> <select ng-change="setLocation()" class="query-form-control form-control" ng-model="ActivityFields.LocationId"  ng-options="id as name for (id, name) in locationOptions"></select>
-									
 							</td>
 						</tr>
 						<tr ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
@@ -92,17 +91,26 @@
 						<!--<tr ng-show="project.Instruments.length > 0" >-->
 						<!--<tr ng-hide="dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >-->
 						<!--<tr ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">-->
-						<tr ng-show="ShowInstrument">
+						<!--<tr ng-show="ShowInstrument">-->
+						<tr ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
 							<td>Instrument: </td>
 							<td>
-
+								<!-- This version is harder to read but easier to use for power users. -->
 								<!--<select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-change="selectInstrument()" style="width: 170px; margin-top: 4px;" ng-model="ActivityFields.InstrumentId">
 										<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
 								</select>-->
-								<!--<select class="form-control" ng-model="ActivityFields.InstrumentId" ng-options="id as name for (id, name) in instrumentOptions">-->
-								<select class="form-control" ng-model="ActivityFields.InstrumentId" >
-									<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
+								<select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-change="setInstrument()" style="width: 170px; margin-top: 4px;" ng-model="ActivityFields.InstrumentId">
+										<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
 								</select>
+								
+								<!-- This version is easier to read but painful to use for power users. -->
+								<!--<select class="form-control" ng-model="ActivityFields.InstrumentId" ng-options="id as name for (id, name) in instrumentOptions">-->
+								<!--<select class="query-form-control form-control" ng-model="ActivityFields.InstrumentId" >
+									<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
+								</select>-->
+								<!-- The version below is patterned after the location, which allows you to type in something, and it finds the item in the list.
+									The Locations version works; this one does not.-->
+								<!--<select ng-change="setInstrument()" class="query-form-control form-control" ng-model="ActivityFields.InstrumentId" ng-options="id as name for (id, name) in instrumentOptions"></select>-->
 							</td>
 						</tr>              
 
@@ -176,7 +184,7 @@
 						</div>
 					</div>
 					
-					<div ng-show="project.Instruments.length > 0 && !dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >
+					<div ng-hide="project.Instruments.length == 0 || dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >
 						<div style="display: inline-flex;">
 							<div class="header-label">Instrument: </div>
 							<div class="header-value">                            
@@ -216,19 +224,25 @@
 					</div>
 
 					<form novalidate class="row-form">
-						<div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
-							<ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-							<ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
-							<ctuir-number-field ng-switch-when="number"></ctuir-number-field>    
-							<ctuir-date-field ng-switch-when="date"></ctuir-date-field>
-							<ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
-							<ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
-							<ctuir-select-field ng-switch-when="select"></ctuir-select-field>
-							<ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-							<ctuir-lookup-field ng-switch-when="lookup"></ctuir-lookup-field>
-							<ctuir-multilookup-field ng-switch-when="multilookup"></ctuir-multilookup-field>
-							<ctuir-text-field ng-switch-default></ctuir-text-field>
-						</div>
+                        <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
+                            <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                            <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                            <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                            <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                            <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                            <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
+                            <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
+                            <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
+                            <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                            <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                            <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
+                            <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
+                            <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                            <ctuir-lookup-field ng-switch-when="lookup"></ctuir-lookup-field>
+                            <ctuir-multilookup-field ng-switch-when="multilookup"></ctuir-multilookup-field>
+                            <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
+                            <ctuir-text-field ng-switch-default></ctuir-text-field>
+                        </div>
 
 						<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
 							<div class="header-label">QA Status:</div>
@@ -250,8 +264,7 @@
 				</div>
 
 				<div class="right" style="margin-top: -25px;" ng-show="dataSheetDataset.length > 0">
-					<button class="btn btn-sm" ng-disabled="selectedItems.length == 0" ng-click="clearSelections()">Clear selections</button>
-					<!--<button class="btn btn-sm" ng-disabled="selectedItems.length == 0" ng-click="openBulkQAChange()">Bulk Row QA Change</button>-->
+					<button class="btn btn-sm" ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange')" ng-disabled="selectedItems.length == 0" ng-click="clearSelections()">Clear selections</button>
 					<button class="btn btn-sm" ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange')" ng-disabled="selectedItems.length == 0" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
 				</div>
 
@@ -273,7 +286,7 @@
 			</div>
 		</div>
 	</div>
-	<div ng-show="dataSheetDataset.length>0" class="large-graph-box" id="chart-div">
+	<div ng-show="dataSheetDataset.length > 0 && !activities.success" class="large-graph-box" id="chart-div">
 		<ng-include src="'app/core/common/components/chart/templates/view-inset-' + dataset.Datastore.TablePrefix + '.html'"></ng-include>
 	</div>
 <!--</div>--><!--This closing tag is unnecesary, because the opening tag has a closing "/".-->

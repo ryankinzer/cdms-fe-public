@@ -7,9 +7,9 @@
 //Fieldsheet / form version of the dataentry page
 //was "DataEditCtrl" from DataEditControllers
 var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$modal', '$location', '$rootScope',
-    'ActivityParser', 'DataSheet', 'FileUploadService', '$upload',
+    'ActivityParser', 'DataSheet', '$upload',
     function ($scope, $q, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
-        ActivityParser, DataSheet, UploadService, $upload) {
+        ActivityParser, DataSheet, $upload) {
 
         initEdit(); // stop backspace from ditching in the wrong place.
 
@@ -121,6 +121,67 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             $scope.finishLocationProcessing();
         });
+		
+		$scope.$watch('projectLeadList.length', function(){
+
+			//if (typeof $scope.fishermenList.$resolved === 'undefined')
+			if (!$scope.projectLeadList)
+			{
+				console.log("$scope.projectLeadList has not loaded.");
+				return;
+			}
+			else if ($scope.projectLeadList.length === 0)
+			{
+				console.log("No CRPP staff found yet...");
+				return;
+			}
+			console.log("Inside watch, projectLeadList");
+			console.dir($scope);
+			
+			console.log("$scope.projectLeadList is next..");
+			console.dir($scope.projectLeadList);		
+		
+			// If we switch the parameters for the makeObjects, like this makeObjects(scope.fishermenList, 'FullName', 'Id'), it will put them in alpha order by name.
+			// However, we must test this first, to verify that it does not mess anything up.
+			$scope.projectLeadOptions = $rootScope.projectLeadOptions = makeObjects($scope.projectLeadList, 'Id','Fullname');
+			
+			// Debug output ... wanted to verify the contents of scope.projectLeadOptions
+			console.log("$scope.projectLeadOptions is next...");
+			console.dir($scope.projectLeadOptions);
+			
+			console.log("We're on CrppContracts...");
+			console.log("$scope.row is next...");
+			console.dir($scope.row);
+			if ($scope.row.ProjectLead)
+			{
+				var pLeadList = $scope.row.ProjectLead.split(";");
+				console.log("pLeadList is next...");
+				console.dir(pLeadList);
+				
+				// Next, get rid of that trailing semicolon.
+				pLeadList.splice(-1, 1);
+				console.log("pLeadList is next...");
+				console.dir(pLeadList);
+				
+				var strProjectLead = "";
+				
+				// Locate the ProjectLead Id and get the Fullname
+				angular.forEach($scope.projectLeadList, function(staffMember){
+					
+					angular.forEach(pLeadList, function(pLead){
+						console.log("pLead = " + pLead + ", staffMember = " + staffMember.Id);
+						if (parseInt(pLead) === parseInt(staffMember.Id))
+						{
+							console.log("Matched...");
+							strProjectLead += staffMember.Fullname + ";\n";
+							$scope.showProjectLeads = true;
+						}
+					});
+				});
+				$scope.row.strProjectLead = strProjectLead;
+				$scope.row.ProjectLead = undefined;
+			}
+		});
 
         $scope.$watch('dataset_activities.Dataset.Id', function () {
             if (!$scope.dataset_activities.Dataset)
@@ -137,6 +198,13 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             $rootScope.datasetId = $scope.datasetId = $scope.dataset.Id;
             console.log("$rootScope.datasetId = " + $rootScope.datasetId);
             $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
+
+            //once the dataset files load, setup our file handler
+            $scope.dataset.Files.$promise.then(function () {
+                //mixin the properties and functions to enable the modal file chooser for this controller...
+                console.log("---------------- setting up dataset file chooser ----------------");
+                modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
+            });
 
             $scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
@@ -189,15 +257,32 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 				}
 				*/
             }
+			else if ($scope.DatastoreTablePrefix === "CrppContracts")
+			{
+				$scope.projectLeadList = ProjectService.getCrppStaff(); // Get all CRPP staff.
+				
+				if ($scope.row.ProjectLead)
+					$scope.showProjectLeads = true;
+			}
             console.log("$scope.row is next...");
             console.dir($scope.row);
 
+            //if the activity qa status is already set in the header, copy it in to this row's activityqastatus (this should really always be the case)
             if ($scope.dataset_activities.Header.Activity.ActivityQAStatus) {
                 $scope.row.ActivityQAStatus = {
                     QAStatusId: "" + $scope.dataset_activities.Header.Activity.ActivityQAStatus.QAStatusId,
                     Comments: $scope.dataset_activities.Header.Activity.ActivityQAStatus.Comments,
                 }
             }
+            //otherwise, set it to the default.
+            else {
+                console.warn("The ActivityQAStatus for this activity is not set, setting to default.");
+                $scope.row.ActivityQAStatus = {
+                    QAStatusId: "" + $scope.dataset.DefaultRowQAStatusId,
+                    Comments: ""
+                }
+            }
+
 
             if ($scope.dataset_activities.Header.Activity.Timezone)
                 $scope.row.Timezone = getByField($scope.SystemTimezones, angular.fromJson($scope.dataset_activities.Header.Activity.Timezone).Name, "Name"); //set default timezone
@@ -275,7 +360,14 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             angular.forEach($scope.dataset.Fields.sort(orderByIndex), function (field) {
                 parseField(field, $scope);
                 if (field.FieldRoleId == FIELD_ROLE_HEADER) {
-                    $scope.fields.header.push(field);
+                    //$scope.fields.header.push(field); // Original line.
+					if (($scope.DatastoreTablePrefix === "CrppContracts") && (field.DbColumnName === "ProjectLead"))
+					{
+						// Skip it.
+					}
+					else
+						$scope.fields.header.push(field);
+					
                     //also copy the value to row
                     if (field.ControlType == "multiselect") {
                         //console.dir($scope.dataset_activities.Header[field.DbColumnName]);
@@ -716,13 +808,12 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                     ($scope.datasheetColDefs[i].field === "TotalTimeFished")
                 ) {
                     $scope.datasheetColDefs[i].enableCellEdit = false;
-                    //$scope.datasheetColDefs[i].cellEditableCondition = false;
-                    //$scope.disabledFont();
+
                 }
 
             }
 
-            console.log("$scope after copy is next...");
+            //console.log("$scope after copy is next...");
             //console.dir($scope);
 
             //$scope.reloadProject();
@@ -737,109 +828,128 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 			*/
             //}
         };
+		
+		$scope.addProjectLead = function() {
+			console.log("+C clicked...");
+			console.dir($scope);
+			console.log("$scope.row.strProjectLead (before adding) = " + $scope.row.strProjectLead);	
+			
+			if (!$scope.row.ProjectLead)
+				return;
+			
+			if (typeof $scope.row.strProjectLead === 'undefined')
+				$scope.row.strProjectLead = "";				
 
-        $scope.viewRelation = function (row, field_name) {
-            //console.dir(row.entity);
-            var field = $scope.FieldLookup[field_name];
-            //console.dir(field);
+			// We will add a new line at the end, so that the string presents well on the page.
+			angular.forEach($scope.projectLeadList, function(staffMember){
+				if (staffMember.Id.toString() === $scope.row.ProjectLead)
+				{
+					$scope.row.strProjectLead += staffMember.Fullname + ";\n";
+				}
+			});
+			
+			$scope.showProjectLeads = true;
+			
+			console.log("$scope.row.strProjectLead (after adding) = " + $scope.row.strProjectLead);		
+		};
+		
+		$scope.removeProjectLead = function() {
+			console.log("-C clicked...");
+			console.dir($scope);
+			//console.log("$scope.row.strProjectLead before stripping = " + $scope.row.strProjectLead);
+			
+			if (!$scope.row.ProjectLead)
+				return;
+			
+			// First, strip out the new line characters.
+			$scope.row.strProjectLead = $scope.row.strProjectLead.replace(/(\r\n|\r|\n)/gm, "");
+			console.log("$scope.row.strProjectLead after stripping = " + $scope.row.strProjectLead);
+			
+			// Note, we still have the trailing semicolon.
+			// Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
+			var aryProjectLeads = $scope.row.strProjectLead.split(";");
+			
+			// Next, get rid of that trailing semicolon.
+			aryProjectLeads.splice(-1, 1);
+			console.dir(aryProjectLeads);
+			
+			//var staffMemberId = -1;
+			var staffMemberFullname = "";
+			angular.forEach($scope.projectLeadList, function(staffMember){
+				//console.log("staffMember.Id = " + staffMember.Id + ", $scope.row.ProjectLead = " + $scope.row.ProjectLead);
+				if (staffMember.Id === parseInt($scope.row.ProjectLead))
+				{
+					//console.log("Matched...");
+					staffMemberFullname = staffMember.Fullname;
+				}
+			});
+			console.log("We want to remove " + staffMemberFullname + " from the list...");
+			
+			// Now we can continue with the delete action.
+			var aryProjectLeadsLength = aryProjectLeads.length;
+			console.log("aryProjectLeadsLength = " + aryProjectLeadsLength);
 
-            $scope.openRelationEditGridModal(row.entity, field);
-        }
-
-
-        $scope.openRelationEditGridModal = function (row, field) {
-            $scope.relationgrid_row = row;
-            $scope.relationgrid_field = field;
-            $scope.isEditable = true;
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/datasets/components/dataset-relationgrid/templates/relationgrid-edit-modal.html',
-                controller: 'RelationGridModalCtrl',
-                scope: $scope,
-            });
-        };
-
-
-        /* -- these functions are for uploading - */
-        $scope.openFileModal = function (row, field) {
-            console.log("Inside DataEditCtrl, openFileModal...");
-            //console.log("row is next...");
-            //console.dir(row);
-            //console.dir(field);
-            $scope.file_row = row;
-            $scope.file_field = field;
-            $rootScope.FieldSheetFile = "";
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/common/components/file/templates/modal-file.html',
-                controller: 'FileModalCtrl',
-                scope: $scope, //scope to make a child of
-            });
-        };
-
-        $scope.openFileAddModal = function (row, field) {
-            console.log("Inside DataEditCtrl, openFileAddModal...");
-            //console.log("row is next...");
-            //console.dir(row);
-            //console.log("field is next...");
-            //console.dir(field);
-            $scope.file_row = row;
-            $scope.file_field = field;
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/common/components/file/templates/modal-file-add.html',
-                controller: 'FileAddModalCtrl',
-                scope: $scope, //scope to make a child of
-            });
-        };
-
-        $scope.openFileDeleteModal = function (row, field) {
-            console.log("Inside DataEditCtrl, openFileDeleteModal...");
-            console.log("row is next...");
-            console.dir(row);
-            console.log("field is next...");
-            console.dir(field);
-            $scope.file_row = row;
-            $scope.file_field = field;
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/common/components/file/templates/modal-file-delete.html',
-                controller: 'FileDeleteModalCtrl',
-                scope: $scope, //scope to make a child of
-            });
-        };
-
+			for (var i = 0; i < aryProjectLeadsLength; i++)
+			{
+				console.log("aryProjectLeads[i] = " + aryProjectLeads[i]);
+				
+				if (aryProjectLeads[i].indexOf(staffMemberFullname) > -1)
+				{
+					console.log("Found the item...");
+					aryProjectLeads.splice(i,1);
+					console.log("Removed the item.");
+					
+					$scope.row.strProjectLead = "";
+					console.log("Wiped $scope.row.strProjectLeads...");
+					
+					// Rebuild the string now, adding the semicolon and newline after every line.
+					angular.forEach(aryProjectLeads, function(item){
+						$scope.row.strProjectLead += item + ";\n";
+						console.log("Added item...");
+					});
+					
+					// Since we found the item, skip to then end to exit.
+					i = aryProjectLeadsLength;
+				}
+			}
+			
+			if (aryProjectLeadsLength === 0)
+				$scope.showProjectLeads = false;
+			
+			//console.log("Finished.");
+		};
+     
         $scope.openWaypointFileModal = function (row, field) {
-            $scope.file_row = row;
             $scope.file_field = field;
-
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
-                controller: 'FileModalCtrl',
+                controller: 'WaypointFileModalCtrl',
                 scope: $scope, //scope to make a child of
             });
         };
 
-        //field = DbColumnName
-        $scope.onFileSelect = function (field, files) {
-            //console.log("file selected! " + field)
-            $scope.filesToUpload[field] = files;
-        };
 
-        //this function gets called when a user clicks the "Add" button in a GRID file cell
+        //this function gets called when a user clicks the "Add" button in a GRID file cell ------------------------------<<<<<<<<<<<<<<<<< TODO
         $scope.addFiles = function (row, field_name) {
-            var field = $scope.FieldLookup[field_name];
+            //var field = $scope.FieldLookup[field_name];
 
             //console.dir(row);
             //console.dir(field);
-            $scope.openFileModal(row.entity, field);
+            $scope.openFileModal(row.entity, field_name);
 
+            console.log("<--------------------------------------- addFiles called for GRID file item ----------------");
+            //console.dir($scope.updatedRows);
+            //console.dir(row);
             //go ahead and mark this row as being updated.
-            if ($scope.updatedRows)
+            if ($scope.updatedRows && row.entity && row.entity.Id) {
+                console.log("ok we have an id so we're pushing -- you must be editing...");
                 $scope.updatedRows.push(row.entity.Id);
+            }
 
         };
-        /*  -- */
-
+        
+        
+        //click "save" on dataset edit form
         $scope.saveData = function () {
             console.log("Saving edited data!");
 
@@ -850,128 +960,27 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                     return;
             }
 
-            var promise = UploadService.uploadFiles($scope.filesToUpload, $scope);
-            if ($scope.foundDuplicate) {
-                alert("One or more of the files to upload is a duplicate!");
-                return;
-            }
-            if ($scope.filesToUpload.FieldSheetFile) {
-                for (var i = 0; i < $scope.filesToUpload.FieldSheetFile.length; i++) {
-                    var file = $scope.filesToUpload.FieldSheetFile[i];
-                    console.log("file is next...");
-                    console.dir(file);
+            //handle saving the files.
+            var data = {
+                ProjectId: $scope.project.Id,
+                DatasetId: $scope.dataset.Id,
+            };
 
-                    var newFileNameLength = file.name.length;
-                    console.log("file name length = " + newFileNameLength);
+            var target = '/api/v1/file/uploaddatasetfile';
 
-                    console.log("file.type = " + file.type);
-                    if ($scope.uploadFileType === "image") {
-                        console.log("We have an image...");
-                        for (var n = 0; n < $scope.project.Images.length; n++) {
-                            var existingFileName = $scope.project.Images[n].Name;
-                            console.log("existingFileName = " + existingFileName);
-                            var existingFileNameLength = existingFileName.length;
-                            if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
-                                $scope.foundDuplicate = true;
-                                console.log(file.name + " already exists in the project file list.");
-                                errors.push(file.name + " already exists in the list of project images.");
-                            }
-                        }
-                    }
-                    else {
-                        console.log("We have something other than an image...");
-                        for (var n = 0; n < $scope.project.Files.length; n++) {
-                            var existingFileName = $scope.project.Files[n].Name;
-                            console.log("existingFileName = " + existingFileName);
-                            var existingFileNameLength = existingFileName.length;
-                            if ((newFileNameLength >= existingFileNameLength) && (file.name.indexOf(existingFileName) > -1)) {
-                                $scope.foundDuplicate = true;
-                                console.log(file.name + " already exists in the project file list.");
-                                errors.push(file.name + " already exists in the list of project Files.");
-                            }
-                        }
-                    }
+            var saveRow = $scope.row;
 
-                    console.log("$scope.foundDuplicate = " + $scope.foundDuplicate);
-
-                    if ($scope.foundDuplicate)
-                        alert(errors);
-
-                    // We are uploading a second time?
-					/*
-					else
-					{
-						console.log("Not a duplicate.  Uploading the file...");
-						if(file.success != "Success")
-						{
-							$scope.upload = $upload.upload({
-								url: serviceUrl + '/data/UploadProjectFile',
-								method: "POST",
-								// headers: {'headerKey': 'headerValue'},
-								// withCredential: true,
-								//data: {ProjectId: $scope.project.Id, Description: "Uploaded file " + file.Name, Title: file.Name},
-								data: {ProjectId: $scope.project.Id, Description: "Uploaded file " + file.Name, Title: file.Name, DatastoreTablePrefix: $scope.DatastoreTablePrefix},
-								file: file,
-
-								}).progress(function(evt) {
-									console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-								}).success(function(data, status, headers, config) {
-									config.file.success = "Success";
-								}).error(function(data, status, headers, config) {
-									$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
-									//console.log(file.name + " was error.");
-									config.file.success = "Failed";
-								});		
-						}
-					}
-					*/
-                }
-
-                // The app works without this section.
-				/*
-				//spin through the files that we uploaded
-				angular.forEach($scope.filesToUpload, function(files, field){
-
-					console.log("field is next...");
-					console.dir(field);
-					if(field == "null" || field == "")
-						return;
-
-					var local_files = [];
-
-					//if we have files in this field, copy them in
-					if($scope.file_row[field])
-					{
-						console.log("We already have some files.  Copying those in first.")
-						var current_files = angular.fromJson($scope.file_row[field]); // This line gets stuck, or stops, or something.
-						console.log("current_files is next...");
-						console.dir(current_files);
-						angular.forEach(current_files, function(file){
-							if(file.Id) //our incoming files don't have an id, just actual files.
-								local_files.push(file);		
-						});
-					}
-
-					console.log("local_files is next...");
-					console.dir(local_files);
-					if (local_files.length > 0)
-					{
-						$scope.file_row[field] = angular.toJson(local_files);
-						console.log("$scope.file_row[field] (new list) is next...");
-						console.dir($scope.file_row[field]);
-						//console.log("Ok our new list of files: "+$scope.row[field]);
-					}
-				});
-				*/
-
-                $scope.saveDatasheetData();
-            }
-            else {
-                $scope.saveDatasheetData();
-            }
+            $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+            
         };
 
-        $scope.saveDatasheetData = function () {
+        //remove file from dataset.
+        $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
+            return DatasetService.deleteDatasetFile($scope.projectId, $scope.datasetId, file_to_remove);
+        };
+
+        //was saveDatasheetData
+        $scope.modalFile_saveParentItem = function (saveRow) {
             console.log("Inside saveDatasheetData, $scope is next...");
             //console.dir($scope);
 
@@ -1083,7 +1092,48 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                 }
             }
             /**** CreeSurvey Detail Time Time calculations End ****/
-
+			else if ($scope.DatastoreTablePrefix === "CrppContracts")
+			{
+				// For CRPP, the location is NOT on the form, so we add it here.
+				$scope.row.locationId = $scope.project.Locations[0].Id;
+				
+				// First, strip out the new line characters.
+				$scope.row.strProjectLead = $scope.row.strProjectLead.replace(/(\r\n|\r|\n)/gm, "");
+				console.log("$scope.row.strProjectLeads after stripping = " + $scope.row.strProjectLeads);
+				
+				// Note, we still have the trailing semicolon.
+				// Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
+				var aryProjectLeads = $scope.row.strProjectLead.split(";");
+				
+				// Next, get rid of that trailing semicolon.
+				aryProjectLeads.splice(-1, 1);
+				console.dir(aryProjectLeads);
+				
+				// Match the names in aryProjectLeads to the one in $scope.projectLeadList, and retrieve the Id.
+				var pLeadIdList = [];
+				angular.forEach($scope.projectLeadList, function(pLeader){
+					
+					angular.forEach(aryProjectLeads, function(aLead){
+						if (pLeader.Fullname === aLead)
+						{
+							console.log("Matched...");
+							pLeadIdList.push(pLeader.Id);
+						}
+					});
+				});
+				console.log("pLeadIdList is next...");
+				console.dir(pLeadIdList);
+				
+				// Convert the list to a string, in the format we want.
+				var strProjLeads = "";
+				angular.forEach(pLeadIdList, function(Id){
+					strProjLeads += Id + ";";
+				});
+				console.log("strProjLeads = " + strProjLeads);
+				
+				$scope.row.ProjectLead = strProjLeads;
+			}
+			
             if ((typeof $scope.dataSheetDataset !== 'undefined') && ($scope.dataSheetDataset !== null)) {
                 for (var i = 0; i < $scope.dataSheetDataset.length; i++) {
                     if ((typeof $scope.dataSheetDataset[i].TotalTimeFished !== 'undefined') && ($scope.dataSheetDataset[i].TotalTimeFished != null)) {
@@ -1107,12 +1157,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             }
 
             var sheetCopy = angular.copy($scope.dataSheetDataset);
-            console.log("The following items are next: $scope.row, sheetCopy, $scope.fields");
-            console.dir($scope.row);
-            console.dir(sheetCopy);
-            console.dir($scope.fields);
-            //throw "Stopping right here...";
-
+            
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             if ($scope.DatastoreTablePrefix == "FishScales") {
                 console.log("$scope.primaryDatasetLocation = " + $scope.primaryDatasetLocation);
