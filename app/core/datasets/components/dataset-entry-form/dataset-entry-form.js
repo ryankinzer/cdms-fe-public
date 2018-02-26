@@ -673,6 +673,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.postSaveFishermanUpdateGrid = function (new_fisherman) {
             $scope.fishermenList.push(new_fisherman); //the watch will take care of the rest?
         };
+		
+        //$scope.postSaveInstrumentUpdateGrid = function (new_instrument) {
+        //    $scope.instrumentList.push(new_fisherman); //the watch will take care of the rest?
+        //};
 
         // For Creel Survey only.
         // Adds another row to datasheet grid and copies common items (surveyor, date, etc.)
