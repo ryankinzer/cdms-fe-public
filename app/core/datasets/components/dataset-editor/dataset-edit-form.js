@@ -763,6 +763,10 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                 scope: $scope, //very important to pass the scope along...
             });
         };
+		
+        $scope.postSaveFishermanUpdateGrid = function (new_fisherman) {
+            $scope.fishermenList.push(new_fisherman); //the watch will take care of the rest?
+        };
 
         // For Creel Survey only.
         // Adds another row to datasheet grid and copies common items (surveyor, date, etc.)
