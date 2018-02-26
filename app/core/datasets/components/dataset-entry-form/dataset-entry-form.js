@@ -589,8 +589,14 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.addSection = function () {
             console.log("Inside addSection...");
             console.log("$scope in addSection is next...");
-            //console.dir($scope);
-
+            console.dir($scope);
+			
+			if ((typeof $scope.row.locationId === 'undefined') || ($scope.row.locationId === null))
+			{
+				alert("Location cannot be blank");
+				return;
+			}
+			
             $scope.addNewSection = true;
             console.log("$scope.addNewSection = " + $scope.addNewSection);
             $scope.saveData();  // Save what we have, before blanking fields.
@@ -603,7 +609,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
                     if ($scope.addNewSectionWatcherCount === 0) {
                         console.log("Resetting the page.")
                         // Reset the content of specific fields, to blank, null, or 0.
-                        $scope.row.locationId = 60; //59; // Blank
+                        $scope.row.locationId = null; //60; //59; // Blank
                         $scope.row.TimeStart = null;
                         $scope.row.TimeEnd = null;
                         $scope.row.NumberAnglersObserved = 0;
