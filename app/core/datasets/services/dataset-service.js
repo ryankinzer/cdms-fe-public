@@ -18,6 +18,12 @@ datasets_module.factory('ActivitiesForView', ['$resource', function ($resource) 
     });
 }]);
 
+datasets_module.factory('CreelSurveyActivitiesForView', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/activity/getcreelsurveydatasetactivitiesview', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
+
 datasets_module.factory('Dataset', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/dataset/getdataset', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: false }
@@ -170,6 +176,7 @@ datasets_module.service('DatasetService', ['$q',
     'DatasetFiles',
     'Activities',
     'ActivitiesForView',
+	'CreelSurveyActivitiesForView',
     'Dataset',
     'Datasets',
     'Data',
@@ -202,6 +209,7 @@ datasets_module.service('DatasetService', ['$q',
         DatasetFiles,
         Activities,
         ActivitiesForView,
+		CreelSurveyActivitiesForView,
         Dataset,
         Datasets,
         Data,
@@ -330,6 +338,10 @@ datasets_module.service('DatasetService', ['$q',
 			
             getActivitiesForView: function (id) {
                 return ActivitiesForView.query({ id: id });
+            },
+			
+            getCreelSurveyActivitiesForView: function (id) {
+                return CreelSurveyActivitiesForView.query({ id: id });
             },
 
             saveDataset: function (a_dataset) {
