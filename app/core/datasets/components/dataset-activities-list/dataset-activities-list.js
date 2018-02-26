@@ -13,13 +13,13 @@ var dataset_activities_list = ['$scope', '$routeParams',
         //    console.log("Set $scope.activities to null for project page...");
         //}
 
-        $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
+        //$scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
         $scope.loading = true;
         $scope.project = null;
         $scope.saveResults = null;
         $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
         $scope.allActivities = null;
-        $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
+        //$scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
         $scope.thisDatasetLocationObjects = [];
         $scope.showDataEntrySheetButton = true; //by default - can change in config
 		
@@ -38,6 +38,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         var activityDateTemplate = function (params) {
             return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.ActivityDate).format('L') + '</a>';
+        };
+		
+        var TimeStartTemplate = function (params) {
+            return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:MM') + '</a>';
         };
 
         var yearReportedTemplate = function (params) {
@@ -91,9 +95,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
             { field: 'EditLinks', headerName: '', cellRenderer: editButtonTemplate, width: 40, alwaysShowField: true, menuTabs: [], hide: true },
-            { field: 'ActivityDate', 
+            { field: 'ActivityDate',
 				headerName: 'Activity Date',
-				valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object				
+				valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object
+				//valueGetter: function (params) { return params.node.data.ActivityDate }, //date filter needs js date object	
                 filter: 'date', 
                 filterParams: { apply: true },
 				cellRenderer: activityDateTemplate, 
@@ -102,7 +107,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 			},
             { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120, menuTabs: [] },
             { field: 'headerdata.RunYear', headerName: 'Run Year', cellRenderer: runYearTemplate, width: 120, menuTabs: [] },
-            {
+            /*{
                 field: 'headerdata.TimeStart',
                 headerName: 'Time Start',
                 width: 80,
@@ -112,7 +117,16 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 }, 
                 filter: 'text', //'time' does not exist yet
                 menuTabs: ['filterMenuTab'],
-            },
+            },*/
+            { field: 'headerdata.TimeStart',
+				headerName: 'DateTime Start',	
+				valueGetter: function (params) { return params.node.data.headerdata.TimeStart }, //date filter needs js date object
+                filter: 'text', 
+                filterParams: { apply: true },
+				cellRenderer: TimeStartTemplate, 
+				width: 130, 
+				menuTabs: ['filterMenuTab']
+			},
             { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, minWidth: 100, menuTabs: ['filterMenuTab'] }, //appraisal
             { field: 'headerdata.AllotmentStatus', headerName: 'Status', minWidth: 120, menuTabs: ['filterMenuTab'] },
             { field: 'Description', headerName: 'Date Range', cellRenderer: desclinkTemplate, minWidth: 200, width: 250, menuTabs: ['filterMenuTab'], filter:'text' },
@@ -161,6 +175,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.agGridOptions); //bind the grid to it.
         $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
 
+		/*
 		// After $scope.activities fills, to this...
         $scope.activities.$promise.then( function () {
 
@@ -194,11 +209,12 @@ var dataset_activities_list = ['$scope', '$routeParams',
 				
 				// Instead, let's try this...
 				// Iterate through the headerdata, but check the activities via IndexOf on the ActivityId.
+				// During development testing, this dropped the page-load time from 1:47 to 1:10.
 				angular.forEach($scope.headerdata, function (header){
 					var theActivityId = $scope.activityIdList.indexOf(header.ActivityId);
-					console.log("Found activity " + theActivityId);
+					//console.log("Found activity " + theActivityId);
 					$scope.activities[theActivityId].headerdata = header;
-					console.dir($scope.activities[theActivityId]);
+					//console.dir($scope.activities[theActivityId]);
 				});
 				
 
@@ -216,13 +232,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
 			// The slow-down happens in here somewhere...end
 			
             console.log("$scope at end of $scope.activities.$promise is next...");
-            //console.dir($scope);
+            console.dir($scope);
 
             $scope.allActivities = $scope.activities; //set allActivities so we can reset our filters
             $scope.loading = false;
             
         });
-
+		*/
+		
         $scope.$watch('dataset.Fields', function () {
             if (!$scope.dataset.Fields) return;
 
@@ -232,6 +249,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             console.log("Inside dataset.Fields watcher...");
             //console.log("$scope is next...");
             //console.dir($scope);
+			console.log("Time check1 = " + moment(Date.now()).format('HH:mm:ss'));
 
             $rootScope.datasetId = $scope.dataset.Id;
             //load our project based on the projectid we get back from the dataset
@@ -243,6 +261,42 @@ var dataset_activities_list = ['$scope', '$routeParams',
             //console.log("$scope.columnDefs is next...");
             //console.dir($scope.columnDefs);
 
+			//$scope.activities = DatasetService.getActivitiesForView($routeParams.Id); // Original way.
+			
+			//Revised way.  This may not be the best way in the long run, but CreelSurvey is the only dataset that needs this right now.
+			if ($scope.DatastoreTablePrefix === "CreelSurvey")
+				$scope.activities = DatasetService.getCreelSurveyActivitiesForView($routeParams.Id);
+			else
+				$scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
+			
+			console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
+			
+			//$scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
+			
+			$scope.activities.$promise.then( function () {
+
+				console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
+				console.log("Time check2 = " + moment(Date.now()).format('HH:mm:ss'));
+				
+				//now that the activities are loaded, tell the grid so that it can refresh.
+				$scope.agGridOptions.api.setRowData($scope.activities);
+				console.log("Time check3 = " + moment(Date.now()).format('HH:mm:ss'));
+
+				console.log("autosizing columns");
+				var allColumnIds = [];
+				$scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
+					allColumnIds.push(column.colId);
+				});
+				//$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
+				console.log("Time after grid loaded = " + moment(Date.now()).format('HH:mm:ss'));
+					
+				console.log("$scope at end of $scope.activities.$promise is next...");
+				console.dir($scope);
+
+				$scope.allActivities = $scope.activities; //set allActivities so we can reset our filters
+				$scope.loading = false;
+				console.log("Time Stop Loading = " + moment(Date.now()).format('HH:mm:ss'));
+			});
 
             //OK this is going away...
 
