@@ -1,6 +1,8 @@
 ﻿var modal_create_fisherman = ['$scope', '$modalInstance','ProjectService','ServiceUtilities','ConvertStatus',
     function ($scope, $modalInstance, ProjectService,  ServiceUtilities, ConvertStatus){
 
+	$scope.fishermenList = ProjectService.getFishermen();
+	
     $scope.header_message = "Create new fisherman";
 	$scope.saveResults = null;
 
@@ -58,24 +60,31 @@
     }
 	
     $scope.saveFisherman = function(){
-        console.log("$scope in saveFisherman is next...");
+		console.log("Inside modal-create-fisherman.js, saveFisherman...");
+        //console.log("$scope in saveFisherman is next...");
 		//console.dir($scope);
+		//console.log("$scope.fisherman_row is next...");
+		//console.dir($scope.fisherman_row);
 		
 		$scope.fishermanSave = [];		
 
 		if ((!$scope.viewFisherman) || ($scope.viewFisherman === null))
 		{
-			// First check if the fisherman is already in the database -- no duplicates allowed.
+			//console.log("Either $scope.viewFisherman does not exist, or it is null...");
+			//console.log("$scope.fishermenList is next...");
+			//console.dir($scope.fishermenList);
+			
+			// First check if the fisherman is already in the database -- no duplicates allowed.//$rootScope.fishermenList
 			angular.forEach($scope.fishermenList, function(fishermanInfo, index){
 				// Verify whether or not the Aka is present
-				if (typeof $scope.fisherman_row.Aka !== 'undefined')
+				if ((typeof $scope.fisherman_row.Aka !== 'undefined') && ($scope.fisherman_row.Aka !== null))
 				{
 					// AKA is present, so we need to check the First, AKA, and Last name.
 					if (($scope.fisherman_row.FirstName === fishermanInfo.FirstName) && ($scope.fisherman_row.Aka === fishermanInfo.Aka) && ($scope.fisherman_row.LastName === fishermanInfo.LastName))
 						$scope.fishermanSave.error = true;
 				}
 				else
-				{	
+				{
 					// AKA is missing, so we only check the First and Last names.
 					if (($scope.fisherman_row.FirstName === fishermanInfo.FirstName) && ($scope.fisherman_row.LastName === fishermanInfo.LastName))
 						$scope.fishermanSave.error = true;

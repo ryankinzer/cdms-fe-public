@@ -17,7 +17,7 @@ var tab_fishermen = ['$scope', '$timeout', '$routeParams', 'SubprojectService', 
         var FirstNameRenderer = function (param)
         {
             return (param.data.Aka) ? param.data.FirstName + ' (' + param.data.Aka + ')' : param.data.FirstName;
-        }
+        };
 
         var DateAddedRenderer = function (param) {
             return moment(param.data.DateAdded).format('L');
