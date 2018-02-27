@@ -16,7 +16,7 @@ var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'D
             //OwningDepartmentId: 1,
         };
 		//$scope.subproject_row.strCounties = "";
-		$scope.subproject_row.County = [];
+		//$scope.subproject_row.County = [];
 
         $scope.agencyList = [];
         $scope.agencyList.push({ Id: 0, Label: "ACHP" });
