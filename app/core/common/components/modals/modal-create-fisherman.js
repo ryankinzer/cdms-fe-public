@@ -48,8 +48,13 @@
     $scope.updateFullName = function () {
         if ((typeof $scope.fisherman_row.Aka !== 'undefined') && ($scope.fisherman_row.Aka !== null) && ($scope.fisherman_row.Aka !== ''))
             $scope.fisherman_row.FullName = $scope.fisherman_row.FirstName + " (" + $scope.fisherman_row.Aka + ") " + $scope.fisherman_row.LastName;
-        else
+		else if ((typeof $scope.fisherman_row.LastName !== 'undefined') && ($scope.fisherman_row.LastName !== null) && ($scope.fisherman_row.LastName !== ''))
             $scope.fisherman_row.FullName = $scope.fisherman_row.FirstName + " " + $scope.fisherman_row.LastName;	
+        else
+		{
+            //$scope.fisherman_row.FullName = $scope.fisherman_row.FirstName + " " + $scope.fisherman_row.LastName;	
+            $scope.fisherman_row.FullName = $scope.fisherman_row.FirstName;
+		}
     }
 	
     $scope.saveFisherman = function(){
