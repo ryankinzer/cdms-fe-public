@@ -88,6 +88,7 @@ function makeFieldColDef(field, scope) {
                 coldef.editableCellTemplate = '<input type="text" ng-blur="updateCell(row,\'' + field.DbColumnName + '\')" ng-model="COL_FIELD" ng-input="COL_FIELD" />';
                 break;
             case 'number':
+            case 'currency':
                 //var maxmin = field.Field.Validation ? 'max="'+field.Field.Validation[1]+'" min="'+field.Field.Validation[0]+'"' : ''; //either returns our min/max setup for a numeric field or empty string.
                 coldef.editableCellTemplate = '<input type="text" ng-model="COL_FIELD" ng-blur="updateCell(row,\'' + field.DbColumnName + '\')" ng-input="COL_FIELD" />';
                 //coldef.cellTemplate = '<div class="ngCellText colt{{$index}}">{{row.getProperty(col.field)}}</div>';
