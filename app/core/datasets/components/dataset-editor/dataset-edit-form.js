@@ -972,6 +972,8 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             var target = '/api/v1/file/uploaddatasetfile';
 
+			console.log("$scope.row is next...");
+			console.dir($scope.row);
             var saveRow = $scope.row;
 
             $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
@@ -985,7 +987,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
         //was saveDatasheetData
         $scope.modalFile_saveParentItem = function (saveRow) {
-            console.log("Inside saveDatasheetData, $scope is next...");
+            console.log("Inside modalFile_saveParentItem, $scope is next...");
             //console.dir($scope);
 
             var strYear = null;
@@ -993,7 +995,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             var intMonth = -1;
             var strDay = null;
 
-            /**** CreeSurvey Detail Time Time calculations Start ****/
+            /**** CreeSurvey Detail Date Time calculations Start ****/
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 // Headers = row
                 // Details = onRow
@@ -1095,7 +1097,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                     console.log("$scope.row.TimeEnd = " + $scope.row.TimeEnd);
                 }
             }
-            /**** CreeSurvey Detail Time Time calculations End ****/
+            /**** CreeSurvey Detail Date Time calculations End ****/
 			else if ($scope.DatastoreTablePrefix === "CrppContracts")
 			{
 				// For CRPP, the location is NOT on the form, so we add it here.
@@ -1138,8 +1140,8 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 				$scope.row.ProjectLead = strProjLeads;
 			}
 			
-            if ((typeof $scope.dataSheetDataset !== 'undefined') && ($scope.dataSheetDataset !== null)) {
-                for (var i = 0; i < $scope.dataSheetDataset.length; i++) {
+            //if ((typeof $scope.dataSheetDataset !== 'undefined') && ($scope.dataSheetDataset !== null)) {
+                /*for (var i = 0; i < $scope.dataSheetDataset.length; i++) {
                     if ((typeof $scope.dataSheetDataset[i].TotalTimeFished !== 'undefined') && ($scope.dataSheetDataset[i].TotalTimeFished != null)) {
                         console.log("TotalTimeFished for row " + i + " = " + $scope.dataSheetDataset[i].TotalTimeFished);
                         var theHours = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(0, 2));
@@ -1158,9 +1160,10 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                         $scope.dataSheetDataset[i].InterviewTime = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
                     }
                 }
-            }
-
-            var sheetCopy = angular.copy($scope.dataSheetDataset);
+				*/
+            //}
+			//console.log("$scope.dataSheetDataset is next...");
+			//console.dir($scope.dataSheetDataset);
             
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             if ($scope.DatastoreTablePrefix == "FishScales") {
@@ -1178,9 +1181,61 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             }
             console.log("$scope.row.Dry = " + $scope.row.Dry);
+			console.log("$scope.row is next...");
+			console.dir($scope.row);
+			console.dir($scope.dataSheetDataset);
+			console.log("$scope.deletedRows is next...");
+			console.dir($scope.deletedRows);
+			//throw "Stopping right here.";
+			
+			// Notes...
+			// If the user removed a row, $scope.dataSheetDataset (what the user sees) no longer contains that row.
+			// However, when we remove a row, it is not deleted from the database; it is marked as deleted in the backend (ROWSTATUS_DELETED).
+			// Therefore, we need to add the removed row back into the list that we send to the database, but we DO NOT want to add it back 
+			// into $scope.dataSheetDataset.  
+			// So, we ...
+			// 1) make a copy of $scope.dataSheetDataset and send the copy to the backend.
+            var sheetCopy = angular.copy($scope.dataSheetDataset);
+			//console.log("sheetCopy is next...");
+			//console.dir(sheetCopy);
+			
+			// 2) add the deleted record to the copy
+			$scope.deletedRows.forEach(function(deletedItem){
+				sheetCopy.push(deletedItem);
+			});
+			
+			// 3) For TotalTimeFished, convert from HH:MM to numberMinutes
+			//    This must be done to the deleted row(s) also, thus we do it here/now.
+			// 4) is down below...
+			sheetCopy.forEach(function(item){
+				if ((typeof item.TotalTimeFished !== 'undefined') && (item.TotalTimeFished !== null)) {
+					console.log("TotalTimeFished for item = " + item.TotalTimeFished);
+					var theHours = parseInt(item.TotalTimeFished.substring(0, 2));
+					console.log("theHours = " + theHours);
+					var theMinutes = parseInt(item.TotalTimeFished.substring(3, 5));
+					console.log("theMinutes = " + theMinutes);
+					var TotalTimeFished = theHours * 60 + theMinutes;
+					console.log("TotalTimeFished (in min) = " + TotalTimeFished);
+					item.TotalTimeFished = TotalTimeFished;
+					console.log("item.TotalTimeFished = " + item.TotalTimeFished);
+				}
 
+				if ((typeof item.InterviewTime !== 'undefined') && (item.InterviewTime != null)) {
+					var tmpTime = item.InterviewTime;
+					//console.log("tmpTime (TimeEnd) = " + tmpTime);
+					item.InterviewTime = "";
+					item.InterviewTime = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
+				}
+			});
+
+			// Per this reference:  http://davidcai.github.io/blog/posts/copy-vs-extend-vs-merge/
+			// Perhaps angular.extend is not how we want to add the deleted records back in. -- GC (revised as shown above).
             //$scope.activities = ActivityParser.parseSingleActivity($scope.row, angular.extend($scope.dataSheetDataset, $scope.deletedRows), $scope.fields);
-            $scope.activities = ActivityParser.parseSingleActivity($scope.row, angular.extend($scope.dataSheetDataset, $scope.deletedRows), $scope.fields, $scope.dataset.QAStatuses);
+            //$scope.activities = ActivityParser.parseSingleActivity($scope.row, angular.extend($scope.dataSheetDataset, $scope.deletedRows), $scope.fields, $scope.dataset.QAStatuses);
+            //$scope.activities = ActivityParser.parseSingleActivity($scope.row, angular.extend(sheetCopy, $scope.deletedRows), $scope.fields, $scope.dataset.QAStatuses);
+			
+			// 4) Continue processing and send the full list (with the deleted items added back in).
+            $scope.activities = ActivityParser.parseSingleActivity($scope.row, sheetCopy, $scope.fields, $scope.dataset.QAStatuses);
 
             if (!$scope.activities.errors) {
                 if ($scope.addNewSection) {
@@ -1192,13 +1247,14 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                 $scope.activities.updatedRowIds = $scope.updatedRows;
 
                 console.log("$scope.activities in saveData, just before calling DatasetService.saveActivities is next...");
-                console.dir($scope.activities);
+                //console.dir($scope.activities);
                 DatasetService.updateActivities($scope.userId, $scope.dataset.Id, $scope.activities, $scope.DatastoreTablePrefix);
             }
             else {
                 console.log("We have errors...");
                 console.dir($scope.activities.errors);
             }
+			
         };
 		
         $scope.doneButton = function () {
