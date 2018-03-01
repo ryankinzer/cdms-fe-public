@@ -6,6 +6,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
         DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
         $modal, $location, $window, $rootScope) {
 
+		console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
+
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
         //if ((typeof $scope.activities !== 'undefined') && ($scope.activities !== null)) {
@@ -277,9 +279,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
 				$scope.activities = DatasetService.getCreelSurveyActivitiesForView($routeParams.Id);
 			else
 				$scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
-
-			
-			console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
 			
 			$scope.activities.$promise.then( function () {
 
