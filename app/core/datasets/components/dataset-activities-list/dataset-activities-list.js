@@ -184,7 +184,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
 
 		/*
-		// After $scope.activities fills, to this...
+		// Moved this commented-out section, down into $scope.$watch('dataset.Fields'
+		// After $scope.activities fills, do this...
         $scope.activities.$promise.then( function () {
 
             console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
@@ -280,12 +281,84 @@ var dataset_activities_list = ['$scope', '$routeParams',
 			
 			console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
 			
-			//$scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
-			
 			$scope.activities.$promise.then( function () {
 
 				console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
 				console.log("Time check2 = " + moment(Date.now()).format('HH:mm:ss'));
+				
+				// Try this to increase speed.
+				// First build a list of our ActivityIds that matches the Activities.
+				$scope.activities.forEach(function(activity){
+					$scope.activityIdList.push(activity.Id);
+				});
+				
+				// After $scope.headerdata fills, continue on in here...
+				// The slow-down happens in here somewhere...start
+				$scope.headerdata.$promise.then(function () {
+					// The ActivityId is not necessary in sequential order, so this is unnecessary at this point.
+					//$scope.headerdata.forEach(header){
+					//	$scope.headerdataList.push()
+					//}
+					
+					// Angular kicks off the function for each record in $scope.activities,
+					// and each one then iterates through $scope.headerdata, looking for a matching
+					// ActivityId.
+					//angular.forEach($scope.activities, function (activity, key) {
+						//activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
+					//});
+					
+					// Instead, let's try this...
+					// Iterate through the headerdata, but check the activities via IndexOf on the ActivityId.
+					// During development testing, this dropped the page-load time from 1:47 to 1:10.
+					angular.forEach($scope.headerdata, function (header){
+						var theActivityId = $scope.activityIdList.indexOf(header.ActivityId);
+						//console.log("Found activity " + theActivityId);
+						$scope.activities[theActivityId].headerdata = header;
+						//console.dir($scope.activities[theActivityId]);
+					});
+					
+
+					//now that the activities are loaded, tell the grid so that it can refresh.
+					$scope.agGridOptions.api.setRowData($scope.activities);
+
+					console.log("autosizing columns");
+					var allColumnIds = [];
+					$scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
+						allColumnIds.push(column.colId);
+					});
+					//$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
+					
+					console.log("config!");
+					console.dir($scope.dataset.Config);
+
+					//if the dataset has a config and the ActivityPage.ShowFields is set, use it
+					if ($scope.dataset.Config != undefined
+						&& $scope.dataset.Config.ActivitiesPage != undefined
+						&& $scope.dataset.Config.ActivitiesPage.ShowFields != undefined) {
+						console.log("Hey config has a showfields configured!");
+						ShowFields = $scope.dataset.Config.ActivitiesPage.ShowFields; //set
+					} else
+						console.log("aww no showfields in config... we'll just use the ShowFields defaults...");
+
+					var showColDefs = [];
+
+					angular.forEach($scope.possibleColumnDefs, function (coldef) {
+						//console.log("coldef is next...");
+						//console.dir(coldef);
+						if (coldef.alwaysShowField || ShowFields.contains(coldef.field)) {
+							showColDefs.push(coldef);
+						}
+					});
+
+					//set the first column to be the sort column:
+					showColDefs[1].sort = "desc";
+
+					$scope.columnDefs = showColDefs; 
+					$scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
+					
+				}); // End of $scope.headerdata.$promise.then
+				// The slow-down happens in here somewhere...end
+				
 				
 				//now that the activities are loaded, tell the grid so that it can refresh.
 				$scope.agGridOptions.api.setRowData($scope.activities);
@@ -307,6 +380,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
 				console.log("Time Stop Loading = " + moment(Date.now()).format('HH:mm:ss'));
 			});
 
+/*			
+			// Moved the stuff in this section, up into $scope.headerdata.$promise.then
             console.log("config!");
             console.dir($scope.dataset.Config);
 
@@ -334,7 +409,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             $scope.columnDefs = showColDefs; 
             $scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
-
+*/
             //some specific dataset things... TODO: i'll bet we can move this out to config, too...
             if ($scope.DatastoreTablePrefix === "WaterTemp") {
                 $scope.reloadDatasetLocations("WaterTemp", LOCATION_TYPE_WaterTemp);
