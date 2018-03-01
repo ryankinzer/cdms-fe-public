@@ -316,7 +316,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
 						//console.dir($scope.activities[theActivityId]);
 					});
 					
-
 					//now that the activities are loaded, tell the grid so that it can refresh.
 					$scope.agGridOptions.api.setRowData($scope.activities);
 
@@ -342,13 +341,15 @@ var dataset_activities_list = ['$scope', '$routeParams',
 					var showColDefs = [];
 
 					angular.forEach($scope.possibleColumnDefs, function (coldef) {
-						//console.log("coldef is next...");
-						//console.dir(coldef);
+						console.log("coldef is next...");
+						console.dir(coldef);
 						if (coldef.alwaysShowField || ShowFields.contains(coldef.field)) {
 							showColDefs.push(coldef);
 						}
 					});
-
+					console.log("showColDefs is next...");
+					console.dir(showColDefs);
+					
 					//set the first column to be the sort column:
 					showColDefs[1].sort = "desc";
 
@@ -360,7 +361,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 				
 				
 				//now that the activities are loaded, tell the grid so that it can refresh.
-				$scope.agGridOptions.api.setRowData($scope.activities);
+				//$scope.agGridOptions.api.setRowData($scope.activities);
 				console.log("Time check3 = " + moment(Date.now()).format('HH:mm:ss'));
 
 				console.log("autosizing columns");
