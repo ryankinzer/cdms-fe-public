@@ -19,7 +19,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.saveResults = null;
         $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
         $scope.allActivities = null;
-        //$scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
+        $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
         $scope.thisDatasetLocationObjects = [];
         $scope.showDataEntrySheetButton = true; //by default - can change in config
 		
@@ -53,7 +53,15 @@ var dataset_activities_list = ['$scope', '$routeParams',
         };
 
         var runYearTemplate = function (params) {
-            if (params.node.data.headerdata.RunYear === undefined)
+			//console.log("params is next...");
+			//console.dir(params);
+            //if (params.node.data.headerdata.RunYear === undefined)
+			if ((typeof params.node.data.headerdata === 'undefined') || (params.node.data.headerdata === null))
+			{
+				console.log("Cannot set runYear, because params.node.data.headerdata not loaded yet or missing...");
+				return;
+			}
+			else if ((typeof params.node.data.headerdata.RunYear === 'undefined') || (params.node.data.headerdata.RunYear === null))
                 return;
             else
                 return '<a href="#/dataview/' + params.node.data.Id
@@ -268,6 +276,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 				$scope.activities = DatasetService.getCreelSurveyActivitiesForView($routeParams.Id);
 			else
 				$scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
+
 			
 			console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
 			
