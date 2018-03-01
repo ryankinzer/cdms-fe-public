@@ -19,7 +19,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.saveResults = null;
         $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
         $scope.allActivities = null;
-        //$scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
+        $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
         $scope.thisDatasetLocationObjects = [];
         $scope.showDataEntrySheetButton = true; //by default - can change in config
 		
