@@ -307,22 +307,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
 				console.log("Time Stop Loading = " + moment(Date.now()).format('HH:mm:ss'));
 			});
 
-            //OK this is going away...
-
-            //hide irrelevant fields TODO -- code smell pretty ripe here...  genericize
-            // $scope.columnDefs[0] = ActivityDate
-            // $scope.columnDefs[1] = YearReported
-            // $scope.columnDefs[2] = TimeStart
-            // $scope.columnDefs[3] = Allotment
-            // $scope.columnDefs[4] = AllotmentStatus
-            // $scope.columnDefs[5] = Location
-            // $scope.columnDefs[6] = Waterbody
-            // $scope.columnDefs[7] = FieldActivityType
-            // $scope.columnDefs[8] = DataType
-            // $scope.columnDefs[9] = Date Range
-            // $scope.columnDefs[10] = By User
-            // $scope.columnDefs[11] = QAStatus
-
             console.log("config!");
             console.dir($scope.dataset.Config);
 
@@ -359,100 +343,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 $scope.reloadDatasetLocations("Metrics", LOCATION_TYPE_Hab);
             }
 
-
-            /*
-
-            //
-            if ($scope.DatastoreTablePrefix === "WaterTemp") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[7].visible = true;  // FieldActivityType
-                $scope.columnDefs[9].visible = true;  // Date Range
-                $scope.columnDefs[10].visible = true; // By User
-
-                $scope.reloadDatasetLocations("WaterTemp", LOCATION_TYPE_WaterTemp);
-            }
-            else if ($scope.DatastoreTablePrefix === "WaterQuality") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[8].visible = true;  // DataType
-                $scope.columnDefs[9].visible = true;  // Date Range
-                $scope.columnDefs[10].visible = true; // By User
-            }
-            else if ($scope.DatastoreTablePrefix === "CreelSurvey") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = true; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[2].visible = true;  // TimeStart
-                $scope.columnDefs[3].visible = false; // Allotment
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[8].visible = false; // DataType
-                $scope.columnDefs[9].visible = false; // Date Range
-                $scope.columnDefs[10].visible = true; // By User
-                $scope.columnDefs[11].visible = true; // QAStatus
-            }
-            else if ($scope.DatastoreTablePrefix === "Appraisal") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[3].visible = true;  // Allotment
-                $scope.columnDefs[4].visible = true;  // AllotmentStatus
-            }
-            else if ($scope.DatastoreTablePrefix === "CrppContracts") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[3].visible = true;  // Allotment
-                $scope.columnDefs[4].visible = true;  // AllotmentStatus
-            }
-            else if ($scope.DatastoreTablePrefix === "FishScales") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = true;  // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[5].visible = false; // Location
-                $scope.columnDefs[10].visible = true; // By User
-                $scope.columnDefs[11].visible = true; // QAStatus
-            }
-            else if ($scope.DatastoreTablePrefix === "Metrics") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = true;  // YearReported
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[10].visible = true; // By User
-                $scope.columnDefs[11].visible = true; // QAStatus
-
-                $scope.showDataEntrySheetButton = false;
-
-                $scope.gridOptions = {};
-                $scope.gridOptions = {
-                    data: 'activities',
-                    selectedItems: [],
-                    showColumnMenu: true,
-                    //sortInfo: {fields:['ActivityDate'], directions: ['desc']},
-                    sortInfo: { fields: ['headerdata.YearReported'], directions: ['desc'] },
-                    columnDefs: 'columnDefs',
-                    filterOptions: $scope.gridOptionsFilter,
-                };
-
-                $scope.reloadDatasetLocations("Metrics", LOCATION_TYPE_Hab);
-            }
-            else {
-                $scope.columnDefs[0].visible = true;  // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[7].visible = false; // FieldActivityType
-                $scope.columnDefs[9].visible = false; // Date Range
-                $scope.columnDefs[10].visible = true; // By User
-                $scope.columnDefs[11].visible = true; // QAStatus
-            }
-
-            console.log("$scope at end of watch, dataset.Fields is next...");
-            //console.dir($scope);
-            */
         });
 
         $scope.$watch('project.Name', function () {
