@@ -6,8 +6,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
         DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
         $modal, $location, $window, $rootScope) {
 
-		console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
-
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
         //if ((typeof $scope.activities !== 'undefined') && ($scope.activities !== null)) {
@@ -15,7 +13,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         //    console.log("Set $scope.activities to null for project page...");
         //}
 
-        //$scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
+        $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
         $scope.loading = true;
         $scope.project = null;
         $scope.saveResults = null;
@@ -26,7 +24,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.showDataEntrySheetButton = true; //by default - can change in config
 		
 		$scope.activityIdList = [];
-		$scope.headerdataList = [];
 
         //this is the default columns (fields) to show in the activities grid, 
         //  but it will be overridden if there is one configured in the dataset.
@@ -55,15 +52,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         };
 
         var runYearTemplate = function (params) {
-			//console.log("params is next...");
-			//console.dir(params);
-            //if (params.node.data.headerdata.RunYear === undefined)
-			if ((typeof params.node.data.headerdata === 'undefined') || (params.node.data.headerdata === null))
-			{
-				console.log("Cannot set runYear, because params.node.data.headerdata not loaded yet or missing...");
-				return;
-			}
-			else if ((typeof params.node.data.headerdata.RunYear === 'undefined') || (params.node.data.headerdata.RunYear === null))
+            if (params.node.data.headerdata.RunYear === undefined)
                 return;
             else
                 return '<a href="#/dataview/' + params.node.data.Id
@@ -105,10 +94,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
             { field: 'EditLinks', headerName: '', cellRenderer: editButtonTemplate, width: 40, alwaysShowField: true, menuTabs: [], hide: true },
-            { field: 'ActivityDate',
+            { field: 'ActivityDate', 
 				headerName: 'Activity Date',
-				valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object
-				//valueGetter: function (params) { return params.node.data.ActivityDate }, //date filter needs js date object	
+				valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object				
                 filter: 'date', 
                 filterParams: { apply: true },
 				cellRenderer: activityDateTemplate, 
@@ -185,15 +173,12 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.agGridOptions); //bind the grid to it.
         $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
 
-		/*
-		// Moved this commented-out section, down into $scope.$watch('dataset.Fields'
-		// After $scope.activities fills, do this...
+
         $scope.activities.$promise.then( function () {
 
             console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
-			
-			console.log("$scope.activities is next...");
-			console.dir($scope.activities);
+
+            $scope.loading = true;
 			
 			// Try this to increase speed.
 			// First build a list of our ActivityIds that matches the Activities.
@@ -201,33 +186,17 @@ var dataset_activities_list = ['$scope', '$routeParams',
 				$scope.activityIdList.push(activity.Id);
 			});
 
-            $scope.loading = true;
-
-			// After $scope.headerdata fills, continue on in here...
-			// The slow-down happens in here somewhere...start
             $scope.headerdata.$promise.then(function () {
-				// The ActivityId is not necessary in sequential order, so this is unnecessary at this point.
-				//$scope.headerdata.forEach(header){
-				//	$scope.headerdataList.push()
-				//}
-				
-				// Angular kicks off the function for each record in $scope.activities,
-				// and each one then iterates through $scope.headerdata, looking for a matching
-				// ActivityId.
                 //angular.forEach($scope.activities, function (activity, key) {
-                    //activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
+                //    activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
                 //});
 				
-				// Instead, let's try this...
-				// Iterate through the headerdata, but check the activities via IndexOf on the ActivityId.
-				// During development testing, this dropped the page-load time from 1:47 to 1:10.
 				angular.forEach($scope.headerdata, function (header){
 					var theActivityId = $scope.activityIdList.indexOf(header.ActivityId);
 					//console.log("Found activity " + theActivityId);
 					$scope.activities[theActivityId].headerdata = header;
 					//console.dir($scope.activities[theActivityId]);
 				});
-				
 
                 //now that the activities are loaded, tell the grid so that it can refresh.
                 $scope.agGridOptions.api.setRowData($scope.activities);
@@ -240,17 +209,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 //$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
                 
             });
-			// The slow-down happens in here somewhere...end
-			
             console.log("$scope at end of $scope.activities.$promise is next...");
-            console.dir($scope);
+            //console.dir($scope);
 
             $scope.allActivities = $scope.activities; //set allActivities so we can reset our filters
             $scope.loading = false;
             
         });
-		*/
-		
+
         $scope.$watch('dataset.Fields', function () {
             if (!$scope.dataset.Fields) return;
 
@@ -260,7 +226,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
             console.log("Inside dataset.Fields watcher...");
             //console.log("$scope is next...");
             //console.dir($scope);
-			console.log("Time check1 = " + moment(Date.now()).format('HH:mm:ss'));
 
             $rootScope.datasetId = $scope.dataset.Id;
             //load our project based on the projectid we get back from the dataset
@@ -272,116 +237,23 @@ var dataset_activities_list = ['$scope', '$routeParams',
             //console.log("$scope.columnDefs is next...");
             //console.dir($scope.columnDefs);
 
-			//$scope.activities = DatasetService.getActivitiesForView($routeParams.Id); // Original way.
-			
-			//Revised way.  This may not be the best way in the long run, but CreelSurvey is the only dataset that needs this right now.
-			if ($scope.DatastoreTablePrefix === "CreelSurvey")
-				$scope.activities = DatasetService.getCreelSurveyActivitiesForView($routeParams.Id);
-			else
-				$scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
-			
-			$scope.activities.$promise.then( function () {
 
-				console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
-				console.log("Time check2 = " + moment(Date.now()).format('HH:mm:ss'));
-				
-				// Try this to increase speed.
-				// First build a list of our ActivityIds that matches the Activities.
-				$scope.activities.forEach(function(activity){
-					$scope.activityIdList.push(activity.Id);
-				});
-				
-				// After $scope.headerdata fills, continue on in here...
-				// The slow-down happens in here somewhere...start
-				$scope.headerdata.$promise.then(function () {
-					// The ActivityId is not necessary in sequential order, so this is unnecessary at this point.
-					//$scope.headerdata.forEach(header){
-					//	$scope.headerdataList.push()
-					//}
-					
-					// Angular kicks off the function for each record in $scope.activities,
-					// and each one then iterates through $scope.headerdata, looking for a matching
-					// ActivityId.
-					//angular.forEach($scope.activities, function (activity, key) {
-						//activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
-					//});
-					
-					// Instead, let's try this...
-					// Iterate through the headerdata, but check the activities via IndexOf on the ActivityId.
-					// During development testing, this dropped the page-load time from 1:47 to 1:10.
-					angular.forEach($scope.headerdata, function (header){
-						var theActivityId = $scope.activityIdList.indexOf(header.ActivityId);
-						//console.log("Found activity " + theActivityId);
-						$scope.activities[theActivityId].headerdata = header;
-						//console.dir($scope.activities[theActivityId]);
-					});
-					
-					//now that the activities are loaded, tell the grid so that it can refresh.
-					$scope.agGridOptions.api.setRowData($scope.activities);
+            //OK this is going away...
 
-					console.log("autosizing columns");
-					var allColumnIds = [];
-					$scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
-						allColumnIds.push(column.colId);
-					});
-					//$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
-					
-					console.log("config!");
-					console.dir($scope.dataset.Config);
+            //hide irrelevant fields TODO -- code smell pretty ripe here...  genericize
+            // $scope.columnDefs[0] = ActivityDate
+            // $scope.columnDefs[1] = YearReported
+            // $scope.columnDefs[2] = TimeStart
+            // $scope.columnDefs[3] = Allotment
+            // $scope.columnDefs[4] = AllotmentStatus
+            // $scope.columnDefs[5] = Location
+            // $scope.columnDefs[6] = Waterbody
+            // $scope.columnDefs[7] = FieldActivityType
+            // $scope.columnDefs[8] = DataType
+            // $scope.columnDefs[9] = Date Range
+            // $scope.columnDefs[10] = By User
+            // $scope.columnDefs[11] = QAStatus
 
-					//if the dataset has a config and the ActivityPage.ShowFields is set, use it
-					if ($scope.dataset.Config != undefined
-						&& $scope.dataset.Config.ActivitiesPage != undefined
-						&& $scope.dataset.Config.ActivitiesPage.ShowFields != undefined) {
-						console.log("Hey config has a showfields configured!");
-						ShowFields = $scope.dataset.Config.ActivitiesPage.ShowFields; //set
-					} else
-						console.log("aww no showfields in config... we'll just use the ShowFields defaults...");
-
-					var showColDefs = [];
-
-					angular.forEach($scope.possibleColumnDefs, function (coldef) {
-						console.log("coldef is next...");
-						console.dir(coldef);
-						if (coldef.alwaysShowField || ShowFields.contains(coldef.field)) {
-							showColDefs.push(coldef);
-						}
-					});
-					console.log("showColDefs is next...");
-					console.dir(showColDefs);
-					
-					//set the first column to be the sort column:
-					showColDefs[1].sort = "desc";
-
-					$scope.columnDefs = showColDefs; 
-					$scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
-					
-				}); // End of $scope.headerdata.$promise.then
-				// The slow-down happens in here somewhere...end
-				
-				
-				//now that the activities are loaded, tell the grid so that it can refresh.
-				//$scope.agGridOptions.api.setRowData($scope.activities);
-				console.log("Time check3 = " + moment(Date.now()).format('HH:mm:ss'));
-
-				console.log("autosizing columns");
-				var allColumnIds = [];
-				$scope.agGridOptions.columnApi.getAllColumns().forEach(function (column) {
-					allColumnIds.push(column.colId);
-				});
-				//$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
-				console.log("Time after grid loaded = " + moment(Date.now()).format('HH:mm:ss'));
-					
-				console.log("$scope at end of $scope.activities.$promise is next...");
-				console.dir($scope);
-
-				$scope.allActivities = $scope.activities; //set allActivities so we can reset our filters
-				$scope.loading = false;
-				console.log("Time Stop Loading = " + moment(Date.now()).format('HH:mm:ss'));
-			});
-
-/*			
-			// Moved the stuff in this section, up into $scope.headerdata.$promise.then
             console.log("config!");
             console.dir($scope.dataset.Config);
 
@@ -409,7 +281,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             $scope.columnDefs = showColDefs; 
             $scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
-*/
+
             //some specific dataset things... TODO: i'll bet we can move this out to config, too...
             if ($scope.DatastoreTablePrefix === "WaterTemp") {
                 $scope.reloadDatasetLocations("WaterTemp", LOCATION_TYPE_WaterTemp);
@@ -418,6 +290,100 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 $scope.reloadDatasetLocations("Metrics", LOCATION_TYPE_Hab);
             }
 
+
+            /*
+
+            //
+            if ($scope.DatastoreTablePrefix === "WaterTemp") {
+                console.log("showing fields for " + $scope.DatastoreTablePrefix);
+                $scope.columnDefs[0].visible = false; // ActivityDate
+                $scope.columnDefs[1].visible = false; // YearReported
+                $scope.columnDefs[5].visible = true;  // Location
+                $scope.columnDefs[7].visible = true;  // FieldActivityType
+                $scope.columnDefs[9].visible = true;  // Date Range
+                $scope.columnDefs[10].visible = true; // By User
+
+                $scope.reloadDatasetLocations("WaterTemp", LOCATION_TYPE_WaterTemp);
+            }
+            else if ($scope.DatastoreTablePrefix === "WaterQuality") {
+                console.log("showing fields for " + $scope.DatastoreTablePrefix);
+                $scope.columnDefs[0].visible = false; // ActivityDate
+                $scope.columnDefs[1].visible = false; // YearReported
+                $scope.columnDefs[5].visible = true;  // Location
+                $scope.columnDefs[8].visible = true;  // DataType
+                $scope.columnDefs[9].visible = true;  // Date Range
+                $scope.columnDefs[10].visible = true; // By User
+            }
+            else if ($scope.DatastoreTablePrefix === "CreelSurvey") {
+                console.log("showing fields for " + $scope.DatastoreTablePrefix);
+                $scope.columnDefs[0].visible = true; // ActivityDate
+                $scope.columnDefs[1].visible = false; // YearReported
+                $scope.columnDefs[2].visible = true;  // TimeStart
+                $scope.columnDefs[3].visible = false; // Allotment
+                $scope.columnDefs[5].visible = true;  // Location
+                $scope.columnDefs[8].visible = false; // DataType
+                $scope.columnDefs[9].visible = false; // Date Range
+                $scope.columnDefs[10].visible = true; // By User
+                $scope.columnDefs[11].visible = true; // QAStatus
+            }
+            else if ($scope.DatastoreTablePrefix === "Appraisal") {
+                console.log("showing fields for " + $scope.DatastoreTablePrefix);
+                $scope.columnDefs[0].visible = false; // ActivityDate
+                $scope.columnDefs[1].visible = false; // YearReported
+                $scope.columnDefs[3].visible = true;  // Allotment
+                $scope.columnDefs[4].visible = true;  // AllotmentStatus
+            }
+            else if ($scope.DatastoreTablePrefix === "CrppContracts") {
+                console.log("showing fields for " + $scope.DatastoreTablePrefix);
+                $scope.columnDefs[0].visible = false; // ActivityDate
+                $scope.columnDefs[1].visible = false; // YearReported
+                $scope.columnDefs[3].visible = true;  // Allotment
+                $scope.columnDefs[4].visible = true;  // AllotmentStatus
+            }
+            else if ($scope.DatastoreTablePrefix === "FishScales") {
+                console.log("showing fields for " + $scope.DatastoreTablePrefix);
+                $scope.columnDefs[0].visible = true;  // ActivityDate
+                $scope.columnDefs[1].visible = false; // YearReported
+                $scope.columnDefs[5].visible = false; // Location
+                $scope.columnDefs[10].visible = true; // By User
+                $scope.columnDefs[11].visible = true; // QAStatus
+            }
+            else if ($scope.DatastoreTablePrefix === "Metrics") {
+                console.log("showing fields for " + $scope.DatastoreTablePrefix);
+                $scope.columnDefs[0].visible = false; // ActivityDate
+                $scope.columnDefs[1].visible = true;  // YearReported
+                $scope.columnDefs[5].visible = true;  // Location
+                $scope.columnDefs[10].visible = true; // By User
+                $scope.columnDefs[11].visible = true; // QAStatus
+
+                $scope.showDataEntrySheetButton = false;
+
+                $scope.gridOptions = {};
+                $scope.gridOptions = {
+                    data: 'activities',
+                    selectedItems: [],
+                    showColumnMenu: true,
+                    //sortInfo: {fields:['ActivityDate'], directions: ['desc']},
+                    sortInfo: { fields: ['headerdata.YearReported'], directions: ['desc'] },
+                    columnDefs: 'columnDefs',
+                    filterOptions: $scope.gridOptionsFilter,
+                };
+
+                $scope.reloadDatasetLocations("Metrics", LOCATION_TYPE_Hab);
+            }
+            else {
+                $scope.columnDefs[0].visible = true;  // ActivityDate
+                $scope.columnDefs[1].visible = false; // YearReported
+                $scope.columnDefs[5].visible = true;  // Location
+                $scope.columnDefs[7].visible = false; // FieldActivityType
+                $scope.columnDefs[9].visible = false; // Date Range
+                $scope.columnDefs[10].visible = true; // By User
+                $scope.columnDefs[11].visible = true; // QAStatus
+            }
+
+            console.log("$scope at end of watch, dataset.Fields is next...");
+            //console.dir($scope);
+            */
         });
 
         $scope.$watch('project.Name', function () {
@@ -1010,5 +976,3 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
    
 ];
-
-
