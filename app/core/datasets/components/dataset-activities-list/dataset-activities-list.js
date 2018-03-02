@@ -5,6 +5,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
     function ($scope, $routeParams, 
         DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
         $modal, $location, $window, $rootScope) {
+			
+		console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
@@ -180,11 +182,15 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             $scope.loading = true;
 			
+			console.log("Time check1 = " + moment(Date.now()).format('HH:mm:ss'));
+			
 			// Try this to increase speed.
 			// First build a list of our ActivityIds that matches the Activities.
 			$scope.activities.forEach(function(activity){
 				$scope.activityIdList.push(activity.Id);
 			});
+			
+			console.log("Time check2 = " + moment(Date.now()).format('HH:mm:ss'));
 
             $scope.headerdata.$promise.then(function () {
                 //angular.forEach($scope.activities, function (activity, key) {
@@ -209,6 +215,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 //$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
                 
             });
+			console.log("Time check3 = " + moment(Date.now()).format('HH:mm:ss'));
             console.log("$scope at end of $scope.activities.$promise is next...");
             //console.dir($scope);
 
@@ -281,6 +288,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             $scope.columnDefs = showColDefs; 
             $scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
+			
+			console.log("Time after grid loaded = " + moment(Date.now()).format('HH:mm:ss'));
 
             //some specific dataset things... TODO: i'll bet we can move this out to config, too...
             if ($scope.DatastoreTablePrefix === "WaterTemp") {
