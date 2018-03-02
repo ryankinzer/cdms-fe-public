@@ -17,7 +17,7 @@
     <button style="margin-top: -12px; margin-left: 5px;" class="btn right" ng-click="editLocation()">Edit</button>
 </div>
 
-<div ng-show="newGraphic && dataset.Config.ActivitiesPage.ShowFields.contains('ProjectLead')" project-role="editor">
+<div ng-show="newGraphic" project-role="editor">
     <button style="margin-top: -12px; margin-left: 5px;" class="btn right btn-danger" ng-click="clearLocation()">Cancel</button>
     <button style="margin-top: -12px; margin-left: 5px;" class="btn right" ng-click="addLocation()">Create New</button>
 </div>
