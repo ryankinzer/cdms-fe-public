@@ -1373,3 +1373,18 @@ function isFileInList(in_file, in_list) {
 
     return isInList;
 }
+
+
+function buildDatasetLocationObjectsList(projectLocations, locationType)
+{
+    console.log("Inside buildDatasetLocationObjectsList...");
+    var thisDatasetLocationObjects = [];
+
+    angular.forEach(projectLocations, function (location, key) {
+        //console.log("location.LocationType.Id = " + location.LocationType.Id + ", locationType = " + locationType);
+        if (location.LocationType.Id === locationType)
+            thisDatasetLocationObjects.push(location.SdeObjectId);
+    });
+
+    return thisDatasetLocationObjects;
+}

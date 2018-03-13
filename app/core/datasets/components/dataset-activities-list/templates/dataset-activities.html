@@ -26,8 +26,8 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span2">
-            <!--<button style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>-->
-            <button ng-hide="dataset.Config && dataset.Config.ActivitiesPage.HiddenFields.contains('MapButton')" style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>
+            <button style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>
+            <!--<button ng-hide="dataset.Config && dataset.Config.ActivitiesPage.AllowMultipleLocations.contains('No') && project.Locations.length > 0" style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>-->
             <!-- img class="map-center" src="assets/images/map_image1.png"  -->
             <div ng-show="ShowMap.Display">
                 <div style="margin-left:125px; margin-top: -45px; margin-bottom: 25px;" id="basemapDropdown">
