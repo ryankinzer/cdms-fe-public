@@ -285,19 +285,15 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$scope.subprojectType = " + $scope.subprojectType);
             SubprojectService.setServiceSubprojectType($scope.subprojectType);
 
-            //if ($scope.subprojectType === "Harvest")
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 console.log("Loading Harvest...");
                 $scope.ShowFishermen = true;
             }
-            //else if ($scope.subprojectType === "CRPP")
             else if ($scope.DatastoreTablePrefix === "CrppContracts") {
                 console.log("Loading CRPP subprojects...");
                 $scope.ShowSubproject = true;
                 $scope.subprojectList = SubprojectService.getSubprojects();
             }
-            //else if ($scope.subprojectType === "Habitat")
-            //else if ($scope.DatastoreTablePrefix === "Metrics")
             else if (($scope.DatastoreTablePrefix === "Metrics") ||
                 ($scope.DatastoreTablePrefix === "Benthic") ||
                 ($scope.DatastoreTablePrefix === "Drift")
@@ -305,23 +301,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 console.log("Loading Habitat subprojects...");
 
                 $scope.subprojectList = SubprojectService.getProjectSubprojects($scope.project.Id);
-                var watcher = $scope.$watch('subprojectList.length', function () {
-                    console.log("Inside watcher for subprojectList.length...");
-                    // We wait until subprojects gets loaded and then turn this watch off.
-                    if ($scope.subprojectList === null) {
-                        console.log("$scope.subprojectList is null");
-                        return;
-                    }
-                    else if (typeof $scope.subprojectList.length === 'undefined') {
-                        console.log("$scope.subprojectList.length is undefined.");
-                        return;
-                    }
-                    else if ($scope.subprojectList.length === 0) {
-                        console.log("$scope.subprojectList.length is 0");
-                        return;
-                    }
 
-                    //if ($scope.DatastoreTablePrefix === "Metrics")
+                $scope.subprojectList.$promise.then(function () {
+                    console.log("Inside PROMISE for subprojectList.length...");
+
                     if (($scope.DatastoreTablePrefix === "Metrics") ||
                         ($scope.DatastoreTablePrefix === "Benthic") ||
                         ($scope.DatastoreTablePrefix === "Drift")
@@ -352,10 +335,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
                     $scope.selectProjectLocationsByLocationType();
 
-                    watcher();
                 });
             }
-            //else if ($scope.subprojectType === "DECD")
             else if ($scope.DatastoreTablePrefix === "Appraisal") {
                 $scope.showDoneButton = false;
             }
@@ -406,33 +387,6 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 console.dir($scope.project.Locations);
 
                 for (var i = 0; i < $scope.project.Locations.length; i++) {
-                    //console.log("i = " + i);
-                    //console.log($scope.project.Locations[i].Id + "  " + $scope.project.Locations[i].Label);
-                    //console.log("$scope.project.Locations[i].LocationTypeId = " + $scope.project.Locations[i].LocationTypeId + ", $scope.datasetLocationType = " + $scope.datasetLocationType);
-                    //if ($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType)
-                    //if (parseInt($scope.project.Locations[i].LocationTypeId) === parseInt($scope.datasetLocationType))
-                    //{
-                    //console.log("Found one");
-                    // If the label is blank, this item is the Primary Project Location, and the label is null.
-                    //	if ((typeof $scope.project.Locations[i].Label !== 'undefined') && ($scope.project.Locations[i].Label != null))
-                    //	{
-                    //		console.log("$scope.project.Locations[i].Id = " + $scope.project.Locations[i].Id + ", $scope.project.Locations[i].Label = " + $scope.project.Locations[i].Label);
-
-                    // Note:  We are pushing an ARRAY into $scope.datasetLocations, NOT separate items.
-                    //		$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]); 									
-
-                    //		console.log("$scope.datasetLocations (inside the loop) is next");
-                    //		console.dir($scope.datasetLocations);
-
-                    //		if ($scope.DatastoreTablePrefix === "FishScales")
-                    //		{
-                    //			console.log("Setting $scope.primaryDatasetLocation...");
-                    //			$scope.primaryDatasetLocation = $scope.project.Locations[i].Id;
-                    //		}
-                    //	}
-                    //}
-
-                    //console.log("$scope.project.Locations[i].LocationTypeId = " + $scope.project.Locations[i].LocationTypeId + ", $scope.datasetLocationType = " + $scope.datasetLocationType);
                     if (($scope.DatastoreTablePrefix === "Metrics") ||
                         ($scope.DatastoreTablePrefix === "Benthic") ||
                         ($scope.DatastoreTablePrefix === "Drift")
@@ -463,20 +417,9 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
         $scope.finishLocationProcessing = function () {
             console.log("Inside $scope.finishLocationProcessing...");
-            // When we built the array, it started adding at location 1 for some reason, skipping 0.
-            // Therefore, row 0 is blank.  The simple solution is to just delete row 0.
-            //$scope.datasetLocations.shift();
 
-            // During the original development, the blank row was always at row 0.  Months later, I noticed that 
-            // the blank row was not at row 0.  Therefore, it needed a different solution.
             var index = 0;
-            //console.log("$scope.datasetLocations (before splice) is next...");
-            //console.dir($scope.datasetLocations);
             angular.forEach($scope.datasetLocations, function (dsLoc) {
-                //if (dsLoc.length === 0)
-                //{
-                //	$scope.datasetLocations.splice(index, 1);
-                //}
                 if (typeof dsLoc[0] === 'undefined')
                     $scope.datasetLocations.splice(index, 1);
 
@@ -589,8 +532,14 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.addSection = function () {
             console.log("Inside addSection...");
             console.log("$scope in addSection is next...");
-            //console.dir($scope);
-
+            console.dir($scope);
+			
+			if ((typeof $scope.row.locationId === 'undefined') || ($scope.row.locationId === null))
+			{
+				alert("Location cannot be blank");
+				return;
+			}
+			
             $scope.addNewSection = true;
             console.log("$scope.addNewSection = " + $scope.addNewSection);
             $scope.saveData();  // Save what we have, before blanking fields.
@@ -603,7 +552,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
                     if ($scope.addNewSectionWatcherCount === 0) {
                         console.log("Resetting the page.")
                         // Reset the content of specific fields, to blank, null, or 0.
-                        $scope.row.locationId = 60; //59; // Blank
+                        $scope.row.locationId = null; //60; //59; // Blank
                         $scope.row.TimeStart = null;
                         $scope.row.TimeEnd = null;
                         $scope.row.NumberAnglersObserved = 0;
@@ -667,6 +616,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.postSaveFishermanUpdateGrid = function (new_fisherman) {
             $scope.fishermenList.push(new_fisherman); //the watch will take care of the rest?
         };
+		
+        //$scope.postSaveInstrumentUpdateGrid = function (new_instrument) {
+        //    $scope.instrumentList.push(new_fisherman); //the watch will take care of the rest?
+        //};
 
         // For Creel Survey only.
         // Adds another row to datasheet grid and copies common items (surveyor, date, etc.)

@@ -5,6 +5,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
     function ($scope, $routeParams, 
         DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
         $modal, $location, $window, $rootScope) {
+			
+		console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
@@ -22,6 +24,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
         $scope.thisDatasetLocationObjects = [];
         $scope.showDataEntrySheetButton = true; //by default - can change in config
+		
+		$scope.activityIdList = [];
 
         //this is the default columns (fields) to show in the activities grid, 
         //  but it will be overridden if there is one configured in the dataset.
@@ -35,6 +39,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         var activityDateTemplate = function (params) {
             return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.ActivityDate).format('L') + '</a>';
+        };
+		
+        var TimeStartTemplate = function (params) {
+            return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:MM') + '</a>';
         };
 
         var yearReportedTemplate = function (params) {
@@ -99,7 +107,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 			},
             { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120, menuTabs: [] },
             { field: 'headerdata.RunYear', headerName: 'Run Year', cellRenderer: runYearTemplate, width: 120, menuTabs: [] },
-            {
+            /*{
                 field: 'headerdata.TimeStart',
                 headerName: 'Time Start',
                 width: 80,
@@ -109,7 +117,16 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 }, 
                 filter: 'text', //'time' does not exist yet
                 menuTabs: ['filterMenuTab'],
-            },
+            },*/
+            { field: 'headerdata.TimeStart',
+				headerName: 'DateTime Start',	
+				valueGetter: function (params) { return params.node.data.headerdata.TimeStart }, //date filter needs js date object
+                filter: 'text', 
+                filterParams: { apply: true },
+				cellRenderer: TimeStartTemplate, 
+				width: 130, 
+				menuTabs: ['filterMenuTab']
+			},
             { field: 'headerdata.Allotment', headerName: 'Allotment', cellRenderer: allotmentTemplate, minWidth: 100, menuTabs: ['filterMenuTab'] }, //appraisal
             { field: 'headerdata.AllotmentStatus', headerName: 'Status', minWidth: 120, menuTabs: ['filterMenuTab'] },
             { field: 'Description', headerName: 'Date Range', cellRenderer: desclinkTemplate, minWidth: 200, width: 250, menuTabs: ['filterMenuTab'], filter:'text' },
@@ -164,11 +181,28 @@ var dataset_activities_list = ['$scope', '$routeParams',
             console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
 
             $scope.loading = true;
+			
+			console.log("Time check1 = " + moment(Date.now()).format('HH:mm:ss'));
+			
+			// Try this to increase speed.
+			// First build a list of our ActivityIds that matches the Activities.
+			$scope.activities.forEach(function(activity){
+				$scope.activityIdList.push(activity.Id);
+			});
+			
+			console.log("Time check2 = " + moment(Date.now()).format('HH:mm:ss'));
 
             $scope.headerdata.$promise.then(function () {
-                angular.forEach($scope.activities, function (activity, key) {
-                    activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
-                });
+                //angular.forEach($scope.activities, function (activity, key) {
+                //    activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
+                //});
+				
+				angular.forEach($scope.headerdata, function (header){
+					var theActivityId = $scope.activityIdList.indexOf(header.ActivityId);
+					//console.log("Found activity " + theActivityId);
+					$scope.activities[theActivityId].headerdata = header;
+					//console.dir($scope.activities[theActivityId]);
+				});
 
                 //now that the activities are loaded, tell the grid so that it can refresh.
                 $scope.agGridOptions.api.setRowData($scope.activities);
@@ -181,6 +215,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 //$scope.agGridOptions.columnApi.autoSizeColumns(allColumnIds);
                 
             });
+			console.log("Time check3 = " + moment(Date.now()).format('HH:mm:ss'));
             console.log("$scope at end of $scope.activities.$promise is next...");
             //console.dir($scope);
 
@@ -253,6 +288,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             $scope.columnDefs = showColDefs; 
             $scope.agGridOptions.api.setColumnDefs(showColDefs); //tell the grid we've changed the coldefs
+			
+			console.log("Time after grid loaded = " + moment(Date.now()).format('HH:mm:ss'));
 
             //some specific dataset things... TODO: i'll bet we can move this out to config, too...
             if ($scope.DatastoreTablePrefix === "WaterTemp") {
@@ -262,6 +299,18 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 $scope.reloadDatasetLocations("Metrics", LOCATION_TYPE_Hab);
             }
 
+            // Using dataset.config, instead of hard-coding...
+            if (($scope.dataset.Config) && 
+                ($scope.dataset.Config.ActivitiesPage) &&
+                ($scope.dataset.Config.ActivitiesPage.HasDatasetLocations))
+            {
+                console.log("The dataset has dataset locations..");
+                // If $scope.dataset.Config.ActivitiesPage.AllowMultipleLocations exists, it will be set to No.
+                if ($scope.dataset.Config.ActivitiesPage.AllowMultipleLocations) {
+                    console.log("This datset DOES NOT allow multiple locations...");
+                    $scope.reloadDatasetLocations($scope.DatastoreTablePrefix, LOCATION_TYPE_FishScales)
+                }
+            }
 
             /*
 
@@ -410,6 +459,18 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 }
                 else {
                     $scope.reloadProjectLocations();
+
+                    // Using dataset.config, instead of hard-coding...
+                    if (($scope.dataset.Config) &&
+                        ($scope.dataset.Config.ActivitiesPage) &&
+                        ($scope.dataset.Config.ActivitiesPage.HasDatasetLocations)) {
+                        console.log("The dataset has dataset locations..");
+                        // If $scope.dataset.Config.ActivitiesPage.AllowMultipleLocations exists, it will be set to No.
+                        if ($scope.dataset.Config.ActivitiesPage.AllowMultipleLocations) {
+                            console.log("This datset DOES NOT allow multiple locations...");
+                            $scope.reloadDatasetLocations($scope.DatastoreTablePrefix, LOCATION_TYPE_FishScales)
+                        }
+                    }
                 }
                 
             }
@@ -466,6 +527,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.reloadDatasetLocations = function (datasetName, locationType) {
             console.log("Inside activities-controllers.js, scope.reloadDatasetLocations...");
+            console.log("datasetName = " + datasetName);
+            console.log("locationType = " + locationType);
 
             //console.log("$scope is next...");
             //console.dir($scope);
@@ -509,7 +572,28 @@ var dataset_activities_list = ['$scope', '$routeParams',
                     });
                 });
             }
+            else if (datasetName === "FishScales")
+            {
+                console.log("Working with FishScales...");
+                //angular.forEach($scope.project.Locations, function (loc) {
+                //    console.log("loc Id = " + loc.Id);
+                //});
+
+                // Need to run this here, because the project has not loaded yet, by the time the 
+                // dataset.Fields watch completes...
+                //console.dir($scope.project.Locations);
+                //angular.forEach($scope.project.Locations, function (location, key) {
+                //    console.log("location.LocationType.Id = " + location.LocationType.Id + ", LOCATION_TYPE_FishScales = " + LOCATION_TYPE_FishScales);
+                //    if (location.LocationType.Id === LOCATION_TYPE_FishScales)
+                //        $scope.thisDatasetLocationObjects.push(location.SdeObjectId);
+                //});
+
+                $scope.thisDatasetLocationObjects = buildDatasetLocationObjectsList($scope.project.Locations, LOCATION_TYPE_FishScales);
+            }
+
             $scope.map.locationLayer.showLocationsById($scope.thisDatasetLocationObjects); //bump and reload the locations.
+            //console.log("$scope (at end of reloadDatasetLocations) is next...");
+            //console.dir($scope);
         };
 
         $scope.ShowMap = {
@@ -520,11 +604,27 @@ var dataset_activities_list = ['$scope', '$routeParams',
         };
 
         $scope.addLocation = function () {
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/common/components/modals/templates/modal-addlocation.html',
-                controller: 'ModalAddLocationCtrl',
-                scope: $scope, //very important to pass the scope along...
-            });
+            console.log("Inside addLocation...");
+            console.log("$scope.thisDatasetLocationObjects is next...");
+            console.dir($scope.thisDatasetLocationObjects);
+
+            if (($scope.dataset.Config) &&
+                ($scope.dataset.Config.ActivitiesPage) &&
+                ($scope.dataset.Config.ActivitiesPage.AllowMultipleLocations) &&
+                ($scope.thisDatasetLocationObjects.length > 0)
+            )
+            {
+                alert("This is a FishScales dataset and it can have only one location, which is already has...");
+            }
+            else
+            {
+                var modalInstance = $modal.open({
+                    templateUrl: 'app/core/common/components/modals/templates/modal-addlocation.html',
+                    controller: 'ModalAddLocationCtrl',
+                    scope: $scope, //very important to pass the scope along...
+                    });
+            }
+
         };
 
         $scope.removeFilter = function () {
@@ -768,7 +868,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             //console.log("Project locations loaded!");
             //console.dir($scope.locationsArray);
-
+            console.log("$scope (at end of reloadProjectLocations) is next...");
+            console.dir($scope);
         };
 
         $scope.reloadActivities = function () {
@@ -948,5 +1049,3 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
    
 ];
-
-

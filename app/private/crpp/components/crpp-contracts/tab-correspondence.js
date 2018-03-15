@@ -152,7 +152,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             },
             { field: 'ProjectName', headerName: 'Name', width: 275, menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'ProjectLead', headerName: 'Project Lead', width: 150, menuTabs: ['filterMenuTab'], },
-            { field: 'Closed', headerName: 'Closed?', width: 80, menuTabs: ['filterMenuTab'], },
+            { field: 'Closed', headerName: 'Additional Action?', width: 80, menuTabs: ['filterMenuTab'], },
             {
                 //note: white-space here causes word-wrap
                 field: 'Comments', headerName: 'Comments', width: 300, cellStyle: { 'white-space': 'normal' }, menuTabs: ['filterMenuTab'], filter: 'text'

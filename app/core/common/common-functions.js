@@ -60,13 +60,23 @@ function getByName(list, search_name) {
 
 //returns single match in any fieldname
 function getByField(list, search, field) {
-    for (var i = 0; i < list.length; i++) {
+    
+	// This loop iterates through the list sequentially.
+	for (var i = 0; i < list.length; i++) {
         var pref = list[i];
         if (pref[field] == search)
             return pref;
     };
 
     return null;
+}
+
+function binIdSearch(list, search, field){
+
+	var listLength = list.length;
+	if (binIdSearch())
+	
+	return -1;
 }
 
 //returns array with matching field value
@@ -1362,4 +1372,19 @@ function isFileInList(in_file, in_list) {
     });
 
     return isInList;
+}
+
+
+function buildDatasetLocationObjectsList(projectLocations, locationType)
+{
+    console.log("Inside buildDatasetLocationObjectsList...");
+    var thisDatasetLocationObjects = [];
+
+    angular.forEach(projectLocations, function (location, key) {
+        //console.log("location.LocationType.Id = " + location.LocationType.Id + ", locationType = " + locationType);
+        if (location.LocationType.Id === locationType)
+            thisDatasetLocationObjects.push(location.SdeObjectId);
+    });
+
+    return thisDatasetLocationObjects;
 }

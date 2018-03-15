@@ -56,11 +56,13 @@ datasets_module.service('ActivityParser', ['Logger',
 
             //parseSingleActivity: function(heading, data, fields) {
             parseSingleActivity: function (heading, data, fields, qaStatuses) {
-                console.log("Inside service, ActivityParser, parseSingleActivity...");
-                console.log("heading is next...");
-                console.dir(heading);
-                console.log("qaStatuses is next");
-                console.dir(qaStatuses);
+                console.log("Inside activity-parser.js, ActivityParser, parseSingleActivity...");
+                //console.log("heading is next...");
+                //console.dir(heading);
+				//console.log("data is next..."); // TotalTimeFished was 0, and is now 00:00 again... here
+				//console.dir(data);
+                //console.log("qaStatuses is next");
+                //console.dir(qaStatuses);
                 var activities = { activities: {}, errors: false };
 
                 var tmpdata = data.slice(0); // create a copy.
