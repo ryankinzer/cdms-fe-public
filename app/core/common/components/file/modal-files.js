@@ -275,6 +275,11 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
         if (!row.fieldRemovedFiles[field])
             row.fieldRemovedFiles[field] = [];
 
+        // $scope.filesToUpload gets set to undefined, during CreelSurvey addSection cleanup/prep action.
+        // Therefore, we must recreate it here, before continuing.
+        if ((typeof $scope.filesToUpload === 'undefined') || ($scope.filesToUpload === null))
+            $scope.filesToUpload = {};
+
         if (!$scope.filesToUpload[field])
             $scope.filesToUpload[field] = [];
         
@@ -371,22 +376,24 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
         // Now let's handle incoming files if we have them.
 
         //in filesToUpload there might be several fields with files to handle.
-        var file_fields = Object.keys($scope.filesToUpload);
-        console.log("Fields that have files in them to upload: ", file_fields);
+        if ((typeof $scope.filesToUpload !== 'undefined') && ($scope.filesToUpload !== null)) {
+            var file_fields = Object.keys($scope.filesToUpload);
+            console.log("Fields that have files in them to upload: ", file_fields);
 
-        //if there are no files being uploaded for any field then carry on.
-        if (file_fields.length === 0) {
-            $scope.modalFile_saveParentItem(saveRow);
-            return;
-        }
+            //if there are no files being uploaded for any field then carry on.
+            if (file_fields.length === 0) {
+                $scope.modalFile_saveParentItem(saveRow);
+                return;
+            }
 
-        //how many files do we have to upload?
-        file_fields.forEach(function (key) {
-            $scope.filesToUpload[key].forEach(function (file) {
-                console.log(key + " : " + file.Name);
-                $scope.fileCount++;
+            //how many files do we have to upload?
+            file_fields.forEach(function (key) {
+                $scope.filesToUpload[key].forEach(function (file) {
+                    console.log(key + " : " + file.Name);
+                    $scope.fileCount++;
+                });
             });
-        });
+        }
 
         console.log(" >> total of " + $scope.fileCount + " files to upload <<");
 
@@ -460,58 +467,59 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
         // --------------------------------------------- end of watcher.
 
 
+        if ((typeof file_fields !== 'undefined') && (file_fields !== null)) {
+            //now go ahead and process the files for each field
+            file_fields.forEach(function (in_file_field, index) {
 
-        //now go ahead and process the files for each field
-        file_fields.forEach(function (in_file_field, index) {
-                
-            //iterate our incoming files...
-            $scope.filesToUpload[in_file_field].forEach(function (file) {
-                console.log("incoming file:");
-                console.dir(file);
-                console.log("for field: ", in_file_field);
+                //iterate our incoming files...
+                $scope.filesToUpload[in_file_field].forEach(function (file) {
+                    console.log("incoming file:");
+                    console.dir(file);
+                    console.log("for field: ", in_file_field);
 
-                if (file.success != "Success") {
-                    console.log("Let's save the file...");
+                    if (file.success != "Success") {
+                        console.log("Let's save the file...");
 
-                    //update our incoming data with some file info
-                    in_data.Description = "Uploaded file " + file.Name;
-                    in_data.Title = file.Name;
+                        //update our incoming data with some file info
+                        in_data.Description = "Uploaded file " + file.Name;
+                        in_data.Title = file.Name;
 
-                    $scope.upload = $upload.upload({
-                        url: serviceUrl + in_target,
-                        method: "POST",
-                        data: in_data,
-                        file: file,
+                        $scope.upload = $upload.upload({
+                            url: serviceUrl + in_target,
+                            method: "POST",
+                            data: in_data,
+                            file: file,
 
-                    }).progress(function (evt) {
-                        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                        file.success = "working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
+                        }).progress(function (evt) {
+                            console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                            file.success = "working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
                         }).success(function (data, status, headers, config) {
 
-                        console.log("done saving and success!");
+                            console.log("done saving and success!");
 
-                        if (data.length == 0) //means the backend actually failed to create our object. We need an error message!
-                        {
+                            if (data.length == 0) //means the backend actually failed to create our object. We need an error message!
+                            {
+                                $scope.filesWithErrors++;
+                                file.success = "Failed (unknown error)"
+                            } else {
+                                $scope.modalFiles_filesToCheckForDuplicates.push(data[0]); //add this file to the duplicate file list
+                                file.success = "Success";
+                            }
+
+                            $scope.fileProgress++;
+
+                        }).error(function (data, status, headers, config) {
                             $scope.filesWithErrors++;
-                            file.success = "Failed (unknown error)"
-                        } else {
-                            $scope.modalFiles_filesToCheckForDuplicates.push(data[0]); //add this file to the duplicate file list
-                            file.success = "Success";
-                        }
+                            console.error(file.name + " failed to upload.");
+                            console.dir(data);
+                            file.success = "Failed (" + data.ExceptionMessage + ")";
+                            $scope.fileProgress++; //even if there is an error, we are done processing it...
+                        });
 
-                        $scope.fileProgress++;
-
-                    }).error(function (data, status, headers, config) {
-                        $scope.filesWithErrors++;
-                        console.error(file.name + " failed to upload.");
-                        console.dir(data);
-                        file.success = "Failed (" + data.ExceptionMessage + ")";
-                        $scope.fileProgress++; //even if there is an error, we are done processing it...
-                    });
-
-                }
-            });
-        }); //foreach filefield
+                    }
+                });
+            }); //foreach filefield
+        }
     };
 };
 

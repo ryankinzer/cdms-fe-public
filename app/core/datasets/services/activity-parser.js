@@ -57,8 +57,8 @@ datasets_module.service('ActivityParser', ['Logger',
             //parseSingleActivity: function(heading, data, fields) {
             parseSingleActivity: function (heading, data, fields, qaStatuses) {
                 console.log("Inside activity-parser.js, ActivityParser, parseSingleActivity...");
-                //console.log("heading is next...");
-                //console.dir(heading);
+                console.log("heading is next...");
+                console.dir(heading);
 				//console.log("data is next..."); // TotalTimeFished was 0, and is now 00:00 again... here
 				//console.dir(data);
                 //console.log("qaStatuses is next");
@@ -86,6 +86,7 @@ datasets_module.service('ActivityParser', ['Logger',
                 }
                 else {
                     service.addError(activities, 0, "Both a Location and ActivityDate are required to save a new Activity.");
+                    activities.errors = true;
                 }
 
 
