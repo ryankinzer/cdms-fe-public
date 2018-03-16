@@ -362,11 +362,6 @@ var dataset_entry_form = ['$scope', '$routeParams',
             //console.dir($scope);
         });
 
-        // Saving problem with Creel Survey...
-        // Press Add Section once:  it works.
-        // Fill out form again and press Add Section second time:  $scope.duplicateEntry at end of checkForDuplicates does not get set,
-        // so this watch never runs, so $scope.continueSaving() never runs, to complete the save process.
-        // Need to fix.
 		$scope.$watch('duplicateEntry', function(){
 			console.log("Inside watch duplicateEntry...");
 			//console.log("typeof $scope.duplicateEntry = " + $scope.duplicateEntry);
@@ -583,8 +578,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
                         // dangling and interphere with the save operation (trying to resave the same file - a duplicate).
                         $scope.originalExistingFiles.FieldSheetFile = $scope.row.originalExistingFiles.FieldSheetFile = undefined;
                         $scope.row.fieldFilesToUpload = [];
-                        //$scope.filesToUpload.FieldSheetFile = undefined;
-                        //$scope.filesToUpload.FieldSheetFile = [];
+
                         // If this is not set to undefined, it will incorrectly register an empty FieldSheetFile as 1,
                         // and cause problems during the save process.
                         $scope.filesToUpload = undefined;
