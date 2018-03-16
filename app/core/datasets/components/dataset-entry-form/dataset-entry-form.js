@@ -361,12 +361,18 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$scope at end of watch project.Name is next...");
             //console.dir($scope);
         });
-		
+
+        // Saving problem with Creel Survey...
+        // Press Add Section once:  it works.
+        // Fill out form again and press Add Section second time:  $scope.duplicateEntry at end of checkForDuplicates does not get set,
+        // so this watch never runs, so $scope.continueSaving() never runs, to complete the save process.
+        // Need to fix.
 		$scope.$watch('duplicateEntry', function(){
 			console.log("Inside watch duplicateEntry...");
 			//console.log("typeof $scope.duplicateEntry = " + $scope.duplicateEntry);
 			console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
-			console.log("$scope.saving = " + $scope.saving);
+            console.log("$scope.saving = " + $scope.saving);
+
 			if ((typeof $scope.duplicateEntry === 'undefined') || ($scope.duplicateEntry === null))
 				return;
 			else if ($scope.duplicateEntry)
@@ -545,7 +551,15 @@ var dataset_entry_form = ['$scope', '$routeParams',
             $scope.saveData();  // Save what we have, before blanking fields.
 
             $scope.addNewSectionWatcherCount = 0;
+            // $scope.activities.addNewSection gets set in $scope.modalFile_saveParentItem,
+            // right after $scope.activities = ActivityParser.parseSingleActivity...
             var addNewSectionWatcher = $scope.$watch('activities.addNewSection', function () {
+                // In $scope.modalFile_saveParentItem, after saving the activity, we set $scope.saving = false.
+                // We do not want to run the code below here, unless we are done saving.  If we do,
+                // The code below will blank the locationId before the save is complete, and cause an error.
+                if ($scope.saving === true)
+                    return;
+
                 console.log("Inside watcher addNewSection...");
                 console.log("$scope.activities.addNewSection = " + $scope.activities.addNewSection);
                 if ((typeof $scope.activities.addNewSection !== 'undefined') && ($scope.activities.addNewSection === false)) {
@@ -564,6 +578,16 @@ var dataset_entry_form = ['$scope', '$routeParams',
                         $scope.dataSheetDataset = [];
                         $scope.addNewRow();
                         $scope.addNewSection = false;
+
+                        // Set the file buckets for Creel to undefined or empty; otherwise, the last saved file will still be
+                        // dangling and interphere with the save operation (trying to resave the same file - a duplicate).
+                        $scope.originalExistingFiles.FieldSheetFile = $scope.row.originalExistingFiles.FieldSheetFile = undefined;
+                        $scope.row.fieldFilesToUpload = [];
+                        //$scope.filesToUpload.FieldSheetFile = undefined;
+                        //$scope.filesToUpload.FieldSheetFile = [];
+                        // If this is not set to undefined, it will incorrectly register an empty FieldSheetFile as 1,
+                        // and cause problems during the save process.
+                        $scope.filesToUpload = undefined;
 
                         // This pops the Save Success modal after Add Section.
                         var modalInstance = $modal.open({
