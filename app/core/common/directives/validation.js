@@ -40,7 +40,7 @@ common_module.directive('integer', function () {
     };
 });
 
-var INTEGER_REGEXP = /^\d{4}$/;
+var INTEGER_REGEXP4DIG = /^\d{4}$/;
 common_module.directive('integerfour', function () {
     return {
         require: 'ngModel',
@@ -51,7 +51,7 @@ common_module.directive('integerfour', function () {
                     return true;
                 }
 
-                if (INTEGER_REGEXP.test(viewValue)) {
+                if (INTEGER_REGEXP4DIG.test(viewValue)) {
                     // it is valid
                     ctrl.$setValidity('integer', true);
                     return parseInt(viewValue);
