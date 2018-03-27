@@ -270,6 +270,8 @@
 				
 				console.log("Inside DatasetImportCtrl, project.Name watcher...");
 	        	//Logger.debug($scope.project);
+
+                $scope.project.Instruments = CommonService.filterListForOnlyActiveInstruments($scope.project.Instruments);
 				
 				//$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
 				console.log("$scope.subprojectType = " + $scope.subprojectType);

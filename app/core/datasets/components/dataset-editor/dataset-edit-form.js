@@ -413,6 +413,8 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             $scope.project.Files = null;
             $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
 
+            $scope.project.Instruments = CommonService.filterListForOnlyActiveInstruments($scope.project.Instruments);
+
             //$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
             console.log("$scope.subprojectType = " + $scope.subprojectType);
             SubprojectService.setServiceSubprojectType($scope.subprojectType);

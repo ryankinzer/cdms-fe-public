@@ -270,8 +270,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				return;
 
             console.log("Inside watch project.Name...");
-            //console.log("$scope.project is next...");
-            //console.dir($scope.project);
+            console.log("$scope.project is next...");
+            console.dir($scope.project);
 
             $rootScope.projectId = $scope.project.Id;
             $scope.project.Files = null;
@@ -280,6 +280,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
             console.log("LocationType = " + $scope.datasetLocationType);
+
+            $scope.project.Instruments = CommonService.filterListForOnlyActiveInstruments($scope.project.Instruments);
 
             $scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
             console.log("$scope.subprojectType = " + $scope.subprojectType);
