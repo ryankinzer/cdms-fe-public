@@ -1656,7 +1656,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var constructorParams = _this.getBeansForParameters(constructorParamsMeta, beanEntry.bean.name);
 	            var newInstance = applyToConstructor(beanEntry.bean, constructorParams);
 	            beanEntry.beanInstance = newInstance;
-	            _this.logger.log('bean ' + _this.getBeanName(newInstance) + ' created');
+	            //_this.logger.log('bean ' + _this.getBeanName(newInstance) + ' created');
 	        });
 	    };
 	    Context.prototype.createBeanEntry = function (Bean) {

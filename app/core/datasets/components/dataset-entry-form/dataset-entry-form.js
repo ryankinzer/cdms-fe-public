@@ -638,6 +638,43 @@ var dataset_entry_form = ['$scope', '$routeParams',
         //$scope.postSaveInstrumentUpdateGrid = function (new_instrument) {
         //    $scope.instrumentList.push(new_fisherman); //the watch will take care of the rest?
         //};
+        //fired after a user saves a new or edited instrument
+        // we update the item in project's instruments then refresh the grid.
+        $scope.postSaveInstrumentUpdateGrid = function (the_promise) {
+            //console.log("ok - we saved so update the grid...");
+            var total = $scope.project.Instruments.length;
+            var count = 0;
+            var updated = false;
+            $scope.project.Instruments.forEach(function (item, index) {
+                if (item.Id === the_promise.Id) {
+                    updated = true;
+
+                    //console.log("ok we found a match! -- updating! before:");
+                    //console.dir($scope.subprojectList[index]);
+
+                    if (the_promise.AccuracyChecks !== undefined)
+                        delete the_promise.AccuracyChecks; //remove this before the copy.
+
+                    angular.extend($scope.project.Instruments[index], the_promise); //replace the data for that item
+                    //console.log("ok we found a match! -- updating! after:");
+
+                    console.log("done editing an instrument.");
+                }
+                count++;
+                if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
+                {
+                    //console.log("ok we found never a match! -- adding!");
+                    the_promise.AccuracyChecks = [];
+                    $scope.project.Instruments.push(the_promise); //add that item
+
+                    console.log("done adding an instrument.");
+                }
+            });
+
+            //console.log("updated the list and the grid... now refreshing the instrument lists");
+            //scope.refreshSubprojectLists(); //funders, collaborators, etc.
+
+        };
 
         // For Creel Survey only.
         // Adds another row to datasheet grid and copies common items (surveyor, date, etc.)
