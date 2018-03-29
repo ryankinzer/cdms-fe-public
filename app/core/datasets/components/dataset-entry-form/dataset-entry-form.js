@@ -795,9 +795,13 @@ var dataset_entry_form = ['$scope', '$routeParams',
             $scope.duplicateEntry = undefined;
             $scope.saving = true;
 
-			if (($scope.DatastoreTablePrefix === "CrppContracts") || ($scope.DatastoreTablePrefix === "WaterQuality"))
+			//if (($scope.DatastoreTablePrefix === "CrppContracts") || ($scope.DatastoreTablePrefix === "WaterQuality"))
+            if (($scope.DatastoreTablePrefix === "CrppContracts") ||
+                ($scope.DatastoreTablePrefix === "WaterQuality") ||
+                ($scope.DatastoreTablePrefix.indexOf("StreamNet_") > -1)
+                )
 			{
-				console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
+				console.log("This dataset is not checked for duplicates.");
 				$scope.duplicateEntry = false;
 				$scope.activities.errors = undefined;
 				//$scope.continueSaving();
