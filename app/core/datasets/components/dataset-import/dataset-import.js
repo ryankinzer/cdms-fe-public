@@ -1716,7 +1716,11 @@
 				console.log("$scope.dataSheetDataset is nextX...");
 				console.dir($scope.dataSheetDataset);
 				//throw "Stopping right here.";
-				if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+                //if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+                if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
+                    ($scope.DatastoreTablePrefix !== "WaterQuality") &&
+                    ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
+                    )
 				{
 					$scope.checkForDuplicates();
 				}
