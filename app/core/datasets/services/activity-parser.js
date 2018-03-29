@@ -86,6 +86,7 @@ datasets_module.service('ActivityParser', ['Logger',
                 }
                 else {
                     service.addError(activities, 0, "Both a Location and ActivityDate are required to save a new Activity.");
+                    activities.errors = true;
                 }
 
 

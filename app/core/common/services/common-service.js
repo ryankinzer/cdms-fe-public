@@ -229,6 +229,17 @@ common_module.service('CommonService', ['$q',
                 return SaveProjectLocation.save({ ProjectId: projectId, Location: location });
             },
 
+            filterListForOnlyActiveInstruments: function (instruments) {
+                var newInstrumentList = [];
+
+                angular.forEach(instruments, function(instrument){
+                    if(instrument.StatusId === 0) 
+                        newInstrumentList.push(instrument);
+                });
+
+                return newInstrumentList;
+            },
+
             getMetadataProperty: function (propertyId) {
 
                 if (!service.metadataProperties) {

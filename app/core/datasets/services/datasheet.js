@@ -892,8 +892,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route',
 				scope.ValidationCheckRunning = true;
 
                 angular.forEach(scope.dataSheetDataset, function (data_row, key) {
-					console.log("data_row (before validate) is next...");
-					console.dir(data_row);
+					//console.log("data_row (before validate) is next...");
+					//console.dir(data_row);
 					
 					// Notes:  We run checkForDuplicates right before the validation checks.
 					// Therefore, we may have some rows that have been flagged as duplicate records.

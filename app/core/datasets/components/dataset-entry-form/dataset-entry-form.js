@@ -270,8 +270,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				return;
 
             console.log("Inside watch project.Name...");
-            //console.log("$scope.project is next...");
-            //console.dir($scope.project);
+            console.log("$scope.project is next...");
+            console.dir($scope.project);
 
             $rootScope.projectId = $scope.project.Id;
             $scope.project.Files = null;
@@ -280,6 +280,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
             $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
             console.log("LocationType = " + $scope.datasetLocationType);
+
+            $scope.project.Instruments = CommonService.filterListForOnlyActiveInstruments($scope.project.Instruments);
 
             $scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
             console.log("$scope.subprojectType = " + $scope.subprojectType);
@@ -361,12 +363,13 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.log("$scope at end of watch project.Name is next...");
             //console.dir($scope);
         });
-		
+
 		$scope.$watch('duplicateEntry', function(){
 			console.log("Inside watch duplicateEntry...");
 			//console.log("typeof $scope.duplicateEntry = " + $scope.duplicateEntry);
 			console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
-			console.log("$scope.saving = " + $scope.saving);
+            console.log("$scope.saving = " + $scope.saving);
+
 			if ((typeof $scope.duplicateEntry === 'undefined') || ($scope.duplicateEntry === null))
 				return;
 			else if ($scope.duplicateEntry)
@@ -545,7 +548,15 @@ var dataset_entry_form = ['$scope', '$routeParams',
             $scope.saveData();  // Save what we have, before blanking fields.
 
             $scope.addNewSectionWatcherCount = 0;
+            // $scope.activities.addNewSection gets set in $scope.modalFile_saveParentItem,
+            // right after $scope.activities = ActivityParser.parseSingleActivity...
             var addNewSectionWatcher = $scope.$watch('activities.addNewSection', function () {
+                // In $scope.modalFile_saveParentItem, after saving the activity, we set $scope.saving = false.
+                // We do not want to run the code below here, unless we are done saving.  If we do,
+                // The code below will blank the locationId before the save is complete, and cause an error.
+                if ($scope.saving === true)
+                    return;
+
                 console.log("Inside watcher addNewSection...");
                 console.log("$scope.activities.addNewSection = " + $scope.activities.addNewSection);
                 if ((typeof $scope.activities.addNewSection !== 'undefined') && ($scope.activities.addNewSection === false)) {
@@ -564,6 +575,15 @@ var dataset_entry_form = ['$scope', '$routeParams',
                         $scope.dataSheetDataset = [];
                         $scope.addNewRow();
                         $scope.addNewSection = false;
+
+                        // Set the file buckets for Creel to undefined or empty; otherwise, the last saved file will still be
+                        // dangling and interphere with the save operation (trying to resave the same file - a duplicate).
+                        $scope.originalExistingFiles.FieldSheetFile = $scope.row.originalExistingFiles.FieldSheetFile = undefined;
+                        $scope.row.fieldFilesToUpload = [];
+
+                        // If this is not set to undefined, it will incorrectly register an empty FieldSheetFile as 1,
+                        // and cause problems during the save process.
+                        $scope.filesToUpload = undefined;
 
                         // This pops the Save Success modal after Add Section.
                         var modalInstance = $modal.open({
@@ -620,6 +640,43 @@ var dataset_entry_form = ['$scope', '$routeParams',
         //$scope.postSaveInstrumentUpdateGrid = function (new_instrument) {
         //    $scope.instrumentList.push(new_fisherman); //the watch will take care of the rest?
         //};
+        //fired after a user saves a new or edited instrument
+        // we update the item in project's instruments then refresh the grid.
+        $scope.postSaveInstrumentUpdateGrid = function (the_promise) {
+            //console.log("ok - we saved so update the grid...");
+            var total = $scope.project.Instruments.length;
+            var count = 0;
+            var updated = false;
+            $scope.project.Instruments.forEach(function (item, index) {
+                if (item.Id === the_promise.Id) {
+                    updated = true;
+
+                    //console.log("ok we found a match! -- updating! before:");
+                    //console.dir($scope.subprojectList[index]);
+
+                    if (the_promise.AccuracyChecks !== undefined)
+                        delete the_promise.AccuracyChecks; //remove this before the copy.
+
+                    angular.extend($scope.project.Instruments[index], the_promise); //replace the data for that item
+                    //console.log("ok we found a match! -- updating! after:");
+
+                    console.log("done editing an instrument.");
+                }
+                count++;
+                if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
+                {
+                    //console.log("ok we found never a match! -- adding!");
+                    the_promise.AccuracyChecks = [];
+                    $scope.project.Instruments.push(the_promise); //add that item
+
+                    console.log("done adding an instrument.");
+                }
+            });
+
+            //console.log("updated the list and the grid... now refreshing the instrument lists");
+            //scope.refreshSubprojectLists(); //funders, collaborators, etc.
+
+        };
 
         // For Creel Survey only.
         // Adds another row to datasheet grid and copies common items (surveyor, date, etc.)

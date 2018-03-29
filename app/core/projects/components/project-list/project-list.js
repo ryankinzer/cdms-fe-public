@@ -2,8 +2,8 @@
 
 
 
-var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService','$modal',
-    function (scope, DatasetService, ProjectService, CommonService, $modal){
+var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService','$modal', '$window',
+    function (scope, DatasetService, ProjectService, CommonService, $modal, $window){
     scope.projects = ProjectService.getProjects();
 
     scope.CellOptions = {}; //for metadata dropdown options
@@ -42,6 +42,11 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
               scope: scope, //very important to pass the scope along...
 
             });
+        };
+
+        scope.resetProject = function (project) {
+            ProjectService.clearProject();
+            $window.location.reload();
         };
 
         scope.clearLocationSelection = function () {
