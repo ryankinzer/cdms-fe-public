@@ -505,7 +505,11 @@ var dataset_entry_form = ['$scope', '$routeParams',
             if ($scope.row.LastAccuracyCheck)
                 $scope.row.AccuracyCheckId = $scope.row.LastAccuracyCheck.Id;
 			
-			if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+			//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+            if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
+                ($scope.DatastoreTablePrefix !== "WaterQuality") &&
+                ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
+            )
 			{
 				$scope.activities.errors = undefined;
 				$scope.removeRowErrorsBeforeRecheck();
@@ -1339,7 +1343,11 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
 			console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);
 			
-			if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+			//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+            if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
+                ($scope.DatastoreTablePrefix !== "WaterQuality") &&
+                ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
+            )
 			{
 				//$scope.activities.errors = {};
 				$scope.activities.errors = undefined;
@@ -1352,11 +1360,17 @@ var dataset_entry_form = ['$scope', '$routeParams',
 		$scope.onActivityDateChange = function()
 		{
 			console.log("Inside $scope.onActivityDateChange...");
-			
-			//$scope.activities.errors = {};
-			$scope.activities.errors = undefined;
-			$scope.duplicateEntry = undefined;
-			$scope.checkForDuplicates();
+
+            if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
+                ($scope.DatastoreTablePrefix !== "WaterQuality") &&
+                ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
+            )
+            {
+                //$scope.activities.errors = {};
+                $scope.activities.errors = undefined;
+                $scope.duplicateEntry = undefined;
+                $scope.checkForDuplicates();
+            }
 		};
 		
 		$scope.rebuildDateTimeList = function()

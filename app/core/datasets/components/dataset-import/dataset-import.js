@@ -1726,7 +1726,7 @@
 				}
 				else
 				{
-					console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
+					console.log("This dataset is not checked for duplicates.");
 					$scope.DupeCheckRunning = false;
 					$scope.duplicateEntry = false;
 					$scope.weHaveDuplicates = false;
