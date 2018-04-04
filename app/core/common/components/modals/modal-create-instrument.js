@@ -1,5 +1,5 @@
 ﻿var modal_create_instrument = ['$scope', '$modalInstance', 'DatasetService', 'ProjectService', 'CommonService',
-    function ($scope, $modalInstance, DatasetService, ProjectService, CommonService){
+    function ($scope, $modalInstance, DatasetService, ProjectService, CommonService) {
 
     $scope.header_message = "Create new instrument";
 
@@ -18,15 +18,23 @@
     $scope.InstrumentTypes = ProjectService.getInstrumentTypes();
     $scope.Departments = CommonService.getDepartments();
     $scope.RawProjects = ProjectService.getProjects();
+    $scope.instrumentList = ProjectService.getInstruments();
 
 
     $scope.save = function(){
-		console.log("Inside ModalCreateInstrumentCtrl, save...");
-		if (!$scope.instrument_row.InstrumentTypeId)
-		{
-			alert("You must select an Instrument Type!");
-			return;
-		}
+        console.log("Inside modal_create_instrument, save...");
+        console.log("$scope.instrument_row is next...");
+        console.dir($scope.instrument_row);
+        console.dir($scope);
+
+        if (!$scope.instrument_row.InstrumentTypeId) {
+            alert("You must select an Instrument Type!");
+            return;
+        }
+        else if (CommonService.checkForDuplicateInstrument($scope.instrumentList, $scope.instrument_row)) {
+            alert("An instrument with this name and serial number has already been entered!");
+            return;
+        }
 		
         var saveRow = angular.copy($scope.instrument_row);
 		console.log("saveRow is next...");

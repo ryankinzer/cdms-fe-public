@@ -57,7 +57,6 @@ common_module.factory('GetLocationTypes', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/location/getlocationtypes');
 }]);
 
-
 common_module.service('CommonService', ['$q',
     'GetMetadataProperties',
     'SaveDatasetMetadata',
@@ -238,6 +237,27 @@ common_module.service('CommonService', ['$q',
                 });
 
                 return newInstrumentList;
+            },
+
+            checkForDuplicateInstrument: function (instrumentList, instrument) {
+                var blnInstrumentExists = false;
+                var blnKeepGoing = true;
+
+                angular.forEach(instrumentList, function (item) {
+                    // Have we found a match yet? If so, we do not need to check the rest of the items.
+                    if (blnKeepGoing) {
+                        if ((item.Name === instrument.Name) && (item.SerialNumber === instrument.SerialNumber)) {
+                            blnInstrumentExists = true;
+                            blnKeepGoing = false;
+                        }
+                    }
+                });
+
+                return blnInstrumentExists;
+            },
+
+            getAllInstruments: function () {
+                return GetAllInstruments.query();
             },
 
             getMetadataProperty: function (propertyId) {
