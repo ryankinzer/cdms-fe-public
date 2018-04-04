@@ -1719,6 +1719,9 @@
                 //if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
                 if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
                     ($scope.DatastoreTablePrefix !== "WaterQuality") &&
+                    ($scope.DatastoreTablePrefix !== "Metrics") &&
+                    ($scope.DatastoreTablePrefix !== "Genetic") &&
+                    ($scope.DatastoreTablePrefix !== "FishScales") &&
                     ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
                     )
 				{
