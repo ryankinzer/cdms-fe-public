@@ -4,6 +4,11 @@ var admin_new_dataset = ['$scope', '$modal', 'DatasetService', 'AdminService', '
 
         $scope.datastore = DatasetService.getDatastore($routeParams.Id);
         $scope.projects = ProjectService.getProjects();
+        $scope.datasets = DatasetService.getDatasets();
+
+        $scope.projectsWithThisDatasetList = [];
+        $scope.availableProjectList = [];
+
         $scope.datastoreFields = null; //the fields we'll load once the datastore is loaded
 
         $scope.SelectedProject = null;
@@ -27,13 +32,58 @@ var admin_new_dataset = ['$scope', '$modal', 'DatasetService', 'AdminService', '
 
         }, true);
 
+        $scope.$watch('projects.0.Id', function () {
+            console.log("Inside watch projects[0].Id...");
+            if ((typeof $scope.projects === 'undefined') || ($scope.projects === null))
+                return;
+            else if ((typeof $scope.projects[0] === 'undefined') || ($scope.projects[0] === null))
+                return;
+
+            // First, get the list of projects that have a dataset from this datastore.
+            $scope.datasets.forEach(function (dataset) {
+                if (dataset.DatastoreId === $scope.datastore.Id)
+                    $scope.projectsWithThisDatasetList.push(dataset.ProjectId);
+            });
+
+            // Next, build our list of available projects, that DO NOT have this dataset.
+            $scope.projects.forEach(function (project) {
+                var DoesProjectHaveThisDataset = false;
+                $scope.projectsWithThisDatasetList.forEach(function (p) {
+                    if (project.Id === p)
+                        DoesProjectHaveThisDataset = true;
+                });
+                if (!DoesProjectHaveThisDataset)
+                    $scope.availableProjectList.push(project);
+
+            });
+
+            // Now set the list that we show in the combo-box to our list of available projects.
+            $scope.projects = $scope.availableProjectList;
+        });
+
         $scope.addDatasetToProject = function () {
+            console.log("Inside admin_new_dataset, addDatasetToProject...");
+            console.log("$scope is next...");
+            console.dir($scope);
 
             if (!$scope.SelectedProject)
             {
                 alert("Please select a project to add this dataset to.");
                 return;
             }
+
+            /*angular.forEach($scope.projects, function (project) {
+                if (project.Id === parseInt($scope.SelectedProject))
+                {
+                    console.log("Found project " + project.Name);
+
+                }
+            });
+            */
+            var projectIndex = $scope.projects.indexOf(parseInt($scope.SelectedProject));
+            console.log("projectIndex = " + projectIndex);
+
+            throw "Stopping right here...";
                 
             console.log(" The selected project: " + $scope.SelectedProject);
             $scope.fieldsToSave = [];

@@ -802,6 +802,9 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			//if (($scope.DatastoreTablePrefix === "CrppContracts") || ($scope.DatastoreTablePrefix === "WaterQuality"))
             if (($scope.DatastoreTablePrefix === "CrppContracts") ||
                 ($scope.DatastoreTablePrefix === "WaterQuality") ||
+                ($scope.DatastoreTablePrefix === "Metrics") ||
+                ($scope.DatastoreTablePrefix === "Genetic") ||
+                ($scope.DatastoreTablePrefix === "FishScales") ||
                 ($scope.DatastoreTablePrefix.indexOf("StreamNet_") > -1)
                 )
 			{
@@ -1346,6 +1349,9 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
             if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
                 ($scope.DatastoreTablePrefix !== "WaterQuality") &&
+                ($scope.DatastoreTablePrefix !== "Metrics") &&
+                ($scope.DatastoreTablePrefix !== "Genetic") &&
+                ($scope.DatastoreTablePrefix !== "FishScales") &&
                 ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
             )
 			{
@@ -1363,6 +1369,9 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
             if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
                 ($scope.DatastoreTablePrefix !== "WaterQuality") &&
+                ($scope.DatastoreTablePrefix !== "Metrics") &&
+                ($scope.DatastoreTablePrefix !== "Genetic") &&
+                ($scope.DatastoreTablePrefix !== "FishScales") &&
                 ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
             )
             {
