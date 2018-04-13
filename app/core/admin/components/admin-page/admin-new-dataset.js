@@ -82,8 +82,6 @@ var admin_new_dataset = ['$scope', '$modal', 'DatasetService', 'AdminService', '
             */
             var projectIndex = $scope.projects.indexOf(parseInt($scope.SelectedProject));
             console.log("projectIndex = " + projectIndex);
-
-            throw "Stopping right here...";
                 
             console.log(" The selected project: " + $scope.SelectedProject);
             $scope.fieldsToSave = [];
