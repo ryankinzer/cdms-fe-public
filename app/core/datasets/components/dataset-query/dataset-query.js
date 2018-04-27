@@ -867,9 +867,24 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 							});
 							$scope.dataSheetDataset[i].ProjectLead = strProjectLead;
 						}
-					}
-					//console.log("$scope in watch query.loading is next...");
-					////console.dir($scope);
+                    }
+                    else if ($scope.DatastoreTablePrefix === "AdultWeir") {
+                        var strTime = "";
+                        var intTimeLoc = -1;
+                        angular.forEach($scope.dataSheetDataset, function (item) {
+                            //console.log("item is next...");
+                            //console.dir(item);
+                            if (item.PassageTime !== null) {
+                                intTimeLoc = item.PassageTime.indexOf("T");
+                                strTime = item.PassageTime.substr(intTimeLoc + 1, 5);
+                                item.PassageTime = strTime;
+                            }
+                            //else
+                            //    console.log("item.PassageTime is null or blank...");
+                        });
+                    }
+					console.log("$scope in watch query.loading is next...");
+					console.dir($scope);
 					//ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {height: 360, width: 800});
 					ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {height: 360, width: 800});
 				}
@@ -930,7 +945,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 			
 			$scope.addDetails = function(){
 				console.log("Inside dataset-query.js, addDetails...");
-				angular.forEach($scope.dataset.Fields.sort(orderByIndex), function(field){
+                angular.forEach($scope.dataset.Fields.sort(orderByIndex), function (field) {
 						
 					if(field.FieldRoleId == FIELD_ROLE_DETAIL)
 					{
@@ -945,7 +960,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 		
 							//fieldIndex ++;
 							$scope.fieldIndex++;
-						}
+                        }
 
 						$scope.datasheetColDefs.push(makeFieldColDef(field, $scope));
 

@@ -7,3 +7,5 @@ web.config
 *Copy.htm
 *Copy.html
 DataTracker/*
+*.sln
+.vs/*

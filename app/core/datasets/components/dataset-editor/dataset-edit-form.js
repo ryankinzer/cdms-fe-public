@@ -355,6 +355,23 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                     $scope.dataSheetDataset[i].InterviewTime = strInterviewTime
                 }
             }
+			else if ($scope.DatastoreTablePrefix === "AdultWeir") {
+				var strTime = "";
+				var tmpTime = "";
+				var intTimeLoc = -1;
+				angular.forEach($scope.dataSheetDataset, function (item) {
+					//tmpTime = item.PassageTime;
+					console.log("item is next...");
+					console.dir(item);
+					if (item.PassageTime !== null) {
+						intTimeLoc = item.PassageTime.indexOf("T");
+						strTime = item.PassageTime.substr(intTimeLoc + 1, 5);
+						item.PassageTime = strTime;
+					}
+					//else
+					//    console.log("item.PassageTime is null or blank...");
+				});
+			}
 
             //setup our header/detail field structure
             angular.forEach($scope.dataset.Fields.sort(orderByIndex), function (field) {
@@ -990,7 +1007,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
         //was saveDatasheetData
         $scope.modalFile_saveParentItem = function (saveRow) {
             console.log("Inside modalFile_saveParentItem, $scope is next...");
-            //console.dir($scope);
+            console.dir($scope);
 
             var strYear = null;
             var strMonth = null;
@@ -1141,6 +1158,21 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 				
 				$scope.row.ProjectLead = strProjLeads;
 			}
+            else if ($scope.DatastoreTablePrefix === "AdultWeir")
+            {
+                console.log("Saving AdultWeir...");
+                var strDate = getDateFromDate($scope.row.activityDate);
+                var strTime = "";
+                $scope.dataSheetDataset.forEach(function (item) {
+                    console.log("item is next...");
+                    console.dir(item);
+                    console.log("item.PassageTime = " + item.PassageTime);
+                    strTime = item.PassageTime;
+                    console.log("strTime = " + strTime);
+
+                    item.PassageTime = strDate + " " + strTime + ":00.000";
+                });
+            }
 			
             //if ((typeof $scope.dataSheetDataset !== 'undefined') && ($scope.dataSheetDataset !== null)) {
                 /*for (var i = 0; i < $scope.dataSheetDataset.length; i++) {
