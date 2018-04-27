@@ -1009,6 +1009,21 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				
 				$scope.row.ProjectLead = strProjLeads;
 			}
+            else if ($scope.DatastoreTablePrefix === "AdultWeir")
+            {
+                console.log("Saving AdultWeir...");
+                var strDate = getDateFromDate($scope.row.activityDate);
+                var strTime = "";
+                $scope.dataSheetDataset.forEach(function (item) {
+                    console.log("item is next...");
+                    console.dir(item);
+                    console.log("item.PassageTime = " + item.PassageTime);
+                    strTime = item.PassageTime;
+                    console.log("strTime = " + strTime);
+
+                    item.PassageTime = strDate + " " + strTime + ":00.000";
+                });
+            }
 
             var sheetCopy = angular.copy($scope.dataSheetDataset);
             console.log("The following items are next: $scope.row, sheetCopy, $scope.fields");

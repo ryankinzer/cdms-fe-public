@@ -124,6 +124,24 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
                         strMinutes = "";
                     }
                 }
+                else if ($scope.DatastoreTablePrefix === "AdultWeir") {
+                    var strTime = "";
+                    var tmpTime = "";
+                    var intTimeLoc = -1;
+                    angular.forEach($scope.dataSheetDataset, function (item) {
+                        //tmpTime = item.PassageTime;
+                        console.log("item is next...");
+                        console.dir(item);
+                        if (item.PassageTime !== null) {
+                            intTimeLoc = item.PassageTime.indexOf("T");
+                            strTime = item.PassageTime.substr(intTimeLoc + 1, 5);
+                            item.PassageTime = strTime;
+                        }
+                        //else
+                        //    console.log("item.PassageTime is null or blank...");
+                    });
+                }
+				
             }
             console.log("$scope at end of watch dataset.ProjectId is next...");
             //console.dir($scope);
