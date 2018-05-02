@@ -74,8 +74,8 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
 
                 ChartService.buildChart($scope, $scope.grid.Details, $scope.dataset.Datastore.TablePrefix);
 
-                // If the dataset WaterTemp or WaterQuality, show the RowQAStatus field.
-                if (($scope.DatastoreTablePrefix === "WaterTemp") || ($scope.DatastoreTablePrefix === "WaterQuality")) {
+                // If the dataset WaterTemp, show the RowQAStatus field.
+                if ($scope.DatastoreTablePrefix === "WaterTemp") {
                     if ($scope.dataset.RowQAStatuses.length > 1) {
                         $scope.datasheetColDefs.unshift( // Add the item to the beginning of the array.
                             {
