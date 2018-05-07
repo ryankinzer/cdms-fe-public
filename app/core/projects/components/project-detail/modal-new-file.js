@@ -9,7 +9,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 
 		$scope.onFileSelect = function(files)
 		{
-            console.log("Inside ModalNewFileCtrl, file selected! " + files);
+            console.log("Inside modal_new_file, onFileSelect!  Files is next...");
+            //console.dir(files);
 
             //check for duplicates
             if (files) {
@@ -17,7 +18,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
                     if (isDuplicateUploadFile(file, $scope.project.Files))
                         file.success = "DUPLICATE";
                 });
-            } else
+            }
+            else
                 console.log("there were no files on FileSelect")
 
             $scope.uploadFiles = files;
@@ -34,15 +36,16 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 		};
 
 		$scope.save = function(){
-			console.log("Inside controllers.js, ModalNewFileCtrl, save...");
+            console.log("Inside modal_new_file.js, save...");
 			//console.log("$scope is next...");
-			//console.dir($scope);
+            //console.dir($scope);
+
 			// Just in case they clicked the Upload button, without selecting a file first.
 			if (!$scope.uploadFiles)
 			{
 				console.log("No file selected; do nothing...");
 				return;
-			}
+            }
 
             $scope.readyToUpload = false;
             $scope.doneUploading = true;
@@ -63,6 +66,22 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
                 if (file.success == "DUPLICATE") {
                     console.log("Duplicate -- ignoring: ", file.Name);
                     continue;
+                }
+                // The Title (file.Info.Title) is a required item.
+                else if (!file.Info) {
+                    console.log("Title missing -- ignoring: ", file.Name);
+                    file.success = "Need Title";
+                    continue;
+                }
+                else if (!file.Info.Title) {
+                    console.log("Title missing -- ignoring: ", file.Name);
+                    file.success = "Need Title";
+                    continue;
+                }
+                else if ((file.Info.Title) && (!file.Info.Description)) {
+                    // Set Description to blank, but it cannot be undefined, or null, because
+                    // "undefined" or "null" will show.
+                    file.Info.Description = "";
                 }
 
                 /*
@@ -109,8 +128,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 				//	alert(errors);
 				//else
 				//{
-					console.log("file is next...");
-					console.dir(file);
+					//console.log("file is next...");
+					//console.dir(file);
 					//if(file.success != "Success")
 					if(!file.success)
 					{
