@@ -57,8 +57,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 			for(var i = 0; i < $scope.uploadFiles.length; i++)
 			{
 				var file = $scope.uploadFiles[i];
-				console.log("file is next...");
-				console.dir(file);
+				//console.log("file is next...");
+				//console.dir(file);
 				
 				var newFileNameLength = file.name.length;
 				console.log("file name length = " + newFileNameLength);
