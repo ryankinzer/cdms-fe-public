@@ -57,8 +57,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 			for(var i = 0; i < $scope.uploadFiles.length; i++)
 			{
 				var file = $scope.uploadFiles[i];
-				//console.log("file is next...");
-				//console.dir(file);
+				console.log("file is next...");
+				console.dir(file);
 				
 				var newFileNameLength = file.name.length;
 				console.log("file name length = " + newFileNameLength);
@@ -142,16 +142,20 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 							data: {ProjectId: $scope.project.Id, Description: file.Info.Description, Title: file.Info.Title},
 							file: file,
 
-							}).progress(function(evt) {
-                                config.file.success = "Working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
-							}).success(function(data, status, headers, config) {
-                                config.file.success = "Success";
-                                $scope.callback(data);
+                            }).progress(function (evt) {
+                                if (typeof config !== 'undefined')
+                                    config.file.success = "Working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
+                            }).success(function (data, status, headers, config) {
+                                if (config) {
+                                    config.file.success = "Success";
+                                    $scope.callback(data);
+                                }
 							})
 							.error(function(data, status, headers, config) {
 								$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
 								//console.log(file.name + " was error.");
-								config.file.success = "Failed";
+                                if (config)
+								    config.file.success = "Failed";
 							});
 					}
 				//}
