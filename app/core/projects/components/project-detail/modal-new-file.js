@@ -146,15 +146,15 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
                                 if (typeof config !== 'undefined')
                                     config.file.success = "Working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
                             }).success(function (data, status, headers, config) {
-                                if (config) {
+                                if (typeof config !== 'undefined')
+                                {
                                     config.file.success = "Success";
                                     $scope.callback(data);
                                 }
-							})
-							.error(function(data, status, headers, config) {
+							}).error(function(data, status, headers, config) {
 								$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
 								//console.log(file.name + " was error.");
-                                if (config)
+                                if (typeof config !== 'undefined')
 								    config.file.success = "Failed";
 							});
 					}
