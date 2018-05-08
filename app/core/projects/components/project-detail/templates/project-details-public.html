@@ -1,0 +1,72 @@
+ <div class="project-attributes panel" style="width: 800px; padding: 20px;">
+                    <table class="table-striped">
+                      <tbody>
+                      <tr>
+                         <td class="metadata-field" style="width: 200px;">Program</td>
+                         <td class="metadata-value">{{project.MetadataValue[23]}}</td>
+                        </tr>
+                        <tr>
+                         <td class="metadata-field">Sub-program</td>
+                         <td class="metadata-value">{{project.MetadataValue[24]}}</td>
+                        </tr>
+
+                        <tr>
+                         <td class="metadata-field" style="width: 200px;">Organization</td>
+                         <td class="metadata-value">{{project.Organization.Name}}</td>
+                        </tr>
+                        
+                        <tr>
+                         <td class="metadata-field">Description</td>
+                         <td class="metadata-value">{{project.Description}}</td>
+                        </tr>
+
+                        <tr>
+                         <td class="metadata-field">Owner</td>
+                         <td class="metadata-value">{{project.Owner.Fullname}}</td>
+                        </tr>
+                        <tr>
+                         <td class="metadata-field">Owner Department</td>
+                         <td class="metadata-value"></td>
+                        </tr>
+
+                        <tr>
+                         <td class="metadata-field">Start Date</td>
+                         <td class="metadata-value">{{project.StartDate | date}}</td>
+                        </tr>
+
+                        <tr>
+                         <td class="metadata-field">End Date</td>
+                         <td class="metadata-value">{{project.EndDate | date}}</td>
+                        </tr>
+
+
+                        <tr>
+                         <td class="metadata-field">Project Statement/Goal</td>
+                         <td class="metadata-value">{{project.MetadataValue[9]}}</td>
+                        </tr>
+
+                        <tr>
+                         <td class="metadata-field">Project Objectives</td>
+                         <td class="metadata-value" id="details_objectives">{{project.MetadataValue[20]}}</td>
+                        </tr>
+
+                        
+                      <tr>
+                         <td class="metadata-field">Inputs: Funding</td>
+                         <td class="metadata-value">{{project.MetadataValue[3]}}</td>
+                        </tr>
+
+                      <tr>
+                         <td class="metadata-field">Inputs: Staff</td>
+                         <td class="metadata-value">{{project.MetadataValue[4]}}</td>
+                        </tr>
+
+                      <tr>
+                         <td class="metadata-field">Inputs: Collaborators</td>
+                         <td class="metadata-value">{{project.MetadataValue[5]}}</td>
+                        </tr>
+            
+                       </tbody>
+                    
+                    </table>
+              </div>

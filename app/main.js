@@ -37,13 +37,21 @@ define([
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 
-            $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'project-list-ctrl'});
-            $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets.html', controller: 'project-detail-ctrl'});
-
+            if (typeof TRIBALCDMS_TEMPLATE !== 'undefined') {
+                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects'+TRIBALCDMS_TEMPLATE+'.html', controller: 'project-list-ctrl' });
+                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets' + TRIBALCDMS_TEMPLATE + '.html', controller: 'project-detail-ctrl' });
+                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities' + TRIBALCDMS_TEMPLATE + '.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
+            }
+            else {
+                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'project-list-ctrl' });
+                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets.html', controller: 'project-detail-ctrl' });
+                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
+            }
+                
             $routeProvider.when('/mydata', { templateUrl: 'app/core/preferences/components/dataset-preferences/templates/mydatasets.html', controller: 'MyDatasetsCtrl'});
             $routeProvider.when('/myprojects', { templateUrl: 'app/core/preferences/components/project-preferences/templates/myprojects.html', controller: 'MyProjectsCtrl'});
             $routeProvider.when('/mypreferences', { templateUrl: 'app/core/preferences/components/my-preferences/templates/mypreferences.html', controller: 'MyPreferencesCtrl'});
-            $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit'});
+            
             $routeProvider.when('/dataview/:Id', { templateUrl: 'app/core/datasets/components/dataset-view/templates/dataset-view.html', controller: 'DatasetViewCtrl'});
             $routeProvider.when('/dataentry/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-sheet/templates/dataset-entry-sheet.html', controller: 'DataEntryDatasheetCtrl', permission: 'Edit'});
             $routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-form/templates/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});

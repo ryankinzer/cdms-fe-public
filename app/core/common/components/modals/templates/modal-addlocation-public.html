@@ -1,0 +1,105 @@
+<div class="modal">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+            <h3>{{headingMessage}}</h3>
+            <div>
+                <p ng-show="locationErrorMessage" class="alert alert-danger">{{locationErrorMessage}}</p>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="form" class="css-form" novalidate>
+                <!-- We need this line, to make the directives work.-->
+
+                <div class="header-label">Project:</div>
+                <div class="header-value">
+                    <span>{{project.Name}}</span>
+                </div>
+
+                <div class="header-label">Location Type:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="row.LocationTypeId" ng-options="p.Id as p.Name for p in locationTypes"></select>
+                </div>
+
+                <div class="header-label">Waterbody:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="row.WaterBodyId" ng-options="p.Id as p.Name for p in waterbodies"></select>
+                </div>
+
+
+                <div class="header-label">Label:</div>
+                <div class="header-value">
+                    <input class="form-control" ng-model="row.Label" />
+                </div>
+
+                <div class="header-label">Description:</div>
+                <div class="header-value">
+                    <textarea class="form-control" ng-model="row.Description"></textarea>
+                </div>
+
+                <div class="header-label">Latitude:</div>
+                <div class="header-value">
+                    <input class="form-control" name="Latitude" ng-model="row.Latitude" />
+                </div>
+
+                <div class="header-label">Longitude:</div>
+                <div class="header-value">
+                    <input class="form-control" name="Longitude" ng-model="row.Longitude" />
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' :  form.Elevation.$error.integer}" style="margin-bottom: 0px;">
+                    <div class="header-label">Elevation (meters):</div>
+                    <div class="header-value">
+                        <input class="form-control" name="Elevation" ng-model="row.Elevation" integer />
+                        <p class="field-error-block" ng-show="form.Elevation.$error.integer">This is not a valid Elevation; it must be a whole number.</p>
+                    </div>
+                </div>
+
+                <div class="header-label">Projection:</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="row.Projection" />
+                </div>
+
+                <div class="header-label">Other Agency ID:</div>
+                <div class="header-value">
+                    <input class="form-control" ng-model="row.OtherAgencyId" />
+                </div>
+
+                <div class="header-label">Study Design:</div>
+                <div class="header-value">
+                    <input class="form-control" ng-model="row.StudyDesign" />
+                </div>
+
+                <div class="header-label">Wetted Width:</div>
+                <div class="header-value">
+                    <input class="form-control" ng-model="row.WettedWidth" />
+                </div>
+
+                <div class="header-label">Wetted Depth:</div>
+                <div class="header-value">
+                    <input class="form-control" ng-model="row.WettedDepth" />
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error' :  form.RiverMile.$error.float}" style="margin-bottom: 0px;">
+                    <div class="header-label">River Mile:</div>
+                    <div class="header-value">
+                        <input class="form-control" name="RiverMile" ng-model="row.RiverMile" smart-float />
+                        <p class="field-error-block" ng-show="form.RiverMile.$error.float">This is not a valid River Mile</p>
+                    </div>
+                </div>
+
+                <div class="header-label">Image Link (URL):</div>
+                <div class="header-value">
+                    <input class="form-control" ng-model="row.ImageLink" />
+                </div>
+            </form>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="save()">Save</button>
+        </div>
+
+    </div>
+    </div>
+</div>

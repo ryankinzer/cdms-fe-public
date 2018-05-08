@@ -1,0 +1,20 @@
+﻿
+<div class="right" style="margin-top: 15px;">
+    <button class="btn" ng-click="openAddProject()">New Project</button>
+</div>
+
+<h3>Projects List</h3>
+<button ng-show="selectedLocation" ng-click="clearLocationSelection()" class="btn btn-xs">Clear</button>
+
+<div class="container-fluid">
+
+    <div class="row-fluid">
+        <div class="span10">
+            <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                <div id="project-list-grid" class="ag-blue gridStyle-small"></div>    
+                <div class="project-list-footer">Total projects: {{projects.length}}</div>
+            </div>
+        </div>
+    </div>
+
+</div>

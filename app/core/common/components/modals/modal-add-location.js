@@ -21,6 +21,21 @@ var modal_add_location = ['$scope', '$modalInstance', 'DatasetService', 'Project
         $scope.save = function () {
             console.log("Inside ModalAddLocationCtrl, save...");
 
+            //tribal CDMS just needs to create a location and be done (no arcgis point)
+            if (typeof TRIBALCDMS_TEMPLATE !== 'undefined') {
+                var promise = CommonService.saveNewProjectLocation($scope.project.Id, $scope.row);
+                promise.$promise.then(function () {
+                    console.log("done and success!");
+                    $scope.refreshProjectLocations();
+                    $modalInstance.dismiss();
+                });
+                return;
+            }
+
+
+            //otherwise we are using ARCGIS Server and Easting/Northings (CTUIR) and need to create a point in the layer
+
+
             if (!$scope.row.GPSEasting || !$scope.row.GPSNorthing) {
                 $scope.locationErrorMessage = "Please enter an Easting and a Northing for this point.";
                 return;
@@ -69,7 +84,6 @@ var modal_add_location = ['$scope', '$modalInstance', 'DatasetService', 'Project
                             var promise = CommonService.saveNewProjectLocation($scope.project.Id, $scope.row);
                             promise.$promise.then(function () {
                                 console.log("done and success!");
-                                //reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
                                 $scope.refreshProjectLocations();
                                 $modalInstance.dismiss();
                             });

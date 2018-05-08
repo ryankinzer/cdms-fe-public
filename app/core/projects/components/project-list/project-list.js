@@ -35,9 +35,16 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 		//};
 
         scope.openAddProject = function(){
-			console.log("Inside project-list.js, openAddProject...");
+            console.log("Inside project-list.js, openAddProject...");
+
+            templateUrl = 'app/core/projects/components/project-detail/templates/modal-edit-project.html';
+
+            if (typeof TRIBALCDMS_TEMPLATE !== 'undefined') {
+                templateUrl = 'app/core/projects/components/project-detail/templates/modal-edit-project' + TRIBALCDMS_TEMPLATE + '.html';
+            }
+
             var modalInstance = $modal.open({
-              templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
+              templateUrl: templateUrl,
               controller: 'ModalProjectEditorCtrl',
               scope: scope, //very important to pass the scope along...
 

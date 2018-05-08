@@ -547,16 +547,21 @@ var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectServ
 
 
         scope.openProjectEditor = function () {
-            scope.row = scope.project; //
+            scope.row = scope.project; 
 
             console.dir(scope.project);
             console.error(scope.project.MetadataValue[9]);
 
+            var templateUrl = 'app/core/projects/components/project-detail/templates/modal-edit-project.html';
+
+            if (typeof TRIBALCDMS_TEMPLATE !== 'undefined') {
+                templateUrl = 'app/core/projects/components/project-detail/templates/modal-edit-project' + TRIBALCDMS_TEMPLATE + '.html';
+            }
+
             var modalInstance = $modal.open({
-                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
+                templateUrl: templateUrl,
                 controller: 'ModalProjectEditorCtrl',
                 scope: scope, //very important to pass the scope along...
-
             });
         };
 
