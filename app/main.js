@@ -84,6 +84,7 @@ define([
 	  $rootScope.config = {
 	      version: CURRENT_VERSION,
           CDMS_DOCUMENTATION_URL: CDMS_DOCUMENTATION_URL,
+          REPORTSERVER_URL: REPORTSERVER_URL,
           build_version: BUILD_VERSION,
 	  };
 
