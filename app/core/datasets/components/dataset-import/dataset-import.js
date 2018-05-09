@@ -1377,28 +1377,23 @@
 									//split on commas -- if any
 									var row_items = data_row[col].trim().split(",");
 
-									for(var a = 0; a < row_items.length; a++)
-									{
-										var row_item = row_items[a].trim().toUpperCase();  //KBHERE -- take this off after the upgrade!
-
-										if ((typeof new_row.activityDate !== 'string') &&  (field.FieldRoleId === 1) && (row[field.DbColumnName].indexOf(row_item) == -1))
+										for(var a = 0; a < row_items.length; a++)
 										{
-											//console.log("We have a header, multiSelect...");
-											$scope.row[field.DbColumnName].push(row_item);
-										}											
-										else if(new_row[field.DbColumnName].indexOf(row_item) == -1)
-											new_row[field.DbColumnName].push(row_item);
-									}
+											var row_item = row_items[a].trim();  
+										    if ((typeof new_row.activityDate !== 'string') &&  (field.FieldRoleId === 1) && (row[field.DbColumnName].indexOf(row_item) == -1))
+										    {
+											    //console.log("We have a header, multiSelect...");
+											    $scope.row[field.DbColumnName].push(row_item);
+										    }											
+										    else if(new_row[field.DbColumnName].indexOf(row_item) == -1)
+											    new_row[field.DbColumnName].push(row_item);
+									    }
 
-									//new_row[field.DbColumnName] = angular.toJson(new_row[field.DbColumnName]);
-									//console.log("  AND our final multiselect value == ");
-									//console.log(new_row[field.DbColumnName]);
 								}
 								else if(field.ControlType === "select" && data_row[col] && typeof data_row[col] === "string")
 								{
 									//console.log(" -- " + data_row[col].trim().toUpperCase());
-									new_row[field.DbColumnName] = data_row[col].trim().toUpperCase(); //uppercase select's too....  KBHERE
-										
+								    new_row[field.DbColumnName] = data_row[col].trim();
 								}
 								else if(field.ControlType == "datetime")
 								{
