@@ -13,8 +13,10 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
        
         //this is for the crpp/subproject correspondence tab below - might can move this all out sometime...
         var otherAgencyTemplate = function (params) {
-            return '<span>' + params.node.data.Agency + '</span>'
-                + ((params.node.data.OtherAgency) ? ('<span> (' + params.node.data.OtherAgency + ')</span>') : ''); //ternery: if otheragency then show it
+            if (params.node.data.Agency !== null || params.node.data.OtherAgency !== null) {
+                return '<span>' + params.node.data.Agency + '</span>'
+                    + ((params.node.data.OtherAgency !== null) ? ('<span> (' + params.node.data.OtherAgency + ')</span>') : ''); //ternery: if otheragency then show it
+            }
         };
 
         var EventCount = function (params) {
@@ -135,8 +137,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 width: 120,
                 valueGetter: function (params) { return moment(params.node.data.EffDt) }, //date filter needs js date object			
                 valueFormatter: function (params) {
-                    if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
-                        return moment(params.node.data.EffDt).format('L');
+                    return valueFormatterDate(params.node.data.EffDt);
                 },
                 sort: 'desc',
                 filter: 'date',
@@ -175,8 +176,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 cellClass: 'event-record-cell',
                 valueGetter: function (params) { return moment(params.node.data.CorrespondenceDate) }, //date filter needs js date object			
                 valueFormatter: function (params) {
-                    if (params.node.data.CorrespondenceDate !== undefined && params.node.data.CorrespondenceDate !== null)
-                        return moment(params.node.data.CorrespondenceDate).format('L');
+                    return valueFormatterDate(params.node.data.CorrespondenceDate);
                 },
                 sort: 'desc',
                 filter: 'date',
@@ -192,8 +192,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 valueGetter: function (params) { return moment(params.node.data.ResponseDate) }, //date filter needs js date object			
                 width: 120,
                 valueFormatter: function (params) {
-                    if (params.node.data.ResponseDate !== undefined && params.node.data.ResponseDate !== null)
-                        return moment(params.node.data.ResponseDate).format('L');
+                    return valueFormatterDate(params.node.data.ResponseDate);
                 },
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],

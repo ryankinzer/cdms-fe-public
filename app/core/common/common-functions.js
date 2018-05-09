@@ -1427,3 +1427,21 @@ function buildDatasetLocationObjectsList(projectLocations, locationType)
 
     return thisDatasetLocationObjects;
 }
+
+//can be used by any valueFormatter to format a date. returns empty string if invalid date
+// @param in_date the date you want to format
+// @param in_format the format you want to use (moment's formatter types) - defaults to M/d/Y
+function valueFormatterDate(in_date, in_format) {
+    the_format = typeof in_format !== 'undefined' ? in_format : 'L'; //default to L type (M/d/Y)
+
+    retval = "";
+
+    if (in_date) {
+        the_date = moment(in_date);
+
+        if (the_date.isValid())
+            retval = the_date.format(the_format);
+    }
+    
+    return retval;
+}
