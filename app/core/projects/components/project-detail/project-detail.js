@@ -79,7 +79,7 @@ var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectServ
 		scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = "";
 		scope.filesToUpload = {};
 		scope.AuthorizedToViewProject = true;
-
+        scope.grids = {}; // Need this for the tab grids; they will be added to this when those tabs run.
 		
 		// Get the project ID from the url.
 		var theUrl = window.location.href;

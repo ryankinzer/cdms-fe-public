@@ -41,7 +41,8 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
         return div;
     };
 
-    /*var ImageTemplate = function (param) {
+    /*
+    var ImageTemplate = function (param) {
 
         var div = document.createElement('div');
 
@@ -228,6 +229,8 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
     }, true);
     */
 
+    scope.grids.docsGridOptions = scope.docsGridOptions;
+
     ///////// file handling for Documents tab
 
     //open the new file modal
@@ -244,13 +247,12 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
             var ag_grid_div = undefined;
             scope.project.Images.push(new_item[0]);
             scope.project.Files.push(new_item[0]);
-            //scope.galleryGridOptions.api.setRowData(scope.project.Images);
-            scope.resetProject();
+            scope.$parent.grids.galleryGridOptions.api.setRowData(scope.project.Images); // This line refreshes the grid on the gallery tab.
         }
         else {
             scope.project.Docs.push(new_item[0]);
             scope.project.Files.push(new_item[0]);
-            scope.docsGridOptions.api.setRowData(scope.project.Docs);
+            scope.docsGridOptions.api.setRowData(scope.project.Docs); // This line refreshes the grid on the documents tab.
         }
         console.log("done reloading grid after editing docs item.");
     };
@@ -261,7 +263,7 @@ var tab_docs = ['$scope', '$document', '$timeout', function (scope, $document, $
         scope.project.Docs.forEach(function (item, index) {
             console.log("item id is " + item.Id + " looking for " + removed_item.File.Id);
             if (item.Id === removed_item.File.Id) {
-                console.log("FOund an ID that matches for delete");
+                console.log("Found an ID that matches for delete");
                 scope.project.Docs.splice(index, 1);
             }
         });
