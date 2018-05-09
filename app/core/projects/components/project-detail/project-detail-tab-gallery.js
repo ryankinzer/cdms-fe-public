@@ -128,8 +128,7 @@ var tab_gallery = ['$scope','$timeout', function (scope, $timeout) {
 
     //after create a new file
     scope.afterNewGalleryFile = function (new_item) {
-        scope.project.Images.push(new_item[0]);
-        scope.project.Files.push(new_item[0]);
+        console.log("After saved a image");
         //scope.galleryGridOptions.api.setRowData(scope.project.Images);
         if (new_item[0].FileTypeId === 1) {
             var ag_grid_div = undefined;
