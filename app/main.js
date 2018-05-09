@@ -37,10 +37,10 @@ define([
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 
-            if (typeof TRIBALCDMS_TEMPLATE !== 'undefined') {
-                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects'+TRIBALCDMS_TEMPLATE+'.html', controller: 'project-list-ctrl' });
-                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets' + TRIBALCDMS_TEMPLATE + '.html', controller: 'project-detail-ctrl' });
-                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities' + TRIBALCDMS_TEMPLATE + '.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
+            if (typeof TRIBALCDMS_TEMPLATES !== 'undefined') {
+                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/' + TRIBALCDMS_TEMPLATES +'/projects.html', controller: 'project-list-ctrl' });
+                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/' + TRIBALCDMS_TEMPLATES +'/project-datasets.html', controller: 'project-detail-ctrl' });
+                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/' + TRIBALCDMS_TEMPLATES +'/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
             }
             else {
                 $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'project-list-ctrl' });

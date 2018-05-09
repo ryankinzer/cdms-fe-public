@@ -624,8 +624,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
             {
                 templateUrl = 'app/core/common/components/modals/templates/modal-addlocation.html';
 
-                if (typeof TRIBALCDMS_TEMPLATE !== 'undefined') {
-                    templateUrl = 'app/core/common/components/modals/templates/modal-addlocation' + TRIBALCDMS_TEMPLATE + '.html';
+                if (typeof TRIBALCDMS_TEMPLATES !== 'undefined') {
+                    templateUrl = 'app/core/common/components/modals/' + TRIBALCDMS_TEMPLATES + '/modal-addlocation.html';
                 }
 
                 var modalInstance = $modal.open({

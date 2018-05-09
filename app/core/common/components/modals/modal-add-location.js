@@ -22,7 +22,7 @@ var modal_add_location = ['$scope', '$modalInstance', 'DatasetService', 'Project
             console.log("Inside ModalAddLocationCtrl, save...");
 
             //tribal CDMS just needs to create a location and be done (no arcgis point)
-            if (typeof TRIBALCDMS_TEMPLATE !== 'undefined') {
+            if (typeof TRIBALCDMS_TEMPLATES !== 'undefined') {
                 var promise = CommonService.saveNewProjectLocation($scope.project.Id, $scope.row);
                 promise.$promise.then(function () {
                     console.log("done and success!");

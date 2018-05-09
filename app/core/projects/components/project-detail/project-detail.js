@@ -554,8 +554,8 @@ var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectServ
 
             var templateUrl = 'app/core/projects/components/project-detail/templates/modal-edit-project.html';
 
-            if (typeof TRIBALCDMS_TEMPLATE !== 'undefined') {
-                templateUrl = 'app/core/projects/components/project-detail/templates/modal-edit-project' + TRIBALCDMS_TEMPLATE + '.html';
+            if (typeof TRIBALCDMS_TEMPLATES !== 'undefined') {
+                templateUrl = 'app/core/projects/components/project-detail/' + TRIBALCDMS_TEMPLATES + '/modal-edit-project.html';
             }
 
             var modalInstance = $modal.open({

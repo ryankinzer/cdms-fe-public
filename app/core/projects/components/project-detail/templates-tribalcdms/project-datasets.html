@@ -14,10 +14,10 @@
 
 <tabset justified="true">
 	<tab heading="Summary">
-		<div ng-include="'app/core/projects/components/project-detail/templates/project-summary-public.html'"></div>
+		<div ng-include="'app/core/projects/components/project-detail/templates-tribalcdms/project-summary.html'"></div>
 	</tab>
 	<tab heading="Details" ng-show="AuthorizedToViewProject">
-		<div ng-include="'app/core/projects/components/project-detail/templates/project-details-public.html'"></div>
+		<div ng-include="'app/core/projects/components/project-detail/templates-tribalcdms/project-details.html'"></div>
 	</tab>
     <tab heading="Gallery" ng-controller="TabGalleryCtrl" ng-show="AuthorizedToViewProject">
         <div ng-include="'app/core/projects/components/project-detail/templates/project-gallery.html'"></div>
