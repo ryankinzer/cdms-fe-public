@@ -117,6 +117,8 @@ var tab_gallery = ['$scope','$timeout', function (scope, $timeout) {
 
     //});
 
+        scope.grids.galleryGridOptions = scope.galleryGridOptions;
+
     ///////// file handling for Gallery tab
 
     //open the new file modal
@@ -126,9 +128,20 @@ var tab_gallery = ['$scope','$timeout', function (scope, $timeout) {
 
     //after create a new file
     scope.afterNewGalleryFile = function (new_item) {
-        scope.project.Images.push(new_item[0]);
-        scope.project.Files.push(new_item[0]);
-        scope.galleryGridOptions.api.setRowData(scope.project.Images);
+        console.log("After saved a image");
+        //scope.galleryGridOptions.api.setRowData(scope.project.Images);
+        if (new_item[0].FileTypeId === 1) {
+            var ag_grid_div = undefined;
+            scope.project.Images.push(new_item[0]);
+            scope.project.Files.push(new_item[0]);
+            scope.galleryGridOptions.api.setRowData(scope.project.Images); // This line refreshes the grid on the gallery tab.
+        }
+        else {
+            scope.project.Docs.push(new_item[0]);
+            scope.project.Files.push(new_item[0]);
+            scope.$parent.grids.docsGridOptions.api.setRowData(scope.project.Docs); // This line refreshes the grid on the documents tab.
+        }
+
         console.log("done reloading grid after editing gallery item.");
     };
 
