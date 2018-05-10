@@ -42,6 +42,10 @@ var modal_manage_user = ['$scope', '$modalInstance', 'CommonService',
                 console.log("done and success!");
                 delete scope.user.Password;
 
+                if (!scope.user.Id) {
+                    scope.Users.push(promise);
+                }
+
                 $modalInstance.dismiss();
             });
             
