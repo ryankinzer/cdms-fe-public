@@ -33,11 +33,15 @@ var modal_manage_user = ['$scope', '$modalInstance', 'CommonService',
         }
 
         scope.save = function () {
-            scope.user.Password = btoa(scope.user.Password); //encodes
+            if(scope.user.Password)
+                scope.user.Password = btoa(scope.user.Password); //encodes
+
             var promise = CommonService.saveUser(scope.user);
 
             promise.$promise.then(function () {
                 console.log("done and success!");
+                delete scope.user.Password;
+
                 $modalInstance.dismiss();
             });
             
