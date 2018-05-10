@@ -75,7 +75,14 @@
               <li><a href="{{config.REPORTSERVER_URL}}" target="_blank">Reports</a></li>
             </ul>
           </li>
-          <li ng-show="Profile.isAdmin()"><a href="#/admin">Admin</a></li>
+          <li class="dropdown" ng-show="Profile.isAdmin()">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="#/admin">Datasets</a></li>
+                <li><a href="#/admin-users">Users</a></li>
+            </ul>
+          </li>
+          
         </ul>
 
         <ul class="nav navbar-nav navbar-right">

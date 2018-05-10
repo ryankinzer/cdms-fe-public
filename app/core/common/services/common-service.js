@@ -41,6 +41,16 @@ common_module.factory('Users', ['$resource', function ($resource) {
     });
 }]);
 
+common_module.factory('GetAllUsers', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/getallusers', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
+common_module.factory('SaveUser', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/saveuser');
+}]);
+
 common_module.factory('SaveProjectLocation', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/location/saveprojectlocation');
 }]);
@@ -66,6 +76,8 @@ common_module.service('CommonService', ['$q',
     'GetTimeZones',
     'GetDepartments',
     'Users',
+    'GetAllUsers',
+    'SaveUser',
     'DeleteLocationAction',
     'GetAllPossibleDatastoreLocations',
     'GetLocationTypes',
@@ -79,6 +91,8 @@ common_module.service('CommonService', ['$q',
         GetTimeZones,
         GetDepartments,
         Users,
+        GetAllUsers,
+        SaveUser,
         DeleteLocationAction,
         GetAllPossibleDatastoreLocations,
         GetLocationTypes,
@@ -220,6 +234,10 @@ common_module.service('CommonService', ['$q',
                 return Users.query();
             },
 
+            getAllUsers: function () {
+                return GetAllUsers.query();
+            },
+
             getDepartments: function () {
                 return GetDepartments.query();
             },
@@ -312,6 +330,11 @@ common_module.service('CommonService', ['$q',
                 return SaveDatasetMetadata.save(payload);
 
             },
+
+            saveUser: function (user) {
+                return SaveUser.save({ User: user });
+            },
+
         };
 
         service.getMetadataProperty(1); //cause our metadata properties to be loaded early.
