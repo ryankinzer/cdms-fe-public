@@ -9,7 +9,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 
 		$scope.onFileSelect = function(files)
 		{
-            console.log("Inside ModalNewFileCtrl, file selected! " + files);
+            console.log("Inside modal_new_file, onFileSelect!  Files is next...");
+            //console.dir(files);
 
             //check for duplicates
             if (files) {
@@ -17,7 +18,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
                     if (isDuplicateUploadFile(file, $scope.project.Files))
                         file.success = "DUPLICATE";
                 });
-            } else
+            }
+            else
                 console.log("there were no files on FileSelect")
 
             $scope.uploadFiles = files;
@@ -34,15 +36,16 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 		};
 
 		$scope.save = function(){
-			console.log("Inside controllers.js, ModalNewFileCtrl, save...");
+            console.log("Inside modal_new_file.js, save...");
 			//console.log("$scope is next...");
-			//console.dir($scope);
+            //console.dir($scope);
+
 			// Just in case they clicked the Upload button, without selecting a file first.
 			if (!$scope.uploadFiles)
 			{
 				console.log("No file selected; do nothing...");
 				return;
-			}
+            }
 
             $scope.readyToUpload = false;
             $scope.doneUploading = true;
@@ -54,8 +57,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 			for(var i = 0; i < $scope.uploadFiles.length; i++)
 			{
 				var file = $scope.uploadFiles[i];
-				console.log("file is next...");
-				console.dir(file);
+				//console.log("file is next...");
+				//console.dir(file);
 				
 				var newFileNameLength = file.name.length;
 				console.log("file name length = " + newFileNameLength);
@@ -63,6 +66,22 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
                 if (file.success == "DUPLICATE") {
                     console.log("Duplicate -- ignoring: ", file.Name);
                     continue;
+                }
+                // The Title (file.Info.Title) is a required item.
+                else if (!file.Info) {
+                    console.log("Title missing -- ignoring: ", file.Name);
+                    file.success = "Need Title";
+                    continue;
+                }
+                else if (!file.Info.Title) {
+                    console.log("Title missing -- ignoring: ", file.Name);
+                    file.success = "Need Title";
+                    continue;
+                }
+                else if ((file.Info.Title) && (!file.Info.Description)) {
+                    // Set Description to blank, but it cannot be undefined, or null, because
+                    // "undefined" or "null" will show.
+                    file.Info.Description = "";
                 }
 
                 /*
@@ -109,8 +128,8 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 				//	alert(errors);
 				//else
 				//{
-					console.log("file is next...");
-					console.dir(file);
+					//console.log("file is next...");
+					//console.dir(file);
 					//if(file.success != "Success")
 					if(!file.success)
 					{
@@ -123,16 +142,20 @@ modal_new_file = ['$scope','$modalInstance', '$upload',
 							data: {ProjectId: $scope.project.Id, Description: file.Info.Description, Title: file.Info.Title},
 							file: file,
 
-							}).progress(function(evt) {
-                                config.file.success = "Working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
-							}).success(function(data, status, headers, config) {
-                                config.file.success = "Success";
-                                $scope.callback(data);
-							})
-							.error(function(data, status, headers, config) {
+                            }).progress(function (evt) {
+                                if (typeof config !== 'undefined')
+                                    config.file.success = "Working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
+                            }).success(function (data, status, headers, config) {
+                                if (typeof config !== 'undefined')
+                                {
+                                    config.file.success = "Success";
+                                    $scope.callback(data);
+                                }
+							}).error(function(data, status, headers, config) {
 								$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
 								//console.log(file.name + " was error.");
-								config.file.success = "Failed";
+                                if (typeof config !== 'undefined')
+								    config.file.success = "Failed";
 							});
 					}
 				//}

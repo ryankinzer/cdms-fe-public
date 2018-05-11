@@ -79,7 +79,7 @@ var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectServ
 		scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = "";
 		scope.filesToUpload = {};
 		scope.AuthorizedToViewProject = true;
-
+        scope.grids = {}; // Need this for the tab grids; they will be added to this when those tabs run.
 		
 		// Get the project ID from the url.
 		var theUrl = window.location.href;
@@ -304,9 +304,9 @@ var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectServ
                 addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
                 scope.status.DoneLoadingProject = true;
 
-                console.error("loaded values direction for mpd -- we were alrady done...");
-                console.dir(scope.project);
-                console.error(scope.project.MetadataValue[9]);
+                //console.error("loaded values direction for mpd -- we were alrady done...");
+                //console.dir(scope.project);
+                //console.error(scope.project.MetadataValue[9]);
             } else {
                 //only setup the mdp values when we're done loading the whole list...
                 var mdpload_watcher = scope.$watch('status.DoneLoadingMetadata', function () {
