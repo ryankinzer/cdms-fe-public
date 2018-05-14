@@ -363,7 +363,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 					//tmpTime = item.PassageTime;
 					console.log("item is next...");
 					console.dir(item);
-					if (item.PassageTime !== null) {
+                    if ((typeof item.PassageTime !== 'undefined') && (item.PassageTime !== null)) {
 						intTimeLoc = item.PassageTime.indexOf("T");
 						strTime = item.PassageTime.substr(intTimeLoc + 1, 5);
 						item.PassageTime = strTime;
@@ -1166,11 +1166,13 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                 $scope.dataSheetDataset.forEach(function (item) {
                     console.log("item is next...");
                     console.dir(item);
-                    console.log("item.PassageTime = " + item.PassageTime);
-                    strTime = item.PassageTime;
-                    console.log("strTime = " + strTime);
+                    if ((typeof item.PassageTime !== 'undefined') && (item.PassageTime !== null)) {
+                        console.log("item.PassageTime = " + item.PassageTime);
+                        strTime = item.PassageTime;
+                        console.log("strTime = " + strTime);
 
-                    item.PassageTime = strDate + " " + strTime + ":00.000";
+                        item.PassageTime = strDate + " " + strTime + ":00.000";
+                    }
                 });
             }
 			

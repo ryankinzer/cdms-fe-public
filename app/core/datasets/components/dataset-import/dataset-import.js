@@ -1951,10 +1951,8 @@
 				
 				for (var i = 0; i < $scope.dataSheetDataset.length; i++)
 				{
-					if ($scope.DatastoreTablePrefix === "CreelSurvey")
-					{
-						if ((typeof $scope.dataSheetDataset[i].TotalTimeFished !== 'undefined') && ($scope.dataSheetDataset[i].TotalTimeFished != null))
-						{
+                    if ($scope.DatastoreTablePrefix === "CreelSurvey") {
+                        if ((typeof $scope.dataSheetDataset[i].TotalTimeFished !== 'undefined') && ($scope.dataSheetDataset[i].TotalTimeFished != null)) {
 							/*//console.log("TotalTimeFished for row " + i + " = " + $scope.dataSheetDataset[i].TotalTimeFished);
 							theHours = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(0,2));
 							//console.log("theHours = " + theHours);
@@ -1964,59 +1962,66 @@
 							//console.log("TotalTimeFished (in min) = " + TotalTimeFished);
 							$scope.dataSheetDataset[i].TotalTimeFished = TotalTimeFished;
 							*/
-							$scope.dataSheetDataset[i].TotalTimeFished = ServiceUtilities.convertHhMmToMinutes($scope.dataSheetDataset[i].TotalTimeFished);
-							
-							//theHours = -1;
-							//theMinutes = -1;
-							//TotalTimeFished = -1;
-						}
-						
-						console.log("typeof $scope.dataSheetDataset[i].activityDate = " + typeof $scope.dataSheetDataset[i].activityDate);
-						if (typeof $scope.dataSheetDataset[i].activityDate === 'object')
-						{
-							strYear = "" + $scope.dataSheetDataset[i].activityDate.getFullYear();
-							strMonth = "" + $scope.dataSheetDataset[i].activityDate.getMonth();
-							strDay = "" + $scope.dataSheetDataset[i].activityDate.getDate();
-						}
-						else if (typeof $scope.dataSheetDataset[i].activityDate === 'string')
-						{
-							//console.log("$scope.dataSheetDataset[i].activityDate = " + $scope.dataSheetDataset[i].activityDate);
-							strYear = $scope.dataSheetDataset[i].activityDate.substr(0, 4);
-							//console.log("strYear = " + strYear);
-							
-							strMonth = $scope.dataSheetDataset[i].activityDate.substr(5, 2);
-							//console.log("strMonth = " + strMonth);
-							if (strMonth.length < 2)
-								strMonth = "0" + strMonth;
-							
-							strDay = $scope.dataSheetDataset[i].activityDate.substr(8, 2);
-							//console.log("strDay = " + strDay);
-							if (strDay.length < 2)
-								strDay = "0" + strDay;
-						
-						}
-						
-						if ((typeof $scope.dataSheetDataset[i].TimeStart !== 'undefined') && ($scope.dataSheetDataset[i].TimeStart !== null))
-						{
-							//$scope.dataSheetDataset[i].TimeStart = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeStart + ":00.000";
-							$scope.dataSheetDataset[i].TimeStart = $scope.dataSheetDataset[i].TimeStart.replace(" ", "T");
-							$scope.dataSheetDataset[i].TimeStart = $scope.dataSheetDataset[i].TimeStart + ":00.000";
-						}
-						
-						if ((typeof $scope.dataSheetDataset[i].TimeEnd !== 'undefined') && ($scope.dataSheetDataset[i].TimeEnd !== null))
-						{
-							//$scope.dataSheetDataset[i].TimeEnd = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeEnd + ":00.000";
-							$scope.dataSheetDataset[i].TimeEnd = $scope.dataSheetDataset[i].TimeEnd.replace(" ", "T");
-							$scope.dataSheetDataset[i].TimeEnd = $scope.dataSheetDataset[i].TimeEnd + ":00.000";
-						}
-						
-						if ((typeof $scope.dataSheetDataset[i].InterviewTime !== 'undefined') && ($scope.dataSheetDataset[i].InterviewTime != null))
-						{
-							//$scope.dataSheetDataset[i].InterviewTime = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].InterviewTime + ":00.000";
-							$scope.dataSheetDataset[i].InterviewTime = $scope.dataSheetDataset[i].InterviewTime.replace(" ", "T");
-							$scope.dataSheetDataset[i].InterviewTime = $scope.dataSheetDataset[i].InterviewTime + ":00.000";
-						}
-					}
+                            $scope.dataSheetDataset[i].TotalTimeFished = ServiceUtilities.convertHhMmToMinutes($scope.dataSheetDataset[i].TotalTimeFished);
+
+                            //theHours = -1;
+                            //theMinutes = -1;
+                            //TotalTimeFished = -1;
+                        }
+
+                        console.log("typeof $scope.dataSheetDataset[i].activityDate = " + typeof $scope.dataSheetDataset[i].activityDate);
+                        if (typeof $scope.dataSheetDataset[i].activityDate === 'object') {
+                            strYear = "" + $scope.dataSheetDataset[i].activityDate.getFullYear();
+                            strMonth = "" + $scope.dataSheetDataset[i].activityDate.getMonth();
+                            strDay = "" + $scope.dataSheetDataset[i].activityDate.getDate();
+                        }
+                        else if (typeof $scope.dataSheetDataset[i].activityDate === 'string') {
+                            //console.log("$scope.dataSheetDataset[i].activityDate = " + $scope.dataSheetDataset[i].activityDate);
+                            strYear = $scope.dataSheetDataset[i].activityDate.substr(0, 4);
+                            //console.log("strYear = " + strYear);
+
+                            strMonth = $scope.dataSheetDataset[i].activityDate.substr(5, 2);
+                            //console.log("strMonth = " + strMonth);
+                            if (strMonth.length < 2)
+                                strMonth = "0" + strMonth;
+
+                            strDay = $scope.dataSheetDataset[i].activityDate.substr(8, 2);
+                            //console.log("strDay = " + strDay);
+                            if (strDay.length < 2)
+                                strDay = "0" + strDay;
+
+                        }
+
+                        if ((typeof $scope.dataSheetDataset[i].TimeStart !== 'undefined') && ($scope.dataSheetDataset[i].TimeStart !== null)) {
+                            //$scope.dataSheetDataset[i].TimeStart = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeStart + ":00.000";
+                            $scope.dataSheetDataset[i].TimeStart = $scope.dataSheetDataset[i].TimeStart.replace(" ", "T");
+                            $scope.dataSheetDataset[i].TimeStart = $scope.dataSheetDataset[i].TimeStart + ":00.000";
+                        }
+
+                        if ((typeof $scope.dataSheetDataset[i].TimeEnd !== 'undefined') && ($scope.dataSheetDataset[i].TimeEnd !== null)) {
+                            //$scope.dataSheetDataset[i].TimeEnd = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].TimeEnd + ":00.000";
+                            $scope.dataSheetDataset[i].TimeEnd = $scope.dataSheetDataset[i].TimeEnd.replace(" ", "T");
+                            $scope.dataSheetDataset[i].TimeEnd = $scope.dataSheetDataset[i].TimeEnd + ":00.000";
+                        }
+
+                        if ((typeof $scope.dataSheetDataset[i].InterviewTime !== 'undefined') && ($scope.dataSheetDataset[i].InterviewTime != null)) {
+                            //$scope.dataSheetDataset[i].InterviewTime = strYear + "-" + strMonth + "-" + strDay + "T" + $scope.dataSheetDataset[i].InterviewTime + ":00.000";
+                            $scope.dataSheetDataset[i].InterviewTime = $scope.dataSheetDataset[i].InterviewTime.replace(" ", "T");
+                            $scope.dataSheetDataset[i].InterviewTime = $scope.dataSheetDataset[i].InterviewTime + ":00.000";
+                        }
+                    }
+                    else if ($scope.DatastoreTablePrefix === "AdultWeir") {
+                        var strTime = "";
+                        var tmpTime = "";
+                        var intTimeLoc = -1;
+                        //console.log("item is next...");
+                        //console.dir(item);
+                        if ((typeof $scope.dataSheetDataset[i].PassageTime !== 'undefined') && ($scope.dataSheetDataset[i].PassageTime !== null)) {
+                            intTimeLoc = $scope.dataSheetDataset[i].PassageTime.indexOf("T");
+                            strTime = $scope.dataSheetDataset[i].PassageTime.substr(intTimeLoc + 1, 5);
+                            $scope.dataSheetDataset[i].PassageTime = strTime;
+                        }
+                    }
 					
 					if (typeof $scope.dataSheetDataset[i].Dry === 'undefined') // If Dry is missing, added and default it to NO?
 						$scope.dataSheetDataset[i].Dry = "NO";
@@ -2414,7 +2419,10 @@
 									var duplicateItems = angular.copy(promise);								
 									
 									if ($scope.showHeaderForm)
-									{
+                                    {
+                                        if (typeof $scope.activities === 'undefined')
+                                            $scope.activities = {};
+
 										$scope.activities.errors = {};
 										$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
 									}
