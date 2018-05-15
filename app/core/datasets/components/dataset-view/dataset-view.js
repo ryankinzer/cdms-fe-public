@@ -132,7 +132,7 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
                         //tmpTime = item.PassageTime;
                         console.log("item is next...");
                         console.dir(item);
-                        if (item.PassageTime !== null) {
+                        if ((typeof item.PassageTime !== 'undefined') && (item.PassageTime !== null)) {
                             intTimeLoc = item.PassageTime.indexOf("T");
                             strTime = item.PassageTime.substr(intTimeLoc + 1, 5);
                             item.PassageTime = strTime;

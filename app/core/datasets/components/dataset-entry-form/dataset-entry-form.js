@@ -1017,11 +1017,13 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 $scope.dataSheetDataset.forEach(function (item) {
                     console.log("item is next...");
                     console.dir(item);
-                    console.log("item.PassageTime = " + item.PassageTime);
-                    strTime = item.PassageTime;
-                    console.log("strTime = " + strTime);
+                    if ((typeof item.PassageTime !== 'undefined') && (item.PassageTime !== null)) {
+                        console.log("item.PassageTime = " + item.PassageTime);
+                        strTime = item.PassageTime;
+                        console.log("strTime = " + strTime);
 
-                    item.PassageTime = strDate + " " + strTime + ":00.000";
+                        item.PassageTime = strDate + " " + strTime + ":00.000";
+                    }
                 });
             }
 
