@@ -92,12 +92,13 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 									},
 									{
 										field: 'ActivityQAStatusId',
-										displayName: 'QA Status',
+										displayName: 'Activity QA',
 										cellFilter: 'QAStatusFilter'
 									},
 									{
-										field: "QAStatusId", //QARowStatus
-										displayName: "QA",
+                                        //field: "QAStatusId", //QARowStatus
+                                        field: "RowQAStatusId", //QARowStatus
+										displayName: "Row QA",
 										minWidth: 50, maxWidth: 200,
 										cellFilter: 'RowQAStatusFilter',
 										visible: false,  //start off hidden -- show only if relevant
