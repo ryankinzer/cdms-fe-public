@@ -819,7 +819,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 					if ((scope.DatastoreTablePrefix !== "CrppContracts") && (scope.DatastoreTablePrefix !== "WaterQuality"))
 					{
 						scope.rebuildDateTimeList();
-						scope.checkForDuplicates();
+						//scope.checkForDuplicates();
+                        service.checkForDuplicates(scope);
 					}
 					
 					//this is expensive in that it runs every time a value is changed in the grid.
