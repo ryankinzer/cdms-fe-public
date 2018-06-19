@@ -513,7 +513,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			{
 				$scope.activities.errors = undefined;
 				$scope.removeRowErrorsBeforeRecheck();
-				$scope.checkForDuplicates();
+                //$scope.checkForDuplicates();
+                DataSheet.checkForDuplicates($scope);
 			}
         };
 
@@ -815,7 +816,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			}
 			else
 			{
-				$scope.checkForDuplicates(); //this will call continueSaving when it is ready...
+                //$scope.checkForDuplicates(); //this will call continueSaving when it is ready...
+                DataSheet.checkForDuplicates($scope);
 			}
         };
 
@@ -1170,8 +1172,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			
 			//console.log("Finished.");
 		};
-		
-		$scope.checkForDuplicates = function(){
+
+        // Moved this function to datasheet.js.
+        // Once the dust settles, and things are stable, we can delete this block from here.
+		/*$scope.checkForDuplicates = function(){
 			console.log("Inside $scope.checkForDuplicates...");
 			console.log("$scope is next...");
 			console.dir($scope);
@@ -1306,7 +1310,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			{
 				// Get the ActivityDate
 				var strActivityDate = toExactISOString($scope.row.activityDate);
-				console.log("strActivityDate = " + strActivityDate);
+                console.log("strActivityDate = " + strActivityDate);
 				
 				strActivityDate = strActivityDate.replace("T", " ");
 				console.log("strActivityDate (without T) = " + strActivityDate);
@@ -1356,12 +1360,13 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				}
 			}
 		};
+        */
 		
 		$scope.onLocationChange = function()
 		{
 			console.log("Inside $scope.onLocationChange...");
 
-			console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);
+			console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);DataSheet.checkForDuplicates($scope);
 			
 			//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
             if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
@@ -1376,7 +1381,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				$scope.activities.errors = undefined;
 				//$scope.errors = { heading: [] };
 				$scope.removeRowErrorsBeforeRecheck();
-				$scope.checkForDuplicates();
+                //$scope.checkForDuplicates();
+                DataSheet.checkForDuplicates($scope);
 			}
 		};
 		
@@ -1395,9 +1401,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 //$scope.activities.errors = {};
                 $scope.activities.errors = undefined;
                 $scope.duplicateEntry = undefined;
-                $scope.checkForDuplicates();
+                //$scope.checkForDuplicates();
+                DataSheet.checkForDuplicates($scope);
             }
-		};
+        };
 		
 		$scope.rebuildDateTimeList = function()
 		{
