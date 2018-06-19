@@ -1725,7 +1725,7 @@
                     ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
                     )
 				{
-					$scope.checkForDuplicates();
+                    $scope.checkForDuplicates();
 				}
 				else
 				{
