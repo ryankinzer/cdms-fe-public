@@ -1143,20 +1143,6 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                     }
                 }
                 else {
-                    // Get the ActivityDate
-                    /*console.log("scope.row.activityDate = " + scope.row.activityDate);
-                    if (scope.row.activityDate instanceof Date)
-                        console.log("scope.row.activityDate is instanceof Date");
-                    else
-                    {
-                        console.log("scope.row.activityDate IS NOT instanceof Date");
-                        var dt = new Date();
-                        dt.setTime(scope.row.activityDate);
-                        scope.row.activityDate = dt;
-                        console.log("scope.row.activityDate = " + scope.row.activityDate);
-                    }
-                    */
-
                     var strActivityDate = toExactISOString(scope.row.activityDate);
                     console.log("strActivityDate = " + strActivityDate);
 
@@ -1177,8 +1163,6 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                     var aryActivityLocationList = intLocationId.split(",");
                     strActivityLocationList = uniq_fast(aryActivityLocationList);
                     console.log("strActivityLocationList = " + strActivityLocationList);
-
-                    //console.log("scope.datasetId = " + scope.datasetId + ", scope.row.locationId = " + scope.row.locationId + ", scope.row.activityDate = " + scope.row.activityDate);
 
                     //scope.SpecificActivitiesResults = null;
 
@@ -1212,6 +1196,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                     }
                     else
                     {
+                        console.log("scope.datasetId = " + scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
                         var promise = DatasetService.getSpecificActivities(scope.datasetId, strActivityLocationList, strActivityDateList);
 
                         //console.log("typeof $promise = " + typeof promise);
