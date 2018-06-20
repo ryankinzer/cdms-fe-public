@@ -126,8 +126,8 @@
                                         <option ng-repeat="instrument in allInstruments" value="{{instrument.Id}}">{{instrument.Name}} - SN:{{instrument.SerialNumber}}</option>
                                     </select>
 
-                                    <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createInstrument()">Create New</button>
-                                    <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addInstrument()">Add to Project</button>
+                                    <button ng-show="UserIsAdmin || UserIsOwner || UserIsEditor" style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createInstrument()">Create New</button>
+                                    <button ng-show="UserIsAdmin || UserIsOwner || UserIsEditor" style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addInstrument()">Add to Project</button>
 
                                 </div>
                             </div>
