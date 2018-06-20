@@ -1185,7 +1185,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                                     if (!scope.activities.errors)
                                         scope.activities.errors = {};
 
-                                    scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
+                                    scope.activities.errors.saveError = "Duplicate:  For this Location, Activity Date and Start Time, a record already exists.";
                                     scope.saving = false;
                                 }
                                 else {
