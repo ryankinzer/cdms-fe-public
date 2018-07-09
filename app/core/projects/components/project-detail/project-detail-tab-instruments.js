@@ -156,16 +156,24 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
 
             inst_ds_watcher(); //turn off watcher
 
-            for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
+            // Moved this block over to project-detail.js, in the users watch.
+            // This part was running before user results were back yet.
+            /*for (var i = 0; i < scope.datasets.length; i++) { //look through the datasets for one of ours.
 
                 //console.log("Woohoo! are we water tempproject?"); //TODO!! don't look at the dataset, look at the project type
                 //console.dir(scope.project);
 
                 if (scope.datasets[i].Datastore.TablePrefix === "WaterTemp") {
                     console.log("Adding instruments to tab bar...");
-                    scope.ShowInstruments = true;
+                    console.log("scope is next...");
+                    console.dir(scope);
+                    //scope.ShowInstruments = true;
+
+                    if ((scope.currentUserId === scope.project.OwnerId) || scope.UserIsEditor || scope.UserIsAdmin)
+                        scope.ShowInstruments = true;
                 }
             }
+            */
         }, true);
 
         //when the parent project is loaded...
