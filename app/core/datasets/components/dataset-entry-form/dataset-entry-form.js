@@ -1366,7 +1366,9 @@ var dataset_entry_form = ['$scope', '$routeParams',
 		{
 			console.log("Inside $scope.onLocationChange...");
 
-			console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);DataSheet.checkForDuplicates($scope);
+            console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);
+
+            DataSheet.checkForDuplicates($scope);
 			
 			//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
             if (($scope.DatastoreTablePrefix !== "CrppContracts") &&

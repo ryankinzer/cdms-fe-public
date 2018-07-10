@@ -635,6 +635,10 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                     //console.log("We have a TimeStart...");
                     service.checkForDuplicates(scope);
                 }
+                else if (strFieldName == "arrivaltime") {
+                    console.log("We have a ArrivalTime...");
+                    service.checkForDuplicates(scope);
+                }
 
                 //fire rules - OnChange
 
@@ -1027,7 +1031,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                 var dtIsoFormat = "";
                 var strActivityLocationList = "";
                 var strInstrumentIdList = "";
-                var strTimeStartList = "";
+                var strTimeList = "";
                 var count = 0;
 
                 if (scope.DatastoreTablePrefix === "WaterTemp") {
@@ -1169,11 +1173,11 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 
                     if (scope.DatastoreTablePrefix === "CreelSurvey") {
                         console.log("We are on CreelSurvey...");
-                        strTimeStartList = scope.row.TimeStart;
-                        console.log("strTimeStartList = " + strTimeStartList);
+                        strTimeList = scope.row.TimeStart;
+                        console.log("strTimeList = " + strTimeList);
 
-                        console.log("scope.datasetId = " + scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList + ", strTimeStartList = " + strTimeStartList);
-                        var promise = DatasetService.getSpecificCreelSurveyActivities(scope.datasetId, strActivityLocationList, strActivityDateList, strTimeStartList);
+                        console.log("scope.datasetId = " + scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList + ", strTimeList = " + strTimeList);
+                        var promise = DatasetService.getSpecificCreelSurveyActivities(scope.datasetId, strActivityLocationList, strActivityDateList, strTimeList);
 
                         //console.log("typeof $promise = " + typeof promise);
                         if (typeof promise !== 'undefined') {
@@ -1186,6 +1190,34 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                                         scope.activities.errors = {};
 
                                     scope.activities.errors.saveError = "Duplicate:  For this Location, Activity Date and Start Time, a record already exists.";
+                                    scope.saving = false;
+                                }
+                                else {
+                                    scope.duplicateEntry = false;
+                                    scope.activities.errors = undefined;
+                                }
+                            });
+                        }
+                    }
+                    else if (scope.DatastoreTablePrefix === "ScrewTrap") {
+                        console.log("We are on ScrewTrap...");
+                        strTimeList = scope.row.ArrivalTime;
+                        console.log("strTimeList = " + strTimeList);
+
+                        console.log("scope.datasetId = " + scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList + ", strTimeList = " + strTimeList);
+                        var promise = DatasetService.getSpecificScrewTrapActivities(scope.datasetId, strActivityLocationList, strActivityDateList, strTimeList);
+
+                        //console.log("typeof $promise = " + typeof promise);
+                        if (typeof promise !== 'undefined') {
+                            promise.$promise.then(function (list) {
+                                console.log("promise is next...");
+                                console.dir(promise);
+                                if (promise.length > 0) {
+                                    scope.duplicateEntry = true;
+                                    if (!scope.activities.errors)
+                                        scope.activities.errors = {};
+
+                                    scope.activities.errors.saveError = "Duplicate:  For this Location, Activity Date and Arrival Time, a record already exists.";
                                     scope.saving = false;
                                 }
                                 else {

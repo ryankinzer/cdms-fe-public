@@ -435,7 +435,10 @@ function validateField(field, row, key, scope, row_errors) {
 
                         if ((field.DbColumnName === "InterviewTime") ||
                             (field.DbColumnName === "TimeStart") ||
-                            (field.DbColumnName === "TimeEnd")) {
+                            (field.DbColumnName === "TimeEnd")
+                            //(field.DbColumnName === "ArrivalTime")
+                            )
+                        {
                             if ((typeof scope.callingPage !== 'undefined') && (scope.callingPage === "Import")) {
                                 if (!checkDateTimeFormat1(value))
                                     row_errors.push("[" + field.DbColumnName + "] Value is not a date-time format (YYYY-MM-DD hh:mm)");
