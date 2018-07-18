@@ -233,15 +233,17 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 console.log("Extracting times from strings...");
-                var strTimeStart = $scope.dataset_activities.Header.TimeStart;
-                var strTimeEnd = $scope.dataset_activities.Header.TimeEnd;
-                var intTLoc = strTimeStart.indexOf("T");
+                //var strTimeStart = $scope.dataset_activities.Header.TimeStart;
+                //var strTimeEnd = $scope.dataset_activities.Header.TimeEnd;
+                //var intTLoc = strTimeStart.indexOf("T");
                 // Start just past the "T" in the string, and get the time portion (the next 5 characters).
-                strTimeStart = strTimeStart.substr(intTLoc + 1, 5);
-                $scope.dataset_activities.Header.TimeStart = strTimeStart;
+                //strTimeStart = strTimeStart.substr(intTLoc + 1, 5);
+                //$scope.dataset_activities.Header.TimeStart = strTimeStart;
+                $scope.dataset_activities.Header.TimeStart = getTimeFromUtcString($scope.dataset_activities.Header.TimeStart);
 
-                strTimeEnd = strTimeEnd.substr(intTLoc + 1, 5);
-                $scope.dataset_activities.Header.TimeEnd = strTimeEnd;
+                //strTimeEnd = strTimeEnd.substr(intTLoc + 1, 5);
+                //$scope.dataset_activities.Header.TimeEnd = strTimeEnd;
+                $scope.dataset_activities.Header.TimeEnd = getTimeFromUtcString($scope.dataset_activities.Header.TimeEnd);
 
 				/*for (var i = 0; i < $scope.dataset_activities.Details.length; i++)
 				{
@@ -256,6 +258,10 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 					$scope.dataset_activities.Details[i].InterviewTime = strInterviewTime
 				}
 				*/
+            }
+            else if ($scope.DatastoreTablePrefix === "ScrewTrap")
+            {
+                $scope.dataset_activities.Header.ArrivalTime = getTimeFromFriendlyString($scope.dataset_activities.Header.ArrivalTime);
             }
 			else if ($scope.DatastoreTablePrefix === "CrppContracts")
 			{
