@@ -1229,7 +1229,6 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                                     strIsoDateTime = item.activityDate.replace("T", " ");
                                 }
                                 console.log("strIsoDateTime = " + strIsoDateTime);
-                                strTimeList = strIsoDateTime;
                             }
                             else // date object
                             {
@@ -1240,10 +1239,14 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                                 strIsoDateTime = formatDateFromFriendlyToUtc(dtActivityDate); // Now take the date and put it in ISO format (yyyy-mm-dd ...);
                                 console.log("strIsoDateTime = " + strIsoDateTime);
                             }
+                            strTimeList = strIsoDateTime;
                             //throw "Stopping right here...";
                         }
 
+
+                        //console.log("scope.datasetId = " + scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
                         console.log("scope.datasetId = " + scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList + ", strTimeList = " + strTimeList);
+                        //var promise = DatasetService.getSpecificActivities(scope.datasetId, strActivityLocationList, strActivityDateList);
                         var promise = DatasetService.getSpecificScrewTrapActivities(scope.datasetId, strActivityLocationList, strActivityDateList, strTimeList);
 
                         //console.log("typeof $promise = " + typeof promise);
