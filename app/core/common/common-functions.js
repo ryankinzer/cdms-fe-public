@@ -888,6 +888,28 @@ function getTimeFromDate(a_date) {
     return theHour + ":" + theMinutes;
 }
 
+// Expects a UTC Date/Time string like this:  2018-07-18T09:00:00.000
+// And returns an hours/min time like this:  09:00
+function getTimeFromUtcString(strDate) {
+    console.log("Inside common-functions.js, getTimeFromUtcString...");
+    // Start just past the "T" in the string, and get the time portion (the next 5 characters).
+    var intTLoc = strDate.indexOf("T");
+    var strTime = strDate.substr(intTLoc + 1, 5);
+
+    return strTime;
+}
+
+// Expects a friendly Date/Time string like this:  07/18/2018 09:00:00
+// And returns an hours/min time like this:  09:00
+function getTimeFromFriendlyString(strDate) {
+    console.log("Inside common-functions.js, getTimeFromFriendlyString...");
+    // Start just past the " " in the string, and get the time portion (the next 5 characters).
+    var intSpaceLoc = strDate.indexOf(" ");
+    var strTime = strDate.substr(intSpaceLoc + 1, 5);
+
+    return strTime;
+}
+
 //give me a date string and offset (in ms) and I'll give you back a Date
 //  with the offset applied.
 //  used in rules.
