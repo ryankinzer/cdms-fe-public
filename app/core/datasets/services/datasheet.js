@@ -1056,7 +1056,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                         if ((typeof item.ReadingDateTime !== 'undefined') && (item.ReadingDateTime !== null)) {
                             //var strIsoDateTime = null;
                             //var strIsoTime = moment(item.ReadingDateTime).format("YYYY-MM-DD").toString();
-                            var strIsoDateTime = strIsoDateTime = formatDateFromFriendlyToUtc(item.ReadingDateTime);
+                            //var strIsoDateTime = strIsoDateTime = formatDateFromFriendlyToUtc(item.ReadingDateTime);
+                            var strIsoDateTime = formatDateFromFriendlyToUtc(item.ReadingDateTime);
 
                             console.log("strIsoDateTime = " + strIsoDateTime);
 
@@ -1199,10 +1200,48 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                             });
                         }
                     }
-                    else if (scope.DatastoreTablePrefix === "ScrewTrap") {
+                    else if (scope.DatastoreTablePrefix === "ScrewTrap")
+                    {
                         console.log("We are on ScrewTrap...");
-                        strTimeList = scope.row.ArrivalTime;
-                        console.log("strTimeList = " + strTimeList);
+                        if ((typeof scope.row.ArrivalTime !== 'undefined') && (scope.row.ArrivalTime !== null))
+                        {
+                            console.log("We have an entry...");
+                            if (typeof scope.row.ArrivalTime === "string") {
+                                console.log("We have a string...");
+                                var slashLoc = scope.row.ArrivalTime.indexOf("/");
+                                //console.log("slashLoc = " + slashLoc);
+
+                                if (slashLoc > -1) {
+                                    //console.log("The date is in friendly format; need to convert...");
+                                    strIsoDateTime = formatDateFromFriendlyToUtc(iscope.row.ArrivalTime);
+                                    item.activityDate = strIsoDateTime.replace(" ", "T");
+                                    var periodLoc = strIsoDateTime.indexOf(".");
+                                    strIsoDateTime = strIsoDateTime.substring(0, periodLoc);
+                                }
+                                else if (scope.row.ArrivalTime.length === 5)
+                                {
+                                    console.log("We have a time in 00:00 format; need to add on the ActivityDate...");
+                                    strIsoDateTime = getDateFromDate(scope.row.activityDate);
+                                    strIsoDateTime += " " + scope.row.ArrivalTime + ":00";
+                                }
+                                else {
+                                    //console.log("The date is in UTC; OK...");
+                                    strIsoDateTime = item.activityDate.replace("T", " ");
+                                }
+                                console.log("strIsoDateTime = " + strIsoDateTime);
+                                strTimeList = strIsoDateTime;
+                            }
+                            else // date object
+                            {
+                                console.log("We have a date object...");
+                                // Use our toolbox of functions to get the date into the format we need.
+                                var dtActivityDate = formatDate(item.activityDate); // Take the date object and put it in friendly format (dd/mm/yyyy ...) first;
+                                console.log("dtActivityDate = " + dtActivityDate);
+                                strIsoDateTime = formatDateFromFriendlyToUtc(dtActivityDate); // Now take the date and put it in ISO format (yyyy-mm-dd ...);
+                                console.log("strIsoDateTime = " + strIsoDateTime);
+                            }
+                            //throw "Stopping right here...";
+                        }
 
                         console.log("scope.datasetId = " + scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList + ", strTimeList = " + strTimeList);
                         var promise = DatasetService.getSpecificScrewTrapActivities(scope.datasetId, strActivityLocationList, strActivityDateList, strTimeList);
