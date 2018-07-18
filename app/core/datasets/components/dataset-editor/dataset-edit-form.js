@@ -233,8 +233,10 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 console.log("Extracting times from strings...");
-                $scope.dataset_activities.Header.TimeStart = getTimeFromUtcString($scope.dataset_activities.Header.TimeStart);
-                $scope.dataset_activities.Header.TimeEnd = getTimeFromUtcString($scope.dataset_activities.Header.TimeEnd);
+                if ((typeof $scope.dataset_activities.Header.TimeStart !== 'undefined') && ($scope.dataset_activities.Header.TimeStart !== null))
+                    $scope.dataset_activities.Header.TimeStart = getTimeFromUtcString($scope.dataset_activities.Header.TimeStart);
+                if ((typeof $scope.dataset_activities.Header.TimeEnd !== 'undefined') && ($scope.dataset_activities.Header.TimeEnd !== null))
+                    $scope.dataset_activities.Header.TimeEnd = getTimeFromUtcString($scope.dataset_activities.Header.TimeEnd);
 
 				/*for (var i = 0; i < $scope.dataset_activities.Details.length; i++)
 				{
@@ -246,7 +248,8 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             }
             else if ($scope.DatastoreTablePrefix === "ScrewTrap")
             {
-                $scope.dataset_activities.Header.ArrivalTime = getTimeFromFriendlyString($scope.dataset_activities.Header.ArrivalTime);
+                if ((typeof $scope.dataset_activities.Header.ArrivalTime !== 'undefined') && ($scope.dataset_activities.Header.ArrivalTime !== null))
+                    $scope.dataset_activities.Header.ArrivalTime = getTimeFromFriendlyString($scope.dataset_activities.Header.ArrivalTime);
             }
 			else if ($scope.DatastoreTablePrefix === "CrppContracts")
 			{
