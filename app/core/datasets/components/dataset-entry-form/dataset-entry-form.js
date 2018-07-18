@@ -826,7 +826,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
             
             //TODO: we should really break this below stuff out somehow so there isn't special handling in here for certain datasets...
             /**** CreeSurvey Header Time Time calculations Start ****/
-            if ($scope.DatastoreTablePrefix === "CreelSurvey") {
+            //if ($scope.DatastoreTablePrefix === "CreelSurvey") {
+            if (($scope.DatastoreTablePrefix === "CreelSurvey") || ($scope.DatastoreTablePrefix === "ScrewTrap")){
                 // Headers = row
                 // Details = onRow
 
@@ -878,20 +879,32 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 if (strDay.length < 2)
                     strDay = "0" + strDay;
 
-                var tmpTime = $scope.row.TimeStart;
-                console.log("tmpTime (TimeStart) = " + tmpTime);
-                if (tmpTime !== null) {
-                    $scope.row.TimeStart = "";
-                    $scope.row.TimeStart = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
-                    console.log("$scope.row.TimeStart = " + $scope.row.TimeStart);
-                }
+                var tmpTime = null;
+                if ($scope.DatastoreTablePrefix === "CreelSurvey") {
+                    tmpTime = $scope.row.TimeStart;
+                    console.log("tmpTime (TimeStart) = " + tmpTime);
+                    if (tmpTime !== null) {
+                        $scope.row.TimeStart = "";
+                        $scope.row.TimeStart = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
+                        console.log("$scope.row.TimeStart = " + $scope.row.TimeStart);
+                    }
 
-                tmpTime = $scope.row.TimeEnd;
-                console.log("tmpTime (TimeEnd) = " + tmpTime);
-                if (tmpTime !== null) {
-                    $scope.row.TimeEnd = "";
-                    $scope.row.TimeEnd = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
-                    console.log("$scope.row.TimeEnd = " + $scope.row.TimeEnd);
+                    tmpTime = $scope.row.TimeEnd;
+                    console.log("tmpTime (TimeEnd) = " + tmpTime);
+                    if (tmpTime !== null) {
+                        $scope.row.TimeEnd = "";
+                        $scope.row.TimeEnd = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
+                        console.log("$scope.row.TimeEnd = " + $scope.row.TimeEnd);
+                    }
+                }
+                else if ($scope.DatastoreTablePrefix === "ScrewTrap") {
+                    tmpTime = $scope.row.ArrivalTime;
+                    console.log("tmpTime (ArrivalTime) = " + tmpTime);
+                    if (tmpTime !== null) {
+                        $scope.row.ArrivalTime = "";
+                        $scope.row.ArrivalTime = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
+                        console.log("$scope.row.ArrivalTime = " + $scope.row.ArrivalTime);
+                    }
                 }
             }
             /**** CreeSurvey Header Time Time calculations End ****/
