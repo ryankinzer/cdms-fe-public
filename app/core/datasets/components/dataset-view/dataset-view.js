@@ -217,19 +217,23 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
                 $scope.fishermenList = ProjectService.getFishermen();
 
                 console.log("Extracting times from strings...");
-                $scope.grid.Header.TimeStart = getTimeFromUtcString($scope.grid.Header.TimeStart);
-                $scope.grid.Header.TimeEnd = getTimeFromUtcString($scope.grid.Header.TimeEnd);
+                if ((typeof $scope.grid.Header.TimeStart !== 'undefined') && ($scope.grid.Header.TimeStart !== null))
+                    $scope.grid.Header.TimeStart = getTimeFromUtcString($scope.grid.Header.TimeStart);
+                if ((typeof $scope.grid.Header.TimeEnd !== 'undefined') && ($scope.grid.Header.TimeEnd !== null))
+                    $scope.grid.Header.TimeEnd = getTimeFromUtcString($scope.grid.Header.TimeEnd);
 
                 for (var i = 0; i < $scope.grid.Details.length; i++) {
                     console.log("$scope.grid.Details[i] is next...");
                     console.dir($scope.grid.Details[i]);
 
-                    $scope.grid.Details[i].InterviewTime = getTimeFromUtcString($scope.grid.Details[i].InterviewTime);
+                    if ((typeof $scope.grid.Details[i].InterviewTime !== 'undefined') && ($scope.grid.Details[i].InterviewTime !== null))
+                        $scope.grid.Details[i].InterviewTime = getTimeFromUtcString($scope.grid.Details[i].InterviewTime);
                 }
             }
             else if ($scope.DatastoreTablePrefix === "ScrewTrap")
             {
-                $scope.grid.Header.ArrivalTime = getTimeFromFriendlyString($scope.grid.Header.ArrivalTime);
+                if ((typeof $scope.grid.Header.ArrivalTime !== 'undefined') && ($scope.grid.Header.ArrivalTime !== null))
+                    $scope.grid.Header.ArrivalTime = getTimeFromFriendlyString($scope.grid.Header.ArrivalTime);
             }
 			else if ($scope.DatastoreTablePrefix === "CrppContracts")
 			{
