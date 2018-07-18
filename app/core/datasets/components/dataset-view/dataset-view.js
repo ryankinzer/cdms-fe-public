@@ -217,28 +217,13 @@ var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$loca
                 $scope.fishermenList = ProjectService.getFishermen();
 
                 console.log("Extracting times from strings...");
-                //var strTimeStart = $scope.grid.Header.TimeStart;
-                //var strTimeEnd = $scope.grid.Header.TimeEnd;
-                //var intTLoc = strTimeStart.indexOf("T");
-                // Start just past the "T" in the string, and get the time portion (the next 5 characters).
-                //strTimeStart = strTimeStart.substr(intTLoc + 1, 5);
-                //$scope.grid.Header.TimeStart = strTimeStart;
                 $scope.grid.Header.TimeStart = getTimeFromUtcString($scope.grid.Header.TimeStart);
-
-                //strTimeEnd = strTimeEnd.substr(intTLoc + 1, 5);
-                //$scope.grid.Header.TimeEnd = strTimeEnd;
                 $scope.grid.Header.TimeEnd = getTimeFromUtcString($scope.grid.Header.TimeEnd);
 
                 for (var i = 0; i < $scope.grid.Details.length; i++) {
                     console.log("$scope.grid.Details[i] is next...");
                     console.dir($scope.grid.Details[i]);
-                    //var strInterviewTime = $scope.grid.Details[i].InterviewTime;
-                    //console.log("strInterviewTime = " + strInterviewTime);
-                    //intTLoc = strInterviewTime.indexOf("T");
-                    //console.log("intLoc = " + intTLoc);
-                    //strInterviewTime = strInterviewTime.substr(intTLoc + 1, 5);
-                    //console.log("strInterviewTime = " + strInterviewTime);
-                    //$scope.grid.Details[i].InterviewTime = strInterviewTime
+
                     $scope.grid.Details[i].InterviewTime = getTimeFromUtcString($scope.grid.Details[i].InterviewTime);
                 }
             }
