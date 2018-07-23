@@ -652,22 +652,6 @@ function checkDateTimeFormat1(strDateTime) {
     else
         strDateTime = strDateTime.slice(2);
 
-    //console.log("strDateTime = " + strDateTime);
-
-    if (strDateTime.charAt(0) !== '-')
-        return false;
-    else
-        strDateTime = strDateTime.slice(1);
-
-    //console.log("strDateTime = " + strDateTime);
-
-    var strDay = strDateTime.substr(0, 2);
-    //console.log("strDay = " + strDay);
-    var intDay = parseInt(strDay);
-
-    if (typeof intDay !== 'number')
-        return false;
-
     switch (intMonth) {
         case 1:
         case 3:
@@ -697,10 +681,29 @@ function checkDateTimeFormat1(strDateTime) {
             }
             break;
     }
-    strDateTime = strDateTime.slice(2);
+
     //console.log("strDateTime = " + strDateTime);
 
-    if (strDateTime.charAt(0) !== ' ')
+    if (strDateTime.charAt(0) !== '-')
+        return false;
+    else
+        strDateTime = strDateTime.slice(1);
+
+    //console.log("strDateTime = " + strDateTime);
+
+    var strDay = strDateTime.substr(0, 2);
+    //console.log("strDay = " + strDay);
+    var intDay = parseInt(strDay);
+
+    if (typeof intDay !== 'number')
+        return false;
+    else
+        strDateTime = strDateTime.slice(2);
+
+    //console.log("strDateTime = " + strDateTime);
+
+    //if (strDateTime.charAt(0) !== ' ')
+    if ((strDateTime.charAt(0) !== ' ') && (strDateTime.charAt(0) !== 'T'))
         return false;
     else
         strDateTime = strDateTime.slice(1);
@@ -727,6 +730,7 @@ function checkDateTimeFormat1(strDateTime) {
 
     //console.log("strDateTime = " + strDateTime);
 
+    var intColonLoc = strDateTime.indexOf(":");
     var strMinutes = strDateTime.substr(0, 2);
     //console.log("strMinutes = " + strMinutes);
     var intMinutes = parseInt(strMinutes);
@@ -735,10 +739,42 @@ function checkDateTimeFormat1(strDateTime) {
         return false;
     else if (intMinutes > 59)
         return false;
+    else
+        strDateTime = strDateTime.slice(2);
 
     //console.log("strDateTime = " + strDateTime);
 
-    if (strDateTime.length === 2)
+    if (strDateTime.charAt(0) !== ':')
+        return false;
+    else
+        strDateTime = strDateTime.slice(1);
+
+    //console.log("strDateTime = " + strDateTime);
+
+    var intColonLoc = strDateTime.indexOf(".");
+    var strSeconds = strDateTime.substr(0, 2);
+    var intSeconds = parseInt(strSeconds);
+
+    if (typeof intSeconds !== 'number')
+        return false;
+    else if (intSeconds > 59)
+        return false;
+    else
+        strDateTime = strDateTime.slice(2);
+
+    //console.log("strDateTime = " + strDateTime);
+
+    if (strDateTime.charAt(0) !== '.')
+        return false;
+    else
+        strDateTime = strDateTime.slice(1);
+
+    //console.log("strDateTime = " + strDateTime);
+
+    var strMilli = strDateTime.substr(0);
+    var intMilli = parseInt(strMilli);
+
+    if (strDateTime.length === 3)
         return true;
     else
         return false;
@@ -985,7 +1021,7 @@ function formatDateFromUtcToFriendly(d) {
 //		01/01/2015 08:00:00
 // Therefore, we must allow for either format and convert.
 function formatDateFromFriendlyToUtc(d) {
-	console.log("Inside formatDateFromFriendlyToUtc; d = " + d);
+	//console.log("Inside formatDateFromFriendlyToUtc; d = " + d);
     //console.log("d = " + d);
     var separatorLocation = d.indexOf("/");
     //console.log("slashLocation = " + separatorLocation);
@@ -1349,6 +1385,9 @@ function getFilenamesForTheseActivities(dataset, activities) {
         //for each header file field
         file_fields.Header.forEach(function (header_file_field) {
             var file_json = activity.Header[header_file_field.DbColumnName]; //like "FarmingLeaseFiles"
+            console.log("typeof file_json = " + typeof file_json);
+            console.log("file_json is next...");
+            console.dir(file_json);
             if (file_json) {
                 var file_obj = angular.fromJson(file_json); //the files turned into the array in the file field, e.g. "FarmingLeaseFiles"
                 if (Array.isArray(file_obj)) {
