@@ -1008,7 +1008,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             var intMonth = -1;
             var strDay = null;
 
-            /**** CreeSurvey Detail Date Time calculations Start ****/
+            /**** Date Time calculations Start ****/
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 // Headers = row
                 // Details = onRow
@@ -1110,7 +1110,15 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                     console.log("$scope.row.TimeEnd = " + $scope.row.TimeEnd);
                 }
             }
-            /**** CreeSurvey Detail Date Time calculations End ****/
+            else if ($scope.DatastoreTablePrefix === "ScrewTrap")
+            {
+                tmpTime = $scope.row.ArrivalTime;
+                console.log("tmpTime (ArrivalTime) = " + tmpTime);
+                $scope.row.ArrivalTime = "";
+                $scope.row.ArrivalTime = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime;
+                console.log("$scope.row.ArrivalTime = " + $scope.row.ArrivalTime);
+            }
+            /**** Date Time calculations End ****/
 			else if ($scope.DatastoreTablePrefix === "CrppContracts")
 			{
 				// For CRPP, the location is NOT on the form, so we add it here.
