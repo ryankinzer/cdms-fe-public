@@ -387,7 +387,7 @@ function validateField(field, row, key, scope, row_errors) {
                     //console.log("value IS NOT a date format:  " + value);
                     row_errors.push("[" + field.DbColumnName + "] Value is not a date (mm/dd/yyyy).");
                 }
-                else
+                //else
                     //console.log("value IS a date format:  " + value);
             }
             break;
