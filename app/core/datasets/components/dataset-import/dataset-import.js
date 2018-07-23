@@ -1,501 +1,543 @@
 ﻿var dataset_import = ['$scope', '$routeParams', 'ProjectService', 'CommonService', 'SubprojectService', 'DatasetService',
-        '$location', '$upload', 'ActivityParser', 'DataSheet', '$rootScope',
-		'Logger','$route','$modal','ChartService','ServiceUtilities',
-        function ($scope, $routeParams, ProjectService, CommonService, SubprojectService, DatasetService, $location, $upload, ActivityParser, DataSheet,
-            $rootScope, Logger, $route, $modal, ChartService,
-			ServiceUtilities) {
-        	$scope.dataset = DatasetService.getDataset($routeParams.Id);
-		
-			$scope.activities = null;
-		
-			$scope.mappedActivityFields = {};
-			$scope.userId = $rootScope.Profile.Id;
-			$scope.fields = { header: [], detail: [], relation: []}; 
-			$scope.dataSheetDataset = [];
-			$scope.showHeaderForm = false;
-			$scope.row = {}; //header form values if used...
-			$scope.selectedItems = [];
+    '$location', '$upload', 'ActivityParser', 'DataSheet', '$rootScope',
+    'Logger', '$route', '$modal', 'ChartService', 'ServiceUtilities',
+    function ($scope, $routeParams, ProjectService, CommonService, SubprojectService, DatasetService, $location, $upload, ActivityParser, DataSheet,
+        $rootScope, Logger, $route, $modal, ChartService,
+        ServiceUtilities) {
+        $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
-			$scope.HeaderColDefs = []; //inserted into grid if wide-sheet view
-			$scope.DetailColDefs = []; //fields always present in the grid
-			$scope.RowQAColDef = [];
+        $scope.activities = null;
 
-			// Q:  Why are we loading the activities, on the import page?
-			// A:  Is a user entering a set of duplicate records?  We need the dataset activities to answer that question.
-			//$scope.existingActivitiesLoad = DatasetService.getActivities($routeParams.Id);
-			//$scope.existingActivities = []; // These are for checking for duplicates.
-			$scope.sortedLocations = [];
-			$scope.datasetLocationType=0;
-			$scope.datasetLocations = [[]];
-			$scope.primaryProjectLocation = 0;
+        $scope.mappedActivityFields = {};
+        $scope.userId = $rootScope.Profile.Id;
+        $scope.fields = { header: [], detail: [], relation: [] };
+        $scope.dataSheetDataset = [];
+        $scope.showHeaderForm = false;
+        $scope.row = {}; //header form values if used...
+        $scope.selectedItems = [];
 
-			$scope.fishermenOptions = $rootScope.fishermenOptions = null;
-			
-			$scope.ShowInstrument = false;
-			
-			$scope.subprojectList = null;
+        $scope.HeaderColDefs = []; //inserted into grid if wide-sheet view
+        $scope.DetailColDefs = []; //fields always present in the grid
+        $scope.RowQAColDef = [];
 
-			$scope.ActivityFields = { QAComments: DEFAULT_IMPORT_QACOMMENT, ActivityDate: new Date() };
+        // Q:  Why are we loading the activities, on the import page?
+        // A:  Is a user entering a set of duplicate records?  We need the dataset activities to answer that question.
+        //$scope.existingActivitiesLoad = DatasetService.getActivities($routeParams.Id);
+        //$scope.existingActivities = []; // These are for checking for duplicates.
+        $scope.sortedLocations = [];
+        $scope.datasetLocationType = 0;
+        $scope.datasetLocations = [[]];
+        $scope.primaryProjectLocation = 0;
 
-			$scope.UploadResults = {};
-			$scope.UploadResults.errors = [];
+        $scope.fishermenOptions = $rootScope.fishermenOptions = null;
 
-			$scope.ignoreDuplicates = true;
-			$scope.DuplicateRecordsBucket = [];
-			
-			$scope.mapping = {};
-			//to be able to show only the invalid records.
-			$scope.ValidRecordsBucket = [];
-			$scope.TempRecordsBucket = [];
-			$scope.validation_error_count = 0;
-			$scope.datetimeList = [];
-			$scope.gridHasErrors = false;
-			$scope.weHaveDuplicates = false;
-			$scope.DupeCheckRunning = true;
-			$scope.ValidationCheckRunning = true;
-			
-			//datasheet grid
-			$scope.gridDatasheetOptions = {
-				data: 'dataSheetDataset',
-				enableCellSelection: true,
-		        enableRowSelection: true,
-		        multiSelect: true,
-		        enableCellEdit: true,
-		        columnDefs: 'datasheetColDefs',
-		        enableColumnResize: true,
-		        selectedItems: $scope.selectedItems
+        $scope.ShowInstrument = false;
 
-			};
-			
-						
-			$scope.importing = false;
-			$scope.UploadResults.showPreview = false;
-			$scope.Logger = Logger;
-			$scope.enablePreview = false;
-			$scope.callingPage = "Import";
-			
+        $scope.subprojectList = null;
 
-			
-            //config the fields for the preview datasheet - include mandatory location and activityDate fields
-			//$scope.datasheetColDefs = DataSheet.getColDefs();
-			DataSheet.initScope($scope);
+        $scope.ActivityFields = { QAComments: DEFAULT_IMPORT_QACOMMENT, ActivityDate: new Date() };
 
-			$scope.cellRowQATemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'RowQAStatusId\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in RowQAStatuses"/>';
+        $scope.UploadResults = {};
+        $scope.UploadResults.errors = [];
 
-            $scope.openWaypointFileModal = function (row, field) {
-                $scope.file_field = field;
-                var modalInstance = $modal.open({
-                    templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
-                    controller: 'WaypointFileModalCtrl',
-                    scope: $scope, //scope to make a child of
+        $scope.ignoreDuplicates = true;
+        $scope.DuplicateRecordsBucket = [];
+
+        $scope.mapping = {};
+        //to be able to show only the invalid records.
+        $scope.ValidRecordsBucket = [];
+        $scope.TempRecordsBucket = [];
+        $scope.validation_error_count = 0;
+        $scope.datetimeList = [];
+        $scope.gridHasErrors = $rootScope.gridHasErrors = false;
+        $scope.weHaveDuplicates = false;
+        $scope.DupeCheckRunning = true;
+        $scope.ValidationCheckRunning = true;
+
+        //datasheet grid
+        $scope.gridDatasheetOptions = {
+            data: 'dataSheetDataset',
+            enableCellSelection: true,
+            enableRowSelection: true,
+            multiSelect: true,
+            enableCellEdit: true,
+            columnDefs: 'datasheetColDefs',
+            enableColumnResize: true,
+            selectedItems: $scope.selectedItems
+
+        };
+
+
+        $scope.importing = false;
+        $scope.UploadResults.showPreview = false;
+        $scope.Logger = Logger;
+        $scope.enablePreview = false;
+        $scope.callingPage = "Import";
+
+
+
+        //config the fields for the preview datasheet - include mandatory location and activityDate fields
+        //$scope.datasheetColDefs = DataSheet.getColDefs();
+        DataSheet.initScope($scope);
+
+        $scope.cellRowQATemplate = '<select ng-class="\'colt\' + col.index" ng-blur="updateCell(row,\'RowQAStatusId\')" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id as name for (id, name) in RowQAStatuses"/>';
+
+        $scope.openWaypointFileModal = function (row, field) {
+            $scope.file_field = field;
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
+                controller: 'WaypointFileModalCtrl',
+                scope: $scope, //scope to make a child of
+            });
+        };
+
+        $scope.$watch('subprojectList.length', function () {
+            if ($scope.subprojectList === null)
+                return;
+            else if ($scope.subprojectList.length === 0)
+                return;
+
+            console.log("Inside watch subprojectList.length...");
+
+            //if ($scope.DatastoreTablePrefix === "Metrics")
+            if (($scope.datasets[i].DatastoreTablePrefix === "Metrics") ||
+                ($scope.datasets[i].DatastoreTablePrefix === "Benthic") ||
+                ($scope.datasets[i].DatastoreTablePrefix === "Drift")
+            ) {
+                console.log("$scope.subprojectList is next...");
+                console.dir($scope.subprojectList);
+                console.log("$scope.project.Locations is next...");
+                console.dir($scope.project.Locations);
+
+                angular.forEach($scope.subprojectList, function (subproject) {
+                    angular.forEach($scope.project.Locations, function (location) {
+                        //console.log("location.LocationTypeId = " +  location.LocationTypeId + ", subproject.LocationId = " + subproject.LocationId + ", location.Id = " + location.Id);
+                        if (subproject.LocationId === location.Id) {
+                            console.log("Found a subproject location")
+                            console.dir(location);
+                            $scope.datasetLocations.push([location.Id, location.Label]);
+                        }
+                    });
                 });
-            };
-			
-			$scope.$watch('subprojectList.length', function(){
-				if ($scope.subprojectList === null)
-					return;
-				else if ($scope.subprojectList.length === 0)
-					return;
-				
-				console.log("Inside watch subprojectList.length...");
-				
-				//if ($scope.DatastoreTablePrefix === "Metrics")
-				if (($scope.datasets[i].DatastoreTablePrefix === "Metrics") || 
-					($scope.datasets[i].DatastoreTablePrefix === "Benthic") ||
-					($scope.datasets[i].DatastoreTablePrefix === "Drift")
-					)
-				{
-					console.log("$scope.subprojectList is next...");
-					console.dir($scope.subprojectList);
-					console.log("$scope.project.Locations is next...");
-					console.dir($scope.project.Locations);
-				
-					angular.forEach($scope.subprojectList, function(subproject){
-						angular.forEach($scope.project.Locations, function(location){
-							//console.log("location.LocationTypeId = " +  location.LocationTypeId + ", subproject.LocationId = " + subproject.LocationId + ", location.Id = " + location.Id);
-							if (subproject.LocationId === location.Id)
-							{
-								console.log("Found a subproject location")
-								console.dir(location);
-								$scope.datasetLocations.push([location.Id, location.Label]);
-							}
-						});						
-					});
-				}
-				
-				console.log("datasetLocations (with subprojects) is next...");
-				console.dir($scope.datasetLocations);
+            }
 
-				$scope.finishLocationProcessing();
-			});
+            console.log("datasetLocations (with subprojects) is next...");
+            console.dir($scope.datasetLocations);
 
-			
-			//setup our mappableFields list
-    		//$scope.$watch('dataset.Name', function(){
-    		$scope.$watch('dataset.Fields', function(){
-				if (!$scope.dataset.Fields)
-					return;
+            $scope.finishLocationProcessing();
+        });
 
-				console.log("Inside DatasetImportCtrl, dataset.Fields watcher...");
 
-                //load the files for this dataset so we can check files they want to upload for duplicates
-                $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
+        //setup our mappableFields list
+        //$scope.$watch('dataset.Name', function(){
+        $scope.$watch('dataset.Fields', function () {
+            if (!$scope.dataset.Fields)
+                return;
 
-                //once the dataset files load, setup our file handler
-                $scope.dataset.Files.$promise.then(function () {
-                    //mixin the properties and functions to enable the modal file chooser for this controller...
-                    console.log("---------------- setting up dataset file chooser ----------------");
-                    modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
+            console.log("Inside DatasetImportCtrl, dataset.Fields watcher...");
+
+            //load the files for this dataset so we can check files they want to upload for duplicates
+            $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
+
+            //once the dataset files load, setup our file handler
+            $scope.dataset.Files.$promise.then(function () {
+                //mixin the properties and functions to enable the modal file chooser for this controller...
+                console.log("---------------- setting up dataset file chooser ----------------");
+                modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
+            });
+
+            console.log("$scope.dataset is next...");
+            console.dir($scope.dataset);
+
+            $rootScope.datasetId = $scope.datasetId = $scope.dataset.Id;
+            console.log("$rootScope.datasetId = " + $rootScope.datasetId);
+
+            //if (($scope.dataset.Config !== "NULL") && ($scope.dataset.Config.DataEntryPage.ShowFields.contains('Instrument')))
+            if (((typeof $scope.dataset.Config !== 'undefined') &&
+                ($scope.dataset.Config !== null) &&
+                ($scope.dataset.Config !== "NULL")) &&
+                ($scope.dataset.Config.DataEntryPage.HiddenFields) &&
+                ($scope.dataset.Config.DataEntryPage.HiddenFields.indexOf("Instrument") > -1))
+                console.log("Found instrument");
+
+            $scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
+            console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
+
+            if ($scope.DatastoreTablePrefix === 'WaterTemp')
+                $scope.ShowInstrument = true;
+            else if ($scope.DatastoreTablePrefix === "CreelSurvey") {
+                $scope.fishermenList = ProjectService.getFishermen();
+                $scope.datasheetColDefs2 = [
+                    {
+                        field: 'FishermanId',
+                        displayName: 'Fisherman',
+                        cellFilter: 'fishermanFilter',
+                    }
+                ];
+            }
+
+            $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
+            console.log("LocationType = " + $scope.datasetLocationType);
+
+            $scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix);  // Pass the TablePrefix (name of the dataset), because it will never change.
+            console.log("$scope.datasheetColDefs is next...");
+            console.dir($scope.datasheetColDefs);
+
+            $scope.mappableFields = $scope.setMappableFields($scope.DatastoreTablePrefix);
+
+            //DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
+
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
+
+            $scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
+            $scope.RowQAStatuses = $rootScope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  //Row qa status ids
+
+            $scope.ActivityFields.QAStatusId = "" + $scope.dataset.DefaultActivityQAStatusId;
+
+            //setup special columns so they participate in validation
+            $scope.FieldLookup['activityDate'] = { DbColumnName: 'activityDate', ControlType: "date" };
+            $scope.FieldLookup['QAStatusId'] = { DbColumnName: 'QAStatusId', ControlType: "select" };
+            $scope.CellOptions['QAStatusIdOptions'] = $scope.QAStatusOptions;
+            //$scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
+
+            //iterate fields and set 'em up
+            angular.forEach($scope.dataset.Fields.sort(orderByAlpha), function (field) {
+                parseField(field, $scope);
+
+                //mappable fields
+                $scope.mappableFields.push(field);
+
+                //setup the headers/details and datasheet fields
+                if (field.FieldRoleId == FIELD_ROLE_HEADER) {
+                    $scope.fields.header.push(field);
+                    $scope.HeaderColDefs.push(makeFieldColDef(field, $scope));
+                }
+                else if (field.FieldRoleId == FIELD_ROLE_DETAIL) {
+                    $scope.fields.detail.push(field);
+                    $scope.DetailColDefs.push(makeFieldColDef(field, $scope));
+                }
+
+                //convention: if you have a readingdatetime field then we turn on our timezone magic
+                if (field.DbColumnName == "ReadingDateTime") {
+                    /* Note:  The first line below allows the system to automatically determine what timezone we are in, based upon the current date.
+                        Initially this seemed like a good idea.  However, while the WaterTemp folks collect their data during the Daylight Savings
+                        timezone, they upload their data during the Standard timezone.  When the system requires them to remember to change the timezone,
+                        for all their imports from Standard to Daylight Savings, it can cause a headache, if they forget to make the change.
+                        Therefore, we decided instead to default the timezone to Daylight Savings, and have them change it to Standard if they must.
+                        Changing to Standard is a less occurring event than changing from Standard to Daylight Savings.
+                    */
+                    //$scope.row.Timezone = getByField($scope.SystemTimezones, new Date().getTimezoneOffset() * -60000, "TimezoneOffset"); //set default timezone
+                    $scope.row.Timezone = getByField($scope.SystemTimezones, 420 * -60000, "TimezoneOffset"); //set default timezone to Daylight Savings
+                }
+
+            });
+
+            //set defaults for header fields
+            angular.forEach($scope.fields.header, function (headerfield) {
+                $scope.row[headerfield.DbColumnName] = (headerfield.DefaultValue) ? headerfield.DefaultValue : null;
+            });
+
+            //if we have more than 1 row qa status then show them.
+            //if($scope.dataset.RowQAStatuses.length > 1)
+            if (($scope.dataset.Datastore.TablePrefix === "WaterTemp") && ($scope.dataset.RowQAStatuses.length > 1)) {
+                $scope.RowQAColDef.push(
+                    {
+                        field: "RowQAStatusId", //QARowStatus
+                        displayName: "Row QA",
+                        cellFilter: 'RowQAStatusFilter',
+                        enableCellEditOnFocus: true,
+                        editableCellTemplate: $scope.cellRowQATemplate
+                    });
+            }
+
+        });
+
+        $scope.$watch('project.Name', function () {
+            // Note:  If we check for the project name without typeof, it throws an error in the debugger, stating that Name is undefined. 
+            // Yes, it does stop the code in its tracks (like the return), but the typeof handles the issue gracefully.
+            //if(!$scope.project.Name) return;
+            if ((typeof $scope.project === 'undefined') || ($scope.project === null))
+                return;
+            else if ((typeof $scope.project.Name === 'undefined') || ($scope.project.Name === null))
+                return;
+
+            console.log("Inside DatasetImportCtrl, project.Name watcher...");
+            //Logger.debug($scope.project);
+
+            $scope.project.Instruments = CommonService.filterListForOnlyActiveInstruments($scope.project.Instruments);
+
+            //$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
+            console.log("$scope.subprojectType = " + $scope.subprojectType);
+            SubprojectService.setServiceSubprojectType($scope.subprojectType);
+
+            //if ($scope.subprojectType === "Habitat")
+            if ($scope.DatastoreTablePrefix === "Metrics") {
+                console.log("Loading Habitat subprojects...");
+
+                $scope.subprojectList = SubprojectService.getProjectSubprojects($scope.project.Id);
+                var watcher = $scope.$watch('subprojectList.length', function () {
+                    console.log("Inside watcher for subprojectList.length...");
+                    // We wait until subprojects gets loaded and then turn this watch off.
+                    if ($scope.subprojectList === null) {
+                        console.log("$scope.subprojectList is null");
+                        return;
+                    }
+                    else if (typeof $scope.subprojectList.length === 'undefined') {
+                        console.log("$scope.subprojectList.length is undefined.");
+                        return;
+                    }
+                    else if ($scope.subprojectList.length === 0) {
+                        console.log("$scope.subprojectList.length is 0");
+                        return;
+                    }
+                    console.log("$scope.subprojectList.length = " + $scope.subprojectList.length);
+                    console.log("subprojects is loaded...");
+                    console.dir($scope.subprojectList);
+
+                    watcher();
                 });
+            }
 
-				console.log("$scope.dataset is next...");
-				console.dir($scope.dataset);
-				
-				$rootScope.datasetId = $scope.datasetId = $scope.dataset.Id;
-				console.log("$rootScope.datasetId = " + $rootScope.datasetId);
-				
-				//if (($scope.dataset.Config !== "NULL") && ($scope.dataset.Config.DataEntryPage.ShowFields.contains('Instrument')))
-				if (((typeof $scope.dataset.Config !== 'undefined') && 
-					($scope.dataset.Config !== null) && 
-					($scope.dataset.Config !== "NULL")) && 
-					($scope.dataset.Config.DataEntryPage.HiddenFields) &&
-					($scope.dataset.Config.DataEntryPage.HiddenFields.indexOf("Instrument") > -1))
-						console.log("Found instrument");
-				
-				$scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
-				console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-				
-				if ($scope.DatastoreTablePrefix === 'WaterTemp')
-					$scope.ShowInstrument = true;
-				else if ($scope.DatastoreTablePrefix === "CreelSurvey")
-				{
-					$scope.fishermenList = ProjectService.getFishermen();
-					$scope.datasheetColDefs2 = [ 
-							{
-								field: 'FishermanId',
-								displayName: 'Fisherman',
-								cellFilter: 'fishermanFilter',
-							}
-						];
-				}
-				
-				$scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);				
-				console.log("LocationType = " + $scope.datasetLocationType);	
-				
-				$scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix);  // Pass the TablePrefix (name of the dataset), because it will never change.
-				console.log("$scope.datasheetColDefs is next...");
-				console.dir($scope.datasheetColDefs);
-				
-				$scope.mappableFields = $scope.setMappableFields($scope.DatastoreTablePrefix);
-									
-				//DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
+            //check authorization -- need to have project loaded before we can check project-level auth
+            //if(!$rootScope.Profile.isProjectOwner($scope.project) && !$rootScope.Profile.isProjectEditor($scope.project))
+            if (!$rootScope.Profile.isProjectOwner($scope.project) && !$rootScope.Profile.isProjectEditor($scope.project)) {
+                $location.path("/unauthorized");
+            }
+            else if ($rootScope.Profile.isProjectOwner($scope.project) && $rootScope.Profile.isProjectEditor($scope.project)) {
+                console.log("User is authorized.");
+            }
 
-				$scope.project = ProjectService.getProject($scope.dataset.ProjectId);
+            console.log("ProjectLocations is next...");
+            console.dir($scope.project.Locations);
+            console.dir($scope);
+            //var locInd = 0;
+            if ($scope.project.Locations) {
+                for (var i = 0; i < $scope.project.Locations.length; i++) {
+                    //console.log("projectLocations Index = " + $scope.project.Locations[i].Label);
+                    //console.log($scope.project.Locations[i].LocationTypeId + "  " + $scope.datasetLocationType); //$scope.project.Locations[i]);
+                    if (($scope.DatastoreTablePrefix === "Metrics") ||
+                        ($scope.DatastoreTablePrefix === "Benthic") ||
+                        ($scope.DatastoreTablePrefix === "Drift")
+                    ) {
+                        if (($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType) || ($scope.project.Locations[i].LocationTypeId === LOCATION_TYPE_Hab)) {
+                            //console.log("Found Habitat-related location");
+                            $scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
+                        }
+                    }
+                    else {
+                        if ($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType) {
+                            //console.log("Found non-Habitat-related location");
+                            $scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
+                        }
+                    }
 
-				$scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id','Name');
-				$scope.RowQAStatuses =  $rootScope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  //Row qa status ids
+                    //{
+                    //	//console.log("Found one");
+                    //	$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
+                    //	//console.log("datasetLocations length = " + $scope.datasetLocations.length);
+                    //	//locInd++;
+                    //}
+                }
+                console.log("datasetLocations is next...");
+                console.dir($scope.datasetLocations);
 
-				$scope.ActivityFields.QAStatusId = ""+$scope.dataset.DefaultActivityQAStatusId;
+                $scope.finishLocationProcessing();
+            }
+            /*
+            // When we built the array, it started adding at location 1 for some reason, skipping 0.
+            // Therefore, row 0 is blank.  The simple solution is to just delete row 0.
+            //$scope.datasetLocations.shift();
+        	
+            // During the original development, the blank row was always at row 0.  Months later, I noticed that 
+            // the blank row was not at row 0.  Therefore, it needed a different solution.
+            var index = 0;
+            angular.forEach($scope.datasetLocations, function(dsLoc)
+            {
+                if (dsLoc.length === 0)
+                {
+                    $scope.datasetLocations.splice(index, 1);
+                }
+            	
+                index++;
+            });
+        	
+            console.log("datasetLocations after splice is next...");
+            console.dir($scope.datasetLocations);
 
-				//setup special columns so they participate in validation
-				$scope.FieldLookup['activityDate'] = { DbColumnName: 'activityDate', ControlType: "date" };
-				$scope.FieldLookup['QAStatusId'] = 	 { DbColumnName: 'QAStatusId', ControlType: "select" };
-				$scope.CellOptions['QAStatusIdOptions'] = 	 $scope.QAStatusOptions;
-				//$scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
+            $scope.datasetLocations.sort(order2dArrayByAlpha);
+            console.log("datasetLocations sorted...");
+            console.dir($scope.datasetLocations);
 
-				//iterate fields and set 'em up
-				angular.forEach($scope.dataset.Fields.sort(orderByAlpha), function(field){
-					parseField(field, $scope);
+            // Convert our 2D array into an array of objects.
+            for (var i = 0; i < $scope.datasetLocations.length; i++)
+            {
+                $scope.sortedLocations.push({Id: $scope.datasetLocations[i][0], Label: $scope.datasetLocations[i][1]});
+            }
+            $scope.datasetLocations = [[]]; // Clean up
+        	
+        	
+            // Convert our array of objects into a list of objects, and put it in the select box.
+            $scope.locationOptions = $rootScope.locationOptions = makeObjects($scope.sortedLocations, 'Id','Label') ;
 
-					//mappable fields
-					$scope.mappableFields.push(field);
+            console.log("locationOptions is next...");
+            console.dir($scope.locationOptions);					
+        	
+            //Add the OtherAgencyId to the label - requirement from Colette
+            angular.forEach($scope.project.Locations, function(loc)
+            {
+                if(loc.OtherAgencyId && loc.Label.indexOf(loc.OtherAgencyId)==-1)
+                    loc.Label = loc.Label + ' (' + loc.OtherAgencyId + ')';
+            });
+            */
+            //setup locationOptions dropdown
+            //$scope.locationOptions = $rootScope.locationOptions = makeObjects(getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId"), 'Id','Label') ;  // Original code
+            $scope.instrumentOptions = $rootScope.instrumentOptions = makeObjects($scope.project.Instruments, 'Id', 'Name');
+            console.log("$scope.instrumentOptions is next...");
+            console.dir($scope.instrumentOptions);
 
-					//setup the headers/details and datasheet fields
-					if(field.FieldRoleId == FIELD_ROLE_HEADER)
-					{
-						$scope.fields.header.push(field);
-						$scope.HeaderColDefs.push(makeFieldColDef(field, $scope));
-					}
-					else if(field.FieldRoleId == FIELD_ROLE_DETAIL)
-					{
-						$scope.fields.detail.push(field);
-						$scope.DetailColDefs.push(makeFieldColDef(field, $scope));
-					}
+            //setup location field to participate in validation
+            $scope.FieldLookup['locationId'] = { DbColumnName: 'locationId', ControlType: "select" };
+            $scope.CellOptions['locationIdOptions'] = $scope.locationOptions;
 
-					//convention: if you have a readingdatetime field then we turn on our timezone magic
-					if(field.DbColumnName == "ReadingDateTime")
-					{
-						/* Note:  The first line below allows the system to automatically determine what timezone we are in, based upon the current date.
-							Initially this seemed like a good idea.  However, while the WaterTemp folks collect their data during the Daylight Savings
-							timezone, they upload their data during the Standard timezone.  When the system requires them to remember to change the timezone,
-							for all their imports from Standard to Daylight Savings, it can cause a headache, if they forget to make the change.
-							Therefore, we decided instead to default the timezone to Daylight Savings, and have them change it to Standard if they must.
-							Changing to Standard is a less occurring event than changing from Standard to Daylight Savings.
-						*/
-						//$scope.row.Timezone = getByField($scope.SystemTimezones, new Date().getTimezoneOffset() * -60000, "TimezoneOffset"); //set default timezone
-						$scope.row.Timezone = getByField($scope.SystemTimezones, 420 * -60000, "TimezoneOffset"); //set default timezone to Daylight Savings
-					}
+            //set locationid if it is incoming as a query param (?LocationId=142)
+            if ($routeParams.LocationId) {
+                $scope.ActivityFields.LocationId = $routeParams.LocationId;
+                $scope.setLocation();
+            }
+            //single location?  go ahead and set it to the default.
+            else if (array_count($scope.locationOptions) == 1) {
+                angular.forEach(Object.keys($scope.locationOptions), function (key) {
+                    $scope.ActivityFields.LocationId = key;
+                    $scope.setLocation();
+                });
+            }
 
-				});
+            $scope.fishermenOptions = $rootScope.fishermenOptions = makeObjects($scope.project.Fishermen, 'Id', 'FullName');
 
-				//set defaults for header fields
-				angular.forEach($scope.fields.header, function(headerfield){
-					$scope.row[headerfield.DbColumnName] = (headerfield.DefaultValue) ? headerfield.DefaultValue : null;
-				});
+            //setup location field to participate in validation
+            $scope.FieldLookup['FishermanId'] = { DbColumnName: 'FishermanId', ControlType: "select" };
+            console.log("Just set $scope.fishermenOptions...");
+            console.dir($scope.fishermenOptions);
+            $scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
+            console.log("$scope (at end of watch project.name) is next...");
+            //console.dir($scope);
 
-				//if we have more than 1 row qa status then show them.
-				//if($scope.dataset.RowQAStatuses.length > 1)
-				if (($scope.dataset.Datastore.TablePrefix === "WaterTemp") && ($scope.dataset.RowQAStatuses.length > 1))
-				{
-					$scope.RowQAColDef.push(
-					{
-						field: "RowQAStatusId", //QARowStatus
-						displayName: "Row QA",
-						cellFilter: 'RowQAStatusFilter',
-						enableCellEditOnFocus: true,
-						editableCellTemplate: $scope.cellRowQATemplate
-					});
-				}
+        });
 
-    		});
-			
-			$scope.$watch('project.Name', function(){
-				// Note:  If we check for the project name without typeof, it throws an error in the debugger, stating that Name is undefined. 
-				// Yes, it does stop the code in its tracks (like the return), but the typeof handles the issue gracefully.
-	        	//if(!$scope.project.Name) return;
-				if ((typeof $scope.project === 'undefined') || ($scope.project === null))
-					return;
-				else if ((typeof $scope.project.Name === 'undefined') || ($scope.project.Name === null))
-					return;
-				
-				console.log("Inside DatasetImportCtrl, project.Name watcher...");
-	        	//Logger.debug($scope.project);
+        //setup our existingActivities array so we can manage duplicates
+        /*var ealoadwatcher = $scope.$watch('existingActivitiesLoad.length', function(){
+            if (($scope.existingActivitiesLoad) && ($scope.existingActivitiesLoad.length > 0))
+            {
+                $scope.existingActivitiesLoad.$promise.then(function(){
+                    angular.forEach($scope.existingActivitiesLoad, function(activity, key){
+                        $scope.existingActivities.push(activity.LocationId+"_"+activity.ActivityDate.substr(0,10));
+                    });
+                    $scope.existingActivitiesLoad = []; // cleanup
+                    //console.dir($scope.existingActivities);
+                    ealoadwatcher();
+                });
+            }
 
-                $scope.project.Instruments = CommonService.filterListForOnlyActiveInstruments($scope.project.Instruments);
-				
-				//$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
-				console.log("$scope.subprojectType = " + $scope.subprojectType);
-				SubprojectService.setServiceSubprojectType($scope.subprojectType);
+        });
+        */
 
-				//if ($scope.subprojectType === "Habitat")
-				if ($scope.DatastoreTablePrefix === "Metrics")
-				{
-					console.log("Loading Habitat subprojects...");				
+        //$scope.$watch('UploadResults.activities', function(){
+        //	$scope.activity_count = array_count($scope.UploadResults.activities.activities);
+        //});
 
-					$scope.subprojectList = SubprojectService.getProjectSubprojects($scope.project.Id);
-					var watcher = $scope.$watch('subprojectList.length', function(){
-						console.log("Inside watcher for subprojectList.length...");
-						// We wait until subprojects gets loaded and then turn this watch off.
-						if ($scope.subprojectList === null)
-						{
-							console.log("$scope.subprojectList is null");
-							return;
-						}
-						else if (typeof $scope.subprojectList.length === 'undefined')
-						{
-							console.log("$scope.subprojectList.length is undefined.");
-							return;
-						}
-						else if ($scope.subprojectList.length === 0)
-						{
-							console.log("$scope.subprojectList.length is 0");
-							return;
-						}
-						console.log("$scope.subprojectList.length = " + $scope.subprojectList.length);
-						console.log("subprojects is loaded...");
-						console.dir($scope.subprojectList);
-						
-						watcher();
-					});
-				}
+        //set mapping fields to defaults
+        $scope.$watch('fileFields', function () {
+            if (Array.isArray($scope.fileFields)) {
+                if ($scope.fileFields.length == 0) {
+                    $scope.uploadErrorMessage = "No columns headers were found in the file. Please make sure the column headers are in the first row of your file and try again.";
+                    $scope.fileFields = undefined;
+                }
+                //TODO: get map candidates from the server. for now, if the field name matches a mappable field, set it, otherwise set to do not map.
+                //TODO: refactor this to not have to spin so many times... but not a big deal i guess. ;)
+                angular.forEach($scope.fileFields, function (field_in) {
+                    var field_in_compare = field_in.toUpperCase();
+                    for (var i = $scope.mappableFields.length - 1; i >= 0; i--) {
 
-	        	//check authorization -- need to have project loaded before we can check project-level auth
-				//if(!$rootScope.Profile.isProjectOwner($scope.project) && !$rootScope.Profile.isProjectEditor($scope.project))
-				if(!$rootScope.Profile.isProjectOwner($scope.project) && !$rootScope.Profile.isProjectEditor($scope.project))
-				{
-					$location.path("/unauthorized");
-				}
-				else if ($rootScope.Profile.isProjectOwner($scope.project) && $rootScope.Profile.isProjectEditor($scope.project))
-				{
-					console.log("User is authorized.");
-				}
+                        //Logger.debug("Comparing: " + $scope.mappableFields[i].Label.toUpperCase() + " and " + field_in_compare);
 
-				console.log("ProjectLocations is next...");
-				console.dir($scope.project.Locations);
-				console.dir($scope);
-				//var locInd = 0;
-				if ($scope.project.Locations)
-				{
-					for (var i = 0; i < $scope.project.Locations.length; i++ )
-					{
-						//console.log("projectLocations Index = " + $scope.project.Locations[i].Label);
-						//console.log($scope.project.Locations[i].LocationTypeId + "  " + $scope.datasetLocationType); //$scope.project.Locations[i]);
-						if (($scope.DatastoreTablePrefix === "Metrics") ||
-							($scope.DatastoreTablePrefix === "Benthic") ||
-							($scope.DatastoreTablePrefix === "Drift")
-							)
-						{
-							if (($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType) || ($scope.project.Locations[i].LocationTypeId === LOCATION_TYPE_Hab))
-							{
-								//console.log("Found Habitat-related location");
-								$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
-							}
-						}
-						else
-						{
-							if ($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType)
-							{
-								//console.log("Found non-Habitat-related location");
-								$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
-							}
-						}
+                        if ($scope.mappableFields[i].Label.toUpperCase() === field_in_compare) {
+                            $scope.mapping[field_in] = $scope.mappableFields[i];
+                            return;
+                        }
+                    };
 
-						//{
-						//	//console.log("Found one");
-						//	$scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
-						//	//console.log("datasetLocations length = " + $scope.datasetLocations.length);
-						//	//locInd++;
-						//}
-					}
-					console.log("datasetLocations is next...");
-					console.dir($scope.datasetLocations);
-					
-					$scope.finishLocationProcessing();
-				}
-				/*
-				// When we built the array, it started adding at location 1 for some reason, skipping 0.
-				// Therefore, row 0 is blank.  The simple solution is to just delete row 0.
-				//$scope.datasetLocations.shift();
-				
-				// During the original development, the blank row was always at row 0.  Months later, I noticed that 
-				// the blank row was not at row 0.  Therefore, it needed a different solution.
-				var index = 0;
-				angular.forEach($scope.datasetLocations, function(dsLoc)
-				{
-					if (dsLoc.length === 0)
-					{
-						$scope.datasetLocations.splice(index, 1);
-					}
-					
-					index++;
-				});
-				
-				console.log("datasetLocations after splice is next...");
-				console.dir($scope.datasetLocations);
+                    //only reaches here if we didn't find a label match
+                    $scope.mapping[field_in] = $scope.mappableFields[DO_NOT_MAP];
 
-				$scope.datasetLocations.sort(order2dArrayByAlpha);
-				console.log("datasetLocations sorted...");
-				console.dir($scope.datasetLocations);
+                });
+            }
+        });
 
-				// Convert our 2D array into an array of objects.
-				for (var i = 0; i < $scope.datasetLocations.length; i++)
-				{
-					$scope.sortedLocations.push({Id: $scope.datasetLocations[i][0], Label: $scope.datasetLocations[i][1]});
-				}
-				$scope.datasetLocations = [[]]; // Clean up
-				
-				
-				// Convert our array of objects into a list of objects, and put it in the select box.
-				$scope.locationOptions = $rootScope.locationOptions = makeObjects($scope.sortedLocations, 'Id','Label') ;
+        $scope.$watch('ActivityFields.ActivityDate', function () {
+            //console.log("Inside watch ActivityFields.ActivityDate...");
+            //console.log("typeof $scope.ActivityFields.ActivityDate = " + typeof $scope.ActivityFields.ActivityDate);
+            //console.log("$scope is next...");
+            //console.dir($scope);
 
-				console.log("locationOptions is next...");
-				console.dir($scope.locationOptions);					
-				
-				//Add the OtherAgencyId to the label - requirement from Colette
-				angular.forEach($scope.project.Locations, function(loc)
-	    		{
-	    			if(loc.OtherAgencyId && loc.Label.indexOf(loc.OtherAgencyId)==-1)
-	    				loc.Label = loc.Label + ' (' + loc.OtherAgencyId + ')';
-	    		});
-				*/
-	        	//setup locationOptions dropdown
-				//$scope.locationOptions = $rootScope.locationOptions = makeObjects(getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId"), 'Id','Label') ;  // Original code
-				$scope.instrumentOptions = $rootScope.instrumentOptions = makeObjects($scope.project.Instruments, 'Id','Name');
-				console.log("$scope.instrumentOptions is next...");
-				console.dir($scope.instrumentOptions);
-				
-				//setup location field to participate in validation
-				$scope.FieldLookup['locationId'] = { DbColumnName: 'locationId', ControlType: "select" };
-				$scope.CellOptions['locationIdOptions'] = $scope.locationOptions;
+            if ((typeof $scope.DatastoreTablePrefix === 'undefined') || ($scope.DatastoreTablePrefix === null))
+                return;
 
-				//set locationid if it is incoming as a query param (?LocationId=142)
-	    		if($routeParams.LocationId)
-				{
-	    			$scope.ActivityFields.LocationId = $routeParams.LocationId;
-	    			$scope.setLocation();
-				}
-	    		//single location?  go ahead and set it to the default.
-	    		else if(array_count($scope.locationOptions) == 1)
-				{
-	    			angular.forEach(Object.keys($scope.locationOptions), function(key){
-	    				$scope.ActivityFields.LocationId = key;
-	    				$scope.setLocation();
-	    			});
-	    		}
-				
-				$scope.fishermenOptions = $rootScope.fishermenOptions = makeObjects($scope.project.Fishermen, 'Id','FullName');
-				
-				//setup location field to participate in validation
-				$scope.FieldLookup['FishermanId'] = { DbColumnName: 'FishermanId', ControlType: "select" };
-				console.log("Just set $scope.fishermenOptions...");
-				console.dir($scope.fishermenOptions);
-				$scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
-				console.log("$scope (at end of watch project.name) is next...");
-				//console.dir($scope);
+            if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
+                ($scope.DatastoreTablePrefix !== "WaterQuality") &&
+                ($scope.DatastoreTablePrefix !== "Metrics") &&
+                ($scope.DatastoreTablePrefix !== "Genetic") &&
+                ($scope.DatastoreTablePrefix !== "FishScales") &&
+                ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
+            ) {
+                //$scope.activities.errors = {};
+                if ($scope.activities)
+                    $scope.activities.errors = undefined;
 
-	        });
+                $scope.duplicateEntry = undefined;
+                //$scope.checkForDuplicates();
 
-			//setup our existingActivities array so we can manage duplicates
-	        /*var ealoadwatcher = $scope.$watch('existingActivitiesLoad.length', function(){
-	        	if (($scope.existingActivitiesLoad) && ($scope.existingActivitiesLoad.length > 0))
-	        	{
-	        		$scope.existingActivitiesLoad.$promise.then(function(){
-	        			angular.forEach($scope.existingActivitiesLoad, function(activity, key){
-	        				$scope.existingActivities.push(activity.LocationId+"_"+activity.ActivityDate.substr(0,10));
-	        			});
-	        			$scope.existingActivitiesLoad = []; // cleanup
-	        			//console.dir($scope.existingActivities);
-	        			ealoadwatcher();
-	        		});
-	        	}
+                //console.log("$rootScope is next...");
+                //console.dir($rootScope);
+                //console.log("$scope is next...");
+                //console.dir($scope);
+                if ((typeof $scope.ActivityFields.ActivityDate === 'undefined') || ($scope.ActivityFields.ActivityDate === null))
+                    return;
+                else if ($scope.ActivityFields.ActivityDate.getFullYear() < 1921)
+                    return;
 
-	        });
-			*/
-			
-    		//$scope.$watch('UploadResults.activities', function(){
-    		//	$scope.activity_count = array_count($scope.UploadResults.activities.activities);
-    		//});
+                console.log("$scope.ActivityFields.ActivityDate = " + $scope.ActivityFields.ActivityDate);
+                var theYear = $scope.ActivityFields.ActivityDate.getFullYear();
+                //console.log("theYear = " + theYear);
 
-    		//set mapping fields to defaults
-			$scope.$watch('fileFields', function(){
-				if(Array.isArray($scope.fileFields))
-				{
-					if($scope.fileFields.length == 0)
-					{
-						$scope.uploadErrorMessage="No columns headers were found in the file. Please make sure the column headers are in the first row of your file and try again.";
-						$scope.fileFields = undefined;
-					}
-					//TODO: get map candidates from the server. for now, if the field name matches a mappable field, set it, otherwise set to do not map.
-					//TODO: refactor this to not have to spin so many times... but not a big deal i guess. ;)
-					angular.forEach($scope.fileFields, function(field_in){
-						var field_in_compare = field_in.toUpperCase();
-						for (var i = $scope.mappableFields.length - 1; i >= 0; i--) {
+                var theMonth = $scope.ActivityFields.ActivityDate.getMonth() + 1; // Month is zero-based.
+				theMonth = pad(theMonth);
+                //console.log("theMonth = " + theMonth);
 
-							//Logger.debug("Comparing: " + $scope.mappableFields[i].Label.toUpperCase() + " and " + field_in_compare);
+                var theDate = $scope.ActivityFields.ActivityDate.getDate();
+				theDate = pad(theDate);
+                //console.log("theDate = " + theDate);
 
-							if($scope.mappableFields[i].Label.toUpperCase() === field_in_compare)
-							{
-								$scope.mapping[field_in] = $scope.mappableFields[i];
-								return;
-							}
-						};
+                var theHours = $scope.ActivityFields.ActivityDate.getHours();
+				theHours = pad(theHours);
+                //console.log("theHours = " + theHours);
 
-						//only reaches here if we didn't find a label match
-						$scope.mapping[field_in] = $scope.mappableFields[DO_NOT_MAP];
+                var theMinutes = $scope.ActivityFields.ActivityDate.getMinutes();
+				theMinutes = pad(theMinutes);
+                //console.log("theMinutes = " + theMinutes);
 
-					});
-				}
-			});
+                angular.forEach($scope.dataSheetDataset, function(item) {
+                    //console.log("item.activityDate = " + item.activityDate);
+
+                    // Rebuild item.activityDate, using the Date/time info from the form.
+                    item.activityDate = theMonth + "/" + theDate + "/" + theYear + " " + theHours + ":" + theMinutes;
+                    //console.log("item.activityDate (updated) = " + item.activityDate);
+                });
+                
+
+                console.log("$scope.callingPage = " + $scope.callingPage);
+                DataSheet.checkForDuplicates($scope);
+            }
+        });
 			
 			$scope.finishLocationProcessing = function(){
 				console.log("Inside $scope.finishLocationProcessing...");
@@ -601,7 +643,28 @@
 				//console.dir($scope);
 				$scope.ActivityFields.Instrument = getByField($scope.project.Instruments, $scope.ActivityFields.InstrumentId, "Id");
 				console.dir($scope);
-			};
+            };
+
+            /*$scope.onActivityDateChange = function (dt)
+            {
+                console.log("Inside $scope.onActivityDateChange...");
+                console.log(dt);
+
+                if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
+                    ($scope.DatastoreTablePrefix !== "WaterQuality") &&
+                    ($scope.DatastoreTablePrefix !== "Metrics") &&
+                    ($scope.DatastoreTablePrefix !== "Genetic") &&
+                    ($scope.DatastoreTablePrefix !== "FishScales") &&
+                    ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
+                ) {
+                    //$scope.activities.errors = {};
+                    $scope.activities.errors = undefined;
+                    $scope.duplicateEntry = undefined;
+                    $scope.checkForDuplicates();
+                    //DataSheet.checkForDuplicates($scope);
+                }
+            };
+            */
 			
 			$scope.onLocationChange = function()
 			{
@@ -976,8 +1039,9 @@
 					if ($scope.DatastoreTablePrefix === "CreelSurvey")
 						$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.datasheetColDefs2,$scope.DetailColDefs);
 					else
-						$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.DetailColDefs);
-				}
+                        $scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.DetailColDefs);
+
+                }
 				console.log("$scope.showHeaderForm = " + $scope.showHeaderForm);
 
 				console.log("$scope.datasheetColDefs (after concatentation) is next...");  // Note:  Column ReleaseLocation is already present here, col 9.
@@ -1716,7 +1780,8 @@
 				console.log("$scope.dataSheetDataset is nextX...");
 				console.dir($scope.dataSheetDataset);
 				//throw "Stopping right here.";
-                //if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
+
+                console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
                 if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
                     ($scope.DatastoreTablePrefix !== "WaterQuality") &&
                     ($scope.DatastoreTablePrefix !== "Metrics") &&
@@ -1725,7 +1790,11 @@
                     ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
                     )
 				{
-                    $scope.checkForDuplicates();
+                    //$scope.checkForDuplicates();
+
+                    console.log("$rootScope is next...");
+                    console.dir($rootScope);
+                    DataSheet.checkForDuplicates($scope);
 				}
 				else
 				{
@@ -1734,7 +1803,8 @@
 					$scope.duplicateEntry = false;
 					$scope.weHaveDuplicates = false;
 				}
-//***
+                //***
+                $scope.gridHasErrors = $rootScope.gridHasErrors;
 				console.log("$scope.gridHasErrors (after checkForDuplicates, bef validateGrid) = " + $scope.gridHasErrors);
 				$scope.UploadResults.showPreview = true;
 
@@ -2116,410 +2186,6 @@
 			$scope.eventTimer = function(){
 				var d = new Date();
 				console.log(d.toLocaleTimeString(),1000);
-			};
-			
-			$scope.checkForDuplicates = function(){
-				console.log("Inside $scope.checkForDuplicates...");
-				
-				console.log("$scope.activities is next...");
-				console.dir($scope.activities);
-				console.log("$scope.dataSheetDataset is next...");
-				console.dir($scope.dataSheetDataset);
-				
-				var strActivityLocationList = "";
-				var strInstrumentIdList = "";
-				var count = 0;
-				var intPlaceCount = 0;
-				var keepGoing = true;
-				var DateTimeIndex = -1;
-				var strDupeItemDateTime = "";
-				//var strIsoDateTime = "";
-				var errorMessage = ""
-				
-				if ($scope.DatastoreTablePrefix === "WaterTemp")
-				{	
-					var strReadingDateTimeList = "";
-					var strIsoDateTime = "";
-					
-					count = 0;
-					angular.forEach($scope.dataSheetDataset, function(item){
-						//console.log("item is next...");
-						//console.dir(item);
-						
-						strIsoDateTime = convertDateFromUnknownStringToUTC(item.ReadingDateTime);
-						
-						if (count === 0)
-						{
-							strReadingDateTimeList = strIsoDateTime;
-							strActivityLocationList = item.locationId;
-							strInstrumentIdList = item.InstrumentId;
-						}
-						else
-						{
-							strReadingDateTimeList += "," + strIsoDateTime; // Note the leading comma.
-							
-							// If we are on a datasheet form (not header form), each line could have a different location.
-							if (!$scope.showHeaderForm)
-							{
-								strActivityLocationList += "," + item.locationId;
-								strInstrumentIdList += "," + item.InstrumentId;
-							}
-						}
-						count++;
-					});
-					console.log("strReadingDateTimeList (with dupes) = " + strReadingDateTimeList);
-					console.log("typeof strReadingDateTimeList = " + typeof strReadingDateTimeList);
-					
-					var aryReadingDateTimeList = strReadingDateTimeList.split(",");
-					strReadingDateTimeList = uniq_fast(aryReadingDateTimeList);
-					console.log("strReadingDateTimeList (without dupes) = " + strReadingDateTimeList);
-					
-					var aryActivityLocationList = strActivityLocationList.split(",");
-					strActivityLocationList = uniq_fast(aryActivityLocationList);
-					console.log("strActivityLocationList = " + strActivityLocationList);
-					
-					var aryInstrumentIdList = strInstrumentIdList.split(",");
-					strInstrumentIdList = uniq_fast(aryInstrumentIdList);
-					console.log("strInstrumentIdList = " + strInstrumentIdList);
-					
-					var promise = null;
-					promise = DatasetService.getSpecificWaterTempActivities($scope.datasetId, strActivityLocationList, strInstrumentIdList, strReadingDateTimeList);
-						
-						
-					//console.log("typeof $promise = " + typeof promise);
-					if (typeof promise !== 'undefined') 
-					{
-						promise.$promise.then(function(list){
-							console.log("promise is next...");
-							console.dir(promise);
-							if (promise.length > 0)
-							{
-								$scope.duplicateEntry = true;
-								var duplicateItems = angular.copy(promise);
-								//console.log("duplicateItems is next...");
-								//console.dir(duplicateItems);
-								var strDupeItemDateTime = "";
-								//var intPlaceCount = 0;
-								var keepGoing = true;
-								var readingDateTimeIndex = -1;
-								
-								//angular.forEach(duplicateItems, function(item){
-								duplicateItems.forEach(function(item){
-									//intPlaceCount++;
-									// The datetime coming back from the backend has a "T" in it; we must remove it.
-									//item.ReadingDateTime = item.ReadingDateTime.replace("T", " ");
-									//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
-								
-									strDupeItemDateTime = convertDateFromUnknownStringToUTC(item.ReadingDateTime);
-									keepGoing = true;
-									/*angular.forEach($scope.dataSheetDataset, function(detailRecord){
-										if (keepGoing)
-										{
-											// In order to compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
-											//strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.ReadingDateTime);
-											strIsoDateTime = convertDateFromUnknownStringToUTC(detailRecord.ReadingDateTime);
-											
-											// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
-											strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
-											//console.log("strDupeItemDateTime = " + strDupeItemDateTime + ", strIsoDateTime = " + strIsoDateTime);
-											if (strDupeItemDateTime === strIsoDateTime)
-											{
-												//console.log("Found dupe...");
-												keepGoing = false;
-												if (!detailRecord.errors)
-													detailRecord.errors = [];
-												
-												// All three of these are required to turn the lines with errors red.
-												detailRecord.isValid = false;
-												detailRecord.errors.push("Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.");
-												//$scope.validation_error_count++;
-												//if ($scope.validation_error_count > $scope.dataSheetDataset.length)
-												//if ($scope.validation_error_count > intPlaceCount)
-												//{
-												//	var strMsg = "detailRecord.ReadingDateTime = " + detailRecord.ReadingDateTime;
-												//	alert(strMsg);
-												//}
-												
-												// During the (angular?) cycle, checkForDuplicates ends of running twice, so we get duplicate error entries.
-												// Therefore, clean out the duplicate entries from the error array.
-												detailRecord.errors = uniq_fast(detailRecord.errors);
-												$scope.gridHasErrors = true;
-											}
-										}
-									});
-									*/
-									//var strDupeItemDateTime2 = strDupeItemDateTime + ".000";
-									//console.log("strDupeItemDateTime = " + strDupeItemDateTime2);
-									
-									//console.log("typeof item.ReadingDateTime = " + typeof item.ReadingDateTime);
-									//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
-									//strIsoDateTime = toExactISOString(item.ReadingDateTime);
-									
-									strIsoDateTime = item.ReadingDateTime;
-									//console.log("typeof strIsoDateTime = " + typeof strIsoDateTime);
-									strIsoDateTime = strIsoDateTime.replace("T", " ");
-									
-									// strIsoDateTime starts out like this:  "YYYY-MM-DD HH.MM.SS".
-									// Is the ReadingDateTime in this format "YYYY-MM-DD HH.MM.SS" or this "YYYY-MM-DD HH.MM.SS.mmm"?
-									//console.log("strIsoDateTime = " + strIsoDateTime + ", $scope.datetimeList[0] = " + $scope.datetimeList[0]);
-									if (strIsoDateTime.length < $scope.datetimeList[0].length)
-									{
-										//console.log("item.ReadingDateTime has YYYY-MM-DD HH.MM.SS format.");
-										strIsoDateTime = strIsoDateTime + ".000";
-									}
-									else
-									{
-										//console.log("item.ReadingDateTime has YYYY-MM-DD HH.MM.SS.mmm format.");
-									}
-									//console.log("strIsoDateTime = " + strIsoDateTime);
-									
-									//console.log("$scope.datetimeList is next...");
-									//console.dir($scope.datetimeList);
-									dateTimeIndex = $scope.datetimeList.indexOf(strIsoDateTime);
-									//console.log("dateTimeIndex = " + dateTimeIndex);
-									
-									//console.log("$scope.dataSheetDataset[dateTimeIndex] is next...");
-									//console.dir($scope.dataSheetDataset[dateTimeIndex]);
-									if (typeof $scope.dataSheetDataset[dateTimeIndex].errors === 'undefined')
-										$scope.dataSheetDataset[dateTimeIndex].errors = [];
-									
-									$scope.dataSheetDataset[dateTimeIndex].isValid = false;
-									errorMessage = "Duplicate:  a record with this Location, Instrument, and ReadingDateTime already exists.";
-									//if (($scope.dataSheetDataset[dateTimeIndex].errors.length > 0) &&
-									//	($scope.dataSheetDataset[dateTimeIndex].errors.indexOf(errorMessage) < 0))
-										$scope.dataSheetDataset[dateTimeIndex].errors.push(errorMessage);
-										
-									$scope.dataSheetDataset[dateTimeIndex].errors = uniq_fast($scope.dataSheetDataset[dateTimeIndex].errors);
-									$scope.gridHasErrors = true;
-									$scope.weHaveDuplicates = true;
-																	
-								});
-								
-								console.log("Checking for duplicates is complete...");
-								$scope.DupeCheckRunning = false;
-								//console.log("$scope.dataSheetDataset (after dupe checks) is next...");
-								//$scope.dataSheetDataset.forEach(function(item){
-								//	console.dir(item);
-								//});
-								//console.log("$scope.gridHasErrors = " + $scope.gridHasErrors);
-							}
-							else
-							{
-								$scope.duplicateEntry = false;
-								$scope.DupeCheckRunning = false;
-								$scope.weHaveDuplicates = false;
-							}
-							//console.log("After the 'if' promise.length...");
-							$scope.validateGrid($scope);
-							
-							//console.log("$scope.dataSheetDataset (after validation checks) is next...");
-							//$scope.dataSheetDataset.forEach(function(item){
-							//	console.dir(item);
-							//});
-						});
-						//console.log("Location after promise.then (but it may not have completed yet)... ");
-					}
-				}
-				
-				/*else if (($scope.DatastoreTablePrefix === "WaterQuality") || ($scope.DatastoreTablePrefix === "CrppContracts"))
-				{
-					// We do not check for duplicates with WaterQuality, because it is possible for multiple identical non-duplicate records
-					// to exist, and be incorrectly flagged as duplicate.  The task for catching the dupes with WaterQuality is on the user.
-					console.log("This dtaset is WaterQuality...");
-					$scope.duplicateEntry = false;
-					$scope.DupeCheckRunning = false;
-					$scope.validateGrid($scope);
-				}*/	
-				else
-				{
-					var strActivityDateList = "";
-					
-					//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
-					//{
-					
-						count = 0;
-						angular.forEach($scope.dataSheetDataset, function(item){
-							//console.log("item is next...");//***
-							//console.dir(item);//***
-							
-							//console.log("typeof item.activityDate = " + typeof item.activityDate);//***
-							var strIsoDataTime = "";
-							if (typeof item.activityDate === "string")
-							{
-								var slashLoc = item.activityDate.indexOf("/");
-								//console.log("slashLoc = " + slashLoc);
-								
-								if (slashLoc > -1)
-								{
-									//console.log("The date is in friendly format; need to convert...");
-									strIsoDateTime = formatDateFromFriendlyToUtc(item.activityDate);
-									item.activityDate = strIsoDateTime.replace(" ", "T");
-									var periodLoc = strIsoDateTime.indexOf(".");
-									strIsoDateTime = strIsoDateTime.substring(0, periodLoc);
-								}	
-								else
-								{
-									//console.log("The date is in UTC; OK...");
-									strIsoDateTime = item.activityDate.replace("T", " ");
-								}
-							}
-							else // date object
-							{
-								// Use our toolbox of functions to get the date into the format we need.
-								var dtActivityDate = formatDate(item.activityDate); // Take the date object and put it in friendly format (dd/mm/yyyy ...) first;
-								console.log("dtActivityDate = " + dtActivityDate);
-								strIsoDateTime = formatDateFromFriendlyToUtc(dtActivityDate); // Now take the date and put it in ISO format (yyyy-mm-dd ...);
-								console.log("strIsoDateTime = " + strIsoDateTime);
-							}
-							
-							if (count === 0)
-							{
-								strActivityDateList = strIsoDateTime;
-								strActivityLocationList = item.locationId;
-							}
-							else
-							{
-								// If we are on a datasheet form (not header form), each line could have a different location.
-								if (!$scope.showHeaderForm)
-								{
-									strActivityDateList += "," + strIsoDateTime; // Note the leading comma.
-									strActivityLocationList += "," + item.locationId;
-								}
-							}
-							count++;
-						});
-						
-						console.log("strActivityDateList (with dupes) = " + strActivityDateList);
-						var aryActivityDateList = strActivityDateList.split(",");
-						strActivityDateList = uniq_fast(aryActivityDateList);
-						console.log("strActivityDateList (without dupes) = " + strActivityDateList);
-						
-						var aryActivityLocationList = strActivityLocationList.split(",");
-						strActivityLocationList = uniq_fast(aryActivityLocationList);
-						console.log("strActivityLocationList = " + strActivityLocationList);
-						
-						//console.log("$scope.datasetId = " + $scope.datasetId + ", $scope.row.locationId = " + $scope.row.locationId + ", $scope.row.activityDate = " + $scope.row.activityDate);
-						console.log("$scope.datasetId = " + $scope.datasetId + ", strActivityLocationList = " + strActivityLocationList + ", strActivityDateList = " + strActivityDateList);
-						var promise = DatasetService.getSpecificActivities($scope.datasetId, strActivityLocationList,strActivityDateList);
-						
-						console.log("typeof $promise = " + typeof promise);
-						if (typeof promise !== 'undefined') 
-						{
-							console.log("promise is exists, but has no results yet...")
-							console.dir(promise);
-							
-							promise.$promise.then(function(list){
-								console.log("promise received its results and is next...");
-								console.dir(promise);
-								//console.log("list is next...");
-								//console.dir(list);
-								if (promise.length > 0)
-								{
-									$scope.duplicateEntry = true;
-									var duplicateItems = angular.copy(promise);								
-									
-									if ($scope.showHeaderForm)
-                                    {
-                                        if (typeof $scope.activities === 'undefined')
-                                            $scope.activities = {};
-
-										$scope.activities.errors = {};
-										$scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
-									}
-									else
-									{
-										console.log("$scope.datetimeList is next..");
-										console.dir($scope.datetimeList);
-										
-										console.log("duplicateItems.length = " + duplicateItems.length);
-										count = 1;
-										angular.forEach(duplicateItems, function(item){
-											//console.log("item is next...");
-											//console.dir(item);
-											// The datetime coming back from the backend has a "T" in it; we must remove it.
-											//item.ActivityDate = item.ActivityDate.replace("T", " ");
-											//console.log("item.ReadingDateTime = " + item.ReadingDateTime);
-											
-											//keepGoing = true;
-											//***
-											//DateTimeIndex = $scope.datetimeList.indexOf(item.ActivityDate);
-											//console.log("DateTimeIndex = " + DateTimeIndex);
-											
-											//console.log("$scope.dataSheetDataset[DateTimeIndex] is next...");
-											//console.dir($scope.dataSheetDataset[DateTimeIndex]);
-											//if (typeof $scope.dataSheetDataset[DateTimeIndex].errors === 'undefined')
-											//	$scope.dataSheetDataset[DateTimeIndex].errors = [];
-											
-											//$scope.dataSheetDataset[DateTimeIndex].isValid = false;
-											//$scope.dataSheetDataset[DateTimeIndex].errors.push("Duplicate:  a record with this ActivityDate and Location already exists.");
-											//$scope.dataSheetDataset[DateTimeIndex].errors = uniq_fast($scope.dataSheetDataset[DateTimeIndex].errors);
-											//$scope.gridHasErrors = true;
-											
-											//console.log(count);
-											//console.log("...");
-											//count++;
-											//***
-											
-											angular.forEach($scope.dataSheetDataset, function(detailRecord){
-												// In order to compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
-												//strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.activityDate);
-												strIsoDateTime = detailRecord.activityDate;
-												//strIsoDateTime = strIsoDateTime.replace("T", " ");
-												
-												// The datetime coming from the backend DOES NOT have milliseconds, so strip them off here.
-												strIsoDateTime = strIsoDateTime.substr(0, 19); // Start here, take this many.
-												//console.log("item.ActivityDate = " + item.ActivityDate + ", strIsoDateTime = " + strIsoDateTime);
-												if (item.ActivityDate === strIsoDateTime)
-												{
-													//console.log("Found dupe...");
-													if (!detailRecord.errors)
-														detailRecord.errors = [];
-													
-													// All three of these are required to turn the lines with errors red.
-													detailRecord.isValid = false;
-													detailRecord.errors.push("Duplicate:  a record with this Dataset, Location, and ActivityDate already exists.");
-													//$scope.validation_error_count++;
-													
-													// During the (angular?) cycle, checkForDuplicates ends up running twice, so we get duplicate error entries.
-													// Therefore, clean out the duplicate entries from the error array.
-													detailRecord.errors = uniq_fast(detailRecord.errors);
-													$scope.gridHasErrors = true;
-													$scope.weHaveDuplicates = true;
-												}
-											});
-											
-											//console.log("Finished inside looping through $scope.dataSheetDataset for ActivityDate errors...");
-										});
-										//console.log("Finished outside looping through duplicateItems for ActivityDate errors...");
-									}
-									//console.log("After 'if' checking for duplicates...");
-								}
-								else
-								{
-									$scope.duplicateEntry = false;
-									$scope.weHaveDuplicates = false;
-								}
-								$scope.DupeCheckRunning = false;
-								//console.log("After the 'if' promise.length...");
-								console.log("$scope.dataSheetDataset is next...");
-								console.dir($scope.dataSheetDataset);
-								$scope.validateGrid($scope);
-							});
-							console.log("Location after promise.then (but it may not have completed yet)... ");
-						}
-					//}
-					//else
-					//{
-					//	console.log("This dataset is either CrppContracts or WaterQuality, not checking for duplicates.");
-					//	$scope.DupeCheckRunning = false;
-					//	$scope.duplicateEntry = false;
-					//	$scope.validateGrid($scope);
-					//}
-				}
-				console.log("$scope.dataSheetDataset is next...");
-				console.dir($scope.dataSheetDataset);
-				$rootScope.dataSheetDataset = angular.copy($scope.dataSheetDataset);
-				console.dir($scope);
 			};
 			
 			$scope.removeRowErrorsBeforeRecheck = function()
