@@ -35,6 +35,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
         $scope.addNewSection = false; // This is a flag.  On Creel Survey, a user may add a new section, which saves the section, but the page remains on the activity.
         $scope.dataEntryPage = true;  // This is s flag, telling the app that we are on the Data Entry Page, to make the Add Section button show only on the Data Entry page.	
+        $scope.callingPage = "DataEntry";
 
         $scope.foundDuplicate = false;
         $scope.showDetails = true;
@@ -55,6 +56,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
         //config the fields for the datasheet - include mandatory location and activityDate fields
         //$scope.datasheetColDefs = DataSheet.getColDefs();
         DataSheet.initScope($scope);
+        //console.log("$scope at top is next...");
+        //console.dir($scope);
 
         //fire up our dataset
         console.log("routeParams.Id = " + $routeParams.Id);
@@ -367,18 +370,30 @@ var dataset_entry_form = ['$scope', '$routeParams',
 		$scope.$watch('duplicateEntry', function(){
 			console.log("Inside watch duplicateEntry...");
 			//console.log("typeof $scope.duplicateEntry = " + $scope.duplicateEntry);
-			console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
-            console.log("$scope.saving = " + $scope.saving);
+            //console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
+            //console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
+            //console.log("$scope.saving = " + $scope.saving);
 
-			if ((typeof $scope.duplicateEntry === 'undefined') || ($scope.duplicateEntry === null))
-				return;
-			else if ($scope.duplicateEntry)
-				return;
-			else if ($scope.saving)
-				$scope.continueSaving();
+            if ((typeof $scope.duplicateEntry === 'undefined') || ($scope.duplicateEntry === null)) {
+                //console.log("$scope.duplicateEntry undefined or null; returning...");
+                return;
+            }
+            else if ((!$scope.duplicateEntry) && ($scope.DatastoreTablePrefix === "ScrewTrap") && ($scope.saving)) {
+                //console.log("$scope.duplicateEntry = false, we're on ScrewTrap, and we're saving...");
+                $scope.continueSaving();
+            }
+            else if ($scope.duplicateEntry) {
+                //console.log("$scope.duplicateEntry = true...");
+                return;
+            }
+            else if ($scope.saving) {
+                //console.log("$scope.saving = true...");
+                $scope.continueSaving();
+            }
 			else
 			{
 				// Do nothing.
+                //console.log("Doing nothing...");
 			}
 		});
 
@@ -514,6 +529,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				$scope.activities.errors = undefined;
 				$scope.removeRowErrorsBeforeRecheck();
                 //$scope.checkForDuplicates();
+                //DataSheet.checkForDuplicates($scope);
                 DataSheet.checkForDuplicates($scope);
 			}
         };
@@ -799,6 +815,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
             console.dir($rootScope);
             $scope.duplicateEntry = undefined;
             $scope.saving = true;
+            console.log("$scope.saving = " + $scope.saving);
 
 			//if (($scope.DatastoreTablePrefix === "CrppContracts") || ($scope.DatastoreTablePrefix === "WaterQuality"))
             if (($scope.DatastoreTablePrefix === "CrppContracts") ||
@@ -817,16 +834,18 @@ var dataset_entry_form = ['$scope', '$routeParams',
 			else
 			{
                 //$scope.checkForDuplicates(); //this will call continueSaving when it is ready...
+                //DataSheet.checkForDuplicates($scope);
                 DataSheet.checkForDuplicates($scope);
 			}
         };
 
         //called after the duplicate checking finishes...
         $scope.continueSaving = function() {
-            
+            console.log("Inside dataset-entry-form.js, continueSaving...");
             //TODO: we should really break this below stuff out somehow so there isn't special handling in here for certain datasets...
             /**** CreeSurvey Header Time Time calculations Start ****/
-            if ($scope.DatastoreTablePrefix === "CreelSurvey") {
+            //if ($scope.DatastoreTablePrefix === "CreelSurvey") {
+            if (($scope.DatastoreTablePrefix === "CreelSurvey") || ($scope.DatastoreTablePrefix === "ScrewTrap")){
                 // Headers = row
                 // Details = onRow
 
@@ -878,20 +897,32 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 if (strDay.length < 2)
                     strDay = "0" + strDay;
 
-                var tmpTime = $scope.row.TimeStart;
-                console.log("tmpTime (TimeStart) = " + tmpTime);
-                if (tmpTime !== null) {
-                    $scope.row.TimeStart = "";
-                    $scope.row.TimeStart = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
-                    console.log("$scope.row.TimeStart = " + $scope.row.TimeStart);
-                }
+                var tmpTime = null;
+                if ($scope.DatastoreTablePrefix === "CreelSurvey") {
+                    tmpTime = $scope.row.TimeStart;
+                    console.log("tmpTime (TimeStart) = " + tmpTime);
+                    if (tmpTime !== null) {
+                        $scope.row.TimeStart = "";
+                        $scope.row.TimeStart = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
+                        console.log("$scope.row.TimeStart = " + $scope.row.TimeStart);
+                    }
 
-                tmpTime = $scope.row.TimeEnd;
-                console.log("tmpTime (TimeEnd) = " + tmpTime);
-                if (tmpTime !== null) {
-                    $scope.row.TimeEnd = "";
-                    $scope.row.TimeEnd = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
-                    console.log("$scope.row.TimeEnd = " + $scope.row.TimeEnd);
+                    tmpTime = $scope.row.TimeEnd;
+                    console.log("tmpTime (TimeEnd) = " + tmpTime);
+                    if (tmpTime !== null) {
+                        $scope.row.TimeEnd = "";
+                        $scope.row.TimeEnd = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
+                        console.log("$scope.row.TimeEnd = " + $scope.row.TimeEnd);
+                    }
+                }
+                else if ($scope.DatastoreTablePrefix === "ScrewTrap") {
+                    tmpTime = $scope.row.ArrivalTime;
+                    console.log("tmpTime (ArrivalTime) = " + tmpTime);
+                    if (tmpTime !== null) {
+                        $scope.row.ArrivalTime = "";
+                        $scope.row.ArrivalTime = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
+                        console.log("$scope.row.ArrivalTime = " + $scope.row.ArrivalTime);
+                    }
                 }
             }
             /**** CreeSurvey Header Time Time calculations End ****/
@@ -1061,7 +1092,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 console.log("$scope.activities in saveData, just before calling DatasetService.saveActivities is next...");
                 console.dir($scope.activities);
                 DatasetService.saveActivities($scope.userId, $scope.dataset.Id, $scope.activities);
-				$scope.saving = false;
+                //$scope.saving = false;
+                //console.log("$scope.saving = " + $scope.saving);
             }
             else {
                 console.log("We have errors...");
@@ -1366,7 +1398,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 		{
 			console.log("Inside $scope.onLocationChange...");
 
-			console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);DataSheet.checkForDuplicates($scope);
+            console.log("New location selected = " + $scope.locationOptions[$scope.row.locationId]);
 			
 			//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
             if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
@@ -1382,6 +1414,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				//$scope.errors = { heading: [] };
 				$scope.removeRowErrorsBeforeRecheck();
                 //$scope.checkForDuplicates();
+                //DataSheet.checkForDuplicates($scope);
                 DataSheet.checkForDuplicates($scope);
 			}
 		};
@@ -1402,6 +1435,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 $scope.activities.errors = undefined;
                 $scope.duplicateEntry = undefined;
                 //$scope.checkForDuplicates();
+                //DataSheet.checkForDuplicates($scope);
                 DataSheet.checkForDuplicates($scope);
             }
         };
