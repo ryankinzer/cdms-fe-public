@@ -1050,7 +1050,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 
             },
 
-            checkForDataEntryDuplicates(scope)
+            checkForDataEntryDuplicates: function (scope)
             {
                 console.log("Inside datasheet.js, checkoutForDataEntryDuplicates...");
 
