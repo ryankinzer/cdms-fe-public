@@ -143,15 +143,23 @@
 				<div class="error-table" style="width: 300px;">
 					<h4>Import preview results:</h4>
 					<table class="table table-striped table-bordered table-condensed">
-						<tbody>
-							<tr>
-								<td>Total Records:</td><td>{{dataSheetDataset.length + ValidRecordsBucket.length}}</td>
-							</tr>
-							<tr ng-show="gridHasErrors">
-								<!--<td>Records with errors:</td><td>{{validation_error_count}}</td>-->
-								<td class="errors-box"><b>There are errors...</b></td>
-							</tr>
-						</tbody>
+                        <tbody>
+                            <tr>
+                                <td>Total Records:</td>
+                                <td>{{dataSheetDataset.length + ValidRecordsBucket.length}}</td>
+                            </tr>
+                            <tr ng-show="gridHasErrors">
+                                <!--<td>Records with errors:</td><td>{{validation_error_count}}</td>-->
+                                <td class="errors-box"><b>There are errors...</b></td>
+                            </tr>
+                            <!-- Need the following tr, in order for the "We may have dupicates" to show properly and consistently.-->
+                            <tr ng-show="pageConfig.weHaveDuplicates">
+                                <td></td>
+                            </tr>
+                            <tr ng-show="pageConfig.weHaveDuplicates">
+                                <td class="errors-box"><b>We may have duplicates...</b></td>
+                            </tr>
+                        </tbody>
 					</table>
 				</div>
 				

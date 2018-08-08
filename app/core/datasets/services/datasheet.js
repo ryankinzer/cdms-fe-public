@@ -541,7 +541,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 					*	If all three items ARE NOT present, the error will be flagged, but the color WILL NOT turn red.
 					*/
                     if (row_errors.length > 0) {
-						//console.log("row_errors.length = " + row_errors.length)
+                        //console.log("row_errors.length = " + row_errors.length)
+
                         row.isValid = false;
                         //row.errors = row_errors;
 						
@@ -556,7 +557,10 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 						});
 						//console.log("row.errors.length = " + row.errors.length)
                         //scope.row.errors = angular.copy(row_errors);
-                        scope.gridHasErrors = true;
+                        if (scope.DatastoreTablePrefix === "ScrewTrap")
+                            scope.gridHasErrors = false;
+                        else
+                            scope.gridHasErrors = true;
                     }
 					else if ((typeof row.errors !== 'undefined') && (row.errors !== null))
 					{
@@ -564,8 +568,16 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 						if (row.errors.length > 0)
 						{
 							//console.log("row.errors.length = " + row.errors.length)
-							row.isValid = false;
-							scope.gridHasErrors = true;
+							//row.isValid = false;
+							//scope.gridHasErrors = true;
+                            if (scope.DatastoreTablePrefix === "ScrewTrap") {
+                                row.isValid = false;
+                                scope.gridHasErrors = false;
+                            }
+                            else {
+                                row.isValid = false;
+                                scope.gridHasErrors = true;
+                            }
 						}
 						else
 						{
@@ -964,6 +976,15 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 				//console.dir(scope.dataSheetDataset[0]);
 				//console.log("scope.onRow.entity is next...");
 				//console.dir(scope.onRow.entity);
+
+                //console.log("scope.gridHasErrors (after checkForDuplicates, aft validateGrid) = " + scope.gridHasErrors);
+                //if ((typeof scope.activities !== 'undefined') && (scope.activities !== null))
+                    //console.log("scope.activities.saving = " + scope.activities.saving);
+
+                //console.log("scope.DupeCheckRunning = " + scope.DupeCheckRunning);
+                //console.log("scope.duplicateEntry = " + scope.duplicateEntry);
+                //console.log("scope.weHaveDuplicates = " + scope.weHaveDuplicates);
+                //console.log("scope.pageConfig.weHaveDuplicates = " + scope.pageConfig.weHaveDuplicates);
             },
 
             getFieldStats: function (scope) {
@@ -1050,7 +1071,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 
             },
 
-            checkForDataEntryDuplicates(scope)
+            checkForDataEntryDuplicates: function (scope)
             {
                 console.log("Inside datasheet.js, checkoutForDataEntryDuplicates...");
 
@@ -1322,7 +1343,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                             strReadingDateTimeList += "," + strIsoDateTime; // Note the leading comma.
 
                             // If we are on a datasheet form (not header form), each line could have a different location.
-                            if (!scope.showHeaderForm) {
+                            //if (!scope.showHeaderForm) {
+                            if (!scope.pageConfig.showHeaderForm) {
                                 strActivityLocationList += "," + item.locationId;
                                 strInstrumentIdList += "," + item.InstrumentId;
                             }
@@ -1449,7 +1471,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 
                                     scope.dataSheetDataset[dateTimeIndex].errors = uniq_fast(scope.dataSheetDataset[dateTimeIndex].errors);
                                     scope.gridHasErrors = true;
-                                    scope.weHaveDuplicates = true;
+                                    //scope.weHaveDuplicates = true;
+                                    scope.pageConfig.weHaveDuplicates = true;
 
                                 });
 
@@ -1464,7 +1487,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                             else {
                                 scope.duplicateEntry = false;
                                 scope.DupeCheckRunning = false;
-                                scope.weHaveDuplicates = false;
+                                //scope.weHaveDuplicates = false;
+                                scope.pageConfig.weHaveDuplicates = false;
                             }
                             //console.log("After the 'if' promise.length...");
                             scope.validateGrid(scope);
@@ -1487,9 +1511,17 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                         //console.dir(item);//***
 
                         // ActivityDate
-                        //console.log("typeof item.activityDate = " + typeof item.activityDate);//***
-                        //console.log("scope.ActivityFields.ActivityDate = " + scope.ActivityFields.ActivityDate);
+                        // If we will show the header form (header at the top), we will get the ActivityDate from scope.ActivityFields.ActivityDate.
+                        // If we will NOT show the header form, we will get the ActivityDate from scope.dataSheetDataset.activityDate.
                         var strIsoDataTime = "";
+
+                        //console.log("scope.showHeaderForm = " + scope.showHeaderForm);
+                        //if (scope.showHeaderForm) {
+                        if (scope.pageConfig.showHeaderForm) {
+                            console.log("scope.ActivityFields.ActivityDate = " + scope.ActivityFields.ActivityDate);
+                        }
+
+                        //var strIsoDataTime = "";
                         if (typeof item.activityDate === "string") {
                             var slashLoc = item.activityDate.indexOf("/");
                             //console.log("slashLoc = " + slashLoc);
@@ -1510,10 +1542,13 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                         {
                             // Use our toolbox of functions to get the date into the format we need.
                             var dtActivityDate = formatDate(item.activityDate); // Take the date object and put it in friendly format (dd/mm/yyyy ...) first;
-                            //console.log("dtActivityDate = " + dtActivityDate);
+                            console.log("dtActivityDate = " + dtActivityDate);
                             strIsoDateTime = formatDateFromFriendlyToUtc(dtActivityDate); // Now take the date and put it in ISO format (yyyy-mm-dd ...);
-                            //console.log("strIsoDateTime = " + strIsoDateTime);
+                            console.log("strIsoDateTime = " + strIsoDateTime);
                         }
+ 
+                        //console.log("typeof item.activityDate = " + typeof item.activityDate);//***
+
 
                         if (count === 0) {
                             strActivityDateList = strIsoDateTime;
@@ -1531,7 +1566,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                         }
                         else {
                             // If we are on a datasheet form (not header form), each line could have a different location.
-                            if (!scope.showHeaderForm) {
+                            //if (!scope.showHeaderForm) {
+                            if (!scope.pageConfig.showHeaderForm) {
                                 strActivityDateList += "," + strIsoDateTime; // Note the leading comma.
                                 strActivityLocationList += "," + item.locationId;
                             }
@@ -1559,7 +1595,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                         count++;
                     });
 
-                    console.log("strActivityDateList (with dupes) = " + strActivityDateList);
+                    //console.log("strActivityDateList (with dupes) = " + strActivityDateList);
                     var aryActivityDateList = strActivityDateList.split(",");
                     strActivityDateList = uniq_fast(aryActivityDateList);
                     console.log("strActivityDateList (without dupes) = " + strActivityDateList);
@@ -1607,10 +1643,16 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                             //console.log("list is next...");
                             //console.dir(list);
                             if (promise.length > 0) {
-                                scope.duplicateEntry = true;
+                                //scope.duplicateEntry = true;
+                                if (scope.DatastoreTablePrefix === "ScrewTrap")
+                                    scope.duplicateEntry = false;
+                                else
+                                    scope.duplicateEntry = true;
+
                                 var duplicateItems = angular.copy(promise);
 
-                                if (scope.showHeaderForm) {
+                                //if (scope.showHeaderForm) {
+                                if (scope.pageConfig.showHeaderForm) {
                                     console.log("typeof scope.activities = " + typeof scope.activities);
                                     console.dir(scope.activities);
                                     if ((typeof scope.activities === 'undefined') || (scope.activities === null))
@@ -1621,14 +1663,13 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                                     if (scope.DatastoreTablePrefix === "ScrewTrap") {
                                         scope.duplicateEntry = false;
                                         scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, Activity Date, and ArrivalTime, a record may already exist.";
-                                        scope.gridHasErrors = false;
+                                        scope.gridHasErrors = $rootScope.gridHasErrors = false;
                                     }
                                     else {
                                         scope.duplicateEntry = true;
                                         scope.activities.errors.saveError = "Duplicate:  For this Dataset, Location, and Activity Date, a record already exists.";
                                         scope.saving = false;
-                                        $rootScope.gridHasErrors = true;
-                                        scope.gridHasErrors = true;
+                                        scope.gridHasErrors = $rootScope.gridHasErrors = true;
                                     }
 
                                 }
@@ -1638,10 +1679,13 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 
                                     console.log("duplicateItems.length = " + duplicateItems.length);
                                     count = 1;
+                                    //console.dir(scope);
                                     angular.forEach(duplicateItems, function (item) {
                                         //console.log("item is next...");
                                         //console.dir(item);
 
+                                        //console.log("scope.dataSheetDataset (inside duplicateItems loop) is next...");
+                                        //console.dir(scope.dataSheetDataset);
                                         angular.forEach(scope.dataSheetDataset, function (detailRecord) {
                                             // In order to compare the "friendly" date format to the UTC coming from the backend, we must convert it UTC.
                                             //strIsoDateTime = formatDateFromFriendlyToUtc(detailRecord.activityDate);
@@ -1664,8 +1708,9 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                                                     // During the (angular?) cycle, checkForDuplicates ends up running twice, so we get duplicate error entries.
                                                     // Therefore, clean out the duplicate entries from the error array.
                                                     detailRecord.errors = uniq_fast(detailRecord.errors);
-                                                    scope.gridHasErrors = false;
-                                                    scope.weHaveDuplicates = true;
+                                                    scope.gridHasErrors = $rootScope.gridHasErrors = false;
+                                                    //scope.weHaveDuplicates = $rootScope.weHaveDuplicates = true;
+                                                    scope.pageConfig.weHaveDuplicates = $rootScope.weHaveDuplicates = true;
                                                 }
                                                 else {
                                                     // All three of these are required to turn the lines with errors red.
@@ -1676,8 +1721,9 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                                                     // During the (angular?) cycle, checkForDuplicates ends up running twice, so we get duplicate error entries.
                                                     // Therefore, clean out the duplicate entries from the error array.
                                                     detailRecord.errors = uniq_fast(detailRecord.errors);
-                                                    scope.gridHasErrors = true;
-                                                    scope.weHaveDuplicates = true;
+                                                    scope.gridHasErrors = $rootScope.gridHasErrors = true;
+                                                    //scope.weHaveDuplicates = $rootScope.weHaveDuplicates = true;
+                                                    scope.pageConfig.weHaveDuplicates = $rootScope.weHaveDuplicates = true;
                                                 }
                                             }
                                         });
@@ -1690,12 +1736,14 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                             }
                             else {
                                 scope.duplicateEntry = false;
-                                scope.weHaveDuplicates = false;
+                                //scope.weHaveDuplicates = false;
+                                scope.pageConfig.weHaveDuplicates = false;
                             }
                             scope.DupeCheckRunning = false;
                             //console.log("After the 'if' promise.length...");
                             console.log("scope.dataSheetDataset is next...");
                             console.dir(scope.dataSheetDataset);
+                            console.error("---");
 
                             scope.validateGrid(scope);
                         });
@@ -1708,6 +1756,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                 $rootScope.dataSheetDataset = angular.copy(scope.dataSheetDataset);
                 //console.dir(scope);
                 //console.dir($rootScope);
+                scope.DupeCheckRunning = false;
+                //console.log("scope.DupeCheckRunning (at end of checkForDuplictes) = " + scope.DupeCheckRunning);
             },
             
 

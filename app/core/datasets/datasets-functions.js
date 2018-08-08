@@ -410,7 +410,7 @@ function validateField(field, row, key, scope, row_errors) {
         case 'time':
             var theTime = value;
             var strTime = theTime.toString();
-            console.log("strTime = " + strTime);
+            //console.log("strTime = " + strTime);
 
             var timeContentValid = true;
             if (!stringIsTime(value) && !is_empty(value))
