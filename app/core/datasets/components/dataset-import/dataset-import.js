@@ -1810,8 +1810,8 @@
 				{
                     //$scope.checkForDuplicates();
 
-                    console.log("$rootScope is next...");
-                    console.dir($rootScope);
+                    //console.log("$rootScope is next...");
+                    //console.dir($rootScope);
                     DataSheet.checkForDuplicates($scope);
 				}
 				else
@@ -1840,18 +1840,18 @@
 				
 				//console.log("$scope is next...");
 				//console.dir($scope);
-				console.log("The following are...$scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix");
-				console.dir($scope);
-				console.dir($scope.dataSheetDataset);
-                console.log("$scope.dataset.Datastore.TablePrefix = " + $scope.dataset.Datastore.TablePrefix);
+				//console.log("The following are...$scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix");
+				//console.dir($scope);
+				//console.dir($scope.dataSheetDataset);
+                //console.log("$scope.dataset.Datastore.TablePrefix = " + $scope.dataset.Datastore.TablePrefix);
                 console.log("$scope.gridHasErrors (after checkForDuplicates, aft validateGrid) = " + $scope.gridHasErrors);
-                if ((typeof $scope.activities !== 'undefined') && ($scope.activities !== null))
-                    console.log("$scope.activities.saving = " + $scope.activities.saving);
+                //if ((typeof $scope.activities !== 'undefined') && ($scope.activities !== null))
+                //    console.log("$scope.activities.saving = " + $scope.activities.saving);
 
-                console.log("$scope.DupeCheckRunning = " + $scope.DupeCheckRunning);
-                console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
+                //console.log("$scope.DupeCheckRunning = " + $scope.DupeCheckRunning);
+                //console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
                 //console.log("$scope.weHaveDuplicates = " + $scope.weHaveDuplicates);
-                console.log("$scope.pageConfig.weHaveDuplicates = " + $scope.pageConfig.weHaveDuplicates);
+                //console.log("$scope.pageConfig.weHaveDuplicates = " + $scope.pageConfig.weHaveDuplicates);
 
         		ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {width: 800, height: 360});
 					//ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {height: 360, width: 800});
