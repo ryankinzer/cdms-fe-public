@@ -153,7 +153,7 @@
                                 <td class="errors-box"><b>There are errors...</b></td>
                             </tr>
                             <!-- Need the following tr, in order for the "We may have dupicates" to show properly and consistently.-->
-                            <tr>
+                            <tr ng-show="pageConfig.weHaveDuplicates">
                                 <td></td>
                             </tr>
                             <tr ng-show="pageConfig.weHaveDuplicates">
