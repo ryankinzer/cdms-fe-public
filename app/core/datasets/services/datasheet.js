@@ -977,14 +977,14 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 				//console.log("scope.onRow.entity is next...");
 				//console.dir(scope.onRow.entity);
 
-                console.log("scope.gridHasErrors (after checkForDuplicates, aft validateGrid) = " + scope.gridHasErrors);
-                if ((typeof scope.activities !== 'undefined') && (scope.activities !== null))
-                    console.log("scope.activities.saving = " + scope.activities.saving);
+                //console.log("scope.gridHasErrors (after checkForDuplicates, aft validateGrid) = " + scope.gridHasErrors);
+                //if ((typeof scope.activities !== 'undefined') && (scope.activities !== null))
+                    //console.log("scope.activities.saving = " + scope.activities.saving);
 
-                console.log("scope.DupeCheckRunning = " + scope.DupeCheckRunning);
-                console.log("scope.duplicateEntry = " + scope.duplicateEntry);
+                //console.log("scope.DupeCheckRunning = " + scope.DupeCheckRunning);
+                //console.log("scope.duplicateEntry = " + scope.duplicateEntry);
                 //console.log("scope.weHaveDuplicates = " + scope.weHaveDuplicates);
-                console.log("scope.pageConfig.weHaveDuplicates = " + scope.pageConfig.weHaveDuplicates);
+                //console.log("scope.pageConfig.weHaveDuplicates = " + scope.pageConfig.weHaveDuplicates);
             },
 
             getFieldStats: function (scope) {
@@ -1679,7 +1679,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 
                                     console.log("duplicateItems.length = " + duplicateItems.length);
                                     count = 1;
-                                    console.dir(scope);
+                                    //console.dir(scope);
                                     angular.forEach(duplicateItems, function (item) {
                                         //console.log("item is next...");
                                         //console.dir(item);
@@ -1757,7 +1757,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                 //console.dir(scope);
                 //console.dir($rootScope);
                 scope.DupeCheckRunning = false;
-                console.log("scope.DupeCheckRunning (at end of checkForDuplictes) = " + scope.DupeCheckRunning);
+                //console.log("scope.DupeCheckRunning (at end of checkForDuplictes) = " + scope.DupeCheckRunning);
             },
             
 
