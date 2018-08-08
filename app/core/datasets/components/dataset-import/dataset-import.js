@@ -12,7 +12,9 @@
         $scope.userId = $rootScope.Profile.Id;
         $scope.fields = { header: [], detail: [], relation: [] };
         $scope.dataSheetDataset = [];
-        $scope.showHeaderForm = false;
+        //$scope.showHeaderForm = false;
+        $scope.pageConfig = {};
+        $scope.pageConfig.showHeaderForm = false;
         $scope.row = {}; //header form values if used...
         $scope.selectedItems = [];
 
@@ -50,7 +52,8 @@
         $scope.validation_error_count = 0;
         $scope.datetimeList = [];
         $scope.gridHasErrors = $rootScope.gridHasErrors = false;
-        $scope.weHaveDuplicates = false;
+        //$scope.weHaveDuplicates = false;
+        $scope.pageConfig.weHaveDuplicates = false;
         $scope.DupeCheckRunning = true;
         $scope.ValidationCheckRunning = true;
 
@@ -498,14 +501,20 @@
 
                 //console.log("$rootScope is next...");
                 //console.dir($rootScope);
-                //console.log("$scope is next...");
-                //console.dir($scope);
+                console.log("$scope is next...");
+                console.dir($scope);
+                console.log("$scope.ActivityFields is next...");
+                console.dir($scope.ActivityFields);
+                console.log("typeof $scope.ActivityFields.ActivityDate = " + typeof $scope.ActivityFields.ActivityDate);
+                console.log("$scope.ActivityFields.ActivityDate = " + $scope.ActivityFields.ActivityDate);
+
                 if ((typeof $scope.ActivityFields.ActivityDate === 'undefined') || ($scope.ActivityFields.ActivityDate === null))
+                    return;
+                else if (typeof $scope.ActivityFields.ActivityDate === "string")
                     return;
                 else if ($scope.ActivityFields.ActivityDate.getFullYear() < 1921)
                     return;
 
-                console.log("$scope.ActivityFields.ActivityDate = " + $scope.ActivityFields.ActivityDate);
                 var theYear = $scope.ActivityFields.ActivityDate.getFullYear();
                 //console.log("theYear = " + theYear);
 
@@ -530,7 +539,7 @@
 
                     // Rebuild item.activityDate, using the Date/time info from the form.
                     item.activityDate = theMonth + "/" + theDate + "/" + theYear + " " + theHours + ":" + theMinutes;
-                    //console.log("item.activityDate (updated) = " + item.activityDate);
+                    console.log("item.activityDate (updated) = " + item.activityDate);
                 });
                 
 
@@ -790,7 +799,7 @@
 
 					//$scope.validateGrid($scope);
 					$scope.validateGrid($scope, "Import");
-		        	$scope.floatErrorsToTop();
+                    $scope.floatErrorsToTop();
 		        }
 		        catch(e)
 		        {
@@ -1029,12 +1038,14 @@
 				//decide if we are going to show the headerForm.  we DO if they entered an activity date, DO NOT if they mapped it.
 				if($scope.mappedActivityFields[ACTIVITY_DATE] || $scope.mappedActivityFields[INDEX_FIELD])
 				{
-					$scope.showHeaderForm = false; //because we have mapped the activity date field to our datafile, meaning multiple activity dates needs the wide sheet.
+                    //$scope.showHeaderForm = false; //because we have mapped the activity date field to our datafile, meaning multiple activity dates needs the wide sheet.
+                    $scope.pageConfig.showHeaderForm = false; //because we have mapped the activity date field to our datafile, meaning multiple activity dates needs the wide sheet.
 					$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.datasheetColDefs,$scope.HeaderColDefs, $scope.DetailColDefs);
 				}
 				else
 				{
-					$scope.showHeaderForm = true; //single activity, use the headerform.
+                    //$scope.showHeaderForm = true; //single activity, use the headerform.
+                    $scope.pageConfig.showHeaderForm = true; //single activity, use the headerform.
 					//$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.DetailColDefs);
 					if ($scope.DatastoreTablePrefix === "CreelSurvey")
 						$scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.datasheetColDefs2,$scope.DetailColDefs);
@@ -1042,7 +1053,8 @@
                         $scope.datasheetColDefs = $scope.RowQAColDef.concat($scope.DetailColDefs);
 
                 }
-				console.log("$scope.showHeaderForm = " + $scope.showHeaderForm);
+                //console.log("$scope.showHeaderForm = " + $scope.showHeaderForm);
+                console.log("$scope.pageConfig.showHeaderForm = " + $scope.pageConfig.showHeaderForm);
 
 				console.log("$scope.datasheetColDefs (after concatentation) is next...");  // Note:  Column ReleaseLocation is already present here, col 9.
 				console.dir($scope.datasheetColDefs);
@@ -1221,12 +1233,14 @@
 												
 												var strNumberAnglersObserved = data_row[col].toString();
 												if (strNumberAnglersObserved === "0")
-													if ($scope.showHeaderForm)
+													//if ($scope.showHeaderForm)
+                                                    if ($scope.pageConfig.showHeaderForm)
 														$scope.row.NumberAnglersObserved = 0;
 													else
 														new_row.NumberAnglersObserved = 0;
 												else
-													if ($scope.showHeaderForm)
+													//if ($scope.showHeaderForm)
+                                                    if ($scope.pageConfig.showHeaderForm)
 														$scope.row.NumberAnglersObserved = data_row[col];
 													else
 														new_row.NumberAnglersObserved = data_row[col];
@@ -1237,12 +1251,14 @@
 												console.log("Found NumberAnglersInterviewed.  Value = " + data_row[col]);
 												var strNumberAnglersInterviewed = data_row[col].toString();
 												if (strNumberAnglersInterviewed === "0")
-													if ($scope.showHeaderForm)
+													//if ($scope.showHeaderForm)
+                                                    if ($scope.pageConfig.showHeaderForm)
 														$scope.row.NumberAnglersInterviewed = 0;
 													else
 														new_row.NumberAnglersInterviewed = 0;
 												else
-													if ($scope.showHeaderForm)
+													//if ($scope.showHeaderForm)
+                                                    if ($scope.pageConfig.showHeaderForm)
 														$scope.row.NumberAnglersInterviewed = data_row[col];
 													else
 														new_row.NumberAnglersInterviewed = data_row[col];
@@ -1406,7 +1422,8 @@
 										//console.log("$scope.showHeaderForm = " + $scope.showHeaderForm + ", field.FieldRoleId = " + field.FieldRoleId);
 										// Using Header form...
 										//if ((typeof new_row.activityDate !== 'string') && (field.FieldRoleId === 1))
-										if ($scope.showHeaderForm && (field.FieldRoleId === 1))
+										//if ($scope.showHeaderForm && (field.FieldRoleId === 1))
+                                        if (($scope.pageConfig.showHeaderForm) && (field.FieldRoleId === 1))
 										{
 											//$scope.row[field.DbColumnName] = data_row[col]; Original line.
 											if ($scope.DatastoreTablePrefix === "CreelSurvey")
@@ -1486,7 +1503,8 @@
 															
 															// Get the value for NumberAnglersInterviewed, because we cannot have an interview,
 															// if NumberAnglersInterviewed = 0.
-															if ($scope.showHeaderForm)
+															//if ($scope.showHeaderForm)
+                                                            if ($scope.pageConfig.showHeaderForm)
 																strNumberAnglersInterviewed = $scope.row.NumberAnglersInterviewed.toString();
 															else
 																strNumberAnglersInterviewed = new_row.NumberAnglersInterviewed.toString();
@@ -1801,27 +1819,40 @@
 					console.log("This dataset is not checked for duplicates.");
 					$scope.DupeCheckRunning = false;
 					$scope.duplicateEntry = false;
-					$scope.weHaveDuplicates = false;
+                    //$scope.weHaveDuplicates = false;
+                    $scope.pageConfig.weHaveDuplicates = false;
 				}
                 //***
                 $scope.gridHasErrors = $rootScope.gridHasErrors;
-				console.log("$scope.gridHasErrors (after checkForDuplicates, bef validateGrid) = " + $scope.gridHasErrors);
+                //$scope.weHaveDuplicates = $rootScope.weHaveDuplicates;
+                $scope.pageConfig.weHaveDuplicates = $rootScope.weHaveDuplicates;
+                console.log("$scope.gridHasErrors (after checkForDuplicates, bef validateGrid) = " + $scope.gridHasErrors);
+                console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
 				$scope.UploadResults.showPreview = true;
 
 				$scope.toggleDuplicates();
 
-            	//$scope.validateGrid($scope);
+            	//$scope.validateGrid($scope); // Moved this to the end of $scope.checkForDuplicates
 				//console.log("$scope.callingPage = " + $scope.callingPage);
             	//$scope.validateGrid($scope); // Moved this to the end of $scope.checkForDuplicates
         		$scope.floatErrorsToTop();
-				console.log("$scope.gridHasErrors (after checkForDuplicates, aft validateGrid) = " + $scope.gridHasErrors);
+				//console.log("$scope.gridHasErrors (after checkForDuplicates, aft validateGrid) = " + $scope.gridHasErrors);
 				
 				//console.log("$scope is next...");
 				//console.dir($scope);
 				console.log("The following are...$scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix");
 				console.dir($scope);
 				console.dir($scope.dataSheetDataset);
-				console.log($scope.dataset.Datastore.TablePrefix);
+                console.log("$scope.dataset.Datastore.TablePrefix = " + $scope.dataset.Datastore.TablePrefix);
+                console.log("$scope.gridHasErrors (after checkForDuplicates, aft validateGrid) = " + $scope.gridHasErrors);
+                if ((typeof $scope.activities !== 'undefined') && ($scope.activities !== null))
+                    console.log("$scope.activities.saving = " + $scope.activities.saving);
+
+                console.log("$scope.DupeCheckRunning = " + $scope.DupeCheckRunning);
+                console.log("$scope.duplicateEntry = " + $scope.duplicateEntry);
+                //console.log("$scope.weHaveDuplicates = " + $scope.weHaveDuplicates);
+                console.log("$scope.pageConfig.weHaveDuplicates = " + $scope.pageConfig.weHaveDuplicates);
+
         		ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {width: 800, height: 360});
 					//ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {height: 360, width: 800});
 
@@ -1985,7 +2016,8 @@
 				var strMonth = null;
 				var strDay = null;
 				
-				if ($scope.weHaveDuplicates)
+				//if ($scope.weHaveDuplicates)
+                if ($scope.pageConfig.weHaveDuplicates)
 				{
 					alert("Unable to save.  The data contains duplicate records.");
 					return;
@@ -1997,7 +2029,8 @@
 						return;
 				}
 				
-				if($scope.showHeaderForm)
+				//if($scope.showHeaderForm)
+                if ($scope.pageConfig.showHeaderForm)
 				{
 					if ($scope.DatastoreTablePrefix === "CreelSurvey")
 					{
@@ -2104,7 +2137,8 @@
 				for (var i = 0; i < $scope.dataSheetDataset.length; i++) {
 					var row = $scope.dataSheetDataset[i];
 
-					if($scope.showHeaderForm)
+					//if($scope.showHeaderForm)
+                    if ($scope.pageConfig.showHeaderForm)
 						row = angular.extend(row, $scope.row, $scope.ActivityFields); // copy in the header fields...  //TODO: might be nicer to pass into parseActivitySheet below...
 
 					//copy in the selected qastatus (default was set above)
@@ -2209,7 +2243,8 @@
 				});
 				
 				$scope.gridHasErrors = false;
-				$scope.weHaveDuplicates = false;
+                //$scope.weHaveDuplicates = false;
+                $scope.pageConfig.weHaveDuplicates = false;
 			};
 			
 			$scope.rebuildDateTimeList = function()
