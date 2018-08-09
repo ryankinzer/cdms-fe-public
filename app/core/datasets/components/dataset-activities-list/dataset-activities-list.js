@@ -42,7 +42,11 @@ var dataset_activities_list = ['$scope', '$routeParams',
         };
 		
         var TimeStartTemplate = function (params) {
-            return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:MM') + '</a>';
+            // moment, for some reason, takes something like this:  "2017-07-09T20:19:00"
+            // and turns it into something like this:  2017-07-09 20:07:00
+            // If you add 5 minutes to the time, it will still come out like this:  2017-07-09 20:07:00
+            //return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:MM') + '</a>';
+            return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:mm') + '</a>';
         };
 
         var yearReportedTemplate = function (params) {
@@ -217,7 +221,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             });
 			console.log("Time check3 = " + moment(Date.now()).format('HH:mm:ss'));
             console.log("$scope at end of $scope.activities.$promise is next...");
-            //console.dir($scope);
+            console.dir($scope);
 
             $scope.allActivities = $scope.activities; //set allActivities so we can reset our filters
             $scope.loading = false;
