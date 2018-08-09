@@ -1119,7 +1119,9 @@ function formatDateFromFriendlyToUtc(d) {
 // MM/DD/YYYY HH:MM:SS
 // and converts it into this format:  YYYY-MM-DD HH:MM:SSS.mmm
 function convertDateFromUnknownStringToUTC(strD) {
-	//console.log("Inside common-functions.js, convertDateFromUnknownStringToUTC...");
+//function convertDateFromUnknownStringToUTC(strD, strTimeFormat) {
+    //console.log("Inside common-functions.js, convertDateFromUnknownStringToUTC...");
+    //console.log("strD = " + strD + ", strTimeFormat = " + strTimeFormat);
 	
 	var strIsoDateTime = "";
 	var strType = "";
@@ -1134,13 +1136,21 @@ function convertDateFromUnknownStringToUTC(strD) {
 		else if (strD.indexOf("/") > -1) // Friendly (MM/DD/YYYY HH:MM)
 		{
 			strIsoDateTime = formatDateFromFriendlyToUtc(strD); 
-		}
+        }
+
+        //if ((typeof strTimeFormat !== 'undefined') && (strTimeFormat !== null)) {
+        //    if (strTimeFormat === "HH:MM") {
+        //        var intColonLoc = strIsoDateTime.indexOf(":"); // The location of the colon after the hour.
+
+        //        strIsoDateTime = strIsoDateTime.substr(0, intColonLoc + 3);
+        //    }
+        //}
 	}
 	else
 	{
 		
 	}
-	//console.log("strIsoDateTime = " + strIsoDateTime);
+	console.log("strIsoDateTime = " + strIsoDateTime);
 	return strIsoDateTime;
 	
 }
