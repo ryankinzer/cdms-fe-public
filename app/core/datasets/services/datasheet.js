@@ -549,18 +549,30 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
 						// validateGrid(scope) calls validate
 						// validate does angular.forEach on scope.dataSheetDataset, passing the data_row to here, coming in as row.
                         //row.errors = angular.copy(row_errors);
+
+                        // If we are one ScriptTrap, first set this to false.  If we have any validation errors, we will set it to true.
+                        // If we only have possible duplicate errors, we must this set to false, to enable the Import button.
+                        if (scope.DatastoreTablePrefix === "ScrewTrap")
+                            scope.gridHasErrors = false;
+
 						angular.forEach(row_errors, function(item){
 							if ((typeof row.errors === 'undefined') || (row.errors === null))
 								row.errors = [];
 							
-							row.errors.push(item);
+                            row.errors.push(item);
+
+                            if (item.indexOf("Duplicate:") < 0) // A validation error, not a duplicate
+                            {
+                                scope.gridHasErrors = true;
+                            }
+
 						});
 						//console.log("row.errors.length = " + row.errors.length)
                         //scope.row.errors = angular.copy(row_errors);
-                        if (scope.DatastoreTablePrefix === "ScrewTrap")
-                            scope.gridHasErrors = false;
-                        else
-                            scope.gridHasErrors = true;
+                        //if (scope.DatastoreTablePrefix === "ScrewTrap")
+                        //    scope.gridHasErrors = false;
+                        //else
+                        //    scope.gridHasErrors = true;
                     }
 					else if ((typeof row.errors !== 'undefined') && (row.errors !== null))
 					{
