@@ -181,7 +181,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 				$scope.row.strProjectLead = strProjectLead;
 				$scope.row.ProjectLead = undefined;
 			}
-		});
+        });
 
         $scope.$watch('dataset_activities.Dataset.Id', function () {
             if (!$scope.dataset_activities.Dataset)
@@ -246,18 +246,17 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 				}
 				*/
             }
-            else if ($scope.DatastoreTablePrefix === "ScrewTrap")
-            {
+            else if ($scope.DatastoreTablePrefix === "ScrewTrap") {
                 if ((typeof $scope.dataset_activities.Header.ArrivalTime !== 'undefined') && ($scope.dataset_activities.Header.ArrivalTime !== null))
                     $scope.dataset_activities.Header.ArrivalTime = getTimeFromFriendlyString($scope.dataset_activities.Header.ArrivalTime);
             }
-			else if ($scope.DatastoreTablePrefix === "CrppContracts")
-			{
-				$scope.projectLeadList = ProjectService.getCrppStaff(); // Get all CRPP staff.
-				
-				if ($scope.row.ProjectLead)
-					$scope.showProjectLeads = true;
-			}
+            else if ($scope.DatastoreTablePrefix === "CrppContracts") {
+                $scope.projectLeadList = ProjectService.getCrppStaff(); // Get all CRPP staff.
+
+                if ($scope.row.ProjectLead)
+                    $scope.showProjectLeads = true;
+            }
+
             console.log("$scope.row is next...");
             console.dir($scope.row);
 
@@ -473,7 +472,6 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
                     watcher();
                 });
-
             }
 
             //check authorization -- need to have project loaded before we can check project-level auth
@@ -583,7 +581,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 			$scope.selectInstrument();
 			*/
             console.log("$scope at end of watch project.Name is next...");
-            //console.dir($scope);
+            console.dir($scope);
         });
 
         $scope.$watch('dataSheetDataset', function () {
@@ -708,13 +706,18 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
         $scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias from service
 
         $scope.selectInstrument = function () {
+            //console.log("Inside $scope.selectInstrument...");
             $scope.viewInstrument = getByField($scope.project.Instruments, $scope.row.InstrumentId, "Id");
             $scope.selectAccuracyCheck();
         };
 
         $scope.selectAccuracyCheck = function () {
+            //console.log("Inside $scope.selectAccuracyCheck...");
             if ($scope.row.AccuracyCheckId)
                 $scope.row.AccuracyCheck = getByField($scope.viewInstrument.AccuracyChecks, $scope.row.AccuracyCheckId, "Id");
+
+            //console.log("$scope at end of $scope.selectAccuracyCheck is next...");
+            //console.dir($scope);
         };
 
         $scope.cancel = function () {
