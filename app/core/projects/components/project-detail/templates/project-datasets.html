@@ -30,134 +30,134 @@
 </div>
 
 <tabset justified="true">
-	<tab heading="Summary">
-		<div ng-include="'app/core/projects/components/project-detail/templates/project-summary.html'"></div>
-	</tab>
-	<tab heading="Details" ng-show="AuthorizedToViewProject">
-		<div ng-include="'app/core/projects/components/project-detail/templates/project-details.html'"></div>
-	</tab>
+    <tab heading="Summary">
+        <div ng-include="'app/core/projects/components/project-detail/templates/project-summary.html'"></div>
+    </tab>
+    <tab heading="Details" ng-show="AuthorizedToViewProject">
+        <div ng-include="'app/core/projects/components/project-detail/templates/project-details.html'"></div>
+    </tab>
     <tab heading="Gallery" ng-controller="TabGalleryCtrl" ng-show="AuthorizedToViewProject">
         <div ng-include="'app/core/projects/components/project-detail/templates/project-gallery.html'"></div>
     </tab>
     <tab heading="Documents" ng-controller="TabDocumentsCtrl" ng-show="AuthorizedToViewProject">
         <div ng-include="'app/core/projects/components/project-detail/templates/project-documents.html'"></div>
     </tab>
-	<tab heading="Data" ng-controller="TabDataCtrl" ng-show="AuthorizedToViewProject">
-		<div class="container-fluid">
-		    <div class="row-fluid">
-		        <div class="span10">
-		     
+    <tab heading="Data" ng-controller="TabDataCtrl" ng-show="AuthorizedToViewProject">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span10">
+
                     <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
                         <div id="data-tab-grid" class="ag-blue gridStyle-small"></div>
                     </div>
 
                     <div class="data-tab-grid-footer">Total datasets in this project: {{datasets.length}}</div>
 
-		        </div>
-		    </div>
-		</div>
-	</tab>	
-	<tab heading="Editors" ng-show="AuthorizedToViewProject">
-		<div style="width: 660px;">		 
-	 	<div ng-show="saveResults && saveResults.success" style="margin-bottom: 50px;">
-		    <div class="alert alert-success">
-		    <h4 class="alert-heading">Success!</h4>
-		    	Editors for this project were updated.
-		    </div>
-		</div>
-		<div>    
-		    <p ng-show="saveResults && saveResults.failure" class="alert alert-danger">There was a problem saving. Please try again or contact support.</p>
-		</div>
+                </div>
+            </div>
+        </div>
+    </tab>
+    <tab heading="Editors" ng-show="AuthorizedToViewProject">
+        <div style="width: 660px;">
+            <div ng-show="saveResults && saveResults.success" style="margin-bottom: 50px;">
+                <div class="alert alert-success">
+                    <h4 class="alert-heading">Success!</h4>
+                    Editors for this project were updated.
+                </div>
+            </div>
+            <div>
+                <p ng-show="saveResults && saveResults.failure" class="alert alert-danger">There was a problem saving. Please try again or contact support.</p>
+            </div>
 
-	    <div class="panel" style="margin: 20px;background-color: #F5FBEF;padding: 0px;">
+            <div class="panel" style="margin: 20px;background-color: #F5FBEF;padding: 0px;">
 
-	        <table class="table table-striped">
-	            <thead>
-	            <tr style="background-color: #E0F8E6;">
-	            	<th width="20%">&nbsp;</th>
-	                <th>Name</th>
-	                <th width="20%">&nbsp;</th>
-	            </tr>
-	            </thead>
-	            <tbody>
-	            <tr>
-	            	<td><img class="img-rounded" ng-src="{{project.Owner.ProfileImageUrl}}"/></td>
-	                <td class="large-font">{{project.Owner.Fullname}}</td>
-	                <td>Owner</td>
-	            </tr>
-	            <tr ng-repeat="user in editors">
-	            	<td><img class="img-rounded" ng-src="{{user.ProfileImageUrl}}"/></td>
-	                <td class="large-font">{{user.Fullname}}</td>
-	                <td><button project-role="owner" class="btn-xs btn-red" ng-click="removeEditor($index)">Remove</button></td>
-	            </tr>
-	            
-	            </tbody>
-	        </table>
-	        <hr/>
-	        <div style="margin-top: 20px;margin-bottom: 30px;">
-	        	<div project-role="owner" class="add-user-box" style="margin-left: 10px; margin-top: 40px; width=200px;">
-	            	<select ui-select2="select2Options" data-placeholder="Choose a user" ng-model="selectedUser" style="width: 200px;">
-					    <option ng-repeat="user in users" value="{{user.Id}}">{{user.Fullname}}</option>
-					</select>
-					<button class="btn" style="margin-left: 25px;" ng-click="addEditor()">Add Editor</button>
-				
-	            	<button class="btn right" style="margin-left: 5px; margin-right: 10px;" ng-click="saveEditors()">Save</button>
-	   				<button class="btn btn-warning right" ng-click="cancel()">Cancel</button>
-	   			</div>
-	   		</div>
-	    </div>
-	    </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr style="background-color: #E0F8E6;">
+                            <th width="20%">&nbsp;</th>
+                            <th>Name</th>
+                            <th width="20%">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><img class="img-rounded" ng-src="{{project.Owner.ProfileImageUrl}}" /></td>
+                            <td class="large-font">{{project.Owner.Fullname}}</td>
+                            <td>Owner</td>
+                        </tr>
+                        <tr ng-repeat="user in editors">
+                            <td><img class="img-rounded" ng-src="{{user.ProfileImageUrl}}" /></td>
+                            <td class="large-font">{{user.Fullname}}</td>
+                            <td><button project-role="owner" class="btn-xs btn-red" ng-click="removeEditor($index)">Remove</button></td>
+                        </tr>
 
-	</tab>
+                    </tbody>
+                </table>
+                <hr />
+                <div style="margin-top: 20px;margin-bottom: 30px;">
+                    <div project-role="owner" class="add-user-box" style="margin-left: 10px; margin-top: 40px; width=200px;">
+                        <select ui-select2="select2Options" data-placeholder="Choose a user" ng-model="selectedUser" style="width: 200px;">
+                            <option ng-repeat="user in users" value="{{user.Id}}">{{user.Fullname}}</option>
+                        </select>
+                        <button class="btn" style="margin-left: 25px;" ng-click="addEditor()">Add Editor</button>
 
-	<!--<tab heading="Instruments" ng-show="AuthorizedToViewProject && project.Instruments">-->
-	<tab heading="Instruments" ng-show="AuthorizedToViewProject && ShowInstruments" ng-controller="TabInstrumentsCtrl">
-		<div class="container-fluid">
-		    <div class="row-fluid">
+                        <button class="btn right" style="margin-left: 5px; margin-right: 10px;" ng-click="saveEditors()">Save</button>
+                        <button class="btn btn-warning right" ng-click="cancel()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </tab>
+
+    <!--<tab heading="Instruments" ng-show="AuthorizedToViewProject && project.Instruments">-->
+    <tab heading="Instruments" ng-show="AuthorizedToViewProject && ShowInstruments" ng-controller="TabInstrumentsCtrl">
+        <div class="container-fluid">
+            <div class="row-fluid">
                 <div class="span10">
 
                     <div class="panel panel-default">
 
-                            <div class="panel-body">
-                                <div project-role="editor" class="panel-body" style="width: 600px;">
-                                    <h3>Add an Instrument:</h3>
+                        <div class="panel-body">
+                            <div project-role="editor" class="panel-body" style="width: 600px;">
+                                <h3>Add an Instrument:</h3>
 
-                                    <select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-model="selectedInstrument" style="width: 300px;">
-                                        <option ng-repeat="instrument in allInstruments" value="{{instrument.Id}}">{{instrument.Name}} - SN:{{instrument.SerialNumber}}</option>
-                                    </select>
+                                <select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-model="selectedInstrument" style="width: 300px;">
+                                    <option ng-repeat="instrument in allInstruments" value="{{instrument.Id}}">{{instrument.Name}} - SN:{{instrument.SerialNumber}}</option>
+                                </select>
 
-                                    <button ng-show="UserIsAdmin || UserIsOwner || UserIsEditor" style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createInstrument()">Create New</button>
-                                    <button ng-show="UserIsAdmin || UserIsOwner || UserIsEditor" style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addInstrument()">Add to Project</button>
+                                <button ng-show="UserIsAdmin || UserIsOwner || UserIsEditor" style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createInstrument()">Create New</button>
+                                <button ng-show="UserIsAdmin || UserIsOwner || UserIsEditor" style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addInstrument()">Add to Project</button>
 
-                                </div>
                             </div>
-
-
-                            <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
-                                <div id="instruments-tab-grid" class="ag-blue gridStyle-small"></div>
-                            </div>
-
-                            <div class="data-tab-grid-footer">Total instruments in this project: {{project.Instruments.length}}</div>
-
-
                         </div>
+
+
+                        <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                            <div id="instruments-tab-grid" class="ag-blue gridStyle-small"></div>
+                        </div>
+
+                        <div class="data-tab-grid-footer">Total instruments in this project: {{project.Instruments.length}}</div>
+
+
                     </div>
                 </div>
             </div>
-	</tab>
+        </div>
+    </tab>
 
-	<!--<tab heading="Fishermen">-->
-	<tab heading="Fishermen" ng-show="AuthorizedToViewProject && ShowFishermen" ng-controller="TabFishermenCtrl">
-		<div class="container-fluid">
-		    <div class="row-fluid">
-		        <div class="span10">
-		     
+    <!--<tab heading="Fishermen">-->
+    <tab heading="Fishermen" ng-show="AuthorizedToViewProject && ShowFishermen" ng-controller="TabFishermenCtrl">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span10">
+
                     <div class="panel panel-default">
 
                         <div project-role="editor">
                             <button style="margin: 20px;" class="right btn" ng-click="createFisherman()">Create New</button>
                         </div>
-                        
+
                         <div style="height: 400px; width: 100%; margin-top: 80px; margin-bottom: 115px;">
                             <div id="fisherman-tab-grid" class="ag-blue gridStyle-small"></div>
                         </div>
@@ -165,71 +165,71 @@
                         <div class="data-tab-grid-footer">Total fishermen: {{project.Fishermen.length}}</div>
 
                     </div>
-		        </div>
-		    </div>
-		</div>
-	</tab>
-	<!--<tab heading="Correspondence">-->
-	<tab heading="Correspondence" ng-show="AuthorizedToViewProject && ShowSubproject" ng-controller="TabCorrespondenceController">
-		<div class="container-fluid">
-		    <div class="row-fluid">
-		        <div class="span10">
-		           <div class="panel panel-default">
-						<div class="panel-body">
-					  		<h3>{{project.Name}} > Manage Correspondence</h3>
+                </div>
+            </div>
+        </div>
+    </tab>
+    <!--<tab heading="Correspondence">-->
+    <tab heading="Correspondence" ng-show="AuthorizedToViewProject && ShowSubproject" ng-controller="TabCorrespondenceController">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span10">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h3>{{project.Name}} > Manage Correspondence</h3>
 
                             <div project-role="editor">
                                 <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createCrppSubproject()">Create Project</button>
                             </div>
-					  		<p><i>Manage CRPP correspondence with agencies</i></p>
-					  		<hr/>
+                            <p><i>Manage CRPP correspondence with agencies</i></p>
+                            <hr />
 
                             <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
                                 <div id="crpp-correspondence-grid" class="ag-blue gridStyle-small"></div>
                                 <div class="crpp-correspondence-grid-footer">Total correspondence projects: {{subprojectList.length}}</div>
                             </div>
 
-					  		<div ng-show="subprojectList.length==0">No correspondence projects are associated with this project.</div>							
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</tab>
-	<tab heading="Sites" ng-show="AuthorizedToViewProject && ShowHabitat" ng-controller="TabSitesController">
-		<div class="container-fluid">
-		    <div class="row-fluid">
-		        <div class="span10">
-					<div class="panel panel-default">
-						<div class="panel-body">
+                            <div ng-show="subprojectList.length==0">No correspondence projects are associated with this project.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </tab>
+    <tab heading="Sites" ng-show="AuthorizedToViewProject && ShowHabitat" ng-controller="TabSitesController">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span10">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
 
-						
-					  		<h3>{{project.Name}} > Manage Sites</h3>
+
+                            <h3>{{project.Name}} > Manage Sites</h3>
                             <p><i>Manage Habitat Site Items</i></p>
 
                             <div project-role="editor">
                                 <button style="margin-left: 10px;" class="right btn" ng-click="createHabSubproject()">Create Site</button>
                             </div>
                             <button class="right btn" ng-click="openGeospatialDataPage()">Geospatial Data</button>
-					  		
-					  		<br/>
-							
+
+                            <br />
+
                             <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
                                 <div id="hab-sites-grid" class="ag-blue gridStyle-small"></div>
                                 <div class="hab-sites-grid-footer">Total sites: {{subprojectList.length}}</div>
                             </div>
 
-					  		<div ng-show="subprojectList.length==0">No Habitat items are associated with this project.</div>
-							
-                            
-							
-					  </div>
-					  <!--<div class="gridStyle-small" ng-grid="gridOptions"></div>-->
-		        </div>
-		    </div>
-		</div>
-		</div>
-	</tab>
+                            <div ng-show="subprojectList.length==0">No Habitat items are associated with this project.</div>
+
+
+
+                        </div>
+                        <!--<div class="gridStyle-small" ng-grid="gridOptions"></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </tab>
 </tabset>
 
 <div ng-show="project.Name == 'StreamNet'">
