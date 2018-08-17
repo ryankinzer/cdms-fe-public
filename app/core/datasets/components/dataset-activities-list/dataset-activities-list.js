@@ -889,6 +889,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
             $location.path("/dataset-details/" + $scope.dataset.Id);
         };
 
+        $scope.openSeasonsWindow = function () {
+            $location.path("/datasetseasons/" + $scope.dataset.Id);
+        };
+
         $scope.openDataEntryWindow = function (p) {
             $location.path("/dataentryform/" + $scope.dataset.Id);
         };
