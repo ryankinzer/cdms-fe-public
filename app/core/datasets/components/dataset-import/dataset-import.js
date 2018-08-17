@@ -505,8 +505,8 @@
                 console.dir($scope);
                 console.log("$scope.ActivityFields is next...");
                 console.dir($scope.ActivityFields);
-                console.log("typeof $scope.ActivityFields.ActivityDate = " + typeof $scope.ActivityFields.ActivityDate);
-                console.log("$scope.ActivityFields.ActivityDate = " + $scope.ActivityFields.ActivityDate);
+                //console.log("typeof $scope.ActivityFields.ActivityDate = " + typeof $scope.ActivityFields.ActivityDate);
+                //console.log("$scope.ActivityFields.ActivityDate = " + $scope.ActivityFields.ActivityDate);
 
                 if ((typeof $scope.ActivityFields.ActivityDate === 'undefined') || ($scope.ActivityFields.ActivityDate === null))
                     return;
@@ -1777,7 +1777,7 @@
 		 		});
 				
 				//console.log("$scope is next");
-				////console.dir($scope);
+				//console.dir($scope);
 				
 				console.log("$scope.dataSheetDataset.length = " + $scope.dataSheetDataset.length);
 				console.dir($scope.dataSheetDataset);
