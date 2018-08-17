@@ -169,131 +169,132 @@
 
 				<!--<div class="header-box" style="margin-top: 20px; width: 500px;" ng-show="showHeaderForm">-->
 				<!--<div class="header-box" style="margin-top: 20px; width: 600px;" ng-show="showHeaderForm">-->
-                <div class="header-box" style="margin-top: 100px; width: 600px;" ng-show="showHeaderForm">
+                <!--<div class="header-box" style="margin-top: 100px; width: 600px;" ng-show="showHeaderForm">-->
+                <div class="header-box" style="margin-top: 100px; width: 600px;" ng-show="pageConfig.showHeaderForm">
 
-                    <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
-                        <div class="header-label">Location:</div>
-                        <div class="header-value">
-                            <!--<select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions"></select>-->
-                            <select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions" ng-change="onLocationChange()"></select>
-                        </div>
-                    </div>
-                    
-                    <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
-                        <div class="header-label">Activity Date:</div>
-                        <div class="header-value">
-                            <!--<input class="form-control" type="text" datepicker-popup="longDate" ng-model="ActivityFields.ActivityDate" is-open="dopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
-                            <input class="form-control" type="text" datepicker-popup="longDate" ng-model="ActivityFields.ActivityDate" is-open="dopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-                        </div>
-                    </div>
-                    <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('SampleDate')">
-                        <div class="header-label">Sample Date:</div>
-                        <div class="header-value">
-                            <input class="form-control" type="text" datepicker-popup="longDate" ng-model="ActivityFields.ActivityDate" is-open="dopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-                        </div>
-                    </div>
-
-                    <div ng-hide="project.Instruments.length == 0 || dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
-                        <div style="display: inline-flex;">
-                            <div class="header-label">Instrument: </div>
+                        <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
+                            <div class="header-label">Location:</div>
                             <div class="header-value">
-                                <select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-change="selectInstrument()" style="width: 200px; margin-top: 4px; margin-bottom: 4px;" ng-model="ActivityFields.InstrumentId">
-                                    <option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
-                                </select>
-                            </div>
-                            <div style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
-                        </div>
-
-                        <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Timezone')">
-                            <div class="header-label">Reading Timezone:</div>
-                            <div class="header-value">
-                                <select class="form-control" ng-model="ActivityFields.Timezone" ng-options="zone.Name for zone in SystemTimezones"></select>
+                                <!--<select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions"></select>-->
+                                <select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions" ng-change="onLocationChange()"></select>
                             </div>
                         </div>
 
-                        <div ng-show="ActivityFields.InstrumentId">
-                            <div style="display: inline-flex; margin-left: -2px;">
-                                <div class="header-label">Pre-deploy Accuracy: </div>
+                        <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
+                            <div class="header-label">Activity Date:</div>
+                            <div class="header-value">
+                                <!--<input class="form-control" type="text" datepicker-popup="longDate" ng-model="ActivityFields.ActivityDate" is-open="dopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
+                                <input class="form-control" type="text" datepicker-popup="longDate" ng-model="ActivityFields.ActivityDate" is-open="dopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                            </div>
+                        </div>
+                        <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('SampleDate')">
+                            <div class="header-label">Sample Date:</div>
+                            <div class="header-value">
+                                <input class="form-control" type="text" datepicker-popup="longDate" ng-model="ActivityFields.ActivityDate" is-open="dopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                            </div>
+                        </div>
+
+                        <div ng-hide="project.Instruments.length == 0 || dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
+                            <div style="display: inline-flex;">
+                                <div class="header-label">Instrument: </div>
                                 <div class="header-value">
-                                    <select class="form-control" ng-model="row.AccuracyCheckId">
-                                        <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.AccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                                    <select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-change="selectInstrument()" style="width: 200px; margin-top: 4px; margin-bottom: 4px;" ng-model="ActivityFields.InstrumentId">
+                                        <option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
                                     </select>
                                 </div>
-                                <div style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="openAccuracyCheckModal()">Add</button></div>
+                                <div style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
                             </div>
 
-                            <div class="header-label">Post-deploy Accuracy: </div>
-                            <div class="header-value">
-                                <select class="form-control" ng-model="row.PostAccuracyCheckId">
-                                    <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.PostAccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
-                                </select>
+                            <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Timezone')">
+                                <div class="header-label">Reading Timezone:</div>
+                                <div class="header-value">
+                                    <select class="form-control" ng-model="ActivityFields.Timezone" ng-options="zone.Name for zone in SystemTimezones"></select>
+                                </div>
                             </div>
 
+                            <div ng-show="ActivityFields.InstrumentId">
+                                <div style="display: inline-flex; margin-left: -2px;">
+                                    <div class="header-label">Pre-deploy Accuracy: </div>
+                                    <div class="header-value">
+                                        <select class="form-control" ng-model="row.AccuracyCheckId">
+                                            <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.AccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                                        </select>
+                                    </div>
+                                    <div style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="openAccuracyCheckModal()">Add</button></div>
+                                </div>
+
+                                <div class="header-label">Post-deploy Accuracy: </div>
+                                <div class="header-value">
+                                    <select class="form-control" ng-model="row.PostAccuracyCheckId">
+                                        <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.PostAccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                                    </select>
+                                </div>
+
+                            </div>
                         </div>
+
+                        <form novalidate class="row-form">
+                            <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
+                                <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                                <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                                <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                                <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                                <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                                <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
+                                <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
+                                <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
+                                <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                                <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                                <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
+                                <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
+                                <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                                <ctuir-lookup-field ng-switch-when="lookup"></ctuir-lookup-field>
+                                <ctuir-multilookup-field ng-switch-when="multilookup"></ctuir-multilookup-field>
+                                <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
+                                <ctuir-text-field ng-switch-default></ctuir-text-field>
+                            </div>
+
+                            <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
+                                <div class="header-label">QA Status:</div>
+                                <div class="header-value">
+                                    <select class="form-control" ng-model="ActivityFields.QAStatusId" ng-options="id as name for (id, name) in QAStatusOptions"></select>
+                                </div>
+
+                                <div class="header-label">QA Comments:</div>
+                                <div class="header-value">
+                                    <textarea class="form-control" ng-model="ActivityFields.QAComments"></textarea>
+                                </div>
+                            </div>
+
+                        </form>
                     </div>
 
-                    <form novalidate class="row-form">
-                        <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
-                            <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                            <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
-                            <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
-                            <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
-                            <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                            <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
-                            <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
-                            <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
-                            <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
-                            <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
-                            <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
-                            <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
-                            <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                            <ctuir-lookup-field ng-switch-when="lookup"></ctuir-lookup-field>
-                            <ctuir-multilookup-field ng-switch-when="multilookup"></ctuir-multilookup-field>
-                            <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
-                            <ctuir-text-field ng-switch-default></ctuir-text-field>
-                        </div>
+                    <div style="margin-top: 20px;" ng-hide="ignoreDuplicates && DuplicateRecordsBucket.length==0">
+                        <span ng-show="DuplicateRecordsBucket.length>0"><i>Ignoring {{DuplicateRecordsBucket.length}} Duplicate Records</i> (<a href ng-click="openDuplicatesModal()">view</a>)</span>
+                    </div>
 
-                        <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
-                            <div class="header-label">QA Status:</div>
-                            <div class="header-value">
-                                <select class="form-control" ng-model="ActivityFields.QAStatusId" ng-options="id as name for (id, name) in QAStatusOptions"></select>
-                            </div>
+                    <div class="right" style="margin-top: -25px;" ng-show="dataSheetDataset.length > 0">
+                        <button class="btn btn-sm" ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange')" ng-disabled="selectedItems.length == 0" ng-click="clearSelections()">Clear selections</button>
+                        <button class="btn btn-sm" ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange')" ng-disabled="selectedItems.length == 0" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
+                    </div>
 
-                            <div class="header-label">QA Comments:</div>
-                            <div class="header-value">
-                                <textarea class="form-control" ng-model="ActivityFields.QAComments"></textarea>
-                            </div>
-                        </div>
+                    <!--<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>-->
+                    <div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 120px;"></div>
+                    <div ng-include="'app/core/datasets/templates/bottom-bar.html'" /><!--Note the closing "/" here!-->
+                    <div style="margin-top: 15px; padding-bottom: 30px;">
+                        <button class="btn" ng-disabled="!onRow" ng-click="removeRow()">Remove Row</button>
+                        <button ng-show="deletedRows.length" class="btn" ng-click="undoRemoveRow()">Undo</button>
 
-                    </form>
+                        <div class="right" style="margin-top: 3px; margin-left: 5px;"><img ng-show="activities.saving" src="assets/images/FishLoading.gif"></div>
+                        <!--<button class="btn right" ng-disabled="activities.saving" ng-click="saveDataSheet()" style="margin-left: 5px;">Import</button>-->
+                        <!--<button class="btn right" ng-disabled="(activities.saving || DupeCheckRunning || gridHasErrors)" ng-click="saveDataSheet()" style="margin-left: 5px;">Import</button>-->
+                        <button class="btn right" ng-disabled="(activities.saving || DupeCheckRunning || duplicateEntry || gridHasErrors)" ng-click="saveDataSheet()" style="margin-left: 5px;">Import</button>
+                        <button class="btn btn-warning right" ng-click="cancel()">Cancel</button>
+                        <br />
+                        <div ng-show="activities.saving" style="float: right;margin-right: 20px;" class="alert alert-success">Saving...</div>
+                    </div>
+                    <!--</div>--><!--Opening tag has a closing "/".-->
                 </div>
-
-				<div style="margin-top: 20px;" ng-hide="ignoreDuplicates && DuplicateRecordsBucket.length==0">
-					<span ng-show="DuplicateRecordsBucket.length>0"><i>Ignoring {{DuplicateRecordsBucket.length}} Duplicate Records</i> (<a href ng-click="openDuplicatesModal()">view</a>)</span>
-				</div>
-
-				<div class="right" style="margin-top: -25px;" ng-show="dataSheetDataset.length > 0">
-					<button class="btn btn-sm" ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange')" ng-disabled="selectedItems.length == 0" ng-click="clearSelections()">Clear selections</button>
-					<button class="btn btn-sm" ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange')" ng-disabled="selectedItems.length == 0" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
-				</div>
-
-				<!--<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>-->
-				<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 120px;"></div> 
-				<div ng-include="'app/core/datasets/templates/bottom-bar.html'"/><!--Note the closing "/" here!-->
-                <div style="margin-top: 15px; padding-bottom: 30px;">
-                    <button class="btn" ng-disabled="!onRow" ng-click="removeRow()">Remove Row</button>
-                    <button ng-show="deletedRows.length" class="btn" ng-click="undoRemoveRow()">Undo</button>
-
-                    <div class="right" style="margin-top: 3px; margin-left: 5px;"><img ng-show="activities.saving" src="assets/images/FishLoading.gif"></div>
-                    <!--<button class="btn right" ng-disabled="activities.saving" ng-click="saveDataSheet()" style="margin-left: 5px;">Import</button>-->
-                    <!--<button class="btn right" ng-disabled="(activities.saving || DupeCheckRunning || gridHasErrors)" ng-click="saveDataSheet()" style="margin-left: 5px;">Import</button>-->
-                    <button class="btn right" ng-disabled="(activities.saving || DupeCheckRunning || duplicateEntry || gridHasErrors)" ng-click="saveDataSheet()" style="margin-left: 5px;">Import</button>
-                    <button class="btn btn-warning right" ng-click="cancel()">Cancel</button>
-                    <br />
-                    <div ng-show="activities.saving" style="float: right;margin-right: 20px;" class="alert alert-success">Saving...</div>
-                </div>
-				<!--</div>--><!--Opening tag has a closing "/".-->
-			</div>
 		</div>
 	</div>
 	<div ng-show="dataSheetDataset.length > 0 && !activities.success" class="large-graph-box" id="chart-div">
