@@ -12,6 +12,12 @@ datasets_module.factory('Activities', ['$resource', function ($resource) {
     });
 }]);
 
+datasets_module.factory('GetDatasetSeasons', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/activity/getdatasetseasons', {}, {
+        query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
+    });
+}]);
+
 datasets_module.factory('ActivitiesForView', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/activity/getdatasetactivitiesview', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
@@ -187,6 +193,7 @@ datasets_module.factory('SpecificScrewTrapActivities', ['$resource', function ($
 datasets_module.service('DatasetService', ['$q',
     'DatasetFiles',
     'Activities',
+    'GetDatasetSeasons',
     'ActivitiesForView',
 	'CreelSurveyActivitiesForView',
     'Dataset',
@@ -222,6 +229,7 @@ datasets_module.service('DatasetService', ['$q',
     function ($q,
         DatasetFiles,
         Activities,
+        GetDatasetSeasons,
         ActivitiesForView,
 		CreelSurveyActivitiesForView,
         Dataset,
@@ -350,6 +358,11 @@ datasets_module.service('DatasetService', ['$q',
 			
             getActivities: function (id) {
                 return Activities.query({ id: id });
+            },
+
+            getSeasons: function (id) {
+                console.log("Inside dataset-service.js, getSeasons...");
+                return GetDatasetSeasons.query({ id: id });
             },
 			
             getActivitiesForView: function (id) {
