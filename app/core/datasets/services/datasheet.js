@@ -1530,7 +1530,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                         //console.log("scope.showHeaderForm = " + scope.showHeaderForm);
                         //if (scope.showHeaderForm) {
                         if (scope.pageConfig.showHeaderForm) {
-                            console.log("scope.ActivityFields.ActivityDate = " + scope.ActivityFields.ActivityDate);
+                            //console.log("scope.ActivityFields.ActivityDate = " + scope.ActivityFields.ActivityDate);
                         }
 
                         //var strIsoDataTime = "";
@@ -1554,9 +1554,9 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                         {
                             // Use our toolbox of functions to get the date into the format we need.
                             var dtActivityDate = formatDate(item.activityDate); // Take the date object and put it in friendly format (dd/mm/yyyy ...) first;
-                            console.log("dtActivityDate = " + dtActivityDate);
+                            //console.log("dtActivityDate = " + dtActivityDate);
                             strIsoDateTime = formatDateFromFriendlyToUtc(dtActivityDate); // Now take the date and put it in ISO format (yyyy-mm-dd ...);
-                            console.log("strIsoDateTime = " + strIsoDateTime);
+                            //console.log("strIsoDateTime = " + strIsoDateTime);
                         }
  
                         //console.log("typeof item.activityDate = " + typeof item.activityDate);//***
