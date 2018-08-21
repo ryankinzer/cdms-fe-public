@@ -17,6 +17,7 @@ var dataset_seasons_list = ['$scope', '$routeParams',
 
         //$scope.seasons = null;
         $scope.seasonsList = null;
+        $scope.speciesList = [];
 
         $scope.viewSeason = null; //what they've clicked to view season
         //$scope.selectedSeason = null; //what they've selected in the dropdown to add to the project
@@ -45,6 +46,7 @@ var dataset_seasons_list = ['$scope', '$routeParams',
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 $scope.openSeasonForm(param.data, {});
+                //$scope.addSeason(param.data, {});
             });
             div.appendChild(addBtn);
 
@@ -55,19 +57,30 @@ var dataset_seasons_list = ['$scope', '$routeParams',
             if (!$scope.dataset.Fields) return;
 
             console.log("Inside watch dataset.Fields...");
-            if ($scope.dataset.Datastore.TablePrefix === "CreelSurvey")
+            if ($scope.dataset.Datastore.TablePrefix === "CreelSurvey") {
                 $scope.seasonsList = DatasetService.getSeasons($routeParams.Id);
+
+                $scope.speciesList = angular.copy($scope.dataset.Config.SeasonsPage.Species);
+                /*$scope.dataset.Fields.forEach(function (item) {
+                    console.log("item is next...");
+                    console.dir(item);
+                    if (item.DbColumnName === "SurveySpecies") {
+                        var strSurvSpecies = item.Field.PossibleValues;
+                        strSurvSpecies = strSurvSpecies.substring(1);
+                        strSurvSpecies = strSurvSpecies.substring(0, strSurvSpecies.length - 1);
+                        //$scope.speciesList = angular.copy(item.Field.PossibleValues);
+                        $scope.speciesList = angular.copy(strSurvSpecies);
+                    }
+                });
+                */
+            }
         });
 
         var seasons_watcher = $scope.$watch('seasonsList.length', function () {
-            if ($scope.seasonsList) {
-                //console.log("Inside project-list.js, watch projects...");
-                ////console.log("$scope is next...");
-                ////console.dir($scope);
-
-                //console.log("$scope.projects is next...");
-                //console.dir($scope.projects);
-
+            if (($scope.seasonsList) && ($scope.seasonsList !== null)) {
+                console.log("Inside dataset-seasons-lits.js, seasons_watcher...");
+                console.log("$scope is next...");
+                console.dir($scope);
 
                 if ($scope.agGridOptions === undefined) {
                     console.log("Inside dataset-seasons-list.js...");
@@ -159,6 +172,55 @@ var dataset_seasons_list = ['$scope', '$routeParams',
                     seasons_watcher();
             }
         }, true);
+
+
+
+        $scope.addSeason = function () {
+            console.log("Inside addSeason...");
+            console.log("$scope is next...");
+            console.dir($scope);
+            console.log("$scope.selectedSeason is next...");
+            console.dir($scope.selectedSeason);
+
+            if (!$scope.selectedSeason || $scope.selectedSeason === null || getMatchingByField($scope.seasonsList, $scope.selectedSeason, 'Id').length > 0)
+                return;
+
+            var theSeason = getMatchingByField($scope.seasonsList, $scope.selectedSeason, 'Id');
+
+            var promise = DatasetService.saveSeason($scope.dataset.Id, theSeason[0]);
+
+            //promise.$promise.then(function () {
+            //    $scope.reloadProject();
+            //});
+        };
+
+        $scope.openSeasonForm = function (season) {
+
+            console.log("Inside openSeasonForm...");
+
+            //$rootScope.season = $scope.season = season; //set this var for the modal controller and file filter
+            //$rootScope.seasonId = 0; //also for file filter. :/
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/datasets/components/dataset-seasons-list/templates/modal-create-season.html',
+                controller: 'ModalCreateSeasonCtrl',
+                scope: $scope, //very important to pass the scope along...
+            });
+        };
+
+        $scope.editSeason = function (season) {
+
+            console.log("Inside editSeason...");
+
+            $rootScope.viewSeason = $scope.viewSeason = season; //set this var for the modal controller and file filter
+            $rootScope.seasonId = season.Id; //also for file filter. :/
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/datasets/components/dataset-seasons-list/templates/modal-create-season.html',
+                controller: 'ModalCreateSeasonCtrl',
+                scope: $scope, //very important to pass the scope along...
+            });
+        };
 
     }
 ];
