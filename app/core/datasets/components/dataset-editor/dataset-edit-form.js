@@ -580,6 +580,8 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 			//$scope.locationOptions = $rootScope.locationOptions = makeObjects(getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId"), 'Id','Label') ;  // Original code
 			$scope.selectInstrument();
 			*/
+            $scope.selectInstrument();
+
             console.log("$scope at end of watch project.Name is next...");
             console.dir($scope);
         });
@@ -707,8 +709,15 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
         $scope.selectInstrument = function () {
             //console.log("Inside $scope.selectInstrument...");
+
             $scope.viewInstrument = getByField($scope.project.Instruments, $scope.row.InstrumentId, "Id");
-            $scope.selectAccuracyCheck();
+
+            //get latest accuracy check
+            $scope.row.LastAccuracyCheck = $scope.viewInstrument.AccuracyChecks[$scope.viewInstrument.AccuracyChecks.length - 1];
+            $scope.row.DataGradeText = getDataGrade($scope.row.LastAccuracyCheck);
+
+            if ($scope.row.LastAccuracyCheck)
+                $scope.row.AccuracyCheckId = $scope.row.LastAccuracyCheck.Id;
         };
 
         $scope.selectAccuracyCheck = function () {
