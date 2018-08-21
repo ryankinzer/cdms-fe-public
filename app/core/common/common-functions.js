@@ -1150,7 +1150,7 @@ function convertDateFromUnknownStringToUTC(strD) {
 	{
 		
 	}
-	console.log("strIsoDateTime = " + strIsoDateTime);
+	//console.log("strIsoDateTime = " + strIsoDateTime);
 	return strIsoDateTime;
 	
 }
