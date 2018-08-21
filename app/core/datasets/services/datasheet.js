@@ -1118,7 +1118,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                             //var strIsoDateTime = strIsoDateTime = formatDateFromFriendlyToUtc(item.ReadingDateTime);
                             var strIsoDateTime = formatDateFromFriendlyToUtc(item.ReadingDateTime);
 
-                            console.log("strIsoDateTime = " + strIsoDateTime);
+                            //console.log("strIsoDateTime = " + strIsoDateTime);
 
                             if (count === 0) {
                                 strReadingDateTimeList = strIsoDateTime;
