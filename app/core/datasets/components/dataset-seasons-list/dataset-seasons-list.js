@@ -40,15 +40,16 @@ var dataset_seasons_list = ['$scope', '$routeParams',
                 $scope.removeSeason(param.data);
             });
             div.appendChild(delBtn);
-            div.appendChild(document.createTextNode("|"));
+            //div.appendChild(document.createTextNode("|"));
 
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Season';
+            /*var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Season';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 $scope.openSeasonForm(param.data, {});
                 //$scope.addSeason(param.data, {});
             });
             div.appendChild(addBtn);
+            */
 
             return div;
         };
@@ -194,9 +195,9 @@ var dataset_seasons_list = ['$scope', '$routeParams',
             //});
         };
 
-        $scope.openSeasonForm = function (season) {
-
-            console.log("Inside openSeasonForm...");
+        $scope.createSeason = function (season) {
+            //createSeason
+            console.log("Inside createSeason...");
 
             //$rootScope.season = $scope.season = season; //set this var for the modal controller and file filter
             //$rootScope.seasonId = 0; //also for file filter. :/

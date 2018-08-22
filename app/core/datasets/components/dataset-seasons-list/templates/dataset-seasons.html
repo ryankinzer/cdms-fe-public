@@ -1,8 +1,9 @@
 ﻿<div title="Toggle 'Favorite' status" class="fav-dataset">
     <a href='' ng-click="toggleFavorite()">
-        <img id="favorite-active" ng-show="isFavorite" class="on" src='assets/images/favorite-on.png'/>
-        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='assets/images/favorite-off.png'/>
-    </a></div>
+        <img id="favorite-active" ng-show="isFavorite" class="on" src='assets/images/favorite-on.png' />
+        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='assets/images/favorite-off.png' />
+    </a>
+</div>
 
 <ul class="breadcrumb">
     <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
@@ -12,13 +13,20 @@
 
 
 <div class="alert alert-info" ng-show="!seasonsList.length">Loading...</div>
-<div class="container-fluid">
+<div project-role="editor">
+    <button style="margin-left: 10px;" class="right btn" ng-click="createSeason()">Create New Season</button>
+</div>
 
+<div class="container-fluid">
     <div class="row-fluid">
         <div class="span10">
-            <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
-                <div id="seasons-list-grid" class="ag-blue gridStyle-small"></div>
-                <div class="seasons-list-footer">Total seasons: {{seasonsList.length}}</div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                        <div id="seasons-list-grid" class="ag-blue gridStyle-small"></div>
+                        <div class="seasons-list-footer">Total seasons: {{seasonsList.length}}</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
