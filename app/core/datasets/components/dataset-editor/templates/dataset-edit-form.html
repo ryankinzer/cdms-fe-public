@@ -69,10 +69,11 @@
     <div ng-show="dataset" class="header-box" style="margin-top: 20px; width: 600px;">
 		<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
 			<div class="header-label">Location:</div>
-			<div class="header-value">
-				<!--<select class="form-control" ng-model="row['locationId']" ng-input="row['locationId']" ng-options="id as name for (id, name) in locationOptions"></select>-->
-				<select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>
-			</div>
+            <div class="header-value">
+                <!--<select class="form-control" ng-model="row['locationId']" ng-input="row['locationId']" ng-options="id as name for (id, name) in locationOptions"></select>-->
+                <!--<select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
+                <select ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="selectLocation()" style="width: 200px; " ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>
+            </div>
 		</div>
 
 		<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
@@ -107,90 +108,102 @@
 		<!--      1.  A project will have instruments, but currently it has none assigned to it; in this case we still need to show the instruments box on the form. -->
 		<!--      2.  A project will never have any instruments assigned to it (Creel Survey, etc.); it this case we do not want the the instruments box on the form at all -->
 		<!--<div ng-show="project.Instruments.length > 0 && !dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >-->
-		<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
+        <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
 
-			<div style="display: inline-flex">
-				<div class="header-label">Instrument: </div>
-                <div class="header-value" style="margin-left: -2px;">
+            <!--Notes regarding using the ui-select2 box on the Data Entry form.
+    With margin-left set to -2, the box is not aligned properly, and it distracts.
+    With margin-left set to 0, the box is aligned with all the other boxes on the form.
+    Curious thing is, zero had things lined up for a while, and not it does not.
+    -->
+            <div style="display: inline-flex">
+                <div class="header-label">Instrument: </div>
+                <!--<div class="header-value" style="margin-left: -2px;">-->
+                <div class="header-value" style="margin-left: 0px;">
                     <!--<select class="form-control" value="127" ng-model="row.InstrumentId" ng-options="i.Id as i.Name+' ('+i.SerialNumber+')' for i in project.Instruments"></select>-->
-                    <select class="form-control" value="127" ng-model="row.InstrumentId" ng-change="selectInstrument()" ng-options="i.Id as i.Name+' ('+i.SerialNumber+')' for i in project.Instruments"></select>
+                    <!--<select class="form-control" value="127" ng-model="row.InstrumentId" ng-change="selectInstrument()" ng-options="i.Id as i.Name+' ('+i.SerialNumber+')' for i in project.Instruments"></select>-->
+                    <select ui-select2="select2Options" data-placeholder="Choose an Instrument" ng-change="selectInstrument()" style="width: 200px; " ng-model="row.InstrumentId">
+                        <option ng-repeat="instrument in project.Instruments | orderBy:'instrument.Name'" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
+                    </select>
                 </div>
-				<div ng-show="false" style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
-			</div>
-			
-			<div class="header-label">Accuracy Check: </div>
-			<div class="header-value">
-				<select class="form-control" ng-model="row.AccuracyCheckId">
-					<option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.AccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
-				</select>
-			</div>
+                <div style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
+            </div>
 
-			<div class="header-label">Post-deploy Accuracy: </div>
-			<div class="header-value">
-				<select class="form-control" ng-model="row.PostAccuracyCheckId">
-					<option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.PostAccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
-				</select>
-			</div>
-		</div>
-		
-		<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('ProjectLead')">
-			<div class="header-label">Project Lead:</div>
-			<div class="header-value">
-				<table>
-					<tr>
-						<td>
-							<!--<select ui-select2="select2Options" multiple="multiple" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>-->
-							<select ui-select2="select2Options" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>
-						</td>
-						<td><button class="right btn btn-xs" ng-click="addProjectLead()">+</button></td>
-						<td><button class="right btn btn-xs" ng-click="removeProjectLead()">-</button></td>	
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div ng-show="showProjectLeads">
-			<div class="header-label">Selected Project Leads:</div>
-			<div class="header-value">
-				<!--<input class="form-control" type="text" ng-model="subproject_row.txtCounty" />-->
-				<textarea class="form-control" type="text" rows="4"  readonly ng-model="row.strProjectLead" ></textarea>
-			</div>
-		</div>
+            <div style="display: inline-flex">
+                <div class="header-label">Accuracy Check: </div>
+                <div class="header-value" style="margin-left: -2px; ">
+                    <select class="form-control" ng-model="row.AccuracyCheckId">
+                        <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.AccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                    </select>
+                </div>
+                <div style="margin-top: 5px; margin-left: 5px;"><button class="btn btn-xs" ng-click="openAccuracyCheckModal()">Add</button></div>
+            </div>
 
-        <form novalidate class="row-form" name="headerForm">
-			<div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
-				<ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-				<ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
-				<ctuir-number-field ng-switch-when="number"></ctuir-number-field>    
-				<ctuir-date-field ng-switch-when="date"></ctuir-date-field>
-				<ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-				<ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
-				<ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
-				<ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
-				<ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
-				<ctuir-select-field ng-switch-when="select"></ctuir-select-field>
-				<ctuir-file-field ng-switch-when="file"></ctuir-file-field>
-				<ctuir-link-field ng-switch-when="link"></ctuir-link-field>
-				<ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-				<ctuir-lookup-field ng-switch-when="lookup"></ctuir-lookup-field>
-				<ctuir-multilookup-field ng-switch-when="multilookup"></ctuir-multilookup-field>
-				<ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
-				<ctuir-text-field ng-switch-default></ctuir-text-field>
-			</div>
-        </form>
-
-        <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
-            <div class="header-label">QA Status:</div>
-            <div class="header-value" title="by {{dataset_activities.Header.Activity.ActivityQAStatus.User.Fullname}}">
-                <select class="form-control" ng-model="row.ActivityQAStatus['QAStatusId']" ng-input="row.ActivityQAStatus['QAStatusId']" ng-options="id as name for (id, name) in QAStatusOptions"></select>
-            </div>  
-
-            <div class="header-label">QA Comments:</div>
+            <div class="header-label">Post-deploy Accuracy: </div>
             <div class="header-value">
-                <textarea class="form-control" ng-model="row.ActivityQAStatus['Comments']" ng-input="row.ActivityQAStatus['Comments']"></textarea>
-            </div>  
-        </div>
+                <select class="form-control" ng-model="row.PostAccuracyCheckId">
+                    <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.PostAccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                </select>
+            </div>
 
-    </div>
+
+            <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('ProjectLead')">
+                <div class="header-label">Project Lead:</div>
+                <div class="header-value">
+                    <table>
+                        <tr>
+                            <td>
+                                <!--<select ui-select2="select2Options" multiple="multiple" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>-->
+                                <select ui-select2="select2Options" data-placeholder="Choose a staff member" style="width: 200px; margin-top: 4px;" ng-model="row['ProjectLead']" ng-options="id as name for (id, name) in projectLeadOptions | orderBy:'name'" ng-change="projectLeadChanged()"></select>
+                            </td>
+                            <td><button class="right btn btn-xs" ng-click="addProjectLead()">+</button></td>
+                            <td><button class="right btn btn-xs" ng-click="removeProjectLead()">-</button></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div ng-show="showProjectLeads">
+                <div class="header-label">Selected Project Leads:</div>
+                <div class="header-value">
+                    <!--<input class="form-control" type="text" ng-model="subproject_row.txtCounty" />-->
+                    <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strProjectLead"></textarea>
+                </div>
+            </div>
+
+            <form novalidate class="row-form" name="headerForm">
+                <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
+                    <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                    <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                    <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                    <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                    <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                    <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
+                    <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
+                    <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
+                    <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                    <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                    <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
+                    <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
+                    <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                    <ctuir-lookup-field ng-switch-when="lookup"></ctuir-lookup-field>
+                    <ctuir-multilookup-field ng-switch-when="multilookup"></ctuir-multilookup-field>
+                    <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
+                    <ctuir-text-field ng-switch-default></ctuir-text-field>
+                </div>
+            </form>
+
+            <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
+                <div class="header-label">QA Status:</div>
+                <div class="header-value" title="by {{dataset_activities.Header.Activity.ActivityQAStatus.User.Fullname}}">
+                    <select class="form-control" ng-model="row.ActivityQAStatus['QAStatusId']" ng-input="row.ActivityQAStatus['QAStatusId']" ng-options="id as name for (id, name) in QAStatusOptions"></select>
+                </div>
+
+                <div class="header-label">QA Comments:</div>
+                <div class="header-value">
+                    <textarea class="form-control" ng-model="row.ActivityQAStatus['Comments']" ng-input="row.ActivityQAStatus['Comments']"></textarea>
+                </div>
+            </div>
+
+        </div>
 
 	<div style="margin-top: 10px;">&nbsp;</div>
 	<button class="btn btn-sm" ng-click="showFilter= !showFilter">Filter</button>    

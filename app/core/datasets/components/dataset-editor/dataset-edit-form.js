@@ -37,6 +37,8 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
         $scope.dataSheetDataset = [];
         $scope.row = { ActivityQAStatus: {} }; //header field values get attached here by dbcolumnname
 
+        $scope.location = null;
+
         $scope.fishermenList = null;
         //$scope.fishermenList = ProjectService.getFishermen();
 
