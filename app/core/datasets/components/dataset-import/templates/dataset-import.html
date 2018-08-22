@@ -63,12 +63,15 @@
 					<p ng-show="!fileFields" style="text-align: center;"><i>Load a file to map columns.</i></p>
 				</div>
 				
-				<div class="col-md-4 options-panel">
+				<div class="col-md-4 options-panel" style="width: 400px; ">
 					<h4 class="text-center">Step 3: Options</h4>
 					<table ng-show="fileFields">
 						<tr ng-hide="dataset.Config && dataset.Config.ImportPage.HiddenFields.contains('Location')">
-							<td>Location:</td><td> <select ng-change="setLocation()" class="query-form-control form-control" ng-model="ActivityFields.LocationId"  ng-options="id as name for (id, name) in locationOptions"></select>
-							</td>
+							<td>Location:</td>
+                            <td>
+                                <!--<select ng-change="setLocation()" class="query-form-control form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions"></select>-->
+                                <select ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="setLocation()" style="width: 200px; margin-top: 4px;" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>
+                            </td>
 						</tr>
 						<tr ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
 							<td>Activity Date:</td><td><input type="text" datepicker-popup="longDate" ng-model="ActivityFields.ActivityDate" is-open="copened" datepicker-options="dateOptions" ng-required="false" close-text="Close" ng-show="!mappedActivityFields['1']"></td>
@@ -92,27 +95,31 @@
 						<!--<tr ng-hide="dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >-->
 						<!--<tr ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">-->
 						<!--<tr ng-show="ShowInstrument">-->
-						<tr ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
-							<td>Instrument: </td>
-							<td>
-								<!-- This version is harder to read but easier to use for power users. -->
-								<!--<select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-change="selectInstrument()" style="width: 170px; margin-top: 4px;" ng-model="ActivityFields.InstrumentId">
-										<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
-								</select>-->
-								<select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-change="setInstrument()" style="width: 170px; margin-top: 4px;" ng-model="ActivityFields.InstrumentId">
-										<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
-								</select>
-								
-								<!-- This version is easier to read but painful to use for power users. -->
-								<!--<select class="form-control" ng-model="ActivityFields.InstrumentId" ng-options="id as name for (id, name) in instrumentOptions">-->
-								<!--<select class="query-form-control form-control" ng-model="ActivityFields.InstrumentId" >
-									<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
-								</select>-->
-								<!-- The version below is patterned after the location, which allows you to type in something, and it finds the item in the list.
-									The Locations version works; this one does not.-->
-								<!--<select ng-change="setInstrument()" class="query-form-control form-control" ng-model="ActivityFields.InstrumentId" ng-options="id as name for (id, name) in instrumentOptions"></select>-->
-							</td>
-						</tr>              
+                        <tr ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
+                            <td>Instrument: </td>
+                            <td style="display: inline-flex">
+
+                                <!-- This version is harder to read but easier to use for power users. -->
+                                <!--<select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-change="selectInstrument()" style="width: 170px; margin-top: 4px;" ng-model="ActivityFields.InstrumentId">-->
+                                <!--<option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>-->
+                                <!--</select>-->
+                                <div>
+                                    <select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-change="setInstrument()" style="width: 170px; margin-top: 4px;" ng-model="ActivityFields.InstrumentId">
+                                        <option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
+                                    </select>
+                                </div>
+                                <div style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
+
+                                <!-- This version is easier to read but painful to use for power users. -->
+                                <!--<select class="form-control" ng-model="ActivityFields.InstrumentId" ng-options="id as name for (id, name) in instrumentOptions">-->
+                                <!--<select class="query-form-control form-control" ng-model="ActivityFields.InstrumentId" >-->
+                                <!--    <option ng-repeat="instrument in project.Instruments" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>-->
+                                <!--</select>-->
+                                <!-- The version below is patterned after the location, which allows you to type in something, and it finds the item in the list.-->
+                                <!-- The Locations version works; this one does not.-->
+                                <!--<select ng-change="setInstrument()" class="query-form-control form-control" ng-model="ActivityFields.InstrumentId" ng-options="id as name for (id, name) in instrumentOptions"></select>-->
+                            </td>
+                        </tr>              
 
 						<tr ng-hide="true">
 							<td>QA Status:</td>
@@ -176,9 +183,9 @@
                             <div class="header-label">Location:</div>
                             <div class="header-value">
                                 <!--<select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions"></select>-->
-                                <select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions" ng-change="onLocationChange()"></select>
+                                <!--<select class="form-control" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions" ng-change="onLocationChange()"></select>-->
+                                <select ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="setLocation()" style="width: 200px; margin-top: 4px;" ng-model="ActivityFields.LocationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>
                             </div>
-                        </div>
 
                         <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
                             <div class="header-label">Activity Date:</div>

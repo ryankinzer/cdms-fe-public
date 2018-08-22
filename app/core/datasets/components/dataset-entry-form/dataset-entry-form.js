@@ -512,6 +512,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
             if (!$scope.row.InstrumentId)
                 return;
 
+            console.log("Inside selectInstrument...");
+            console.log("$scope.row (at start of selectInstrument) is next...");
+            console.dir($scope.row);
+
             //get latest accuracy check
             $scope.viewInstrument = getByField($scope.project.Instruments, $scope.row.InstrumentId, "Id");
             $scope.row.LastAccuracyCheck = $scope.viewInstrument.AccuracyChecks[$scope.viewInstrument.AccuracyChecks.length - 1];
@@ -519,6 +523,9 @@ var dataset_entry_form = ['$scope', '$routeParams',
 
             if ($scope.row.LastAccuracyCheck)
                 $scope.row.AccuracyCheckId = $scope.row.LastAccuracyCheck.Id;
+
+            console.log("$scope.row (at end of selectInstrument) is next...");
+            console.dir($scope.row);
 			
 			//if (($scope.DatastoreTablePrefix !== "CrppContracts") && ($scope.DatastoreTablePrefix !== "WaterQuality"))
             if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
@@ -529,7 +536,6 @@ var dataset_entry_form = ['$scope', '$routeParams',
 				$scope.activities.errors = undefined;
 				$scope.removeRowErrorsBeforeRecheck();
                 //$scope.checkForDuplicates();
-                //DataSheet.checkForDuplicates($scope);
                 DataSheet.checkForDuplicates($scope);
 			}
         };
