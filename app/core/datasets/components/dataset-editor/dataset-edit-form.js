@@ -726,6 +726,10 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
         $scope.selectInstrument = function () {
             //console.log("Inside $scope.selectInstrument...");
 
+            if ((typeof $scope.row.InstrumentId === 'undefined') || ($scope.row.InstrumentId === null)) {
+                $scope.row.InstrumentId = $rootScope.InstrumentId;
+            }
+
             $scope.viewInstrument = getByField($scope.project.Instruments, $scope.row.InstrumentId, "Id");
 
             //get latest accuracy check
