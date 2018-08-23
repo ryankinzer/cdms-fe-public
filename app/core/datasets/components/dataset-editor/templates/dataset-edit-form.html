@@ -8,41 +8,40 @@
 <h4>Editing activity in: {{dataset.Name}}</h4>
 <br/>
 
-     <div ng-show="activities.success" style="margin-bottom: 50px;">
+<div ng-show="activities.success" style="margin-bottom: 50px;">
 
-         <div class="alert alert-success">
-             <h4 class="alert-heading">Success!</h4>
-             {{activities.success}}
+    <div class="alert alert-success">
+        <h4 class="alert-heading">Success!</h4>
+        {{activities.success}}
 
-         </div>
-         <button style="margin-left: 3px;" class="btn right" ng-click="doneButton()">Back to list</button>
+    </div>
+    <button style="margin-left: 3px;" class="btn right" ng-click="doneButton()">Back to list</button>
 
-         <div style="margin-top: 75px;" ng-show="filesToUpload_keys.length > 0">
-             <h4>Files to upload:</h4>
-             <div ng-repeat="fieldFile in filesToUpload_keys">
-                 For field: {{fieldFile}}
-                 <table class="table striped">
-                     <tr ng-repeat="file in filesToUpload[fieldFile]">
-                         <td class="modal-file-col1">{{file.name}}</td>
-                         <td class="modal-file-col2">{{file.success}}</td>
-                     </tr>
-                 </table>
-             </div>
-         </div>
+    <div style="margin-top: 75px;" ng-show="filesToUpload_keys.length > 0">
+        <h4>Files to upload:</h4>
+        <div ng-repeat="fieldFile in filesToUpload_keys">
+            For field: {{fieldFile}}
+            <table class="table striped">
+                <tr ng-repeat="file in filesToUpload[fieldFile]">
+                    <td class="modal-file-col1">{{file.name}}</td>
+                    <td class="modal-file-col2">{{file.success}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 
-         <div ng-show="removedFiles.length>0">
-             <hr />
-             <h4>Removing files:</h4>
-             <table class="table striped">
-                 <tr ng-repeat="file in removedFiles">
-                     <td class="modal-file-col1">{{file.Name}}</td>
-                     <td class="modal-file-col2">{{file.success}}</td>
-                 </tr>
-             </table>
-         </div>
+    <div ng-show="removedFiles.length>0">
+        <hr />
+        <h4>Removing files:</h4>
+        <table class="table striped">
+            <tr ng-repeat="file in removedFiles">
+                <td class="modal-file-col1">{{file.Name}}</td>
+                <td class="modal-file-col2">{{file.success}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
 
-
-     </div>
 <div>
     <p ng-show="activities.errors.saveError" class="alert alert-danger">{{activities.errors.saveError}}</p>
 </div>
@@ -67,84 +66,84 @@
 
     <!--<div ng-show="dataset" class="header-box" style="margin-top: 20px; width: 550px;">-->
     <div ng-show="dataset" class="header-box" style="margin-top: 20px; width: 600px;">
-		<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
-			<div class="header-label">Location:</div>
+        <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
+            <div class="header-label">Location:</div>
             <div class="header-value">
                 <!--<select class="form-control" ng-model="row['locationId']" ng-input="row['locationId']" ng-options="id as name for (id, name) in locationOptions"></select>-->
                 <!--<select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
-                <select ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="selectLocation()" style="width: 200px; " ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>
-            </div>
-		</div>
-
-		<div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
-			<div class="header-label">Activity Date:</div>
-			<div class="header-value">
-				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-			</div>
-		</div>
-		<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('SampleDate')">
-			<div class="header-label">Sample Date:</div>
-			<div class="header-value">
-				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="copened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-			</div>
-		</div>
-			
-		<!--<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Dry')">
-			<div class="header-label">Dry:</div>
-			<div class="header-value">
-				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-			</div>
-		</div>-->
-
-		<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Timezone')">
-			<div class="header-label">Reading Timezone:</div>
-			<div class="header-value">
-				<select class="form-control" ng-model="row.Timezone" ng-options="zone.Name for zone in SystemTimezones">
-				</select>  
-			</div>                
-		</div>
-
-		<!-- Two situations -->
-		<!--      1.  A project will have instruments, but currently it has none assigned to it; in this case we still need to show the instruments box on the form. -->
-		<!--      2.  A project will never have any instruments assigned to it (Creel Survey, etc.); it this case we do not want the the instruments box on the form at all -->
-		<!--<div ng-show="project.Instruments.length > 0 && !dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >-->
-        <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
-
-            <!--Notes regarding using the ui-select2 box on the Data Entry form.
-    With margin-left set to -2, the box is not aligned properly, and it distracts.
-    With margin-left set to 0, the box is aligned with all the other boxes on the form.
-    Curious thing is, zero had things lined up for a while, and not it does not.
-    -->
-            <div style="display: inline-flex">
-                <div class="header-label">Instrument: </div>
-                <!--<div class="header-value" style="margin-left: -2px;">-->
-                <div class="header-value" style="margin-left: 0px;">
-                    <!--<select class="form-control" value="127" ng-model="row.InstrumentId" ng-options="i.Id as i.Name+' ('+i.SerialNumber+')' for i in project.Instruments"></select>-->
-                    <!--<select class="form-control" value="127" ng-model="row.InstrumentId" ng-change="selectInstrument()" ng-options="i.Id as i.Name+' ('+i.SerialNumber+')' for i in project.Instruments"></select>-->
-                    <select ui-select2="select2Options" data-placeholder="Choose an Instrument" ng-change="selectInstrument()" style="width: 200px; " ng-model="row.InstrumentId">
-                        <option ng-repeat="instrument in project.Instruments | orderBy:'instrument.Name'" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
-                    </select>
-                </div>
-                <div style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
-            </div>
-
-            <div style="display: inline-flex">
-                <div class="header-label">Accuracy Check: </div>
-                <div class="header-value" style="margin-left: -2px; ">
-                    <select class="form-control" ng-model="row.AccuracyCheckId">
-                        <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.AccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
-                    </select>
-                </div>
-                <div style="margin-top: 5px; margin-left: 5px;"><button class="btn btn-xs" ng-click="openAccuracyCheckModal()">Add</button></div>
-            </div>
-
-            <div class="header-label">Post-deploy Accuracy: </div>
-            <div class="header-value">
-                <select class="form-control" ng-model="row.PostAccuracyCheckId">
-                    <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.PostAccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                <select ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="selectLocation()" style="width: 200px; " ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions">
+                    <option ng-repeat="location in project.Locations | orderBy:'location.Name'" value="{{location.Id}}">{{location.Name}}</option>
                 </select>
             </div>
 
+            <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
+                <div class="header-label">Activity Date:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                </div>
+            </div>
+            <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('SampleDate')">
+                <div class="header-label">Sample Date:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="copened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                </div>
+            </div>
+
+            <!--<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Dry')">-->
+            <!--<div class="header-label">Dry:</div>-->
+            <!--<div class="header-value">-->
+            <!--<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Timezone')">
+                <div class="header-label">Reading Timezone:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="row.Timezone" ng-options="zone.Name for zone in SystemTimezones"></select>
+                </div>
+            </div>
+
+            <!-- Two situations -->
+            <!--      1.  A project will have instruments, but currently it has none assigned to it; in this case we still need to show the instruments box on the form. -->
+            <!--      2.  A project will never have any instruments assigned to it (Creel Survey, etc.); it this case we do not want the the instruments box on the form at all -->
+            <!--<div ng-show="project.Instruments.length > 0 && !dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >-->
+            <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
+
+                <!--Notes regarding using the ui-select2 box on the Data Entry form.-->
+                <!--With margin-left set to -2, the box is not aligned properly, and it distracts.-->
+                <!--With margin-left set to 0, the box is aligned with all the other boxes on the form.-->
+                <!--Curious thing is, zero had things lined up for a while, and not it does not.-->
+                <div style="display: inline-flex">
+                    <div class="header-label">Instrument: </div>
+                    <!--<div class="header-value" style="margin-left: -2px;">-->
+                    <div class="header-value" style="margin-left: 0px;">
+                        <!--<select class="form-control" value="127" ng-model="row.InstrumentId" ng-options="i.Id as i.Name+' ('+i.SerialNumber+')' for i in project.Instruments"></select>-->
+                        <!--<select class="form-control" value="127" ng-model="row.InstrumentId" ng-change="selectInstrument()" ng-options="i.Id as i.Name+' ('+i.SerialNumber+')' for i in project.Instruments"></select>-->
+                        <select ui-select2="select2Options" data-placeholder="Choose an Instrument" ng-change="selectInstrument()" style="width: 200px; " ng-model="row.InstrumentId">
+                            <option ng-repeat="instrument in project.Instruments | orderBy:'instrument.Name'" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
+                </div>
+
+                <div style="display: inline-flex">
+                    <div class="header-label">Accuracy Check: </div>
+                    <div class="header-value" style="margin-left: -2px; ">
+                        <select class="form-control" ng-model="row.AccuracyCheckId">
+                            <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.AccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 5px; margin-left: 5px;"><button class="btn btn-xs" ng-click="openAccuracyCheckModal()">Add</button></div>
+                </div>
+
+                <div class="header-label">Post-deploy Accuracy: </div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="row.PostAccuracyCheckId">
+                        <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.PostAccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                    </select>
+                </div>
+            </div>
 
             <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('ProjectLead')">
                 <div class="header-label">Project Lead:</div>
@@ -189,37 +188,39 @@
                     <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
                     <ctuir-text-field ng-switch-default></ctuir-text-field>
                 </div>
+
+                <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
+                    <div class="header-label">QA Status:</div>
+                    <div class="header-value" title="by {{dataset_activities.Header.Activity.ActivityQAStatus.User.Fullname}}">
+                        <select class="form-control" ng-model="row.ActivityQAStatus['QAStatusId']" ng-input="row.ActivityQAStatus['QAStatusId']" ng-options="id as name for (id, name) in QAStatusOptions"></select>
+                    </div>
+
+                    <div class="header-label">QA Comments:</div>
+                    <div class="header-value">
+                        <textarea class="form-control" ng-model="row.ActivityQAStatus['Comments']" ng-input="row.ActivityQAStatus['Comments']"></textarea>
+                    </div>
+                </div>
             </form>
-
-            <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
-                <div class="header-label">QA Status:</div>
-                <div class="header-value" title="by {{dataset_activities.Header.Activity.ActivityQAStatus.User.Fullname}}">
-                    <select class="form-control" ng-model="row.ActivityQAStatus['QAStatusId']" ng-input="row.ActivityQAStatus['QAStatusId']" ng-options="id as name for (id, name) in QAStatusOptions"></select>
-                </div>
-
-                <div class="header-label">QA Comments:</div>
-                <div class="header-value">
-                    <textarea class="form-control" ng-model="row.ActivityQAStatus['Comments']" ng-input="row.ActivityQAStatus['Comments']"></textarea>
-                </div>
-            </div>
 
         </div>
 
-	<div style="margin-top: 10px;">&nbsp;</div>
-	<button class="btn btn-sm" ng-click="showFilter= !showFilter">Filter</button>    
-	<button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="clearSelections()">Clear selections</button>
-	<button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
+        <div style="margin-top: 10px;">&nbsp;</div>
+        <button class="btn btn-sm" ng-click="showFilter= !showFilter">Filter</button>
+        <button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="clearSelections()">Clear selections</button>
+        <button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
 
 
-	<div ng-show="showFilter" style="padding: 8px; width: 260px;">
-		<input class="form-control" ng-model="gridOptionsFilter.filterText" placeholder="Filter By" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>
-	</div>
+        <div ng-show="showFilter" style="padding: 8px; width: 260px;">
+            <input class="form-control" ng-model="gridOptionsFilter.filterText" placeholder="Filter By" type="text" /><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png" />
+        </div>
+    </div>
 
-	<div ng-hide="dataset.Config && (dataset.Config.DataEntryPage.HiddenFields.indexOf('theDetails') > -1)">
-		<div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>
-	</div>
+    <div ng-hide="dataset.Config && (dataset.Config.DataEntryPage.HiddenFields.indexOf('theDetails') > -1)">
+        <div class="datasheet-grid" ng-grid="gridDatasheetOptions" ng-style="gridWidth" style="margin-top: 20px;"></div>
+    </div>
 
-	<div ng-include="'app/core/datasets/templates/bottom-bar.html'"/>
+    <div ng-include="'app/core/datasets/templates/bottom-bar.html'" />
+    <!--<div ng-include="'app/core/datasets/templates/buttons.html'">&nbsp;</div>-->
+    <div ng-include="'app/core/datasets/templates/buttons.html'" />
 
-	<div ng-include="'app/core/datasets/templates/buttons.html'">&nbsp;</div>
 </div>
