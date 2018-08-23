@@ -728,6 +728,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             if ((typeof $scope.row.InstrumentId === 'undefined') || ($scope.row.InstrumentId === null)) {
                 $scope.row.InstrumentId = $rootScope.InstrumentId;
+                $rootScope.InstrumentId = undefined;
             }
 
             $scope.viewInstrument = getByField($scope.project.Instruments, $scope.row.InstrumentId, "Id");
