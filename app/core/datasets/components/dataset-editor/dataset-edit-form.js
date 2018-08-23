@@ -425,7 +425,9 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             $scope.project.Files = null;
             $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
 
-            $scope.project.Instruments = CommonService.filterListForOnlyActiveInstruments($scope.project.Instruments);
+            // We need the following line for Data Entry, and Data Import, when dealing with new data.'
+            // However, for editing existing data, we want the ENTIRE list of instruments, not just the Active ones.
+            //$scope.project.Instruments = CommonService.filterListForOnlyActiveInstruments($scope.project.Instruments);
 
             //$scope.subprojectType = ProjectService.getProjectType($scope.project.Id);
             console.log("$scope.subprojectType = " + $scope.subprojectType);
@@ -583,6 +585,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 			$scope.selectInstrument();
 			*/
             $scope.selectInstrument();
+            //$scope.selectLocation();
 
             console.log("$scope at end of watch project.Name is next...");
             console.dir($scope);
@@ -654,6 +657,11 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             $scope.gridDatasheetOptions.selectAll(false);
         };
 
+        $scope.setLocation = function () {
+            //$scope.row.Location = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
+            $scope.viewLocation = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
+        };
+
         $scope.setSelectedBulkQAStatus = function (rowQAId) {
             angular.forEach($scope.gridDatasheetOptions.selectedItems, function (item, key) {
                 //console.dir(item);
@@ -708,6 +716,10 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
         };
 
         $scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias from service
+
+        $scope.selectLocation = function () {
+            $scope.viewLocation = getByField($scope.project.Locations, $scope.row.locationId, "Id");
+        };
 
         $scope.selectInstrument = function () {
             //console.log("Inside $scope.selectInstrument...");
@@ -793,6 +805,42 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 		
         $scope.postSaveFishermanUpdateGrid = function (new_fisherman) {
             $scope.fishermenList.push(new_fisherman); //the watch will take care of the rest?
+        };
+
+        $scope.postSaveInstrumentUpdateGrid = function (the_promise) {
+            //console.log("ok - we saved so update the grid...");
+            var total = $scope.project.Instruments.length;
+            var count = 0;
+            var updated = false;
+            $scope.project.Instruments.forEach(function (item, index) {
+                if (item.Id === the_promise.Id) {
+                    updated = true;
+
+                    //console.log("ok we found a match! -- updating! before:");
+                    //console.dir($scope.subprojectList[index]);
+
+                    if (the_promise.AccuracyChecks !== undefined)
+                        delete the_promise.AccuracyChecks; //remove this before the copy.
+
+                    angular.extend($scope.project.Instruments[index], the_promise); //replace the data for that item
+                    //console.log("ok we found a match! -- updating! after:");
+
+                    console.log("done editing an instrument.");
+                }
+                count++;
+                if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
+                {
+                    //console.log("ok we found never a match! -- adding!");
+                    the_promise.AccuracyChecks = [];
+                    $scope.project.Instruments.push(the_promise); //add that item
+
+                    console.log("done adding an instrument.");
+                }
+            });
+
+            //console.log("updated the list and the grid... now refreshing the instrument lists");
+            //scope.refreshSubprojectLists(); //funders, collaborators, etc.
+
         };
 
         // For Creel Survey only.
