@@ -62,24 +62,12 @@ var dataset_seasons_list = ['$scope', '$routeParams',
                 $scope.seasonsList = DatasetService.getSeasons($routeParams.Id);
 
                 $scope.speciesList = angular.copy($scope.dataset.Config.SeasonsPage.Species);
-                /*$scope.dataset.Fields.forEach(function (item) {
-                    console.log("item is next...");
-                    console.dir(item);
-                    if (item.DbColumnName === "SurveySpecies") {
-                        var strSurvSpecies = item.Field.PossibleValues;
-                        strSurvSpecies = strSurvSpecies.substring(1);
-                        strSurvSpecies = strSurvSpecies.substring(0, strSurvSpecies.length - 1);
-                        //$scope.speciesList = angular.copy(item.Field.PossibleValues);
-                        $scope.speciesList = angular.copy(strSurvSpecies);
-                    }
-                });
-                */
             }
         });
 
         var seasons_watcher = $scope.$watch('seasonsList.length', function () {
             if (($scope.seasonsList) && ($scope.seasonsList !== null)) {
-                console.log("Inside dataset-seasons-lits.js, seasons_watcher...");
+                console.log("Inside dataset-seasons-list.js, seasons_watcher...");
                 console.log("$scope is next...");
                 console.dir($scope);
 
@@ -215,6 +203,9 @@ var dataset_seasons_list = ['$scope', '$routeParams',
 
             $rootScope.viewSeason = $scope.viewSeason = season; //set this var for the modal controller and file filter
             $rootScope.seasonId = season.Id; //also for file filter. :/
+
+            console.log("$scope.viewSeason is next...");
+            console.dir($scope.viewSeason);
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/datasets/components/dataset-seasons-list/templates/modal-create-season.html',

@@ -21,10 +21,57 @@ var modal_create_season = ['$scope', '$rootScope', '$modalInstance', '$modal', '
 
         //$scope.seasonId = 0; 
         $scope.seasonId = 0;
-	
+
+        $scope.setSpecies = function () {
+            console.log("Inside setSpecies...");
+
+            console.log("$scope is next...");
+            console.dir($scope);
+            console.log("$scope.season_row.Species (before setting) is next...");
+            console.dir($scope.season_row.Species);
+            console.log("typeof $scope.season_row.Species = " + typeof $scope.season_row.Species)
+
+            /*$scope.speciesOptions = [];
+
+            var intCount = 0;
+            $scope.speciesList.forEach(function (item) {
+                //var specie = { id: intCount, name: item };
+
+                $scope.speciesOptions.push({ id: intCount, name: item });
+                intCount++;
+
+            });
+            console.log("$scope.speciesOptions is next...");
+            console.dir($scope.speciesOptions);
+
+            var selectedOptionId = -1;
+            $scope.speciesOptions.forEach(function (item) {
+                if (item.name = $scope.season_row.Species)
+                    selectedOptionId = item.id;
+            });
+            */
+
+            $scope.season_row.Species = getByField($scope.speciesList, 0, "Id");
+            console.log("$scope.season_row.Species (after setting) is next...");
+            console.dir($scope.season_row.Species);
+            console.log("typeof $scope.season_row.Species = " + typeof $scope.season_row.Species)
+
+            /*for (var i = 0; i < $scope.speciesList.length; i++) {
+                console.log("$scope.speciesList[" + i + "] = " + $scope.speciesList[i]);
+                if ($scope.season_row.Species === $scope.speciesList[i]) {
+                    $scope.selectedOption = $scope.speciesList[i];
+                }
+            }
+            */
+
+        };
+
 	    //if we are editing, viewSubproject will be set. -- prepare scope for editing...
         if ($scope.viewSeason) {
             console.log("We are editing an existing season...");
+            console.log("$scope.viewSeason is next...");
+            console.dir($scope.viewSeason);
+
             $scope.header_message = "Edit Season: " + $scope.viewSeason.Species + " " + $scope.viewSeason.Season;
             $rootScope.newSeason = $scope.newSeason = false;
             $scope.seasonsList = $rootScope.seasonsList;
@@ -32,6 +79,8 @@ var modal_create_season = ['$scope', '$rootScope', '$modalInstance', '$modal', '
             $scope.season_row = angular.copy($scope.viewSeason);
             //$scope.seasonId = $scope.season_row.Id;
             $scope.seasonId = $scope.viewSeason.Id;
+
+            $scope.setSpecies();
         }
         else {
             //$scope.viewSeason either does not exist or is null, so we are creating a new season.
@@ -261,7 +310,5 @@ var modal_create_season = ['$scope', '$rootScope', '$modalInstance', '$modal', '
             console.log("Inside $scope.cancel...");
             $modalInstance.dismiss();
         };
-
-
     }
 ];
