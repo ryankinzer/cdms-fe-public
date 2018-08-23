@@ -130,42 +130,44 @@
 
         <div ng-show="project.Instruments.length > 0 && !dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')">
 
-        <!--Notes regarding using the ui-select2 box on the Data Entry form.-->
-        <!--With margin-left set to 0, the box is not aligned prperly, and it distracts.-->
-        <!--With margin-left set to -9, the box is aligned with all the other boxes on the form.-->
-        <!--Checked again later in the day, and the -9 was misaligned, and I had to set is back to zero.-->
-        <!--I had cleared cache, etc., trying to verify, what was up.  Probably best to not worry about it...-->
-        <div style="display: inline-flex; margin-left: 0px;">
-            <div class="header-label">Instrument:</div>
-            <div class="header-value">
+            <!--Notes regarding using the ui-select2 box on the Data Entry form.-->
+            <!--With margin-left set to 0, the box is not aligned prperly, and it distracts.-->
+            <!--With margin-left set to -9, the box is aligned with all the other boxes on the form.-->
+            <!--Checked again later in the day, and the -9 was misaligned, and I had to set is back to zero.-->
+            <!--I had cleared cache, etc., trying to verify, what was up.  Probably best to not worry about it...-->
+            <div style="display: inline-flex; margin-left: 0px;">
+                <div class="header-label">Instrument:</div>
+                <div class="header-value">
 
-                <select ui-select2="select2Options" data-placeholder="Choose an Instrument" ng-change="selectInstrument()" style="width: 200px; margin-top: 4px;" ng-model="row.InstrumentId">
-                    <option ng-repeat="instrument in project.Instruments | orderBy:'instrument.Name'" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
-                </select>
+                    <select ui-select2="select2Options" data-placeholder="Choose an Instrument" ng-change="selectInstrument()" style="width: 200px; margin-top: 4px;" ng-model="row.InstrumentId">
+                        <option ng-repeat="instrument in project.Instruments | orderBy:'instrument.Name'" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
+                    </select>
 
-                <!--<div ng-show="row.DataGradeText">
-                    <!--<a href ng-click="openAccuracyCheckModal()">-->
-                        <!--<span ng-show="row.DataGradeText">Grade: {{row.DataGradeText}} on {{row.LastCharacteristic.CheckDate | date}} </span>-->
-                    <!--</a>-->
-                <!--</div>-->
+                    <!--<div ng-show="row.DataGradeText">
+                        <!--<a href ng-click="openAccuracyCheckModal()">-->
+                            <!--<span ng-show="row.DataGradeText">Grade: {{row.DataGradeText}} on {{row.LastCharacteristic.CheckDate | date}} </span>-->
+                        <!--</a>-->
+                    <!--</div>-->
+                </div>
+                <div style="margin-top: 5px; margin-left: 7px;"><button ng-click="createInstrument()" class="btn btn-xs">Add</button></div>
             </div>
-            <div style="margin-top: 5px; margin-left: 7px;"><button ng-click="createInstrument()" class="btn btn-xs">Add</button></div>
-        </div>
-        <div style="display: inline-flex; margin-left: -2px;">
-            <div class="header-label">Accuracy Check: </div>
+            <div style="display: inline-flex; margin-left: -2px;">
+                <div class="header-label">Accuracy Check: </div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="row.AccuracyCheckId">
+                        <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.AccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                    </select>
+                </div>
+                <div style="margin-top: 5px; margin-left: 5px;"><button ng-click="openAccuracyCheckModal()" class="btn btn-xs">Add</button></div>
+            </div>
+            <div class="header-label">Post-deploy Accuracy: </div>
             <div class="header-value">
-                <select class="form-control" ng-model="row.AccuracyCheckId">
-                    <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.AccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+                <select class="form-control" ng-model="row.PostAccuracyCheckId">
+                    <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.PostAccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
                 </select>
             </div>
-            <div style="margin-top: 5px; margin-left: 5px;"><button ng-click="openAccuracyCheckModal()" class="btn btn-xs">Add</button></div>
         </div>
-        <div class="header-label">Post-deploy Accuracy: </div>
-        <div class="header-value">
-            <select class="form-control" ng-model="row.PostAccuracyCheckId">
-                <option ng-repeat="check in viewInstrument.AccuracyChecks" ng-selected="check.Id == row.PostAccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
-            </select>
-        </div>
+
 
         <form novalidate class="row-form">
             <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
