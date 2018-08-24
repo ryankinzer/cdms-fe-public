@@ -143,6 +143,9 @@ var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectServ
 
             project_watcher();
 
+            //console.log("scope at end of project_watcher is next...");
+            //console.dir(scope);
+
         }, true); //end after project load watcher.
 
         var user_watcher = scope.$watch('users[0].Id', function () {
