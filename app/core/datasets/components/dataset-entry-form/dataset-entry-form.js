@@ -481,6 +481,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
             ProjectService.clearProject();
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
             var watcher = $scope.$watch('project.Id', function () {
+                if (!$scope.project.Id) return;
+
                 $scope.selectInstrument();
                 watcher();
             });
