@@ -148,7 +148,7 @@ var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectServ
         var user_watcher = scope.$watch('users[0].Id', function () {
             scope.UserIsAdmin = false;
             angular.forEach(scope.users, function (user) {
-                console.log("scope.currentUserId = " + scope.currentUserId + ", user.Id = " + user.Id); // + ", " + user.Roles.indexOf("Admin"));
+                //console.log("scope.currentUserId = " + scope.currentUserId + ", user.Id = " + user.Id); // + ", " + user.Roles.indexOf("Admin"));
                 if ((user.Id === scope.currentUserId) && (user.Roles.indexOf("Admin") > -1))
                 {
                     console.log("user is an admin...");
@@ -162,9 +162,9 @@ var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectServ
                     //console.dir(scope.project);
 
                     if (scope.datasets[i].Datastore.TablePrefix === "WaterTemp") {
-                        console.log("Adding instruments to tab bar...");
-                        console.log("scope is next...");
-                        console.dir(scope);
+                        //console.log("Adding instruments to tab bar...");
+                        //console.log("scope is next...");
+                        //console.dir(scope);
                         scope.ShowInstruments = true;
                     }
                 }
