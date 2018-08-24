@@ -1,5 +1,5 @@
-﻿var modal_create_instrument = ['$scope', '$modalInstance', 'DatasetService', 'ProjectService', 'CommonService',
-    function ($scope, $modalInstance, DatasetService, ProjectService, CommonService) {
+﻿var modal_create_instrument = ['$scope', '$modalInstance', 'DatasetService', 'ProjectService', 'CommonService', '$rootScope',
+    function ($scope, $modalInstance, DatasetService, ProjectService, CommonService, $rootScope) {
 
     $scope.header_message = "Create new instrument";
 
@@ -44,9 +44,26 @@
         //saveRow.InstrumentType = undefined; // We have an InstrumentTypeId, but no InstrumentType.  Why is this here?
         saveRow.OwningDepartment = undefined;
         var promise = ProjectService.saveInstrument($scope.project.Id, saveRow);
-        promise.$promise.then(function(){
-            //$scope.reloadProject();
-            $scope.postSaveInstrumentUpdateGrid(promise);
+        promise.$promise.then(function () {
+            console.log("saveInstrument promise is next...");
+            console.dir(promise);
+
+            // Capture the Id of the instrument we just created, so that after we save it, and the form closes,
+            // we can "remember" what it was, so that we can set the instrument box to it, after the project reloads.
+            $rootScope.InstrumentId = promise.Id;
+
+            // If we are on the Project-Instruments tab, no datasets have been loaded.
+            // If we are on Adding an instrument from a Dataset page (Data Entry, Data Edit, or Data Import),
+            // there is a dataset.
+            if ((typeof $scope.dataset === 'undefined') || ($scope.dataset === null)) {
+                console.log("At project-level; reload Instruments tab...");
+                $scope.postSaveInstrumentUpdateGrid(promise);
+            }
+            else {
+                console.log("At dataset-level; reload project...");
+                $scope.reloadProject(); // We need this line, so that the project reloads and picks up the new instrument.
+            }
+
             $modalInstance.dismiss();
         });
     };
