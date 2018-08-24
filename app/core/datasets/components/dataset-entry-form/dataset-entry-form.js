@@ -509,7 +509,14 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias from service
 
         $scope.selectInstrument = function () {
-            if (!$scope.row.InstrumentId)
+
+            if (((typeof $scope.row.InstrumentId === 'undefined') || ($scope.row.InstrumentId === null)) &&
+                ($rootScope.InstrumentId !== undefined)) {
+
+                $scope.row.InstrumentId = $rootScope.InstrumentId;
+                $rootScope.InstrumentId = undefined;
+            }
+            else if (!$scope.row.InstrumentId)
                 return;
 
             console.log("Inside selectInstrument...");
