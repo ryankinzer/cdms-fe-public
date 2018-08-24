@@ -1879,8 +1879,9 @@
 				//ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {height: 360, width: 800});
 
 			$scope.importing = false;
-			console.log("Set $scope.importing = false...");
-			////console.dir($scope);
+            console.log("Set $scope.importing = false...");
+            console.log("$scope at end of displayImportPreview is next...");
+			console.dir($scope);
 		};
 
 		$scope.getFishermanId = function(fishermanName)
@@ -2291,7 +2292,13 @@
 				scope: $scope, //very important to pass the scope along... -- TODO: but we don't want to pass in the whole $scope...
 				//resolve: { files: function() { return $scope.files; } }
 			});
-	    };
+        };
+
+        $scope.selectTimezone = function () {
+            console.log("Inside selectTimezone...");
+            console.log("$scope.row.Timezone is next...");
+            console.dir($scope.row.Timezone);
+        };
 
 	    //this is for custom import of appraisals
 	    $scope.importAppraisalLine = function(row){
