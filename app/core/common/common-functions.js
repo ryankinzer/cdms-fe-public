@@ -287,6 +287,18 @@ function orderByIndex(a, b) {
         return (a.FieldRoleId - b.FieldRoleId);
 }
 
+function orderByOrderIndex(a, b) {
+    if (!a || !b || !a.OrderIndex || !b.OrderIndex)
+        return 0;
+
+    var nameA = parseInt(a.OrderIndex), nameB = parseInt(b.OrderIndex)
+    if (nameA < nameB) //sort ascending
+        return -1
+    if (nameA > nameB)
+        return 1
+    return 0 //default return value (no sorting)
+}
+
 //works for either regular arrays or associative arrays
 function array_count(the_array) {
     var count = 0;
