@@ -481,6 +481,8 @@ var dataset_entry_form = ['$scope', '$routeParams',
             ProjectService.clearProject();
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
             var watcher = $scope.$watch('project.Id', function () {
+                if (!$scope.project.Id) return;
+
                 $scope.selectInstrument();
                 watcher();
             });
@@ -509,7 +511,14 @@ var dataset_entry_form = ['$scope', '$routeParams',
         $scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias from service
 
         $scope.selectInstrument = function () {
-            if (!$scope.row.InstrumentId)
+
+            if (((typeof $scope.row.InstrumentId === 'undefined') || ($scope.row.InstrumentId === null)) &&
+                ($rootScope.InstrumentId !== undefined)) {
+
+                $scope.row.InstrumentId = $rootScope.InstrumentId;
+                $rootScope.InstrumentId = undefined;
+            }
+            else if (!$scope.row.InstrumentId)
                 return;
 
             console.log("Inside selectInstrument...");
