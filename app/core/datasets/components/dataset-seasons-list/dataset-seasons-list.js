@@ -88,7 +88,7 @@ var dataset_seasons_list = ['$scope', '$routeParams',
                     */
 
                     var agColumnDefs = [
-                        { colId: 'EditLinksMaster', width: 130, cellRenderer: EditMasterLinksTemplate, menuTabs: ['filterMenuTab'], hide: false },
+                        { colId: 'EditLinksMaster', width: 20, cellRenderer: EditMasterLinksTemplate, menuTabs: ['filterMenuTab'], hide: false },
                         { field: 'Species', headerName: 'Species', width: 50, menuTabs: ['filterMenuTab'] },
                         { field: 'Season', headerName: 'Season', width: 50, menuTabs: ['filterMenuTab'] },
                         {
