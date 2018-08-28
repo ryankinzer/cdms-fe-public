@@ -134,9 +134,13 @@
 
         //setup our mappableFields list
         //$scope.$watch('dataset.Name', function(){
-        $scope.$watch('dataset.Fields', function () {
+        var datasetField_watcher = $scope.$watch('dataset.Fields', function () {
             if (!$scope.dataset.Fields)
                 return;
+
+            // Turn off this watch right now, for now, because later in the watch, we will be making some changes
+            // to $scope.dataset.Fields, and they will kick off each time we make a change, bogging the machine down.
+            datasetField_watcher();
 
             console.log("Inside DatasetImportCtrl, dataset.Fields watcher...");
 
@@ -204,8 +208,48 @@
             $scope.CellOptions['QAStatusIdOptions'] = $scope.QAStatusOptions;
             //$scope.CellOptions['FishermanIdOptions'] = $scope.fishermenOptions;
 
+            
+            var unsortedDatasetFields = angular.copy($scope.dataset.Fields);
+
+            $scope.fields.header = [];
+            $scope.fields.detail = [];
+
+            angular.forEach(unsortedDatasetFields, function (item) {
+                if (item.FieldRoleId === FIELD_ROLE_HEADER) {
+                    $scope.fields.header.push(item);
+                }
+                else if (item.FieldRoleId === FIELD_ROLE_DETAIL){
+                    $scope.fields.detail.push(item);
+                }
+
+            });
+            // Do some cleanup
+            unsortedDatasetFields = undefined;
+
+            $scope.fields.header = $scope.fields.header.sort(orderByOrderIndex);
+            $scope.fields.detail = $scope.fields.detail.sort(orderByOrderIndex);
+
+            var sortedDatasetFields = [];
+            $scope.fields.header.forEach(function (item) {
+                sortedDatasetFields.push(item);
+            });
+
+            $scope.fields.detail.forEach(function (item) {
+                sortedDatasetFields.push(item);
+            });
+
+            console.log("sortedDatasetFields is next...");
+            console.dir(sortedDatasetFields);
+
+            $scope.dataset.Fields = [];
+            $scope.dataset.Fields = angular.copy(sortedDatasetFields);
+            // More cleanup...
+            sortedDatasetFields = undefined;
+
+            // *** This is where the sort order the fields in the datasheet gets set ***
             //iterate fields and set 'em up
-            angular.forEach($scope.dataset.Fields.sort(orderByAlpha), function (field) {
+            //angular.forEach($scope.dataset.Fields.sort(orderByAlpha), function (field) {
+            angular.forEach($scope.dataset.Fields, function (field) {
                 parseField(field, $scope);
 
                 //mappable fields
@@ -213,11 +257,11 @@
 
                 //setup the headers/details and datasheet fields
                 if (field.FieldRoleId == FIELD_ROLE_HEADER) {
-                    $scope.fields.header.push(field);
+                    //$scope.fields.header.push(field);
                     $scope.HeaderColDefs.push(makeFieldColDef(field, $scope));
                 }
                 else if (field.FieldRoleId == FIELD_ROLE_DETAIL) {
-                    $scope.fields.detail.push(field);
+                    //$scope.fields.detail.push(field);
                     $scope.DetailColDefs.push(makeFieldColDef(field, $scope));
                 }
 
@@ -1403,7 +1447,7 @@
 								}
 								else if(field.ControlType == "time")
 								{	
-									try
+								    try
 									{
 										//console.log("We have a time field.  ");
 										if(data_row[col])
@@ -1879,8 +1923,9 @@
 				//ChartService.buildChart($scope, $scope.dataSheetDataset, $scope.dataset.Datastore.TablePrefix, {height: 360, width: 800});
 
 			$scope.importing = false;
-			console.log("Set $scope.importing = false...");
-			////console.dir($scope);
+            console.log("Set $scope.importing = false...");
+            console.log("$scope at end of displayImportPreview is next...");
+			console.dir($scope);
 		};
 
 		$scope.getFishermanId = function(fishermanName)
@@ -2291,7 +2336,13 @@
 				scope: $scope, //very important to pass the scope along... -- TODO: but we don't want to pass in the whole $scope...
 				//resolve: { files: function() { return $scope.files; } }
 			});
-	    };
+        };
+
+        $scope.selectTimezone = function () {
+            console.log("Inside selectTimezone...");
+            console.log("$scope.row.Timezone is next...");
+            console.dir($scope.row.Timezone);
+        };
 
 	    //this is for custom import of appraisals
 	    $scope.importAppraisalLine = function(row){
