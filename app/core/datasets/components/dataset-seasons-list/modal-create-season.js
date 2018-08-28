@@ -19,7 +19,6 @@ var modal_create_season = ['$scope', '$rootScope', '$modalInstance', '$modal', '
             StatusId: 0,
         };
 
-        //$scope.seasonId = 0; 
         $scope.seasonId = 0;
 
         $scope.setSpecies = function () {
@@ -31,38 +30,19 @@ var modal_create_season = ['$scope', '$rootScope', '$modalInstance', '$modal', '
             console.dir($scope.season_row.Species);
             console.log("typeof $scope.season_row.Species = " + typeof $scope.season_row.Species)
 
-            /*$scope.speciesOptions = [];
+            // When Species gets first set, from the options in dataset.Confg, the values are strings.
+            // The select box gyrates on numbers, so we set the value to the proper index, and then
+            // when modal appears, it has the correct value (string) showing in the Species box.
+            for (var i = 0; i < $scope.speciesList.length; i++) {
+                console.log("$scope.speciesList[" + i + "] = " + $scope.speciesList[i]);
 
-            var intCount = 0;
-            $scope.speciesList.forEach(function (item) {
-                //var specie = { id: intCount, name: item };
-
-                $scope.speciesOptions.push({ id: intCount, name: item });
-                intCount++;
-
-            });
-            console.log("$scope.speciesOptions is next...");
-            console.dir($scope.speciesOptions);
-
-            var selectedOptionId = -1;
-            $scope.speciesOptions.forEach(function (item) {
-                if (item.name = $scope.season_row.Species)
-                    selectedOptionId = item.id;
-            });
-            */
-
-            $scope.season_row.Species = getByField($scope.speciesList, 0, "Id");
+                if ($scope.season_row.Species === $scope.speciesList[i]) {
+                    $scope.season_row.Species = "" + i; // Note the string conversion ""
+                }
+            }
             console.log("$scope.season_row.Species (after setting) is next...");
             console.dir($scope.season_row.Species);
             console.log("typeof $scope.season_row.Species = " + typeof $scope.season_row.Species)
-
-            /*for (var i = 0; i < $scope.speciesList.length; i++) {
-                console.log("$scope.speciesList[" + i + "] = " + $scope.speciesList[i]);
-                if ($scope.season_row.Species === $scope.speciesList[i]) {
-                    $scope.selectedOption = $scope.speciesList[i];
-                }
-            }
-            */
 
         };
 
@@ -306,9 +286,39 @@ var modal_create_season = ['$scope', '$rootScope', '$modalInstance', '$modal', '
             $modalInstance.dismiss();
         };
 
+        $scope.save = function () {
+            console.log("Inside $scope.save...");
+
+            console.log("$scope is next...");
+            console.dir($scope);
+            console.log("$scope.season_row.Species (before resetting) is next...");
+            console.dir($scope.season_row.Species);
+            console.log("typeof $scope.season_row.Species = " + typeof $scope.season_row.Species)
+
+            // To display the existing value, we had to set Species to its index value first.
+            // The select box gyrates on numbers, so we set the value to the proper index.
+            // To save, we must switch the value back, from the index, to its proper string value.
+            for (var i = 0; i < $scope.speciesList.length; i++) {
+                console.log("$scope.speciesList[" + i + "] = " + $scope.speciesList[i]);
+
+                if ($scope.season_row.Species === i.toString()) {
+                    $scope.season_row.Species = $scope.speciesList[i];
+                }
+            }
+            console.log("$scope.season_row.Species (after resetting) is next...");
+            console.dir($scope.season_row.Species);
+        };
+
         $scope.cancel = function () {
             console.log("Inside $scope.cancel...");
             $modalInstance.dismiss();
+        };
+
+        $scope.selectSpecies = function () {
+            console.log("Inside selectSpecies...");
+
+            console.log("$scope.season_row.Species is next...");
+            console.dir($scope.season_row.Species);
         };
     }
 ];
