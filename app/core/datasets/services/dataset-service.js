@@ -178,6 +178,12 @@ datasets_module.factory('SpecificCreelSurveyActivities', ['$resource', function 
     });
 }]);
 
+datasets_module.factory('SpecificScrewTrapActivities', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/activity/queryspecificscrewtrapactivities', {}, {
+        save: { method: 'POST', isArray: true }
+    });
+}]);
+
 datasets_module.service('DatasetService', ['$q',
     'DatasetFiles',
     'Activities',
@@ -210,6 +216,7 @@ datasets_module.service('DatasetService', ['$q',
 	'SpecificActivitiesWithBounds',
     'SpecificWaterTempActivities',
     'SpecificCreelSurveyActivities',
+    'SpecificScrewTrapActivities',
     'AddDatasetToProject',
     'UpdateDataset',
     function ($q,
@@ -244,6 +251,7 @@ datasets_module.service('DatasetService', ['$q',
 		SpecificActivitiesWithBounds,
         SpecificWaterTempActivities,
         SpecificCreelSurveyActivities,
+        SpecificScrewTrapActivities,
         AddDatasetToProject,
         UpdateDataset)
     {
@@ -629,6 +637,18 @@ datasets_module.service('DatasetService', ['$q',
 
                 return SpecificCreelSurveyActivities.save(searchCriteria);
             },
+
+            getSpecificScrewTrapActivities: function (datasetId, locationIdList, acvtivityDateList, arrivalTimeList) {
+                console.log("Inside dataset-service.js, getSpecificScrewTrapActivities...");
+                var searchCriteria = {
+                    DatasetId: datasetId,
+                    LocationId: locationIdList,
+                    ActivityDate: acvtivityDateList,
+                    ArrivalTime: arrivalTimeList
+                }
+
+                return SpecificScrewTrapActivities.save(searchCriteria);
+            }
         };
 
         return service;

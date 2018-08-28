@@ -8,4 +8,4 @@ web.config
 *Copy.html
 DataTracker/*
 *.sln
-.vs/*
+/.vs/*

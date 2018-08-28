@@ -381,8 +381,15 @@ function validateField(field, row, key, scope, row_errors) {
             }
             break;
         case 'date':
-            if (isNaN(Date.parse(value)))
-                row_errors.push("[" + field.DbColumnName + "] Value is not a date (mm/dd/yyyy).");
+            //console.log("date value = " + value);
+            if (isNaN(Date.parse(value))) {
+                if (!checkDateTimeFormat1(value)) {
+                    //console.log("value IS NOT a date format:  " + value);
+                    row_errors.push("[" + field.DbColumnName + "] Value is not a date (mm/dd/yyyy).");
+                }
+                //else
+                    //console.log("value IS a date format:  " + value);
+            }
             break;
         case 'datetime':
             //console.log("Inside datetime...");
@@ -403,7 +410,7 @@ function validateField(field, row, key, scope, row_errors) {
         case 'time':
             var theTime = value;
             var strTime = theTime.toString();
-            console.log("strTime = " + strTime);
+            //console.log("strTime = " + strTime);
 
             var timeContentValid = true;
             if (!stringIsTime(value) && !is_empty(value))
@@ -435,7 +442,10 @@ function validateField(field, row, key, scope, row_errors) {
 
                         if ((field.DbColumnName === "InterviewTime") ||
                             (field.DbColumnName === "TimeStart") ||
-                            (field.DbColumnName === "TimeEnd")) {
+                            (field.DbColumnName === "TimeEnd")
+                            //(field.DbColumnName === "ArrivalTime")
+                            )
+                        {
                             if ((typeof scope.callingPage !== 'undefined') && (scope.callingPage === "Import")) {
                                 if (!checkDateTimeFormat1(value))
                                     row_errors.push("[" + field.DbColumnName + "] Value is not a date-time format (YYYY-MM-DD hh:mm)");
@@ -469,18 +479,20 @@ function validateField(field, row, key, scope, row_errors) {
                         else {
                             // value may contain a time (HH:MM) or the time may be in a datetime string (YYYY-MM-DDTHH:mm:SS format).
                             console.log("value (before extracting time)= " + value);
-                            var colonLocation = value.indexOf(":");
-                            value = value.substr(colonLocation - 2);
-                            if (value.length > 5)
-                                value = value.substr(0, 6);
+                            if (value != null) {
+                                var colonLocation = value.indexOf(":");
+                                value = value.substr(colonLocation - 2);
+                                if (value.length > 5)
+                                    value = value.substr(0, 6);
 
-                            //console.log("value (after extracting time)= " + value);
-                            var validTime = checkTime(value);
-                            //console.log("validTime (time is valid)= " + validTime)
+                                //console.log("value (after extracting time)= " + value);
+                                var validTime = checkTime(value);
+                                //console.log("validTime (time is valid)= " + validTime)
 
-                            if ((typeof validTime === 'undefined') || (value.length < 5)) {
-                                console.log("Error: Invalid time entry in " + field.DbColumnName + ".");
-                                row_errors.push("[" + field.DbColumnName + "] Invalid entry.  The entry must use the 24-hr military time format.  Example:  8:00 a.m. = 08:00 and 5:15 p.m. = 17:15");
+                                if ((typeof validTime === 'undefined') || (value.length < 5)) {
+                                    console.log("Error: Invalid time entry in " + field.DbColumnName + ".");
+                                    row_errors.push("[" + field.DbColumnName + "] Invalid entry.  The entry must use the 24-hr military time format.  Example:  8:00 a.m. = 08:00 and 5:15 p.m. = 17:15");
+                                }
                             }
                         }
 						/* Before import change

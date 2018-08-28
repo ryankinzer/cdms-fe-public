@@ -233,29 +233,23 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
 
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 console.log("Extracting times from strings...");
-                var strTimeStart = $scope.dataset_activities.Header.TimeStart;
-                var strTimeEnd = $scope.dataset_activities.Header.TimeEnd;
-                var intTLoc = strTimeStart.indexOf("T");
-                // Start just past the "T" in the string, and get the time portion (the next 5 characters).
-                strTimeStart = strTimeStart.substr(intTLoc + 1, 5);
-                $scope.dataset_activities.Header.TimeStart = strTimeStart;
-
-                strTimeEnd = strTimeEnd.substr(intTLoc + 1, 5);
-                $scope.dataset_activities.Header.TimeEnd = strTimeEnd;
+                if ((typeof $scope.dataset_activities.Header.TimeStart !== 'undefined') && ($scope.dataset_activities.Header.TimeStart !== null))
+                    $scope.dataset_activities.Header.TimeStart = getTimeFromUtcString($scope.dataset_activities.Header.TimeStart);
+                if ((typeof $scope.dataset_activities.Header.TimeEnd !== 'undefined') && ($scope.dataset_activities.Header.TimeEnd !== null))
+                    $scope.dataset_activities.Header.TimeEnd = getTimeFromUtcString($scope.dataset_activities.Header.TimeEnd);
 
 				/*for (var i = 0; i < $scope.dataset_activities.Details.length; i++)
 				{
 					console.log("$scope.dataset_activities.Details[i] is next...");
 					console.dir($scope.dataset_activities.Details[i]);
-					var strInterviewTime = $scope.dataset_activities.Details[i].InterviewTime;
-					console.log("strInterviewTime = " + strInterviewTime);
-					intTLoc = strInterviewTime.indexOf("T");
-					console.log("intLoc = " + intTLoc);
-					strInterviewTime = strInterviewTime.substr(intTLoc + 1, 5);
-					console.log("strInterviewTime = " + strInterviewTime);
-					$scope.dataset_activities.Details[i].InterviewTime = strInterviewTime
+                    $scope.dataset_activities.Details[i].InterviewTime = getTimeFromUtcString($scope.dataset_activities.Details[i].InterviewTime);
 				}
 				*/
+            }
+            else if ($scope.DatastoreTablePrefix === "ScrewTrap")
+            {
+                if ((typeof $scope.dataset_activities.Header.ArrivalTime !== 'undefined') && ($scope.dataset_activities.Header.ArrivalTime !== null))
+                    $scope.dataset_activities.Header.ArrivalTime = getTimeFromFriendlyString($scope.dataset_activities.Header.ArrivalTime);
             }
 			else if ($scope.DatastoreTablePrefix === "CrppContracts")
 			{
@@ -1014,7 +1008,7 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
             var intMonth = -1;
             var strDay = null;
 
-            /**** CreeSurvey Detail Date Time calculations Start ****/
+            /**** Date Time calculations Start ****/
             if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                 // Headers = row
                 // Details = onRow
@@ -1116,7 +1110,15 @@ var dataset_edit_form = ['$scope', '$q', '$sce', '$routeParams', 'DatasetService
                     console.log("$scope.row.TimeEnd = " + $scope.row.TimeEnd);
                 }
             }
-            /**** CreeSurvey Detail Date Time calculations End ****/
+            else if ($scope.DatastoreTablePrefix === "ScrewTrap")
+            {
+                tmpTime = $scope.row.ArrivalTime;
+                console.log("tmpTime (ArrivalTime) = " + tmpTime);
+                $scope.row.ArrivalTime = "";
+                $scope.row.ArrivalTime = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime;
+                console.log("$scope.row.ArrivalTime = " + $scope.row.ArrivalTime);
+            }
+            /**** Date Time calculations End ****/
 			else if ($scope.DatastoreTablePrefix === "CrppContracts")
 			{
 				// For CRPP, the location is NOT on the form, so we add it here.
