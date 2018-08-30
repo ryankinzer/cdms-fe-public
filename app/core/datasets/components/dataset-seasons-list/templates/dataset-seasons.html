@@ -13,14 +13,15 @@
 
 
 <div class="alert alert-info" ng-show="!seasonsList.length">Loading...</div>
-<div project-role="editor">
-    <button style="margin-left: 10px;" class="right btn" ng-click="createSeason()">Create New Season</button>
-</div>
-
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span10">
             <div class="panel panel-default">
+                <div class="panel-body">
+                    <div project-role="editor">
+                        <button style="margin-left: 10px;" class="right btn" ng-click="createSeason()">Create New Season</button>
+                    </div>
+                </div>
                 <div class="panel-body">
                     <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
                         <div id="seasons-list-grid" class="ag-blue gridStyle-small"></div>
@@ -28,7 +29,5 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
-
 </div>
