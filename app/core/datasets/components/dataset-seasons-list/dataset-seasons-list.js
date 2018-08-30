@@ -214,5 +214,67 @@ var dataset_seasons_list = ['$scope', '$routeParams',
             });
         };
 
+        $scope.removeSeason = function (a_season) {
+            console.log("alrighty, remove this season!");
+            console.dir(a_season);
+            if (!a_season)
+                return;
+
+            if (!confirm("Are you sure you want to remove this season?"))
+                return;
+
+            var removeSeasonPromise = DatasetService.removeSeason($scope.dataset.ProjectId, $scope.dataset.Id, a_season.Id);
+
+            removeSeasonPromise.$promise.then(function () {
+                $scope.seasonsList.forEach(function (item, index) {
+                    if (item.Id === a_season.Id) {
+                        $scope.seasonsList.splice(index, 1);
+                        $scope.agGridOptions.api.setRowData($scope.seasonsList);
+                    }
+                });
+            });
+        };
+
+        //fired after a user saves a new or edited project.
+        // we update the item in the main subproject array and then refresh the grid.
+        $scope.postSaveSeasonUpdateGrid = function (promise) {
+            
+            //console.log("ok - we saved so update the grid...");
+            var total = $scope.seasonsList.length;
+            var count = 0;
+            var updated = false;
+            $scope.seasonsList.forEach(function (item, index) {
+                if (item.Id === promise.Id) {
+                    updated = true;
+
+                    //console.log("ok we found a match! -- updating! before:");
+                    //console.dir($scope.seasonsList[index]);
+
+                    angular.extend($scope.seasonsList[index], promise); //replace the data for that item
+                    //console.log("ok we found a match! -- updating! after:");
+                    //console.dir($scope.seasonsList[index]);
+                    $scope.agGridOptions.api.redrawRows();
+                    //console.log("done reloading grid.");
+                }
+                count++;
+                if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
+                {
+                    //console.log("ok we found never a match! -- adding!");
+                    $scope.seasonsList.push(promise); //add that item
+                    $scope.agGridOptions.api.setRowData([]);
+                    $scope.agGridOptions.api.setRowData($scope.seasonsList);
+
+                    console.log("done reloading grid, after adding a season.");
+                }
+            });
+
+        };
+
+        // Don't think we need this anymore.
+        $scope.refreshSeasonsList = function () {
+            // Call the functions that will build the list of seasons -- as the data comes in.
+            $scope.seasonsList = DatasetService.getSeasons($scope.dataset.Id);
+
+        };
     }
 ];
