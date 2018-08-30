@@ -12,10 +12,18 @@ datasets_module.factory('Activities', ['$resource', function ($resource) {
     });
 }]);
 
-datasets_module.factory('GetDatasetSeasons', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/activity/getdatasetseasons', {}, {
+datasets_module.factory('GetSeasons', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/season/getseasons', {}, {
         query: { method: 'GET', params: { id: 'datasetId' }, isArray: true }
     });
+}]);
+
+datasets_module.factory('SaveSeason', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/season/saveseason');
+}]);
+
+datasets_module.factory('RemoveSeason', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/season/removeseason');
 }]);
 
 datasets_module.factory('ActivitiesForView', ['$resource', function ($resource) {
@@ -193,7 +201,9 @@ datasets_module.factory('SpecificScrewTrapActivities', ['$resource', function ($
 datasets_module.service('DatasetService', ['$q',
     'DatasetFiles',
     'Activities',
-    'GetDatasetSeasons',
+    'GetSeasons',
+    'SaveSeason',
+    'RemoveSeason',
     'ActivitiesForView',
 	'CreelSurveyActivitiesForView',
     'Dataset',
@@ -229,7 +239,9 @@ datasets_module.service('DatasetService', ['$q',
     function ($q,
         DatasetFiles,
         Activities,
-        GetDatasetSeasons,
+        GetSeasons,
+        SaveSeason,
+        RemoveSeason,
         ActivitiesForView,
 		CreelSurveyActivitiesForView,
         Dataset,
@@ -362,7 +374,59 @@ datasets_module.service('DatasetService', ['$q',
 
             getSeasons: function (id) {
                 console.log("Inside dataset-service.js, getSeasons...");
-                return GetDatasetSeasons.query({ id: id });
+                return GetSeasons.query({ id: id });
+            },
+
+            saveSeason: function (projectId, datasetId, userId, season, saveResults) {
+                console.log("Inside saveSeason...starting save...");
+                console.log("season is next...");
+                console.dir(season);
+
+                season.saving = true; //tell everyone we are saving
+                season.UserId = userId;
+                season.DatasetId = datasetId;
+                season.ProjectId = projectId;
+                return SaveSeason.save(season, function (data) {
+                    season.success = "Save successful.";
+                    season.errors = false;
+                    console.log("Initialized season.errors...");
+                    season.new_record = data;
+                    console.log("Success!");
+
+                    season.saving = false; //and... we're done.
+                }, function (data) {
+                    season.success = false;
+                    // activities.errors = {saveError: "There was a problem saving your data.  Please try again or contact support."}; // Original line.
+                    // Let's provide a little more information that will help us figure out what happened.
+                    var theErrorText = "";
+                    if (typeof data.message !== 'undefined')
+                        theErrorText = data.message;
+                    else if (typeof data.data !== 'undefined') {
+                        if (typeof data.data.ExceptionMessage !== 'undefined') {
+                            theErrorText = data.data.ExceptionMessage;
+                            console.log("Save error:  theErrorText = " + theErrorText);
+                        }
+                        else {
+                            theErrorText = data.data;
+                            var titleStartLoc = theErrorText.indexOf("<title>") + 7;
+                            console.log("titleStartLoc = " + titleStartLoc);
+                            var titleEndLoc = theErrorText.indexOf("</title>");
+                            console.log("titleEndLoc = " + titleEndLoc);
+                            theErrorText = theErrorText.substr(titleStartLoc, titleEndLoc - titleStartLoc);
+                        }
+                    }
+                    var theErrorMessage = "There was a problem saving your data (" + theErrorText + ").  Please try again or contact support.";
+                    season.errors = { saveError: theErrorMessage };
+                    console.log("Failure!");
+                    console.log(theErrorText);
+                    console.log(theErrorMessage);
+                    console.dir(data);
+                    season.saving = false; //and... we're done.
+                });
+            },
+
+            removeSeason: function (projectId, datasetId, seasonId) {
+                return RemoveSeason.save({ ProjectId: projectId, DatasetId: datasetId, SeasonId: seasonId });
             },
 			
             getActivitiesForView: function (id) {
