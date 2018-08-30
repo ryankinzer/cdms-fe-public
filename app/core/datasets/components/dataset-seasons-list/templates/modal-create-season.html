@@ -1,5 +1,4 @@
 <div class="modal">
-	<!--<div class="modal-dialog">-->
 	<div class="modal-dialog edit-project-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -10,43 +9,45 @@
                 <div class="alert alert-danger" ng-show="seasonSave.error">
                     {{seasonSave.errorMessage}}
                 </div>
-                <!--<div class="alert alert-info" ng-show="!subprojectSave.error" >
-                    Fisherman does not exist.
-                </div>-->
             </div>
 
             <div class="modal-body">
                 <!-- We need this line, to make the directives work.-->
                 <form name="form" class="css-form" novalidate>
-                    <div class="header-label">Species:</div>
-                    <div class="header-value">
-                        <!--<select class="form-control" ng-model="season_row.Species" ng-options="id as name for (id, name) in speciesList"></select>-->
-                        <select class="form-control" ng-model="season_row.Species" ng-options="id as name for (id, name) in speciesList" ng-change="selectSpecies()"></select>
-                    </div>
+                    <div class="panel-body">
+                        <div class="header-label">Species:</div>
+                        <div class="header-value">
+                            <!--<select class="form-control" ng-model="season_row.Species" ng-options="id as name for (id, name) in speciesList"></select>-->
+                            <select class="form-control" ng-model="season_row.Species" ng-options="id as name for (id, name) in speciesList" ng-change="selectSpecies()"></select>
+                        </div>
 
-                    <div class="header-label">Season:</div>
-                    <div class="header-value">
-                        <input class="form-control" type="text" ng-model="season_row.Season" />
-                    </div>
+                        <div class="header-label">Season:</div>
+                        <div class="header-value">
+                            <input class="form-control" type="text" ng-model="season_row.Season" />
+                        </div>
 
-                    <div class="header-label">Open Date</div>
-                    <div class="header-value">
-                        <input class="form-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="season_row.OpenDate" is-open="aopened" min="'2000-01-01'" max="'2020-12-31'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-                    </div>
+                        <div class="header-label">Open Date</div>
+                        <div class="header-value">
+                            <input class="form-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="season_row.OpenDate" is-open="aopened" min="'2000-01-01'" max="'2020-12-31'" datepicker-options="dateOptions" ng-required="false" close-text="Close" ng-change="calculateTotalDays()" />
+                        </div>
 
-                    <div class="header-label">Close Date</div>
-                    <div class="header-value">
-                        <input class="form-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="season_row.CloseDate" is-open="bopened" min="'2000-01-01'" max="'2020-12-31'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-                    </div>
+                        <div class="header-label">Close Date</div>
+                        <div class="header-value">
+                            <input class="form-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="season_row.CloseDate" is-open="bopened" min="'2000-01-01'" max="'2020-12-31'" datepicker-options="dateOptions" ng-required="false" close-text="Close" ng-change="calculateTotalDays()" />
+                        </div>
 
-                    <div class="header-label">Total Days:</div>
-                    <div class="header-value">
-                        <input class="form-control" type="text" ng-model="season_row.TotalDays" />
+                        <div class="header-label">Total Days:</div>
+                        <div class="header-value">
+                            <input class="form-control" type="text" ng-model="season_row.TotalDays" readonly />
+                        </div>
                     </div>
+                    <hr />
+                    <div class="panel-body">
 
-                    <div>
-                        <button class="btn btn-primary right" style="margin: 10px;" ng-click="save()">Save</button>
-                        <button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Cancel</button>
+                        <div>
+                            <button class="btn btn-primary right" style="margin: 10px;" ng-click="save()">Save</button>
+                            <button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Cancel</button>
+                        </div>
                     </div>
                 </form>
             </div>
