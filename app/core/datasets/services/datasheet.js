@@ -424,32 +424,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'DatasetSer
                 }
 
                 else {
-                    var coldefs = [
-                        {
-                            field: 'locationId',
-                            Label: 'Location',
-                            displayName: 'Location',
-                            cellFilter: 'locationNameFilter',
-                            editableCellTemplate: LocationCellEditTemplate,
-                            Field: { Description: "What location is this record related to?" }
-                        },
-                        {
-                            field: 'activityDate',
-                            Label: 'Activity Date',
-                            displayName: 'Activity Date (MM/DD/YYYY)',
-                            cellFilter: 'date: \'MM/dd/yyyy\'',
-                            editableCellTemplate: '<input ng-blur="updateCell(row,\'activityDate\')" type="text" ng-pattern="' + date_pattern + '" ng-model="COL_FIELD" ng-input="COL_FIELD" />',
-                            Field: { Description: "Date of activity in format: '10/22/2014'" }
-                        },
-                        {
-                            field: 'QAStatusId',
-                            Label: 'QA Status',
-                            displayName: 'QA Status',
-                            cellFilter: 'QAStatusFilter',
-                            editableCellTemplate: QACellEditTemplate,
-                            Field: { Description: "Quality Assurance workflow status" }
-                        }
-                    ];
+                    var coldefs = [ ];
                 }
 
                 return coldefs;
