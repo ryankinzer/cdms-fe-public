@@ -23,6 +23,8 @@ require([
     'core/datasets/components/dataset-query/dataset-query',
     'core/datasets/components/dataset-query/big-bucket-query',
     //'core/datasets/components/dataset-relationgrid/modal-relationgrid',
+    'core/datasets/components/dataset-seasons-list/dataset-seasons-list',
+    'core/datasets/components/dataset-seasons-list/modal-create-season',
 
     //load the various dataset services
     'core/datasets/services/dataset-service',
@@ -48,5 +50,7 @@ require([
     datasets_module.controller('DataQueryCtrl', dataset_query);
     datasets_module.controller('DatastoreQueryCtrl', big_bucket_query);
     //datasets.controller('RelationGridModalCtrl', modal_relationgrid); <--not used just yet...
+    datasets_module.controller('DatasetSeasonsCtrl', dataset_seasons_list);
+    datasets_module.controller('ModalCreateSeasonCtrl', modal_create_season);
 });
 
