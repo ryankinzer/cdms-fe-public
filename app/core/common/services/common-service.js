@@ -246,6 +246,7 @@ common_module.service('CommonService', ['$q',
                 angular.forEach(instrumentList, function (item) {
                     // Have we found a match yet? If so, we do not need to check the rest of the items.
                     if (blnKeepGoing) {
+                        //console.log("item.Name = " + item.Name + ", instrument.Name = " + instrument.Name + ", item.SerialNumber = " + item.SerialNumber + ", instrument.SerialNumber = " + instrument.SerialNumber); 
                         if ((item.Name === instrument.Name) && (item.SerialNumber === instrument.SerialNumber)) {
                             blnInstrumentExists = true;
                             blnKeepGoing = false;
