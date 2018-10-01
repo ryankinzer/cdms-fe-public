@@ -31,9 +31,13 @@
             alert("You must select an Instrument Type!");
             return;
         }
-        else if (CommonService.checkForDuplicateInstrument($scope.instrumentList, $scope.instrument_row)) {
-            alert("An instrument with this name and serial number has already been entered!");
-            return;
+        else if ((typeof $scope.instrument_row.Id === 'undefined') || ($scope.instrument_row.Id === 0)) {
+            // No Id, or Id = 0 means that we're adding a new instrument.
+            // Verify that the instrument does not already exist, before adding it.
+            if (CommonService.checkForDuplicateInstrument($scope.instrumentList, $scope.instrument_row)) {
+                alert("An instrument with this name and serial number has already been entered!");
+                return;
+            }
         }
 		
         var saveRow = angular.copy($scope.instrument_row);
