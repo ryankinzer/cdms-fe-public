@@ -8,9 +8,9 @@
 //was "DataEditCtrl" from DataEditControllers
 
 var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$modal', '$location', '$rootScope',
-    'ActivityParser', 'DataSheet', 'FileUploadService', '$upload',
+    'ActivityParser', 'DataSheet', '$upload',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
-        ActivityParser, DataSheet, UploadService, $upload) {
+        ActivityParser, DataSheet, $upload) {
 
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
         $scope.EditedRows = []; //whenever a row gets edited, it will be added here; we only send edited rows...

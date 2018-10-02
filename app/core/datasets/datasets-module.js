@@ -21,7 +21,6 @@ require([
     'core/datasets/components/dataset-import/modal-dataset-duplicates',
     'core/datasets/components/dataset-query/dataset-query',
     'core/datasets/components/dataset-query/big-bucket-query',
-    //'core/datasets/components/dataset-relationgrid/modal-relationgrid',
     'core/datasets/components/dataset-seasons-list/dataset-seasons-list',
     'core/datasets/components/dataset-seasons-list/modal-create-season',
 
@@ -30,10 +29,6 @@ require([
     'core/datasets/services/activity-parser',
     'core/datasets/services/convert-status',
     'core/datasets/services/datasheet',
-    //'core/datasets/services/file-upload',
-    'core/datasets/services/datasheet-cell-validators',
-    'core/datasets/services/datasheet-controltype-definitions',
-    'core/datasets/services/field-renderer-service',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!
@@ -50,7 +45,6 @@ require([
     datasets_module.controller('ModalDuplicatesViewCtrl', modal_dataset_duplicates);
     datasets_module.controller('DataQueryCtrl', dataset_query);
     datasets_module.controller('DatastoreQueryCtrl', big_bucket_query);
-    //datasets.controller('RelationGridModalCtrl', modal_relationgrid); <--not used just yet...
     datasets_module.controller('DatasetSeasonsCtrl', dataset_seasons_list);
     datasets_module.controller('ModalCreateSeasonCtrl', modal_create_season);
 });
