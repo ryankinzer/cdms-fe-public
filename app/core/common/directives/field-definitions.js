@@ -90,7 +90,7 @@ common_module.directive('ctuirSelectField',
             templateUrl: 'app/core/common/templates/grid-fields/field-select.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.Field.PossibleValues);
+                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.cdmsField.Field.PossibleValues);
             }
         };
 
@@ -105,7 +105,7 @@ common_module.directive('ctuirMultiselectField',
             templateUrl: 'app/core/common/templates/grid-fields/field-multiselect.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.Field.PossibleValues);
+               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.cdmsField.Field.PossibleValues);
             }
         };
         
@@ -120,7 +120,7 @@ common_module.directive('ctuirMultilookupField',
             templateUrl: 'app/core/common/templates/grid-fields/field-multilookup.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.Field.PossibleValues);
+               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.cdmsField.Field.PossibleValues);
             }
         };
         
@@ -135,7 +135,7 @@ common_module.directive('ctuirLookupField',
             templateUrl: 'app/core/common/templates/grid-fields/field-lookup.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.Field.PossibleValues);
+                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.cdmsField.Field.PossibleValues);
             }
         };
 
