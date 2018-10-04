@@ -159,9 +159,11 @@
                     <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strProjectLead"></textarea>
                 </div>
             </div>
-
+BEFORE
             <form novalidate class="row-form" name="headerForm">
                 <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
+                    <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
+                    <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
                     <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
                     <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                     <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
@@ -180,7 +182,7 @@
                     <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
                     <ctuir-text-field ng-switch-default></ctuir-text-field>
                 </div>
-
+MIDDLE
                 <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
                     <div class="header-label">QA Status:</div>
                     <div class="header-value" title="by {{dataset_activities.Header.Activity.ActivityQAStatus.User.Fullname}}">
@@ -193,6 +195,7 @@
                     </div>
                 </div>
             </form>
+AFTER
 
         </div>
     </div>

@@ -37,6 +37,32 @@ common_module.directive('ctuirDateField',
 
     });
 
+common_module.directive('ctuirActivityDateField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/grid-fields/field-activity-date.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+common_module.directive('ctuirLocationSelectField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/grid-fields/field-location-select.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+
+
 common_module.directive('ctuirTimeField',
     function(){
 
@@ -84,13 +110,14 @@ common_module.directive('ctuirNumberField',
     });
 
 common_module.directive('ctuirSelectField',
-    function(){
+    function () {
 
         var result = {
             templateUrl: 'app/core/common/templates/grid-fields/field-select.html',
             restrict: 'E',
-            controller: function($scope, $element, $attrs) {
-                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.cdmsField.Field.PossibleValues);
+            controller: function ($scope, $element, $attrs) {
+                var possibleValues = ($scope.field.cdmsField) ? $scope.field.cdmsField.Field.PossibleValues : $scope.field.PossibleValues; //one of these is required.
+                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, possibleValues);
             }
         };
 
@@ -105,7 +132,8 @@ common_module.directive('ctuirMultiselectField',
             templateUrl: 'app/core/common/templates/grid-fields/field-multiselect.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.cdmsField.Field.PossibleValues);
+               var possibleValues = ($scope.field.cdmsField) ? $scope.field.cdmsField.Field.PossibleValues : $scope.field.PossibleValues; //one of these is required.
+               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, possibleValues);
             }
         };
         
@@ -120,7 +148,8 @@ common_module.directive('ctuirMultilookupField',
             templateUrl: 'app/core/common/templates/grid-fields/field-multilookup.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.cdmsField.Field.PossibleValues);
+               var possibleValues = ($scope.field.cdmsField) ? $scope.field.cdmsField.Field.PossibleValues : $scope.field.PossibleValues; //one of these is required.
+               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, possibleValues);
             }
         };
         
@@ -135,7 +164,8 @@ common_module.directive('ctuirLookupField',
             templateUrl: 'app/core/common/templates/grid-fields/field-lookup.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.cdmsField.Field.PossibleValues);
+                var possibleValues = ($scope.field.cdmsField) ? $scope.field.cdmsField.Field.PossibleValues : $scope.field.PossibleValues; //one of these is required.
+                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, possibleValues);
             }
         };
 

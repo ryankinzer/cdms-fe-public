@@ -105,82 +105,12 @@ datasets_module.service('GridService', ['$window', '$route',
 
         service.getAgColumnDefs = function (dataset) {
 
-            var defaultShowColumns = {
-                'TopHeaderFields': ['Location', 'ActivityDate'],
-                'BottomHeaderFields': ['QAStatus', 'QAComments'],
-                'sort': { 'field': 'ActivityDate', 'direction': 'desc' }
-                //'LeftDetailFields': [],
-                //'RightDetailFields': []  
-            };
+            //SystemFieldDefinitions and DefaultSystemFieldsToShow are defined in config.js
+            // these are the "system" columns that can be turned on via dataset configuration for the data entry page
+            var possibleColumnDefs = SystemFieldDefinitions;           
+            var showColumns = DefaultSystemFieldsToShow;
 
-            var showColumns = defaultShowColumns;
             var finalColumnDefs = { HeaderFields: [], DetailFields: [] };
-
-            //these are the "system" coldefs that can be added via configuration
-            var possibleColumnDefs = [
-
-                {
-                    configName: 'ActivityDate', //we match on this from config
-                    field: 'ActivityDate',
-                    headerName: 'Activity Date',
-                    valueGetter: function (params) { return moment(params.node.data.ActivityDate) }, //date filter needs js date object				
-                    filter: 'date',
-                    filterParams: { apply: true },
-                    //cellRenderer: ActivityCellRenderer,
-                    width: 180,
-                    menuTabs: ['filterMenuTab']
-                },
-                {
-                    configName: 'QAStatus',
-                    field: 'QAStatus', headerName: 'QA Status',
-                    //cellRenderer: QATemplate,
-                    width: 120,
-                    menuTabs: ['filterMenuTab'],
-                    valueGetter: function (params) { return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId]; }
-                },
-                {
-                    configName: 'QAComments',
-                    field: 'QAComments', headerName: 'QA Comments',
-                    //cellRenderer: QATemplate,
-                    width: 120,
-                    menuTabs: ['filterMenuTab'],
-                },
-                {
-                    configName: 'Location',
-                    field: 'Location.Label', headerName: 'Location',
-                    //cellRenderer: LocationCellRenderer,
-                    width: 200, menuTabs: ['filterMenuTab']
-                },
-                {
-                    configName: 'Instrument',
-                    field: 'InstrumentId', headerName: 'Instrument',
-                    //cellRenderer: InstrumentCellRenderer,
-                    width: 200, menuTabs: ['filterMenuTab']
-                },
-                {
-                    configName: 'Timezone',
-                    field: 'Timezone', headerName: 'Reading Timezone',
-                    //cellRenderer: TimezoneCellRenderer,
-                    width: 150, menuTabs: ['filterMenuTab']
-                },
-                {
-                    configName: 'Fisherman',
-                    field: 'FishermanId', headerName: 'Fisherman',
-                    cellEditor: CDMSSelectCellEditor,
-                    cellEditorParams: {
-                        values: [] //these will be populated later (via setPossibleValues below) when the fishermanList comes in.
-                    },
-                    valueFormatter: function (params) {
-                        return params.colDef.cellEditorParams.values[params.value]; //display the fisherman name instead of fishermanId
-                    },
-                    cellValidator: CDMSSelectCellValidator,
-                    width: 170, menuTabs: ['filterMenuTab'],
-                    setPossibleValues: function (in_values) {
-                        if (this.hasOwnProperty('cellEditorParams'))
-                            this.cellEditorParams.values = in_values;
-                    }
-                },
-            ];
 
             console.log("composing data grid columns from config - here is the dataset config!");
             console.dir(dataset.Config);
@@ -190,7 +120,7 @@ datasets_module.service('GridService', ['$window', '$route',
                 && dataset.Config.DatasheetFields != undefined) {
 
                 console.log("Hey config has a DatasheetFields configured!");
-                showColumns = dataset.Config.DatasheetFields; //use our dataset config
+                showColumns = dataset.Config.DatasheetFields; //use our dataset config instead of our defaults
 
             } else {
                 console.log("aww no showfields in config... we'll just use the ShowColumns defaults as configured above...");
@@ -200,7 +130,7 @@ datasets_module.service('GridService', ['$window', '$route',
             if (typeof showColumns.TopHeaderFields !== 'undefined' && Array.isArray(showColumns.TopHeaderFields)) {
                 showColumns.TopHeaderFields.forEach(function (fieldname) {
                     possibleColumnDefs.forEach(function (coldef) {
-                        if (coldef.configName == fieldname)
+                        if (coldef.DbColumnName == fieldname)
                             finalColumnDefs.HeaderFields.push(coldef);
                     });
                 });
@@ -212,12 +142,13 @@ datasets_module.service('GridService', ['$window', '$route',
                     //some col builder function here soon!! TODO
                     finalColumnDefs.HeaderFields.push({
                         headerName: field.Label,
+                        field: field.DbColumnName,
+                        width: SystemDefaultColumnWidth,
                         Label: field.Label,                 //legacy
                         DbColumnName: field.DbColumnName,   //legacy
                         ControlType: field.ControlType,     //legacy
-                        field: field.DbColumnName,
+                        PossibleValues: field.Field.PossibleValues, //legacy
                         cdmsField: field, //our own we can use later
-                        width: 150,
                         //menuTabs: [],
                     });
                 }
@@ -227,7 +158,7 @@ datasets_module.service('GridService', ['$window', '$route',
             if (typeof showColumns.BottomHeaderFields !== 'undefined' && Array.isArray(showColumns.BottomHeaderFields)) {
                 showColumns.BottomHeaderFields.forEach(function (fieldname) {
                     possibleColumnDefs.forEach(function (coldef) {
-                        if (coldef.configName == fieldname)
+                        if (coldef.DbColumnName == fieldname)
                             finalColumnDefs.HeaderFields.push(coldef);
                     });
                 });
@@ -237,7 +168,7 @@ datasets_module.service('GridService', ['$window', '$route',
             if (typeof showColumns.LeftDetailFields !== 'undefined' && Array.isArray(showColumns.LeftDetailFields)) {
                 showColumns.LeftDetailFields.forEach(function (fieldname) {
                     possibleColumnDefs.forEach(function (coldef) {
-                        if (coldef.configName == fieldname)
+                        if (coldef.DbColumnName == fieldname)
                             finalColumnDefs.DetailFields.push(coldef);
                     });
                 });
@@ -250,8 +181,7 @@ datasets_module.service('GridService', ['$window', '$route',
                     var newColDef = {
                         headerName: field.Label,
                         field: field.DbColumnName,
-                        cdmsField: field, //our own we can use later
-                        width: 150,
+                        width: SystemDefaultColumnWidth,
                         menuTabs: [],
                         tooltipField: "rowErrorTooltip", //rowErrorTooltip is populated only when a validation error exists for any cell in a row.
                         cellClassRules: {
@@ -270,7 +200,12 @@ datasets_module.service('GridService', ['$window', '$route',
                                 }
                                 return fieldHasErrors;
                             },
-                        }
+                        },
+                        Label: field.Label,                 //legacy
+                        DbColumnName: field.DbColumnName,   //legacy
+                        ControlType: field.ControlType,     //legacy
+                        PossibleValues: field.Field.PossibleValues, //legacy
+                        cdmsField: field, //our own we can use later
                     };
 
                     //setup column def for DETAIL only for right now... //TODO -- header fields?
@@ -284,7 +219,7 @@ datasets_module.service('GridService', ['$window', '$route',
             if (typeof showColumns.RightDetailFields !== 'undefined' && Array.isArray(showColumns.RightDetailFields)) {
                 showColumns.RightDetailFields.forEach(function (fieldname) {
                     possibleColumnDefs.forEach(function (coldef) {
-                        if (coldef.configName == fieldname)
+                        if (coldef.DbColumnName == fieldname)
                             finalColumnDefs.DetailFields.push(coldef);
                     });
                 });
@@ -293,7 +228,7 @@ datasets_module.service('GridService', ['$window', '$route',
             //set the sort from the config, if present.
             if (typeof showColumns.sort !== 'undefined' && showColumns.sort.field && showColumns.sort.direction) {
                 finalColumnDefs.DetailFields.forEach(function (field) {
-                    if (field.configName === showColumns.sort.field) {
+                    if (field.DbColumnName === showColumns.sort.field) {
                         field.sort = showColumns.sort.direction;
                     }
                 });

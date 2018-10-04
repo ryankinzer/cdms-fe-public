@@ -141,7 +141,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
 				$scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
 				console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-				$scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);					
+				$scope.datasetLocationType = getDatasetLocationType($scope.DatastoreTablePrefix);					
 				console.log("LocationType = " + $scope.datasetLocationType);				
 
 				$scope.project = ProjectService.getProject($scope.dataset.ProjectId);

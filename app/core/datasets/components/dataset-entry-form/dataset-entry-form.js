@@ -281,7 +281,7 @@ var dataset_entry_form = ['$scope', '$routeParams',
             $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id); // This is used to check for a duplicate file.
 
             console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
-            $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
+            $scope.datasetLocationType = getDatasetLocationType($scope.DatastoreTablePrefix);
             console.log("LocationType = " + $scope.datasetLocationType);
 
             $scope.project.Instruments = CommonService.filterListForOnlyActiveInstruments($scope.project.Instruments);

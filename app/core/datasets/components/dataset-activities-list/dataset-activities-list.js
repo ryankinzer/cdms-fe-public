@@ -834,7 +834,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             //console.log("$scope.subprojectList is next...");
             //console.dir($scope.subprojectList);
 
-            $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
+            $scope.datasetLocationType = getDatasetLocationType($scope.DatastoreTablePrefix);
             console.log("LocationType = " + $scope.datasetLocationType);
 
             //$scope.locationsArray = getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId");

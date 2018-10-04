@@ -184,7 +184,7 @@
                 ];
             }
 
-            $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
+            $scope.datasetLocationType = getDatasetLocationType($scope.DatastoreTablePrefix);
             console.log("LocationType = " + $scope.datasetLocationType);
 
             $scope.datasheetColDefs = DataSheet.getColDefs($scope.DatastoreTablePrefix);  // Pass the TablePrefix (name of the dataset), because it will never change.

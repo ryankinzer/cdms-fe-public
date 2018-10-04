@@ -40,8 +40,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         if ($routeParams.Id !== null)
             $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);
         else
-            $scope.dataset_activities = {};
+            $scope.dataset_activities = {}; //TODO: needs to have Header and Details I think
         
+        //we bind directly to the Header that comes back from activity details now -- BUT might need do make a new one if we are creating a NEW one!
         //$scope.row is the Header fields data row
         $scope.row = { ActivityQAStatus: {} }; //header field values get attached here by DbColumnName : value
 
@@ -231,23 +232,23 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
 
-                //$scope.dataAgGridOptions.api.refreshHeader();
+                //set the detail values into the grid
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
-
+                
+                //set the header values into the form/row
+                $scope.row = $scope.dataset_activities.Header;
+                
                 console.dir($scope.dataAgGridOptions.columnApi.getAllColumns());
 
-                //add the value of the header to our $scope.row by DbColumnName -- that's our data for the header form
+                //spin through and convert any multiselect values from JSON to actual object
                 angular.forEach($scope.fields.header, function (fieldDef) {
                 	console.dir("--> property == " + fieldDef.field);
-                    //also copy the value to row
                     if (fieldDef.ControlType == "multiselect") {
-                        console.dir("--> property as a dropdown: == " + fieldDef.field);
+                        console.dir("--> property is a multiselect, converting JSON to object : == " + fieldDef.field);
                         $scope.row[fieldDef.field] = angular.fromJson($scope.dataset_activities.Header[fieldDef.field]);
                         console.dir($scope.row[fieldDef.field]);
                     }
-                    else
-                        $scope.row[fieldDef.field] = $scope.dataset_activities.Header[fieldDef.field];
-                
+                    
                 });
 
 
@@ -266,28 +267,30 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //todo: combine this together with file loading -- or just do it in DataService.getDatasets or whatever?
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
-
             $scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
 
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 
-     //update our location options as soon as our project is loaded.
+            //once the project is loaded...
             $scope.project.$promise.then(function () {
 
                 console.log("Project is done loading!");
                 console.dir($scope.project);
-
-                $rootScope.projectId = $scope.projectId = $scope.project.Id;
-                $scope.project.Files = null;
-                $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
 
                 //check authorization -- need to have project loaded before we can check project-level auth
                 if (!$rootScope.Profile.isProjectOwner($scope.project) && !$rootScope.Profile.isProjectEditor($scope.project)) {
                     $location.path("/unauthorized");
                 }
 
-                $scope.datasetLocationType = CommonService.getDatasetLocationType($scope.DatastoreTablePrefix);
-                console.log("LocationType = " + $scope.datasetLocationType);
+                $rootScope.projectId = $scope.projectId = $scope.project.Id;
+
+                //I think these come back already with getProject? TODO
+                $scope.project.Files = null;
+                $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
+
+                
+                //$scope.datasetLocationType = getDatasetLocationType($scope.DatastoreTablePrefix);
+                //console.log("LocationType = " + $scope.datasetLocationType);
 
     /*
                 if ($scope.project.Locations) {
@@ -334,9 +337,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //set the header field data values
 //NOTE: can we do this automagically?
             console.log("Setting header field values ...");
+
+//************************* TODO!
             $scope.row['ActivityId'] = $scope.dataset_activities.Header.ActivityId;
-            $scope.row['activityDate'] = $scope.dataset_activities.Header.Activity.ActivityDate;
-            $scope.row['locationId'] = "" + $scope.dataset_activities.Header.Activity.LocationId; //note the conversion of this to a string!
+            //$scope.row['activityDate'] = $scope.dataset_activities.Header.Activity.ActivityDate;
+            //$scope.row['locationId'] = "" + $scope.dataset_activities.Header.Activity.LocationId; //note the conversion of this to a string!
             $scope.row['InstrumentId'] = $scope.dataset_activities.Header.Activity.InstrumentId;
             $scope.row['AccuracyCheckId'] = $scope.dataset_activities.Header.Activity.AccuracyCheckId;
             $scope.row['PostAccuracyCheckId'] = $scope.dataset_activities.Header.Activity.PostAccuracyCheckId;
