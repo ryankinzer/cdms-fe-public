@@ -61,6 +61,19 @@ common_module.directive('ctuirLocationSelectField',
 
     });
 
+common_module.directive('ctuirTimezoneSelectField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/grid-fields/field-timezone-select.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+
 
 
 common_module.directive('ctuirTimeField',

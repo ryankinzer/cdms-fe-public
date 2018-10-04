@@ -11,8 +11,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
         
-//GridService.initScope($scope); //necessary?
-
         $scope.fields = { header: [], detail: [] };
 
         //lets keep these in the GRID
@@ -248,8 +246,13 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                         $scope.row[fieldDef.field] = angular.fromJson($scope.dataset_activities.Header[fieldDef.field]);
                         console.dir($scope.row[fieldDef.field]);
                     }
-                    
                 });
+
+                //convert timezone to object if it exists
+                $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
+
+                console.log("$scope.row (header fields/data) is done... what do we have?");
+                console.dir($scope.row);
 
 
             }, 0);
@@ -330,8 +333,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
       //          $scope.selectInstrument();
                 //$scope.selectLocation();
 
-                console.log("$scope at end of watch project.Name is next...");
-                console.dir($scope);
+                //console.log("$scope at end of watch project.Name is next...");
+                //console.dir($scope);
             });
 
             //set the header field data values
@@ -367,12 +370,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             $scope.RowQAStatuses = $rootScope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  //Row qa status ids
 
-            console.log("$scope.row (header fields/data) is done... what do we have?");
-            console.dir($scope.row);
+            
 
         });
 
-       
+       /*
 
        
         $scope.clearSelections = function () {
@@ -381,7 +383,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         $scope.setLocation = function () {
             //$scope.row.Location = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
-            $scope.viewLocation = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
+            //$scope.viewLocation = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
         };
 
         $scope.setSelectedBulkQAStatus = function (rowQAId) {
@@ -442,7 +444,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias from service
 
         $scope.selectLocation = function () {
-            $scope.viewLocation = getByField($scope.project.Locations, $scope.row.locationId, "Id");
+            //$scope.viewLocation = getByField($scope.project.Locations, $scope.row.locationId, "Id");
         };
 
         $scope.selectInstrument = function () {
@@ -643,5 +645,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             return results;
         }
+*/
     }
+
+
 ];

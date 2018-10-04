@@ -1,8 +1,6 @@
 <div class="header-label">{{field.Label}}:</div>
 <div class="header-value">
-    <!--<select class="form-control" ng-model="row['locationId']" ng-input="row['locationId']" ng-options="id as name for (id, name) in locationOptions"></select>-->
-    <!--<select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
-    <select ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="selectLocation()" style="width: 200px; " ng-model="row.locationId">
-        <option ng-repeat="location in project.Locations | orderBy:'location.Label'" value="{{location.Id}}">{{location.Label}}</option>
+    <select ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="selectLocation()" style="width: 200px; " ng-model="row.Activity.LocationId">
+        <option ng-repeat="location in project.Locations | filter: {LocationTypeId: dataset.Datastore.LocationTypeId } | orderBy:'Label'" ng-selected="location.Id == row.Activity.LocationId" value="{{location.Id}}">{{location.Label}}</option>
     </select>
 </div>

@@ -1,0 +1,7 @@
+<div class="header-label">{{field.Label}}:</div>
+<div class="header-value">
+    <select class="form-control" ng-model="row.Activity.Timezone" >
+        <option ng-repeat="zone in SystemTimezones" ng-selected="row.Activity.Timezone.Id == zone.Id">{{zone.Name}}</option>
+    </select>
+</div>
+

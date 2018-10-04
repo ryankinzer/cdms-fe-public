@@ -47,5 +47,6 @@ require([
     datasets_module.controller('DatastoreQueryCtrl', big_bucket_query);
     datasets_module.controller('DatasetSeasonsCtrl', dataset_seasons_list);
     datasets_module.controller('ModalCreateSeasonCtrl', modal_create_season);
+
 });
 

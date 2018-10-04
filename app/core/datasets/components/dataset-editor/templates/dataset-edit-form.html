@@ -66,22 +66,7 @@
 
     <!-- header fields -->
     <div ng-show="dataset" class="header-box" style="margin-top: 20px; width: 600px;">
-        <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
-            <div class="header-label">Location:</div>
-            <div class="header-value">
-                <!--<select class="form-control" ng-model="row['locationId']" ng-input="row['locationId']" ng-options="id as name for (id, name) in locationOptions"></select>-->
-                <!--<select class="form-control" ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions | orderBy:'name'"></select>-->
-                <select ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="selectLocation()" style="width: 200px; " ng-model="row.locationId" ng-options="id as name for (id, name) in locationOptions">
-                    <option ng-repeat="location in project.Locations | orderBy:'location.Name'" value="{{location.Id}}">{{location.Name}}</option>
-                </select>
-            </div>
-
-            <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
-                <div class="header-label">Activity Date:</div>
-                <div class="header-value">
-                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="row['activityDate']" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-                </div>
-            </div>
+           
             <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('SampleDate')">
                 <div class="header-label">Sample Date:</div>
                 <div class="header-value">
@@ -89,12 +74,6 @@
                 </div>
             </div>
 
-            <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Timezone')">
-                <div class="header-label">Reading Timezone:</div>
-                <div class="header-value">
-                    <select class="form-control" ng-model="row.Timezone" ng-options="zone.Name for zone in SystemTimezones"></select>
-                </div>
-            </div>
 
             <!-- Two situations -->
             <!--      1.  A project will have instruments, but currently it has none assigned to it; in this case we still need to show the instruments box on the form. -->
@@ -164,6 +143,7 @@ BEFORE
                 <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
                     <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
                     <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
+                    <ctuir-timezone-select-field ng-switch-when="timezone-select"></ctuir-timezone-select-field>
                     <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
                     <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                     <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
@@ -197,7 +177,6 @@ MIDDLE
             </form>
 AFTER
 
-        </div>
     </div>
 
     <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
