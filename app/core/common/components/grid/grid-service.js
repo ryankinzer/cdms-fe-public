@@ -84,58 +84,67 @@ datasets_module.service('GridService', ['$window', '$route',
 
         //This method builds the column definitions of a dataset for use on any grid view.
         // and returns them as an object: {HeaderFields: [], DetailFields: []}
+        //@param dataset - the dataset we're building for (uses the fields and config)
+        //@param page - the page is the key to the config and systemformfields (like "DataEntryPage")
+        service.getAgColumnDefs = function (dataset, page) {
 
-        // the composition of header and detail arrays is controlled by the definition in dataset config key "datasheet"
-        // and is in the structure:
-        //   top header fields ("top-header-fields")
-        //   dataset defined header fields
-        //   bottom header fields ("bottom-header-fields")
-        //   left detail fields ("left-detail-fields")
-        //   dataset defined detail fields
-        //   right detail fields ("right-detail-fields")
-        //  this enables you to control the complete appearance and order of the fields via the dataset config.
-        //  Here is the default (as an example of what you might put into the dataset config):
-        //      config: [... "DatasheetFields":
-        //        {  'TopHeaderFields': ['Location','ActivityDate'],
-        //           'BottomHeaderFields': ['QAStatus', 'QAComments'],
-        //           'LeftDetailFields': ['RowQAStatus'],
-        //           'RightDetailFields': []  //note that you could just leave this key out -- you only need define the present ones.
-        //           'sort': { 'field': 'ActivityDate', 'direction': 'desc' } //you can control the default sort on the detail grid this way
-        //        }
-
-        service.getAgColumnDefs = function (dataset) {
-
-            //SystemFieldDefinitions and DefaultSystemFieldsToShow are defined in config.js
             // these are the "system" columns that can be turned on via dataset configuration for the data entry page
-            var possibleColumnDefs = SystemFieldDefinitions;           
-            var showColumns = DefaultSystemFieldsToShow;
+            var systemFields = angular.copy(SystemFormFields[page]);
 
+            // what we return in the end            
             var finalColumnDefs = { HeaderFields: [], DetailFields: [] };
 
-            console.log("composing data grid columns from config - here is the dataset config!");
-            console.dir(dataset.Config);
+            //apply the dataset config to our defaults for which fields to show/hide
+            if (dataset.Config != undefined && dataset.Config[page] != undefined) {
+                
+                var config = dataset.Config[page];
 
-            //if the dataset has a config and the ActivityPage.ShowFields is set, use it
-            if (dataset.Config != undefined
-                && dataset.Config.DatasheetFields != undefined) {
+                console.log("Hey config has a "+page+" configured!");
+                console.dir(config);
 
-                console.log("Hey config has a DatasheetFields configured!");
-                showColumns = dataset.Config.DatasheetFields; //use our dataset config instead of our defaults
+                //unhide all show fields
+                if (config.hasOwnProperty('ShowFields')) {
+                    config.ShowFields.forEach(function (field_to_show) {
+                        //remove the showfield if it exists in hiddenfields
+                        systemFields.HiddenFields.indexOf(field_to_show) !== -1 && systemFields.HiddenFields.splice(systemFields.HiddenFields.indexOf(field_to_show), 1);
+                        if (field_to_show == 'Instrument') { 
+                            //then lets also show the AccuracyCheck/PostAccuracyCheck
+                            systemFields.HiddenFields.indexOf('AccuracyCheck') !== -1 && systemFields.HiddenFields.splice(systemFields.HiddenFields.indexOf('AccuracyCheck'), 1);
+                            systemFields.HiddenFields.indexOf('PostAccuracyCheck') !== -1 && systemFields.HiddenFields.splice(systemFields.HiddenFields.indexOf('PostAccuracyCheck'), 1);
+                        }
+                    });
+                }
+
+                //hide all hidden fields
+                if (config.hasOwnProperty('HiddenFields')) {
+                    config.HiddenFields.forEach(function (field_to_hide) {
+                        //ensure the hiddenfield is in hiddenfields
+                        systemFields.HiddenFields.indexOf(field_to_hide) == -1 && systemFields.HiddenFields.push(field_to_hide);
+                    });
+                }
 
             } else {
-                console.log("aww no showfields in config... we'll just use the ShowColumns defaults as configured above...");
+                console.log("aww nothing for that page in config... we'll just use the defaults");
             }
 
-            //top header fields
-            if (typeof showColumns.TopHeaderFields !== 'undefined' && Array.isArray(showColumns.TopHeaderFields)) {
-                showColumns.TopHeaderFields.forEach(function (fieldname) {
-                    possibleColumnDefs.forEach(function (coldef) {
-                        var coldef_fieldname = (coldef.hasOwnProperty('ConfigAlias')) ? coldef.ConfigAlias : coldef.DbColumnName;
-                        if (coldef_fieldname == fieldname)
-                            finalColumnDefs.HeaderFields.push(coldef);
-                    });
-                });
-            }
+
+            //now remove all hidden fields from headerfields
+            systemFields.HiddenFields.forEach(function (field_to_hide) { 
+                systemFields.HeaderFields.indexOf(field_to_hide) !== -1 && systemFields.HeaderFields.splice(systemFields.HeaderFields.indexOf(field_to_hide), 1);
+            });
+
+            //now same for details
+            systemFields.HiddenFields.forEach(function (field_to_hide) { 
+                systemFields.DetailFields.indexOf(field_to_hide) !== -1 && systemFields.DetailFields.splice(systemFields.DetailFields.indexOf(field_to_hide), 1);
+            });
+
+            console.log("the fields we'll show after applying the config");
+            console.dir(systemFields);
+
+            //the only headerfields left are those we should have - add them to the beginning of the header fields
+            systemFields.HeaderFields.forEach(function (fieldname) {
+                finalColumnDefs.HeaderFields.push(SystemFieldDefinitions[fieldname]);
+            });
 
             //dataset defined header fields 
             dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
@@ -155,27 +164,17 @@ datasets_module.service('GridService', ['$window', '$route',
                 }
             });
 
-            //bottom header fields
-            if (typeof showColumns.BottomHeaderFields !== 'undefined' && Array.isArray(showColumns.BottomHeaderFields)) {
-                showColumns.BottomHeaderFields.forEach(function (fieldname) {
-                    possibleColumnDefs.forEach(function (coldef) {
-                        var coldef_fieldname = (coldef.hasOwnProperty('ConfigAlias')) ? coldef.ConfigAlias : coldef.DbColumnName;
-                        if (coldef_fieldname == fieldname)
-                            finalColumnDefs.HeaderFields.push(coldef);
-                    });
+            //qa header fields (unless in "hidden fields")
+            if (systemFields.HiddenFields.indexOf('QAFields') == -1) {
+                systemFields.QAFields.forEach(function (qa_field) { 
+                    finalColumnDefs.HeaderFields.push(SystemFieldDefinitions[qa_field]);
                 });
             }
-
-            //left detail fields
-            if (typeof showColumns.LeftDetailFields !== 'undefined' && Array.isArray(showColumns.LeftDetailFields)) {
-                showColumns.LeftDetailFields.forEach(function (fieldname) {
-                    possibleColumnDefs.forEach(function (coldef) {
-                        var coldef_fieldname = (coldef.hasOwnProperty('ConfigAlias')) ? coldef.ConfigAlias : coldef.DbColumnName;
-                        if (coldef_fieldname == fieldname)
-                            finalColumnDefs.DetailFields.push(coldef);
-                    });
-                });
-            }
+            
+            //detail "header" fields
+            systemFields.DetailFields.forEach(function (fieldname) {
+                finalColumnDefs.DetailFields.push(SystemFieldDefinitions[fieldname]);
+            });
 
             //dataset defined detail fields 
             dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
@@ -204,10 +203,10 @@ datasets_module.service('GridService', ['$window', '$route',
                                 return fieldHasErrors;
                             },
                         },
-                        Label: field.Label,                 //legacy
-                        DbColumnName: field.DbColumnName,   //legacy
-                        ControlType: field.ControlType,     //legacy
-                        PossibleValues: field.Field.PossibleValues, //legacy
+                        Label: field.Label,                 //cdms
+                        DbColumnName: field.DbColumnName,   //cdms
+                        ControlType: field.ControlType,     //cdms
+                        PossibleValues: field.Field.PossibleValues, //cdms
                         cdmsField: field, //our own we can use later
                     };
 
@@ -218,26 +217,15 @@ datasets_module.service('GridService', ['$window', '$route',
                 }
             });
 
-            //right detail fields
-            if (typeof showColumns.RightDetailFields !== 'undefined' && Array.isArray(showColumns.RightDetailFields)) {
-                showColumns.RightDetailFields.forEach(function (fieldname) {
-                    possibleColumnDefs.forEach(function (coldef) {
-                        var coldef_fieldname = (coldef.hasOwnProperty('ConfigAlias')) ? coldef.ConfigAlias : coldef.DbColumnName;
-                        if (coldef_fieldname == fieldname)
-                            finalColumnDefs.DetailFields.push(coldef);
-                    });
-                });
-            }
-
             //set the sort from the config, if present.
-            if (typeof showColumns.sort !== 'undefined' && showColumns.sort.field && showColumns.sort.direction) {
+            if (typeof systemFields.sort !== 'undefined' && systemFields.sort.field && systemFields.sort.direction) {
                 finalColumnDefs.DetailFields.forEach(function (field) {
-                    if (field.DbColumnName === showColumns.sort.field) {
-                        field.sort = showColumns.sort.direction;
+                    if (field.DbColumnName === systemFields.sort.field) {
+                        field.sort = systemFields.sort.direction;
                     }
                 });
             }
-            //console.log("returning from datasheet ------------------------------------------------------ asynch " + finalColumnDefs.DetailFields.length);
+            
             return finalColumnDefs;
         };
 
