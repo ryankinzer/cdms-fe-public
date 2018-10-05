@@ -130,7 +130,8 @@ datasets_module.service('GridService', ['$window', '$route',
             if (typeof showColumns.TopHeaderFields !== 'undefined' && Array.isArray(showColumns.TopHeaderFields)) {
                 showColumns.TopHeaderFields.forEach(function (fieldname) {
                     possibleColumnDefs.forEach(function (coldef) {
-                        if (coldef.DbColumnName == fieldname)
+                        var coldef_fieldname = (coldef.hasOwnProperty('ConfigAlias')) ? coldef.ConfigAlias : coldef.DbColumnName;
+                        if (coldef_fieldname == fieldname)
                             finalColumnDefs.HeaderFields.push(coldef);
                     });
                 });
@@ -158,7 +159,8 @@ datasets_module.service('GridService', ['$window', '$route',
             if (typeof showColumns.BottomHeaderFields !== 'undefined' && Array.isArray(showColumns.BottomHeaderFields)) {
                 showColumns.BottomHeaderFields.forEach(function (fieldname) {
                     possibleColumnDefs.forEach(function (coldef) {
-                        if (coldef.DbColumnName == fieldname)
+                        var coldef_fieldname = (coldef.hasOwnProperty('ConfigAlias')) ? coldef.ConfigAlias : coldef.DbColumnName;
+                        if (coldef_fieldname == fieldname)
                             finalColumnDefs.HeaderFields.push(coldef);
                     });
                 });
@@ -168,7 +170,8 @@ datasets_module.service('GridService', ['$window', '$route',
             if (typeof showColumns.LeftDetailFields !== 'undefined' && Array.isArray(showColumns.LeftDetailFields)) {
                 showColumns.LeftDetailFields.forEach(function (fieldname) {
                     possibleColumnDefs.forEach(function (coldef) {
-                        if (coldef.DbColumnName == fieldname)
+                        var coldef_fieldname = (coldef.hasOwnProperty('ConfigAlias')) ? coldef.ConfigAlias : coldef.DbColumnName;
+                        if (coldef_fieldname == fieldname)
                             finalColumnDefs.DetailFields.push(coldef);
                     });
                 });
@@ -219,7 +222,8 @@ datasets_module.service('GridService', ['$window', '$route',
             if (typeof showColumns.RightDetailFields !== 'undefined' && Array.isArray(showColumns.RightDetailFields)) {
                 showColumns.RightDetailFields.forEach(function (fieldname) {
                     possibleColumnDefs.forEach(function (coldef) {
-                        if (coldef.DbColumnName == fieldname)
+                        var coldef_fieldname = (coldef.hasOwnProperty('ConfigAlias')) ? coldef.ConfigAlias : coldef.DbColumnName;
+                        if (coldef_fieldname == fieldname)
                             finalColumnDefs.DetailFields.push(coldef);
                     });
                 });

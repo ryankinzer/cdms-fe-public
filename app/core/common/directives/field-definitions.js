@@ -5,7 +5,7 @@
 common_module.directive('ctuirTextField',
     function(){
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-text.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-text.html',
             restrict: 'E',
         };
 
@@ -17,7 +17,7 @@ common_module.directive('ctuirTextareaField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-textarea.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-textarea.html',
             restrict: 'E',
         };
 
@@ -29,7 +29,7 @@ common_module.directive('ctuirDateField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-date.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-date.html',
             restrict: 'E',
         };
 
@@ -41,7 +41,7 @@ common_module.directive('ctuirActivityDateField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-activity-date.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-activity-date.html',
             restrict: 'E',
         };
 
@@ -53,7 +53,7 @@ common_module.directive('ctuirLocationSelectField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-location-select.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-location-select.html',
             restrict: 'E',
         };
 
@@ -65,7 +65,55 @@ common_module.directive('ctuirTimezoneSelectField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-timezone-select.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-timezone-select.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+common_module.directive('ctuirInstrumentSelectField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-instrument-select.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+common_module.directive('ctuirAccuracyCheckSelectField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-accuracy-check-select.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+common_module.directive('ctuirPostAccuracyCheckSelectField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-post-accuracy-check-select.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+common_module.directive('ctuirQaStatusSelectField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-qa-status-select.html',
             restrict: 'E',
         };
 
@@ -75,12 +123,11 @@ common_module.directive('ctuirTimezoneSelectField',
 
 
 
-
 common_module.directive('ctuirTimeField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-time.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-time.html',
             restrict: 'E',
         };
 
@@ -92,7 +139,7 @@ common_module.directive('ctuirEastingField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-easting.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-easting.html',
             restrict: 'E',
         };
 
@@ -103,7 +150,7 @@ common_module.directive('ctuirNorthingField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-northing.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-northing.html',
             restrict: 'E',
         };
 
@@ -114,7 +161,7 @@ common_module.directive('ctuirNumberField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-number.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-number.html',
             restrict: 'E',
         };
 
@@ -126,11 +173,10 @@ common_module.directive('ctuirSelectField',
     function () {
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-select.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-select.html',
             restrict: 'E',
             controller: function ($scope, $element, $attrs) {
-                var possibleValues = ($scope.field.cdmsField) ? $scope.field.cdmsField.Field.PossibleValues : $scope.field.PossibleValues; //one of these is required.
-                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, possibleValues);
+                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
             }
         };
 
@@ -142,11 +188,10 @@ common_module.directive('ctuirMultiselectField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-multiselect.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-multiselect.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-               var possibleValues = ($scope.field.cdmsField) ? $scope.field.cdmsField.Field.PossibleValues : $scope.field.PossibleValues; //one of these is required.
-               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, possibleValues);
+               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
             }
         };
         
@@ -158,11 +203,10 @@ common_module.directive('ctuirMultilookupField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-multilookup.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-multilookup.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-               var possibleValues = ($scope.field.cdmsField) ? $scope.field.cdmsField.Field.PossibleValues : $scope.field.PossibleValues; //one of these is required.
-               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, possibleValues);
+               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
             }
         };
         
@@ -174,11 +218,10 @@ common_module.directive('ctuirLookupField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-lookup.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-lookup.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-                var possibleValues = ($scope.field.cdmsField) ? $scope.field.cdmsField.Field.PossibleValues : $scope.field.PossibleValues; //one of these is required.
-                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, possibleValues);
+                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
             }
         };
 
@@ -189,7 +232,7 @@ common_module.directive('ctuirLookupField',
 common_module.directive('ctuirFileField',
     function($modal){
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-file.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-file.html',
             restrict: 'E',
         };
 
@@ -199,7 +242,7 @@ common_module.directive('ctuirFileField',
 common_module.directive('ctuirTempWaypointFileField',
     function($modal){
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-waypoint-file.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-waypoint-file.html',
             restrict: 'E',
         };
 
@@ -209,7 +252,7 @@ common_module.directive('ctuirTempWaypointFileField',
 common_module.directive('ctuirLinkField',
     function($modal){
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-link.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-link.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs)
             {
@@ -237,7 +280,7 @@ common_module.directive('ctuirRadioField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-radio.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-radio.html',
             restrict: 'E',
         };
 
@@ -249,7 +292,7 @@ common_module.directive('ctuirCheckboxField',
     function(){
 
         var result = {
-            templateUrl: 'app/core/common/templates/grid-fields/field-checkbox.html',
+            templateUrl: 'app/core/common/templates/form-fields/field-checkbox.html',
             restrict: 'E',
         };
 

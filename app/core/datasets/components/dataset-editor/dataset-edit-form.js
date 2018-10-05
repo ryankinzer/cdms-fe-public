@@ -135,6 +135,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.agValidateGrid = function (params) {
             console.log(" -- validating grid --");
 
+/*
             //get all of the columns for the grid
             var gridColumns = params.columnApi.getAllColumns();
 
@@ -150,6 +151,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 });
 
             });
+*/
         };
 
 
@@ -270,7 +272,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //todo: combine this together with file loading -- or just do it in DataService.getDatasets or whatever?
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
-            $scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
 
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 

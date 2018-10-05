@@ -1,0 +1,6 @@
+<div class="header-label">{{field.Label}}: </div>
+<div class="header-value">
+    <select class="form-control" ng-model="row.Activity.PostAccuracyCheckId">
+        <option ng-repeat="check in row.Activity.Instrument.AccuracyChecks" ng-selected="check.Id == row.Activity.PostAccuracyCheckId" value="{{check.Id}}">{{getDataGrade(check)}} on {{check.CheckDate | date}}</option>
+    </select>
+</div>
