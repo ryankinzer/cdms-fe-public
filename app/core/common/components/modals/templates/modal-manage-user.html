@@ -1,0 +1,59 @@
+﻿<div class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>{{headingMessage}}</h3>
+                <div>
+                    <p ng-show="errorMessage" class="alert alert-danger">{{errorMessage}}</p>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form name="form" class="css-form" novalidate>
+
+                    <div class="header-label">Username:</div>
+                    <div class="header-value">
+                        <input class="form-control" ng-model="user.Username" />
+                    </div>
+
+                    <div class="header-label">Description:</div>
+                    <div class="header-value">
+                        <input class="form-control" ng-model="user.Description" />
+                    </div>
+
+                    <div class="header-label">Full name:</div>
+                    <div class="header-value">
+                        <input class="form-control" ng-model="user.Fullname" />
+                    </div>
+
+                    <div class="header-label">Department:</div>
+                    <div class="header-value">
+                        <select class="form-control" ng-model="user.DepartmentId" ng-options="p.Id as p.Name for p in Departments"></select>
+                    </div>
+
+                    <div class="header-label">Password:</div>
+                    <div class="header-value">
+                        <input id="user-password" class="form-control" ng-blur="hidePassword()" placeholder="Edit to Change Password" ng-model="user.Password" />
+                        <input id="user-password-hidden" class="form-control" ng-click="showPassword()" style="display: none;" type="password" ng-model="user.Password" />
+                    </div>
+
+                    <div class="header-label">Roles:</div>
+                    <div class="header-value">
+                        <input class="form-control" ng-model="user.Roles" />
+                    </div>
+
+                    <div class="header-label">Status:</div>
+                    <div class="header-value">
+                        <select class="form-control" ng-model="user.Inactive" ng-options="p.Id as p.Name for p in UserStatuses"></select>
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
