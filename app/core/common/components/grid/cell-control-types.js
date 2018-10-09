@@ -6,26 +6,60 @@
 
 //multiselect list - displays as multiple selection dropdown list
 var MultiselectControlType = function (cdms_field, col_def) {
-    
+
+    //check for master field's possible values and copy them if they exist.
+    if (cdms_field.hasOwnProperty('Field') && cdms_field.Field.hasOwnProperty('PossibleValues'))
+        cdms_field.PossibleValues = cdms_field.Field.PossibleValues;
+
+    //now either directly set or copied from master, do we have possible values?
+    if (!cdms_field.hasOwnProperty('PossibleValues')) {
+        console.warn("Field: " + cdms_field.DbColumnName + " is Multiselect but no PossibleValues are given.");
+        return;
+    }
+
+    //if so then define our cell editor and validator.
     col_def.cellEditor = CDMSMultiselectCellEditor;
     col_def.cellEditorParams = {
-        values: angular.fromJson(cdms_field.Field.PossibleValues)
+        values: getPossibleValuesObjects(cdms_field.PossibleValues)
     };
     col_def.cellValidator = CDMSMultiselectCellValidator;
-
+    col_def.valueGetter = function (params) {
+        console.dir(params);
+        return angular.fromJson(params.data[params.column.colId]);
+    };
     return col_def;
 
 };
 
 //select list - displays as drop down select
 var SelectControlType = function (cdms_field, col_def) {
-    //    console.log('we are a select');
 
-    col_def.cellEditor = CDMSSelectCellEditor; //or: agRichSelectCellEditor OR better I think we make our own...
+    //check for master field's possible values and copy them if they exist.
+    if (cdms_field.hasOwnProperty('Field') && cdms_field.Field.hasOwnProperty('PossibleValues'))
+        cdms_field.PossibleValues = cdms_field.Field.PossibleValues;
+
+    //now either directly set or copied from master, do we have possible values?
+    if (!cdms_field.hasOwnProperty('PossibleValues')) {
+        console.warn("Field: " + cdms_field.field + " is Select but no PossibleValues are given.");
+        return;
+    }
+
+    //if so then define our cell editor and validator.
+    col_def.cellEditor = CDMSSelectCellEditor; //works for standard cdms values: ["label"] or {"alias":"label"}
     col_def.cellEditorParams = {
-        values: angular.fromJson(cdms_field.Field.PossibleValues),
+        values: getPossibleValuesObjects(cdms_field.PossibleValues)
     };
     col_def.cellValidator = CDMSSelectCellValidator;
+    col_def.valueGetter = function (params) {
+        var retval = "<ERR>";
+        if (Array.isArray(params.colDef.cellEditorParams.values)) {
+            retval = params.data[params.column.colId];
+        }
+        else {
+            retval = params.colDef.PossibleValues[params.data[params.column.colId]];
+        }
+        return retval;
+    };
     return col_def;
 };
 

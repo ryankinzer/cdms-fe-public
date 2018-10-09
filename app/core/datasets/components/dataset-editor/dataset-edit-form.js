@@ -68,14 +68,14 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             debug: false,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
-                console.log("selection changed fired!");
-                console.dir(params);
+                //console.log("selection changed fired!");
+                //console.dir(params);
                 
                 var rows = params.api.getSelectedRows();
                 if (Array.isArray(rows) && rows[0] != null)
                 {
-                    console.log("rows:");
-                    console.dir(rows);
+                    //console.log("rows:");
+                    //console.dir(rows);
                     
                 }
             },
@@ -87,7 +87,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //    return rowNode.level === 1;
             //},
             onGridReady: function (params) {
-                console.log("GRID IS READY. ------------------------------------------>>>");
+                //console.log("GRID IS READY. ------------------------------------------>>>");
                 $scope.agValidateGrid(params);
             },
             //getRowHeight: function (params) {
@@ -133,7 +133,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
 //move to GridService?
         $scope.agValidateGrid = function (params) {
-            console.log(" -- validating grid --");
+            //console.log(" -- validating grid --");
 
 /*
             //get all of the columns for the grid
@@ -207,8 +207,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         //once dataset loaded
         $scope.dataset_activities.$promise.then(function () {
             
-            console.log("$scope.dataset_activities finished loading!");
-            console.dir($scope.dataset_activities);
+            //console.log("$scope.dataset_activities finished loading!");
+            //console.dir($scope.dataset_activities);
 
             //setup the scope dataset    
             $scope.dataset = $scope.dataset_activities.Dataset;
@@ -221,10 +221,22 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 
                 $scope.fields = { header: $scope.dataAgColumnDefs.HeaderFields, detail: $scope.dataAgColumnDefs.DetailFields };
 
-                console.log("our fields are setup: ");
-                console.dir($scope.fields);
-                console.log("and this will be our data");
-                console.dir($scope.dataset_activities.Details);
+                //console.log("our fields are setup: ");
+                //console.dir($scope.fields);
+                //console.log("and this will be our data");
+                //console.dir($scope.dataset_activities.Details);
+
+                //spin through and set any sytem field detail possible values TODO - refactor into list manager
+                angular.forEach($scope.fields.detail, function (fieldDef) {
+                	//console.dir("--> property == " + fieldDef.field);
+                    if (fieldDef.field == "QAStatusId") { //RowQAStatusId
+                        fieldDef.setPossibleValues(makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name'));
+                        //console.log("field after setting QAStatus: ");
+                        //console.dir(fieldDef);
+                    }
+                });
+
+
                 
 
                 var ag_grid_div = document.querySelector('#data-edit-grid');    //get the container id...
@@ -232,29 +244,36 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
 
+
+
                 //set the detail values into the grid
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
                 
                 //set the header values into the form/row
                 $scope.row = $scope.dataset_activities.Header;
                 
-                console.dir($scope.dataAgGridOptions.columnApi.getAllColumns());
-
-                //spin through and convert any multiselect values from JSON to actual object
-                angular.forEach($scope.fields.header, function (fieldDef) {
-                	console.dir("--> property == " + fieldDef.field);
-                    if (fieldDef.ControlType == "multiselect") {
-                        console.dir("--> property is a multiselect, converting JSON to object : == " + fieldDef.field);
-                        $scope.row[fieldDef.field] = angular.fromJson($scope.dataset_activities.Header[fieldDef.field]);
-                        console.dir($scope.row[fieldDef.field]);
-                    }
-                });
-
                 //convert timezone to object if it exists
                 $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
+                
+                //console.dir($scope.dataAgGridOptions.columnApi.getAllColumns());
 
-                console.log("$scope.row (header fields/data) is done... what do we have?");
-                console.dir($scope.row);
+
+/* - shouldn't need to do this as it is already defined in cell-control-types.js
+                //spin through and convert any multiselect values from JSON to actual object
+
+                angular.forEach($scope.fields.header, function (fieldDef) {
+                	//console.dir("--> property == " + fieldDef.field);
+                    if (fieldDef.ControlType == "multiselect" || fieldDef.ControlType == "select") {
+                        //console.dir("--> property is a multiselect, converting JSON to object : == " + fieldDef.field);
+                        $scope.row[fieldDef.field] = angular.fromJson($scope.dataset_activities.Header[fieldDef.field]);
+                        //console.dir($scope.row[fieldDef.field]);
+                    }
+                });
+*/
+
+
+                //console.log("$scope.row (header fields/data) is done... what do we have in the end?");
+                //console.dir($scope.row);
 
 
             }, 0);
@@ -265,7 +284,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //once the dataset files load, setup our file handler
             $scope.dataset.Files.$promise.then(function () {
                 //mixin the properties and functions to enable the modal file chooser for this controller...
-                console.log("---------------- setting up dataset file chooser ----------------");
+                //console.log("---------------- setting up dataset file chooser ----------------");
                 modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
             });
 
@@ -278,8 +297,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //once the project is loaded...
             $scope.project.$promise.then(function () {
 
-                console.log("Project is done loading!");
-                console.dir($scope.project);
+                //console.log("Project is done loading!");
+                //console.dir($scope.project);
 
                 //check authorization -- need to have project loaded before we can check project-level auth
                 if (!$rootScope.Profile.isProjectOwner($scope.project) && !$rootScope.Profile.isProjectEditor($scope.project)) {
@@ -317,15 +336,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                             }
 
                             if ($scope.DatastoreTablePrefix === "FishScales") {
-                                console.log("Setting $scope.primaryDatasetLocation...");
+                                //console.log("Setting $scope.primaryDatasetLocation...");
                                 $scope.primaryDatasetLocation = $scope.project.Locations[i].Id;
                             }
                         }
 
                    
                     }
-                    console.log("datasetLocations is next...");
-                    console.dir($scope.datasetLocations);
+                    //console.log("datasetLocations is next...");
+                    //console.dir($scope.datasetLocations);
                     $scope.finishLocationProcessing();
                 }
     */
@@ -340,7 +359,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             //set the header field data values
 //NOTE: can we do this automagically?
-            console.log("Setting header field values ...");
+            //console.log("Setting header field values ...");
 
 //************************* TODO!
             $scope.row['ActivityId'] = $scope.dataset_activities.Header.ActivityId;
@@ -359,7 +378,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             }
             //otherwise, set it to the default.
             else {
-                console.warn("The ActivityQAStatus for this activity is not set, setting to default.");
+                //console.warn("The ActivityQAStatus for this activity is not set, setting to default.");
                 $scope.row.ActivityQAStatus = {
                     QAStatusId: "" + $scope.dataset.DefaultRowQAStatusId,
                     Comments: ""
@@ -369,7 +388,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             if ($scope.dataset_activities.Header.Activity.Timezone)
                 $scope.row.Timezone = getByField($scope.SystemTimezones, angular.fromJson($scope.dataset_activities.Header.Activity.Timezone).Name, "Name"); //set default timezone
 
-            $scope.RowQAStatuses = $rootScope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  //Row qa status ids
+            //$scope.RowQAStatuses = $rootScope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  //Row qa status ids
 
             
 
@@ -527,7 +546,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         
         //click "save" on dataset edit form
         $scope.saveData = function () {
-            console.log("Saving edited data!");
+            //console.log("Saving edited data!");
 
             $scope.errors.heading = []; //reset errors if there are any.
 
@@ -558,8 +577,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         };
 
         $scope.modalFile_saveParentItem = function (saveRow) {
-            console.log("Inside modalFile_saveParentItem, $scope is next...");
-            console.dir($scope);
+            //console.log("Inside modalFile_saveParentItem, $scope is next...");
+            //console.dir($scope);
 
             var strYear = null;
             var strMonth = null;
@@ -611,20 +630,20 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             if (!$scope.activities.errors) {
                 if ($scope.addNewSection) {
-                    console.log("$scope.addNewSection is true, so setting $scope.activities.addNewSection to true also.");
+                    //console.log("$scope.addNewSection is true, so setting $scope.activities.addNewSection to true also.");
                     $scope.activities.addNewSection = true;
                 }
 
                 $scope.activities.deletedRowIds = $scope.getDeletedRowIds($scope.deletedRows);
                 $scope.activities.updatedRowIds = $scope.updatedRows;
 
-                console.log("$scope.activities in saveData, just before calling DatasetService.saveActivities is next...");
+                //console.log("$scope.activities in saveData, just before calling DatasetService.saveActivities is next...");
                 //console.dir($scope.activities);
                 DatasetService.updateActivities($scope.userId, $scope.dataset.Id, $scope.activities, $scope.DatastoreTablePrefix);
             }
             else {
-                console.log("We have errors...");
-                console.dir($scope.activities.errors);
+                //console.log("We have errors...");
+                //console.dir($scope.activities.errors);
             }
 			
         };

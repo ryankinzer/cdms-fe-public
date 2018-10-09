@@ -1403,7 +1403,13 @@ function isDuplicateUploadFile(incoming_file, files_to_check) {
     return foundDuplicate;
 }
 
-
+//helper function that unJSON's the vals if a string or else returns the vals if already an object
+function getPossibleValuesObjects(vals) { 
+    if (typeof vals === 'string') { 
+        return angular.fromJson(vals);
+    }
+    return vals;
+}
 
 
 //helper function that aggregates the filenames for a list of activities

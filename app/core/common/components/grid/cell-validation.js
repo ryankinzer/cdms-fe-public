@@ -101,7 +101,7 @@ CellValidator.prototype.getValidationsArray = function (cdms_field) {
     }
 
     //get validation from dataset field Validation column - otherwise from master's.
-    var validation = cdms_field.Validation || cdms_field.Field.Validation; //prefer dataset over master.
+    var validation = cdms_field.Validation; // TODO::: || cdms_field.Field.Validation; //prefer dataset over master.
 
     if (!validation)
         return empty;

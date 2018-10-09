@@ -35,13 +35,41 @@ datasets_module.service('GridService', ['$window', '$route',
                         col_def.validator = new validatorFunction(cdms_field);
                     }
 
-                    //add a function to the column to populate PossibleValues
+                    //setPossibleValues (PossibleValues are copied in if they exist, this is for calling later/dynamically)
                     if (col_def.hasOwnProperty('cellEditorParams')) {
+
+                        if (col_def.hasOwnProperty('PossibleValues'))
+                            col_def.cellEditorParams.values = getPossibleValuesObjects(col_def.PossibleValues);
+                        
                         col_def.setPossibleValues = function (in_values) {
+                            this.PossibleValues = in_values;
                             if (this.hasOwnProperty('cellEditorParams'))
                                 this.cellEditorParams.values = in_values;
                         };
+                        
                     }
+    
+                    //setup tooltip
+                    col_def.tooltipField = "rowErrorTooltip";  //rowErrorTooltip is populated only when a validation error exists for any cell in a row.
+                    col_def.cellClassRules = {
+                        'has-validation-error': function (params) {
+                            var fieldHasErrors = false;
+                            //console.log("checking for validatoin errors in css");
+                            //this css class is added to the cell if there are validation errors matching this field
+                            if ((Array.isArray(params.node.data.validationErrors) && params.node.data.validationErrors.length > 0)) {
+                                //console.log(" >> we do have errors for this row... ");
+                                params.node.data.validationErrors.forEach(function (error, index) {
+                                    //console.log(" -- checking " + error.field.DbColumnName + " and " + params.colDef.field);
+                                    //is there a validation error for this cell?
+                                    if (error.field.DbColumnName === params.colDef.field)
+                                        fieldHasErrors = true;
+                                });
+                            }
+                            return fieldHasErrors;
+                        },
+                    };
+
+
                 }
                 else {
                     console.warn("Notice: There isn't a ControlTypeDefinition for " + cdms_field.DbColumnName + " with ControlType = " + cdms_field.ControlType);
@@ -138,7 +166,7 @@ datasets_module.service('GridService', ['$window', '$route',
                 systemFields.DetailFields.indexOf(field_to_hide) !== -1 && systemFields.DetailFields.splice(systemFields.DetailFields.indexOf(field_to_hide), 1);
             });
 
-            console.log("the fields we'll show after applying the config");
+            console.log("the fields we'll show after having applied the config");
             console.dir(systemFields);
 
             //the only headerfields left are those we should have - add them to the beginning of the header fields
@@ -154,10 +182,10 @@ datasets_module.service('GridService', ['$window', '$route',
                         headerName: field.Label,
                         field: field.DbColumnName,
                         width: SystemDefaultColumnWidth,
-                        Label: field.Label,                 //legacy
-                        DbColumnName: field.DbColumnName,   //legacy
-                        ControlType: field.ControlType,     //legacy
-                        PossibleValues: field.Field.PossibleValues, //legacy
+                        Label: field.Label,                 
+                        DbColumnName: field.DbColumnName,   
+                        ControlType: field.ControlType,     
+                        PossibleValues: field.Field.PossibleValues, 
                         cdmsField: field, //our own we can use later
                         //menuTabs: [],
                     });
@@ -173,10 +201,12 @@ datasets_module.service('GridService', ['$window', '$route',
             
             //detail "header" fields
             systemFields.DetailFields.forEach(function (fieldname) {
-                finalColumnDefs.DetailFields.push(SystemFieldDefinitions[fieldname]);
+                var field = SystemFieldDefinitions[fieldname];
+                service.setupColDefForField(field, field);
+                finalColumnDefs.DetailFields.push(field);
             });
 
-            //dataset defined detail fields 
+            //now add in the dataset defined detail fields and set each one up for use in the grid 
             dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
                 if (field.FieldRoleId === FIELD_ROLE_DETAIL) {
                     //initial values for detail column definition
@@ -185,29 +215,11 @@ datasets_module.service('GridService', ['$window', '$route',
                         field: field.DbColumnName,
                         width: SystemDefaultColumnWidth,
                         menuTabs: [],
-                        tooltipField: "rowErrorTooltip", //rowErrorTooltip is populated only when a validation error exists for any cell in a row.
-                        cellClassRules: {
-                            'has-validation-error': function (params) {
-                                var fieldHasErrors = false;
-                                //console.log("checking for validatoin errors in css");
-                                //this css class is added to the cell if there are validation errors matching this field
-                                if ((Array.isArray(params.node.data.validationErrors) && params.node.data.validationErrors.length > 0)) {
-                                    //console.log(" >> we do have errors for this row... ");
-                                    params.node.data.validationErrors.forEach(function (error, index) {
-                                        //console.log(" -- checking " + error.field.DbColumnName + " and " + params.colDef.field);
-                                        //is there a validation error for this cell?
-                                        if (error.field.DbColumnName === params.colDef.field)
-                                            fieldHasErrors = true;
-                                    });
-                                }
-                                return fieldHasErrors;
-                            },
-                        },
-                        Label: field.Label,                 //cdms
-                        DbColumnName: field.DbColumnName,   //cdms
-                        ControlType: field.ControlType,     //cdms
-                        PossibleValues: field.Field.PossibleValues, //cdms
-                        cdmsField: field, //our own we can use later
+                        Label: field.Label,                 
+                        DbColumnName: field.DbColumnName,   
+                        ControlType: field.ControlType,     
+                        PossibleValues: field.Field.PossibleValues, //TODO?
+                        cdmsField: field,                               //in case it is somehow needed
                     };
 
                     //setup column def for DETAIL only for right now... //TODO -- header fields?

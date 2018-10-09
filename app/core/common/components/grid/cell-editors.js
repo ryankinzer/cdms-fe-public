@@ -165,11 +165,12 @@ CDMSSelectCellEditor.prototype.init = function (params) {
 };
 
 CDMSSelectCellEditor.prototype.getGui = function () {
+    console.dir("getgui fired");
     return this.container;
 };
 
 CDMSSelectCellEditor.prototype.getValue = function () {
-    //console.log("getvalue fired ------------ ");
+    console.log("getvalue fired ------------ ");
     return this.eSelect.value;
 };
 
