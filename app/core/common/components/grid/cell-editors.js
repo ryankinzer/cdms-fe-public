@@ -170,7 +170,7 @@ CDMSSelectCellEditor.prototype.getGui = function () {
 };
 
 CDMSSelectCellEditor.prototype.getValue = function () {
-    console.log("getvalue fired ------------ ");
+    console.log("getvalue fired ------------ " + this.eSelect.value);
     return this.eSelect.value;
 };
 

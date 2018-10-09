@@ -24,7 +24,7 @@ var MultiselectControlType = function (cdms_field, col_def) {
     };
     col_def.cellValidator = CDMSMultiselectCellValidator;
     col_def.valueGetter = function (params) {
-        console.dir(params);
+        //console.dir(params);
         return angular.fromJson(params.data[params.column.colId]);
     };
     return col_def;
@@ -50,7 +50,7 @@ var SelectControlType = function (cdms_field, col_def) {
         values: getPossibleValuesObjects(cdms_field.PossibleValues)
     };
     col_def.cellValidator = CDMSSelectCellValidator;
-    col_def.valueGetter = function (params) {
+    col_def.valueFormatter = function (params) {
         var retval = "<ERR>";
         if (Array.isArray(params.colDef.cellEditorParams.values)) {
             retval = params.data[params.column.colId];
@@ -58,6 +58,7 @@ var SelectControlType = function (cdms_field, col_def) {
         else {
             retval = params.colDef.PossibleValues[params.data[params.column.colId]];
         }
+        console.log("valuegetter - returning retval = " + retval);
         return retval;
     };
     return col_def;

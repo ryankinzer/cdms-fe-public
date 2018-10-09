@@ -738,3 +738,13 @@ a {
     color: darkslategrey;
     float: right;
 }
+
+#data-edit-grid input, #data-edit-grid select{
+    border-radius: 0px;
+    margin: 0px;
+    width: 100%;
+}
+
+.ag-popup-editor {
+    width: 150px;
+}
