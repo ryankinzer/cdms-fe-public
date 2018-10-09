@@ -48,5 +48,21 @@ require([
     datasets_module.controller('DatasetSeasonsCtrl', dataset_seasons_list);
     datasets_module.controller('ModalCreateSeasonCtrl', modal_create_season);
 
+    datasets_module.filter('dataGrade', function () { 
+        return function (check) {
+            if (!check)
+                return;
+
+            var grade = "N/A";
+
+            if (check.CheckMethod == 1)
+                grade = check.Bath1Grade + "-" + check.Bath2Grade;
+            else if (check.CheckMethod == 2)
+                grade = check.Bath1Grade;
+
+            return grade;
+        }
+    });
+    
 });
 

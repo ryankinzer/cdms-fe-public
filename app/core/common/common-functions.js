@@ -434,6 +434,7 @@ function isInteger (value) {
         Math.floor(value) === value;
 };
 
+//TODO note: this is moved into a filter in datasets_module. delete me when convenient.
 //give me an instrument's accuracy check and I'll give you the datagrade to display
 function getDataGrade(check) {
     if (!check)

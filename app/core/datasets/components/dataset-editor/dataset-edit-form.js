@@ -1,6 +1,6 @@
 ﻿/**
 *  This component provides the data edit page (form + grid).
-*  http://localhost/cdms/index.html#/edit/1004
+*  /index.html#/edit/1004
 */
 
 
@@ -394,6 +394,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         });
 
+        //moved into a filter
+        //$scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias from service
+
+
        /*
 
        
@@ -461,7 +465,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             });
         };
 
-        $scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias from service
 
         $scope.selectLocation = function () {
             //$scope.viewLocation = getByField($scope.project.Locations, $scope.row.locationId, "Id");
