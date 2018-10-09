@@ -168,13 +168,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             var validator = event.colDef.validator;
 
+            console.log(" -- running cell validator: ");
+            console.dir(validator);
             //remove this field's validation errors from our row's validation errors (returns [] if none)
             event.node.data.validationErrors = validator.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
 
             //validate this cell's value and merge in any errors with this row's errors.
             var fieldValidationErrors = validator.validate(event);
             event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
-
+console.dir(fieldValidationErrors);
             //set validation status
             event.node.data.rowHasError = ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0));
 

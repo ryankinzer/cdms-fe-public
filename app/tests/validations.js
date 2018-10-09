@@ -18,7 +18,7 @@ var validations =
 
 var parsed_validations = [];
 
-var rangeRegex = new RegExp(/\[\d*\,\d*\]$/);
+var rangeRegex = new RegExp(/\[-?\d*\,\d*\]$/);
 var validationMatchers =
     [
         new RegExp(/^(int)\((\d)\)$/), //int(4)

@@ -124,12 +124,14 @@ CellValidator.prototype.getValidationsArray = function (cdms_field) {
         return empty;
     }
 
-    //console.log("Found some validation for that field: " + cdms_field.DbColumnName + " -- now parsing... ");
-    //console.dir(validation);
-    //console.log("  -- now parsing... ");
+//    console.log("Found some validation for that field: " + cdms_field.DbColumnName + " -- now parsing... ");
+//    console.dir(validation);
+//    console.log("  -- now parsing... ");
 
     validation = this.getParsedValidationArray(validation); //add the .parsed property to each validation that tokenizes the validation string
-    //console.dir(validation);
+
+//    console.log("completed validation parsing: ");
+//    console.dir(validation);
 
     return validation;
 
@@ -143,8 +145,8 @@ CellValidator.prototype.getParsedValidationArray = function (validations) {
 
     var parsed_validations = [];
 
-    //the regex that matches our "range" validations (ex: "[100,500]")
-    var rangeRegex = new RegExp(/\[\d*\,\d*\]$/);
+    //the regex that matches our "range" validations (ex: "[100,500]" or )
+    var rangeRegex = new RegExp(/\[-?\d*\,-?\d*\]$/);
 
     //the regexs that match the int/float format validations
     var validationMatchers =

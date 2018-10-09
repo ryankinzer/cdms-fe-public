@@ -44,7 +44,7 @@ CDMSNumberCellValidator.prototype = new CellValidator;
 CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
     //we are a number, so spin through and test any of our validations that are "number" types
 
-    //console.log("validateFieldControlTypeValidation ------------------------------------------------ ");
+    //console.log("Number Validation ------------------------------------------------ ");
     //console.dir(data);
     //console.dir(this.validation);
 
@@ -63,7 +63,7 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
     //iterate each validation in "Validation" field (we can have more than one separated by semicolons) 
     // validate any of the constraints that are "number" (float, int, # of digits, etc.)
     this.validation.forEach(function (val) {
-
+        console.dir(val);
         try {
 
             //if this validation is a "number" constraint
@@ -134,7 +134,7 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
                             if (!Number.isNaN(num_from) && !Number.isNaN(num_to)) {
 
                                 if (data.value < num_from || data.value > num_to)
-                                    _this.errors.push(new ValidationError(_this.cdms_field, "Value is out of range: " + num_from + " - " + num_to));
+                                    _this.errors.push(new ValidationError(_this.cdms_field, "Value is out of range: " + num_from + ":" + num_to));
                             }
                         }
 
@@ -147,6 +147,9 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
 
                 //any other numeric types? they'd go here
 
+            } else {
+                console.warn("Validation could not be parsed for this column: " + _this.cdms_field.DbColumnName);
+                console.dir(val);
             }
 
         } catch (e) {
