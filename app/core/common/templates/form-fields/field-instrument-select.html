@@ -1,12 +1,8 @@
-<div style="display: inline-flex">
     <div class="header-label">{{field.Label}}: </div>
-    <!--<div class="header-value" style="margin-left: -2px;">-->
-    <div class="header-value" style="margin-left: 0px;">
-        <!--<select class="form-control" value="127" ng-model="row.InstrumentId" ng-options="i.Id as i.Name+' ('+i.SerialNumber+')' for i in project.Instruments"></select>-->
-        <!--<select class="form-control" value="127" ng-model="row.InstrumentId" ng-change="selectInstrument()" ng-options="i.Id as i.Name+' ('+i.SerialNumber+')' for i in project.Instruments"></select>-->
-        <select ui-select2="select2Options" data-placeholder="Choose an Instrument" ng-change="selectInstrument()" style="width: 200px; " ng-model="row.Activity.InstrumentId">
+    <div style="margin-top: 5px; margin-left: 7px; float:right;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
+    <div class="header-value" >
+        <select style="width: 256px;" ui-select2="select2Options" data-placeholder="Choose an Instrument" ng-change="selectInstrument()" style="width: 200px; " ng-model="row.Activity.InstrumentId">
             <option ng-repeat="instrument in project.Instruments | orderBy:'Name'" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
         </select>
     </div>
-    <div style="margin-top: 5px; margin-left: 7px;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
-</div>
+    
