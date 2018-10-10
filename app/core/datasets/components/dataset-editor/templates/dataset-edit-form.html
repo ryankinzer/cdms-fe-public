@@ -49,25 +49,9 @@
 <div ng-show="errors.heading.length>0" class="alert alert-danger"><div ng-repeat="error in errors.heading">{{error}}</div></div>
 
 <div class="row" ng-show="!activities.success">
-    <div ng-show="dataset" class="error-table" style="width: 400px; margin-top: 10px; float: right; margin-right: 50px;">
-        <table class="table table-striped table-bordered table-condensed" style="width: 250px;">
-            <tbody>
-                <tr>
-                    <td>Total Records:</td>
-                    <td>{{dataSheetDataset.length}}</td>
-                </tr>
-                <tr>
-                    <td>Records with errors: </td>
-                    <td>{{validation_error_count}}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div style="margin-top: 10px;" ng-include="'app/core/datasets/templates/grid-validation-error-box.html'"></div>
-    </div>
 
     <!-- header fields -->
-    <div ng-show="dataset" class="header-box" style="margin-top: 20px; width: 600px;">
+    <div ng-show="dataset" class="header-box" style="margin-top: 20px; width: 600px; display:inline-block">
 
         <form novalidate class="row-form" name="headerForm">
             <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
@@ -99,20 +83,19 @@
         </form>
     </div>
 
-    <div style="margin-top: 10px;">&nbsp;</div>
-    <button class="btn btn-sm" ng-click="showFilter= !showFilter">Filter</button>
-    <button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="clearSelections()">Clear selections</button>
-    <button ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange'))" class="btn btn-sm" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
-
-    <div ng-show="showFilter" style="padding: 8px; width: 260px;">
-        <input class="form-control" ng-model="gridOptionsFilter.filterText" placeholder="Filter By" type="text" /><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png" />
+    <div style="margin-top: 20px;" ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange')) && dataAgGridOptions.selectedItems.length > 0">
+        <button class="btn btn-sm" ng-click="dataAgGridOptions.api.deselectAll()">Clear selections</button>
+        <button class="btn btn-sm" ng-click="openBulkQAChange()">Bulk Row QA Change</button>
     </div>
 
-    <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+    <div style="height: 400px; width: 100%; margin-top: 5px; margin-bottom: 115px;">
         <div id="data-edit-grid" class="ag-blue gridStyle-small"></div>
     </div>
+    <div>
+        Total rows: {{dataset_activities.Details.length}}
+        <hr />
+    </div>
 
-    <div ng-include="'app/core/datasets/templates/bottom-bar.html'" />
     <div ng-include="'app/core/datasets/templates/buttons.html'" />
 
 </div>

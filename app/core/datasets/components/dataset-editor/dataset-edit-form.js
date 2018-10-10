@@ -13,8 +13,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         
         $scope.fields = { header: [], detail: [] };
 
-        //lets keep these in the GRID
-        $scope.EditedRows = []; //whenever a row gets edited, it will be added here; we only send edited rows...
         //$scope.validationErrors = [];
 
         $scope.userId = $rootScope.Profile.Id;
@@ -66,22 +64,26 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             rowData: null,
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             debug: false,
-            rowSelection: 'single',
+            rowSelection: 'multiple',
             onSelectionChanged: function (params) {
                 //console.log("selection changed fired!");
                 //console.dir(params);
                 
                 var rows = params.api.getSelectedRows();
-                if (Array.isArray(rows) && rows[0] != null)
-                {
-                    //console.log("rows:");
-                    //console.dir(rows);
+                //if (Array.isArray(rows) && rows[0] != null)
+                //{
+                    $scope.dataAgGridOptions.selectedItems.length = 0; //truncate, don't replace with [] -- otherwise it is a shadow copy
+                    rows.forEach(function (row) {
+                        $scope.dataAgGridOptions.selectedItems.push(row);
+                    });
                     
-                }
+                    $scope.$apply(); //bump angular (won't work otherwise!)
+                //}
             },
             //onFilterModified: function () {
             //    scope.corrAgGridOptions.api.deselectAll();
             //},
+            editedItems: [],
             selectedItems: [],
             //isFullWidthCell: function (rowNode) {
             //    return rowNode.level === 1;
@@ -131,6 +133,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
         };
 
+        //adds row to grid
+        $scope.addNewRow = function () {
+            var new_row = makeNewRow($scope.dataAgColumnDefs.DetailFields);
+            new_row.QAStatusId = $scope.dataset.DefaultRowQAStatusId;
+            $scope.dataAgGridOptions.api.updateRowData({add: [new_row]});
+//TODO: note in editedItems? or newItems?
+        };
+
+
 //move to GridService?
         $scope.agValidateGrid = function (params) {
             //console.log(" -- validating grid --");
@@ -176,7 +187,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //validate this cell's value and merge in any errors with this row's errors.
             var fieldValidationErrors = validator.validate(event);
             event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
-console.dir(fieldValidationErrors);
+
+            console.dir(fieldValidationErrors);
+
             //set validation status
             event.node.data.rowHasError = ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0));
 
@@ -396,34 +409,19 @@ console.dir(fieldValidationErrors);
 
         });
 
-        //moved into a filter
-        //$scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias from service
-
-
-       /*
-
-       
-        $scope.clearSelections = function () {
-            $scope.gridDatasheetOptions.selectAll(false);
-        };
-
-        $scope.setLocation = function () {
-            //$scope.row.Location = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
-            //$scope.viewLocation = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
-        };
-
         $scope.setSelectedBulkQAStatus = function (rowQAId) {
-            angular.forEach($scope.gridDatasheetOptions.selectedItems, function (item, key) {
-                //console.dir(item);
+            angular.forEach($scope.dataAgGridOptions.selectedItems, function (item, key) {
+                console.log("bulk changing: ");
+                console.dir(item);
                 item.QAStatusId = rowQAId;
-
+//TODO: refreshthegrid!!
                 //mark the row as updated so it will get saved.
-                if ($scope.updatedRows.indexOf(item.Id) == -1) {
-                    $scope.updatedRows.push(item.Id);
+                if ($scope.dataAgGridOptions.editedItems.indexOf(item.Id) == -1) {
+                    $scope.dataAgGridOptions.editedItems.push(item.Id);
                 }
             });
 
-            $scope.clearSelections();
+            $scope.dataAgGridOptions.api.deselectAll();
         };
 
         $scope.openBulkQAChange = function () {
@@ -435,7 +433,17 @@ console.dir(fieldValidationErrors);
 
             });
 
+        };       
+       /*
+
+
+
+        $scope.setLocation = function () {
+            //$scope.row.Location = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
+            //$scope.viewLocation = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
         };
+
+
 
         $scope.createInstrument = function () {
             $scope.viewInstrument = null;
@@ -508,11 +516,11 @@ console.dir(fieldValidationErrors);
             $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
         };
 
-        //adds row to datasheet grid
+        //adds row to grid
         $scope.addNewRow = function () {
             var row = makeNewRow($scope.datasheetColDefs);
             row.QAStatusId = $scope.dataset.DefaultRowQAStatusId;
-            $scope.dataSheetDataset.push(row);
+            $scope.dataGridOptions.api.updateRowData({add: [row]});
         };
 
         // For Creel Survey only. 

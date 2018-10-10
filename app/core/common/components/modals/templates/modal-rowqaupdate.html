@@ -2,13 +2,15 @@
 	<div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-            <h3>Set QA Status for {{gridDatasheetOptions.selectedItems.length}} rows</h3>
+            <h3>Set QA Status for {{dataAgGridOptions.selectedItems.length}} rows</h3>
         </div>
         <div class="modal-body">
         <form name="form" class="css-form" novalidate>
             <div class="header-label">Row QA Status:</div>
             <div class="header-value">
-                <select class="form-control" ng-model="newRowQAStatus.Id" ng-options="id as name for (id, name) in RowQAStatuses"></select>
+                <select class="form-control" ng-model="newRowQAStatus.Id">
+                    <option ng-repeat="qastatus in dataset.RowQAStatuses | orderBy:'Name'" value="{{qastatus.Id}}">{{qastatus.Name}}</option>
+                </select>
             </div>  
 
         </form>
