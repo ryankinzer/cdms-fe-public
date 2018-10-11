@@ -1,15 +1,14 @@
-// ag-grid-enterprise v15.0.0
-import { ColDef } from "ag-grid/main";
-import { IRowModel } from 'ag-grid';
+// ag-grid-enterprise v19.0.0
+import { ColDef, Column, ValueFormatterService, IRowModel } from "ag-grid-community";
 export declare enum SetFilterModelValuesType {
     PROVIDED_LIST = 0,
     PROVIDED_CB = 1,
-    NOT_PROVIDED = 2,
+    NOT_PROVIDED = 2
 }
 export declare class SetFilterModel {
     private colDef;
     private filterParams;
-    private inMemoryRowModel;
+    private clientSideRowModel;
     private valueGetter;
     private allUniqueValues;
     private availableUniqueValues;
@@ -24,33 +23,37 @@ export declare class SetFilterModel {
     private doesRowPassOtherFilters;
     private modelUpdatedFunc;
     private isLoadingFunc;
-    constructor(colDef: ColDef, rowModel: IRowModel, valueGetter: any, doesRowPassOtherFilters: any, suppressSorting: boolean, modelUpdatedFunc: (values: string[]) => void, isLoadingFunc: (loading: boolean) => void);
+    private filterValuesExternalPromise;
+    private filterValuesPromise;
+    private valueFormatterService;
+    private column;
+    constructor(colDef: ColDef, rowModel: IRowModel, valueGetter: any, doesRowPassOtherFilters: any, suppressSorting: boolean, modelUpdatedFunc: (values: string[], selected?: string[]) => void, isLoadingFunc: (loading: boolean) => void, valueFormatterService: ValueFormatterService, column: Column);
     refreshAfterNewRowsLoaded(keepSelection: any, isSelectAll: boolean): void;
     refreshValues(valuesToUse: string[], keepSelection: any, isSelectAll: boolean): void;
-    private refreshSelection(keepSelection, isSelectAll);
+    private refreshSelection;
     refreshAfterAnyFilterChanged(): void;
-    private createAllUniqueValues();
-    private onAsyncValuesLoaded(values);
-    private areValuesSync();
+    private createAllUniqueValues;
+    private onAsyncValuesLoaded;
+    private areValuesSync;
     setValuesType(value: SetFilterModelValuesType): void;
-    private setValues(valuesToUse);
-    private extractSyncValuesToUse();
-    private createAvailableUniqueValues();
-    private sortValues(values);
-    private getUniqueValues(filterOutNotAvailable);
-    setMiniFilter(newMiniFilter: any): boolean;
-    getMiniFilter(): any;
-    private processMiniFilter();
+    private setValues;
+    private extractSyncValuesToUse;
+    private createAvailableUniqueValues;
+    private sortValues;
+    private getUniqueValues;
+    setMiniFilter(newMiniFilter: string): boolean;
+    getMiniFilter(): string;
+    private processMiniFilter;
     getDisplayedValueCount(): number;
     getDisplayedValue(index: any): any;
     selectEverything(): void;
-    private selectOn(toSelectOn);
-    private valueToKey(key);
-    private keyToValue(value);
+    private selectOn;
+    private valueToKey;
+    private keyToValue;
     isFilterActive(): boolean;
     selectNothing(): void;
     getUniqueValueCount(): number;
-    getUniqueValue(index: any): any;
+    getUniqueValue(index: any): string;
     unselectValue(value: any): void;
     selectValue(value: any): void;
     isValueSelected(value: any): boolean;
@@ -58,4 +61,6 @@ export declare class SetFilterModel {
     isNothingSelected(): boolean;
     getModel(): string[];
     setModel(model: string[], isSelectAll?: boolean): void;
+    private setSyncModel;
+    onFilterValuesReady(callback: () => void): void;
 }

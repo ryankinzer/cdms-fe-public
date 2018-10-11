@@ -5,7 +5,7 @@
 
 
 var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
-    '$modal', 'ServiceUtilities', 'ConvertStatus', '$rootScope',
+    '$uibModal', 'ServiceUtilities', 'ConvertStatus', '$rootScope',
     function (scope, $timeout, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $modal,
         ServiceUtilities, ConvertStatus, $rootScope) {
         //console.log("Inside tab correspondence controller...");

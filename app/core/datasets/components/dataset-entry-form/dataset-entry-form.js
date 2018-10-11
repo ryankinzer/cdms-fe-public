@@ -1,6 +1,6 @@
 ﻿// Data entry page
 var dataset_entry_form = ['$scope', '$routeParams',
-    'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$modal', '$location', '$rootScope',
+    'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
     'ActivityParser', 'DataSheet', '$route', '$upload',
     function ($scope, $routeParams,
         DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,

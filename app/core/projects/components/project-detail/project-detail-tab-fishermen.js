@@ -2,7 +2,7 @@
 // the fishermen tab if it is a harvest/creel project. 
 
 var tab_fishermen = ['$scope', '$timeout', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
-    '$rootScope', '$modal', '$sce', '$window', '$http',
+    '$rootScope', '$uibModal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
     function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {

@@ -2,10 +2,11 @@
 
 
 
-var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService','$modal', '$window',
+var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService','$uibModal', '$window',
     function (scope, DatasetService, ProjectService, CommonService, $modal, $window){
     scope.projects = ProjectService.getProjects();
 
+/*
     scope.CellOptions = {}; //for metadata dropdown options
     scope.metadataList = {};
     scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID);
@@ -18,7 +19,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
     scope.habitatPropertiesPromise.promise.then(function(list){
         addMetadataProperties(list, scope.metadataList, scope, CommonService);
     });
-
+*/
       
         scope.locationObjectArray = [];
         scope.locationObjectIdArray = [];
@@ -43,7 +44,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 
             });
         };
-
+/*
         scope.resetProject = function (project) {
             ProjectService.clearProject();
             $window.location.reload();
@@ -91,7 +92,11 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 				console.dir(e);
 			}
         };
-		
+*/
+
+
+
+		/*
 		scope.$watch('infoContent', function()
 		{
 			console.log("Inside project-list.js, watch infoContent...");
@@ -173,57 +178,40 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 			scope.infoContent = html;
 			//return html;
         };
-
-		// Note:  This watch is for the main Projects page.
-        var project_watcher = scope.$watch('projects',function(){
-            if(scope.projects)
-            {
-                //console.log("Inside project-list.js, watch projects...");
-				////console.log("scope is next...");
-				////console.dir(scope);
-				
-				//console.log("scope.projects is next...");
-				//console.dir(scope.projects);
-				
-				if (!scope.allProjects)
-					scope.allProjects = scope.projects;
-
+*/
+		
+        scope.projects.$promise.then(function () { 
+        
                 //spin through and add a "Program" field to our project that we can display easily in the grid.
-                //angular.forEach(scope.projects, function(project, key){
-                angular.forEach(scope.allProjects, function(project, key){	
-                    var program = getByField(project.Metadata,'23','MetadataPropertyId');
-                    var subprogram = getByField(project.Metadata,'24','MetadataPropertyId');
+                angular.forEach(scope.projects, function(project, key){	
+                    
+                    if(project.SubProgram && project.SubProgram != "(None)")
+                      project.Program += " > " + project.SubProgram;
 
-                    if(program) project.Program = program.Values;
-
-                    if(subprogram && subprogram.Values != "(None)")
-                      project.Program += " > " + subprogram.Values;
-
-                    var primary_location = getByField(project.Locations,3,"LocationTypeId");
-                    if(primary_location)
-                      scope.locationObjectArray.push(primary_location);
+//                    var primary_location = getByField(project.Locations,3,"LocationTypeId");
+//                    if(primary_location)
+//                      scope.locationObjectArray.push(primary_location);
                 });
 
-                angular.forEach(scope.locationObjectArray, function(item, key){
-                    scope.locationObjectIdArray.push(item.SdeObjectId);
-                });
+  //              angular.forEach(scope.locationObjectArray, function(item, key){
+  //                  scope.locationObjectIdArray.push(item.SdeObjectId);
+  //              });
 				//console.log("scope.locationObjectIdArray is next...");
 				//console.dir(scope.locationObjectIdArray);
 
-                scope.locationObjectIds = scope.locationObjectIdArray.join();
+    //            scope.locationObjectIds = scope.locationObjectIdArray.join();
 				//console.log("typeof scope.locationObjectId = " + typeof scope.locationObjectId);
-                console.log("In project-list.js, projects watcher, found project locations: " + scope.locationObjectIds);
+//                console.log("In project-list.js, projects watcher, found project locations: " + scope.locationObjectIds);
 
 				//console.log("scope.map is next...");
 				//console.dir(scope.map);
 				//console.log("scope.map.locationLayer is next...");
 				//console.dir(scope.map.locationLayer);
 
-				if(scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
-                    scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
+//				if(scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
+//                    scope.map.locationLayer.showLocationsById(scope.locationObjectIds); //bump and reload the locations.
 
                 if (scope.agGridOptions === undefined) {
-					console.log("Inside project-list.js...");
                     console.log(" ----------- ok we are defining our grid...");
 
                     //define the cell renderer (template) for our "Project Name" column.
@@ -238,7 +226,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
 
                     var agColumnDefs = [
                         { field: 'Program', headerName: 'Program', width: 220, sort: 'asc', menuTabs: ['filterMenuTab'] },
-                        { field: 'ProjectType.Name', headerName: 'Type', width: 130, menuTabs: ['filterMenuTab'] },
+                        { field: 'ProjectType', headerName: 'Type', width: 130, menuTabs: ['filterMenuTab'] },
                         { field: 'Name', headerName: 'Project Name', cellRenderer: agCellRendererProjectName, width: 300, menuTabs: ['filterMenuTab'], filter: 'text'},
                     ];
 
@@ -262,7 +250,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                     var ag_grid_div = document.querySelector('#project-list-grid');    //get the container id...
                     scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.agGridOptions); //bind the grid to it.
 
-                    scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+                    //scope.agGridOptions.api.showLoadingOverlay(); //show loading...
 
 
                 } else { 
@@ -277,11 +265,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                     console.log('done');
                     
                 }
-
-                if (scope.projects.length > 0)
-                    project_watcher();
-            }
-        },true);
+        });
   }
 ];
 

@@ -1,5 +1,5 @@
-// ag-grid-enterprise v15.0.0
-import { IRowModel, RowNode, IViewportDatasource, RowBounds } from "ag-grid/main";
+// ag-grid-enterprise v19.0.0
+import { IRowModel, RowNode, IViewportDatasource, RowBounds } from "ag-grid-community";
 export declare class ViewportRowModel implements IRowModel {
     private gridOptionsWrapper;
     private eventService;
@@ -13,17 +13,17 @@ export declare class ViewportRowModel implements IRowModel {
     private rowNodesByIndex;
     private rowHeight;
     private viewportDatasource;
-    private init();
-    private destroy();
+    private init;
     isLastRowFound(): boolean;
-    private destroyCurrentDatasource();
-    private calculateFirstRow(firstRenderedRow);
-    private calculateLastRow(lastRenderedRow);
-    private onViewportChanged(event);
+    private destroyDatasource;
+    private calculateFirstRow;
+    private calculateLastRow;
+    private onViewportChanged;
     purgeRowsNotInViewport(): void;
     setViewportDatasource(viewportDatasource: IViewportDatasource): void;
     getType(): string;
     getRow(rowIndex: number): RowNode;
+    getRowNode(id: string): RowNode;
     getPageFirstRow(): number;
     getPageLastRow(): number;
     getRowCount(): number;
@@ -34,8 +34,8 @@ export declare class ViewportRowModel implements IRowModel {
     isRowsToRender(): boolean;
     getNodesInRangeForSelection(firstInRange: RowNode, lastInRange: RowNode): RowNode[];
     forEachNode(callback: (rowNode: RowNode, index: number) => void): void;
-    private setRowData(rowData);
-    private createBlankRowNode(rowIndex);
+    private setRowData;
+    private createBlankRowNode;
     setRowCount(rowCount: number): void;
     isRowPresent(rowNode: RowNode): boolean;
 }

@@ -1,4 +1,4 @@
-// ag-grid-enterprise v15.0.0
+// ag-grid-enterprise v19.0.0
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -20,8 +20,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var main_1 = require("ag-grid/main");
-var DetailCellRenderer = (function (_super) {
+var ag_grid_community_1 = require("ag-grid-community");
+var DetailCellRenderer = /** @class */ (function (_super) {
     __extends(DetailCellRenderer, _super);
     function DetailCellRenderer() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -31,26 +31,30 @@ var DetailCellRenderer = (function (_super) {
         this.rowId = params.node.id;
         this.masterGridApi = params.api;
         this.selectAndSetTemplate(params);
-        if (main_1._.exists(this.eDetailGrid)) {
+        if (ag_grid_community_1._.exists(this.eDetailGrid)) {
+            this.addThemeToDetailGrid();
             this.createDetailsGrid(params);
             this.registerDetailWithMaster(params.node);
             this.loadRowData(params);
-            this.setupGrabMouseWheelEvent();
-            setTimeout(function () { return _this.detailGridOptions.api.doLayout(); }, 0);
+            setTimeout(function () {
+                // ensure detail grid api still exists (grid may be destroyed when async call tries to set data)
+                if (_this.detailGridOptions.api) {
+                    _this.detailGridOptions.api.doLayout();
+                }
+            }, 0);
         }
         else {
             console.warn('ag-Grid: reference to eDetailGrid was missing from the details template. ' +
                 'Please add ref="eDetailGrid" to the template.');
         }
     };
-    DetailCellRenderer.prototype.setupGrabMouseWheelEvent = function () {
-        var mouseWheelListener = function () {
-            event.stopPropagation();
-        };
-        // event is 'mousewheel' for IE9, Chrome, Safari, Opera
-        this.eDetailGrid.addEventListener('mousewheel', mouseWheelListener);
-        // event is 'DOMMouseScroll' Firefox
-        this.eDetailGrid.addEventListener('DOMMouseScroll', mouseWheelListener);
+    DetailCellRenderer.prototype.addThemeToDetailGrid = function () {
+        // this is needed by environment service of the child grid, the class needs to be on
+        // the grid div itself - the browser's CSS on the other hand just inherits from the parent grid theme.
+        var theme = this.environment.getTheme();
+        if (ag_grid_community_1._.exists(theme)) {
+            ag_grid_community_1._.addCssClass(this.eDetailGrid, theme);
+        }
     };
     DetailCellRenderer.prototype.registerDetailWithMaster = function (rowNode) {
         var _this = this;
@@ -70,7 +74,7 @@ var DetailCellRenderer = (function (_super) {
     };
     DetailCellRenderer.prototype.selectAndSetTemplate = function (params) {
         var paramsAny = params;
-        if (main_1._.missing(paramsAny.template)) {
+        if (ag_grid_community_1._.missing(paramsAny.template)) {
             // use default template
             this.setTemplate(DetailCellRenderer.TEMPLATE);
         }
@@ -96,13 +100,21 @@ var DetailCellRenderer = (function (_super) {
         // api and columnApi into gridOptions
         var _this = this;
         var gridOptions = params.detailGridOptions;
-        if (main_1._.missing(gridOptions)) {
+        if (ag_grid_community_1._.missing(gridOptions)) {
             console.warn('ag-Grid: could not find detail grid options for master detail, ' +
                 'please set gridOptions.detailCellRendererParams.detailGridOptions');
         }
         // IMPORTANT - gridOptions must be cloned
-        this.detailGridOptions = main_1._.cloneObject(gridOptions);
-        new main_1.Grid(this.eDetailGrid, this.detailGridOptions);
+        this.detailGridOptions = ag_grid_community_1._.cloneObject(gridOptions);
+        new ag_grid_community_1.Grid(this.eDetailGrid, this.detailGridOptions, {
+            seedBeanInstances: {
+                // a temporary fix for AG-1574
+                // AG-1715 raised to do a wider ranging refactor to improve this
+                agGridReact: params.agGridReact,
+                // AG-1716 - directly related to AG-1574 and AG-1715
+                frameworkComponentWrapper: params.frameworkComponentWrapper
+            }
+        });
         this.addDestroyFunc(function () { return _this.detailGridOptions.api.destroy(); });
     };
     DetailCellRenderer.prototype.loadRowData = function (params) {
@@ -120,17 +132,24 @@ var DetailCellRenderer = (function (_super) {
         userFunc(funcParams);
     };
     DetailCellRenderer.prototype.setRowData = function (rowData) {
-        this.detailGridOptions.api.setRowData(rowData);
+        // ensure detail grid api still exists (grid may be destroyed when async call tries to set data)
+        if (this.detailGridOptions.api) {
+            this.detailGridOptions.api.setRowData(rowData);
+        }
     };
     DetailCellRenderer.TEMPLATE = "<div class=\"ag-details-row\">\n            <div ref=\"eDetailGrid\" class=\"ag-details-grid\"/>\n        </div>";
     __decorate([
-        main_1.RefSelector('eDetailGrid'),
+        ag_grid_community_1.RefSelector('eDetailGrid'),
         __metadata("design:type", HTMLElement)
     ], DetailCellRenderer.prototype, "eDetailGrid", void 0);
     __decorate([
-        main_1.Autowired('gridOptionsWrapper'),
-        __metadata("design:type", main_1.GridOptionsWrapper)
+        ag_grid_community_1.Autowired('gridOptionsWrapper'),
+        __metadata("design:type", ag_grid_community_1.GridOptionsWrapper)
     ], DetailCellRenderer.prototype, "gridOptionsWrapper", void 0);
+    __decorate([
+        ag_grid_community_1.Autowired('environment'),
+        __metadata("design:type", ag_grid_community_1.Environment)
+    ], DetailCellRenderer.prototype, "environment", void 0);
     return DetailCellRenderer;
-}(main_1.Component));
+}(ag_grid_community_1.Component));
 exports.DetailCellRenderer = DetailCellRenderer;

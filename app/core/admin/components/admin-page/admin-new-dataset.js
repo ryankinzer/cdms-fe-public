@@ -1,5 +1,5 @@
 ﻿
-var admin_new_dataset = ['$scope', '$modal', 'DatasetService', 'AdminService', '$routeParams','ProjectService',
+var admin_new_dataset = ['$scope', '$uibModal', 'DatasetService', 'AdminService', '$routeParams','ProjectService',
     function ($scope, $modal, DatasetService, AdminService, $routeParams, ProjectService) {
 
         $scope.datastore = DatasetService.getDatastore($routeParams.Id);

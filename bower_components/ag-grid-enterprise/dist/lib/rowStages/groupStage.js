@@ -1,4 +1,4 @@
-// ag-grid-enterprise v15.0.0
+// ag-grid-enterprise v19.0.0
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -10,14 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var main_1 = require("ag-grid/main");
-var GroupStage = (function () {
+var ag_grid_community_1 = require("ag-grid-community");
+var GroupStage = /** @class */ (function () {
     function GroupStage() {
         // we use a sequence variable so that each time we do a grouping, we don't
         // reuse the ids - otherwise the rowRenderer will confuse rowNodes between redraws
         // when it tries to animate between rows. we set to -1 as others row id 0 will be shared
         // with the other rows.
-        this.groupIdSequence = new main_1.NumberSequence(1);
+        this.groupIdSequence = new ag_grid_community_1.NumberSequence(1);
     }
     // when grouping, these items are of note:
     // rowNode.parent: RowNode: set to the parent
@@ -28,9 +28,6 @@ var GroupStage = (function () {
         this.usingTreeData = this.gridOptionsWrapper.isTreeData();
         if (this.usingTreeData) {
             this.getDataPath = this.gridOptionsWrapper.getDataPathFunc();
-            if (main_1._.missing(this.getDataPath)) {
-                console.warn('ag-Grid: property usingTreeData=true, but you did not provide getDataPath function, please provide getDataPath function if using tree data.');
-            }
         }
     };
     GroupStage.prototype.execute = function (params) {
@@ -41,12 +38,14 @@ var GroupStage = (function () {
         else {
             this.shotgunResetEverything(details);
         }
+        this.sortGroupsWithComparator(details.rootNode);
+        this.selectableService.updateSelectableAfterGrouping(details.rootNode);
     };
     GroupStage.prototype.createGroupingDetails = function (params) {
         var rowNode = params.rowNode, changedPath = params.changedPath, rowNodeTransaction = params.rowNodeTransaction, rowNodeOrder = params.rowNodeOrder;
         var groupedCols = this.usingTreeData ? null : this.columnController.getRowGroupColumns();
         var isGrouping = this.usingTreeData || groupedCols.length > 0;
-        var usingTransaction = isGrouping && main_1._.exists(rowNodeTransaction);
+        var usingTransaction = isGrouping && ag_grid_community_1._.exists(rowNodeTransaction);
         var details = {
             // someone complained that the parent attribute was causing some change detection
             // to break is some angular add-on - which i never used. taking the parent out breaks
@@ -63,8 +62,8 @@ var GroupStage = (function () {
             // ie, if not grouping, then we just want to shotgun so the rootNode.allLeafChildren gets copied
             // to rootNode.childrenAfterGroup and maintaining order (as delta transaction misses the order).
             transaction: usingTransaction ? rowNodeTransaction : null,
-            // if no transaction, then it's shotgun, so no changed path
-            changedPath: usingTransaction ? changedPath : null
+            // if no transaction, then it's shotgun, changed path would be 'not active' at this point anyway
+            changedPath: changedPath
         };
         return details;
     };
@@ -86,12 +85,31 @@ var GroupStage = (function () {
     // this is used when doing delta updates, eg Redux, keeps nodes in right order
     GroupStage.prototype.recursiveSortChildren = function (node, details) {
         var _this = this;
-        main_1._.sortRowNodesByOrder(node.childrenAfterGroup, details.rowNodeOrder);
+        ag_grid_community_1._.sortRowNodesByOrder(node.childrenAfterGroup, details.rowNodeOrder);
         node.childrenAfterGroup.forEach(function (childNode) {
             if (childNode.childrenAfterGroup) {
                 _this.recursiveSortChildren(childNode, details);
             }
         });
+    };
+    GroupStage.prototype.sortGroupsWithComparator = function (rootNode) {
+        // we don't do group sorting for tree data
+        if (this.usingTreeData) {
+            return;
+        }
+        var comparator = this.gridOptionsWrapper.getDefaultGroupSortComparator();
+        if (ag_grid_community_1._.exists(comparator)) {
+            recursiveSort(rootNode);
+        }
+        function recursiveSort(rowNode) {
+            var doSort = ag_grid_community_1._.exists(rowNode.childrenAfterGroup) &&
+                // we only want to sort groups, so we do not sort leafs (a leaf group has leafs as children)
+                !rowNode.leafGroup;
+            if (doSort) {
+                rowNode.childrenAfterGroup.sort(comparator);
+                rowNode.childrenAfterGroup.forEach(function (childNode) { return recursiveSort(childNode); });
+            }
+        }
     };
     GroupStage.prototype.getExistingPathForNode = function (node, details) {
         var res = [];
@@ -114,13 +132,13 @@ var GroupStage = (function () {
         childNodes.forEach(function (childNode) {
             // we add node, even if parent has not changed, as the data could have
             // changed, hence aggregations will be wrong
-            if (details.changedPath) {
+            if (details.changedPath.isActive()) {
                 details.changedPath.addParentNode(childNode.parent);
             }
             var infoToKeyMapper = function (item) { return item.key; };
             var oldPath = _this.getExistingPathForNode(childNode, details).map(infoToKeyMapper);
             var newPath = _this.getGroupInfo(childNode, details).map(infoToKeyMapper);
-            var nodeInCorrectPath = main_1._.compareArrays(oldPath, newPath);
+            var nodeInCorrectPath = ag_grid_community_1._.compareArrays(oldPath, newPath);
             if (!nodeInCorrectPath) {
                 _this.moveNode(childNode, details);
             }
@@ -137,7 +155,7 @@ var GroupStage = (function () {
         childNode.setData(childNode.data);
         // we add both old and new parents to changed path, as both will need to be refreshed.
         // we already added the old parent (in calling method), so just add the new parent here
-        if (details.changedPath) {
+        if (details.changedPath.isActive()) {
             var newParent = childNode.parent;
             details.changedPath.addParentNode(newParent);
         }
@@ -146,7 +164,7 @@ var GroupStage = (function () {
         var _this = this;
         leafRowNodes.forEach(function (leafToRemove) {
             _this.removeOneNode(leafToRemove, details);
-            if (details.changedPath) {
+            if (details.changedPath.isActive()) {
                 details.changedPath.addParentNode(leafToRemove.parent);
             }
         });
@@ -164,7 +182,7 @@ var GroupStage = (function () {
         // remove leaf from direct parent
         this.removeFromParent(childNode);
         // remove from allLeafChildren
-        forEachParentGroup(function (parentNode) { return main_1._.removeFromArray(parentNode.allLeafChildren, childNode); });
+        forEachParentGroup(function (parentNode) { return ag_grid_community_1._.removeFromArray(parentNode.allLeafChildren, childNode); });
         // if not group, and children are present, need to move children to a group.
         // otherwise if no children, we can just remove without replacing.
         var replaceWithGroup = childNode.hasChildren();
@@ -191,7 +209,7 @@ var GroupStage = (function () {
         });
     };
     GroupStage.prototype.removeFromParent = function (child) {
-        main_1._.removeFromArray(child.parent.childrenAfterGroup, child);
+        ag_grid_community_1._.removeFromArray(child.parent.childrenAfterGroup, child);
         var mapKey = this.getChildrenMappedKey(child.key, child.rowGroupColumn);
         child.parent.childrenMapped[mapKey] = undefined;
         // this is important for transition, see rowComp removeFirstPassFuncs. when doing animation and
@@ -218,7 +236,7 @@ var GroupStage = (function () {
         var _this = this;
         newRowNodes.forEach(function (rowNode) {
             _this.insertOneNode(rowNode, details);
-            if (details.changedPath) {
+            if (details.changedPath.isActive()) {
                 details.changedPath.addParentNode(rowNode.parent);
             }
         });
@@ -280,7 +298,7 @@ var GroupStage = (function () {
     };
     GroupStage.prototype.createGroup = function (groupInfo, parent, level, details) {
         var _this = this;
-        var groupNode = new main_1.RowNode();
+        var groupNode = new ag_grid_community_1.RowNode();
         this.context.wireBean(groupNode);
         groupNode.group = true;
         groupNode.field = groupInfo.field;
@@ -347,6 +365,9 @@ var GroupStage = (function () {
     };
     GroupStage.prototype.getGroupInfoFromCallback = function (rowNode) {
         var keys = this.getDataPath(rowNode.data);
+        if (keys === null || keys === undefined || keys.length === 0) {
+            ag_grid_community_1._.doOnce(function () { return console.warn("getDataPath() should not return an empty path for data", rowNode.data); }, 'groupStage.getGroupInfoFromCallback');
+        }
         var groupInfoMapper = function (key) { return ({ key: key, field: null, rowGroupColumn: null }); };
         return keys ? keys.map(groupInfoMapper) : [];
     };
@@ -375,37 +396,41 @@ var GroupStage = (function () {
         return res;
     };
     __decorate([
-        main_1.Autowired('selectionController'),
-        __metadata("design:type", main_1.SelectionController)
+        ag_grid_community_1.Autowired('selectionController'),
+        __metadata("design:type", ag_grid_community_1.SelectionController)
     ], GroupStage.prototype, "selectionController", void 0);
     __decorate([
-        main_1.Autowired('gridOptionsWrapper'),
-        __metadata("design:type", main_1.GridOptionsWrapper)
+        ag_grid_community_1.Autowired('gridOptionsWrapper'),
+        __metadata("design:type", ag_grid_community_1.GridOptionsWrapper)
     ], GroupStage.prototype, "gridOptionsWrapper", void 0);
     __decorate([
-        main_1.Autowired('columnController'),
-        __metadata("design:type", main_1.ColumnController)
+        ag_grid_community_1.Autowired('columnController'),
+        __metadata("design:type", ag_grid_community_1.ColumnController)
     ], GroupStage.prototype, "columnController", void 0);
     __decorate([
-        main_1.Autowired('valueService'),
-        __metadata("design:type", main_1.ValueService)
+        ag_grid_community_1.Autowired('selectableService'),
+        __metadata("design:type", ag_grid_community_1.SelectableService)
+    ], GroupStage.prototype, "selectableService", void 0);
+    __decorate([
+        ag_grid_community_1.Autowired('valueService'),
+        __metadata("design:type", ag_grid_community_1.ValueService)
     ], GroupStage.prototype, "valueService", void 0);
     __decorate([
-        main_1.Autowired('eventService'),
-        __metadata("design:type", main_1.EventService)
+        ag_grid_community_1.Autowired('eventService'),
+        __metadata("design:type", ag_grid_community_1.EventService)
     ], GroupStage.prototype, "eventService", void 0);
     __decorate([
-        main_1.Autowired('context'),
-        __metadata("design:type", main_1.Context)
+        ag_grid_community_1.Autowired('context'),
+        __metadata("design:type", ag_grid_community_1.Context)
     ], GroupStage.prototype, "context", void 0);
     __decorate([
-        main_1.PostConstruct,
+        ag_grid_community_1.PostConstruct,
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", void 0)
     ], GroupStage.prototype, "postConstruct", null);
     GroupStage = __decorate([
-        main_1.Bean('groupStage')
+        ag_grid_community_1.Bean('groupStage')
     ], GroupStage);
     return GroupStage;
 }());

@@ -1,6 +1,6 @@
 {
   "name": "ag-grid-enterprise",
-  "version": "15.0.0",
+  "version": "19.0.1",
   "homepage": "http://www.ag-grid.com/",
   "authors": [
     "Niall Crosby <niall.crosby@ag-grid.com>"
@@ -26,13 +26,13 @@
   ],
   "devDependencies": {},
   "dependencies": {},
-  "_release": "15.0.0",
+  "_release": "19.0.1",
   "_resolution": {
     "type": "version",
-    "tag": "15.0.0",
-    "commit": "cbfca105dcc4734ecb51f240227250f36a083ef6"
+    "tag": "19.0.1",
+    "commit": "939448dc97a17739fdcb48d1822feebd1540887d"
   },
   "_source": "https://github.com/ceolter/ag-grid-enterprise.git",
-  "_target": "*",
+  "_target": "19.0.1",
   "_originalSource": "ag-grid-enterprise"
 }

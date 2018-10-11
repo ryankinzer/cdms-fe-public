@@ -1,8 +1,7 @@
-// ag-grid-enterprise v15.0.0
-import { IRangeController, RangeSelection, GridCell, AddRangeSelectionParams } from "ag-grid/main";
+// ag-grid-enterprise v19.0.0
+import { IRangeController, GridPanel, RangeSelection, GridCell, AddRangeSelectionParams } from "ag-grid-community";
 export declare class RangeController implements IRangeController {
     private loggerFactory;
-    private gridPanel;
     private rowModel;
     private eventService;
     private columnController;
@@ -12,30 +11,36 @@ export declare class RangeController implements IRangeController {
     private gridOptionsWrapper;
     private columnApi;
     private gridApi;
+    private cellNavigationService;
     private logger;
+    private gridPanel;
     private cellRanges;
     private activeRange;
     private lastMouseEvent;
     private bodyScrollListener;
     private dragging;
-    private init();
-    setRangeToCell(cell: GridCell): void;
+    private autoScrollService;
+    registerGridComp(gridPanel: GridPanel): void;
+    private init;
+    setRangeToCell(cell: GridCell, appendRange?: boolean): void;
+    extendRangeToCell(toCell: GridCell): void;
+    extendRangeInDirection(startCell: GridCell, key: number): boolean;
     setRange(rangeSelection: AddRangeSelectionParams): void;
     addRange(rangeSelection: AddRangeSelectionParams): void;
     getCellRanges(): RangeSelection[];
     isEmpty(): boolean;
     isMoreThanOneCell(): boolean;
     clearSelection(): void;
-    private onBodyScroll();
+    private onBodyScroll;
     isCellInAnyRange(cell: GridCell): boolean;
-    private isCellInSpecificRange(cell, range);
+    private isCellInSpecificRange;
     getCellRangeCount(cell: GridCell): number;
-    private isRowInRange(rowIndex, floating, cellRange);
+    private isRowInRange;
     onDragStart(mouseEvent: MouseEvent): void;
-    private createNewActiveRange(cell);
-    private selectionChanged(finished, started);
-    private dispatchChangedEvent(finished, started);
+    private createNewActiveRange;
+    private selectionChanged;
+    private dispatchChangedEvent;
     onDragStop(): void;
     onDragging(mouseEvent: MouseEvent): void;
-    private updateSelectedColumns(columnFrom, columnTo);
+    private updateSelectedColumns;
 }

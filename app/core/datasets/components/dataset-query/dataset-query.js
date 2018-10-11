@@ -1,5 +1,5 @@
 ﻿
-var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$modal', 'DataSheet', '$rootScope', 'ChartService',
+var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$uibModal', 'DataSheet', '$rootScope', 'ChartService',
     'ProjectService', 'CommonService', 'SubprojectService', 
     	function($scope, $routeParams, DatasetService, $location, $modal, DataSheet, $rootScope, ChartService, ProjectService, CommonService, SubprojectService) {
 

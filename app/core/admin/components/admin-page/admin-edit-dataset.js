@@ -1,5 +1,5 @@
 ﻿
-var admin_edit_dataset = ['$scope', '$modal', '$timeout', '$routeParams', 'DatasetService', 'CommonService','ProjectService','AdminService',
+var admin_edit_dataset = ['$scope', '$uibModal', '$timeout', '$routeParams', 'DatasetService', 'CommonService','ProjectService','AdminService',
     function ($scope, $modal, $timeout, $routeParams, DatasetService, CommonService, ProjectService, AdminService ){
 
 		$scope.dataset = DatasetService.getDataset($routeParams.Id);

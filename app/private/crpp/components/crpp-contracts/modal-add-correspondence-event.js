@@ -1,5 +1,5 @@
 ﻿
-var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','SubprojectService','ServiceUtilities',
+var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', '$uibModal', 'DatasetService','SubprojectService','ServiceUtilities',
 	'$filter', '$upload','$location', '$anchorScroll',
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
 	$filter, $upload, $location, $anchorScroll){

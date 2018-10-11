@@ -1,4 +1,4 @@
-var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService', '$modal', '$location', '$window', '$rootScope', 'ProjectService',
+var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService', '$uibModal', '$location', '$window', '$rootScope', 'ProjectService',
     'CommonService','PreferencesService',
     	function ($scope, $route, $routeParams, DatasetService, $modal, $location, $window, $rootScope, ProjectService,CommonService, PreferencesService) {
 			console.log("Inside appraisalController...");

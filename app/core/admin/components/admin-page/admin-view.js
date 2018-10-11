@@ -1,5 +1,5 @@
 ﻿
-var admin_view = ['$scope', '$modal', 'DatasetService','ProjectService',
+var admin_view = ['$scope', '$uibModal', 'DatasetService','ProjectService',
     function ($scope, $modal, DatasetService, ProjectService) {
 
         //TODO: a nicer global route authorization scheme...

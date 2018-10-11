@@ -1,17 +1,17 @@
 {
   "name": "ag-grid-enterprise",
-  "version": "15.0.0",
+  "version": "19.0.1",
   "description": "ag-Grid Enterprise Features",
   "main": "main.js",
   "types": "main.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watchWebpack": "webpack --watch",
-    "build":"gulp release"
+    "build": "gulp release"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ag-grid/ag-grid-enterprise.git"
+    "url": "https://github.com/ag-grid/ag-grid.git"
   },
   "keywords": [
     "grid",
@@ -22,24 +22,26 @@
   "author": "Niall Crosby <niall.crosby@ag-grid.com>",
   "license": "Commercial",
   "bugs": {
-    "url": "https://github.com/ag-grid/ag-grid-enterprise/issues"
+    "url": "https://github.com/ag-grid/ag-grid/issues"
   },
   "homepage": "http://www.ag-grid.com/",
   "devDependencies": {
-    "gulp": "3.9.0",
-    "gulp-typescript": "2.10.0",
-    "gulp-clean": "0.3.1",
-    "typescript": "2.4.1",
-    "gulp-header": "1.7.0",
-    "merge2": "0.3.6",
-    "webpack-stream": "3.1.0",
-    "webpack": "2.2.1",
-    "style-loader": "0.13.0",
-    "css-loader": "0.23.1",
-    "gulp-rename": "1.2.2"
+    "ag-grid-community": "^19.0.0",
+    "css-loader": "^1.0.0",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-header": "^2.0.5",
+    "gulp-rename": "^1.4.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-typescript": "^4.0.2",
+    "merge2": "^1.2.2",
+    "style-loader": "^0.22.1",
+    "tslint": "^5.11.0",
+    "typescript": "2.9.2",
+    "webpack": "^3.12.0",
+    "webpack-stream": "^4.0.3"
   },
   "peerDependencies": {
-    "ag-grid": "15.0.x"
-  },
-  "dependencies": {}
+    "ag-grid-community": "^18.0.0"
+  }
 }

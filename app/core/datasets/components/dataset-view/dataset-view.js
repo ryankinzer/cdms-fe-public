@@ -3,7 +3,7 @@
 *  e.g.: http://localhost/cdms/index.html#/dataview/89433
 */
 
-var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$modal', '$location', 'DataSheet', '$route', '$rootScope', 'ChartService', 'ProjectService',
+var dataset_view = ['$scope', '$routeParams', 'DatasetService', '$uibModal', '$location', 'DataSheet', '$route', '$rootScope', 'ChartService', 'ProjectService',
     function ($scope, $routeParams, DatasetService, $modal, $location, DataSheet, $route, $rootScope, ChartService, ProjectService) {
         console.log("Inside dataview-controller.js, controller DatasetViewCtrl...");
         console.log("$routeParams.Id = " + $routeParams.Id);

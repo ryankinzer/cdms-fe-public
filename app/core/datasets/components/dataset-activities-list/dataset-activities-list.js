@@ -1,7 +1,7 @@
 ﻿
 var dataset_activities_list = ['$scope', '$routeParams',
     'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'PreferencesService',
-    '$modal', '$location', '$window', '$rootScope',
+    '$uibModal', '$location', '$window', '$rootScope',
     function ($scope, $routeParams, 
         DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
         $modal, $location, $window, $rootScope) {

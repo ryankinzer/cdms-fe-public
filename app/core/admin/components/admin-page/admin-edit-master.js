@@ -1,5 +1,5 @@
 ﻿
-var admin_edit_master = ['$scope', '$timeout', '$modal', 'DatasetService', 'AdminService', '$routeParams',
+var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'AdminService', '$routeParams',
 	function($scope, $timeout, $modal, DatasetService, AdminService, $routeParams){
 
 		$scope.datastore = DatasetService.getDatastore($routeParams.Id);

@@ -1,15 +1,14 @@
 {
   "name": "Stickyfill",
   "homepage": "https://github.com/wilddeer/stickyfill",
-  "version": "2.0.3",
-  "_release": "2.0.3",
+  "version": "2.1.0",
+  "_release": "2.1.0",
   "_resolution": {
     "type": "version",
-    "tag": "2.0.3",
-    "commit": "ec3a2ba7466515c7863eb108282ad18b10543a15"
+    "tag": "2.1.0",
+    "commit": "3abc9a957c6673ac5e709e34c39b82ca0ecd5bf0"
   },
   "_source": "https://github.com/wilddeer/stickyfill.git",
   "_target": "^2.0.3",
-  "_originalSource": "Stickyfill",
-  "_direct": true
+  "_originalSource": "Stickyfill"
 }

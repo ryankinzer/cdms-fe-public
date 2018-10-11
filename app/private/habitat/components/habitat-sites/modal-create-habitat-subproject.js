@@ -1,7 +1,7 @@
 ﻿//controller for modal-create-habSubproject.html
 // create/edit habitat subproject
 
-var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance', '$modal', 'DatasetService','CommonService','SubprojectService', 'ServiceUtilities', 
+var modal_create_habitat_subproject = ['$scope', '$rootScope', '$modalInstance', '$uibModal', 'DatasetService','CommonService','SubprojectService', 'ServiceUtilities', 
 	'$timeout', '$location', '$anchorScroll', '$document', '$upload', 
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, CommonService, SubprojectService, ServiceUtilities, 
 	$timeout, $location, $anchorScroll, $document, $upload){

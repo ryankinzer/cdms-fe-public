@@ -1,9 +1,7 @@
-// ag-grid-enterprise v15.0.0
+// ag-grid-enterprise v19.0.0
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var main_1 = require("ag-grid/main");
-var main_2 = require("ag-grid/main");
-var ag_grid_1 = require("ag-grid");
+var ag_grid_community_1 = require("ag-grid-community");
 // we cannot have 'null' as a key in a JavaScript map,
 // it needs to be a string. so we use this string for
 // storing null values.
@@ -14,19 +12,21 @@ var SetFilterModelValuesType;
     SetFilterModelValuesType[SetFilterModelValuesType["PROVIDED_CB"] = 1] = "PROVIDED_CB";
     SetFilterModelValuesType[SetFilterModelValuesType["NOT_PROVIDED"] = 2] = "NOT_PROVIDED";
 })(SetFilterModelValuesType = exports.SetFilterModelValuesType || (exports.SetFilterModelValuesType = {}));
-var SetFilterModel = (function () {
-    function SetFilterModel(colDef, rowModel, valueGetter, doesRowPassOtherFilters, suppressSorting, modelUpdatedFunc, isLoadingFunc) {
+var SetFilterModel = /** @class */ (function () {
+    function SetFilterModel(colDef, rowModel, valueGetter, doesRowPassOtherFilters, suppressSorting, modelUpdatedFunc, isLoadingFunc, valueFormatterService, column) {
         this.suppressSorting = suppressSorting;
         this.colDef = colDef;
         this.valueGetter = valueGetter;
         this.doesRowPassOtherFilters = doesRowPassOtherFilters;
         this.modelUpdatedFunc = modelUpdatedFunc;
         this.isLoadingFunc = isLoadingFunc;
-        if (rowModel.getType() === ag_grid_1.Constants.ROW_MODEL_TYPE_IN_MEMORY) {
-            this.inMemoryRowModel = rowModel;
+        this.valueFormatterService = valueFormatterService;
+        this.column = column;
+        if (rowModel.getType() === ag_grid_community_1.Constants.ROW_MODEL_TYPE_CLIENT_SIDE) {
+            this.clientSideRowModel = rowModel;
         }
         this.filterParams = this.colDef.filterParams ? this.colDef.filterParams : {};
-        if (main_1.Utils.exists(this.filterParams) && main_1.Utils.exists(this.filterParams.values)) {
+        if (ag_grid_community_1.Utils.exists(this.filterParams) && ag_grid_community_1.Utils.exists(this.filterParams.values)) {
             this.valuesType = Array.isArray(this.filterParams.values) ?
                 SetFilterModelValuesType.PROVIDED_LIST :
                 SetFilterModelValuesType.PROVIDED_CB;
@@ -46,7 +46,7 @@ var SetFilterModel = (function () {
         // the length of the array is thousands of records long
         this.selectedValuesMap = {};
         this.selectEverything();
-        this.formatter = this.filterParams.textFormatter ? this.filterParams.textFormatter : main_2.TextFilter.DEFAULT_FORMATTER;
+        this.formatter = this.filterParams.textFormatter ? this.filterParams.textFormatter : ag_grid_community_1.TextFilter.DEFAULT_FORMATTER;
     }
     // if keepSelection not set will always select all filters
     // if keepSelection set will keep current state of selected filters
@@ -84,13 +84,17 @@ var SetFilterModel = (function () {
         if (this.areValuesSync()) {
             var valuesToUse = this.extractSyncValuesToUse();
             this.setValues(valuesToUse);
+            this.filterValuesPromise = ag_grid_community_1.Promise.resolve(null);
         }
         else {
+            this.filterValuesExternalPromise = ag_grid_community_1.Promise.external();
+            this.filterValuesPromise = this.filterValuesExternalPromise.promise;
             this.isLoadingFunc(true);
             this.setValues([]);
             var callback = this.filterParams.values;
             var params = {
-                success: this.onAsyncValuesLoaded.bind(this)
+                success: this.onAsyncValuesLoaded.bind(this),
+                colDef: this.colDef
             };
             callback(params);
         }
@@ -98,6 +102,7 @@ var SetFilterModel = (function () {
     SetFilterModel.prototype.onAsyncValuesLoaded = function (values) {
         this.modelUpdatedFunc(values);
         this.isLoadingFunc(false);
+        this.filterValuesExternalPromise.resolve(values);
     };
     SetFilterModel.prototype.areValuesSync = function () {
         return this.valuesType == SetFilterModelValuesType.PROVIDED_LIST || this.valuesType == SetFilterModelValuesType.NOT_PROVIDED;
@@ -115,7 +120,7 @@ var SetFilterModel = (function () {
         var valuesToUse;
         if (this.valuesType == SetFilterModelValuesType.PROVIDED_LIST) {
             if (Array.isArray(this.filterParams.values)) {
-                valuesToUse = main_1.Utils.toStrings(this.filterParams.values);
+                valuesToUse = ag_grid_community_1.Utils.toStrings(this.filterParams.values);
             }
             else {
                 // In this case the values are async but have already been resolved, so we can reuse them
@@ -127,7 +132,7 @@ var SetFilterModel = (function () {
         }
         else {
             var uniqueValuesAsAnyObjects = this.getUniqueValues(false);
-            valuesToUse = main_1.Utils.toStrings(uniqueValuesAsAnyObjects);
+            valuesToUse = ag_grid_community_1.Utils.toStrings(uniqueValuesAsAnyObjects);
         }
         return valuesToUse;
     };
@@ -138,7 +143,7 @@ var SetFilterModel = (function () {
             return;
         }
         var uniqueValuesAsAnyObjects = this.getUniqueValues(true);
-        this.availableUniqueValues = main_1.Utils.toStrings(uniqueValuesAsAnyObjects);
+        this.availableUniqueValues = ag_grid_community_1.Utils.toStrings(uniqueValuesAsAnyObjects);
         this.sortValues(this.availableUniqueValues);
     };
     SetFilterModel.prototype.sortValues = function (values) {
@@ -149,18 +154,18 @@ var SetFilterModel = (function () {
             values.sort(this.colDef.comparator);
         }
         else {
-            values.sort(main_1.Utils.defaultComparator);
+            values.sort(ag_grid_community_1.Utils.defaultComparator);
         }
     };
     SetFilterModel.prototype.getUniqueValues = function (filterOutNotAvailable) {
         var _this = this;
         var uniqueCheck = {};
         var result = [];
-        if (!this.inMemoryRowModel) {
+        if (!this.clientSideRowModel) {
             console.error('ag-Grid: Set Filter cannot initialise because you are using a row model that does not contain all rows in the browser. Either use a different filter type, or configure Set Filter such that you provide it with values');
             return [];
         }
-        this.inMemoryRowModel.forEachLeafNode(function (node) {
+        this.clientSideRowModel.forEachLeafNode(function (node) {
             // only pull values from rows that have data. this means we skip filler group nodes.
             if (!node.data) {
                 return;
@@ -196,7 +201,7 @@ var SetFilterModel = (function () {
     };
     //sets mini filter. returns true if it changed from last value, otherwise false
     SetFilterModel.prototype.setMiniFilter = function (newMiniFilter) {
-        newMiniFilter = main_1.Utils.makeNull(newMiniFilter);
+        newMiniFilter = ag_grid_community_1.Utils.makeNull(newMiniFilter);
         if (this.miniFilter === newMiniFilter) {
             //do nothing if filter has not changed
             return false;
@@ -216,13 +221,25 @@ var SetFilterModel = (function () {
         }
         // if filter present, we filter down the list
         this.displayedValues = [];
-        var miniFilterFormatted = this.formatter(this.miniFilter);
+        var miniFilter = this.formatter(this.miniFilter);
+        // make upper case to have search case insensitive
+        var miniFilterUpperCase = miniFilter.toUpperCase();
+        //This function encapsulates the logic to check if a string matches the mini filter
+        var matchesFn = function (valueToCheck) {
+            if (valueToCheck == null) {
+                return false;
+            }
+            // allow for case insensitive searches, make both filter and value uppercase
+            var valueUpperCase = valueToCheck.toUpperCase();
+            return valueUpperCase.indexOf(miniFilterUpperCase) >= 0;
+        };
         for (var i = 0, l = this.availableUniqueValues.length; i < l; i++) {
-            var filteredValue = this.availableUniqueValues[i];
-            if (filteredValue) {
-                var filteredValueFormatted = this.formatter(filteredValue.toString());
-                if (filteredValueFormatted !== null && filteredValueFormatted.indexOf(miniFilterFormatted) >= 0) {
-                    this.displayedValues.push(filteredValue);
+            var value = this.availableUniqueValues[i];
+            if (value) {
+                var displayedValue = this.formatter(value.toString());
+                var formattedValue = this.valueFormatterService.formatValue(this.column, null, null, displayedValue);
+                if (matchesFn(displayedValue) || matchesFn(formattedValue)) {
+                    this.displayedValues.push(value);
                 }
             }
         }
@@ -327,13 +344,26 @@ var SetFilterModel = (function () {
             return null;
         }
         var selectedValues = [];
-        main_1.Utils.iterateObject(this.selectedValuesMap, function (key) {
+        ag_grid_community_1.Utils.iterateObject(this.selectedValuesMap, function (key) {
             var value = _this.keyToValue(key);
             selectedValues.push(value);
         });
         return selectedValues;
     };
     SetFilterModel.prototype.setModel = function (model, isSelectAll) {
+        var _this = this;
+        if (isSelectAll === void 0) { isSelectAll = false; }
+        if (this.areValuesSync()) {
+            this.setSyncModel(model, isSelectAll);
+        }
+        else {
+            this.filterValuesExternalPromise.promise.then(function (values) {
+                _this.setSyncModel(model, isSelectAll);
+                _this.modelUpdatedFunc(values, model);
+            });
+        }
+    };
+    SetFilterModel.prototype.setSyncModel = function (model, isSelectAll) {
         if (isSelectAll === void 0) { isSelectAll = false; }
         if (model && !isSelectAll) {
             this.selectNothing();
@@ -348,6 +378,14 @@ var SetFilterModel = (function () {
         else {
             this.selectEverything();
         }
+    };
+    SetFilterModel.prototype.onFilterValuesReady = function (callback) {
+        //This guarantees that if the user is racing to set values async into the set filter, only the first instance
+        //will be used
+        // ie Values are async and the user manually wants to override them before the retrieval of values is triggered
+        // (set filter values in the following example)
+        // http://plnkr.co/edit/eFka7ynvPj68tL3VJFWf?p=preview
+        this.filterValuesPromise.firstOneOnly(callback);
     };
     return SetFilterModel;
 }());

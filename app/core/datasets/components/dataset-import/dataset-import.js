@@ -1,6 +1,6 @@
 ﻿var dataset_import = ['$scope', '$routeParams', 'ProjectService', 'CommonService', 'SubprojectService', 'DatasetService',
     '$location', '$upload', 'ActivityParser', 'DataSheet', '$rootScope',
-    'Logger', '$route', '$modal', 'ChartService', 'ServiceUtilities',
+    'Logger', '$route', '$uibModal', 'ChartService', 'ServiceUtilities',
     function ($scope, $routeParams, ProjectService, CommonService, SubprojectService, DatasetService, $location, $upload, ActivityParser, DataSheet,
         $rootScope, Logger, $route, $modal, ChartService,
         ServiceUtilities) {
