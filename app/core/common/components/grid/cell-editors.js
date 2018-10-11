@@ -12,12 +12,16 @@ function CDMSTextareaCellEditor() { };
 
 
 var onKeyDown = function (event) {
+    console.dir(event);
     var key = event.which || event.keyCode;
     if (key == 37 ||  // left
-        key == 39 || // right
-        key == 9) {  // tab
-        event.stopPropagation();
-    }
+        key == 39 ||  // right
+        key == 9 ||   // tab
+        key == 40 ||  // down
+        key == 38)    // up
+        {    
+            event.stopPropagation();
+        }
 }
 
 

@@ -211,7 +211,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 event.node.data.rowErrorTooltip = ""; //clear the tooltip if there are no errors.
             }
 
+            //we redraw the current row/column in order to immediately update the UI about the validation result
             event.api.redrawRows({ columns: event.column });
+            var cell = event.api.getFocusedCell();
+            if ( cell ) {
+                 event.api.setFocusedCell( cell.rowIndex, cell.column );
+            }
 
         };
 
