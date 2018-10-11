@@ -177,6 +177,9 @@ datasets_module.service('GridService', ['$window', '$route',
             //dataset defined header fields 
             dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
                 if (field.FieldRoleId === FIELD_ROLE_HEADER) {
+            
+                    field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
+
                     //some col builder function here soon!! TODO
                     finalColumnDefs.HeaderFields.push({
                         headerName: field.Label,
@@ -209,6 +212,9 @@ datasets_module.service('GridService', ['$window', '$route',
             //now add in the dataset defined detail fields and set each one up for use in the grid 
             dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
                 if (field.FieldRoleId === FIELD_ROLE_DETAIL) {
+
+                    field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
+
                     //initial values for detail column definition
                     var newColDef = {
                         headerName: field.Label,
