@@ -180,7 +180,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             var validator = event.colDef.validator;
 
             console.log(" -- running cell validator: ");
-            console.dir(validator);
+            //console.dir(validator);
             //remove this field's validation errors from our row's validation errors (returns [] if none)
             event.node.data.validationErrors = validator.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
 
@@ -211,12 +211,18 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 event.node.data.rowErrorTooltip = ""; //clear the tooltip if there are no errors.
             }
 
+
+            //TODO: ok, this isn't working right, but is close enough for the moment.
             //we redraw the current row/column in order to immediately update the UI about the validation result
-            event.api.redrawRows({ columns: event.column });
+            console.dir(event);
+            //event.api.redrawRows({ columns: event.column });
+            event.api.redrawRows({rowNodes: [event.node] });
             var cell = event.api.getFocusedCell();
-            if ( cell ) {
-                 event.api.setFocusedCell( cell.rowIndex, cell.column );
-            }
+            //console.dir(cell);
+            //if ( cell && cell.column.colDef.ControlType !== "select") {
+            //    console.log(" ---- set focus --- ");
+                event.api.setFocusedCell( cell.rowIndex, cell.column );
+            //}
 
         };
 

@@ -16,7 +16,7 @@ var onKeyDown = function (event) {
     var key = event.which || event.keyCode;
     if (key == 37 ||  // left
         key == 39 ||  // right
-        key == 9 ||   // tab
+        //key == 9 ||   // tab
         key == 40 ||  // down
         key == 38)    // up
         {    
@@ -42,7 +42,7 @@ CDMSMultiselectCellEditor.prototype.init = function (params) {
     _this.values = params.values;
     _this.container = document.createElement('div');
     _this.container.style = "border-radius: 3px; border: 1px solid grey;background: #e6e6e6;padding: 1px;";
-    //this.container.onkeydown = onKeyDown
+    _this.container.onkeydown = onKeyDown;
     _this.eSelect = document.createElement("select");
     _this.eSelect.multiple = "multiple";
     _this.eSelect.size = 7;

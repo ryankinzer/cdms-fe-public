@@ -63,7 +63,7 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
     //iterate each validation in "Validation" field (we can have more than one separated by semicolons) 
     // validate any of the constraints that are "number" (float, int, # of digits, etc.)
     this.validation.forEach(function (val) {
-        console.dir(val);
+        //console.dir(val);
         try {
 
             //if this validation is a "number" constraint
