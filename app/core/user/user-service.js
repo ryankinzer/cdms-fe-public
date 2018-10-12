@@ -23,6 +23,13 @@ user_module.factory('GetMyDatasetsAction', ['$resource', function ($resource) {
     });
 }]);
 
+user_module.factory('GetMyLastUpdatedDatasets', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/GetMyLastUpdatedDatasets', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
+
 /*
 * define the service that can be used by any module in our application to work with projects.
 */
@@ -30,13 +37,15 @@ user_module.service('UserService', ['$q',
     'SaveUserInfo',
     'GetMyProjectsAction',
     'SaveUserPreferenceAction',
-    'GetMyDatasetsAction', 
+    'GetMyDatasetsAction',
+    'GetMyLastUpdatedDatasets',
 
     function ($q,
         SaveUserInfo,
         GetMyProjectsAction,
         SaveUserPreferenceAction,
-        GetMyDatasetsAction) {
+        GetMyDatasetsAction,
+        GetMyLastUpdatedDatasets) {
 
         var service = {
 
@@ -75,6 +84,10 @@ user_module.service('UserService', ['$q',
                     console.log("scope.savePreferencesResults.failure = " + scope.savePreferencesResults.failure);
                 });
 
+            },
+
+            getMyLastUpdatedDatasets: function () { 
+                return GetMyLastUpdatedDatasets.query();
             },
 
 

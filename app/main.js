@@ -37,6 +37,8 @@ define([
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 
+            $routeProvider.when('/dashboard', { templateUrl: 'app/core/user/components/landing-page/templates/landing-page.html', controller: 'LandingPage'});
+
             $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'ProjectListCtrl'});
             $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-landing.html', controller: 'ProjectLandingCtrl'});
             $routeProvider.when('/projectFiles/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-files.html', controller: 'ProjectFilesCtrl'});
@@ -71,7 +73,7 @@ define([
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
 
 	        //when all else fails...
-	        $routeProvider.otherwise({redirectTo: '/mydata'});
+	        $routeProvider.otherwise({redirectTo: '/dashboard'});
 	    }]);
 
 	//any functions in here are available to EVERY scope.  use sparingly!

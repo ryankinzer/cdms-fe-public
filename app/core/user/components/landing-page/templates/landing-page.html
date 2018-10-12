@@ -1,18 +1,38 @@
 <ul class="breadcrumb">
     <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
-    <li class="active">My Datasets</li>
+    <li class="active">Dashboard</li>
 </ul>
 
-<h3>Your favorite datasets</h3>
-<p>Below are the datasets you've added to your favorites list.</p>
+<div class="container">
+    <div class="row">
+        <div class="col-sm panel panel-default">
+            <div class="panel-body">
+                <h3>Last Activities</h3>
+                <ul>
+                    <li ng-repeat="update in mylastupdated"><a title="{{update.ProjectName}}" href="#!/{{update.activitiesRoute}}/{{update.DatasetId}}">{{update.LastUpdated}} - {{update.DatasetName}}</a></li>
+                </ul>
+                <div ng-show="mylastupdated.length == 0">No activities yet.</div>
+            </div>
+        </div>
 
-<div class="panel panel-default">
-  <div class="panel-body" ng-repeat="store in favoriteDatasetStores">
-  		<!--<h3>{{store.Datastore.Name}}</h3><button ng-show="false" ng-click="go('query/'+store.Datastore.Id)" class="btn btn-xs">Query</button> <button ng-click="openReportWindow(store.Datastore.TablePrefix)" class="btn btn-xs">Reports</button>-->
-  		<h3>{{store.Datastore.Name}}</h3><button ng-show="store.Datastore.Id" ng-click="go('query/'+store.Datastore.Id)" class="btn btn-xs">Query</button> <button ng-click="openReportWindow(store.Datastore.TablePrefix)" class="btn btn-xs">Reports</button>
-  		<hr/>
-    	<ul>
-    		<li ng-repeat="dataset in store.favoriteDatasets"><a href="#/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}}</a></li>
-    	</ul>
-  </div>
+        <div class="col-sm panel panel-default">
+            <div class="panel-body">
+                <h3>My Datasets</h3>
+                <ul>
+                    <li ng-repeat="dataset in mydatasets"><a href="#!/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}}</a></li>
+                </ul>
+                <div ng-show="mydatasets.length == 0">No favorited datasets yet.  Click the star when viewing a dataset to favorite one.</div>
+            </div>
+
+            <div class="panel-body">
+                <h3>My Projects</h3>
+                <ul>
+                    <li ng-repeat="project in myprojects"><a href="#/projects/{{project.Id}}">{{project.Name}}</a></li>
+                </ul>
+                <div ng-show="myprojects.length == 0">No favorited projects yet. Click the star when viewing a project to favorite one.</div>
+            </div>
+
+        </div>
+
+    </div>
 </div>
