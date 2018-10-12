@@ -1,23 +1,23 @@
 ﻿
-// preferences factories and service
+// user preferences factories and service
 
-preferences_module.factory('SaveUserInfo', ['$resource', function ($resource) {
+user_module.factory('SaveUserInfo', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/user/saveuserinfo');
 }]);
 
-preferences_module.factory('GetMyProjectsAction', ['$resource', function ($resource) {
+user_module.factory('GetMyProjectsAction', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/user/getmyprojects', {}, {
         query: { method: 'GET', params: {}, isArray: true }
     });
 }]);
 
-preferences_module.factory('SaveUserPreferenceAction', ['$resource', function ($resource) {
+user_module.factory('SaveUserPreferenceAction', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/user/saveuserpreference', {}, {
         save: { method: 'POST', isArray: false }
     });
 }]);
 
-preferences_module.factory('GetMyDatasetsAction', ['$resource', function ($resource) {
+user_module.factory('GetMyDatasetsAction', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/user/getmydatasets', {}, {
         query: { method: 'GET', params: {}, isArray: true }
     });
@@ -26,7 +26,7 @@ preferences_module.factory('GetMyDatasetsAction', ['$resource', function ($resou
 /*
 * define the service that can be used by any module in our application to work with projects.
 */
-preferences_module.service('PreferencesService', ['$q',
+user_module.service('UserService', ['$q',
     'SaveUserInfo',
     'GetMyProjectsAction',
     'SaveUserPreferenceAction',

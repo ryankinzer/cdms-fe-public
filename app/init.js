@@ -29,7 +29,7 @@
       'core/projects/projects-module',
       'core/datasets/datasets-module',
       'core/admin/admin-module',
-      'core/preferences/preferences-module',
+      'core/user/user-module',
       'private/all-modules',
       'private/crpp/crpp-module',
       'private/habitat/habitat-module',

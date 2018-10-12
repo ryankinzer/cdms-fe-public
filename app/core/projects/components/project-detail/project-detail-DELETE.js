@@ -4,10 +4,10 @@
 *
 */
 
-var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
     '$rootScope', '$uibModal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, UserService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 		//console.log("Inside controllers.js, projectDatasetsController...");
 		//console.log("routeParams.Id = " + routeParams.Id);
@@ -191,7 +191,7 @@ var project_detail = ['$scope', '$routeParams','SubprojectService', 'ProjectServ
 
             $rootScope.Profile.toggleProjectFavorite(scope.project);
 
-            PreferencesService.saveUserPreference("Projects", $rootScope.Profile.favoriteProjects.join(), scope.results);
+            UserService.saveUserPreference("Projects", $rootScope.Profile.favoriteProjects.join(), scope.results);
 
             var watcher = scope.$watch('results', function(){
                 if(scope.results.done)

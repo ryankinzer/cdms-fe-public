@@ -2,10 +2,10 @@
 *   This page loads the project editors
 */
 
-var project_editors = ['$scope', '$routeParams','SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var project_editors = ['$scope', '$routeParams','SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
     '$rootScope', '$uibModal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, UserService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 
         scope.OnTab = "Editors";

@@ -24,7 +24,7 @@ define([
       'ProjectModule',
       'DatasetModule',
       'AdminModule',
-      'PreferencesModule',
+      'UserModule',
 
       'ngFileUpload',				
       'angularCharts',					
@@ -44,9 +44,9 @@ define([
             $routeProvider.when('/projectEditors/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-editors.html', controller: 'ProjectEditorsCtrl'});
             $routeProvider.when('/projectLists/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-lists.html', controller: 'ProjectListsCtrl'});
 
-            $routeProvider.when('/mydata', { templateUrl: 'app/core/preferences/components/dataset-preferences/templates/mydatasets.html', controller: 'MyDatasetsCtrl'});
-            $routeProvider.when('/myprojects', { templateUrl: 'app/core/preferences/components/project-preferences/templates/myprojects.html', controller: 'MyProjectsCtrl'});
-            $routeProvider.when('/mypreferences', { templateUrl: 'app/core/preferences/components/my-preferences/templates/mypreferences.html', controller: 'MyPreferencesCtrl'});
+            $routeProvider.when('/mydata', { templateUrl: 'app/core/user/components/dataset-preferences/templates/mydatasets.html', controller: 'MyDatasetsCtrl'});
+            $routeProvider.when('/myprojects', { templateUrl: 'app/core/user/components/project-preferences/templates/myprojects.html', controller: 'MyProjectsCtrl'});
+            $routeProvider.when('/mypreferences', { templateUrl: 'app/core/user/components/my-preferences/templates/mypreferences.html', controller: 'MyPreferencesCtrl'});
             $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit'});
             $routeProvider.when('/dataview/:Id', { templateUrl: 'app/core/datasets/components/dataset-view/templates/dataset-view.html', controller: 'DatasetViewCtrl'});
             $routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-form/templates/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});
@@ -71,7 +71,7 @@ define([
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
 
 	        //when all else fails...
-	        $routeProvider.otherwise({redirectTo: '/projects'});
+	        $routeProvider.otherwise({redirectTo: '/mydata'});
 	    }]);
 
 	//any functions in here are available to EVERY scope.  use sparingly!

@@ -2,10 +2,10 @@
 *   This page loads the project files (gallery and documents)
 */
 
-var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
     '$rootScope', '$uibModal', '$sce', '$window', '$http', '$timeout',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http, $timeout,
+    function (scope, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, UserService, $rootScope, $modal, $sce, $window, $http, $timeout,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 		
         scope.OnTab = "Files";

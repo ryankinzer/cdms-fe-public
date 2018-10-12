@@ -1,9 +1,9 @@
 ﻿
-var dataset_preferences = ['$scope', '$rootScope', '$location', 'DatasetService','PreferencesService','$window',
-    function ($scope, $rootScope, $location, DatasetService, PreferencesService, $window){
+var dataset_preferences = ['$scope', '$rootScope', '$location', 'DatasetService','UserService','$window',
+    function ($scope, $rootScope, $location, DatasetService, UserService, $window){
 
 		//var mydatasets = getByName($rootScope.Profile.UserPreferences, 'Datasets');
-		$scope.mydatasets = PreferencesService.getMyDatasets();
+		$scope.mydatasets = UserService.getMyDatasets();
 		$scope.favoriteDatasetStores = {};
 
 		$scope.$watch('mydatasets',function(){

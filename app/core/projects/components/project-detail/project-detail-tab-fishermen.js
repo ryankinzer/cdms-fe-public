@@ -1,10 +1,10 @@
 ﻿//this is a nested controller used on the project-details page to load
 // the fishermen tab if it is a harvest/creel project. 
 
-var tab_fishermen = ['$scope', '$timeout', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'PreferencesService',
+var tab_fishermen = ['$scope', '$timeout', '$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
     '$rootScope', '$uibModal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
-    function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, PreferencesService, $rootScope, $modal, $sce, $window, $http,
+    function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, UserService, $rootScope, $modal, $sce, $window, $http,
         ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
 
         //console.log("Inside tab fishermen controller...");

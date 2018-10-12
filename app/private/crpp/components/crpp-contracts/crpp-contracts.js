@@ -268,7 +268,7 @@ var crpp_contracts = ['$scope', '$route', '$routeParams', 'DatasetService', '$ui
 
                 $rootScope.Profile.toggleDatasetFavorite($scope.dataset);
                 
-                PreferencesService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
+                UserService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
 
                 var watcher = $scope.$watch('results', function(){
                     if($scope.results.done)

@@ -1,9 +1,9 @@
 ﻿
 var dataset_seasons_list = ['$scope', '$routeParams',
-    'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'PreferencesService',
+    'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'UserService',
     '$uibModal', '$location', '$window', '$rootScope',
     function ($scope, $routeParams,
-        DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
+        DatasetService, SubprojectService, ProjectService, CommonService, UserService,
         $modal, $location, $window, $rootScope) {
 
         console.log("Inside dataset-seasons-list.js...");

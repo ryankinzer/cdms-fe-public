@@ -1,6 +1,6 @@
 var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService', '$uibModal', '$location', '$window', '$rootScope', 'ProjectService',
-    'CommonService','PreferencesService',
-    	function ($scope, $route, $routeParams, DatasetService, $modal, $location, $window, $rootScope, ProjectService,CommonService, PreferencesService) {
+    'CommonService','UserService',
+    	function ($scope, $route, $routeParams, DatasetService, $modal, $location, $window, $rootScope, ProjectService,CommonService, UserService) {
 			console.log("Inside appraisalController...");
 			console.log("$routeParams.Id = " + $routeParams.Id);
 
@@ -352,7 +352,7 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
 
                 $rootScope.Profile.toggleDatasetFavorite($scope.dataset);
                 
-                PreferencesService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
+                UserService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
 
                 var watcher = $scope.$watch('results', function(){
                     if($scope.results.done)

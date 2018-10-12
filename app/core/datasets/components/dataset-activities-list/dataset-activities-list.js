@@ -1,9 +1,9 @@
 ﻿
 var dataset_activities_list = ['$scope', '$routeParams',
-    'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'PreferencesService',
+    'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'UserService',
     '$uibModal', '$location', '$window', '$rootScope',
     function ($scope, $routeParams, 
-        DatasetService, SubprojectService, ProjectService, CommonService, PreferencesService,
+        DatasetService, SubprojectService, ProjectService, CommonService, UserService,
         $modal, $location, $window, $rootScope) {
 			
 		console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
@@ -802,7 +802,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             $rootScope.Profile.toggleDatasetFavorite($scope.dataset);
 
-            PreferencesService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
+            UserService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
 
             var watcher = $scope.$watch('results', function () {
                 if ($scope.results.done) {
