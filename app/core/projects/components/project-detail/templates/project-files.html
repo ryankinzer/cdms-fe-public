@@ -1,0 +1,41 @@
+<!-- Header shows project heading information, favorites and project image  -->
+<div ng-include="'app/core/projects/components/project-detail/templates/project-header.html'"></div>
+
+<div ng-show="AuthorizedToViewProject">
+
+    <div project-role="editor">
+        <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="newGalleryFile()">Upload a new file</button>
+    </div>
+
+    <h3>Images</h3>
+    <div class="project-files">
+        <!--
+        <div style="padding: 8px; width: 260px;">
+            <input class="form-control" ng-model="GalleryFilterOptions.filterText" placeholder="Find Images" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>
+        </div>-->
+
+        <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+            <div id="gallery-tab-grid" class="ag-theme-blue gridStyle-small"></div>
+        </div>
+
+        <div class="data-tab-grid-footer">Number of images in this project: {{project.Images.length}}</div>
+
+    </div>
+    <br />
+    <hr />
+    <h3>Documents</h3>
+    <div class="project-files">
+        <!--
+        <div style="padding: 8px; width: 260px;">
+            <input class="form-control" ng-model="GalleryFilterOptions.filterText" placeholder="Find Images" type="text"/><img class="right" style="margin-top: -30px;" src="assets/images/search-sm.png"/>
+        </div>-->
+
+        <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+            <div id="docs-tab-grid" class="ag-theme-blue gridStyle-small"></div>
+        </div>
+
+        <div class="data-tab-grid-footer">Number of documents in this project: {{project.Docs.length}}</div>
+
+    </div>
+
+</div>

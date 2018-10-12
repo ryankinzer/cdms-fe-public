@@ -1,0 +1,12 @@
+<!-- Header shows project heading information, favorites and project image  -->
+<div ng-include="'app/core/projects/components/project-detail/templates/project-header.html'"></div>
+
+<div ng-show="AuthorizedToViewProject">
+
+    <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+        <div id="data-tab-grid" class="ag-theme-blue gridStyle-small"></div>
+    </div>
+
+    <div class="data-tab-grid-footer">Total datasets in this project: {{datasets.length}}</div>
+
+</div>

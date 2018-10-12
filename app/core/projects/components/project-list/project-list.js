@@ -219,7 +219,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                         //console.dir(params.node.data);
                         return '<div>' +
                             '<a title="' + params.node.data.Description
-                            + '" href="#/projects/' + params.node.data.Id + '">'
+                            + '" href="/index.html#!/projects/' + params.node.data.Id + '">'
                             + params.node.data.Name + '</a>' +
                             '</div>';
                     };

@@ -37,8 +37,12 @@ define([
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 
-            $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'project-list-ctrl'});
-            $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets.html', controller: 'project-detail-ctrl'});
+            $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'ProjectListCtrl'});
+            $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-landing.html', controller: 'ProjectLandingCtrl'});
+            $routeProvider.when('/projectFiles/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-files.html', controller: 'ProjectFilesCtrl'});
+            $routeProvider.when('/projectData/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-data.html', controller: 'ProjectDataCtrl'});
+            $routeProvider.when('/projectEditors/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-editors.html', controller: 'ProjectEditorsCtrl'});
+            $routeProvider.when('/projectLists/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-lists.html', controller: 'ProjectListsCtrl'});
 
             $routeProvider.when('/mydata', { templateUrl: 'app/core/preferences/components/dataset-preferences/templates/mydatasets.html', controller: 'MyDatasetsCtrl'});
             $routeProvider.when('/myprojects', { templateUrl: 'app/core/preferences/components/project-preferences/templates/myprojects.html', controller: 'MyProjectsCtrl'});
