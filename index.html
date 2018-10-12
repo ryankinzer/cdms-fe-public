@@ -51,56 +51,70 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-default" role="navigation">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
+
+
+    <nav class="navbar navbar-expand-lg navbar-light " style="background-color: #e3f2fd;">
         <a class="navbar-brand" href="#">CDMS</a>
-      </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-          <li><a href="#">Projects</a></li>
-          <li><a href="#/myprojects">My Projects</a></li>
-          <li><a href="#/mydata">My Datasets</a></li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tools <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="http://gis-sql/Reports">Reports</a></li>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Projects</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Maps</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Files</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Data</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tools
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Reports</a>
+                        <a class="dropdown-item" href="#">Query</a>
+                        <div class="dropdown-divider">External Resources</div>
+                        <a class="dropdown-item" href="#">ArcGIS Online</a>
+                        <a class="dropdown-item" href="#">GIS Web</a>
+                    </div>
+                </li>
+                <li ng-cloak ng-show="Profile.isAdmin()" class="nav-item">
+                    <a class="nav-link" href="#">Admin</a>
+                </li>
             </ul>
-          </li>
-          <li ng-show="Profile.isAdmin()"><a href="#/admin">Admin</a></li>
-        </ul>
+            <ul class="navbar-nav navbar-right">
+                <li class="dropdown" ng-cloak>
+                    <a class="nav-item nav-link dropdown-toggle" data-toggle="dropdown">{{Profile.Fullname}}</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#/mypreferences">Preferences</a></li>
+                        <li class="divider"></li>
+                        <li><a href="login.html#/logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
 
-        <ul class="nav navbar-nav navbar-right">
-		  <!-- Temporarily removed the Help button, because the part has not been developed yet.-->
-          <!--<li><a href="{{config.CDMS_DOCUMENTATION_URL}}" target="_blank">Help</a></li>-->
-          <li class="dropdown" ng-cloak>
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{Profile.Fullname}}<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <!--<li><a href="#">Preferences</a></li>-->
-              <li><a href="#/mypreferences">Preferences</a></li>
-              <li class="divider"></li>
-              <li><a href="login.html#/logout">Logout</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div><!-- /.navbar-collapse -->
+        </div>
     </nav>
+
     <div id="wrap">
         <div class="well well-small" style="margin: 20px;">
-          <div class="view-container">
-            <div ng-view class="view-frame"></div>
-          </div>
+            <div class="view-container">
+                <div ng-view class="view-frame"></div>
+            </div>
         </div>
         <div id="push"></div>
     </div>
-<div ng-include="'app/core/common/templates/footer.html'"></div>
+
+    <div ng-include="'app/core/common/templates/footer.html'"></div>
 </body>
 </html>

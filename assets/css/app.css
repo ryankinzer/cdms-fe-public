@@ -1,10 +1,4 @@
 
-.navbar {
-	background-image: linear-gradient(#49567F, #1E2B52 60%);
-}
-
-
-
 html {
   background: url(../images/eobg.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -351,8 +345,8 @@ table.metadata td
 	border: solid 1px lightgray;
 }
 
-.nav-buttons{
-	width: 28px;
+.nav-item{
+	margin-left: 25px;
 	cursor: pointer;
 }
 
