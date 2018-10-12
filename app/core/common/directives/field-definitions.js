@@ -122,18 +122,6 @@ common_module.directive('ctuirQaStatusSelectField',
     });
 
 
-common_module.directive('ctuirRowQaStatusSelectField',
-    function(){
-
-        var result = {
-            templateUrl: 'app/core/common/templates/form-fields/field-row-qa-status-select.html',
-            restrict: 'E',
-        };
-
-        return result;
-
-    });
-
 
 
 common_module.directive('ctuirTimeField',
@@ -364,4 +352,18 @@ common_module.directive('multiselect', function () {
             }
  
         };
+});
+
+common_module.directive('convertToNumber', function () {
+    return {
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModel) {
+            ngModel.$parsers.push(function (val) {
+                return parseInt(val, 10);
+            });
+            ngModel.$formatters.push(function (val) {
+                return '' + val;
+            });
+        }
+    };
 });

@@ -43,7 +43,7 @@ var project_data = ['$scope', '$routeParams','SubprojectService', 'ProjectServic
             var div = document.createElement('div');
 
             var linkBtn = document.createElement('a');
-            linkBtn.href = '#/' + param.data.activitiesRoute + '/' + param.data.Id;
+            linkBtn.href = '#!/' + param.data.activitiesRoute + '/' + param.data.Id;
             linkBtn.innerHTML = param.data.Name;
 
             div.appendChild(linkBtn);

@@ -46,14 +46,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
             // and turns it into something like this:  2017-07-09 20:07:00
             // If you add 5 minutes to the time, it will still come out like this:  2017-07-09 20:07:00
             //return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:MM') + '</a>';
-            return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:mm') + '</a>';
+            return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:mm') + '</a>';
         };
 
         var yearReportedTemplate = function (params) {
             if (params.node.data.headerdata.YearReported === undefined)
                 return;
             else
-                return '<a href="#/dataview/' + params.node.data.Id
+                return '<a href="#!/dataview/' + params.node.data.Id
                 + '">' + params.node.data.headerdata.YearReported + '</a>';
         };
 
@@ -61,17 +61,17 @@ var dataset_activities_list = ['$scope', '$routeParams',
             if (params.node.data.headerdata.RunYear === undefined)
                 return;
             else
-                return '<a href="#/dataview/' + params.node.data.Id
+                return '<a href="#!/dataview/' + params.node.data.Id
                     + '">' + params.node.data.headerdata.RunYear + '</a>';
         };
 
         var desclinkTemplate = function (params) {
-            return '<a href="#/dataview/' + params.node.data.Id
+            return '<a href="#!/dataview/' + params.node.data.Id
                 + '">' + params.node.data.Description + '</a>';
         };
 
         var allotmentTemplate = function (params) {
-            return '<a href="#/dataview/' + params.node.data.Id
+            return '<a href="#!/dataview/' + params.node.data.Id
                 + '">' + params.node.data.headerdata.Allotment + '</a>';
         };
 
@@ -86,7 +86,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         var editButtonTemplate = function (params) {
             return '<div project-role="editor">' +
-                '<a href="#/edit/' + params.node.data.Id + '">Edit</a>' +
+                '<a href="#!/edit/' + params.node.data.Id + '">Edit</a>' +
                 '</div>';
         };
 

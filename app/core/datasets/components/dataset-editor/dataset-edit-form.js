@@ -5,9 +5,9 @@
 
 
 var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
-    'ActivityParser', 'GridService', '$upload',
+    'ActivityParser', 'GridService',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
-        ActivityParser, GridService, $upload) {
+        ActivityParser, GridService) {
 
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
         
