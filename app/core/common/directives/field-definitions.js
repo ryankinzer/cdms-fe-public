@@ -231,7 +231,7 @@ common_module.directive('ctuirLookupField',
     });
 
 common_module.directive('ctuirFileField',
-    function($modal){
+    function($uibModal){
         var result = {
             templateUrl: 'app/core/common/templates/form-fields/field-file.html',
             restrict: 'E',
@@ -241,7 +241,7 @@ common_module.directive('ctuirFileField',
     });
 
 common_module.directive('ctuirTempWaypointFileField',
-    function($modal){
+    function($uibModal){
         var result = {
             templateUrl: 'app/core/common/templates/form-fields/field-waypoint-file.html',
             restrict: 'E',
@@ -251,7 +251,7 @@ common_module.directive('ctuirTempWaypointFileField',
     });
 
 common_module.directive('ctuirLinkField',
-    function($modal){
+    function($uibModal){
         var result = {
             templateUrl: 'app/core/common/templates/form-fields/field-link.html',
             restrict: 'E',

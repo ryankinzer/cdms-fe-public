@@ -25,7 +25,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 */
 
         //page-level errors
-        $scope.errors = { heading: [] };
+        //$scope.errors = { heading: [] };
 
 //        $scope.datasetId = null;
 
@@ -300,7 +300,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
                 //console.log("$scope.row (header fields/data) is done... what do we have in the end?");
                 //console.dir($scope.row);
+                //$scope.dataAgGridOptions.api.autoSizeColumns();
 
+                GridService.autosizeColumns($scope.dataAgGridOptions);
 
             }, 0);
 

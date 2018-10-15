@@ -247,6 +247,15 @@ datasets_module.service('GridService', ['$window', '$route',
             return finalColumnDefs;
         };
 
+        //pass a grid columndefs and we'll autosize the columns
+        service.autosizeColumns = function (coldefObject) {
+            var allColumnIds = [];
+            coldefObject.columnApi.getAllColumns().forEach( function(columnDef) {
+                allColumnIds.push(columnDef);
+            });
+            coldefObject.columnApi.autoSizeColumns(allColumnIds);
+        };
+
         return service;
 
     }]);
