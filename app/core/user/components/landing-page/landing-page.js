@@ -4,6 +4,6 @@ var landing_page = ['$scope', '$rootScope', '$location', 'DatasetService','UserS
 
 		$scope.mydatasets = UserService.getMyDatasets();
         $scope.myprojects = UserService.getMyProjects();
-        $scope.mylastupdated = UserService.getMyLastUpdatedDatasets();
+        //$scope.mylastupdated = UserService.getMyLastUpdatedDatasets();
 
 }];

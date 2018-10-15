@@ -7,29 +7,23 @@
     <div class="row">
         <div class="col-sm panel panel-default" style="margin-right:10px;">
             <div class="panel-body">
-                <h3>Last Activities</h3>
-                <ul>
-                    <li ng-repeat="update in mylastupdated"><a title="{{update.ProjectName}}" href="#!/{{update.activitiesRoute}}/{{update.DatasetId}}">{{update.LastUpdated}} - {{update.DatasetName}}</a></li>
-                </ul>
-                <div ng-show="mylastupdated.length == 0">No activities yet.</div>
-            </div>
-        </div>
-
-        <div class="col-sm panel panel-default">
-            <div class="panel-body">
                 <h3>My Datasets</h3>
                 <ul>
                     <li ng-repeat="dataset in mydatasets"><a href="#!/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}}</a></li>
                 </ul>
-                <div ng-show="mydatasets.length == 0">No favorited datasets yet.  Click the star when viewing a dataset to favorite one.</div>
+                <div ng-cloak ng-show="mydatasets.length == 0">No favorited datasets yet.  Click the star when viewing a dataset to favorite one.</div>
             </div>
 
+        </div>
+
+        <div class="col-sm panel panel-default">
+            
             <div class="panel-body">
                 <h3>My Projects</h3>
                 <ul>
                     <li ng-repeat="project in myprojects"><a href="#/projects/{{project.Id}}">{{project.Name}}</a></li>
                 </ul>
-                <div ng-show="myprojects.length == 0">No favorited projects yet. Click the star when viewing a project to favorite one.</div>
+                <div ng-cloak ng-show="myprojects.length == 0">No favorited projects yet. Click the star when viewing a project to favorite one.</div>
             </div>
 
         </div>
