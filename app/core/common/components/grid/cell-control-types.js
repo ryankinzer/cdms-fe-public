@@ -20,7 +20,7 @@ var MultiselectControlType = function (cdms_field, col_def) {
     //if so then define our cell editor and validator.
     col_def.cellEditor = CDMSMultiselectCellEditor;
     col_def.cellEditorParams = {
-        values: getPossibleValuesObjects(cdms_field.PossibleValues)
+        values: getJsonObjects(cdms_field.PossibleValues)
     };
     col_def.cellValidator = CDMSMultiselectCellValidator;
     col_def.valueGetter = function (params) {
@@ -47,7 +47,7 @@ var SelectControlType = function (cdms_field, col_def) {
     //if so then define our cell editor and validator.
     col_def.cellEditor = CDMSSelectCellEditor; //works for standard cdms values: ["label"] or {"alias":"label"}
     col_def.cellEditorParams = {
-        values: getPossibleValuesObjects(cdms_field.PossibleValues)
+        values: getJsonObjects(cdms_field.PossibleValues)
     };
     col_def.cellValidator = CDMSSelectCellValidator;
     col_def.valueFormatter = function (params) {

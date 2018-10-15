@@ -39,7 +39,7 @@ datasets_module.service('GridService', ['$window', '$route',
                     if (col_def.hasOwnProperty('cellEditorParams')) {
 
                         if (col_def.hasOwnProperty('PossibleValues'))
-                            col_def.cellEditorParams.values = getPossibleValuesObjects(col_def.PossibleValues);
+                            col_def.cellEditorParams.values = getJsonObjects(col_def.PossibleValues);
                         
                         col_def.setPossibleValues = function (in_values) {
                             this.PossibleValues = in_values;
@@ -69,6 +69,8 @@ datasets_module.service('GridService', ['$window', '$route',
                         },
                     };
 
+                    //set Default if exists
+                    service.fireRule("DefaultValue",
 
                 }
                 else {
@@ -255,6 +257,148 @@ datasets_module.service('GridService', ['$window', '$route',
             });
             coldefObject.columnApi.autoSizeColumns(allColumnIds);
         };
+
+
+        // Called to validate a cell value (like after editing or first time display). 
+        //  once a cell is validated, if there are errors, here is the situation:
+        //  (data represents the row)
+        //  data.validationErrors is an array of errors from this cell + previously set errors from other cells in this row
+        //  data.rowHasError = true (or false if no error)
+        //  data.rowErrorTooltip = "error messages" from all validation errors for this cell for display as a tooltip (displayed on hover)
+        // returns boolean as to whether the field was valid or not.
+        service.validateCell = function (event) { 
+
+            console.log(" --- validate cell for event : ");
+            console.dir(event);
+
+            if (!event.colDef.hasOwnProperty('validator'))
+                return false;
+
+            var validator = event.colDef.validator;
+
+            console.log(" -- running cell validator -- ");
+            //console.dir(validator);
+            //remove this field's validation errors from our row's validation errors (returns [] if none)
+            event.node.data.validationErrors = validator.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
+
+            //validate this cell's value - returns array of errors if any
+            var fieldValidationErrors = validator.validate(event);
+            //console.dir(fieldValidationErrors);
+
+            //merge in any row errors with this cell's errors.
+            event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
+            //console.dir(fieldValidationErrors);
+
+            //set validation status
+            event.node.data.rowHasError = ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0));
+
+            //collect error messages into a tooltip for the cells with error/s
+            if (event.node.data.rowHasError) {
+                event.node.data.validationErrors.forEach(function (error, index) {
+                    event.node.data.rowErrorTooltip = (index === 0) ? "" : event.node.data.rowErrorTooltip + "\n"; //either initialize to "" or add a newline
+
+                    //flatten the error messages for this cell
+                    event.node.data.rowErrorTooltip = event.node.data.rowErrorTooltip +
+                        "[" + error.field.DbColumnName + "] " + error.message;
+
+                    //console.log("validation errors for [" + error.field.DbColumnName + "] " + event.node.data.rowErrorTooltip);
+                    //console.dir(event.node.data);
+
+                });
+            }
+            else {
+                event.node.data.rowErrorTooltip = ""; //clear the tooltip if there are no errors.
+            }
+
+            return (fieldValidationErrors.length === 0); //true if we no errors (is valid)
+
+        };
+
+
+        service.refreshGrid = function (event) {
+            //TODO: ok, this isn't working right, but is close enough for the moment.
+            //we redraw the current row/column in order to immediately update the UI about the validation result
+            //console.dir(event);
+            //event.api.redrawRows({ columns: event.column });
+            event.api.redrawRows({rowNodes: [event.node] });
+            var cell = event.api.getFocusedCell();
+            //console.dir(cell);
+            //if ( cell && cell.column.colDef.ControlType !== "select") {
+            //    console.log(" ---- set focus --- ");
+                event.api.setFocusedCell( cell.rowIndex, cell.column );
+            //}
+        };
+
+
+
+        service.validateGrid = function (params) {
+            console.log(" -- NOT validating the whole grid FIXME! --");
+
+/*
+            //get all of the columns for the grid
+            var gridColumns = params.columnApi.getAllColumns();
+
+            //iterate each node, columns and validate the cell
+            params.api.forEachNode(function (node, index) {
+                gridColumns.forEach(function (column) {
+                    $scope.agValidateCell({
+                        node: node,
+                        colDef: column.colDef,
+                        value: node.data[column.colDef.field],
+                        api: params.api,
+                    })
+                });
+
+            });
+*/
+        };
+
+
+
+
+
+        service.fireRule = function (type, event, scope) { //row, field, value, headers, errors, scope) {
+            
+            if (!event.colDef.hasOwnProperty('cdmsField'))
+                return;
+
+            var MasterFieldRule = event.colDef.cdmsField.Field.Rule = (typeof event.colDef.cdmsField.Field.Rule === 'string') ? getJsonObjects(event.colDef.cdmsField.Field.Rule) : event.colDef.cdmsField.Field.Rule;
+            var DatasetFieldRule = event.colDef.cdmsField.Rule = (typeof event.colDef.cdmsField.Rule === 'string') ? getJsonObjects(event.colDef.cdmsField.Rule) : event.colDef.cdmsField.Rule;
+
+            //these are available to the rule
+            var field = event.colDef;
+            var value = event.value;
+            var row = event.data;
+
+            try {
+                //fire MasterFieldRule rule if it exists
+                if (MasterFieldRule && MasterFieldRule.hasOwnProperty(type)) {
+                        if (type == "DefaultValue")
+                            event.colDef.DefaultValue = MasterFieldRule[type];
+                        else
+                            eval(MasterFieldRule[type]);
+                    }
+
+                //fire DatasetFieldRule rule if it exists. this will override any results of the MasterFieldRule
+                if (DatasetFieldRule && DatasetFieldRule.hasOwnProperty(type)) {
+                    if (type == "DefaultValue")
+                        event.colDef.DefaultValue = DatasetFieldRule[type];
+                    else
+                        eval(DatasetFieldRule[type]);
+                }
+
+
+            } catch (e) {
+                //so we don't die if the rule fails....
+                console.warn("Looks like a rule failed: "+type);
+                console.dir(e);
+                console.dir(event);
+            }
+        };
+
+
+
+
 
         return service;
 
