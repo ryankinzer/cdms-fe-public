@@ -38,9 +38,11 @@ datasets_module.service('GridService', ['$window', '$route',
                     //setPossibleValues (PossibleValues are copied in if they exist, this is for calling later/dynamically)
                     if (col_def.hasOwnProperty('cellEditorParams')) {
 
+                        //set them if we have them already at construction time. for system fields, usually
                         if (col_def.hasOwnProperty('PossibleValues'))
                             col_def.cellEditorParams.values = getJsonObjects(col_def.PossibleValues);
                         
+                        //only call with object version of the possible values
                         col_def.setPossibleValues = function (in_values) {
                             this.PossibleValues = in_values;
                             if (this.hasOwnProperty('cellEditorParams'))

@@ -129,7 +129,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 if (GridService.validateCell(event)) {
                     GridService.fireRule("OnChange", event); //only fires when valid change is made
                 }
-                GridService.refreshGrid(event);
+                else {
+                    GridService.refreshGrid(event);
+                }
             },
         };
 

@@ -11,10 +11,13 @@ CDMSDateCellValidator.prototype = new CellValidator;
 
 CDMSDateCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
 
-    //i wonder if it wouldn't be better to use moment.js?: 
-    //  var dateFormat = "YYYY-MM-DD hh:mm"; moment(the_date, dateFormat, true).isValid()
-    if (isNaN(Date.parse(data.value)))
-        this.errors.push(new ValidationError(this.cdms_field, "Value is not a date (mm/dd/yyyy)."));
+    if (data.value == null || data.value == "")
+        return;
+
+    the_date = moment(data.value, ["MM-DD-YYYY", "YYYY-MM-DD"], true); //will try both formats, strict=true
+
+    if (!the_date.isValid())
+        this.errors.push(new ValidationError(this.cdms_field, "Value is not a date (mm-dd-yyyy)."));
     
     return this.errors;
 };

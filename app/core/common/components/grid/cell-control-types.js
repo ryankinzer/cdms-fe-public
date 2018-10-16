@@ -36,10 +36,10 @@ var SelectControlType = function (cdms_field, col_def) {
 
     //check for master field's possible values and copy them if they exist.
     if (cdms_field.hasOwnProperty('Field') && cdms_field.Field.hasOwnProperty('PossibleValues'))
-        cdms_field.PossibleValues = cdms_field.Field.PossibleValues;
+        col_def.PossibleValues = getJsonObjects(cdms_field.Field.PossibleValues);
 
     //now either directly set or copied from master, do we have possible values?
-    if (!cdms_field.hasOwnProperty('PossibleValues')) {
+    if (!col_def.hasOwnProperty('PossibleValues')) {
         console.warn("Field: " + cdms_field.field + " is Select but no PossibleValues are given.");
         return;
     }
@@ -47,16 +47,21 @@ var SelectControlType = function (cdms_field, col_def) {
     //if so then define our cell editor and validator.
     col_def.cellEditor = CDMSSelectCellEditor; //works for standard cdms values: ["label"] or {"alias":"label"}
     col_def.cellEditorParams = {
-        values: getJsonObjects(cdms_field.PossibleValues)
+        values: col_def.PossibleValues
     };
     col_def.cellValidator = CDMSSelectCellValidator;
     col_def.valueFormatter = function (params) {
+        console.log("select formatting - params = ");
+        console.dir(params);
+
         var retval = "<ERR>";
-        if (Array.isArray(params.colDef.cellEditorParams.values)) {
-            retval = params.data[params.column.colId];
+        if (Array.isArray(params.colDef.cellEditorParams.values)) { //if array type of possible values, just return the value
+            console.log("isarray");
+            retval = params.value; //params.data[params.column.colId];
         }
         else {
-            retval = params.colDef.PossibleValues[params.data[params.column.colId]];
+            console.log("is not array but an object");
+            retval = params.colDef.cellEditorParams.values[params.value]; //[params.data[params.column.colId]];
         }
         console.log("select valueformatter - returning retval = " + retval);
         return retval;

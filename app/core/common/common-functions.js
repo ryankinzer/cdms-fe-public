@@ -148,6 +148,7 @@ function makeObjects(optionList, keyProperty, valueProperty) {
         //console.dir(item);
         //console.log("item[keyProperty] = " + item[keyProperty] + ", item[valueProperty] = " + item[valueProperty]);
         objects[item[keyProperty]] = item[valueProperty];
+        //console.log("string = " + item[keyProperty].toString());
     });
 
     return objects;
@@ -1406,10 +1407,21 @@ function isDuplicateUploadFile(incoming_file, files_to_check) {
 
 //helper function that unJSON's the vals if a string or else returns the vals if already an object
 function getJsonObjects(vals) { 
+
+    objvals = vals;
+
     if (typeof vals === 'string') { 
-        return angular.fromJson(vals);
+        objvals = angular.fromJson(vals);
+        if (Array.isArray(objvals) && objvals.length > 0) {
+            if (objvals[0].hasOwnProperty('ID')) {
+                objvals = makeObjects(objvals, 'ID', 'LABEL'); //if our possible values are objectified (fisherman, etc. from LookupHelper)
+            }
+        }
     }
-    return vals;
+    
+    //console.warn("possiblevalues");
+    //console.dir(objvals);
+    return objvals;
 }
 
 
