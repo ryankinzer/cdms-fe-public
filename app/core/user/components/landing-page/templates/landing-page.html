@@ -21,7 +21,7 @@
             <div class="panel-body">
                 <h3>My Projects</h3>
                 <ul>
-                    <li ng-repeat="project in myprojects"><a href="#/projects/{{project.Id}}">{{project.Name}}</a></li>
+                    <li ng-repeat="project in myprojects"><a href="#!/projects/{{project.Id}}">{{project.Name}}</a></li>
                 </ul>
                 <div ng-cloak ng-show="myprojects.length == 0">No favorited projects yet. Click the star when viewing a project to favorite one.</div>
             </div>

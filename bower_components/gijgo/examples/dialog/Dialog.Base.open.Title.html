@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Example</title>
+  <script src="../../dist/libraries/jquery/jquery.js"></script>
+  <script src="../../dist/modular/js/core.js" type="text/javascript"></script>
+  <link href="../../dist/modular/css/core.css" rel="stylesheet" type="text/css">
+  <link href="../../dist/modular/css/dialog.css" rel="stylesheet" type="text/css">
+  <link href="../../dist/libraries/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <script src="../../dist/modular/js/draggable.js"></script>
+  <script src="../../dist/modular/js/dialog.js"></script>
+</head>
+<body style="padding: 8px;">
+ <div id="dialog" style="display: none">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</div>
+ <button onclick="dialog.open('Custom Text')" class="gj-button-md">Open Dialog</button>
+ <script>
+     var dialog = $('#dialog').dialog({
+         autoOpen: false
+     });
+ </script>
+</body>
+</html>

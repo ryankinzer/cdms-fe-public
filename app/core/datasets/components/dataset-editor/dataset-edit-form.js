@@ -13,8 +13,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         
         $scope.fields = { header: [], detail: [] };
 
-        //$scope.validationErrors = [];
-
         $scope.userId = $rootScope.Profile.Id;
         
         //fields to support uploads // *** but is this the old or the new?
@@ -24,34 +22,16 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.file_field = {};
 */
 
-        //page-level errors
-        //$scope.errors = { heading: [] };
-
-//        $scope.datasetId = null;
-
-  //      $scope.option = { enableMultiselect: false };
-
-
         // Are we editing or not?
         if ($routeParams.Id !== null)
             $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);
         else
             $scope.dataset_activities = {}; //TODO: needs to have Header and Details I think
         
-        //we bind directly to the Header that comes back from activity details now -- BUT might need do make a new one if we are creating a NEW one!
         //$scope.row is the Header fields data row
         $scope.row = { ActivityQAStatus: {} }; //header field values get attached here by DbColumnName : value
 
-/*
-        $scope.sortedLocations = [];
-        $scope.datasetLocationType = 0;
-        $scope.datasetLocations = [[]];
-        $scope.primaryDatasetLocation = 0;
-
-        $scope.foundDuplicate = false;
-*/
-
-
+//        $scope.foundDuplicate = false;
 
         //ag-grid - details
         $scope.dataAgGridOptions = {
@@ -135,91 +115,50 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
         };
 
-        //adds row to grid
+        //expose a function to add row to grid
         $scope.addNewRow = function () {
             var new_row = GridService.getNewRow($scope.dataAgColumnDefs.DetailFields);
             new_row.QAStatusId = $scope.dataset.DefaultRowQAStatusId;
             $scope.dataAgGridOptions.api.updateRowData({add: [new_row]});
-//TODO: note in editedItems? or newItems?
+            //TODO: note in editedItems? or newItems?
         };
 
-
-        
-
-        //TODO: load special fields for dataset
 
         //once dataset loaded
         $scope.dataset_activities.$promise.then(function () {
             
-            //console.log("$scope.dataset_activities finished loading!");
-            //console.dir($scope.dataset_activities);
-
             //setup the scope dataset    
             $scope.dataset = $scope.dataset_activities.Dataset;
+            DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
             //setup grid and coldefs and then go!
             $timeout(function () {
 
                 $scope.dataAgColumnDefs = GridService.getAgColumnDefs($scope.dataset, 'DataEntryPage');
                 $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs.DetailFields;
-                
                 $scope.fields = { header: $scope.dataAgColumnDefs.HeaderFields, detail: $scope.dataAgColumnDefs.DetailFields };
 
-                //console.log("our fields are setup: ");
-                //console.dir($scope.fields);
-                //console.log("and this will be our data");
-                //console.dir($scope.dataset_activities.Details);
-
-                //spin through and set any sytem field detail possible values TODO - refactor into list manager
+                //spin through and set any sytem field detail possible values -----------------       //////TODO move the config.js fields into a systems dataset, then can use the Datasource technique to load these.
                 angular.forEach($scope.fields.detail, function (fieldDef) {
-                	//console.dir("--> property == " + fieldDef.field);
                     if (fieldDef.field == "QAStatusId") { //RowQAStatusId
                         fieldDef.setPossibleValues(makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name'));
-                        //console.log("field after setting QAStatus: ");
-                        //console.dir(fieldDef);
                     }
                 });
 
 
-                
-
                 var ag_grid_div = document.querySelector('#data-edit-grid');    //get the container id...
-                //console.dir(ag_grid_div);
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
-
-
 
                 //set the detail values into the grid
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
                 
-                //set the header values into the form/row
+                //set the header values into the form
                 $scope.row = $scope.dataset_activities.Header;
                 
                 //convert timezone to object if it exists
                 $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
                 
-                //console.dir($scope.dataAgGridOptions.columnApi.getAllColumns());
-
-
-/* - shouldn't need to do this as it is already defined in cell-control-types.js
-                //spin through and convert any multiselect values from JSON to actual object
-
-                angular.forEach($scope.fields.header, function (fieldDef) {
-                	//console.dir("--> property == " + fieldDef.field);
-                    if (fieldDef.ControlType == "multiselect" || fieldDef.ControlType == "select") {
-                        //console.dir("--> property is a multiselect, converting JSON to object : == " + fieldDef.field);
-                        $scope.row[fieldDef.field] = angular.fromJson($scope.dataset_activities.Header[fieldDef.field]);
-                        //console.dir($scope.row[fieldDef.field]);
-                    }
-                });
-*/
-
-
-                //console.log("$scope.row (header fields/data) is done... what do we have in the end?");
-                //console.dir($scope.row);
-                //$scope.dataAgGridOptions.api.autoSizeColumns();
-
                 GridService.autosizeColumns($scope.dataAgGridOptions);
 
             }, 0);
@@ -234,33 +173,26 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
             });
 
-            //todo: combine this together with file loading -- or just do it in DataService.getDatasets or whatever?
-            DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
-
 
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 
             //once the project is loaded...
             $scope.project.$promise.then(function () {
 
-                //console.log("Project is done loading!");
-                //console.dir($scope.project);
-
                 //check authorization -- need to have project loaded before we can check project-level auth
                 if (!$rootScope.Profile.isProjectOwner($scope.project) && !$rootScope.Profile.isProjectEditor($scope.project)) {
                     $location.path("/unauthorized");
                 }
 
-                $rootScope.projectId = $scope.projectId = $scope.project.Id;
+
+                //TODO - needed?
+                //$rootScope.projectId = $scope.projectId = $scope.project.Id;
 
                 //I think these come back already with getProject? TODO
-                $scope.project.Files = null;
-                $scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
+                //$scope.project.Files = null;
+                //$scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
 
                 
-                //$scope.datasetLocationType = getDatasetLocationType($scope.DatastoreTablePrefix);
-                //console.log("LocationType = " + $scope.datasetLocationType);
-
     /*
                 if ($scope.project.Locations) {
                     for (var i = 0; i < $scope.project.Locations.length; i++) {
@@ -304,13 +236,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             });
 
             //set the header field data values
-//NOTE: can we do this automagically?
+            //NOTE: can we do this automagically?
             //console.log("Setting header field values ...");
-
-//************************* TODO!
+            //************************* TODO!
             $scope.row['ActivityId'] = $scope.dataset_activities.Header.ActivityId;
-            //$scope.row['activityDate'] = $scope.dataset_activities.Header.Activity.ActivityDate;
-            //$scope.row['locationId'] = "" + $scope.dataset_activities.Header.Activity.LocationId; //note the conversion of this to a string!
             $scope.row['InstrumentId'] = $scope.dataset_activities.Header.Activity.InstrumentId;
             $scope.row['AccuracyCheckId'] = $scope.dataset_activities.Header.Activity.AccuracyCheckId;
             $scope.row['PostAccuracyCheckId'] = $scope.dataset_activities.Header.Activity.PostAccuracyCheckId;
@@ -331,14 +260,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
-//already done above - -
-            //if ($scope.dataset_activities.Header.Activity.Timezone)
-            //    $scope.row.Timezone = getByField($scope.SystemTimezones, angular.fromJson($scope.dataset_activities.Header.Activity.Timezone).Name, "Name"); //set default timezone
-
-            //$scope.RowQAStatuses = $rootScope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  //Row qa status ids
-
-            
-
         });
 
         $scope.setSelectedBulkQAStatus = function (rowQAId) {
@@ -346,7 +267,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 console.log("bulk changing: ");
                 console.dir(item);
                 item.QAStatusId = rowQAId;
-//TODO: refreshthegrid!!
+                //TODO: refreshthegrid!!????
                 //mark the row as updated so it will get saved.
                 if ($scope.dataAgGridOptions.editedItems.indexOf(item.Id) == -1) {
                     $scope.dataAgGridOptions.editedItems.push(item.Id);
@@ -448,12 +369,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
         };
 
-        //adds row to grid
-        $scope.addNewRow = function () {
-            var row = makeNewRow($scope.datasheetColDefs);
-            row.QAStatusId = $scope.dataset.DefaultRowQAStatusId;
-            $scope.dataGridOptions.api.updateRowData({add: [row]});
-        };
 
         // For Creel Survey only. 
         $scope.addSection = function () {

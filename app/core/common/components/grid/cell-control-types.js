@@ -51,19 +51,13 @@ var SelectControlType = function (cdms_field, col_def) {
     };
     col_def.cellValidator = CDMSSelectCellValidator;
     col_def.valueFormatter = function (params) {
-        console.log("select formatting - params = ");
-        console.dir(params);
-
-        var retval = "<ERR>";
+        var retval = null;
         if (Array.isArray(params.colDef.cellEditorParams.values)) { //if array type of possible values, just return the value
-            console.log("isarray");
             retval = params.value; //params.data[params.column.colId];
         }
         else {
-            console.log("is not array but an object");
             retval = params.colDef.cellEditorParams.values[params.value]; //[params.data[params.column.colId]];
         }
-        console.log("select valueformatter - returning retval = " + retval);
         return retval;
     };
     return col_def;
