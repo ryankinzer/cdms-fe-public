@@ -58,7 +58,7 @@ var SelectControlType = function (cdms_field, col_def) {
         else {
             retval = params.colDef.PossibleValues[params.data[params.column.colId]];
         }
-        console.log("valuegetter - returning retval = " + retval);
+        console.log("select valueformatter - returning retval = " + retval);
         return retval;
     };
     return col_def;
@@ -83,12 +83,23 @@ var DateControlType = function (cdms_field, col_def) {
         useFormatter: true, 
     };
     col_def.valueFormatter = function (params) {
-        if (params.value !== undefined && params.value !== null)
-            return moment(params.value).format("YYYY-MM-DD");
+        if (params.value == null)
+            return params.value;
+        else {
+            the_date = moment(params.value);
+            return (the_date.isValid()) ? the_date.format("YYYY-MM-DD") : params.value;
+        }
     };
+
     col_def.valueParser = function (params) {
-        return moment(params.newValue).format("YYYY-MM-DDTHH:mm:ss")  // 2017-12-19T14:03:10 (no timezone)
+        if (params.newValue == null)
+            return params.newValue;
+        else {
+            the_date = moment(params.newValue);
+            return (the_date.isValid()) ? the_date.format("YYYY-MM-DDTHH:mm:ss") : params.newValue; // 2017-12-19T14:03:10 (no timezone)
+        }
     };
+
     col_def.cellValidator = CDMSDateCellValidator;
     return col_def;};
 
@@ -99,13 +110,30 @@ var DateTimeControlType = function (cdms_field, col_def) {
     col_def.cellEditorParams = {
         useFormatter: true,
     };
-    col_def.valueFormatter = function (params) {
-        if (params.value !== undefined && params.value !== null)
-            return moment(params.value).format("YYYY-MM-DD HH:mm:ss"); 
+
+    col_def.valueFormatter = function (params) { //valueformatter - formats the field for display
+
+        if (params.value == null) {
+            return params.value;
+        }
+        else {
+            the_date = moment(params.value);
+            return (the_date.isValid()) ? the_date.format("YYYY-MM-DD HH:mm:ss") : params.value;
+        }
     };
-    col_def.valueParser = function (params) {
-        return moment(params.newValue).format("YYYY-MM-DDTHH:mm:ss")  // 2017-12-19T14:03:10 (no timezone)
+
+    col_def.valueParser = function (params) { //valueparser - parses the field for storing in the grid
+
+        if (params.newValue == null) {
+            return params.newValue; 
+        }
+        else {
+            the_date = moment(params.newValue);
+            return (the_date.isValid()) ? the_date.format("YYYY-MM-DDTHH:mm:ss") : params.newValue;  // 2017-12-19T14:03:10 (no timezone)
+        }
+        
     };
+
     col_def.cellValidator = CDMSDateTimeCellValidator;
     return col_def;
 };
@@ -116,12 +144,22 @@ var TimeControlType = function (cdms_field, col_def) {
     col_def.cellEditorParams = {
         useFormatter: true,
     };
-    col_def.valueFormatter = function (params) {
-        if (params.value !== undefined && params.value !== null)
-            return moment(params.value).format("HH:mm:ss");
+    col_def.valueFormatter = function (params) { //formats for display
+        if (params.value == null)
+            return params.value;
+        else {
+            the_date = moment(params.value);
+            return (the_date.isValid()) ? the_date.format("HH:mm:ss") : params.value;
+        }
     };
-    col_def.valueParser = function (params) {
-        return moment(params.newValue).format("YYYY-MM-DDTHH:mm:ss")  // 2017-12-19T14:03:10 (no timezone)
+
+    col_def.valueParser = function (params) { //formats for saving in the grid
+        if (params.newValue == null)
+            return params.newValue;
+        else {
+            the_date = moment(params.newValue);
+            return (the_date.isValid()) ? the_date.format("YYYY-MM-DDTHH:mm:ss") : params.newValue; // 2017-12-19T14:03:10 (no timezone)
+        }
     };
     col_def.cellValidator = CDMSTimeCellValidator;
     return col_def;

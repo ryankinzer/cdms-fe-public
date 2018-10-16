@@ -11,17 +11,21 @@ CDMSDateTimeCellValidator.prototype = new CellValidator;
 
 CDMSDateTimeCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
 
-    //i wonder if it wouldn't be better to use moment.js?
-    if (isNaN(Date.parse(data.value))) {
+    console.log("-- date validation --");
+    console.dir(data);
+
+    if (data.value == null || data.value == "")
+        return;
+
+    var the_date = moment(data.value);
+
+    if (!the_date.isValid()) {
         this.errors.push(new ValidationError(this.cdms_field, "Value is not a date-time (mm/dd/yyyy hh:mm)."));
     }
     else // it IS a valid date value, make sure it isn't older than 1901!
     {
-        var theDate = new Date(data.value);
-        var theYear = theDate.getFullYear();
-    
-        if (theYear < 1901)
-            this.errors.push(new ValidationError(this.cdms_field, "Year is before 1901 (set from Excel?); Please update year."));
+        if(theDate.getFullYear() < 1901)
+            this.errors.push(new ValidationError(this.cdms_field, "Year is before 1901 (set from Excel?); Please update Year."));
     }
 
     return this.errors;
