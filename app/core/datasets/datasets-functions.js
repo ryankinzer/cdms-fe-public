@@ -280,19 +280,6 @@ function parseField(field, scope) {
 
 }
 
-//creates an empty row for arbitrary datasets
-function makeNewRow(coldefs) {
-    var obj = {};
-
-    //sets to default value of this field if one is specified as a "DefaultValue" rule; otherwise null
-    angular.forEach(coldefs, function (col) {
-        obj[col.field] = (col.defaultValue) ? col.defaultValue : null;
-    });
-
-    obj.isValid = true;
-
-    return obj;
-}
 
 
 function isInvalidOption(scope, field, value) {

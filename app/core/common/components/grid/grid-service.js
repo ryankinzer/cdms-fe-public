@@ -70,7 +70,7 @@ datasets_module.service('GridService', ['$window', '$route',
                     };
 
                     //set Default if exists
-                    service.fireRule("DefaultValue",
+                    service.fireRule("DefaultValue", { colDef: col_def });
 
                 }
                 else {
@@ -359,20 +359,27 @@ datasets_module.service('GridService', ['$window', '$route',
 
         service.fireRule = function (type, event, scope) { //row, field, value, headers, errors, scope) {
             
-            if (!event.colDef.hasOwnProperty('cdmsField'))
+            if (!event.colDef.hasOwnProperty('cdmsField')) {
+                console.warn("fireRule ("+ type +")- no cdmsField defined so there are no rules - skipping. The event:");
+                console.dir(event);
                 return;
-
-            var MasterFieldRule = event.colDef.cdmsField.Field.Rule = (typeof event.colDef.cdmsField.Field.Rule === 'string') ? getJsonObjects(event.colDef.cdmsField.Field.Rule) : event.colDef.cdmsField.Field.Rule;
-            var DatasetFieldRule = event.colDef.cdmsField.Rule = (typeof event.colDef.cdmsField.Rule === 'string') ? getJsonObjects(event.colDef.cdmsField.Rule) : event.colDef.cdmsField.Rule;
-
-            //these are available to the rule
-            var field = event.colDef;
-            var value = event.value;
-            var row = event.data;
+            }
 
             try {
+
+                var MasterFieldRule = event.colDef.cdmsField.Field.Rule = (typeof event.colDef.cdmsField.Field.Rule === 'string') ? getJsonObjects(event.colDef.cdmsField.Field.Rule) : event.colDef.cdmsField.Field.Rule;
+                var DatasetFieldRule = event.colDef.cdmsField.Rule = (typeof event.colDef.cdmsField.Rule === 'string') ? getJsonObjects(event.colDef.cdmsField.Rule) : event.colDef.cdmsField.Rule;
+
+                //these are available to the rule if defined
+                var field = event.colDef;
+                var value = (event.value) ? event.value : "";
+                var row = (event.data) ? event.data : {};
+
                 //fire MasterFieldRule rule if it exists
                 if (MasterFieldRule && MasterFieldRule.hasOwnProperty(type)) {
+
+                        console.log("Firing a rule: " + type + " on " + field.DbColumnName);
+
                         if (type == "DefaultValue")
                             event.colDef.DefaultValue = MasterFieldRule[type];
                         else
@@ -381,6 +388,9 @@ datasets_module.service('GridService', ['$window', '$route',
 
                 //fire DatasetFieldRule rule if it exists. this will override any results of the MasterFieldRule
                 if (DatasetFieldRule && DatasetFieldRule.hasOwnProperty(type)) {
+        
+                    console.log("Firing a rule: " + type + " on " + field.DbColumnName);
+
                     if (type == "DefaultValue")
                         event.colDef.DefaultValue = DatasetFieldRule[type];
                     else
@@ -391,12 +401,23 @@ datasets_module.service('GridService', ['$window', '$route',
             } catch (e) {
                 //so we don't die if the rule fails....
                 console.warn("Looks like a rule failed: "+type);
-                console.dir(e);
                 console.dir(event);
+                console.dir(e);
             }
         };
 
 
+        //creates an row with an empty field (or default value if set) for each columnDef 
+        service.getNewRow = function (coldefs) {
+            var obj = {};
+
+            //sets to default value of this field if one is specified as a "DefaultValue" rule; otherwise null
+            angular.forEach(coldefs, function (col) {
+                obj[col.field] = (col.DefaultValue) ? col.DefaultValue : null;
+            });
+
+            return obj;
+        };
 
 
 

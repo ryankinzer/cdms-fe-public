@@ -135,7 +135,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         //adds row to grid
         $scope.addNewRow = function () {
-            var new_row = makeNewRow($scope.dataAgColumnDefs.DetailFields);
+            var new_row = GridService.getNewRow($scope.dataAgColumnDefs.DetailFields);
             new_row.QAStatusId = $scope.dataset.DefaultRowQAStatusId;
             $scope.dataAgGridOptions.api.updateRowData({add: [new_row]});
 //TODO: note in editedItems? or newItems?
