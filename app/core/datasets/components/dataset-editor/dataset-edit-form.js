@@ -63,7 +63,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //onFilterModified: function () {
             //    scope.corrAgGridOptions.api.deselectAll();
             //},
+            addedItems: [],
             editedItems: [],
+            deletedItems: [],
             selectedItems: [],
             //isFullWidthCell: function (rowNode) {
             //    return rowNode.level === 1;
@@ -106,23 +108,47 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log('cellEditingStarted');
             },
             onCellEditingStopped: function (event) {
+                //save the row we just edited
+                console.dir(event);
+
                 if (GridService.validateCell(event)) {
                     GridService.fireRule("OnChange", event); //only fires when valid change is made
                 }
-                else {
+                //else {
                     GridService.refreshGrid(event);
-                }
+                //}
             },
         };
 
-        //expose a function to add row to grid
+        //add a row
         $scope.addNewRow = function () {
             var new_row = GridService.getNewRow($scope.dataAgColumnDefs.DetailFields);
             new_row.QAStatusId = $scope.dataset.DefaultRowQAStatusId;
-            $scope.dataAgGridOptions.api.updateRowData({add: [new_row]});
-            //TODO: note in editedItems? or newItems?
+            var result = $scope.dataAgGridOptions.api.updateRowData({add: [new_row]});
+            $scope.dataAgGridOptions.addedItems.push(result.add[0]); //add the actual grid row
         };
 
+        //remove a row
+        $scope.removeRow = function () { 
+            var rows_to_delete = $scope.dataAgGridOptions.api.getSelectedRows();
+
+            //add selected rows to deleted rows (might already be some in there, just add ours, too)
+            rows_to_delete.forEach(function (item) { 
+                $scope.dataAgGridOptions.deletedItems.push(item);
+            });
+            
+            //note the currently deleted row(s) in case they want to undo
+            $scope.deletedRows = rows_to_delete;
+
+            //do the remove from the grid.
+            $scope.dataAgGridOptions.api.updateRowData({ remove: rows_to_delete });
+        };
+
+        //undo remove row
+        $scope.undoRemoveRow = function () { 
+            $scope.dataAgGridOptions.api.updateRowData({ add: $scope.deletedRows });
+            $scope.deletedRows = [];
+        };
 
         //once dataset loaded
         $scope.dataset_activities.$promise.then(function () {
