@@ -317,7 +317,7 @@ datasets_module.service('GridService', ['$window', '$route',
         };
 
 
-        service.refreshGrid = function (event) {
+        service.refreshRow = function (event) {
             //TODO: ok, this isn't working right, but is close enough for the moment.
             //we redraw the current row/column in order to immediately update the UI about the validation result
             //console.dir(event);
@@ -329,6 +329,11 @@ datasets_module.service('GridService', ['$window', '$route',
             //    console.log(" ---- set focus --- ");
                 event.api.setFocusedCell( cell.rowIndex, cell.column );
             //}
+        };
+
+        //redraw the whole grid (expensive)
+        service.refreshGrid = function (gridOptions) {
+            gridOptions.api.redrawRows();
         };
 
 

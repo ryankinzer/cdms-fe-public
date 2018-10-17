@@ -1,26 +1,20 @@
-<div class="modal">
-	<div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-            <h3>Set QA Status for {{dataAgGridOptions.selectedItems.length}} rows</h3>
-        </div>
-        <div class="modal-body">
-        <form name="form" class="css-form" novalidate>
-            <div class="header-label">Row QA Status:</div>
-            <div class="header-value">
-                <select class="form-control" ng-model="newRowQAStatus.Id">
-                    <option ng-repeat="qastatus in dataset.RowQAStatuses | orderBy:'Name'" value="{{qastatus.Id}}">{{qastatus.Name}}</option>
-                </select>
-            </div>  
 
-        </form>
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Set QA Status for {{dataAgGridOptions.selectedItems.length}} rows</h3>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <form name="form" class="css-form" novalidate>
+                    <div class="header-label" style="text-align: left;">Row QA Status:</div>
+                    <div class="header-value">
+                        <select class="form-control" ng-model="newRowQAStatus.Id">
+                            <option ng-repeat="qastatus in dataset.RowQAStatuses | orderBy:'Name'" value="{{qastatus.Id}}">{{qastatus.Name}}</option>
+                        </select>
+                    </div>
 
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-            <button class="btn btn-primary" ng-click="save()">Change</button>
-        </div>
+                </form>
 
-    </div>
-    </div>
-</div>    
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button class="btn btn-primary" ng-click="save()">Change</button>
+            </div>

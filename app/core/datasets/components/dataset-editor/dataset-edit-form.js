@@ -115,7 +115,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     GridService.fireRule("OnChange", event); //only fires when valid change is made
                 }
                 //else {
-                    GridService.refreshGrid(event);
+                    GridService.refreshRow(event);
                 //}
             },
         };
@@ -293,7 +293,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 console.log("bulk changing: ");
                 console.dir(item);
                 item.QAStatusId = rowQAId;
-                //TODO: refreshthegrid!!????
+                GridService.refreshGrid($scope.dataAgGridOptions);
                 //mark the row as updated so it will get saved.
                 if ($scope.dataAgGridOptions.editedItems.indexOf(item.Id) == -1) {
                     $scope.dataAgGridOptions.editedItems.push(item.Id);
