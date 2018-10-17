@@ -743,3 +743,13 @@ a {
 .ag-popup-editor {
     width: 150px;
 }
+
+
+.md-datepicker-input-container {
+    border-bottom-style: none !important;
+}
+
+.md-datepicker-button {
+    margin: -16px !important;
+margin-left: -8px !important;
+}

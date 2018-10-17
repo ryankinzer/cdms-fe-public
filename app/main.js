@@ -34,6 +34,8 @@ define([
       'AppraisalsModule',
       'HabitatModule',
 
+      'ngMaterial', 'ngMessages',
+
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 
