@@ -345,7 +345,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             });
 
         };
-
+*/
         $scope.openAccuracyCheckModal = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/common/components/modals/templates/modal-new-accuracycheck.html',
@@ -359,31 +359,25 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //$scope.viewLocation = getByField($scope.project.Locations, $scope.row.locationId, "Id");
         };
 
+        //when user selects an instrument, the directive model binding sets the row.Activity.InstrumentId. 
+        // we need to set the row.Activity.Instrument to the matching one from project.Instruments
+        // and then select the last AccuracyCheck and set it in row.Activity.AccuracyCheckId
         $scope.selectInstrument = function () {
-            //console.log("Inside $scope.selectInstrument...");
-
-            if ((typeof $scope.row.InstrumentId === 'undefined') || ($scope.row.InstrumentId === null)) {
-                $scope.row.InstrumentId = $rootScope.InstrumentId;
-                $rootScope.InstrumentId = undefined;
-            }
-
-            $scope.viewInstrument = getByField($scope.project.Instruments, $scope.row.InstrumentId, "Id");
+            
+            $scope.project.Instruments.forEach(function (inst) { 
+                if (inst.Id == $scope.row.Activity.InstrumentId) {
+                    console.log("found that instrument!"); console.dir(inst);
+                    $scope.row.Activity.Instrument = inst;
+                }
+            });
 
             //get latest accuracy check
-            $scope.row.LastAccuracyCheck = $scope.viewInstrument.AccuracyChecks[$scope.viewInstrument.AccuracyChecks.length - 1];
-            $scope.row.DataGradeText = getDataGrade($scope.row.LastAccuracyCheck);
+            $scope.row.Activity.AccuracyCheck = $scope.row.Activity.Instrument.AccuracyChecks[$scope.row.Activity.Instrument.AccuracyChecks.length - 1];
+            $scope.row.DataGradeText = getDataGrade($scope.row.Activity.AccuracyCheck);
 
-            if ($scope.row.LastAccuracyCheck)
-                $scope.row.AccuracyCheckId = $scope.row.LastAccuracyCheck.Id;
-        };
+            if ($scope.row.Activity.AccuracyCheck)
+                $scope.row.Activity.AccuracyCheckId = $scope.row.Activity.AccuracyCheck.Id;
 
-        $scope.selectAccuracyCheck = function () {
-            //console.log("Inside $scope.selectAccuracyCheck...");
-            if ($scope.row.AccuracyCheckId)
-                $scope.row.AccuracyCheck = getByField($scope.viewInstrument.AccuracyChecks, $scope.row.AccuracyCheckId, "Id");
-
-            //console.log("$scope at end of $scope.selectAccuracyCheck is next...");
-            //console.dir($scope);
         };
 
         $scope.cancel = function () {
@@ -395,6 +389,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
         };
 
+
+/*
 
         // For Creel Survey only. 
         $scope.addSection = function () {
