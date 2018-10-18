@@ -122,6 +122,17 @@ common_module.directive('ctuirQaStatusSelectField',
     });
 
 
+common_module.directive('ctuirQaStatusCommentField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-qa-status-comment.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
 
 
 common_module.directive('ctuirTimeField',

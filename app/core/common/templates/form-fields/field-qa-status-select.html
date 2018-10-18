@@ -1,5 +1,5 @@
 <div class="header-label">{{field.Label}}:</div>
-<div class="header-value" title="by {{row.Activity.ActivityQAStatus.User.Fullname}}">
+<div class="header-value">
     <select class="form-control" ng-model="row.Activity.ActivityQAStatus.QAStatusId" convert-to-number>
         <option ng-repeat="qa in dataset.QAStatuses" value="{{qa.Id}}">{{qa.Name}}</option>
     </select>

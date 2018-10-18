@@ -43,7 +43,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             columnDefs: null,
             rowData: null,
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
-            debug: false,
+            dataChanged: false, //updated to true if ever any data is changed
             rowSelection: 'multiple',
             onSelectionChanged: function (params) {
                 //console.log("selection changed fired!");
@@ -63,8 +63,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //onFilterModified: function () {
             //    scope.corrAgGridOptions.api.deselectAll();
             //},
-            addedItems: [],
-            editedItems: [],
+            editedRowIds: [],
             deletedItems: [],
             selectedItems: [],
             //isFullWidthCell: function (rowNode) {
@@ -109,7 +108,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
             onCellEditingStopped: function (event) {
                 //save the row we just edited
-                console.dir(event);
+                //console.dir(event);
 
                 if (GridService.validateCell(event)) {
                     GridService.fireRule("OnChange", event); //only fires when valid change is made
@@ -117,6 +116,13 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //else {
                     GridService.refreshRow(event);
                 //}
+                $scope.dataAgGridOptions.dataChanged = true;
+
+                console.dir(event);
+
+                if (event.data.Id && (!$scope.dataAgGridOptions.editedRowIds.containsInt(event.data.Id))){ 
+                    $scope.dataAgGridOptions.editedRowIds.push(event.data.Id);
+                };
             },
         };
 
@@ -125,7 +131,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             var new_row = GridService.getNewRow($scope.dataAgColumnDefs.DetailFields);
             new_row.QAStatusId = $scope.dataset.DefaultRowQAStatusId;
             var result = $scope.dataAgGridOptions.api.updateRowData({add: [new_row]});
-            $scope.dataAgGridOptions.addedItems.push(result.add[0]); //add the actual grid row
+            $scope.dataAgGridOptions.dataChanged = true;
         };
 
         //remove a row
@@ -142,12 +148,30 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             //do the remove from the grid.
             $scope.dataAgGridOptions.api.updateRowData({ remove: rows_to_delete });
+
+            $scope.dataAgGridOptions.dataChanged = true;
         };
 
         //undo remove row
         $scope.undoRemoveRow = function () { 
             $scope.dataAgGridOptions.api.updateRowData({ add: $scope.deletedRows });
+
+            //remove these deleted rows from deleted items since we're undeleting
+            var new_deleted = [];
+            $scope.dataAgGridOptions.deletedItems.forEach(function (deleted) {
+                var is_being_undeleted = false
+                $scope.deletedRows.forEach(function (undelete) {
+                    if (deleted.hasOwnProperty('Id') && undelete.hasOwnProperty('Id') && deleted.Id == undelete.Id)
+                        is_being_undeleted = true;                   
+                });
+                if(!is_being_undeleted) 
+                    new_deleted.push(deleted)
+            });
+            $scope.dataAgGridOptions.deletedItems = new_deleted;
+
+            //clear our deleted rows buffer
             $scope.deletedRows = [];
+            
         };
 
         //once dataset loaded
@@ -265,10 +289,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //NOTE: can we do this automagically?
             //console.log("Setting header field values ...");
             //************************* TODO!
-            $scope.row['ActivityId'] = $scope.dataset_activities.Header.ActivityId;
-            $scope.row['InstrumentId'] = $scope.dataset_activities.Header.Activity.InstrumentId;
-            $scope.row['AccuracyCheckId'] = $scope.dataset_activities.Header.Activity.AccuracyCheckId;
-            $scope.row['PostAccuracyCheckId'] = $scope.dataset_activities.Header.Activity.PostAccuracyCheckId;
+            //$scope.row['ActivityId'] = $scope.dataset_activities.Header.ActivityId;
+            //$scope.row['InstrumentId'] = $scope.dataset_activities.Header.Activity.InstrumentId;
+            //$scope.row['AccuracyCheckId'] = $scope.dataset_activities.Header.Activity.AccuracyCheckId;
+            //$scope.row['PostAccuracyCheckId'] = $scope.dataset_activities.Header.Activity.PostAccuracyCheckId;
 
             //if the activity qa status is already set in the header, copy it in to this row's activityqastatus (this should really always be the case)
             if ($scope.dataset_activities.Header.Activity.ActivityQAStatus) {
@@ -381,7 +405,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         };
 
         $scope.cancel = function () {
-            if ($scope.dataChanged) {
+            if ($scope.dataAgGridOptions.dataChanged) {
                 if (!confirm("Looks like you've made changes.  Are you sure you want to leave this page?"))
                     return;
             }
@@ -389,6 +413,36 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
         };
 
+
+        //click "save" on dataset edit form
+        $scope.saveData = function () {
+            console.log(" -- save -- ");
+            //console.dir($scope.row);
+
+            $scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
+/*
+            $scope.errors.heading = []; //reset errors if there are any.
+
+            if ($scope.gridHasErrors) {
+                if (!confirm("There are validation errors.  Are you sure you want to save anyway?"))
+                    return;
+            }
+
+            //handle saving the files.
+            var data = {
+                ProjectId: $scope.project.Id,
+                DatasetId: $scope.dataset.Id,
+            };
+
+            var target = '/api/v1/file/uploaddatasetfile';
+
+			console.log("$scope.row is next...");
+			console.dir($scope.row);
+            var saveRow = $scope.row;
+
+            $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+  */          
+        };
 
 /*
 
@@ -426,107 +480,76 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         };
 
         
-        //click "save" on dataset edit form
-        $scope.saveData = function () {
-            //console.log("Saving edited data!");
 
-            $scope.errors.heading = []; //reset errors if there are any.
-
-            if ($scope.gridHasErrors) {
-                if (!confirm("There are validation errors.  Are you sure you want to save anyway?"))
-                    return;
-            }
-
-            //handle saving the files.
-            var data = {
-                ProjectId: $scope.project.Id,
-                DatasetId: $scope.dataset.Id,
-            };
-
-            var target = '/api/v1/file/uploaddatasetfile';
-
-			console.log("$scope.row is next...");
-			console.dir($scope.row);
-            var saveRow = $scope.row;
-
-            $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
-            
-        };
 
         //remove file from dataset.
         $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
             return DatasetService.deleteDatasetFile($scope.projectId, $scope.datasetId, file_to_remove);
         };
-
+*/
         $scope.modalFile_saveParentItem = function (saveRow) {
-            //console.log("Inside modalFile_saveParentItem, $scope is next...");
-            //console.dir($scope);
+            
+            //clean up some things from the copy of activity that we don't need to send to the backend.
+            var new_activity = angular.copy($scope.row.Activity);
+            delete new_activity.AccuracyCheck;
+            delete new_activity.ActivityType;
+            delete new_activity.Instrument;
+            delete new_activity.Location;
+            delete new_activity.Source;
+            delete new_activity.User;
+            delete new_activity.ActivityQAStatus;
+            new_activity.Timezone = angular.toJson(new_activity.Timezone); //why don't we just save the id?
 
-            var strYear = null;
-            var strMonth = null;
-            var intMonth = -1;
-            var strDay = null;
+            //add the ActivityQAStatus back in with values from the activity
+            new_activity.ActivityQAStatus = {
+                'Comments': $scope.row.Activity.ActivityQAStatus.Comments,
+                'QAStatusId': $scope.row.Activity.ActivityQAStatus.QAStatusId,
+            };
 
-			// Notes...
-			// If the user removed a row, $scope.dataSheetDataset (what the user sees) no longer contains that row.
+            //clean up some things from the row (header fields)
+            var new_row = angular.copy($scope.row);
+            delete new_row.Activity;
+            delete new_row.ByUser;
+
+            //compose our payload (we can punt this and change the backend if it is cleaner!)
+            var payload = {
+                'Activity': new_activity,
+                'DatasetId': $scope.dataset.Id,
+                'UserId': $rootScope.Profile.Id,
+                'deletedRowIds': [],
+                'editedRowIds': [],
+                'header': new_row,
+                'details': [],
+            };
+
+            
+
+            // 1) all current detail records from the grid
+            $scope.dataAgGridOptions.api.forEachNode(function (node) { 
+                payload.details.push(node.data); 
+            });
+
+			// If the user removed a row, the grid no longer contains that row.
 			// However, when we remove a row, it is not deleted from the database; it is marked as deleted in the backend (ROWSTATUS_DELETED).
 			// Therefore, we need to add the removed row back into the list that we send to the database, but we DO NOT want to add it back 
-			// into $scope.dataSheetDataset.  
-			// So, we ...
-			// 1) make a copy of $scope.dataSheetDataset and send the copy to the backend.
-            var sheetCopy = angular.copy($scope.dataSheetDataset);
-			//console.log("sheetCopy is next...");
-			//console.dir(sheetCopy);
-			
-			// 2) add the deleted record to the copy
-			$scope.deletedRows.forEach(function(deletedItem){
-				sheetCopy.push(deletedItem);
-			});
-			
-			// 3) For TotalTimeFished, convert from HH:MM to numberMinutes
-			//    This must be done to the deleted row(s) also, thus we do it here/now.
-			// 4) is down below...
-			sheetCopy.forEach(function(item){
-				if ((typeof item.TotalTimeFished !== 'undefined') && (item.TotalTimeFished !== null)) {
-					console.log("TotalTimeFished for item = " + item.TotalTimeFished);
-					var theHours = parseInt(item.TotalTimeFished.substring(0, 2));
-					console.log("theHours = " + theHours);
-					var theMinutes = parseInt(item.TotalTimeFished.substring(3, 5));
-					console.log("theMinutes = " + theMinutes);
-					var TotalTimeFished = theHours * 60 + theMinutes;
-					console.log("TotalTimeFished (in min) = " + TotalTimeFished);
-					item.TotalTimeFished = TotalTimeFished;
-					console.log("item.TotalTimeFished = " + item.TotalTimeFished);
-				}
-
-				if ((typeof item.InterviewTime !== 'undefined') && (item.InterviewTime != null)) {
-					var tmpTime = item.InterviewTime;
-					//console.log("tmpTime (TimeEnd) = " + tmpTime);
-					item.InterviewTime = "";
-					item.InterviewTime = strYear + "-" + strMonth + "-" + strDay + "T" + tmpTime + ":00.000";
-				}
-			});
-
-			// 4) Continue processing and send the full list (with the deleted items added back in).
-            $scope.activities = ActivityParser.parseSingleActivity($scope.row, sheetCopy, $scope.fields, $scope.dataset.QAStatuses);
-
-            if (!$scope.activities.errors) {
-                if ($scope.addNewSection) {
-                    //console.log("$scope.addNewSection is true, so setting $scope.activities.addNewSection to true also.");
-                    $scope.activities.addNewSection = true;
+			// into the grid. 
+			// 2) add the deleted record to the detail payload, mark it as deleted
+			$scope.dataAgGridOptions.deletedItems.forEach(function(deletedItem){
+                if (deletedItem.Id) { //only push ones that were existing already (new rows that are deleted are ignored)
+                    deletedItem.RowStatusId = ROWSTATUS_DELETED; 
+                    payload.details.push(deletedItem);
+                    payload.deletedRowIds.push(deletedItem.Id);
                 }
+			});
 
-                $scope.activities.deletedRowIds = $scope.getDeletedRowIds($scope.deletedRows);
-                $scope.activities.updatedRowIds = $scope.updatedRows;
+            // 3) note which are edited
+            payload.editedRowIds = $scope.dataAgGridOptions.editedRowIds; 
 
-                //console.log("$scope.activities in saveData, just before calling DatasetService.saveActivities is next...");
-                //console.dir($scope.activities);
-                DatasetService.updateActivities($scope.userId, $scope.dataset.Id, $scope.activities, $scope.DatastoreTablePrefix);
-            }
-            else {
-                //console.log("We have errors...");
-                //console.dir($scope.activities.errors);
-            }
+            console.dir(payload);
+            return;
+
+
+//            DatasetService.updateActivities($scope.userId, $scope.dataset.Id, $scope.activities, $scope.DatastoreTablePrefix);
 			
         };
 		
@@ -535,7 +558,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
         };
 
-        $scope.getDeletedRowIds = function (rows) {
+        $scope.getRowIds = function (rows) {
             var results = [];
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
@@ -547,7 +570,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             return results;
         }
-*/
+
     }
 
 
