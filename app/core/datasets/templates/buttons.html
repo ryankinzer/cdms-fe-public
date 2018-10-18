@@ -14,7 +14,7 @@
     </div>
     
     <!--<button class="right btn" ng-disabled="activities.saving" ng-click="saveData()">Save and close</button>-->
-    <button class="right btn" ng-disabled="(activities.saving || DupeCheckRunning || duplicateEntry || gridHasErrors)" ng-click="saveData()">Save and close</button>
+    <button class="right btn" ng-disabled="(activities.saving || DupeCheckRunning || duplicateEntry || gridHasErrors || headerHasErrors)" ng-click="saveData()">Save and close</button>
     <button class="btn btn-warning right" ng-click="cancel()" style="margin-right: 10px;">Cancel</button>
     <br/>
 	<div ng-show="activities.saving" style="float: right;margin-right: 20px;" class="alert alert-success">Saving...</div>
