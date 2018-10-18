@@ -410,12 +410,22 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     return;
             }
 
-            $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
+            $location.path("#!/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
         };
 
 
         //click "save" on dataset edit form
         $scope.saveData = function () {
+
+            if (!$scope.dataAgGridOptions.dataChanged) {
+                if (confirm("Nothing to save. Return to Activities?")) {
+                    $location.path("#!/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
+                }
+                else {
+                    return;
+                }
+            }
+
             console.log(" -- save -- ");
             //console.dir($scope.row);
 
@@ -481,12 +491,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         
 
-
+*/
         //remove file from dataset.
         $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
             return DatasetService.deleteDatasetFile($scope.projectId, $scope.datasetId, file_to_remove);
         };
-*/
+
         $scope.modalFile_saveParentItem = function (saveRow) {
             
             //clean up some things from the copy of activity that we don't need to send to the backend.
@@ -557,19 +567,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $scope.activities = undefined;
             $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
         };
-
-        $scope.getRowIds = function (rows) {
-            var results = [];
-            for (var i = 0; i < rows.length; i++) {
-                var row = rows[i];
-                if (row.Id) // true of deleted existing records; new rows added won't have an id.
-                {
-                    results.push(row.Id);
-                }
-            };
-
-            return results;
-        }
 
     }
 
