@@ -14,9 +14,27 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.saveResult = { saving: false, error: null, success: null };
         
         $scope.fields = { header: [], detail: [] };
+        $scope.headerFieldErrors = [];
 
         $scope.userId = $rootScope.Profile.Id;
         
+        $scope.PageErrorCount = 0;
+
+        //returns the number of errors on the page, headers + details
+        //TODO this is probably expensive for big grids, maybe not...
+        $scope.getPageErrorCount = function () { 
+            if (!$scope.dataAgGridOptions.hasOwnProperty('api'))
+                return 0; //not loaded yet.
+
+            var count = Object.keys($scope.headerFieldErrors).length; //start with number of header errors
+            $scope.dataAgGridOptions.api.forEachNode(function (node) { 
+                if (node.data.rowHasError)
+                    count ++;
+            });
+
+            return count;
+        };
+
         //fields to support uploads // *** but is this the old or the new?
 /*
         $scope.filesToUpload = {}; 
@@ -115,14 +133,17 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 if (GridService.validateCell(event)) {
                     GridService.fireRule("OnChange", event); //only fires when valid change is made
                 }
-                //else {
-                    GridService.refreshRow(event);
-                //}
+
+                $scope.PageErrorCount = $scope.getPageErrorCount();
+
+                GridService.refreshRow(event);
+
                 $scope.dataAgGridOptions.dataChanged = true;
 
                 if (event.data.Id && (!$scope.dataAgGridOptions.editedRowIds.containsInt(event.data.Id))){ 
                     $scope.dataAgGridOptions.editedRowIds.push(event.data.Id);
                 };
+                $scope.$apply();
             },
         };
 
@@ -138,8 +159,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             if (GridService.validateCell(event)) {
                     GridService.fireRule("OnChange", event); //only fires when valid change is made
             }
-            
-            $scope.row.dataChanged = true;
 
             //update our collection of header errors if any were returned
             $scope.headerFieldErrors = [];
@@ -152,6 +171,13 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     }
                 });
             }
+
+            //update the error count -- determine if this bogs down on big datasets                 TODO
+            $scope.PageErrorCount = $scope.getPageErrorCount();
+
+            $scope.row.dataChanged = true;
+
+            
 
             //console.dir($scope.row);
         };
