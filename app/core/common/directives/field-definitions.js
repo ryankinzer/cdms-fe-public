@@ -211,36 +211,6 @@ common_module.directive('ctuirMultiselectField',
 
     });
 
-common_module.directive('ctuirMultilookupField',
-    function(){
-
-        var result = {
-            templateUrl: 'app/core/common/templates/form-fields/field-multilookup.html',
-            restrict: 'E',
-            controller: function($scope, $element, $attrs) {
-               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
-            }
-        };
-        
-        return result;
-
-    });
-
-common_module.directive('ctuirLookupField',
-    function(){
-
-        var result = {
-            templateUrl: 'app/core/common/templates/form-fields/field-lookup.html',
-            restrict: 'E',
-            controller: function($scope, $element, $attrs) {
-                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
-            }
-        };
-
-        return result;
-
-    });
-
 common_module.directive('ctuirFileField',
     function($uibModal){
         var result = {

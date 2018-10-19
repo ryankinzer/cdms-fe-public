@@ -184,8 +184,8 @@ datasets_module.service('GridService', ['$window', '$route',
             
                     field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
 
-                    //some col builder function here soon!! TODO
-                    finalColumnDefs.HeaderFields.push({
+                    //initial values for header column definition
+                    var newColDef = {
                         headerName: field.Label,
                         field: field.DbColumnName,
                         width: SystemDefaultColumnWidth,
@@ -195,22 +195,52 @@ datasets_module.service('GridService', ['$window', '$route',
                         PossibleValues: field.Field.PossibleValues, 
                         cdmsField: field, //our own we can use later
                         //menuTabs: [],
-                    });
+                    };
+
+                    //setup column def for HEADER and add it to our list
+                    service.setupColDefForField(field, newColDef);
+                    finalColumnDefs.HeaderFields.push(newColDef);
                 }
             });
 
-            //qa header fields (unless in "hidden fields")
+            //qa header fields (unless should be hidden (in "hidden fields"))
             if (systemFields.HiddenFields.indexOf('QAFields') == -1) {
-                systemFields.QAFields.forEach(function (qa_field) { 
-                    finalColumnDefs.HeaderFields.push(SystemFieldDefinitions[qa_field]);
+                systemFields.QAFields.forEach(function (qa_field_name) { 
+                    var field = SystemFieldDefinitions[qa_field_name];
+                    var newColDef = {
+                        headerName: field.Label,
+                        field: field.DbColumnName,
+                        width: SystemDefaultColumnWidth,
+                        Label: field.Label,                 
+                        DbColumnName: field.DbColumnName,   
+                        ControlType: field.ControlType,     
+                        PossibleValues: field.PossibleValues, //for system fields, do they define here or ? TODO
+                        //cdmsField: field, //our own we can use later
+                        //menuTabs: [],
+                    };
+
+                    service.setupColDefForField(field, newColDef);
+                    finalColumnDefs.HeaderFields.push(newColDef);
                 });
             }
             
-            //detail "header" fields
+            //grid fields like RowQAStatus
             systemFields.DetailFields.forEach(function (fieldname) {
                 var field = SystemFieldDefinitions[fieldname];
-                service.setupColDefForField(field, field);
-                finalColumnDefs.DetailFields.push(field);
+                var newColDef = {
+                        headerName: field.Label,
+                        field: field.DbColumnName,
+                        width: SystemDefaultColumnWidth,
+                        Label: field.Label,                 
+                        DbColumnName: field.DbColumnName,   
+                        ControlType: field.ControlType,     
+                        PossibleValues: field.PossibleValues, //for system fields, do they define here or ? TODO
+                        //cdmsField: field, //our own we can use later
+                        //menuTabs: [],
+                };
+
+                service.setupColDefForField(field, newColDef);
+                finalColumnDefs.DetailFields.push(newColDef);
             });
 
             //now add in the dataset defined detail fields and set each one up for use in the grid 
@@ -228,11 +258,11 @@ datasets_module.service('GridService', ['$window', '$route',
                         Label: field.Label,                 
                         DbColumnName: field.DbColumnName,   
                         ControlType: field.ControlType,     
-                        PossibleValues: field.Field.PossibleValues, //TODO?
-                        cdmsField: field,                               //in case it is somehow needed
+                        PossibleValues: field.Field.PossibleValues, 
+                        cdmsField: field,                           
                     };
 
-                    //setup column def for DETAIL only for right now... //TODO -- header fields?
+                    //setup column def for DETAIL  and add it to our list
                     service.setupColDefForField(field, newColDef);
                     finalColumnDefs.DetailFields.push(newColDef);
 
@@ -270,21 +300,22 @@ datasets_module.service('GridService', ['$window', '$route',
         // returns boolean as to whether the field was valid or not.
         service.validateCell = function (event) { 
 
-            console.log(" --- validate cell for event : ");
-            console.dir(event);
+            //console.log(" --- validate cell for event : ");
+            //console.dir(event);
 
             if (!event.colDef.hasOwnProperty('validator'))
                 return false;
 
             var validator = event.colDef.validator;
 
-            console.log(" -- running cell validator -- ");
+            //console.log(" -- running cell validator -- ");
             //console.dir(validator);
             //remove this field's validation errors from our row's validation errors (returns [] if none)
             event.node.data.validationErrors = validator.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
 
             //validate this cell's value - returns array of errors if any
             var fieldValidationErrors = validator.validate(event);
+            //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
             //merge in any row errors with this cell's errors.

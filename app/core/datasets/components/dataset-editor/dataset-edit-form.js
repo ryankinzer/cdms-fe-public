@@ -120,12 +120,40 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //}
                 $scope.dataAgGridOptions.dataChanged = true;
 
-                console.dir(event);
-
                 if (event.data.Id && (!$scope.dataAgGridOptions.editedRowIds.containsInt(event.data.Id))){ 
                     $scope.dataAgGridOptions.editedRowIds.push(event.data.Id);
                 };
             },
+        };
+
+        $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
+            //build event to send for validation
+            var event = {
+                colDef: field,
+                node: { data: $scope.row },
+                value: $scope.row[field.DbColumnName],
+                type: 'onHeaderEditingStopped'
+            };
+
+            if (GridService.validateCell(event)) {
+                    GridService.fireRule("OnChange", event); //only fires when valid change is made
+            }
+            
+            $scope.row.dataChanged = true;
+
+            //update our collection of header errors if any were returned
+            $scope.headerFieldErrors = [];
+            if ($scope.row.rowHasError) {
+                $scope.row.validationErrors.forEach(function (error) { 
+                    if (Array.isArray($scope.headerFieldErrors[error.field.DbColumnName])) {
+                        $scope.headerFieldErrors[error.field.DbColumnName].push(error.message);
+                    } else {
+                        $scope.headerFieldErrors[error.field.DbColumnName] = [error.message];
+                    }
+                });
+            }
+
+            //console.dir($scope.row);
         };
 
         //add a row

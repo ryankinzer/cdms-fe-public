@@ -48,7 +48,7 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
     //console.dir(data);
     //console.dir(this.validation);
 
-    //if it is empty, don't bother (required is a different constraint that can be applied)
+    //if it is empty, don't bother (required is a different constraint that can be applied and is run earlier)
     if (data.value === null || data.value === "")
         return this.errors;
 

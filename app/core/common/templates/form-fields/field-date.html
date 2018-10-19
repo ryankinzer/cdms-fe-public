@@ -1,4 +1,7 @@
-<div class="header-label">{{field.Label}}:</div>
-<div class="header-value">
-    <md-datepicker class="form-control" ng-model="row[field.DbColumnName]" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+<div class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;">
+    <div class="header-label">{{field.Label}}:</div>
+    <div class="header-value">
+        <md-datepicker class="form-control" ng-blur="onHeaderEditingStopped(field)" ng-model="row[field.DbColumnName]" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+        <p class="field-error-block" ng-show="headerFieldErrors[field.DbColumnName]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>
+    </div>
 </div>

@@ -205,6 +205,7 @@ var TextControlType = function (cdms_field, col_def) {
 var TextAreaControlType = function (cdms_field, col_def) {
     col_def.cellEditor = CDMSTextareaCellEditor;     
     //col_def.cellValidator = CDMSTextareaCellValidator;
+//TODO
     return col_def;
 };
 
@@ -230,6 +231,8 @@ var ControlTypeDefinitions = {
     'textarea': TextAreaControlType,
     'time': TimeControlType,
     'upload': UploadControlType,
+    'qa-status-comment': TextAreaControlType,
+
 };
 
 function getControlDefinition(def) {

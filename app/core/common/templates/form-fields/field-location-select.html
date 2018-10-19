@@ -1,6 +1,10 @@
-<div class="header-label">{{field.Label}}:</div>
-<div class="header-value">
-    <select style="width: 298px;" ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="selectLocation()" ng-model="row.Activity.LocationId" convert-to-number>
-        <option ng-repeat="location in project.Locations | filter: {LocationTypeId: dataset.Datastore.LocationTypeId } | orderBy:'Label'" value="{{location.Id}}">{{location.Label}}</option>
-    </select>
+<div class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;">
+
+    <div class="header-label">{{field.Label}}:</div>
+    <div class="header-value">
+        <select style="width: 298px;" ui-select2="select2Options" data-placeholder="Choose a Location" ng-change="selectLocation()" ng-model="row.Activity.LocationId" convert-to-number>
+            <option ng-repeat="location in project.Locations | filter: {LocationTypeId: dataset.Datastore.LocationTypeId } | orderBy:'Label'" value="{{location.Id}}">{{location.Label}}</option>
+        </select>
+        <p class="field-error-block" ng-show="headerFieldErrors[field.DbColumnName]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>
+    </div>
 </div>

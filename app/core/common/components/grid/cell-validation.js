@@ -29,7 +29,7 @@ var cellValidators = [
 
 //validation error object. give the field object and the message.
 function ValidationError(field, message) {
-    this.message = message || '<not provided>';
+    this.message = message || '<error message not provided>';
     this.field = field || null;
 };
 
@@ -75,14 +75,16 @@ CellValidator.prototype.validateFieldOnValidateRule = function (data) { };
 
 */
 CellValidator.prototype.validateFieldLevelValidation = function (data) {
-
+    //console.log("Running validateFieldLevelValidation");
+    //console.dir(data);
+    //console.dir(this.validation);
     //validation: is the field required? "required" or "nb" (for "not blank")
     if (  (this.validation.contains('required') || this.validation.contains("nb"))
           && (data.value === null || data.value === '')) //this is probably not sufficient.
         this.errors.push(new ValidationError(this.cdms_field, "Field is required."));
 
     //other types of field-level validation?
-
+    //console.dir(this.errors);
     return this.errors;
 };
 
@@ -101,7 +103,7 @@ CellValidator.prototype.getValidationsArray = function (cdms_field) {
     }
 
     //get validation from dataset field Validation column - otherwise from master's.
-    var validation = cdms_field.Validation; // TODO::: || cdms_field.Field.Validation; //prefer dataset over master.
+    var validation = (cdms_field.Field) ? cdms_field.Validation || cdms_field.Field.Validation : cdms_field.Validation ; //prefer dataset over master.
 
     if (!validation)
         return empty;
