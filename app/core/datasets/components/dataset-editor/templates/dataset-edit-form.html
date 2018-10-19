@@ -8,11 +8,11 @@
 <h4>Editing activity in: {{dataset.Name}}</h4>
 <br/>
 
-<div ng-show="activities.success" style="margin-bottom: 50px;">
+<div ng-show="saveResult.success" style="margin-bottom: 50px;">
 
     <div class="alert alert-success">
         <h4 class="alert-heading">Success!</h4>
-        {{activities.success}}
+        {{saveResult.success}}
 
     </div>
     <button style="margin-left: 3px;" class="btn right" ng-click="doneButton()">Back to list</button>
@@ -43,12 +43,12 @@
 </div>
 
 <div>
-    <p ng-show="activities.errors.saveError" class="alert alert-danger">{{activities.errors.saveError}}</p>
+    <p ng-show="saveResult.error" class="alert alert-danger">{{saveResult.error}}</p>
 </div>
 
 <div ng-show="errors.heading.length>0" class="alert alert-danger"><div ng-repeat="error in errors.heading">{{error}}</div></div>
 
-<div class="row" ng-show="!activities.success">
+<div class="row" ng-show="!saveResult.success">
 
     <!-- header fields -->
     <div style="width:100%;">

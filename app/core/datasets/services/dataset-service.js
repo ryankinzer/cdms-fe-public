@@ -502,22 +502,18 @@ datasets_module.service('DatasetService', ['$q',
             },
 			
             //updateActivities: function(userId, datasetId, activities)
-            updateActivities: function (userId, datasetId, activities, datastoreTablePrefix) {
-                activities.saving = true; //tell everyone we are saving
-                activities.UserId = userId;
-                activities.DatasetId = datasetId;
-                activities.DatastoreTablePrefix = datastoreTablePrefix;
-                UpdateActivitiesAction.save(activities, function (data) {
-                    activities.success = "Update successful.";
-                    activities.errors = false;
+            updateActivities: function (payload, saveResult) {
+                UpdateActivitiesAction.save(payload, function (data) {
+                    saveResult.success = "Update successful.";
+                    saveResult.error = false;
                     console.log("Success!");
-                    activities.saving = false; //and... we're done.
+                    saveResult.saving = false; //and... we're done.
                 }, function (data) {
-                    activities.success = false;
-                    activities.errors = { saveError: "There was a problem saving your data.  Please try again or contact support." };
+                    saveResult.success = false;
+                    saveResult.error = "There was a problem saving your data.  Please try again or contact support." ;
                     console.log("Failure!");
                     console.dir(data);
-                    activities.saving = false; //and... we're done.
+                    saveResult.saving = false; //and... we're done.
                 });
 
             },

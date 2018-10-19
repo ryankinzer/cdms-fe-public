@@ -10,6 +10,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         ActivityParser, GridService) {
 
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
+
+        $scope.saveResult = { saving: false, error: null, success: null };
         
         $scope.fields = { header: [], detail: [] };
 
@@ -556,10 +558,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             payload.editedRowIds = $scope.dataAgGridOptions.editedRowIds; 
 
             console.dir(payload);
-            return;
+            //return;
 
 
-//            DatasetService.updateActivities($scope.userId, $scope.dataset.Id, $scope.activities, $scope.DatastoreTablePrefix);
+            DatasetService.updateActivities(payload, $scope.saveResult);
 			
         };
 		
