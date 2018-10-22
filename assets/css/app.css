@@ -227,10 +227,9 @@ ul.dropdown-menu .btn {
 	background-color: #CEF6D3; height: 300px; border-radius:6px;
 }
 
-.has-validation-error
-{
-	background-color: #f2dede;
-	border-bottom: 1px solid #E6E6E6;
+.has-validation-error {
+    background-color: #ff8989;
+    border-bottom: 1px solid #E6E6E6;
 }
 
 .row-validation-error {
@@ -705,11 +704,6 @@ table.metadata td
     display: table;
 }
 
-a {
-    color: rgb(5, 0, 208);
-    text-decoration: none;
-    font-weight: bold;
-}
 a {
     color: #07C;
     text-decoration: none;

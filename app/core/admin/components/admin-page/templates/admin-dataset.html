@@ -5,61 +5,38 @@
 </ul>
 
 	<div class="panel panel-default">
-	  <div class="panel-body">
-	  		<h3>{{dataset.Datastore.Name}} :: {{dataset.Name}}</h3>
+        <div class="panel-body">
+            <h3>{{dataset.Datastore.Name}} :: {{dataset.Name}}</h3>
 
-	  		<p><i>Manage the dataset for this project.</i></p>
-	  		
-            <tabset justified="true">
-                <tab heading="Fields">
-
-                    <div class="panel-body">
-                        <div class="col-md-6 admin-field-list-box">
-                            <div class="row">
-                                <div ng-click="selectField(field)" class="admin-field" ng-class="{'admin-field-selected': field.Id == SelectedField.Id}" ng-repeat="field in dataFields">
-                                    <span class="admin-field-name">{{field.Label}}</span><br />
-                                    <span class="admin-field-desc">{{field.Field.Description}}</span>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div id="sticky-box">
-                            <div ng-hide="SelectedField" class="col-md-6 admin-criteria-list-box"><H2 class="text-center">Select a field</H2></div>
-                            <div ng-show="SelectedField" class="col-md-6 admin-criteria-list-box">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div ng-include="'app/core/admin/components/admin-page/templates/dataset-field-options.html'"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-
-                    <div class="panel-body" style="width: 400px; margin-top: 20px;">
-                        <h3>Add a field:</h3>
-
-                        <select ui-select2="select2Options" data-placeholder="Add a field" ng-model="newField" style="width: 200px;">
-                            <option ng-repeat="field in MasterFields" value="{{field.Id}}">{{field.Name}}</option>
-                        </select>
-
-                        <button style="margin-top: -5px" class="right btn" ng-click="addMasterField()">Add Field</button>
-
-                    </div>
-                </tab>
+            <p><i>Manage the dataset for this project.</i></p>
 
 
-                <tab heading="Configuration">
-                    <div ng-include="'app/core/admin/components/admin-page/templates/admin-dataset-tab-config.html'"></div>
-                </tab>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" ng-class="{'active': OnTab == 'Fields'}" href="/index.html#!/admin-dataset/{{dataset.Id}}">Fields</a>
+                </li>
+                <li class="nav-item" ng-class="{'active': OnTab == 'Defaults'}">
+                    <a class="nav-link" href="/index.html#!/admin-config/{{dataset.Id}}">Defaults/Config</a>
+                </li>
 
+            </ul>
+            <div style="margin-top: 10px;">&nbsp;</div>
+            <h4>The following fields are defined for this project.</h4>
+            <p>Edit or remove fields using the grid below or add available fields using the dropdown.</p>
+            <hr/>
 
-                <tab heading="Lists">
-                    <div ng-include="'app/core/admin/components/admin-page/templates/admin-dataset-tab-lists.html'"></div>
-                </tab>
+            <h3>Add a field:</h3>
 
-            </tabset>
+            <select ui-select2="select2Options" data-placeholder="Add a field" ng-model="newField" style="width: 200px;">
+                <option ng-repeat="field in MasterFields" value="{{field.Id}}">{{field.Name}}</option>
+            </select>
 
-    </div>
+            <button style="margin-top: -5px" class="btn" ng-click="addMasterField()">Add Field</button>
+
+            <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                <div id="fields-grid" class="ag-theme-blue gridStyle-small"></div>
+            </div>
+
+        </div>
 </div>
 

@@ -2,77 +2,99 @@
 var admin_edit_dataset = ['$scope', '$uibModal', '$timeout', '$routeParams', 'DatasetService', 'CommonService','ProjectService','AdminService',
     function ($scope, $modal, $timeout, $routeParams, DatasetService, CommonService, ProjectService, AdminService ){
 
+        $scope.OnTab = "Fields";
+
 		$scope.dataset = DatasetService.getDataset($routeParams.Id);
 		$scope.FieldLookup = {};
-        $scope.SelectedField = null;
+        //$scope.SelectedField = null;
         $scope.saveResults = {};
-		
-		$scope.Sources = CommonService.getSources();
-		$scope.Instruments = ProjectService.getInstruments();
+
+        $scope.MasterFields = [];
+        $scope.allFields = [];
+
+		//$scope.Sources = CommonService.getSources();
+		//$scope.Instruments = ProjectService.getInstruments();
+
+      
+        var EditLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.openEditFieldModal(param.data);
+            });
+            div.appendChild(editBtn);
+            div.appendChild(document.createTextNode("|"));
+
+            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Remove';
+            delBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.removeField(param.data);
+            });
+            div.appendChild(delBtn);
+
+            return div;
+        };
+
+        $scope.fieldGridOptions = {
+            enableSorting: true,
+            enableFilter: true,
+            enableColResize: true,
+            rowSelection: 'multiple',
+            //getRowHeight: function () { return 120; },
+            //onFilterModified: function () {
+            //    scope.galleryGridOptions.api.deselectAll();
+            //},
+            //selectedItems: [],
+            columnDefs:
+            [
+                { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 120, menuTabs: [] },
+                { field: 'Label', headerName: 'Label', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'OrderIndex', headerName: 'Order Index', sort:'asc', width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Validation', headerName: 'Local Validation', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Rule', headerName: 'Local Rule', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.Name', headerName: 'Name', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.Units', headerName: 'Units', width: 200, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.DbColumnName', headerName: 'DbColumnName', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.DataType', headerName: 'DataType', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.ControlType', headerName: 'Control Type', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.PossibleValues', headerName: 'Possible Values', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.DataSource', headerName: 'Data Source', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.FieldRoleId', headerName: 'Field Role', width: 100, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.Validation', headerName: 'Master Validation', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'Field.Rule', headerName: 'Master Rule', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+            ]
+        };
 
 
-        $timeout(function () {
-            //stickyfill - this is so that IE (dumb thing) can have sticky div.
-            //https://www.npmjs.com/package/stickyfill2
-            var stickybox = document.getElementById('sticky-box');
-            if (stickybox) {
-                Stickyfill.add(stickybox);
-                //console.log("stickyfill is a go!!! - !!!!!!!!!!!!!!!!!!!!!!");
-            }
-        }, 0);
-        
-		$scope.$watch('dataset.Id', function(){
-			
-			if(!$scope.dataset.Id)
-				return;
-			
-			console.log("Inside dataset.Id watcher...");
-			console.dir($scope.dataset);
-		
-            if (!$scope.MasterFields)
-            {
-                var promise = AdminService.getMasterFields($scope.dataset.Datastore.FieldCategoryId);
+        $scope.activateGrid = function () {
 
-                promise.$promise.then(function (data) {
-                    $scope.allFields = promise;
-                    $scope.populateAddFieldDropdown();
-                });
-            }
-            else
+                var ag_grid_div = document.querySelector('#fields-grid');    //get the container id...
+
+                if (typeof $scope.ag_grid_div === 'undefined')
+                    $scope.ag_grid_div = new agGrid.Grid(ag_grid_div, $scope.fieldGridOptions); //bind the grid to it.
+
+                $scope.fieldGridOptions.api.showLoadingOverlay(); //show loading...
+                $scope.fieldGridOptions.api.setRowData($scope.dataset.Fields);
+                //$scope.galleryGridOptions.api.sizeColumnsToFit();
+
+                
+        };
+
+
+		$scope.dataset.$promise.then( function(){
+
+            var promise = AdminService.getMasterFields($scope.dataset.Datastore.Id);
+
+            promise.$promise.then(function (data) {
+                $scope.allFields = promise;
                 $scope.populateAddFieldDropdown();
+            });
 
-			angular.forEach($scope.dataset.Fields.sort(orderByAlpha), function(field){
-				//parseField(field, $scope);
-				console.log("field.Field.DbColumnName = " + field.Field.DbColumnName);
-				if(field.Field.PossibleValues)
-					field.Values = makeObjectsFromValues($scope.dataset.DatastoreId+field.DbColumnName, field.Field.PossibleValues);
-
-				field.SourceId = ""+field.SourceId; //so we can find it in the dropdown!
-				field.InstrumentId = ""+field.InstrumentId;
-			});
-
-			$scope.dataFields = $scope.dataset.Fields;
-
-            if ($scope.dataset.Config !== undefined && $scope.dataset.Config != null) {
-                $scope.dataset.ConfigString = angular.toJson($scope.dataset.Config, true);
-                $scope.parseConfigString();
-            }
-
-            $scope.dataset.DefaultActivityQAStatusId = "" + $scope.dataset.DefaultActivityQAStatusId;
-            $scope.dataset.DefaultRowQAStatusId = "" + $scope.dataset.DefaultRowQAStatusId;
-
-            $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
-            $scope.RowQAStatuses = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');  
-
-            console.log('-----------------');
-            console.dir($scope.QAStatusList);
-            console.dir($scope.dataset.DefaultActivityQAStatusId);
-            console.dir($scope.dataset);
-
-
-
-            //$scope.QAStatusOptions = $rootScope.QAStatusOptions = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
-
+            $scope.activateGrid();
 
 
 		});
@@ -84,16 +106,6 @@ var admin_edit_dataset = ['$scope', '$uibModal', '$timeout', '$routeParams', 'Da
             console.log(typeof $scope.dataset.DefaultActivityQAStatusId);
             console.dir($scope.dataset);
         };
-
-		$scope.$watch('Sources',function(){
-			if($scope.Sources.length > 0)
-			$scope.SourcesLookup = makeObjects($scope.Sources, 'Id','Name');
-		},true);
-
-		$scope.$watch('Instruments',function(){
-			if($scope.Instruments.length > 0)
-			$scope.InstrumentsLookup = makeObjects($scope.Instruments, 'Id','Name');
-		},true);
 
 		$scope.$watch('saveResults.success', function(){
 			if (!$scope.saveResults.success)
@@ -108,20 +120,25 @@ var admin_edit_dataset = ['$scope', '$uibModal', '$timeout', '$routeParams', 'Da
 
 		},true);
 
-		$scope.removeField = function()
+		$scope.removeField = function(params)
 		{
-			if(!confirm("Are you sure you want to remove '" + $scope.SelectedField.Label + "' from this dataset?"))
-                return;
+			
+			//$scope.saveResults = {};
+            //AdminService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
 
-			$scope.saveResults = {};
-            AdminService.removeField($scope.dataset.Id, $scope.SelectedField.FieldId, $scope.saveResults);
+            //if removed
+            $scope.dataset.Fields.forEach(function (field_removed,index) {
+                if (field_removed.FieldId == params.node.FieldId) {
+                    console.dir("found field to remove : " + field_removed.FieldId);
+                    $scope.dataset.Fields.splice(index, 1);
+                    console.dir($scope.dataset.Fields);
+                }
+            });
+
 		}
 
 		$scope.addMasterField = function()
 		{
-			console.log("Inside admin-controller.js, addMasterField...");
-			$scope.saveResults = {};
-			
 			// Note:  Given a list with zero-based index (0, 1, 2, 3, etc.), like we have here.
 			// With angular, when you select the first item in a list, it often (always?) shows blank (null).
 			// The problem does not present itself for items 1 and following.
@@ -130,10 +147,20 @@ var admin_edit_dataset = ['$scope', '$uibModal', '$timeout', '$routeParams', 'Da
 			if ($scope.newField === null)
 				$scope.newField = $scope.MasterFields[0].Id;
 			
-			console.log("$scope.newField (after checking) = " + $scope.newField);
-			AdminService.addMasterFieldToDataset($scope.dataset.Id, $scope.newField, $scope.saveResults);
-		};
+			console.log("$scope.newField  = " + $scope.newField);
+            console.dir($scope.newField);
 
+			var result = AdminService.addMasterFieldToDataset($scope.dataset.Id, $scope.newField);
+    
+            result.$promise.then(function () { 
+                console.dir(result);
+                $scope.dataset.Fields.push(result);
+                $scope.populateAddFieldDropdown();
+                $scope.fieldGridOptions.api.setRowData($scope.dataset.Fields);
+                $scope.newField = $scope.MasterFields[0].Id;
+            });
+		};
+/*
 		$scope.saveField = function()
 		{
 			console.log("Inside admin_edit_dataset, saveField...");
@@ -167,17 +194,16 @@ var admin_edit_dataset = ['$scope', '$uibModal', '$timeout', '$routeParams', 'Da
                 $scope.ConfigParse = exception.message;
             }
         }
-
+*/
         $scope.populateAddFieldDropdown = function () {
-            var master_fields = [];
-
+            $scope.MasterFields.length = 0;
             //make sure incoming master fields aren't already in the dataset fields
             $scope.allFields.forEach(function (field, index) {
                 if (!getByField($scope.dataset.Fields, field.Id, 'FieldId')) {
-                    master_fields.push(field);
+                    $scope.MasterFields.push(field);
+                    //console.dir(field);
                 }
             });
-            $scope.MasterFields = master_fields;
         };
 	}
 ];

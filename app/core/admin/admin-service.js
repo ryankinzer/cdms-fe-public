@@ -21,7 +21,7 @@ admin_module.factory('DeleteDatasetField', ['$resource', function ($resource) {
 }]);
 
 admin_module.factory('GetAllFields', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/datastore/getfieldcategoryfields');
+    return $resource(serviceUrl + '/api/v1/datastore/GetDatastoreFields');
 }]);
 
 admin_module.factory('AddMasterFieldToDataset', ['$resource', function ($resource) {
@@ -52,15 +52,9 @@ admin_module.service('AdminService', ['$q',
 
         var service = {
 
-           addMasterFieldToDataset: function(datasetId, fieldId, saveResults)
+           addMasterFieldToDataset: function(datasetId, fieldId)
             {
-               AddMasterFieldToDataset.save({ DatasetId: datasetId, FieldId: fieldId },
-                   function (data) {
-                       saveResults.success = true;
-                   },
-                   function (data) {
-                       saveResults.success = false;
-                   });
+               return AddMasterFieldToDataset.save({ DatasetId: datasetId, FieldId: fieldId });
             },
 
             removeField: function(datasetId, fieldId, saveResults)
@@ -77,8 +71,8 @@ admin_module.service('AdminService', ['$q',
                 return GetAllDatastoreFields.query({ id: id });
             },
 
-            getMasterFields: function (categoryId) {
-                return GetAllFields.query({ id: categoryId });
+            getMasterFields: function (datastoreId) {
+                return GetAllFields.query({ id: datastoreId });
             },
 
             saveDataset: function (dataset, saveResults) {
