@@ -148,6 +148,7 @@ var admin_edit_dataset_fields = ['$scope', '$uibModal', '$timeout', '$routeParam
 		};
 
         $scope.openEditModal = function (a_selection, a_callback) {
+            $scope.SaveMessage = null;
             $scope.field_to_edit = a_selection;
             $scope.callback = a_callback;
             var modalInstance = $modal.open({

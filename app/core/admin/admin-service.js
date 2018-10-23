@@ -88,17 +88,8 @@ admin_module.service('AdminService', ['$q',
                 return SaveDatasetField.save(field);
 
             },
-            saveMasterField: function (field, saveResults) {
-                saveResults.saving = true;
-
-                SaveMasterField.save(field, function (data) {
-                    saveResults.saving = false;
-                    saveResults.success = true;
-                }, function (data) {
-                    saveResults.saving = false;
-                    saveResults.failure = true;
-                });
-
+            saveMasterField: function (field) {
+                return SaveMasterField.save(field);
             },
 
         };

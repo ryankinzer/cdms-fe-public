@@ -18,15 +18,15 @@ var crpp_contracts = ['$scope', '$route', '$routeParams', 'DatasetService', '$ui
             //console.dir($rootScope.Profile);
 
             var linkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' + 
-            				   '<a href="#/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("ActivityDate") | date:\'MM/dd/yyyy\'}}</a>' +
+            				   '<a href="#!/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("ActivityDate") | date:\'MM/dd/yyyy\'}}</a>' +
             				   '</div>';
 
             var desclinkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' + 
-                               '<a href="#/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("Description") }}</a>' +
+                               '<a href="#!/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("Description") }}</a>' +
                                '</div>';
 
             var allotmentTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' + 
-                               '<a href="#/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("headerdata.Allotment") }}</a>' +
+                               '<a href="#!/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("headerdata.Allotment") }}</a>' +
                                '</div>';
 
 
@@ -34,7 +34,7 @@ var crpp_contracts = ['$scope', '$route', '$routeParams', 'DatasetService', '$ui
 
             //performance idea: if project-role evaluation ends up being slow, you can conditionally include here...
           	var editButtonTemplate = '<div project-role="editor" class="ngCellText" ng-class="col.colIndex()">' + 
-            				   '<a href="#/edit/{{row.getProperty(\'Id\')}}">Edit</a>' +
+            				   '<a href="#!/edit/{{row.getProperty(\'Id\')}}">Edit</a>' +
             				   '</div>';
 
             $scope.columnDefs = [

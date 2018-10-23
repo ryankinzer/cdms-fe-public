@@ -4,9 +4,9 @@
     <img ng-click="nextActivity()" title="Next Activity" class="nav-buttons" src="assets/images/icon-next.png"/>
 </div>
 <ul class="breadcrumb">
-    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
-    <li><a href="#/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
-    <li><a href="#/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
+    <li><a href="#!/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#!/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li><a href="#!/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
     
     <li class="active">Activity Detail for {{grid.Header.Activity.ActivityDate | date: 'MM/dd/yyyy'}}</li>
 </ul>

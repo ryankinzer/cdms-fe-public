@@ -1,8 +1,8 @@
 <ul class="breadcrumb">
-    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
-    <li ng-show="project.Name"><a href="#/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li><a href="#!/projects">Projects</a> <span class="divider"></span> </li>
+    <li ng-show="project.Name"><a href="#!/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
     <li ng-show="datastore.Name">{{datastore.Name}} (All) <span class="divider"></span></li>
-    <li ng-show="dataset.Name"><a href="#/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
+    <li ng-show="dataset.Name"><a href="#!/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
     
     <li class="active">Query</li>
 </ul>
@@ -10,7 +10,7 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span6">
-        <div class="right" ng-show="dataset.Name"><a href="#/query/{{dataset.Datastore.Id}}">Query all {{dataset.Datastore.Name}}</a></div>
+        <div class="right" ng-show="dataset.Name"><a href="#!/query/{{dataset.Datastore.Id}}">Query all {{dataset.Datastore.Name}}</a></div>
         <h4 ng-show="dataset.Name">Dataset Query Tool for {{dataset.Name}}</h4>
         <h4 ng-show="datastore.Name">Dataset Query Tool for {{datastore.Name}} (All)</h4>
         

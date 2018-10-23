@@ -81,7 +81,7 @@ var dataset_seasons_list = ['$scope', '$routeParams',
                         console.dir(params.node.data);
                         return '<div>' +
                             '<a title="' + params.node.data.Description
-                            + '" href="#/projects/' + params.node.data.Id + '">'
+                            + '" href="#!/projects/' + params.node.data.Id + '">'
                             + params.node.data.Name + '</a>' +
                             '</div>';
                     };

@@ -121,12 +121,13 @@ datasets_module.service('GridService', ['$window', '$route',
         service.getAgColumnDefs = function (dataset, page) {
 
             // these are the "system" columns that can be turned on via dataset configuration for the data entry page
-            var systemFields = angular.copy(SystemFormFields[page]);
+            //var systemFields = angular.copy(SystemFormFields[page]);
 
             // what we return in the end            
             var finalColumnDefs = { HeaderFields: [], DetailFields: [] };
 
             //apply the dataset config to our defaults for which fields to show/hide
+/*
             if (dataset.Config != undefined && dataset.Config[page] != undefined) {
                 
                 var config = dataset.Config[page];
@@ -177,7 +178,7 @@ datasets_module.service('GridService', ['$window', '$route',
             systemFields.HeaderFields.forEach(function (fieldname) {
                 finalColumnDefs.HeaderFields.push(SystemFieldDefinitions[fieldname]);
             });
-
+*/
             //dataset defined header fields 
             dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
                 if (field.FieldRoleId === FIELD_ROLE_HEADER) {
@@ -202,7 +203,7 @@ datasets_module.service('GridService', ['$window', '$route',
                     finalColumnDefs.HeaderFields.push(newColDef);
                 }
             });
-
+/*
             //qa header fields (unless should be hidden (in "hidden fields"))
             if (systemFields.HiddenFields.indexOf('QAFields') == -1) {
                 systemFields.QAFields.forEach(function (qa_field_name) { 
@@ -242,7 +243,7 @@ datasets_module.service('GridService', ['$window', '$route',
                 service.setupColDefForField(field, newColDef);
                 finalColumnDefs.DetailFields.push(newColDef);
             });
-
+*/
             //now add in the dataset defined detail fields and set each one up for use in the grid 
             dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
                 if (field.FieldRoleId === FIELD_ROLE_DETAIL) {
@@ -270,6 +271,7 @@ datasets_module.service('GridService', ['$window', '$route',
             });
 
             //set the sort from the config, if present.
+/*
             if (typeof systemFields.sort !== 'undefined' && systemFields.sort.field && systemFields.sort.direction) {
                 finalColumnDefs.DetailFields.forEach(function (field) {
                     if (field.DbColumnName === systemFields.sort.field) {
@@ -277,7 +279,7 @@ datasets_module.service('GridService', ['$window', '$route',
                     }
                 });
             }
-            
+  */          
             return finalColumnDefs;
         };
 

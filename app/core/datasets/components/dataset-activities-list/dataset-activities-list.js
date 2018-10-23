@@ -38,14 +38,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
         //console.dir($rootScope.Profile);
 
         var activityDateTemplate = function (params) {
-            return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.ActivityDate).format('L') + '</a>';
+            return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data.ActivityDate).format('L') + '</a>';
         };
 		
         var TimeStartTemplate = function (params) {
             // moment, for some reason, takes something like this:  "2017-07-09T20:19:00"
             // and turns it into something like this:  2017-07-09 20:07:00
             // If you add 5 minutes to the time, it will still come out like this:  2017-07-09 20:07:00
-            //return '<a href="#/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:MM') + '</a>';
+            //return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:MM') + '</a>';
             return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:mm') + '</a>';
         };
 
