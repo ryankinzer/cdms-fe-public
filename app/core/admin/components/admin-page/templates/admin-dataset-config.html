@@ -1,0 +1,66 @@
+﻿
+<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#/admin">Administration</a><span class="divider"></span> </li>
+    <li class="active">Edit Project Dataset</li>
+</ul>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h3>{{dataset.Datastore.Name}} :: {{dataset.Name}}</h3>
+
+        <p><i>Manage the dataset for this project.</i></p>
+
+
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" ng-class="{'active': OnTab == 'Fields'}" href="/index.html#!/admin-dataset/{{dataset.Id}}">Fields</a>
+            </li>
+            <li class="nav-item" ng-class="{'active': OnTab == 'Configuration'}">
+                <a class="nav-link" href="/index.html#!/admin-config/{{dataset.Id}}">Configuration</a>
+            </li>
+
+        </ul>
+
+        <div class="dataset-config-tab" style="margin-top:20px;">
+            <table class="inherited-properties">
+                <tr>
+                    <td class="prop-name">Datastore Name:</td>
+                    <td class="prop-val">{{dataset.Datastore.Name}}</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">Datastore Description:</td>
+                    <td class="prop-val">{{dataset.Datastore.Description}}</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">Datastore Table Prefix:</td>
+                    <td class="prop-val">{{dataset.Datastore.TablePrefix}}</td>
+                </tr>
+                <tr>
+                    <td class="prop-name">Project Assignment:</td>
+                    <td class="prop-val">{{dataset.ProjectId}}</td>
+                </tr>
+
+                <tr><td class="prop-name">Name:</td><td class="prop-val"><input class="form-control" type="text" ng-model="dataset.Name" name="Name"></td></tr>
+                <tr><td class="prop-name">Description:</td><td class="prop-val"><textarea style="margin-left: 2px;" class="form-control" type="text" ng-model="dataset.Description" name="Description"></textarea></td></tr>
+                <tr>
+                    <td class="prop-name">Default Activity QA:</td>
+                    <td class="prop-val">
+                        <select ng-change="logStatus()" ng-model="dataset.DefaultActivityQAStatusId" ng-options="id as name for (id, name) in QAStatusList"></select>
+                    </td>
+                </tr>
+                <tr><td class="prop-name">Default Row QA:</td><td class="prop-val"><select ng-model="dataset.DefaultRowQAStatusId" ng-options="id as name for (id, name) in RowQAStatuses"></select></td></tr>
+                <tr><td class="prop-name">Config Rules:</td><td class="prop-val"><textarea rows="20" style="margin-left: 2px;" class="form-control" type="text" ng-change="parseConfigString()" ng-model="dataset.ConfigString" name="Config"></textarea></td></tr>
+                <tr>
+                    <td class="prop-name">Config Parse:</td>
+                    <td class="prop-val">{{ConfigParse}}</td>
+                </tr>
+            </table>
+
+            <button style="margin-top: 30px;" class="right btn" ng-click="saveConfig()">Save Changes</button>
+
+            <div ng-show="SaveMessage" style="float: right;margin-right: 20px;" class="alert alert-success">{{SaveMessage}}</div>
+
+        </div>
+
+</div>

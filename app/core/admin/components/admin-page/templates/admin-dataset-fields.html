@@ -15,13 +15,13 @@
                 <li class="nav-item">
                     <a class="nav-link" ng-class="{'active': OnTab == 'Fields'}" href="/index.html#!/admin-dataset/{{dataset.Id}}">Fields</a>
                 </li>
-                <li class="nav-item" ng-class="{'active': OnTab == 'Defaults'}">
-                    <a class="nav-link" href="/index.html#!/admin-config/{{dataset.Id}}">Defaults/Config</a>
+                <li class="nav-item" ng-class="{'active': OnTab == 'Configuration'}">
+                    <a class="nav-link" href="/index.html#!/admin-config/{{dataset.Id}}">Configuration</a>
                 </li>
 
             </ul>
             <div style="margin-top: 10px;">&nbsp;</div>
-            <h4>The following fields are defined for this project.</h4>
+            <h4>The following fields are defined for {{dataset.Name}}.</h4>
             <p>Edit or remove fields using the grid below or add available fields using the dropdown.</p>
             <hr/>
 
