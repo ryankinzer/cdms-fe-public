@@ -21,7 +21,7 @@
                class="list-group-item list-group-group-item-action" 
                ng-class="{'list-group-item-red': field.exclude, 'list-group-item-green':!field.exclude}" 
                ng-repeat="field in datastoreFields">
-               {{field.Name}}
+               {{field.Name}} {{field.Units}}
             </a>
         </div>
 

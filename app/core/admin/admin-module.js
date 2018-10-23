@@ -7,7 +7,8 @@ require([
     'core/admin/components/admin-page/admin-edit-dataset',
     'core/admin/components/admin-page/admin-edit-master',
     'core/admin/components/admin-page/admin-new-dataset',
-
+    'core/admin/components/admin-page/admin-users',
+    'core/admin/components/admin-page/admin-manage-users-modal',
     //service
     'core/admin/admin-service',
 
@@ -20,6 +21,8 @@ require([
     admin_module.controller('AdminEditDatasetCtrl', admin_edit_dataset);
     admin_module.controller('AdminEditMasterCtrl', admin_edit_master);
     admin_module.controller('AdminNewDatasetCtrl', admin_new_dataset);
+    admin_module.controller('AdminUsersCtrl', admin_users);
+    admin_module.controller('ModalManageUserCtrl', modal_manage_user);
 
 
     //load services

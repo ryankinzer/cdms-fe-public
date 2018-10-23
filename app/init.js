@@ -2,6 +2,7 @@
 (function (angular) {
 
     var root = location.pathname.replace(new RegExp(/\/[^\/]+$/), '');
+    root = (root == '/' ? "" : root); //when visiting website with just the domain, the root has a hanging /
 
     define('angular', function () {
         return angular;

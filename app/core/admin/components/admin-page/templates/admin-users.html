@@ -1,0 +1,37 @@
+﻿<ul class="breadcrumb">
+    <li><a href="#/projects">Projects</a> <span class="divider"></span> </li>
+    <li class="active">User Administration</li>
+</ul>
+
+<button class="btn btn-sm right" ng-click="openManageUserModal()">Create User</button>
+
+<h4>Manage Users</h4>
+<p><i>Use the table below to manage the LOCAL user accounts in CDMS. Note: this will not manage Active Directory users.</i></p>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">&nbsp;</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Full name</th>
+                    <th scope="col">Roles</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in Users">
+                    <th><a ng-click="openManageUserModal(user)" style="cursor: pointer;">Edit</a></th>
+                    <td>{{user.Username}}</td>
+                    <td>{{user.Description}}</td>
+                    <td>{{user.Fullname}}</td>
+                    <td>{{user.Roles}}</td>
+                    <td>{{getStatusText(user.Inactive)}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
