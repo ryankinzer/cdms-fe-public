@@ -502,8 +502,10 @@ datasets_module.service('DatasetService', ['$q',
             },
 			
             //updateActivities: function(userId, datasetId, activities)
-            updateActivities: function (payload, saveResult) {
-                UpdateActivitiesAction.save(payload, function (data) {
+            updateActivities: function (payload) {
+                return UpdateActivitiesAction.save(payload); 
+                    /*
+                    , function (data) {
                     saveResult.success = "Update successful.";
                     saveResult.error = false;
                     console.log("Success!");
@@ -514,7 +516,7 @@ datasets_module.service('DatasetService', ['$q',
                     console.log("Failure!");
                     console.dir(data);
                     saveResult.saving = false; //and... we're done.
-                });
+                });*/
 
             },
 
@@ -522,18 +524,11 @@ datasets_module.service('DatasetService', ['$q',
                 return AddDatasetToProject.save({ DatastoreId: a_datastoreId, ProjectId: a_projectId, DatasetFields: a_fields });
             },
             
-            saveActivities: function (userId, datasetId, activities) {
-                console.log("Inside saveActivities...starting save...");
-                console.log("activities is next...");
-                console.dir(activities);
-
-                var theDate = new Date();
-                console.log(formatDate(theDate));
-
-                activities.saving = true; //tell everyone we are saving
-                activities.UserId = userId;
-                activities.DatasetId = datasetId;
-                return SaveActivitiesAction.save(activities, function (data) {
+            saveActivities: function (payload) {
+               
+                return SaveActivitiesAction.save(payload);
+                    /*
+                    , function (data) {
                     //activities.success = "Save successful.";
                     activities.errors = false;
                     console.log("Set activities.errors...");
@@ -584,7 +579,7 @@ datasets_module.service('DatasetService', ['$q',
                     console.log(theErrorMessage);
                     console.dir(data);
                     activities.saving = false; //and... we're done.
-                });
+                });*/
             },
 			
             //delete selectedItems activities

@@ -53,7 +53,8 @@ define([
             $routeProvider.when('/mypreferences', { templateUrl: 'app/core/user/components/my-preferences/templates/mypreferences.html', controller: 'MyPreferencesCtrl'});
             $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit'});
             $routeProvider.when('/dataview/:Id', { templateUrl: 'app/core/datasets/components/dataset-view/templates/dataset-view.html', controller: 'DatasetViewCtrl'});
-            $routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-form/templates/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});
+            //$routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-form/templates/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});
+            $routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-editor/templates/dataset-edit-form.html', controller: 'DataEditCtrl', permission: 'Edit'});
             $routeProvider.when('/edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-editor/templates/dataset-edit-form.html', controller: 'DataEditCtrl', permission: 'Edit'});
             $routeProvider.when('/datasetquery/:Id', { templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DataQueryCtrl'});
             $routeProvider.when('/dataset-details/:Id', { templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-view.html', controller: 'DatasetDetailsCtrl'});

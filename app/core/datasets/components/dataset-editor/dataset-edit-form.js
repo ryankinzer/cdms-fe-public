@@ -8,7 +8,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
     'ActivityParser', 'GridService',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
         ActivityParser, GridService) {
-
+        
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
 
         $scope.saveResult = { saving: false, error: null, success: null };
@@ -41,15 +41,33 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.file_row = {};
         $scope.file_field = {};
 */
-
+        console.dir($location.path());
         // Are we editing or not?
-        if ($routeParams.Id !== null)
+        if ($location.path().indexOf('edit') !== -1) {
+            $scope.editing = true;
             $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);
-        else
-            $scope.dataset_activities = {}; //TODO: needs to have Header and Details I think
+
+            $scope.dataset_activities.$promise.then(function () {
+                $scope.dataset = $scope.dataset_activities.Dataset;
+                //$scope.row is the Header fields data row
+                $scope.row = $scope.dataset_activities.Header; 
+                
+                $scope.afterDatasetLoadedEvent();
+            });
+        }
+        else {
+            $scope.dataset_activities = { Header: [], Details:[] }; 
+            $scope.dataset = DatasetService.getDataset($routeParams.Id);
+
+            $scope.dataset.$promise.then(function () { 
+                //$scope.row is the Header fields data row
+                $scope.row = { 'Activity': { 'ActivityDate': moment().format(), 'ActivityQAStatus': {} }}; //empty row
+
+                $scope.afterDatasetLoadedEvent();
+            });
+        }
         
-        //$scope.row is the Header fields data row
-        $scope.row = { ActivityQAStatus: {} }; //header field values get attached here by DbColumnName : value
+        
 
 //        $scope.foundDuplicate = false;
 
@@ -230,13 +248,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             
         };
 
-        //once dataset loaded
-        $scope.dataset_activities.$promise.then(function () {
-            
-            //setup the scope dataset    
-            $scope.dataset = $scope.dataset_activities.Dataset;
-            DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
+        //call to fire up the grid after the $scope.dataset is ready
+        $scope.activateGrid = function () {
+            
             //setup grid and coldefs and then go!
             $timeout(function () {
 
@@ -259,15 +274,24 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //set the detail values into the grid
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
                 
-                //set the header values into the form
-                $scope.row = $scope.dataset_activities.Header;
                 
                 //convert timezone to object if it exists
-                $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
+                if($scope.row.Activity)
+                    $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
                 
                 GridService.autosizeColumns($scope.dataAgGridOptions);
 
             }, 0);
+
+            
+
+        };
+
+        //called after the dataset is loaded
+        $scope.afterDatasetLoadedEvent = function () { 
+            DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
+
+            $scope.activateGrid();
 
             //load the files related to this dataset
             $scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
@@ -279,6 +303,24 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
             });
 
+
+            //TODO -(((
+
+            //if the activity qa status is already set in the header (editing), copy it in to this row's activityqastatus 
+            if ($scope.dataset_activities.Header.Activity && $scope.dataset_activities.Header.Activity.ActivityQAStatus) {
+                $scope.row.ActivityQAStatus = {
+                    QAStatusId: "" + $scope.dataset_activities.Header.Activity.ActivityQAStatus.QAStatusId,
+                    Comments: $scope.dataset_activities.Header.Activity.ActivityQAStatus.Comments,
+                }
+            }
+            //otherwise (new record), set it to the default. 
+            else {
+                //console.warn("The ActivityQAStatus for this activity is not set, setting to default.");
+                $scope.row.ActivityQAStatus = {
+                    QAStatusId: "" + $scope.dataset.DefaultRowQAStatusId,
+                    Comments: ""
+                }
+            }
 
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 
@@ -350,23 +392,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //$scope.row['AccuracyCheckId'] = $scope.dataset_activities.Header.Activity.AccuracyCheckId;
             //$scope.row['PostAccuracyCheckId'] = $scope.dataset_activities.Header.Activity.PostAccuracyCheckId;
 
-            //if the activity qa status is already set in the header, copy it in to this row's activityqastatus (this should really always be the case)
-            if ($scope.dataset_activities.Header.Activity.ActivityQAStatus) {
-                $scope.row.ActivityQAStatus = {
-                    QAStatusId: "" + $scope.dataset_activities.Header.Activity.ActivityQAStatus.QAStatusId,
-                    Comments: $scope.dataset_activities.Header.Activity.ActivityQAStatus.Comments,
-                }
-            }
-            //otherwise, set it to the default.
-            else {
-                //console.warn("The ActivityQAStatus for this activity is not set, setting to default.");
-                $scope.row.ActivityQAStatus = {
-                    QAStatusId: "" + $scope.dataset.DefaultRowQAStatusId,
-                    Comments: ""
-                }
-            }
+            
+        };
 
-        });
+
+       
 
         $scope.setSelectedBulkQAStatus = function (rowQAId) {
             angular.forEach($scope.dataAgGridOptions.selectedItems, function (item, key) {
@@ -581,6 +611,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             var payload = {
                 'Activity': new_activity,
                 'DatasetId': $scope.dataset.Id,
+                'ProjectId': $scope.project.Id,
                 'UserId': $rootScope.Profile.Id,
                 'deletedRowIds': [],
                 'editedRowIds': [],
@@ -614,8 +645,44 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             console.dir(payload);
             //return;
 
+            var save_promise = null;
 
-            DatasetService.updateActivities(payload, $scope.saveResult);
+            if ($scope.editing)
+                save_promise = DatasetService.updateActivities(payload);
+            else
+                save_promise = DatasetService.saveActivities(payload);
+
+            save_promise.$promise.then(
+                function () {
+                    $scope.saveResult.success = "Save successful.";
+                    $scope.saveResult.error = false;
+                    console.log("Success!");
+                    $scope.saveResult.saving = false; 
+                      
+                }, 
+                function (data) { 
+                    $scope.saveResult.success = false;
+                    console.log("Failure!");
+                    console.dir(data);
+                    $scope.saveResult.saving = false; 
+
+                    if (typeof data.data !== 'undefined') {
+                        if (typeof data.data.ExceptionMessage !== 'undefined') {
+                            theErrorText = data.data.ExceptionMessage;
+                            console.log("Save error:  theErrorText = " + theErrorText);
+                        }
+                        else {
+                            theErrorText = data.data;
+                            var titleStartLoc = theErrorText.indexOf("<title>") + 7;
+                            console.log("titleStartLoc = " + titleStartLoc);
+                            var titleEndLoc = theErrorText.indexOf("</title>");
+                            console.log("titleEndLoc = " + titleEndLoc);
+                            theErrorText = theErrorText.substr(titleStartLoc, titleEndLoc - titleStartLoc);
+                        }
+                    }
+                    $scope.saveResult.error = "There was a problem saving your data (" + theErrorText + ").  Please try again or contact support.";
+
+                });
 			
         };
 		
