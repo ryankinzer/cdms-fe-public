@@ -198,6 +198,15 @@ datasets_module.factory('SpecificScrewTrapActivities', ['$resource', function ($
     });
 }]);
 
+
+datasets_module.factory('HasExistingActivity', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/activity/HasExistingActivity', {}, {
+        save: { method: 'POST', isArray: false }
+    });
+}]);
+
+
+
 datasets_module.service('DatasetService', ['$q',
     'DatasetFiles',
     'Activities',
@@ -236,6 +245,7 @@ datasets_module.service('DatasetService', ['$q',
     'SpecificScrewTrapActivities',
     'AddDatasetToProject',
     'UpdateDataset',
+    'HasExistingActivity',
     function ($q,
         DatasetFiles,
         Activities,
@@ -273,7 +283,8 @@ datasets_module.service('DatasetService', ['$q',
         SpecificCreelSurveyActivities,
         SpecificScrewTrapActivities,
         AddDatasetToProject,
-        UpdateDataset)
+        UpdateDataset,
+        HasExistingActivity)
     {
 
         var service = {
@@ -375,6 +386,10 @@ datasets_module.service('DatasetService', ['$q',
             getSeasons: function (id) {
                 console.log("Inside dataset-service.js, getSeasons...");
                 return GetSeasons.query({ id: id });
+            },
+
+            checkForDuplicateActivity: function (query) {
+                return HasExistingActivity.save(query);
             },
 
             saveSeason: function (projectId, datasetId, userId, season, saveResults) {

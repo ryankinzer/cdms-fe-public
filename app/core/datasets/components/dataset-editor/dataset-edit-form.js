@@ -503,7 +503,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         //click "save" on dataset edit form
         $scope.saveData = function () {
 
-            if (!$scope.dataAgGridOptions.dataChanged) {
+            if (!$scope.dataAgGridOptions.dataChanged && !$scope.row.dataChanged) {
                 if (confirm("Nothing to save. Return to Activities?")) {
                     $location.path("#!/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
                 }
@@ -512,10 +512,42 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
+            //if checkforduplicates is enabled, do so
+            if ($scope.dataset.Config.EnableDuplicateChecking) {
+                console.log("we are dupe checking!");
+                var query = {
+                    'DatasetId': $scope.dataset.Id,
+                    'Fields': [],
+                    'Locations': "["+ $scope.row.Activity.LocationId +"]",
+                    'QAStatusId' : 'all',
+                };
+
+                $scope.dataset.Config.DuplicateCheckFields.forEach(function (dc_field) {
+                    query.Fields.push({ 'DbColumnName': dc_field, 'Value': $scope.row.Activity[dc_field] });
+                });
+
+                console.dir(query);
+
+                var dupe_check = DatasetService.checkForDuplicateActivity(query);
+
+                dupe_check.$promise.then(function () {
+                    console.log(" back from dupe check with: ");
+                    console.dir(dupe_check);
+                    if (dupe_check.count > 0)
+                        console.log(" HEY! we have a duplicate.");
+                    else
+                        console.log(" no duplicate for this key");
+                });
+            }
+
+
+
             console.log(" -- save -- ");
             //console.dir($scope.row);
 
-            $scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
+            return;
+
+            //$scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
 /*
             $scope.errors.heading = []; //reset errors if there are any.
 
