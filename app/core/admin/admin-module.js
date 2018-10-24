@@ -10,6 +10,7 @@ require([
     'core/admin/components/admin-page/admin-new-dataset',
     'core/admin/components/admin-page/modal-edit-dataset-field',
     'core/admin/components/admin-page/modal-edit-master-field',
+    'core/admin/components/admin-page/modal-choose-duplicate-fields',
 
     //service
     'core/admin/admin-service',
@@ -26,6 +27,7 @@ require([
     admin_module.controller('AdminNewDatasetCtrl', admin_new_dataset);
     admin_module.controller('ModalEditDatasetFieldCtrl', modal_admin_edit_dataset_field);
     admin_module.controller('ModalEditMasterFieldCtrl', modal_admin_edit_master_field);
+    admin_module.controller('ModalChooseDuplicateFieldsCtrl', modal_admin_choose_duplicate_fields);
 
 
     //load services

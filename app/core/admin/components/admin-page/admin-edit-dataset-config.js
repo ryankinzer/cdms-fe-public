@@ -9,11 +9,6 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
 
         $scope.dataset.$promise.then(function () {
 
-            if ($scope.dataset.Config !== undefined && $scope.dataset.Config != null) {
-                $scope.dataset.ConfigString = angular.toJson($scope.dataset.Config, true);
-                $scope.parseConfigString();
-            }
-
             $scope.dataset.DefaultActivityQAStatusId = "" + $scope.dataset.DefaultActivityQAStatusId;
             $scope.dataset.DefaultRowQAStatusId = "" + $scope.dataset.DefaultRowQAStatusId;
 
@@ -22,24 +17,12 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
 
         });
 
-        $scope.parseConfigString = function () {
-            try {
-                var ConfigObject = angular.fromJson($scope.dataset.ConfigString);
-                if (ConfigObject)
-                    $scope.ConfigParse = "Parse successful.";
-            } catch (exception) {
-                console.dir(exception);
-                $scope.ConfigParse = exception.message;
-            }
-        }
-
         $scope.saveConfig = function () {
             $scope.SaveMessage = "Saving...";
-            $scope.dataset.Config = $scope.dataset.ConfigString;
+            $scope.dataset.Config = angular.toJson($scope.dataset.Config);
             var promise = DatasetService.saveDataset($scope.dataset );
 
             promise.$promise.then(function () {
-                //console.dir(promise);
                 if (promise.Id) {
                     $scope.dataset = DatasetService.getDataset(promise.Id);
                     $scope.SaveMessage = "Save successful.";
@@ -47,8 +30,26 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
                     console.dir(promise);
                     $scope.SaveMessage = "Save failed.";
                 }
+                $scope.dataset.Config = angular.fromJson($scope.dataset.Config);
             });
         };
+
+
+        $scope.openChooseDuplicateFields = function () {
+            
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/admin/components/admin-page/templates/modal-choose-duplicate-fields.html',
+                controller: 'ModalChooseDuplicateFieldsCtrl',
+                scope: $scope, //very important to pass the scope along...
+            }).result.then(function (saved_field) { 
+
+                //set the list of fields that are chosen
+                //$scope.dataset.Config.DuplicateCheckFields;
+
+            });
+        };
+
+
 
     }
 

@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <h3>Choose fields to check for duplicates</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <p>Specify which header field(s) will be the "key" for duplicate checking. Hold ctrl to select multiple fields.</p>
+    <select size="8" class="form-control" multiple ng-model="dataset.Config.DuplicateCheckFields">
+        <option ng-repeat="field in dataset.Fields  | orderBy:'Label'" value="{{field.DbColumnName}}">{{field.Label}} {{field.Field.Units}}</option>
+    </select>
+</div>
+<div class="modal-footer">
+    <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button style="margin-top: 30px;" class="right btn" ng-click="save()">Save Changes</button>
+</div>
+
