@@ -5,7 +5,8 @@
     <li><a href="#!/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
     <li class="active">Edit data</li>
 </ul>
-<h4>Editing activity in: {{dataset.Name}}</h4>
+<h4 ng-show="editing">Editing activity in: {{dataset.Name}}</h4>
+<h4 ng-hide="editing">New activity in: {{dataset.Name}}</h4>
 <br/>
 
 <div ng-show="saveResult.success" style="margin-bottom: 50px;">
@@ -64,6 +65,7 @@
                         <ctuir-post-accuracy-check-select-field ng-switch-when="post-accuracy-check-select"></ctuir-post-accuracy-check-select-field>
                         <ctuir-timezone-select-field ng-switch-when="timezone-select"></ctuir-timezone-select-field>
                         <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                        <ctuir-activity-text-field ng-switch-when="activity-text"></ctuir-activity-text-field>
                         <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                         <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
                         <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
@@ -105,15 +107,22 @@
         <hr />
     </div>
 
+    
+
     <div style="width:100%;">
+        <div>
+            <p ng-show="saveResult.error" class="alert alert-danger">{{saveResult.error}}</p>
+        </div>
         <div>
             <div style="float:right;">
                 <!--<button class="right btn" ng-disabled="activities.saving" ng-click="saveData()">Save and close</button>      DUPLICATE CHECK TOO -->
                 <button class="btn" ng-disabled="(saveResult.saving || (PageErrorCount > 0 && (dataset.Config && dataset.Config.AllowSaveWithErrors == false)) )" ng-click="saveData()">Save and close</button>
                 <button class="btn btn-warning" ng-click="cancel()" style="margin-right: 10px;">Cancel</button>
                 <br />
-                <div ng-show="saveResult.saving" style="margin-right: 20px;" class="alert alert-success">Saving...</div>
+                <div ng-show="saveResult.saving" style="margin-right: 20px;" class="alert alert-success">{{saveResult.saveMessage}}</div>
             </div>
+
+
 
             <div ng-hide="dataset.Config && (dataset.Config.DataEntryPage.HiddenFields.contains('theDetails'))">
 

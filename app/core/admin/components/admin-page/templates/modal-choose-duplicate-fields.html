@@ -4,7 +4,7 @@
 <div class="modal-body" id="modal-body">
     <p>Specify which header field(s) will be the "key" for duplicate checking. Hold ctrl to select multiple fields.</p>
     <select size="8" class="form-control" multiple ng-model="dataset.Config.DuplicateCheckFields">
-        <option ng-repeat="field in dataset.Fields  | orderBy:'Label'" value="{{field.DbColumnName}}">{{field.Label}} {{field.Field.Units}}</option>
+        <option ng-repeat="field in dataset.Fields | {FieldCategoryId:1} | orderBy:'Label'" value="{{field.DbColumnName}}">{{field.Label}} {{field.Field.Units}}</option>
     </select>
 </div>
 <div class="modal-footer">

@@ -37,6 +37,19 @@ common_module.directive('ctuirDateField',
 
     });
 
+common_module.directive('ctuirActivityTextField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-activity-text.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+
 common_module.directive('ctuirActivityDateField',
     function(){
 
