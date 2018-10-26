@@ -15,6 +15,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         
         $scope.fields = { header: [], detail: [] };
         $scope.headerFieldErrors = [];
+        $scope.hasDuplicateError = false;
 
         $scope.userId = $rootScope.Profile.Id;
         
@@ -167,6 +168,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
             //build event to send for validation
+            console.log("onHeaderEditingStopped: " + field.DbColumnName);
             var event = {
                 colDef: field,
                 node: { data: $scope.row },
@@ -195,7 +197,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             $scope.row.dataChanged = true;
 
-            
+            //if one of the duplicatecheck fields change then check for duplicates.
+            if($scope.dataset.Config.DuplicateCheckFields.contains(field.DbColumnName))
+                $scope.checkForDuplicates();
 
             //console.dir($scope.row);
         };
@@ -376,22 +380,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
     */
 
 
-      //          $scope.selectInstrument();
-                //$scope.selectLocation();
 
-                //console.log("$scope at end of watch project.Name is next...");
-                //console.dir($scope);
             });
-
-            //set the header field data values
-            //NOTE: can we do this automagically?
-            //console.log("Setting header field values ...");
-            //************************* TODO!
-            //$scope.row['ActivityId'] = $scope.dataset_activities.Header.ActivityId;
-            //$scope.row['InstrumentId'] = $scope.dataset_activities.Header.Activity.InstrumentId;
-            //$scope.row['AccuracyCheckId'] = $scope.dataset_activities.Header.Activity.AccuracyCheckId;
-            //$scope.row['PostAccuracyCheckId'] = $scope.dataset_activities.Header.Activity.PostAccuracyCheckId;
-
             
         };
 
@@ -465,10 +455,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         };
 
 
-        $scope.selectLocation = function () {
-            //$scope.viewLocation = getByField($scope.project.Locations, $scope.row.locationId, "Id");
-        };
-
         //when user selects an instrument, the directive model binding sets the row.Activity.InstrumentId. 
         // we need to set the row.Activity.Instrument to the matching one from project.Instruments
         // and then select the last AccuracyCheck and set it in row.Activity.AccuracyCheckId
@@ -512,14 +498,23 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
-            $scope.checkForDuplicates();
+            var dupe_check = $scope.checkForDuplicates();
 
             console.log(" -- save -- ");
+
+            dupe_check.$promise.then(function () { 
+                //TODO: IF we have errors don't save unless config.savewitherrors = true
+                if (!$scope.hasDuplicateError)
+                    $scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
+                else
+                    console.log("Aborting saving because we have a duplicate error");
+            });
+
+
             //console.dir($scope.row);
 
-            return;
 
-            //$scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
+            
 /*
             $scope.errors.heading = []; //reset errors if there are any.
 
@@ -605,9 +600,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //special case for water temp - update the Activity.Description field with the range... we'll use this to duplicate check
                 if ($scope.dataset.Datastore.TablePrefix == "WaterTemp") {
                     //sort, then get the first and last dates
+                    
                     $scope.dataAgGridOptions.api.setSortModel({ colId: 'ReadingDateTime', sort: 'asc' });
-                    var oldest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex($scope.dataAgGridOptions.api.getFirstDisplayedRow());
-                    var newest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex($scope.dataAgGridOptions.api.getLastDisplayedRow());
+                    var oldest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(0);
+                    var newest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex($scope.dataAgGridOptions.api.getDisplayedRowCount()-1);
+
                     var oldest_date = moment(oldest.data.ReadingDateTime).format('YYYY/MM/DD');
                     var newest_date = moment(newest.data.ReadingDateTime).format('YYYY/MM/DD');
                     var watertemp_range = oldest_date + " - " + newest_date;
@@ -634,9 +631,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
                 dupe_check.$promise.then(function () {
                     if (dupe_check.count > 0) {
-                        $scope.saveResult.error = "Duplicate record exists with these values: " + $scope.dataset.Config.DuplicateCheckFields.toString().replace("Description","ReadingDateTime");
+                        $scope.hasDuplicateError = true;
+                        $scope.saveResult.error = "Duplicate record exists with these values: " + 
+                            $scope.dataset.Config.DuplicateCheckFields.toString().replace("Description","ReadingDateTimeRange").replace(/,/g,", ");
                     }
                     else {
+                        $scope.hasDuplicateError = false;
                         $scope.saveResult.error = null;
                     }
 
@@ -646,6 +646,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }, function (data) { 
                     console.dir(data);
                 });
+
+                return dupe_check; //promise... can add more then's 
             }
         };
 
@@ -674,7 +676,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             delete new_row.Activity;
             delete new_row.ByUser;
 
-            //compose our payload (we can punt this and change the backend if it is cleaner!)
+            //compose our payload 
             var payload = {
                 'Activity': new_activity,
                 'DatasetId': $scope.dataset.Id,

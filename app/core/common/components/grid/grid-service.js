@@ -120,67 +120,13 @@ datasets_module.service('GridService', ['$window', '$route',
         //@param page - the page is the key to the config and systemformfields (like "DataEntryPage")
         service.getAgColumnDefs = function (dataset, page) {
 
-            // these are the "system" columns that can be turned on via dataset configuration for the data entry page
-            //var systemFields = angular.copy(SystemFormFields[page]);
-
             // what we return in the end            
             var finalColumnDefs = { HeaderFields: [], DetailFields: [] };
 
-            //apply the dataset config to our defaults for which fields to show/hide
-/*
-            if (dataset.Config != undefined && dataset.Config[page] != undefined) {
-                
-                var config = dataset.Config[page];
+            var FieldsSorted = dataset.Fields.sort(orderByOrderIndex);
 
-                console.log("Hey config has a "+page+" configured!");
-                console.dir(config);
-
-                //unhide all show fields
-                if (config.hasOwnProperty('ShowFields')) {
-                    config.ShowFields.forEach(function (field_to_show) {
-                        //remove the showfield if it exists in hiddenfields
-                        systemFields.HiddenFields.indexOf(field_to_show) !== -1 && systemFields.HiddenFields.splice(systemFields.HiddenFields.indexOf(field_to_show), 1);
-                        if (field_to_show == 'Instrument') { 
-                            //then lets also show the AccuracyCheck/PostAccuracyCheck
-                            systemFields.HiddenFields.indexOf('AccuracyCheck') !== -1 && systemFields.HiddenFields.splice(systemFields.HiddenFields.indexOf('AccuracyCheck'), 1);
-                            systemFields.HiddenFields.indexOf('PostAccuracyCheck') !== -1 && systemFields.HiddenFields.splice(systemFields.HiddenFields.indexOf('PostAccuracyCheck'), 1);
-                        }
-                    });
-                }
-
-                //hide all hidden fields
-                if (config.hasOwnProperty('HiddenFields')) {
-                    config.HiddenFields.forEach(function (field_to_hide) {
-                        //ensure the hiddenfield is in hiddenfields
-                        systemFields.HiddenFields.indexOf(field_to_hide) == -1 && systemFields.HiddenFields.push(field_to_hide);
-                    });
-                }
-
-            } else {
-                console.log("aww nothing for that page in config... we'll just use the defaults");
-            }
-
-
-            //now remove all hidden fields from headerfields
-            systemFields.HiddenFields.forEach(function (field_to_hide) { 
-                systemFields.HeaderFields.indexOf(field_to_hide) !== -1 && systemFields.HeaderFields.splice(systemFields.HeaderFields.indexOf(field_to_hide), 1);
-            });
-
-            //now same for details
-            systemFields.HiddenFields.forEach(function (field_to_hide) { 
-                systemFields.DetailFields.indexOf(field_to_hide) !== -1 && systemFields.DetailFields.splice(systemFields.DetailFields.indexOf(field_to_hide), 1);
-            });
-
-            console.log("the fields we'll show after having applied the config");
-            console.dir(systemFields);
-
-            //the only headerfields left are those we should have - add them to the beginning of the header fields
-            systemFields.HeaderFields.forEach(function (fieldname) {
-                finalColumnDefs.HeaderFields.push(SystemFieldDefinitions[fieldname]);
-            });
-*/
             //dataset defined header fields 
-            dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
+            FieldsSorted.forEach(function (field, index) {
                 if (field.FieldRoleId === FIELD_ROLE_HEADER) {
             
                     field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
@@ -203,49 +149,9 @@ datasets_module.service('GridService', ['$window', '$route',
                     finalColumnDefs.HeaderFields.push(newColDef);
                 }
             });
-/*
-            //qa header fields (unless should be hidden (in "hidden fields"))
-            if (systemFields.HiddenFields.indexOf('QAFields') == -1) {
-                systemFields.QAFields.forEach(function (qa_field_name) { 
-                    var field = SystemFieldDefinitions[qa_field_name];
-                    var newColDef = {
-                        headerName: field.Label,
-                        field: field.DbColumnName,
-                        width: SystemDefaultColumnWidth,
-                        Label: field.Label,                 
-                        DbColumnName: field.DbColumnName,   
-                        ControlType: field.ControlType,     
-                        PossibleValues: field.PossibleValues, //for system fields, do they define here or ? TODO
-                        //cdmsField: field, //our own we can use later
-                        //menuTabs: [],
-                    };
 
-                    service.setupColDefForField(field, newColDef);
-                    finalColumnDefs.HeaderFields.push(newColDef);
-                });
-            }
-            
-            //grid fields like RowQAStatus
-            systemFields.DetailFields.forEach(function (fieldname) {
-                var field = SystemFieldDefinitions[fieldname];
-                var newColDef = {
-                        headerName: field.Label,
-                        field: field.DbColumnName,
-                        width: SystemDefaultColumnWidth,
-                        Label: field.Label,                 
-                        DbColumnName: field.DbColumnName,   
-                        ControlType: field.ControlType,     
-                        PossibleValues: field.PossibleValues, //for system fields, do they define here or ? TODO
-                        //cdmsField: field, //our own we can use later
-                        //menuTabs: [],
-                };
-
-                service.setupColDefForField(field, newColDef);
-                finalColumnDefs.DetailFields.push(newColDef);
-            });
-*/
             //now add in the dataset defined detail fields and set each one up for use in the grid 
-            dataset.Fields.sort(orderByIndex).forEach(function (field, index) {
+            FieldsSorted.forEach(function (field, index) {
                 if (field.FieldRoleId === FIELD_ROLE_DETAIL) {
 
                     field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
@@ -270,16 +176,6 @@ datasets_module.service('GridService', ['$window', '$route',
                 }
             });
 
-            //set the sort from the config, if present.
-/*
-            if (typeof systemFields.sort !== 'undefined' && systemFields.sort.field && systemFields.sort.direction) {
-                finalColumnDefs.DetailFields.forEach(function (field) {
-                    if (field.DbColumnName === systemFields.sort.field) {
-                        field.sort = systemFields.sort.direction;
-                    }
-                });
-            }
-  */          
             return finalColumnDefs;
         };
 

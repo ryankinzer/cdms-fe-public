@@ -1,6 +1,6 @@
 <div class="header-label">{{field.Label}}:</div>
 <div class="header-value">
-    <select class="form-control" ng-model="row.Activity.Timezone.Id"  convert-to-number>
+    <select class="form-control" ng-blur="onHeaderEditingStopped(field)" ng-model="row.Activity.Timezone.Id"  convert-to-number>
         <option ng-repeat="zone in SystemTimezones" value="{{zone.Id}}">{{zone.Name}}</option>
     </select>
 </div>
