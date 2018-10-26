@@ -11,6 +11,7 @@ require([
     'core/admin/components/admin-page/modal-edit-dataset-field',
     'core/admin/components/admin-page/modal-edit-master-field',
     'core/admin/components/admin-page/modal-choose-duplicate-fields',
+    'core/admin/components/admin-page/modal-choose-activitylist-fields',
 
     //service
     'core/admin/admin-service',
@@ -28,6 +29,7 @@ require([
     admin_module.controller('ModalEditDatasetFieldCtrl', modal_admin_edit_dataset_field);
     admin_module.controller('ModalEditMasterFieldCtrl', modal_admin_edit_master_field);
     admin_module.controller('ModalChooseDuplicateFieldsCtrl', modal_admin_choose_duplicate_fields);
+    admin_module.controller('ModalChooseActivityListFieldsCtrl', modal_admin_choose_activitylist_fields);
 
 
     //load services

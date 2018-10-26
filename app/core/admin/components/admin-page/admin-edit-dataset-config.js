@@ -43,11 +43,20 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
                 scope: $scope, //very important to pass the scope along...
             }).result.then(function (saved_field) { 
 
-                //set the list of fields that are chosen
-                //$scope.dataset.Config.DuplicateCheckFields;
+            });
+        };
+
+        $scope.openChooseActivityListFields = function () {
+            
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/admin/components/admin-page/templates/modal-choose-activitylist-fields.html',
+                controller: 'ModalChooseActivityListFieldsCtrl',
+                scope: $scope, //very important to pass the scope along...
+            }).result.then(function (saved_field) { 
 
             });
         };
+
 
 
 

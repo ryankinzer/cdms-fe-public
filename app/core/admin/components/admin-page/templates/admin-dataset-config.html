@@ -41,7 +41,7 @@
                     <td class="prop-val">{{dataset.ProjectId}}</td>
                 </tr>
 
-                <tr><td class="prop-name">Name:</td><td class="prop-val"><input class="form-control" type="text" ng-model="dataset.Name" name="Name"></td></tr>
+                <tr><td class="prop-name">Name:</td><td class="prop-val"><input style="margin-left: 2px;" class="form-control" type="text" ng-model="dataset.Name" name="Name"></td></tr>
                 <tr><td class="prop-name">Description:</td><td class="prop-val"><textarea style="margin-left: 2px;" class="form-control" type="text" ng-model="dataset.Description" name="Description"></textarea></td></tr>
                 <tr>
                     <td class="prop-name">Default Activity QA:</td>
@@ -54,12 +54,19 @@
                     <td class="prop-name">Config Options:</td>
                     <td>
                         <input type="checkbox" ng-model="dataset.Config.AllowSaveWithErrors" /> Allow saving data even if there are errors.<br />
-                        <input type="checkbox" ng-model="dataset.Config.EnableDuplicateChecking" /> Enable duplicate checking  
+                        <input type="checkbox" ng-model="dataset.Config.EnableDuplicateChecking" /> Enable duplicate checking
                         <span ng-show="dataset.Config.EnableDuplicateChecking">
                             <span ng-show="dataset.Config.DuplicateCheckFields">
                                 on key fields: <span ng-repeat="field in dataset.Config.DuplicateCheckFields"><b>{{field}}</b> </span>
                             </span>
                             <a href ng-click="openChooseDuplicateFields()">Choose fields...</a><br />
+                        </span>
+                        <input type="checkbox" ng-model="dataset.Config.SpecifyActivityListFields" /> Specify Activities page fields
+                        <span ng-show="dataset.Config.SpecifyActivityListFields">
+                            <span ng-show="dataset.Config.ActivityListFields">
+                                on key fields: <span ng-repeat="field in dataset.Config.ActivityListFields"><b>{{field}}</b> </span>
+                            </span>
+                            <a href ng-click="openChooseActivityListFields()">Choose fields...</a><br />
                         </span>
                     </td>
                 </tr>

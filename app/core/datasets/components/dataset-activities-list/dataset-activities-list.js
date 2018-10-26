@@ -6,91 +6,137 @@ var dataset_activities_list = ['$scope', '$routeParams',
         DatasetService, SubprojectService, ProjectService, CommonService, UserService,
         $modal, $location, $window, $rootScope) {
 			
-		console.log("Time Start Loading = " + moment(Date.now()).format('HH:mm:ss'));
-
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
-        //if ((typeof $scope.activities !== 'undefined') && ($scope.activities !== null)) {
-            $scope.activities = null;
-        //    console.log("Set $scope.activities to null for project page...");
-        //}
-
-        $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
-        $scope.loading = true;
-        $scope.project = null;
-        $scope.saveResults = null;
         $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
-        $scope.allActivities = null;
-        $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
-        $scope.thisDatasetLocationObjects = [];
-        $scope.showDataEntrySheetButton = true; //by default - can change in config
-		
-		$scope.activityIdList = [];
 
         //this is the default columns (fields) to show in the activities grid, 
         //  but it will be overridden if there is one configured in the dataset.
-        var ShowFields = [
-            "ActivityDate",                 // ActivityDate
-            "Location.Label",               // Location
+        var DefaultActivityListFields = [
+            "ActivityDate",
+            "LocationId",  
+            "QAStatusId",
+            "UserId",
         ];                
 
-        //console.log("Profile = ");
-        //console.dir($rootScope.Profile);
+        $scope.dataset.$promise.then(function () {
 
-        var activityDateTemplate = function (params) {
-            return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data.ActivityDate).format('L') + '</a>';
-        };
-		
-        var TimeStartTemplate = function (params) {
-            // moment, for some reason, takes something like this:  "2017-07-09T20:19:00"
-            // and turns it into something like this:  2017-07-09 20:07:00
-            // If you add 5 minutes to the time, it will still come out like this:  2017-07-09 20:07:00
-            //return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:MM') + '</a>';
-            return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data.headerdata.TimeStart).format('YYYY-MM-DD HH:mm') + '</a>';
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
+            $scope.project.$promise.then(function () { 
+                //if user can edit this project, unhide the edit links
+                if ($rootScope.Profile.canEdit($scope.project)) {
+                    $scope.agGridOptions.columnApi.setColumnVisible("EditLinks", true);
+                    $scope.agGridOptions.api.refreshHeader();
+                }
+            });
+
+            $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
+            $scope.activities.$promise.then(function () { 
+                //now that the activities are loaded, tell the grid so that it can refresh.
+                $scope.agGridOptions.api.setRowData($scope.activities);                
+            });
+
+            $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
+
+            //once the dataset loads, determine our columns
+
+            var gridColumnNames = DefaultActivityListFields;
+
+            if ($scope.dataset.Config.SpecifyActivityListFields)
+                gridColumnNames = $scope.dataset.Config.ActivityListFields;
+
+            var gridColDefs = [];
+            $scope.dataset.Fields.sort(orderByOrderIndex).forEach(function (field,index) { 
+                if (field.FieldRoleId == FIELD_ROLE_HEADER && gridColumnNames.contains(field.DbColumnName)) { //is a header and should be in our grid
+
+                    field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
+
+                    //initial values for header column definition
+                    var newColDef = {
+                        headerName: field.Label,
+                        field: field.DbColumnName,
+                        width: SystemDefaultColumnWidth,
+                        Label: field.Label,                 
+                        DbColumnName: field.DbColumnName,   
+                        ControlType: field.ControlType,     
+                        PossibleValues: field.Field.PossibleValues, 
+                        cellRenderer: $scope.CellRenderers[field.ControlType],
+                        valueGetter: $scope.ValueGetters[field.ControlType],
+                        //cdmsField: field, //our own we can use later
+                        //menuTabs: [],
+                    };
+
+                    gridColDefs.push(newColDef); 
+                }
+            });
+
+            //set the first column to be the sort column:
+            gridColDefs[0].sort = "desc";
+
+            $scope.agGridOptions.api.setColumnDefs(gridColDefs); //tell the grid we've changed the coldefs
+            console.log(" -- ok grid loaded and the coldefs are: ");
+            console.dir(gridColDefs);
+        });
+
+
+        $scope.CellRenderers = {
+            'activity-date': function (params) {
+                return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data[params.colDef.DbColumnName]).format('L') + '</a>';
+            },
+
+            'time': function (params) {
+                return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data[params.colDef.DbColumnName]).format('YYYY-MM-DD HH:mm') + '</a>';
+            },
+
+            'text': function (params) {
+                //if (params.node.data.headerdata.YearReported === undefined)
+                //    return;
+                //else
+                return '<a href="#!/dataview/' + params.node.data.Id + '">' + params.node.data[params.colDef.DbColumnName] + '</a>';
+            },
+
+            'location-select': function (params) {
+                //return '<span>' + params.node.data.Location.Label + '</span>'
+                //    + ((params.node.data.Location.OtherAgencyId) ? ('<span> (' + params.node.data.Location.OtherAgencyId + ')</span>' ) : ''); //ternery: if otheragencyid then show it
+                return params.node.data[params.colDef.DbColumnName];
+            },
+
+            'qa-status-select': function (params) {
+                //return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId];
+                console.dir($scope.QAStatusList);
+                console.dir(params);
+                return '<span>'+$scope.QAStatusList[params.node.data[params.colDef.DbColumnName]]+'</span>';
+            },
         };
 
-        var yearReportedTemplate = function (params) {
-            if (params.node.data.headerdata.YearReported === undefined)
-                return;
-            else
-                return '<a href="#!/dataview/' + params.node.data.Id
-                + '">' + params.node.data.headerdata.YearReported + '</a>';
+        $scope.ValueGetters = {
+            'activity-date': function (params) {
+                return moment(params.node.data[params.colDef.DbColumnName]);
+            },
+
+            'time': function (params) {
+                return moment(params.node.data[params.colDef.DbColumnName]);
+            },
+
+            'text': function (params) {
+                return params.node.data[params.colDef.DbColumnName];
+            },
+
+            'location-select': function (params) {
+                return params.node.data[params.colDef.DbColumnName];
+            },
+
+            'qa-status-select': function (params) {
+                return params.node.data[params.colDef.DbColumnName];
+            },
         };
 
-        var runYearTemplate = function (params) {
-            if (params.node.data.headerdata.RunYear === undefined)
-                return;
-            else
-                return '<a href="#!/dataview/' + params.node.data.Id
-                    + '">' + params.node.data.headerdata.RunYear + '</a>';
-        };
-
-        var desclinkTemplate = function (params) {
-            return '<a href="#!/dataview/' + params.node.data.Id
-                + '">' + params.node.data.Description + '</a>';
-        };
-
-        var allotmentTemplate = function (params) {
-            return '<a href="#!/dataview/' + params.node.data.Id
-                + '">' + params.node.data.headerdata.Allotment + '</a>';
-        };
-
-        var locationLabelTemplate = function (params) {
-            return '<span>' + params.node.data.Location.Label + '</span>'
-                + ((params.node.data.Location.OtherAgencyId) ? ('<span> (' + params.node.data.Location.OtherAgencyId + ')</span>' ) : ''); //ternery: if otheragencyid then show it
-        };
-
-        var QATemplate = function (params) {
-            return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId];
-        };
 
         var editButtonTemplate = function (params) {
-            return '<div project-role="editor">' +
-                '<a href="#!/edit/' + params.node.data.Id + '">Edit</a>' +
-                '</div>';
+            return '<div project-role="editor"><a href="#!/edit/' + params.node.data.Id + '">Edit</a></div>';
         };
 
-        $scope.columnDefs = []; // the one we'll bind to the grid; starts out empty...
+        //$scope.columnDefs = []; // the one we'll bind to the grid; starts out empty...
 
         //the way we want this to be:
 
@@ -98,6 +144,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         // have a list of default ShowFields - the fields we will show if the dataset doesn't have a different set configured.
         // but if there is a config, spin through the list and add all the dataset config's SHOWFIELDS and display those.
 
+/*
         $scope.possibleColumnDefs = [  //in order the columns will display, by the way...
             { field: 'EditLinks', headerName: '', cellRenderer: editButtonTemplate, width: 40, alwaysShowField: true, menuTabs: [], hide: true },
             { field: 'ActivityDate', 
@@ -111,17 +158,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 			},
             { field: 'headerdata.YearReported', headerName: 'Year Reported', cellRenderer: yearReportedTemplate, width: 120, menuTabs: [] },
             { field: 'headerdata.RunYear', headerName: 'Run Year', cellRenderer: runYearTemplate, width: 120, menuTabs: [] },
-            /*{
-                field: 'headerdata.TimeStart',
-                headerName: 'Time Start',
-                width: 80,
-                valueFormatter: function (params) {
-                    if (params.node.data.headerdata.TimeStart && params.node.data.headerdata.TimeStart !== undefined )
-                        return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
-                }, 
-                filter: 'text', //'time' does not exist yet
-                menuTabs: ['filterMenuTab'],
-            },*/
+
             { field: 'headerdata.TimeStart',
 				headerName: 'DateTime Start',	
 				valueGetter: function (params) { return params.node.data.headerdata.TimeStart }, //date filter needs js date object
@@ -149,11 +186,23 @@ var dataset_activities_list = ['$scope', '$routeParams',
             }
 
         ];
+*/
+            /*{ == i think this is the original timestart that probably wasn't working right.
+                field: 'headerdata.TimeStart',
+                headerName: 'Time Start',
+                width: 80,
+                valueFormatter: function (params) {
+                    if (params.node.data.headerdata.TimeStart && params.node.data.headerdata.TimeStart !== undefined )
+                        return moment(params.node.data.headerdata.TimeStart).format('HH:mm');
+                }, 
+                filter: 'text', //'time' does not exist yet
+                menuTabs: ['filterMenuTab'],
+            },*/
 
 
-        $scope.selectedLocation = null;
-        $scope.newPoint = null;
-        $scope.newGraphic = null;
+        //$scope.selectedLocation = null;
+        //$scope.newPoint = null;
+        //$scope.newGraphic = null;
 
         $scope.agGridOptions = {
             animateRows: true,
@@ -179,7 +228,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.agGridOptions); //bind the grid to it.
         $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
 
-
+/*
         $scope.activities.$promise.then( function () {
 
             console.log("Inside activities-controller.js, $scope.activities.$promise, loading header data...");
@@ -227,7 +276,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
             $scope.loading = false;
             
         });
+*/
 
+
+/*
         $scope.$watch('dataset.Fields', function () {
             if (!$scope.dataset.Fields) return;
 
@@ -249,24 +301,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
             //console.dir($scope.columnDefs);
 
 
-            //OK this is going away...
-
-            //hide irrelevant fields TODO -- code smell pretty ripe here...  genericize
-            // $scope.columnDefs[0] = ActivityDate
-            // $scope.columnDefs[1] = YearReported
-            // $scope.columnDefs[2] = TimeStart
-            // $scope.columnDefs[3] = Allotment
-            // $scope.columnDefs[4] = AllotmentStatus
-            // $scope.columnDefs[5] = Location
-            // $scope.columnDefs[6] = Waterbody
-            // $scope.columnDefs[7] = FieldActivityType
-            // $scope.columnDefs[8] = DataType
-            // $scope.columnDefs[9] = Date Range
-            // $scope.columnDefs[10] = By User
-            // $scope.columnDefs[11] = QAStatus
-
-            console.log("config!");
-            console.dir($scope.dataset.Config);
 
             //if the dataset has a config and the ActivityPage.ShowFields is set, use it
             if ($scope.dataset.Config != undefined
@@ -316,101 +350,13 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 }
             }
 
-            /*
-
-            //
-            if ($scope.DatastoreTablePrefix === "WaterTemp") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[7].visible = true;  // FieldActivityType
-                $scope.columnDefs[9].visible = true;  // Date Range
-                $scope.columnDefs[10].visible = true; // By User
-
-                $scope.reloadDatasetLocations("WaterTemp", LOCATION_TYPE_WaterTemp);
-            }
-            else if ($scope.DatastoreTablePrefix === "WaterQuality") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[8].visible = true;  // DataType
-                $scope.columnDefs[9].visible = true;  // Date Range
-                $scope.columnDefs[10].visible = true; // By User
-            }
-            else if ($scope.DatastoreTablePrefix === "CreelSurvey") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = true; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[2].visible = true;  // TimeStart
-                $scope.columnDefs[3].visible = false; // Allotment
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[8].visible = false; // DataType
-                $scope.columnDefs[9].visible = false; // Date Range
-                $scope.columnDefs[10].visible = true; // By User
-                $scope.columnDefs[11].visible = true; // QAStatus
-            }
-            else if ($scope.DatastoreTablePrefix === "Appraisal") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[3].visible = true;  // Allotment
-                $scope.columnDefs[4].visible = true;  // AllotmentStatus
-            }
-            else if ($scope.DatastoreTablePrefix === "CrppContracts") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[3].visible = true;  // Allotment
-                $scope.columnDefs[4].visible = true;  // AllotmentStatus
-            }
-            else if ($scope.DatastoreTablePrefix === "FishScales") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = true;  // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[5].visible = false; // Location
-                $scope.columnDefs[10].visible = true; // By User
-                $scope.columnDefs[11].visible = true; // QAStatus
-            }
-            else if ($scope.DatastoreTablePrefix === "Metrics") {
-                console.log("showing fields for " + $scope.DatastoreTablePrefix);
-                $scope.columnDefs[0].visible = false; // ActivityDate
-                $scope.columnDefs[1].visible = true;  // YearReported
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[10].visible = true; // By User
-                $scope.columnDefs[11].visible = true; // QAStatus
-
-                $scope.showDataEntrySheetButton = false;
-
-                $scope.gridOptions = {};
-                $scope.gridOptions = {
-                    data: 'activities',
-                    selectedItems: [],
-                    showColumnMenu: true,
-                    //sortInfo: {fields:['ActivityDate'], directions: ['desc']},
-                    sortInfo: { fields: ['headerdata.YearReported'], directions: ['desc'] },
-                    columnDefs: 'columnDefs',
-                    filterOptions: $scope.gridOptionsFilter,
-                };
-
-                $scope.reloadDatasetLocations("Metrics", LOCATION_TYPE_Hab);
-            }
-            else {
-                $scope.columnDefs[0].visible = true;  // ActivityDate
-                $scope.columnDefs[1].visible = false; // YearReported
-                $scope.columnDefs[5].visible = true;  // Location
-                $scope.columnDefs[7].visible = false; // FieldActivityType
-                $scope.columnDefs[9].visible = false; // Date Range
-                $scope.columnDefs[10].visible = true; // By User
-                $scope.columnDefs[11].visible = true; // QAStatus
-            }
-
-            console.log("$scope at end of watch, dataset.Fields is next...");
-            //console.dir($scope);
-            */
+            
         });
+*/
 
+
+
+/*
         $scope.$watch('project.Name', function () {
             if ($scope.project && $scope.project.$resolved) {
                 console.log("Inside watch project.Name...");
@@ -425,7 +371,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                     $scope.agGridOptions.api.refreshHeader();
                 }
 
-                /* -- this may no longer be necessary? -- */
+                // -- this may no longer be necessary? -- 
                 //if ($scope.subprojectType === "Habitat")
                 if ($scope.DatastoreTablePrefix === "Metrics") {
                     console.log("x")
@@ -479,56 +425,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 
             }
         });
+*/
 
-        /*
-        $scope.$watch('activities.$resolved', function () {
-            $scope.loading = true;
-            if ($scope.activities && $scope.activities.$resolved) {
-                console.log("Inside watch activities.$resolved...");
-                //console.log("$scope is next...");
-                console.log($scope);
-
-                if (!$scope.allActivities)
-                    $scope.allActivities = $scope.activities;
-
-                $scope.loading = false;
-
-                if ($scope.activities.length > 0) {
-                    $scope.gridOptions.ngGrid.data.$promise.then(function () {
-                        if ($scope.DatastoreTablePrefix === "CreelSurvey") {
-                            var intLocT = -1;
-                            var strTheTime = "";
-                            console.log("Starting to extract TimeStart...");
-                            angular.forEach($scope.gridOptions.ngGrid.data, function (row) {
-                                // Verify that we have a StartTime, before we try to extract the time from it.
-                                if ((typeof row.headerdata.TimeStart !== 'undefined') && (row.headerdata.TimeStart !== null)) {
-                                    intLocT = row.headerdata.TimeStart.indexOf("T");
-                                    strTheTime = row.headerdata.TimeStart.substr(intLocT + 1, 5);
-                                    row.headerdata.TimeStart = strTheTime;
-
-                                    intLocT = -1;
-                                    strTheTime = "";
-                                }
-                                else
-                                    console.log("$scope.row.headerdata.TimeStart exists and has data...");
-                            });
-                            console.log("Done extracting TimeStart...");
-
-                            // This makes a copy of ALL the activities.  When the dataset has lots of activities, it causes problems.
-                            //$rootScope.GridActivities = $scope.gridOptions.ngGrid.data;
-                        }
-                    });
-                }
-
-            }
-
-            //turn off the wheel of fishies
-            if (($scope.activities) && (typeof $scope.activities.$resolved == "undefined"))
-                $scope.loading = false;
-
-        });
-        */
-
+/*
         $scope.reloadDatasetLocations = function (datasetName, locationType) {
             console.log("Inside activities-controllers.js, scope.reloadDatasetLocations...");
             console.log("datasetName = " + datasetName);
@@ -599,13 +498,16 @@ var dataset_activities_list = ['$scope', '$routeParams',
             //console.log("$scope (at end of reloadDatasetLocations) is next...");
             //console.dir($scope);
         };
+*/
 
+/*
         $scope.ShowMap = {
             Display: false,
             Message: "Show Map",
             MessageToOpen: "Show Map",
             MessageToClose: "Hide Map",
         };
+*/
 
         $scope.addLocation = function () {
             console.log("Inside addLocation...");
@@ -630,7 +532,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             }
 
         };
-
+/*
         $scope.removeFilter = function () {
             $scope.activities = $scope.allActivities;
             $scope.agGridOptions.api.setRowData($scope.activities);
@@ -661,6 +563,12 @@ var dataset_activities_list = ['$scope', '$routeParams',
             }
 
         };
+*/
+
+
+
+
+/*
 
         $scope.editLocation = function () {
             $scope.row = $scope.selectedLocation;
@@ -768,14 +676,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         };
 
-        // listen for click broadcasts
-        /* $scope.$on("map.click", function(event, e){
-          console.log("broadcast", event, e);
-          console.log("Map -- ");
-          console.dir($scope.map.locationLayer);
-        });
-        */
+*/
 
+/*
 
         $scope.toggleMap = function () {
             if ($scope.ShowMap.Display) {
@@ -794,7 +697,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             }
         };
-
+*/
         $scope.toggleFavorite = function () {
             $scope.isFavorite = !$scope.isFavorite; //make the visible change instantly.
 
@@ -818,12 +721,17 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         }
 
+/*
         $scope.refreshProjectLocations = function () {
             ProjectService.clearProject();
             $scope.project = null;
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
         };
+*/
 
+
+
+/*
         $scope.reloadProjectLocations = function () {
             console.log("Inside $scope.reloadProjectLocations...");
             //console.log("$scope is next...")
@@ -874,13 +782,16 @@ var dataset_activities_list = ['$scope', '$routeParams',
             //console.dir($scope.locationsArray);
             console.log("$scope (at end of reloadProjectLocations) is next...");
             console.dir($scope);
-        };
+        };*/
+
+
+/*
 
         $scope.reloadActivities = function () {
             $scope.loading = true;
             $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
         }
-
+*/
         $scope.openQueryWindow = function (p) {
             $location.path("/datasetquery/" + $scope.dataset.Id);
         };
@@ -1004,6 +915,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.openDataEntry = function (p) { $location.path("/dataentryform/" + $scope.dataset.Id); };
 
+
+/*
         //Ok -- this is pretty ugly and non-angular-ish.  This is because in the context of a dijit I'm not sure
         //  how to get angular to process any content here... so we'll have to compose the content " by hand "
         $scope.getInfoContent = function (graphic) {
@@ -1044,7 +957,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             return html;
 
         };
-
+*/
     }
 
    
