@@ -43,26 +43,26 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.file_field = {};
 */
         console.dir($location.path());
-        // Are we editing or not?
-        if ($location.path().indexOf('edit') !== -1) {
-            $scope.editing = true;
-            $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);
 
-            $scope.dataset_activities.$promise.then(function () {
-                $scope.dataset = $scope.dataset_activities.Dataset;
+        $scope.pagemode = $location.path().match(/\/(.*)\//)[1]; //edit, dataentryform, dataview - our 3 options from our route... nothing else is possible.
+
+        // Are we editing or not?
+        if ($scope.pagemode.indexOf('dataentryform') !== -1) {
+            $scope.dataset_activities = { Header: [], Details: [] };
+            $scope.dataset = DatasetService.getDataset($routeParams.Id);
+            $scope.dataset.$promise.then(function () {
                 //$scope.row is the Header fields data row
-                $scope.row = $scope.dataset_activities.Header; 
-                
+                $scope.row = { 'Activity': { 'ActivityDate': moment().format(), 'ActivityQAStatus': {} } }; //empty row
+
                 $scope.afterDatasetLoadedEvent();
             });
         }
-        else {
-            $scope.dataset_activities = { Header: [], Details:[] }; 
-            $scope.dataset = DatasetService.getDataset($routeParams.Id);
-
-            $scope.dataset.$promise.then(function () { 
+        else {  //either edit or data view - both load a particular activity
+            $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);
+            $scope.dataset_activities.$promise.then(function () {
+                $scope.dataset = $scope.dataset_activities.Dataset;
                 //$scope.row is the Header fields data row
-                $scope.row = { 'Activity': { 'ActivityDate': moment().format(), 'ActivityQAStatus': {} }}; //empty row
+                $scope.row = $scope.dataset_activities.Header;
 
                 $scope.afterDatasetLoadedEvent();
             });
@@ -112,6 +112,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 console.log("GRID IS READY. ------------------------------------------>>>");
                 GridService.validateGrid(params);
             },
+
+            defaultColDef: {
+                editable: ($scope.pagemode!=='dataview'),
+            },
+
             //getRowHeight: function (params) {
                 /*
                 var rowIsDetailRow = params.node.level === 1;
@@ -138,9 +143,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             */
             rowClassRules: {
                 'row-validation-error': function(params) { return params.node.data.rowHasError; }
-            },
-            defaultColDef: {
-                editable: true
             },
             onCellEditingStarted: function (event) {
                 //console.log('cellEditingStarted');
@@ -259,7 +261,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //setup grid and coldefs and then go!
             $timeout(function () {
 
-                $scope.dataAgColumnDefs = GridService.getAgColumnDefs($scope.dataset, 'DataEntryPage');
+                $scope.dataAgColumnDefs = GridService.getAgColumnDefs($scope.dataset);
                 $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs.DetailFields;
                 $scope.fields = { header: $scope.dataAgColumnDefs.HeaderFields, detail: $scope.dataAgColumnDefs.DetailFields };
 
@@ -716,10 +718,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             var save_promise = null;
 
-            if ($scope.editing)
+            if ($scope.pagemode == 'edit')
                 save_promise = DatasetService.updateActivities(payload);
-            else
+            else if ($scope.pagemode = 'dataentryform')
                 save_promise = DatasetService.saveActivities(payload);
+            else
+                return;
 
             save_promise.$promise.then(
                 function () {

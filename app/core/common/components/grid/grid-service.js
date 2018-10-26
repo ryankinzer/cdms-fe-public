@@ -117,8 +117,7 @@ datasets_module.service('GridService', ['$window', '$route',
         //This method builds the column definitions of a dataset for use on any grid view.
         // and returns them as an object: {HeaderFields: [], DetailFields: []}
         //@param dataset - the dataset we're building for (uses the fields and config)
-        //@param page - the page is the key to the config and systemformfields (like "DataEntryPage")
-        service.getAgColumnDefs = function (dataset, page) {
+        service.getAgColumnDefs = function (dataset) {
 
             // what we return in the end            
             var finalColumnDefs = { HeaderFields: [], DetailFields: [] };
@@ -146,6 +145,7 @@ datasets_module.service('GridService', ['$window', '$route',
 
                     //setup column def for HEADER and add it to our list
                     service.setupColDefForField(field, newColDef);
+
                     finalColumnDefs.HeaderFields.push(newColDef);
                 }
             });
@@ -171,6 +171,7 @@ datasets_module.service('GridService', ['$window', '$route',
 
                     //setup column def for DETAIL  and add it to our list
                     service.setupColDefForField(field, newColDef);
+
                     finalColumnDefs.DetailFields.push(newColDef);
 
                 }

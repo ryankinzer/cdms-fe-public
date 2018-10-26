@@ -1,17 +1,21 @@
 <div class="right" ng-show="activities">
-    <img ng-click="previousActivity()" title="Previous Activity" class="nav-buttons" src="assets/images/icon-prev.png"/>
+    <img ng-click="previousActivity()" title="Previous Activity" class="nav-buttons" src="assets/images/icon-prev.png" />
     <span>&nbsp;</span>
-    <img ng-click="nextActivity()" title="Next Activity" class="nav-buttons" src="assets/images/icon-next.png"/>
+    <img ng-click="nextActivity()" title="Next Activity" class="nav-buttons" src="assets/images/icon-next.png" />
 </div>
 <ul class="breadcrumb">
     <li><a href="#!/projects">Projects</a> <span class="divider"></span> </li>
     <li><a href="#!/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
     <li><a href="#!/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
-    
-    <li class="active">Activity Detail for {{grid.Header.Activity.ActivityDate | date: 'MM/dd/yyyy'}}</li>
+
+    <li class="active">Activity Detail for {{row.Activity.ActivityDate | date: 'MM/dd/yyyy'}}</li>
 </ul>
 
-<div class="container-fluid">
+<div style="margin-left:30px; margin-bottom: 25px;">
+    <h4 ng-show="pagemode=='dataview'">View activity in: {{dataset.Name}}</h4>
+</div>
+
+<div ng-show="dataset" class="container-fluid">
     <div class="row-fluid">
         <div class="span6" style="min-height: 300px;">
 
@@ -20,96 +24,114 @@
             </div>
 
             <div class="header-box">
-                <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('Location')">
-                    <div class="header-label">Location:</div>
-                    <div class="header-value">{{grid.Header.Activity.Location.Label}}&nbsp;</div>
-                </div>
-
-                <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('ActivityDate')">
-                    <div class="header-label">Activity Date:</div>
-                    <div class="header-value">{{grid.Header.Activity.ActivityDate | date: 'MM/dd/yyyy'}}&nbsp;</div>            
-                </div>
-				<div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('SampleDate')">
-					<div class="header-label">Sample Date:</div>
-                    <div class="header-value">{{grid.Header.Activity.ActivityDate | date: 'MM/dd/yyyy'}}&nbsp;</div>    
-				</div>
-
-                <div ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('Timezone')">
-                    <div class="header-label">Reading Timezone:</div>
-                    <div class="header-value">{{grid.Header.Activity.Timezone.Name}}&nbsp;</div>
-                </div>
-
-                <div ng-show="grid.Header.Activity.Instrument && !dataset.Config.DataEntryPage.HiddenFields.contains('Instrument')" >
-                    <div class="header-label">Instrument:</div>
-                    <div class="header-value">{{grid.Header.Activity.Instrument.Name}} (SN:{{grid.Header.Activity.Instrument.SerialNumber}})</div>
-
-                    <div ng-show="grid.Header.Activity.AccuracyCheck" class="header-label">Deploy Accuracy: </div>
-                    <div ng-show="grid.Header.Activity.AccuracyCheck" class="header-value">{{getDataGrade(grid.Header.Activity.AccuracyCheck)}} on {{grid.Header.Activity.AccuracyCheck.CheckDate | date}}</div>
-
-                    <div ng-show="grid.Header.Activity.PostAccuracyCheck" class="header-label">Post-Deploy Accuracy: </div>
-                    <div ng-show="grid.Header.Activity.PostAccuracyCheck" class="header-value">{{getDataGrade(grid.Header.Activity.PostAccuracyCheck)}} on {{grid.Header.Activity.PostAccuracyCheck.CheckDate | date}}</div>
-                </div>
-
-				<div>
-					<div ng-show="showProjectLeads">
-						<div class="header-label">Selected Project Leads:</div>
-						<div class="header-value">
-							<!--<input class="form-control" type="text" ng-model="subproject_row.txtCounty" />-->
-							<textarea class="form-control" type="text" rows="4"  readonly ng-model="grid.Header.strProjectLead" ></textarea>
-						</div>
-					</div>
-				</div>					
-
                 <div ng-repeat="field in fields.header" ng-switch on="field.ControlType">
-                    <div ng-switch-when="multiselect" class="header-column">
+
+                    <div ng-switch-when="activity-date" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{grid.Header[field.DbColumnName] | arrayValues}}&nbsp;</div>
+                        <div class="header-value">{{row.Activity.ActivityDate | date: 'MM/dd/yyyy'}}&nbsp;</div>
                     </div>
 
-                    <div ng-switch-when="file" class="header-column" >
+                    <div ng-switch-when="location-select" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div style="min-height: 25px; margin-left: 200px;" ng-show="field.ControlType" class="header-value" ng-bind-html="grid.Header[field.DbColumnName] | fileNamesFromString">&nbsp;</div>
+                        <div class="header-value">{{row.Activity.Location.Label}}&nbsp;</div>
                     </div>
 
-                    <div ng-switch-when="link" class="header-column" >
+                    <div ng-switch-when="instrument-select" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div style="min-height: 25px; margin-left: 200px;" ng-show="field.ControlType" class="header-value" ng-bind-html="grid.Header[field.DbColumnName] | urlsFromString">&nbsp;</div>
+                        <div class="header-value">{{row.Activity.Instrument.Name}} (SN:{{row.Activity.Instrument.SerialNumber}})</div>
+                    </div>
+
+                    <div ng-switch-when="accuracy-check-select" class="header-column">
+                        <div ng-show="row.Activity.AccuracyCheck" class="header-label">Deploy Accuracy: </div>
+                        <div ng-show="row.Activity.AccuracyCheck" class="header-value">{{row.Activity.AccuracyCheck | dataGrade}} on {{row.Activity.AccuracyCheck.CheckDate | date}}</div>
+                    </div>
+
+                    <div ng-switch-when="post-accuracy-check-select" class="header-column">
+                        <div ng-show="row.Activity.PostAccuracyCheck" class="header-label">Post-Deploy Accuracy: </div>
+                        <div ng-show="row.Activity.PostAccuracyCheck" class="header-value">{{row.Activity.PostAccuracyCheck | dataGrade}} on {{row.Activity.PostAccuracyCheck.CheckDate | date}}</div>
+                    </div>
+
+                    <div ng-switch-when="timezone-select" class="header-column">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div class="header-value">{{row.Activity.Timezone.Name}}&nbsp;</div>
+                    </div>
+
+                    <div ng-switch-when="multiselect,select" ng-switch-when-separator="," class="header-column">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | arrayValues}}&nbsp;</div>
+                    </div>
+
+                    <div ng-switch-when="file" class="header-column">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div style="min-height: 25px; margin-left: 200px;" ng-show="field.ControlType" class="header-value" ng-bind-html="row[field.DbColumnName] | fileNamesFromString">&nbsp;</div>
+                    </div>
+
+                    <div ng-switch-when="link" class="header-column">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div style="min-height: 25px; margin-left: 200px;" ng-show="field.ControlType" class="header-value" ng-bind-html="row[field.DbColumnName] | urlsFromString">&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="date" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{grid.Header[field.DbColumnName] | date}}&nbsp;</div>
+                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date}}&nbsp;</div>
+                    </div>
+
+                    <div ng-switch-when="time" class="header-column">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date: 'HH:MM'}}&nbsp;</div>
+                    </div>
+
+
+                    <div class="header-column" ng-switch-when="qa-status-select">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div class="header-value">
+                            {{row.Activity.ActivityQAStatus.QAStatus.Name}} ({{row.Activity.ActivityQAStatus.User.Fullname}}) <button project-role="editor" class="btn btn-xs" ng-click="changeQa()">Change</button>
+                            <div class="alert alert-danger" ng-show="QaSaveResults.failure">Failed to update.</div>
+                        </div>
+                    </div>
+
+                    <div class="header-column" ng-switch-when="qa-status-comment">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div class="header-value">{{row.Activity.ActivityQAStatus.Comments}}</div>
                     </div>
 
                     <div ng-switch-default class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{grid.Header[field.DbColumnName]}}&nbsp;</div>
+                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName]}}&nbsp;</div>
                     </div>
+                    
+
+
+                                                        <!--
+                                        <div>
+                                            <div ng-show="showProjectLeads">
+                                                <div class="header-label">Selected Project Leads:</div>
+                                                <div class="header-value">
+                                                    <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strProjectLead"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    -->
+
                 </div>
-
-
-                <div ng-hide="dataset.Config && dataset.Config.DataEntryPage.HiddenFields.contains('QA')">
-                    <div class="header-label">QA Status:</div>
-                    <div class="header-value" ng-show="grid.Header.Activity.ActivityQAStatus">{{grid.Header.Activity.ActivityQAStatus.QAStatus.Name}} ({{grid.Header.Activity.ActivityQAStatus.User.Fullname}}) <button project-role="editor" class="btn btn-xs" ng-click="changeQa()">Change</button>
-                    <div class="alert alert-danger" ng-show="QaSaveResults.failure">Failed to update.</div>
-                    </div>            
-
-                    <div class="header-label">QA Comment:</div>
-                    <div class="header-value">{{grid.Header.Activity.ActivityQAStatus.Comments}}</div>            
-                </div>
-
-            
             </div>
-            
-            <hr/>
-			<div ng-hide="dataset.Config && (dataset.Config.DataEntryPage.HiddenFields.indexOf('theDetails') > -1)">
-				<div class="gridStyle" ng-grid="gridDatasheetOptions" ng-style="gridWidth" ng-show="!query.loading"></div>
-			</div>
-            <div ng-include="'app/core/datasets/templates/bottom-bar.html'"/> 
-            Total Records: {{grid.Details.length}} <img ng-show="query.loading" src="assets/images/FishLoading.gif"/></div>           
-            <button project-role="editor" class="btn" ng-click="openEdit()">Edit</button>
+            <hr />
+
+            <div style="height: 400px; width: 100%; margin-top: 5px; margin-bottom: 115px;">
+                <div id="data-edit-grid" class="ag-theme-blue gridStyle-small"></div>
+            </div>
+
+            <div>
+                Total rows: {{dataAgGridOptions.api.getDisplayedRowCount()}} / Errors on page: {{PageErrorCount}}
+                <hr />
+            </div>
+
+            <img ng-show="query.loading" src="assets/images/FishLoading.gif" />
 
         </div>
+        <button project-role="editor" class="btn" ng-click="openEdit()">Edit</button>
+
     </div>
 </div>
+
 

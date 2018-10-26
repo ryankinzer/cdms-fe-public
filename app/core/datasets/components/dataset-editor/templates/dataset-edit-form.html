@@ -5,8 +5,8 @@
     <li><a href="#!/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
     <li class="active">Edit data</li>
 </ul>
-<h4 ng-show="editing">Editing activity in: {{dataset.Name}}</h4>
-<h4 ng-hide="editing">New activity in: {{dataset.Name}}</h4>
+<h4 ng-show="pagemode=='edit'">Editing activity in: {{dataset.Name}}</h4>
+<h4 ng-show="pagemode=='dataentryform'">New activity in: {{dataset.Name}}</h4>
 <br/>
 
 <div ng-show="saveResult.success" style="margin-bottom: 50px;">
