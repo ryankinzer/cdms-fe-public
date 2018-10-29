@@ -49,6 +49,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         // Are we editing or not?
         if ($scope.pagemode.indexOf('dataentryform') !== -1) {
             $scope.dataset_activities = { Header: [], Details: [] };
+
+            //are we importing?
+            if($rootScope.hasOwnProperty('imported_rows'))
+                $scope.dataset_activities = { Header: [], Details: $rootScope.imported_rows };
+
             $scope.dataset = DatasetService.getDataset($routeParams.Id);
             $scope.dataset.$promise.then(function () {
                 //$scope.row is the Header fields data row
@@ -397,8 +402,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 item.QAStatusId = rowQAId;
                 GridService.refreshGrid($scope.dataAgGridOptions);
                 //mark the row as updated so it will get saved.
-                if ($scope.dataAgGridOptions.editedItems.indexOf(item.Id) == -1) {
-                    $scope.dataAgGridOptions.editedItems.push(item.Id);
+                if (item.Id && $scope.dataAgGridOptions.editedItems.indexOf(item.Id) == -1) {
+                    $scope.dataAgGridOptions.editedRowIds.push(item.Id);
                 }
             });
 

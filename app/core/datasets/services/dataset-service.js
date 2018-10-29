@@ -309,8 +309,8 @@ datasets_module.service('DatasetService', ['$q',
             },
 			
             getDataset: function (datasetId) {
-                if (service.dataset && service.dataset.Id == datasetId)
-                    return service.dataset;
+                //if (service.dataset && service.dataset.Id == datasetId)
+                //    return service.dataset;
 
                 console.log("Inside dataset-service.js, getDataset...");
 

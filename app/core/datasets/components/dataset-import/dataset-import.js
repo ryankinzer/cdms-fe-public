@@ -1,11 +1,249 @@
 ﻿var dataset_import = ['$scope', '$routeParams', 'ProjectService', 'CommonService', 'SubprojectService', 'DatasetService',
-    '$location', '$upload', 'ActivityParser', 'DataSheet', '$rootScope',
-    'Logger', '$route', '$uibModal', 'ChartService', 'ServiceUtilities',
-    function ($scope, $routeParams, ProjectService, CommonService, SubprojectService, DatasetService, $location, $upload, ActivityParser, DataSheet,
-        $rootScope, Logger, $route, $modal, ChartService,
-        ServiceUtilities) {
-        $scope.dataset = DatasetService.getDataset($routeParams.Id);
+    '$location', '$rootScope',
+    'Logger', '$route', '$uibModal', 'ChartService', 'ServiceUtilities','Upload',
+    function ($scope, $routeParams, ProjectService, CommonService, SubprojectService, DatasetService, $location,
+        $rootScope, Logger, $route, $modal, ChartService, ServiceUtilities, Upload) {
 
+        //our upload tool is: https://github.com/danialfarid/ng-file-upload
+
+        $scope.ActivityFields = {
+            QAComments: DEFAULT_IMPORT_QACOMMENT,
+            ActivityDate: new Date()
+        };
+
+        $scope.UploadResults = {};
+        $scope.UploadResults.errors = [];
+        $scope.file = $scope.files = null;
+        $scope.mapping = [];
+        delete $rootScope.imported_rows;
+
+        $scope.dataset = DatasetService.getDataset($routeParams.Id);
+        $scope.dataset.$promise.then(function () {
+
+            $scope.mappableFields = $scope.getMappableFields();
+
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
+            $scope.project.$promise.then(function () {
+                //if user can not edit this project, redirect to unauthorized.
+                if (!$rootScope.Profile.canEdit($scope.project)) {
+                    angular.rootScope.go("/unauthorized");
+                }
+            });
+        });
+
+        //TODO: might not need this at all...
+        $scope.onUploadFileSelect = function (selected_file) {
+            //$files: an array of files selected, each file has name, size, and type.
+            console.dir(selected_file);
+
+            if (!selected_file)
+                return
+
+            if (selected_file.type !== "application/vnd.ms-excel" && selected_file.type !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                console.warn("Not an excel file?");
+
+        };
+
+        $scope.cancel = function () {
+            $location.path("/activities/" + $scope.dataset.Id);
+        };
+
+        $scope.uploadFile = function () {
+            $scope.loading = true;
+            console.log("serviceUrl = " + serviceUrl);
+            if (typeof $scope.project.Id !== 'undefined')
+                console.log("project.Id = " + $scope.project.Id);
+            else
+                console.log("project.Id is not set.  User should go to dataset activities page first.");
+
+            console.log("startOnLine = " + $scope.startOnLine);
+            console.log("file...");
+            console.dir($scope.file);
+            $scope.upload = Upload.upload({
+                url: serviceUrl + '/api/v1/import/uploadimportfile',
+                method: "POST",
+                data: {
+                    ProjectId: $scope.project.Id,
+                    DatasetId: $scope.dataset.Id,
+                    Title: $scope.file.name,
+                    Description: "Uploaded file " + $scope.file.name,
+                    StartOnLine: $scope.startOnLine
+                },
+                file: $scope.file,
+            }).progress(function (evt) {
+                console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+            }).success(function (data) {
+                // file is uploaded successfully
+
+                console.log("success!");
+                //console.dir(data);
+
+                var objdata = angular.fromJson(data);
+                $scope.UploadResults.Fields = objdata.columns;
+                $scope.UploadResults.Data = objdata.rows;
+
+                $scope.loading = false;
+                $scope.enablePreview = true;
+
+                console.log("$scope.UploadResults is next...");
+                console.dir($scope.UploadResults);
+                
+                $scope.afterFileUploaded();
+
+            })
+                .error(function (data) {
+                    //$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
+                    var errorStem = "There was a problem uploading your file.\n";
+                    var errorSpecificPart1 = "The form says the column headers start on line " + $scope.startOnLine + ".  ";
+                    var errorSpecificPart2 = "Is this correct?  Also verify that the data/time entries are in 24-hour format.";
+                    $scope.uploadErrorMessage = errorStem + errorSpecificPart1 + errorSpecificPart2;
+                    console.log("$scope.upload next...");
+                    console.dir($scope.upload);
+                    $scope.loading = false;
+                });
+            //.then(success, error, progress);
+        };
+
+        $scope.afterFileUploaded = function(){
+
+            if (Array.isArray($scope.UploadResults.Fields)) {
+                if ($scope.UploadResults.Fields.length == 0) {
+                    $scope.uploadErrorMessage = "No columns headers were found in the file. Please make sure the column headers are in the first row of your file and try again.";
+                }
+
+                $scope.UploadResults.Fields.forEach(function (field_in) {
+                    var field_in_compare = field_in.trim().toUpperCase();
+                    for (var i = $scope.mappableFields.length - 1; i >= 0; i--) {
+
+                        //console.log("Comparing: " + $scope.mappableFields[i].Label.toUpperCase() + " and " + field_in_compare);
+
+                        if ($scope.mappableFields[i].Label.toUpperCase() === field_in_compare) {
+                            $scope.mapping[field_in] = $scope.mappableFields[i];
+                            return;
+                        }
+                    };
+
+                    //only reaches here if we didn't find a label match
+                    $scope.mapping[field_in] = $scope.mappableFields[0];
+
+                });
+            }
+        }
+
+        $scope.getMappableFields = function()
+		{
+			
+			var mappableFields = [];
+			mappableFields.push({ Label: DO_NOT_MAP_VALUE });
+            $scope.dataset.Fields.sort(orderByAlpha).forEach(function (field, index) { 
+                if(field.FieldRoleId === FIELD_ROLE_DETAIL)
+                    field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
+                    mappableFields.push(field);
+            });
+			
+			return mappableFields;
+		};
+
+
+        //convert the incoming data rows to a format we can pass on to dataentry
+        $scope.previewUpload = function () {
+            $scope.enablePreview = false;
+            $scope.importing = true;
+            $scope.imported_rows = [];
+
+            console.dir($scope.mapping);
+
+			$scope.UploadResults.Data.forEach( function(data_row){
+				//console.dir(data_row);
+
+				//set default Row QA StatusId
+				var new_row = {
+					QAStatusId: $scope.dataset.DefaultRowQAStatusId
+				};
+
+				// On each row of imported data (data_row), we only want to pull in the fields we have mapped.
+				// Therefore, we loop through $scope.mapping, which contains those fields.
+                Object.keys($scope.mapping).forEach(function (col) {
+                    var field = $scope.mapping[col];
+
+                    //console.dir(field);
+                    //console.dir(col);
+                    if (field.Label !== DO_NOT_MAP_VALUE) {
+
+                        //just ditch if it is an empty value
+                        if (data_row[col] === null || data_row[col] === "") {
+                            return; 
+                        }
+
+                        // Handle control types*******************************************************
+                        if (field.ControlType == "number") {
+                            //if (!isNumber(data_row[col])) {
+                            //    console.warn("ignoring: " + field.DbColumnName + " is a number field but value is not a number: " + data_row[col]);
+                            //    return; //don't set this as a value
+                            //}
+                            new_row[field.DbColumnName] = data_row[col]; 
+                        }
+                        else if (field.ControlType == "multiselect") {
+                            new_row[field.DbColumnName] = [];
+
+                            //split on commas -- if any
+                            var row_items = data_row[col].trim().split(",");
+
+                            for (var a = 0; a < row_items.length; a++) {
+                                var row_item = row_items[a].trim();
+                                new_row[field.DbColumnName].push(row_item);
+                            }
+
+                        }
+                        else if (field.ControlType === "select" && data_row[col] && typeof data_row[col] === "string") {
+                            new_row[field.DbColumnName] = data_row[col].trim();
+                        }
+                        else if (field.ControlType == "datetime" || field.ControlType == "time") {
+                            try {
+                                if (data_row[col]) {
+                                    var d = moment(data_row[col]);
+                                    new_row[field.DbColumnName] = d.toISOString();
+                                }
+                            }
+                            catch (e) {
+                                console.log("problem converting datetime: " + data_row[col]);
+                                console.dir(e);
+                            }
+
+                        }
+                        else //just add the value to the cell
+                        {
+                            new_row[field.DbColumnName] = data_row[col]; 
+                        }
+
+                        //console.dir(new_row);
+
+                    }//if is mapped
+
+                }); //iterate mappings
+			
+                $scope.imported_rows.push(new_row);
+
+			}); //foreach data row
+
+            console.dir($scope.imported_rows);
+            $scope.importing = false;
+
+            //set rootscope and change view.
+            $rootScope.imported_rows = $scope.imported_rows;
+            angular.rootScope.go("/dataentryform/" + $scope.dataset.Id);
+
+        }
+
+
+
+
+
+
+
+
+
+/*
         $scope.activities = null;
 
         $scope.mappedActivityFields = {};
@@ -267,13 +505,13 @@
 
                 //convention: if you have a readingdatetime field then we turn on our timezone magic
                 if (field.DbColumnName == "ReadingDateTime") {
-                    /* Note:  The first line below allows the system to automatically determine what timezone we are in, based upon the current date.
-                        Initially this seemed like a good idea.  However, while the WaterTemp folks collect their data during the Daylight Savings
-                        timezone, they upload their data during the Standard timezone.  When the system requires them to remember to change the timezone,
-                        for all their imports from Standard to Daylight Savings, it can cause a headache, if they forget to make the change.
-                        Therefore, we decided instead to default the timezone to Daylight Savings, and have them change it to Standard if they must.
-                        Changing to Standard is a less occurring event than changing from Standard to Daylight Savings.
-                    */
+                    // Note:  The first line below allows the system to automatically determine what timezone we are in, based upon the current date.
+                    //    Initially this seemed like a good idea.  However, while the WaterTemp folks collect their data during the Daylight Savings
+                    //    timezone, they upload their data during the Standard timezone.  When the system requires them to remember to change the timezone,
+                    //    for all their imports from Standard to Daylight Savings, it can cause a headache, if they forget to make the change.
+                    //    Therefore, we decided instead to default the timezone to Daylight Savings, and have them change it to Standard if they must.
+                    //    Changing to Standard is a less occurring event than changing from Standard to Daylight Savings.
+                    
                     //$scope.row.Timezone = getByField($scope.SystemTimezones, new Date().getTimezoneOffset() * -60000, "TimezoneOffset"); //set default timezone
                     $scope.row.Timezone = getByField($scope.SystemTimezones, 420 * -60000, "TimezoneOffset"); //set default timezone to Daylight Savings
                 }
@@ -391,52 +629,9 @@
 
                 $scope.finishLocationProcessing();
             }
-            /*
-            // When we built the array, it started adding at location 1 for some reason, skipping 0.
-            // Therefore, row 0 is blank.  The simple solution is to just delete row 0.
-            //$scope.datasetLocations.shift();
-        	
-            // During the original development, the blank row was always at row 0.  Months later, I noticed that 
-            // the blank row was not at row 0.  Therefore, it needed a different solution.
-            var index = 0;
-            angular.forEach($scope.datasetLocations, function(dsLoc)
-            {
-                if (dsLoc.length === 0)
-                {
-                    $scope.datasetLocations.splice(index, 1);
-                }
-            	
-                index++;
-            });
-        	
-            console.log("datasetLocations after splice is next...");
-            console.dir($scope.datasetLocations);
 
-            $scope.datasetLocations.sort(order2dArrayByAlpha);
-            console.log("datasetLocations sorted...");
-            console.dir($scope.datasetLocations);
 
-            // Convert our 2D array into an array of objects.
-            for (var i = 0; i < $scope.datasetLocations.length; i++)
-            {
-                $scope.sortedLocations.push({Id: $scope.datasetLocations[i][0], Label: $scope.datasetLocations[i][1]});
-            }
-            $scope.datasetLocations = [[]]; // Clean up
-        	
-        	
-            // Convert our array of objects into a list of objects, and put it in the select box.
-            $scope.locationOptions = $rootScope.locationOptions = makeObjects($scope.sortedLocations, 'Id','Label') ;
-
-            console.log("locationOptions is next...");
-            console.dir($scope.locationOptions);					
-        	
-            //Add the OtherAgencyId to the label - requirement from Colette
-            angular.forEach($scope.project.Locations, function(loc)
-            {
-                if(loc.OtherAgencyId && loc.Label.indexOf(loc.OtherAgencyId)==-1)
-                    loc.Label = loc.Label + ' (' + loc.OtherAgencyId + ')';
-            });
-            */
+  
             //setup locationOptions dropdown
             //$scope.locationOptions = $rootScope.locationOptions = makeObjects(getUnMatchingByField($scope.project.Locations,PRIMARY_PROJECT_LOCATION_TYPEID,"LocationTypeId"), 'Id','Label') ;  // Original code
             $scope.instrumentOptions = $rootScope.instrumentOptions = makeObjects($scope.project.Instruments, 'Id', 'Name');
@@ -472,22 +667,7 @@
 
         });
 
-        //setup our existingActivities array so we can manage duplicates
-        /*var ealoadwatcher = $scope.$watch('existingActivitiesLoad.length', function(){
-            if (($scope.existingActivitiesLoad) && ($scope.existingActivitiesLoad.length > 0))
-            {
-                $scope.existingActivitiesLoad.$promise.then(function(){
-                    angular.forEach($scope.existingActivitiesLoad, function(activity, key){
-                        $scope.existingActivities.push(activity.LocationId+"_"+activity.ActivityDate.substr(0,10));
-                    });
-                    $scope.existingActivitiesLoad = []; // cleanup
-                    //console.dir($scope.existingActivities);
-                    ealoadwatcher();
-                });
-            }
-
-        });
-        */
+        //
 
         //$scope.$watch('UploadResults.activities', function(){
         //	$scope.activity_count = array_count($scope.UploadResults.activities.activities);
@@ -699,26 +879,7 @@
 			console.dir($scope);
         };
 
-        /*$scope.onActivityDateChange = function (dt)
-        {
-            console.log("Inside $scope.onActivityDateChange...");
-            console.log(dt);
-
-            if (($scope.DatastoreTablePrefix !== "CrppContracts") &&
-                ($scope.DatastoreTablePrefix !== "WaterQuality") &&
-                ($scope.DatastoreTablePrefix !== "Metrics") &&
-                ($scope.DatastoreTablePrefix !== "Genetic") &&
-                ($scope.DatastoreTablePrefix !== "FishScales") &&
-                ($scope.DatastoreTablePrefix.indexOf("StreamNet_") < 0)
-            ) {
-                //$scope.activities.errors = {};
-                $scope.activities.errors = undefined;
-                $scope.duplicateEntry = undefined;
-                $scope.checkForDuplicates();
-                //DataSheet.checkForDuplicates($scope);
-            }
-        };
-        */
+        
 			
 		$scope.onLocationChange = function()
 		{
@@ -944,10 +1105,7 @@
 						if($scope.mappedActivityFields[INDEX_FIELD] === field_name)
 							$scope.mappedActivityFields[INDEX_FIELD] = false;
 
-					/*
-						if($scope.mappedActivityFields[LOCATION_ID] === field_name)
-							$scope.mappedActivityFields[LOCATION_ID] = false;
-						*/
+					
 						if($scope.mappedActivityFields[ROW_QA_STATUS_ID] === field_name)
 							$scope.mappedActivityFields[ROW_QA_STATUS_ID] = false;
 							
@@ -987,10 +1145,7 @@
 						if($scope.mappedActivityFields[INDEX_FIELD] === field_name)
 							$scope.mappedActivityFields[INDEX_FIELD] = false;
 
-					/*
-						if($scope.mappedActivityFields[LOCATION_ID] === field_name)
-							$scope.mappedActivityFields[LOCATION_ID] = false;
-						*/
+				
 						if($scope.mappedActivityFields[ROW_QA_STATUS_ID] === field_name)
 							$scope.mappedActivityFields[ROW_QA_STATUS_ID] = false;
 							
@@ -1014,13 +1169,13 @@
 			//console.log("$scope in previewUpload is next...");
 			////console.dir($scope);
 
-			/****************************************************/
-			/* 	This section needs a review.
-				The Creel Survey dataset file will have multiple locations, possibly one on each row.
-				With WaterTemp, the user could upload their audits (Field, Retrieval, Launch) on one sheet,
-				and each is a different activity.
-				Currently, the import expects something like a logger, where all the data is on one activity.
-			*/
+			/--------------------------------/
+			// 	This section needs a review.
+		//		The Creel Survey dataset file will have multiple locations, possibly one on each row.
+		//		With WaterTemp, the user could upload their audits (Field, Retrieval, Launch) on one sheet,
+		//		and each is a different activity.
+			//	Currently, the import expects something like a logger, where all the data is on one activity.
+			
 			//validate mapping fields -- primarily: make sure there are selections for special fields
 				
 			// Note:  $scope.ActivityFields.LocationId is the Location is Step 3 on the Import form.
@@ -1039,7 +1194,7 @@
 					$scope.errors.push("Please select an activity location.");
 				}
 			}
-			/***************************************************/
+			/------/
 				
 			//console.log("$scope.ActivityFields.ActivityDate (before check) = " + $scope.ActivityFields.ActivityDate);
 			console.log("$scope.mappedActivityFields[ACTIVITY_DATE] = " + $scope.mappedActivityFields[ACTIVITY_DATE]);
@@ -1659,7 +1814,7 @@
 					}
 						
 					//now that the row is populated with import values, lets spin through each field again and fire any rules
-					//* ---- Run the rules for each field on this row ---- *//
+					// ---- Run the rules for each field on this row ---- /
 					var row = new_row;  // Note:  This variable gets used later, not immediately.
 					//console.log("Ok, now we'll run the rules for each column in this row");
 						
@@ -1755,20 +1910,7 @@
 					//last validation before we add row:
 					// -- nothing so far.
 						
-					/*if ($scope.DatastoreTablePrefix === "CreelSurvey")
-					{
-						console.log("Working with CreelSurvey");
-						console.log("typeof new_row.Species = " + typeof new_row.Species + ", value = " + new_row.Species + ", new_row.FishCount = X" + new_row.FishCount + "X");
-						if ((typeof new_row.Species !== 'undefined') && (new_row.Species !== null) && 
-							((typeof new_row.FishCount === 'undefined') || (new_row.FishCount === null) || (new_row.FishCount === "0") || (new_row.FishCount < 1))
-							)
-						{
-							var strErrorMessage = "Error:  We have fish species, without FishCount.";
-							console.log(strErrorMessage);
-							new_row.errors.push(strErrorMessage);
-							//console.log("Pushed error onto new_row.errors...");
-						}
-					}*/
+					
 						
 					new_row.errors = angular.copy(new_row.errors);
 						
@@ -1780,23 +1922,7 @@
 					if(new_row.activityDate)
 					{
 						//console.log("We have an activityDate...");
-						/*var d = new Date(new_row.ReadingDateTime);
-						tmpYear = d.getFullYear();
-						tmpMonth = d.getMonth();
-						tmpDate = d.getDate();
-						tmpHour = d.getHours();
-						tmpMinutes = d.getMinutes();
-						tmpSeconds = d.getSeconds();
-
-						new_row[field.DbColumnName] = toExactISOString(d); // Datasheet form
-						if ((tmpYear === 2016) && (tmpMonth === 3) && (tmpDate === 13) && (tmpHour > 0) && (tmpHour < 4))
-						{
-							console.log("d = " + d.toString());
-							console.log(tmpYear + "-" + tmpMonth + "-" + tmpDate + " " + tmpHour + ":" + tmpMinutes + ":" + tmpSeconds);
-							console.log(new_row[field.DbColumnName]);
-							console.dir(new_row);
-						}
-						*/
+						
 						$scope.dataSheetDataset.push(new_row);
 							
 						// We want to build a list of all the ReadingDateTime values, so that we can use it as an index later to search.
@@ -1860,7 +1986,7 @@
 				//i++;
 			//});
 				
-//***
+// ***
 			console.log("$scope.dataSheetDataset is nextX...");
 			console.dir($scope.dataSheetDataset);
 			//throw "Stopping right here.";
@@ -1888,7 +2014,7 @@
                 //$scope.weHaveDuplicates = false;
                 $scope.pageConfig.weHaveDuplicates = false;
 			}
-            //***
+            // ***
             $scope.gridHasErrors = $rootScope.gridHasErrors;
             //$scope.weHaveDuplicates = $rootScope.weHaveDuplicates;
             $scope.pageConfig.weHaveDuplicates = $rootScope.weHaveDuplicates;
@@ -2009,9 +2135,9 @@
 			    data: {ProjectId: $scope.project.Id, DatasetId: $scope.dataset.Id, Title: $scope.file.name, Description: "Uploaded file " + $scope.file.name, StartOnLine: $scope.startOnLine},
 			    file: $scope.file,
 			    // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
-			    /* set file formData name for 'Content-Desposition' header. Default: 'file' */
+			    /// set file formData name for 'Content-Desposition' header. Default: 'file' * /
 			    //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
-			    /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
+			    // customize how data is added to formData. See #40#issuecomment-28612000 for example * /
 			    //formDataAppender: function(formData, key, val){}
 			    }).progress(function(evt) {
 				console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
@@ -2047,32 +2173,7 @@
 		};
 
 
-		$scope.onUploadFileSelect = function($files) {
-			//$files: an array of files selected, each file has name, size, and type.
-
-			$scope.files = $files;
-			$scope.file = $files[0];
-
-			};
-
-			$scope.cancel = function(){
-			if($scope.UploadResults.showPreview)
-			{
-				if(!confirm("Looks like you've made changes.  Are you sure you want to leave this page?"))
-				 	return;
-				}
-
-			$location.path("/activities/"+$scope.dataset.Id);
-			};
-
-			$scope.doneButton = function(){
-			$scope.activities = undefined;
-			$route.reload();
-			};
-
-			$scope.viewButton = function(){
-			$location.path("/activities/"+$scope.dataset.Id);
-			}
+		
 
 		$scope.saveDataSheet = function() {
 			console.log("Inside import-controllers.js, $scope.saveDataSheet...");
@@ -2123,15 +2224,7 @@
 			{
                 if ($scope.DatastoreTablePrefix === "CreelSurvey") {
                     if ((typeof $scope.dataSheetDataset[i].TotalTimeFished !== 'undefined') && ($scope.dataSheetDataset[i].TotalTimeFished != null)) {
-						/*//console.log("TotalTimeFished for row " + i + " = " + $scope.dataSheetDataset[i].TotalTimeFished);
-						theHours = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(0,2));
-						//console.log("theHours = " + theHours);
-						theMinutes = parseInt($scope.dataSheetDataset[i].TotalTimeFished.substring(3,5));
-						//console.log("theMinutes = " + theMinutes);
-						TotalTimeFished = theHours * 60 + theMinutes;
-						//console.log("TotalTimeFished (in min) = " + TotalTimeFished);
-						$scope.dataSheetDataset[i].TotalTimeFished = TotalTimeFished;
-						*/
+						
                         $scope.dataSheetDataset[i].TotalTimeFished = ServiceUtilities.convertHhMmToMinutes($scope.dataSheetDataset[i].TotalTimeFished);
 
                         //theHours = -1;
@@ -2411,5 +2504,16 @@
 
 		}
 
+$scope.doneButton = function(){
+			$scope.activities = undefined;
+			$route.reload();
+		};
+
+		$scope.viewButton = function(){
+			$location.path("/activities/"+$scope.dataset.Id);
+		}
+
+
+*/
 	}
 ];
