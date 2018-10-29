@@ -2,10 +2,10 @@
 var dataset_activities_list = ['$scope', '$routeParams',
     'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'UserService',
     '$uibModal', '$location', '$window', '$rootScope',
-    function ($scope, $routeParams, 
+    function ($scope, $routeParams,
         DatasetService, SubprojectService, ProjectService, CommonService, UserService,
         $modal, $location, $window, $rootScope) {
-			
+
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
         $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
@@ -14,26 +14,26 @@ var dataset_activities_list = ['$scope', '$routeParams',
         //  but it will be overridden if there is one configured in the dataset.
         var DefaultActivityListFields = [
             "ActivityDate",
-            "LocationId",  
+            "LocationId",
             "QAStatusId",
             "UserId",
-        ];                
+        ];
 
         $scope.dataset.$promise.then(function () {
 
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
-            $scope.project.$promise.then(function () { 
+            $scope.project.$promise.then(function () {
                 //if user can edit this project, unhide the edit links
                 if ($rootScope.Profile.canEdit($scope.project)) {
-                    $scope.agGridOptions.columnApi.setColumnVisible("EditLinks", true);
+                    $scope.agGridOptions.columnApi.setColumnVisible("EditLink", true);
                     $scope.agGridOptions.api.refreshHeader();
                 }
             });
 
             $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
-            $scope.activities.$promise.then(function () { 
+            $scope.activities.$promise.then(function () {
                 //now that the activities are loaded, tell the grid so that it can refresh.
-                $scope.agGridOptions.api.setRowData($scope.activities);                
+                $scope.agGridOptions.api.setRowData($scope.activities);
             });
 
             $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
@@ -45,7 +45,11 @@ var dataset_activities_list = ['$scope', '$routeParams',
             if ($scope.dataset.Config.SpecifyActivityListFields)
                 gridColumnNames = $scope.dataset.Config.ActivityListFields;
 
-            var gridColDefs = [];
+            var gridColDefs = [
+                { field: 'ViewLink', headerName: '', cellRenderer: viewTemplate, width: 50, alwaysShowField: true, menuTabs: [] },
+                { field: 'EditLink', headerName: '', cellRenderer: editTemplate, width: 50, alwaysShowField: true, menuTabs: [], hide: true },
+            ];
+
             $scope.dataset.Fields.sort(orderByOrderIndex).forEach(function (field,index) { 
                 if (field.FieldRoleId == FIELD_ROLE_HEADER && gridColumnNames.contains(field.DbColumnName)) { //is a header and should be in our grid
 
@@ -71,40 +75,47 @@ var dataset_activities_list = ['$scope', '$routeParams',
             });
 
             //set the first column to be the sort column:
-            gridColDefs[0].sort = "desc";
+            gridColDefs[2].sort = "desc";
 
-            $scope.agGridOptions.api.setColumnDefs(gridColDefs); //tell the grid we've changed the coldefs
-            console.log(" -- ok grid loaded and the coldefs are: ");
-            console.dir(gridColDefs);
+            //add the user fullname to the end. this will appear for all datasets.
+            gridColDefs.push({
+                headerName: "By User",
+                field: "UserFullname", //column from the activities list
+            });
+
+            //tell the grid we've changed the coldefs
+            $scope.agGridOptions.api.setColumnDefs(gridColDefs); 
+            //console.log(" -- ok grid loaded and the coldefs are: ");
+            //console.dir(gridColDefs);
         });
 
 
         $scope.CellRenderers = {
             'activity-date': function (params) {
-                return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data[params.colDef.DbColumnName]).format('L') + '</a>';
+                return moment(params.node.data[params.colDef.DbColumnName]).format('L');
             },
 
             'time': function (params) {
-                return '<a href="#!/dataview/' + params.node.data.Id + '">' + moment(params.node.data[params.colDef.DbColumnName]).format('YYYY-MM-DD HH:mm') + '</a>';
+                return moment(params.node.data[params.colDef.DbColumnName]).format('YYYY-MM-DD HH:mm');
             },
 
             'text': function (params) {
                 //if (params.node.data.headerdata.YearReported === undefined)
                 //    return;
                 //else
-                return '<a href="#!/dataview/' + params.node.data.Id + '">' + params.node.data[params.colDef.DbColumnName] + '</a>';
+                return params.node.data[params.colDef.DbColumnName] ;
             },
 
             'location-select': function (params) {
-                //return '<span>' + params.node.data.Location.Label + '</span>'
-                //    + ((params.node.data.Location.OtherAgencyId) ? ('<span> (' + params.node.data.Location.OtherAgencyId + ')</span>' ) : ''); //ternery: if otheragencyid then show it
-                return params.node.data[params.colDef.DbColumnName];
+                return '<span>' + params.node.data.LocationLabel + '</span>'
+                    + ((params.node.data.OtherAgencyId) ? ('<span> (' + params.node.data.OtherAgencyId + ')</span>' ) : ''); //ternery: if otheragencyid then show it
+                //return params.node.data[params.colDef.DbColumnName];
             },
 
             'qa-status-select': function (params) {
                 //return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId];
-                console.dir($scope.QAStatusList);
-                console.dir(params);
+                //console.dir($scope.QAStatusList);
+                //console.dir(params);
                 return '<span>'+$scope.QAStatusList[params.node.data[params.colDef.DbColumnName]]+'</span>';
             },
         };
@@ -132,8 +143,12 @@ var dataset_activities_list = ['$scope', '$routeParams',
         };
 
 
-        var editButtonTemplate = function (params) {
-            return '<div project-role="editor"><a href="#!/edit/' + params.node.data.Id + '">Edit</a></div>';
+        var viewTemplate = function (params) {
+            return '<div><a href="#!/dataview/' + params.node.data.ActivityId + '">View</a></div>';
+        };
+
+        var editTemplate = function (params) {
+            return '<div project-role="editor"><a href="#!/edit/' + params.node.data.ActivityId + '">Edit</a></div>';
         };
 
         //$scope.columnDefs = []; // the one we'll bind to the grid; starts out empty...
