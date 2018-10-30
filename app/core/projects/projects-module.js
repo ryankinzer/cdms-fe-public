@@ -11,6 +11,8 @@ require([
     'core/projects/components/project-detail/modal-choose-summary-images',
     'core/projects/components/project-detail/modal-choose-map',
     'core/projects/components/project-detail/modal-add-accuracy-check',
+    'core/projects/components/project-detail/modal-edit-location',
+
     //tabs for the project detail page
     'core/projects/components/project-detail/project-detail-tab-instruments',
     'core/projects/components/project-detail/project-detail-tab-fishermen',
@@ -25,7 +27,7 @@ require([
     
     'core/projects/components/project-list/project-list',
     
-
+    
 
     //load project service
     'core/projects/services/project-service',
@@ -42,6 +44,7 @@ require([
     projects_module.controller('ProjectDataCtrl', project_data);
     projects_module.controller('ProjectEditorsCtrl', project_editors);
     projects_module.controller('ProjectLocationsCtrl', project_locations);
+    
     projects_module.controller('ProjectLookupsCtrl', project_lookups);
 
     
@@ -58,6 +61,7 @@ require([
     projects_module.controller('ModalDeleteFileCtrl', modal_delete_file);
     projects_module.controller('ModalChooseSummaryImagesCtrl', modal_choose_summary_images);
     projects_module.controller('ModalChooseMapCtrl', modal_choose_map);
+    projects_module.controller('ModalEditLocationCtrl', modal_edit_location);
 
     projects_module.controller('ProjectListCtrl', project_list);
     projects_module.controller('ModalAddAccuracyCheckCtrl', module_add_accuracy_check);

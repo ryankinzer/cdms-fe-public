@@ -42,11 +42,15 @@
             <td class="prop-val"><textarea textarea rows="4" class="form-control" type="text" ng-model="field_to_edit.Rule" name="Rule"></textarea></td>
         </tr>
         <tr>
+            <td class="prop-name">Data Source:</td>
+            <td class="prop-val"><input class="form-control" type="text" ng-model="field_to_edit.DataSource" name="DataSource"></td>
+        </tr>
+        <tr ng-hide="field_to_edit.DataSource">
             <td class="prop-name">Possible Values:</td>
             <td class="prop-val"><textarea rows="4" style="margin-left: 2px;" class="form-control" type="text" ng-change="parsePossibleValuesString()" ng-model="field_to_edit.PossibleValues" name="PossibleValues"></textarea></td>
         </tr>
 
-        <tr>
+        <tr ng-hide="field_to_edit.DataSource">
             <td class="prop-name">(Parsed):</td>
             <td class="prop-val"><pre>{{field_to_edit.Values | arrayValues}}</pre></td>
         </tr>

@@ -32,17 +32,26 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 			}
 			else
 			{
-				console.log("This project has no datasets.");
+				console.warn("This project has no datasets.");
             }
 
         });
 
         scope.locationDataset.$promise.then(function () { 
             scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.locationDataset).HeaderFields;
+            scope.dataGridOptions.columnDefs.unshift({ field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, alwaysShowField: true, menuTabs: [], hide: true }),
             scope.activateDataGrid();
         });
 
+
+        scope.project.$promise.then(function () { 
+            if ($rootScope.Profile.canEdit(scope.project)) {
+                scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
+                scope.dataGridOptions.api.refreshHeader();
+            }
+        });
         
+
         scope.showLocations = function (dataset) { 
             
             scope.selectedDataset = dataset;
@@ -62,6 +71,7 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             scope.dataGridOptions.api.deselectAll();
         };
 
+/*
         var linkTemplate = function (param) {
 
             var div = document.createElement('div');
@@ -72,6 +82,21 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
             div.appendChild(linkBtn);
 
+            return div;
+        };
+*/
+        
+        var EditLinkTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.openEditModal(param.data);
+            });
+            div.appendChild(editBtn);
+            
             return div;
         };
 
@@ -100,9 +125,34 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
                 scope.dataGridOptions.api.setRowData(scope.project.Locations);
                 //scope.dataGridOptions.api.sizeColumnsToFit(); 
             });
-            
-            
+        };
 
+        scope.openEditModal = function (a_selection) {
+            scope.SaveMessage = null;
+
+            console.dir(a_selection);
+            scope.row = a_selection;
+
+      //      scope.field_to_edit = a_selection;
+        //    scope.callback = a_callback;
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-location.html',
+                controller: 'ModalEditLocationCtrl',
+                scope: scope, //very important to pass the scope along...
+            }).result.then(function (saved_location) { 
+                //replace that field in the grid with the one we got back
+/*
+                scope.dataset.Fields.forEach(function (existing_field,index) {
+                    if (existing_field.FieldId == saved_field.FieldId) {
+                        console.dir("found field to replace : " + existing_field.FieldId);
+                        scope.dataset.Fields[index] = saved_field;
+                    }
+                });
+*/
+  //              scope.populateAddFieldDropdown();
+    //            scope.fieldGridOptions.api.setRowData(scope.dataset.Fields);
+                scope.SaveMessage = "Success.";
+            });
         };
 
 
