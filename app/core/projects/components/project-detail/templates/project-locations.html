@@ -1,0 +1,36 @@
+<!-- Header shows project heading information, favorites and project image  -->
+<div ng-include="'app/core/projects/components/project-detail/templates/project-header.html'"></div>
+
+<div ng-show="AuthorizedToViewProject">
+
+
+    <div style="width: 100%; display: inline-block; margin-top:30px;">
+        <button project-role="editor" style="margin-left: 5px; margin-right:43px;" class="btn right" ng-click="addLocation()">Create</button>
+        <button project-role="editor" class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteLocations()">Delete {{dataGridOptions.selectedItems.length}} Locations</button>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item" style="margin-left: 3px;">
+                        <a class="nav-link" ng-click="showProjectLocations()" ng-class="{'active': !selectedDataset}" href>Project</a>
+                    </li>
+                    <li class="nav-item" ng-repeat="dataset in datasets">
+                        <a href class="nav-link" ng-class="{'active': selectedDataset && (dataset.Id == selectedDataset.Id) }" ng-click="showLocations(dataset)">{{dataset.Name}}</a>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="col-9">
+
+                <div>
+                    <div id="locations-grid" class="ag-theme-blue gridStyle-small"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>

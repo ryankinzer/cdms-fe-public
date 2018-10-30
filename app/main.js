@@ -46,7 +46,8 @@ define([
             $routeProvider.when('/projectFiles/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-files.html', controller: 'ProjectFilesCtrl'});
             $routeProvider.when('/projectData/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-data.html', controller: 'ProjectDataCtrl'});
             $routeProvider.when('/projectEditors/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-editors.html', controller: 'ProjectEditorsCtrl'});
-            $routeProvider.when('/projectLists/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-lists.html', controller: 'ProjectListsCtrl'});
+            $routeProvider.when('/projectLookups/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-lookups.html', controller: 'ProjectLookupsCtrl'});
+            $routeProvider.when('/projectLocations/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-locations.html', controller: 'ProjectLocationsCtrl'});
 
             $routeProvider.when('/mydata', { templateUrl: 'app/core/user/components/dataset-preferences/templates/mydatasets.html', controller: 'MyDatasetsCtrl'});
             $routeProvider.when('/myprojects', { templateUrl: 'app/core/user/components/project-preferences/templates/myprojects.html', controller: 'MyProjectsCtrl'});

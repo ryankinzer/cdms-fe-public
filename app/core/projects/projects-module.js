@@ -20,8 +20,9 @@ require([
     'core/projects/components/project-detail/project-files',
     'core/projects/components/project-detail/project-data',
     'core/projects/components/project-detail/project-editors',
+    'core/projects/components/project-detail/project-lookups',
+    'core/projects/components/project-detail/project-locations',
     
-
     'core/projects/components/project-list/project-list',
     
 
@@ -40,6 +41,8 @@ require([
     projects_module.controller('ProjectFilesCtrl', project_files);
     projects_module.controller('ProjectDataCtrl', project_data);
     projects_module.controller('ProjectEditorsCtrl', project_editors);
+    projects_module.controller('ProjectLocationsCtrl', project_locations);
+    projects_module.controller('ProjectLookupsCtrl', project_lookups);
 
     
     projects_module.controller('TabInstrumentsCtrl', tab_instruments);
