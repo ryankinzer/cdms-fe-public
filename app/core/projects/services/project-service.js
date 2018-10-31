@@ -247,13 +247,13 @@ projects_module.service('ProjectService', ['$q',
                 //console.log("service is next...");
                 //console.dir(service);
                 //if(service.project && service.project.Id == id)
-                if (service.project && service.project.Id == id && service.subprojectType !== "Habitat") // Not Habitat
-                {
-                    console.log("returning cached service.project.Id = " + service.project.Id);
-                    return service.project;
-                }
+                //if (service.project && service.project.Id == id && service.subprojectType !== "Habitat") // Not Habitat
+                //{
+                //    console.log("returning cached service.project.Id = " + service.project.Id);
+                //    return service.project;
+                //}
 
-                service.project = Project.query({ id: id });
+                return Project.query({ id: id });
 
                 /*service.project.$promise.then(function () {
                     console.log("after-project-load!");
@@ -266,7 +266,7 @@ projects_module.service('ProjectService', ['$q',
                 });
                 */
 
-                return service.project;
+                //return service.project;
             },
 
             // We don't really like to set things this way...  Is there a better way?
