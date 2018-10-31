@@ -130,11 +130,8 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
         scope.openEditModal = function (a_selection) {
             scope.SaveMessage = null;
 
-            console.dir(a_selection);
-            scope.row = a_selection;
+            scope.row = angular.copy(a_selection);
 
-      //      scope.field_to_edit = a_selection;
-        //    scope.callback = a_callback;
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-location.html',
                 controller: 'ModalEditLocationCtrl',

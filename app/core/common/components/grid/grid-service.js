@@ -140,6 +140,7 @@ datasets_module.service('GridService', ['$window', '$route',
                         ControlType: field.Field.ControlType,     
                         PossibleValues: field.Field.PossibleValues, 
                         cdmsField: field, //our own we can use later
+                        DatastoreId: field.Field.DatastoreId,
                         //menuTabs: [],
                     };
 
@@ -166,7 +167,8 @@ datasets_module.service('GridService', ['$window', '$route',
                         DbColumnName: field.DbColumnName,   
                         ControlType: field.Field.ControlType,     
                         PossibleValues: field.Field.PossibleValues, 
-                        cdmsField: field,                           
+                        cdmsField: field,        
+                        DatastoreId: field.Field.DatastoreId,
                     };
 
                     //setup column def for DETAIL  and add it to our list

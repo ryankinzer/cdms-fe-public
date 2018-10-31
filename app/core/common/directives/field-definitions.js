@@ -201,13 +201,30 @@ common_module.directive('ctuirSelectField',
             templateUrl: 'app/core/common/templates/form-fields/field-select.html',
             restrict: 'E',
             controller: function ($scope, $element, $attrs) {
-                $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
+                $scope.selectOptions = makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
             }
         };
 
         return result;
 
     });
+
+
+common_module.directive('ctuirSelectNumberField',
+    function () {
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-select-number.html',
+            restrict: 'E',
+            controller: function ($scope, $element, $attrs) {
+                $scope.selectOptions = makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
+            }
+        };
+
+        return result;
+
+    });
+
 
 common_module.directive('ctuirMultiselectField',
     function(){
@@ -216,7 +233,7 @@ common_module.directive('ctuirMultiselectField',
             templateUrl: 'app/core/common/templates/form-fields/field-multiselect.html',
             restrict: 'E',
             controller: function($scope, $element, $attrs) {
-               $scope.selectOptions = makeObjectsFromValues($scope.dataset.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
+               $scope.selectOptions = makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
             }
         };
         

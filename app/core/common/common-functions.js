@@ -193,7 +193,7 @@ function sortObjectsByValue(list) {
 //give us a unique key to reference it by for caching.
 function makeObjectsFromValues(key, valuesList) {
     var objects = angular.rootScope.Cache[key]; //see if we have it squirreled away in our cache
-
+    //console.log(" -- make objects from values key : " + key);
     if (!objects) {
         objects = {};
 
@@ -224,7 +224,7 @@ function makeObjectsFromValues(key, valuesList) {
         }
         angular.rootScope.Cache[key] = objects; //save into our cache
     }
-
+    //console.log("returning " + objects.length);
     return objects;
 }
 
@@ -1193,7 +1193,10 @@ function convertDateFromUnknownStringToUTC(strD) {
 //if(somearray.contains("a"))... (case insensitive) -- can't be used with ints
 if (!Array.prototype.contains) {
     Array.prototype.contains = function (searchElement) {
-        searchElement = searchElement.toLowerCase();
+
+        if (typeof searchElement === 'string') {
+            searchElement = searchElement.toLowerCase();    
+        }
 
         if (this == null)
             throw new TypeError('Array.contains: "this" is null or not defined');
@@ -1223,7 +1226,7 @@ if (!Array.prototype.containsInt) {
             return false;
 
         for (let i = 0; i < this.length; i++) {
-            if (this[i] === searchElement)
+            if (this[i] == searchElement)
                 return true;
         };
 

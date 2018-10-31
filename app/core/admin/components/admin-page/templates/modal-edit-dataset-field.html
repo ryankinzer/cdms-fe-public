@@ -45,6 +45,11 @@
             <td class="prop-val"><pre>{{field_to_edit.Field.PossibleValues}}</pre></td>
         </tr>
         <tr><td class="prop-name">Label:</td><td><input class="form-control" type="text" ng-model="field_to_edit.Label" name="Label"></td></tr>
+        <tr>
+            <td class="prop-name">Control Type:</td>
+            <td class="prop-val"><select ng-model="field_to_edit.ControlType"><option>date</option><option>datetime</option><option>multiselect</option><option>number</option><option>select</option><option>select-number</option><option>text</option><option>textarea</option><option>currency</option><option>easting</option><option>northing</option></select></td>
+        </tr>
+
         <tr><td class="prop-name">Validation:</td><td><input class="form-control" type="text" ng-model="field_to_edit.Validation" name="Validation"></td></tr>
         <tr><td class="prop-name">Rule:</td><td><textarea class="form-control" type="text" ng-model="field_to_edit.Rule" name="Rule"></textarea></td></tr>
         <tr><td class="prop-name">OrderIndex:</td><td><input class="form-control" type="text" ng-model="field_to_edit.OrderIndex" name="Order Index"></td></tr>

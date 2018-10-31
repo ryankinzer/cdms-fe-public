@@ -63,6 +63,8 @@ var SelectControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
+
+
 //currency - displays as USD currency, saves as number
 var CurrencyControlType = function (cdms_field, col_def) {
     col_def.valueFormatter = function (params) {
@@ -219,12 +221,13 @@ var ControlTypeDefinitions = {
     'currency': CurrencyControlType,
     'date': DateControlType,
     'datetime': DateTimeControlType,
-    'easting': EastingControlType,
+    'easting': NumberControlType,
     'file': FileControlType,
     'link': LinkControlType,
-    'northing': NorthingControlType,
+    'northing': NumberControlType,
     'number': NumberControlType,
     'select': SelectControlType,
+    'select-number': SelectControlType,
     'string': TextControlType, //just use the Text renderer
     'temp-waypoint-file': TempWaypointFileControlType,
     'text': TextControlType,
