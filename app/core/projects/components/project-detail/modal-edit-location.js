@@ -3,6 +3,12 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
 
     function ($scope, $modal, $modalInstance, GridService) {
 
+        $scope.mode = "edit";
+
+        if (!$scope.row.Id) {
+            $scope.mode = "new";
+        }
+
         $scope.save = function () {
 /*
 			var saved_field = AdminService.saveDatasetField($scope.field_to_edit);
@@ -47,11 +53,12 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
 
         };
 
-        //fire validation for all columns when we load
-        $scope.dataGridOptions.columnDefs.forEach(function (field) { 
-            $scope.onHeaderEditingStopped(field);
-            //console.dir(field);
-        });
+        //fire validation for all columns when we load (if we are editing)
+        if ($scope.mode === 'edit') {
+            $scope.dataGridOptions.columnDefs.forEach(function (field) {
+                $scope.onHeaderEditingStopped(field);
+            });
+        }
 
         $scope.cancel = function () {
             $modalInstance.dismiss();

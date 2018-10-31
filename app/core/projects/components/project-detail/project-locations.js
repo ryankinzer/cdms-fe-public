@@ -71,20 +71,6 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             scope.dataGridOptions.api.deselectAll();
         };
 
-/*
-        var linkTemplate = function (param) {
-
-            var div = document.createElement('div');
-
-            var linkBtn = document.createElement('a');
-            linkBtn.href = '#!/' + param.data.activitiesRoute + '/' + param.data.Id;
-            linkBtn.innerHTML = param.data.Name;
-
-            div.appendChild(linkBtn);
-
-            return div;
-        };
-*/
         
         var EditLinkTemplate = function (param) {
 
@@ -131,6 +117,32 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             scope.SaveMessage = null;
 
             scope.row = angular.copy(a_selection);
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-location.html',
+                controller: 'ModalEditLocationCtrl',
+                scope: scope, //very important to pass the scope along...
+            }).result.then(function (saved_location) { 
+                //replace that field in the grid with the one we got back
+/*
+                scope.dataset.Fields.forEach(function (existing_field,index) {
+                    if (existing_field.FieldId == saved_field.FieldId) {
+                        console.dir("found field to replace : " + existing_field.FieldId);
+                        scope.dataset.Fields[index] = saved_field;
+                    }
+                });
+*/
+  //              scope.populateAddFieldDropdown();
+    //            scope.fieldGridOptions.api.setRowData(scope.dataset.Fields);
+                scope.SaveMessage = "Success.";
+            });
+        };
+
+
+        scope.addLocation = function (a_selection) {
+            scope.SaveMessage = null;
+
+            scope.row = {};
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-location.html',
