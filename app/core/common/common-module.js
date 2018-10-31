@@ -103,3 +103,83 @@ require([
         
     });
 });
+
+define([
+    'app',
+    'esri/map',
+    'esri/geometry/Point',
+    'esri/dijit/InfoWindow',
+    'esri/InfoTemplate',
+    'esri/dijit/BasemapLayer',
+    'esri/dijit/BasemapGallery',
+    'esri/dijit/Basemap',
+    'esri/virtualearth/VETiledLayer'
+], function (app, Map, Point, InfoWindow, InfoTemplate, VETiledLayer) {
+
+
+    /*
+      <esri-map class="claro" id="map" center="-118.45,45.56" zoom="10" basemap="streets" onclick="click">
+                        <esri-feature-layer url="//restdata.ctuir.org/arcgis/rest/services/CDMS_ProjectPoints/FeatureServer/0" filter="location"></esri-feature-layer>
+                  </esri-map>
+     */
+
+    common_module.getLocationMapLayer = function () {
+
+        var mapOptions = {
+            center: (-118.45, 45.56),
+            zoom: (10),
+            spatialReference: {
+                wkid: 102100 //mercator
+                //wkid:26911 //nad_1983
+                //"wkt":'PROJCS["NAD83(NSRS2007) / UTM zone 11N",GEOGCS["NAD83(NSRS2007)",DATUM["D_",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",-117],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],UNIT["Meter",1]]'
+            }
+        };
+
+        // declare our map
+        var map = new Map('map', mapOptions);
+        map.locationLayer = map.addLayer(MapPointsLayer); 
+
+        return map;
+    };
+
+    //adds a new location point and returns the running promise
+    common_module.addGISPoint = function (map, location) { 
+            
+        var inSR = new esri.SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
+        var outSR = new esri.SpatialReference({ wkid: 102100 })
+        var geometryService = new esri.tasks.GeometryService(GEOMETRY_SERVICE_URL);
+
+        var newPoint = new esri.geometry.Point(location.GPSEasting, location.GPSNorthing, inSR);
+
+        //convert spatial reference
+        var PrjParams = new esri.tasks.ProjectParameters();
+
+        PrjParams.geometries = [newPoint];
+        PrjParams.outSR = outSR;
+
+        //do the projection (conversion)
+        var geo_promise = geometryService.project(PrjParams, function (outputpoint) {
+
+            newPoint = new esri.geometry.Point(outputpoint[0], outSR);
+            var newGraphic = new esri.Graphic(newPoint, new esri.symbol.SimpleMarkerSymbol());
+
+            //add the graphic to the map and get SDE_ObjectId
+            var map_promise = map.locationLayer.applyEdits([newGraphic], null, null);
+            console.log("sending apply edits");
+            map_promise.$promise.then(function (results) {
+                if (results[0].success) {
+                    var SdeObjectId = results[0].objectId;
+                    console.log("Created a new point! " + SdeObjectId);
+                }
+                else {
+                    console.log( "There was a problem saving that location.");
+                }
+            });
+        });
+
+        console.dir(geo_promise);
+
+    };
+
+
+});

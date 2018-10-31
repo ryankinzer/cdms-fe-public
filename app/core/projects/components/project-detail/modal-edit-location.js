@@ -1,7 +1,7 @@
 ﻿//modal to edit location
-var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridService',
+var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridService','CommonService',
 
-    function ($scope, $modal, $modalInstance, GridService) {
+    function ($scope, $modal, $modalInstance, GridService, CommonService) {
 
         $scope.mode = "edit";
 
@@ -10,14 +10,20 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
         }
 
         $scope.save = function () {
-/*
-			var saved_field = AdminService.saveDatasetField($scope.field_to_edit);
-            saved_field.$promise.then(function () { 
-                $modalInstance.close(saved_field);
+
+            var payload = {
+                'ProjectId' : $scope.project.Id,
+                'Location' : $scope.row,
+            };
+
+            var save_location = CommonService.saveNewProjectLocation($scope.project.Id, $scope.row);
+
+            save_location.$promise.then(function () { 
+                $modalInstance.close(save_location);
             }, function (error) {
                 $scope.SaveMessage = "Error: " + error.data.ExceptionMessage;
             });
-  */          
+          
         };
 
         //used as a filter to exclude the edit link - only show bonafide fields
@@ -64,5 +70,6 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
             $modalInstance.dismiss();
         };
 
+        
     }
 ];

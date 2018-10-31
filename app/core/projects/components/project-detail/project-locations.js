@@ -18,23 +18,17 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
         scope.selectedDataset = null;
 
-
 		scope.AuthorizedToViewProject = true;
 
 		//once the datasets load, make sure each is configured with our scope.
         scope.datasets.$promise.then(function () {
-         	if ((scope.datasets) && (scope.datasets.length > 0))
-			{
-				for (var i = 0; i < scope.datasets.length; i++)
-				{
+         	if ((scope.datasets) && (scope.datasets.length > 0)) {
+				for (var i = 0; i < scope.datasets.length; i++)	{
 					DatasetService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
 				}
-			}
-			else
-			{
+			} else {
 				console.warn("This project has no datasets.");
             }
-
         });
 
         scope.locationDataset.$promise.then(function () { 
@@ -42,15 +36,6 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             scope.dataGridOptions.columnDefs.unshift({ field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, alwaysShowField: true, menuTabs: [], hide: true }),
             scope.activateDataGrid();
         });
-
-
-        scope.project.$promise.then(function () { 
-            if ($rootScope.Profile.canEdit(scope.project)) {
-                scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
-                scope.dataGridOptions.api.refreshHeader();
-            }
-        });
-        
 
         scope.showLocations = function (dataset) { 
             
@@ -109,13 +94,16 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
             scope.project.$promise.then(function () { 
                 scope.dataGridOptions.api.setRowData(scope.project.Locations);
-                //scope.dataGridOptions.api.sizeColumnsToFit(); 
+                if ($rootScope.Profile.canEdit(scope.project)) {
+                    scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
+                    scope.dataGridOptions.api.refreshHeader();
+                }
             });
+
         };
 
         scope.openEditModal = function (a_selection) {
             scope.SaveMessage = null;
-
             scope.row = angular.copy(a_selection);
 
             var modalInstance = $modal.open({
@@ -123,47 +111,61 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
                 controller: 'ModalEditLocationCtrl',
                 scope: scope, //very important to pass the scope along...
             }).result.then(function (saved_location) { 
-                //replace that field in the grid with the one we got back
-/*
-                scope.dataset.Fields.forEach(function (existing_field,index) {
-                    if (existing_field.FieldId == saved_field.FieldId) {
-                        console.dir("found field to replace : " + existing_field.FieldId);
-                        scope.dataset.Fields[index] = saved_field;
+                //replace that location in the grid with the one we got back
+                scope.project.Locations.forEach(function (existing_location, index) {
+                    if (existing_location.Id == saved_location.Id) {
+                        console.dir("found field to replace : " + existing_location.Id);
+                        scope.project.Locations[index] = saved_location;
                     }
                 });
-*/
-  //              scope.populateAddFieldDropdown();
-    //            scope.fieldGridOptions.api.setRowData(scope.dataset.Fields);
+                
+                scope.dataGridOptions.api.setRowData(scope.project.Locations);
                 scope.SaveMessage = "Success.";
+                scope.showProjectLocations();
+    
             });
         };
 
 
         scope.addLocation = function (a_selection) {
             scope.SaveMessage = null;
-
-            scope.row = {};
+            scope.row = { 'Status': 0 };
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-location.html',
                 controller: 'ModalEditLocationCtrl',
                 scope: scope, //very important to pass the scope along...
             }).result.then(function (saved_location) { 
-                //replace that field in the grid with the one we got back
-/*
-                scope.dataset.Fields.forEach(function (existing_field,index) {
-                    if (existing_field.FieldId == saved_field.FieldId) {
-                        console.dir("found field to replace : " + existing_field.FieldId);
-                        scope.dataset.Fields[index] = saved_field;
-                    }
-                });
-*/
-  //              scope.populateAddFieldDropdown();
-    //            scope.fieldGridOptions.api.setRowData(scope.dataset.Fields);
+                //add that location in the grid with the one we got back
+                scope.project.Locations.push(saved_location);
+
+                scope.dataGridOptions.api.setRowData(scope.project.Locations);
                 scope.SaveMessage = "Success.";
+                scope.showProjectLocations();
             });
         };
 
+
+        scope.deleteLocations = function () { 
+            scope.dataGridOptions.selectedItems.forEach(function (location) { 
+                var delete_loc = CommonService.deleteLocation(location.Id);
+                delete_loc.$promise.then(function () { 
+                    scope.project.Locations.forEach(function (existing_location, index) {
+                        if (existing_location.Id == location.Id) {
+                            console.dir("found field to remove : " + existing_location.Id);
+                            scope.project.Locations.splice(index);
+                            scope.dataGridOptions.api.setRowData(scope.project.Locations);
+                            scope.showProjectLocations();
+                        }
+                    });
+                }, function () { 
+                    alert("Could not delete " + location.Label + " because activities exist. Remove them and then you can delete this location.");
+                });
+            });
+
+        };
+
+        //scope.map = common_module.getLocationMapLayer();
 
     }
 

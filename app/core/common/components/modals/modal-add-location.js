@@ -1,4 +1,6 @@
 ﻿
+//TODO - delete me.
+
 //modal that handles both saving and editing locations on a project
 var modal_add_location = ['$scope', '$modalInstance', 'DatasetService', 'ProjectService', 'CommonService',
     function ($scope, $modalInstance, DatasetService, ProjectService, CommonService) {
