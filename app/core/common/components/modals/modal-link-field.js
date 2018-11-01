@@ -1,5 +1,5 @@
 ﻿
-var modal_link_field = ['$scope', '$modalInstance', '$rootScope',
+var modal_link_field = ['$scope', '$uibModalInstance', '$rootScope',
     function ($scope, $modalInstance, $rootScope) {
         console.log("Inside modals-controller.js, LinkModalCtrl...");
         //console.log("$scope is next...");

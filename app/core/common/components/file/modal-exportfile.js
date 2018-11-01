@@ -1,4 +1,4 @@
-﻿var modal_exportfile = ['$scope','DatasetService','$modalInstance','$window',
+﻿var modal_exportfile = ['$scope','DatasetService','$uibModalInstance','$window',
 	function($scope, DatasetService,$modalInstance, $window) {
 
 		//$scope.alerts 

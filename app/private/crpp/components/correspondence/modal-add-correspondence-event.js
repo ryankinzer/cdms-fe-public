@@ -1,6 +1,6 @@
 ﻿
-var modal_add_correspondence_event = ['$scope', '$rootScope', '$modalInstance', '$uibModal', 'DatasetService','SubprojectService','ServiceUtilities',
-	'$filter', '$upload','$location', '$anchorScroll',
+var modal_add_correspondence_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'DatasetService','SubprojectService','ServiceUtilities',
+	'$filter', 'Upload','$location', '$anchorScroll',
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
 	$filter, $upload, $location, $anchorScroll){
 	console.log("Inside ModalAddCorrespondenceEventCtrl...");

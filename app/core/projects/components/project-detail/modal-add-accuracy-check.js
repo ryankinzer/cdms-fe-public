@@ -1,5 +1,5 @@
 ﻿
-module_add_accuracy_check = ['$scope', '$modalInstance', 'ProjectService',
+module_add_accuracy_check = ['$scope', '$uibModalInstance', 'ProjectService',
     function ($scope, $modalInstance, ProjectService) {
 
         $scope.ac_row = angular.copy($scope.ac_row);

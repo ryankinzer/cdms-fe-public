@@ -1,4 +1,4 @@
-﻿var modal_choose_summary_images = ['$scope', '$modalInstance', 'ProjectService',
+﻿var modal_choose_summary_images = ['$scope', '$uibModalInstance', 'ProjectService',
     function ($scope, $modalInstance, ProjectService){
 
      var galleryLinkTemplate = '<a href="{{row.getProperty(\'Link\')}}" target="_blank" title="{{row.getProperty(\'Link\')}}">' +

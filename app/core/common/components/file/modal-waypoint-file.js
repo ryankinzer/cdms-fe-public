@@ -1,6 +1,6 @@
 ﻿//controller for the waypoints loading process.
 
-var modal_waypoint_files = ['$scope', '$modalInstance', 'DatasetService', '$rootScope',
+var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$rootScope',
     function ($scope, $modalInstance, DatasetService, $rootScope) {
 
         $scope.uploadWaypoints = function () {

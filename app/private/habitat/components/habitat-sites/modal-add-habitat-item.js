@@ -1,5 +1,5 @@
 ﻿
-var modal_add_habitat = ['$scope', '$rootScope', '$modalInstance', '$uibModal', 'DatasetService','SubprojectService','ServiceUtilities',
+var modal_add_habitat = ['$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'DatasetService','SubprojectService','ServiceUtilities',
 	'$filter', '$upload','$location', '$anchorScroll',
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
 	$filter, $upload, $location, $anchorScroll){

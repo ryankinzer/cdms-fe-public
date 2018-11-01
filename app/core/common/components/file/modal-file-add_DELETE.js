@@ -1,5 +1,5 @@
 ﻿//handles managing file controltypes
-var modal_file_add = ['$scope','$modalInstance', 'DatasetService','ServiceUtilities','$rootScope',
+var modal_file_add = ['$scope','$uibModalInstance', 'DatasetService','ServiceUtilities','$rootScope',
     function($scope, $modalInstance, DatasetService, ServiceUtilities, $rootScope){
 		// This controller is for the Dataset Activity / Subproject File modal.
 		console.log("Inside modals-controller.js, FileAddModalCtrl");

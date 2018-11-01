@@ -1,5 +1,5 @@
 ﻿
-var add_project_dataset = ['$scope','$modalInstance', 'ProjectService',
+var add_project_dataset = ['$scope','$uibModalInstance', 'ProjectService',
 	function($scope,  $modalInstance, ProjectService){
 
 		$scope.row = {};

@@ -198,25 +198,25 @@ projects_module.service('ProjectService', ['$q',
             },
 
             getProjectDatasets: function (projectId) {
-                this.getProject(projectId); //set our local project to the one selected
+                //this.getProject(projectId); //set our local project to the one selected
                 return ProjectDatasets.query({ id: projectId });
             },
 
             getProjectFunders: function (projectId) {
                 console.log("Inside getProjectFunders, projectId = " + projectId);
-                this.getProject(projectId); //set our local project to the one selected
+                //this.getProject(projectId); //set our local project to the one selected
                 return ProjectFunders.query({ id: projectId });
             },
 
             getProjectCollaborators: function (projectId) {
                 console.log("Inside getProjectCollaborators...");
-                this.getProject(projectId); //set our local project to the one selected
+                //this.getProject(projectId); //set our local project to the one selected
                 return ProjectCollaborators.query({ id: projectId });
             },
 			
             getProjectCounties: function (projectId) {
                 console.log("Inside getProjectCounties...");
-                this.getProject(projectId); //set our local project to the one selected
+                //this.getProject(projectId); //set our local project to the one selected
                 return ProjectCounties.query({ id: projectId });
             },
 

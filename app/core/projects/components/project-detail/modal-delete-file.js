@@ -1,4 +1,4 @@
-﻿var modal_delete_file = ['$scope', '$modalInstance', 'ProjectService',
+﻿var modal_delete_file = ['$scope', '$uibModalInstance', 'ProjectService',
     function ($scope, $modalInstance, ProjectService){
 
 		$scope.header_message = "Delete file?";

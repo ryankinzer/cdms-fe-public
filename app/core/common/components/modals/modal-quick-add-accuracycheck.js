@@ -1,4 +1,4 @@
-﻿var modal_quick_add_accuracycheck = ['$scope', '$modalInstance', 'ProjectService', '$rootScope',
+﻿var modal_quick_add_accuracycheck = ['$scope', '$uibModalInstance', 'ProjectService', '$rootScope',
     function ($scope, $modalInstance, ProjectService, $rootScope){
 
     $scope.ac_row = {};

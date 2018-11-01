@@ -1598,3 +1598,30 @@ function filterToCurrency(value) {
     return (parseToFloat(value)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 }
 
+
+
+//return an array from the eventfiles.
+function getFilesArrayAsList (theFiles) {
+    if (theFiles === undefined || theFiles === null)
+        return [];
+
+    var files = angular.fromJson(theFiles);
+    return (files === null || !Array.isArray(files)) ? [] : files; //if it isn't an array, make an empty array
+
+};
+
+//return an array of file links to cdmsShareUrl (defined in config) for subproject
+function getSubprojectFilesArrayAsLinks (a_projectId, a_subprojectId, a_files)
+{
+    var files = getFilesArrayAsList(a_files);
+    var retval = [];
+
+    files.forEach(function (file) {
+        retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/S/" + a_subprojectId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+    });
+
+    return retval;
+}
+
+
+

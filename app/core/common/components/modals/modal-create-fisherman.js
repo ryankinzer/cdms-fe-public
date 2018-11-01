@@ -1,4 +1,4 @@
-﻿var modal_create_fisherman = ['$scope', '$modalInstance','ProjectService','ServiceUtilities','ConvertStatus',
+﻿var modal_create_fisherman = ['$scope', '$uibModalInstance','ProjectService','ServiceUtilities','ConvertStatus',
     function ($scope, $modalInstance, ProjectService,  ServiceUtilities, ConvertStatus){
 
 	$scope.fishermenList = ProjectService.getFishermen();

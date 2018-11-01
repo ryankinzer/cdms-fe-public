@@ -2,7 +2,7 @@
 //TODO - delete me.
 
 //modal that handles both saving and editing locations on a project
-var modal_add_location = ['$scope', '$modalInstance', 'DatasetService', 'ProjectService', 'CommonService',
+var modal_add_location = ['$scope', '$uibModalInstance', 'DatasetService', 'ProjectService', 'CommonService',
     function ($scope, $modalInstance, DatasetService, ProjectService, CommonService) {
 
         //if $scope.selectedLocation is set then we are EDITING, otherwise CREATING

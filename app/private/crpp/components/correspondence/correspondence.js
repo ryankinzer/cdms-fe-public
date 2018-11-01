@@ -1,14 +1,37 @@
-﻿//this is a nested controller used on the project-details page to load
-// the correspondence tab grid. It only appears for projects that are CRPP Correspondence.
+﻿//page for CRPP Correspondence.
 
-//var METADATA_PROPERTY_PROGRAM = 23; //add this to your config.js
-
-
-var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
-    '$uibModal', 'ServiceUtilities', 'ConvertStatus', '$rootScope',
+var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
+    '$uibModal', 'ServiceUtilities', 'ConvertStatus', '$rootScope', '$routeParams',
     function (scope, $timeout, SubprojectService, ProjectService, DatasetService, CommonService, UserService, $modal,
-        ServiceUtilities, ConvertStatus, $rootScope) {
+        ServiceUtilities, ConvertStatus, $rootScope, $routeParams) {
         //console.log("Inside tab correspondence controller...");
+
+        scope.dataset = DatasetService.getDataset($routeParams.Id);
+
+        scope.dataset.$promise.then(function () {
+            scope.project = ProjectService.getProject(scope.dataset.ProjectId);
+
+            scope.project.$promise.then(function () {
+
+                var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
+                //console.dir(ag_grid_div);
+                scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.corrAgGridOptions); //bind the grid to it.
+                scope.corrAgGridOptions.api.showLoadingOverlay(); //show loading...
+
+                scope.subprojectList = SubprojectService.getSubprojects();
+
+                //if user can edit, unhide the edit links
+                if ($rootScope.Profile.canEdit(scope.project)) {
+                    scope.corrAgGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
+                    scope.corrDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 110, menuTabs: [] }); //add this column to the front of the detail grid cols
+                }
+
+                scope.subprojectList.$promise.then( function () {
+                    scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
+                    scope.refreshSubprojectLists();
+                });
+            });
+        });
 
        
         //this is for the crpp/subproject correspondence tab below - might can move this all out sometime...
@@ -54,20 +77,14 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             div.appendChild(addBtn);
 
             return div;
-            /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
-            return '<div project-role="editor">' +
-                        '<a ng-click="editViewSubproject();">Edit</a>|' +
-                        '<a ng-click="removeViewSubproject();">Delete</div>|' + 
-                        '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
-                '</div>';
-                */
+            
         };
 
 
         var FileListCellTemplate = function (params) {
             var list = '<div class="event-file-list"><ul>';
 
-            var file_links = scope.getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.EventFiles);
+            var file_links = getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.EventFiles);
 
             file_links.forEach(function (link) {
                 list += '<li>' + link + '</li>';
@@ -109,24 +126,18 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             div.appendChild(addBtn);
 
             return div;
-            /* can't do angular stuff in here unless we enable it as an angular grid... let's see if we can do without...
-            return '<div project-role="editor">' +
-                        '<a ng-click="editViewSubproject();">Edit</a>|' +
-                        '<a ng-click="removeViewSubproject();">Delete</div>|' + 
-                        '<a ng-click="openCorrespondenceEventForm();">Add</div>' +
-                '</div>';
-                */
+            
         };
 
 
         //grid columns for crpp correspondence tab (master/subprojects)
         scope.corrAgColumnDefs = [  //in order the columns will display, by the way...
-            { colId: 'EditLinksMaster', width: 140, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
+            { colId: 'EditLinksMaster', width: 150, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             {
                 headerName: 'ID',
                 field: 'Id',
                 width: 80,
-                cellRenderer: 'group',
+                cellRenderer: 'agGroupCellRenderer',
                 cellRendererParams: { suppressCount: true },
                 menuTabs: ['filterMenuTab'],
                 filter: 'number'
@@ -232,7 +243,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             getRowHeight: function (params) {
                 var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
                 var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                var file_height = 25 * (scope.getFilesArrayAsList(params.data.EventFiles).length); //count up the number of file lines we will have.
+                var file_height = 25 * (getFilesArrayAsList(params.data.EventFiles).length); //count up the number of file lines we will have.
                 return (comment_height > file_height) ? comment_height : file_height;
             },
             //onRowClicked: function (row) {
@@ -339,57 +350,6 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             },
         };
 
-        //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
-        var crpp_ds_watcher = scope.$parent.$watch('status.DoneLoadingProject', function () {
-            //console.log("Inside TAB CORRESPONDENCE watch project... --------------------------");
-
-            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
-                return;
-
-            console.log("OK TAB CORRESPONDENCE .  The project is loaded...");
-
-            crpp_ds_watcher(); //turn off watcher
-
-            if (isCRPPProject(scope.project)) {
-
-                console.log("Adding Correspondence to tab bar because we are a CRPP project...");
-                scope.ShowSubproject = true;
-
-                $timeout(function () {
-
-                    var ag_grid_div = document.querySelector('#crpp-correspondence-grid');    //get the container id...
-                    //console.dir(ag_grid_div);
-                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.corrAgGridOptions); //bind the grid to it.
-                    scope.corrAgGridOptions.api.showLoadingOverlay(); //show loading...
-
-                    scope.subprojectList = SubprojectService.getSubprojects();
-                    //console.log("Fetching CRPP subprojects...");
-
-                    //if user can edit, unhide the edit links
-                    if (scope.canEdit(scope.project)) {
-                        scope.corrAgGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
-                        scope.corrDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [] }); //add this column to the front of the detail grid cols
-                    }
-
-                    var watcher = scope.$watch('subprojectList.length', function () {
-                        if (scope.subprojectList === undefined || scope.subprojectList == null || scope.subprojectList.length === 0)
-                            return;
-
-                        console.log("our crpp subproject list is back -- build the grid. we have " + scope.subprojectList.length + " of them.");
-                        scope.corrAgGridOptions.api.setRowData(scope.subprojectList);
-						
-						scope.refreshSubprojectLists();
-
-                        watcher();
-                    });
-                }, 0);
-
-            } else {
-                console.log(" we are NOT a crpp project so no Correspondence tab.");
-            }
-
-        },true);
-
 
 
         //if you are creating a new one for the project, the ce_row should be empty {}
@@ -404,7 +364,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             scope.ce_row = ce_row;
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-new-correspondenceEvent.html',
+                templateUrl: 'app/private/crpp/components/correspondence/templates/modal-new-correspondenceEvent.html',
                 controller: 'ModalAddCorrespondenceEventCtrl',
                 scope: scope, //very important to pass the scope along...
             });
@@ -596,7 +556,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             scope.subprojectOptions = null;
             //console.log("scope.createNewSubproject = " + scope.createNewSubproject);
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
+                templateUrl: 'app/private/crpp/components/correspondence/templates/modal-create-subproject.html',
                 controller: 'ModalCreateSubprojectCtrl',
                 scope: scope, //very important to pass the scope along...
             });
@@ -609,7 +569,7 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             // Call the functions that will build the list of funders, and list of files related to the project.
             // We add the items from these lists to the subproject -- as the data comes in.
             //scope.project.SubprojectFileList = SubprojectService.getSubprojectFiles(scope.projectId); //TODO: we already have this as scope.project.SubprojectFiles once the files load in project-detail.js
-            scope.project.CountyList = ProjectService.getProjectCounties(scope.projectId);
+            scope.project.CountyList = ProjectService.getProjectCounties(scope.project.Id);
 
             //this one we can start right away since project locations are loaded with the project.
             //scope.matchLocationsToSubprojects();
@@ -632,15 +592,15 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
             $rootScope.viewSubproject = scope.viewSubproject = subproject;
 
             var modalInstance = $modal.open({
-                    templateUrl: 'app/private/crpp/components/crpp-contracts/templates/modal-create-subproject.html',
+                    templateUrl: 'app/private/crpp/components/correspondence/templates/modal-create-subproject.html',
                     controller: 'ModalCreateSubprojectCtrl',
                     scope: scope, //very important to pass the scope along...
             });
         };
 		
         scope.matchCountyToSubproject = function () {
-            console.log("Inside controllers.js, scope.matchCountyToSubproject...");
-            console.dir(scope.project.CountyList);
+            //console.log("Inside controllers.js, scope.matchCountyToSubproject...");
+            //console.dir(scope.project.CountyList);
 
             var strCounties = "";
             angular.forEach(scope.subprojectList, function (subproject) {
@@ -652,8 +612,8 @@ var tab_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSer
                 });
                 subproject.strCounties = strCounties;
             });
-			console.log("scope.subprojectList is next...");
-			console.dir(scope.subprojectList);
+			//console.log("scope.subprojectList is next...");
+			//console.dir(scope.subprojectList);
         };
 
         scope.redrawRows = function () {

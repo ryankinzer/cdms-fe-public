@@ -2,7 +2,7 @@
 //controller for modal-create-season.html
 // create/edit season
 
-var modal_create_season = ['$scope', '$rootScope', '$modalInstance', '$uibModal', 'DatasetService','CommonService','SubprojectService', 'ServiceUtilities', 
+var modal_create_season = ['$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'DatasetService','CommonService','SubprojectService', 'ServiceUtilities', 
 	'$timeout', '$location', '$anchorScroll', '$document', '$upload', 
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, CommonService, SubprojectService, ServiceUtilities, 
         $timeout, $location, $anchorScroll, $document, $upload)

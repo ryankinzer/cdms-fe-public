@@ -7,7 +7,7 @@
 */
 
 //handles managing file controltypes
-var modal_files = ['$scope', '$modalInstance', 'DatasetService','SubprojectService','$rootScope',
+var modal_files = ['$scope', '$uibModalInstance', 'DatasetService','SubprojectService','$rootScope',
     function ($scope, $modalInstance, DatasetService, SubprojectService, $rootScope){
 		
 		if (typeof $scope.onRow !== 'undefined')

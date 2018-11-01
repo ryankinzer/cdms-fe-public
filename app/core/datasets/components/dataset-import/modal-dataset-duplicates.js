@@ -1,5 +1,5 @@
 ﻿
-var modal_dataset_duplicates = ['$scope', '$modalInstance',
+var modal_dataset_duplicates = ['$scope', '$uibModalInstance',
     function ($scope, $modalInstance) {
 
         $scope.gridDuplicates = {

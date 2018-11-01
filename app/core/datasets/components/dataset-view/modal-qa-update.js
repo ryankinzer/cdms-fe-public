@@ -1,4 +1,4 @@
-﻿var modal_qa_update = ['$scope', 'DatasetService', 'ProjectService', '$modalInstance',
+﻿var modal_qa_update = ['$scope', 'DatasetService', 'ProjectService', '$uibModalInstance',
     function ($scope, DatasetService, ProjectService, $modalInstance) {
         $scope.save = function () {
 

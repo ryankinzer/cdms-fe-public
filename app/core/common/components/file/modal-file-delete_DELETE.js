@@ -1,6 +1,6 @@
 ﻿
 //handles managing file controltypes
-var modal_file_delete = ['$scope', '$modalInstance', 'DatasetService','SubprojectService','$rootScope',
+var modal_file_delete = ['$scope', '$uibModalInstance', 'DatasetService','SubprojectService','$rootScope',
     function ($scope, $modalInstance, DatasetService, SubprojectService, $rootScope) {
 
 		// This controller is for the Dataset Activity / Subproject File modal.

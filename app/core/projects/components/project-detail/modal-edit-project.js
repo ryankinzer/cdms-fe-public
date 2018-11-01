@@ -1,5 +1,5 @@
 ﻿
-var modal_edit_project = ['$scope', '$modalInstance', 'ProjectService', 
+var modal_edit_project = ['$scope', '$uibModalInstance', 'ProjectService', 
     function ($scope, $modalInstance, ProjectService) {
 
         console.dir($scope);

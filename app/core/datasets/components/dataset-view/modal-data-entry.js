@@ -1,5 +1,5 @@
 ﻿
-var modal_data_entry = ['$scope', '$modalInstance', 
+var modal_data_entry = ['$scope', '$uibModalInstance', 
 	function($scope, $modalInstance){
 		//DRY alert -- this was copy and pasted... how can we fixy?
 		$scope.alerts = [];

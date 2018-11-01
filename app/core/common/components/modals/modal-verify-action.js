@@ -1,5 +1,5 @@
 ﻿
-var modal_verify_action = ['$scope', '$rootScope', '$modalInstance', 'SubprojectService',
+var modal_verify_action = ['$scope', '$rootScope', '$uibModalInstance', 'SubprojectService',
     function ($scope, $rootScope, $modalInstance, SubprojectService){
 	console.log("Inside ModalVerifyActionCtrl...");
 	//console.log("$scope is next...");

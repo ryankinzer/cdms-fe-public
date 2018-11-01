@@ -1,4 +1,4 @@
-﻿var modal_create_instrument = ['$scope', '$modalInstance', 'DatasetService', 'ProjectService', 'CommonService', '$rootScope',
+﻿var modal_create_instrument = ['$scope', '$uibModalInstance', 'DatasetService', 'ProjectService', 'CommonService', '$rootScope',
     function ($scope, $modalInstance, DatasetService, ProjectService, CommonService, $rootScope) {
 
     $scope.header_message = "Create new instrument";

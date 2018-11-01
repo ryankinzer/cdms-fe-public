@@ -1,5 +1,5 @@
 ﻿
-var modal_create_crpp_subproject = ['$scope', '$rootScope', '$modalInstance', 'DatasetService', 'SubprojectService', 'ServiceUtilities',
+var modal_create_crpp_subproject = ['$scope', '$rootScope', '$uibModalInstance', 'DatasetService', 'SubprojectService', 'ServiceUtilities',
     '$timeout', '$location', '$anchorScroll', '$document',
     function ($scope, $rootScope, $modalInstance, DatasetService, SubprojectService, ServiceUtilities,
         $timeout, $location, $anchorScroll, $document) {

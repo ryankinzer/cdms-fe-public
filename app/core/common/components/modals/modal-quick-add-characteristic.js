@@ -1,7 +1,7 @@
 ﻿
 //kb 11/1 - I don't see this anywhere used in the system - it isn't being loaded by our module
 
-var modal_quick_add_characteristic = ['$scope','$modalInstance', 'DatasetService','DatastoreService',
+var modal_quick_add_characteristic = ['$scope','$uibModalInstance', 'DatasetService','DatastoreService',
   function($scope,  $modalInstance, DatasetService, DatastoreService){
 
     $scope.char_row = {};
