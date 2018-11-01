@@ -35,13 +35,12 @@ var admin_view = ['$scope', '$uibModal', 'DatasetService','ProjectService',
         };
 
         $scope.getProjectName = function (id) {
-
-            //console.log(">>" + id);
             var ret = "";
             var project = getMatchingByField($scope.projects, id, 'Id');
-            if (project)
-                ret = " - " + project.Name;
-
+            if (Array.isArray(project) && project.length == 1) {
+                ret = project[0].Name;
+            }
+            return ret;
         }
 
 

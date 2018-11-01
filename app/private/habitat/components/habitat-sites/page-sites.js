@@ -1,18 +1,49 @@
-﻿//this is a nested controller used on the project-details page to load
-// the sites tab grid. It only appears for projects that are Habitat type projects.
+﻿//habitat sites page
 
-//hab-sites-grid
-
-var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
+var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
     '$rootScope', '$uibModal', '$sce', '$window', '$http',
-    'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
+    'ServiceUtilities', 'ConvertStatus', '$location', '$routeParams',
     function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, UserService, $rootScope, $modal, $sce, $window, $http,
-        ServiceUtilities, ConvertStatus, $location, $anchorScroll) {
+        ServiceUtilities, ConvertStatus, $location, $routeParams) {
 //        console.log("Inside tab sites controller...");
 
         scope.subprojectFileList = null;
         scope.funderList = null;
         scope.collaboratorList = null;
+
+        
+        scope.dataset = DatasetService.getDataset($routeParams.Id);
+
+        scope.dataset.$promise.then(function () {
+            scope.project = ProjectService.getProject(scope.dataset.ProjectId);
+
+            scope.project.$promise.then(function () {
+
+                var ag_grid_div = document.querySelector('#hab-sites-grid');    //get the container id...
+                //console.dir(ag_grid_div);
+                scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.sitesGridOptions); //bind the grid to it.
+                scope.sitesGridOptions.api.showLoadingOverlay(); //show loading...
+
+                scope.subprojectList = SubprojectService.getProjectSubprojects(scope.project.Id); //the habitat subprojects
+                //console.log("Fetching Habitat subprojects...");
+
+                //if user can edit, unhide the edit links
+                if ($rootScope.Profile.canEdit(scope.project)) {
+                    scope.sitesGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
+                    scope.sitesDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 120, menuTabs: [] }); //add this column to the front of the detail grid cols
+                }
+
+                scope.subprojectList.$promise.then( function () {
+                    scope.sitesGridOptions.api.setRowData(scope.subprojectList);
+                    scope.refreshSubprojectLists();
+                });
+            });
+        });
+
+
+
+
+
 
         var ItemCount = function (params) {
             if (params.node.data.HabitatItems === undefined || params.node.data.HabitatItems === null)
@@ -55,7 +86,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         var FileListCellTemplate = function (params) {
             var list = '<div class="event-file-list"><ul>';
 
-            var file_links = scope.getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.ItemFiles);
+            var file_links = getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.ItemFiles);
 
             file_links.forEach(function (link) {
                 list += '<li>' + link + '</li>';
@@ -124,9 +155,9 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
 
         //grid columns for sites tab (master/subprojects)
         scope.sitesColumnDefs = [  //in order the columns will display, by the way...
-            { colId: 'EditLinksMaster', width: 130, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
+            { colId: 'EditLinksMaster', width: 145, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             {
-                field: 'ProjectName', headerName: 'Name', width: 325, cellRenderer: 'group',
+                field: 'ProjectName', headerName: 'Name', width: 325, cellRenderer: 'agGroupCellRenderer',
                 cellRendererParams: { suppressCount: true },
                 menuTabs: ['filterMenuTab'],
                 filter: 'text'
@@ -217,7 +248,7 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
             //},
             
             getRowHeight: function (params) {
-                var file_height = 25 * (scope.getFilesArrayAsList(params.node.data.ItemFiles).length); //count up the number of file lines we will have.
+                var file_height = 25 * (getFilesArrayAsList(params.node.data.ItemFiles).length); //count up the number of file lines we will have.
                 return (file_height > 25) ? file_height : 25;
             },
             
@@ -317,74 +348,6 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
                 row.node.setSelected(true);
             },
         };
-
-        
-        //watch the project on the parent-detail page to load... once it does, check to see if we should show our tab
-        var sites_ds_watcher = scope.$parent.$watch('status.DoneLoadingProject', function () {
-            console.log("Inside TAB SITES watch project... --------------------------");
-
-            if (typeof scope.project === 'undefined' || typeof scope.project.Id === 'undefined')
-                return;
-
-            sites_ds_watcher(); //turn off the watcher.
-
-            //console.log("Woohoo! are we habitat project?");
-            //console.dir(scope.project);
-                
-            if (isHabitatProject(scope.project)) {
-                console.log("Turning on Sites tab because we are a habitat project...");
-                scope.$parent.ShowHabitat = true; //need to update parent scope for the map to show.
-
-                $timeout(function () {
-
-                    var ag_grid_div = document.querySelector('#hab-sites-grid');    //get the container id...
-                    //console.dir(ag_grid_div);
-                    scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.sitesGridOptions); //bind the grid to it.
-                    scope.sitesGridOptions.api.showLoadingOverlay(); //show loading...
-
-                    scope.subprojectList = SubprojectService.getProjectSubprojects(scope.project.Id); //the habitat subprojects
-                    //console.log("Fetching Habitat subprojects...");
-
-                    //if user can edit, unhide the edit links
-                    if (scope.canEdit(scope.project)) {
-                        scope.sitesGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
-                        scope.sitesDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [] }); //add this column to the front of the detail grid cols
-                    }
-
-                    //ok let's watch for when the subprojects come back and we can load the other things we need.
-                    var watcher = scope.$watch('subprojectList.length', function () {
-                        if (scope.subprojectList === undefined || scope.subprojectList == null)
-                            return;
-
-                        //console.log("our subproject list is back! we have " + scope.subprojectList.length + " of them.");
-
-                        //if there are no subprojects then don't show any points on the map.
-                        if (scope.subprojectList.length === 0) {
-                            if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById')) {
-                                //scope.map.locationLayer.showLocationsById(scope.thisProjectsLocationObjects); //bump and reload the locations.
-                                // Note:  If we sent an empty list, it pulls all the locations.
-                                // If we supply an Id that we know does not exist (0), we get no locations, which is what we want.
-                                scope.map.locationLayer.showLocationsById(0); //
-                            }
-                            return;
-                        }
-
-                        //build the grid based on our subprojects
-                        scope.sitesGridOptions.api.setRowData(scope.subprojectList);
-
-                        //console.log("ok now firing off the habitat subproject parts loading...");
-                        scope.refreshSubprojectLists();
-
-                        watcher();
-                    });
-                },0);
-
-            } else {
-                console.log(" we are NOT a habitat project so no Sites tab.");
-            }
-
-        }, true);
-
 
         scope.matchLocationsToSubprojects = function () {
 
@@ -705,9 +668,9 @@ var tab_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Proj
         scope.refreshSubprojectLists = function () {
             // Call the functions that will build the list of funders, and list of files related to the project.
             // We add the items from these lists to the subproject -- as the data comes in.
-            scope.project.SubprojectFileList = SubprojectService.getSubprojectFiles(scope.projectId); //TODO: we already have this as scope.project.SubprojectFiles once the files load in project-detail.js
-            scope.project.FunderList = ProjectService.getProjectFunders(scope.projectId);
-            scope.project.CollaboratorList = ProjectService.getProjectCollaborators(scope.projectId);
+            scope.project.SubprojectFileList = SubprojectService.getSubprojectFiles(scope.project.Id); //TODO: we already have this as scope.project.SubprojectFiles once the files load in project-detail.js
+            scope.project.FunderList = ProjectService.getProjectFunders(scope.project.Id);
+            scope.project.CollaboratorList = ProjectService.getProjectCollaborators(scope.project.Id);
 
             //this one we can start right away since project locations are loaded with the project.
             scope.matchLocationsToSubprojects();

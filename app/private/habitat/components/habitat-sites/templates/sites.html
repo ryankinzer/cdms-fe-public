@@ -1,0 +1,31 @@
+﻿<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span10">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+
+                    <h3>{{project.Name}} > Manage Sites</h3>
+                    <p><i>Manage Habitat Site Items</i></p>
+
+                    <div project-role="editor">
+                        <button style="margin-left: 10px;" class="right btn" ng-click="createHabSubproject()">Create Site</button>
+                    </div>
+                    <button class="right btn" ng-click="openGeospatialDataPage()">Geospatial Data</button>
+
+                    <br />
+
+                    <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                        <div id="hab-sites-grid" class="ag-theme-blue gridStyle-small"></div>
+                        <div class="hab-sites-grid-footer">Total sites: {{subprojectList.length}}</div>
+                    </div>
+
+                    <div ng-show="subprojectList.length==0">No Habitat items are associated with this project.</div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

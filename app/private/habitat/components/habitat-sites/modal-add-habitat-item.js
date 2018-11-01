@@ -1,6 +1,6 @@
 ﻿
 var modal_add_habitat = ['$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'DatasetService','SubprojectService','ServiceUtilities',
-	'$filter', '$upload','$location', '$anchorScroll',
+	'$filter', 'Upload','$location', '$anchorScroll',
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, SubprojectService, ServiceUtilities, 
 	$filter, $upload, $location, $anchorScroll){
 	console.log("Inside ModalAddHabitatItemCtrl...");
