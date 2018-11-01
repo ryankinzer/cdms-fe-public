@@ -1,9 +1,4 @@
-﻿<div class="map-container">
-    <esri-map class="claro" id="map" center="-118.45,45.56" zoom="11" basemap="streets" onclick="click">
-        <esri-feature-layer url="//arcserv.ctuir.org/arcgis/rest/services/CDMS_ProjectPoints/FeatureServer/0"></esri-feature-layer>
-    </esri-map>
-</div>
-
+﻿
 <div class="right" style="margin-top: 15px;">
     <button class="btn" ng-click="openAddProject()">New Project</button>
 </div>
@@ -16,10 +11,11 @@
     <div class="row-fluid">
         <div class="span10">
             <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
-                <div id="project-list-grid" class="ag-theme-blue gridStyle-small"></div>    
+                <div id="project-list-grid" class="ag-theme-blue gridStyle-small"></div>
                 <div class="project-list-footer">Total projects: {{projects.length}}</div>
             </div>
         </div>
     </div>
 
 </div>
+

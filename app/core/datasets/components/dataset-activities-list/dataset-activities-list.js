@@ -523,7 +523,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             MessageToClose: "Hide Map",
         };
 */
-
+/*
         $scope.addLocation = function () {
             console.log("Inside addLocation...");
             console.log("$scope.thisDatasetLocationObjects is next...");
@@ -547,6 +547,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
             }
 
         };
+
+*/
 /*
         $scope.removeFilter = function () {
             $scope.activities = $scope.allActivities;

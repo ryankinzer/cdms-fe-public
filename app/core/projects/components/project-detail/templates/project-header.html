@@ -1,24 +1,27 @@
 ﻿<div style="" title="Toggle 'Favorite' status" class="fav-dataset">
     <a href ng-click="toggleFavorite()">
-        <img id="favorite-active" ng-show="isFavorite" class="on" src='assets/images/favorite-on.png'/>
-        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='assets/images/favorite-off.png'/>
-    </a></div>
+        <img id="favorite-active" ng-show="isFavorite" class="on" src='assets/images/favorite-on.png' />
+        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='assets/images/favorite-off.png' />
+    </a>
+</div>
 
 <ul class="breadcrumb">
     <li><a href="#!/projects">Projects</a> <span class="divider"></span> </li>
     <li class="active">{{project.Name}}</li>
 </ul>
 
+<!--
 <div ng-mouseover="showMapButton=true" ng-mouseout="showMapButton=false" ng-init="showMapButton=false" class="right map-inset" ng-bind-html="mapHtml"></div>
 <button project-role="editor" ng-mouseover="showMapButton=true" ng-click="openChooseMapImage()" ng-show="showMapButton==true" style="margin-right: -220px" class="right btn">Choose Image</button>
 <button project-role="editor" ng-mouseover="showMapButton=true" ng-click="openChooseMapImage()" ng-show="!mapHtml" class="right btn">Choose Image</button>
+-->
 
 <h3>{{project.Name}}</h3>
 <p>{{project.Description}}</p>
 
 <ul class="nav nav-tabs">
     <li class="nav-item">
-        <a class="nav-link" ng-class="{'active': OnTab == 'Summary'}"  href="/index.html#!/projects/{{project.Id}}">Summary</a>
+        <a class="nav-link" ng-class="{'active': OnTab == 'Summary'}" href="/index.html#!/projects/{{project.Id}}">Summary</a>
     </li>
     <li class="nav-item" ng-class="{'active': OnTab == 'Files'}" ng-show="AuthorizedToViewProject">
         <a class="nav-link" href="/index.html#!/projectFiles/{{project.Id}}">Files</a>
@@ -37,4 +40,4 @@
     </li>
 </ul>
 
-<br/>
+<br />

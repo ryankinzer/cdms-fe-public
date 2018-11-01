@@ -65,10 +65,9 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
                 
         };
 
-        $scope.openEditModal = function (a_selection, a_callback) {
+        $scope.openEditModal = function (a_selection) {
             $scope.SaveMessage = null;
             $scope.field_to_edit = a_selection;
-            $scope.callback = a_callback;
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-edit-master-field.html',
                 controller: 'ModalEditMasterFieldCtrl',
@@ -86,8 +85,6 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
                 $scope.SaveMessage = "Success.";
             });
         };
-
-
 
 		
 	}

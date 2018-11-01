@@ -182,6 +182,7 @@ common_module.service('CommonService', ['$q',
 
             getMetadataProperties: function (propertyTypeId) {
 
+    
                 var properties = $q.defer();
 
                 if (!service.metadataProperties) {

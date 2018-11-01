@@ -497,26 +497,17 @@ table.metadata td
 /*.edit-project-modal { width: 700px;}*/
 .edit-project-modal { width: 750px;}
 
-.edit-project-modal .checkbox-itemlist
+.checkbox-itemlist
 {
-	width: 400px;
-	/*margin-left: 250px;*/
-	margin-left: 300px;
+	
+	display: inline-block;
+	width: 240px;
 	border: lightgrey 1px solid;
 	border-radius:6px;
 	padding: 8px;
+    margin-bottom: 3px;
 }
 
-/* margin-left: 200px */
-
-.hab-subproject-modal .checkbox-itemlist
-{
-	width: 400px;
-	margin-left: 250px;
-	border: lightgrey 1px solid;
-	border-radius:6px;
-	padding: 8px;
-}
 
 .basemap-menu {
 	color: white;
@@ -787,4 +778,8 @@ margin-left: -8px !important;
 
 .modal-content {
     width: 600px !important;
+}
+
+.md-datepicker-calendar-pane {
+    z-index: 1200
 }
