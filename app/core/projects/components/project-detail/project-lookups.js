@@ -29,7 +29,7 @@ var project_lookups = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
         scope.metadataList = {};
 
         //project metadata
-        scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID); //load all the possible mdp 
+        scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECT); //load all the possible mdp 
         scope.metadataPropertiesPromise.promise.then(function (list) {
             //console.error("MDP now loaded -- adding the big list");
             addMetadataProperties(list, scope.metadataList, scope, CommonService); //add in all the mdp
@@ -39,7 +39,7 @@ var project_lookups = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 
 
         //habitat metadata
-        scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID); //gets all the possible properties
+        scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITAT); //gets all the possible properties
         scope.habitatPropertiesPromise.promise.then(function (hab_mdp_list) {
             //console.error("got 'em now add in the big list and fire off the request for the values.")
             addMetadataProperties(hab_mdp_list, scope.metadataList, scope, CommonService);
@@ -52,7 +52,7 @@ var project_lookups = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 
                 mdpproject_watcher();
 
-                var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID); //gets the values
+                var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITAT); //gets the values
 
                 habitatProjectMetadataPromise.$promise.then(function (hab_proj_mdp_list) {
                     //console.error("ok, we have the values, adding them in (for habitat)");

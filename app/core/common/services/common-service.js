@@ -12,7 +12,6 @@ common_module.factory('SaveDatasetMetadata', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/metadata/setdatasetmetadata');
 }]);
 
-// NB: why a POST?
 common_module.factory('GetMetadataFor',['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/metadata/getmetadatafor', {}, {
            save: {method: 'POST', isArray: true}
@@ -197,8 +196,8 @@ common_module.service('CommonService', ['$q',
 
             },
 
-            getMetadataFor: function (projectId, typeId) {
-                return GetMetadataFor.save({ ProjectId: projectId, EntityTypeId: typeId });
+            getMetadataFor: function (relationId, typeId) {
+                return GetMetadataFor.save({ RelationId: relationId, EntityTypeId: typeId });
             },
 
             //returns promise so you can carry on once it loads.

@@ -24,49 +24,39 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 
         
         scope.project.$promise.then(function () {
-            scope.prepareMetadataforProject();
-        });
+            //load the metafields for this project once it loads
+            scope.project.MetaFields = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_PROJECT);
 
+            //if habitat project then load those fields, too...
+            scope.project.MetaFields.$promise.then(function () { 
 
-        scope.prepareMetadataforProject = function () { 
-            //console.log("Project is loaded.");
-            scope.project.Files = ProjectService.getProjectFiles(scope.project.Id);
+                if (getByName(scope.project.MetaFields, 'Sub-program').Values == 'Habitat') {
+                    var habfields = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITAT);
+                    habfields.$promise.then(function () {
 
-            //project metadata
-            scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID); //load all the possible mdp 
-            scope.metadataPropertiesPromise.promise.then(function (list) {
-                //console.dir(list);
-                //console.warn("MDP now loaded -- adding the big list");
-                addMetadataProperties(list, scope.metadataList, scope, CommonService); //add in all the mdp
-                //console.warn("Done setting up the full mdp list");
+                        habfields.forEach(function (habfield) {
+                            scope.project.MetaFields.push(habfield);
+                        });
 
-                //habitat metadata
-                scope.habitatPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_HABITATTYPEID); //gets all the possible properties
-                scope.habitatPropertiesPromise.promise.then(function (hab_mdp_list) {
-                    //console.warn("got 'em now add in the big list and fire off the request for the values.")
-                    addMetadataProperties(hab_mdp_list, scope.metadataList, scope, CommonService);
+                        //prep the values if it is a multiselect
+                        scope.project.MetaFields.forEach(function (field) {
+                            if (field.Values && field.ControlType == "multiselect")
+                                field.Values = getParsedMetadataValues(field.Values);
+                        });
+                    });
+                } else {
 
-                    var habitatProjectMetadataPromise = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITATTYPEID); //gets the values
-                    habitatProjectMetadataPromise.$promise.then(function (hab_proj_mdp_list) {
-                        addMetadataProperties(hab_proj_mdp_list, scope.metadataList, scope, CommonService);
-                        //console.warn("all done with habitat mdp");
+                    //prep the values if it is a multiselect
+                    scope.project.MetaFields.forEach(function (field) {
+                        if (field.Values && field.ControlType == "multiselect") {
+                            field.Values = getParsedMetadataValues(field.Values);
+                        }
+                    });
+                }
 
-
-                        //final project setup after everything is loaded...
-                        scope.project.MetadataValue = {};
-                        addMetadataProperties(scope.project.Metadata, scope.metadataList, scope, CommonService); //match and add in the values
-//                        scope.mapHtml = $sce.trustAsHtml(scope.project.MetadataValue[25]);
-//                        scope.imagesHtml = $sce.trustAsHtml(scope.project.MetadataValue[13]);
-
-                        //console.dir(scope.project);
-                        //console.warn(scope.project.MetadataValue[9]);
-                        //console.dir(scope.metadataList);
-
-                    });            
-                });
+                console.dir(scope.project);
             });
-
-        };
+        });
 
         scope.openProjectEditor = function () {
             scope.row = scope.project; //

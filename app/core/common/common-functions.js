@@ -172,7 +172,6 @@ function makeInstrumentObjects(optionList) {
 // an array of objects instead of properties of a single object.
 function sortObjectsByValue(list) {
     var sorted = [];
-
     Object.keys(list)
         .map(function (k) { return [k, list[k]]; })
         .sort(function (a, b) {
@@ -1623,5 +1622,26 @@ function getSubprojectFilesArrayAsLinks (a_projectId, a_subprojectId, a_files)
     return retval;
 }
 
+
+function getParsedMetadataValues(raw_values) { 
+    //get the value no matter what if we have it.
+
+    var values = raw_values;
+
+    if (raw_values) {
+
+        try {
+            values = angular.fromJson(raw_values);
+        }
+        catch (e)  //if we can't then it wasn't an object... use split instead.
+        {
+            if (typeof values === 'string')
+                values = raw_values.split(",");
+        }
+    }
+
+    return values;
+
+}
 
 

@@ -2,13 +2,10 @@
 var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectService', 'CommonService',
     function (scope, $modal, $modalInstance, ProjectService, CommonService) {
 
-        //console.dir(scope);
-        
-        scope.CellOptions = {}; //for metadata dropdown options
-        scope.metadataList = {};
-        scope.metadataPropertiesPromise = CommonService.getMetadataProperties(METADATA_ENTITY_PROJECTTYPEID);
-        scope.metadataPropertiesPromise.promise.then(function(list){
-            addMetadataProperties(list, scope.metadataList, scope, CommonService);
+        //make the row of values that map to our field directives.
+        scope.project.MetaFields.forEach(function (field) { 
+            field.DbColumnName = field.Label = field.Name;
+            scope.row[field.DbColumnName] = field.Values;
         });
 
         if (scope.row && scope.row.Id) {
