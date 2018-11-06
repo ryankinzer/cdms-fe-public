@@ -27,19 +27,27 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
 
         });
 
+        scope.deselectAll = function () { 
+            scope.dataGridOptions.api.setFilterModel(null)
+            scope.dataGridOptions.api.onFilterChanged();
+            scope.dataGridOptions.api.deselectAll();
+        }
+
         scope.selectLookup = function (lookup) { 
+
             scope.selectedLookup = lookup;
             scope.lookupItems = CommonService.getLookupItems(lookup);
 
             scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields;
             scope.dataGridOptions.columnDefs.unshift({ field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, alwaysShowField: true, menuTabs: [], hide: true });
 
-//            console.dir(scope.dataGridOptions.columnDefs);
+            console.dir(scope.dataGridOptions.columnDefs);
 
             scope.lookupItems.$promise.then(function () {
                 if (!scope.datatab_ag_grid)
                     scope.activateDataGrid();
                 else {
+                    scope.deselectAll();
                     scope.dataGridOptions.api.setRowData(scope.lookupItems);
                     scope.dataGridOptions.api.setColumnDefs(scope.dataGridOptions.columnDefs);  //redraws everything
                 }
@@ -94,22 +102,53 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
 
         };
 
-        
+         scope.openEditModal = function (a_selection) {
+            scope.SaveMessage = null;
+            scope.row = angular.copy(a_selection);
 
-/*
-		//once the datasets load, make sure each is configured with our scope.
-        scope.datasets.$promise.then(function () {
-         	if ((scope.datasets) && (scope.datasets.length > 0)) {
-				for (var i = 0; i < scope.datasets.length; i++)	{
-					DatasetService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
-				}
-			} else {
-				console.warn("This project has no datasets.");
-            }
-        });
-  */
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-lookup-item.html',
+                controller: 'ModalEditLookupItemCtrl',
+                scope: scope, //very important to pass the scope along...
+            }).result.then(function (saved_item) { 
+                //replace that item in the grid with the one we got back
+                var found = false;
+                
+                scope.lookupItems.forEach(function (existing, index) {
+                    if (existing.Id == saved_item.Id) {
+                        console.dir("found field to replace : " + existing.Id);
+                        scope.lookupItems[index] = saved_item;
+                        found = true;
+                    }
+                });
 
-        
+                if (!found)
+                    scope.lookupItems.push(saved_item);
+
+                scope.deselectAll();
+                scope.dataGridOptions.api.setRowData(scope.lookupItems);
+                scope.SaveMessage = "Success.";
+    
+            });
+        };
+
+        scope.addItem = function (a_selection) {
+            scope.SaveMessage = null;
+            scope.row = { };
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-lookup-item.html',
+                controller: 'ModalEditLookupItemCtrl',
+                scope: scope, //very important to pass the scope along...
+            }).result.then(function (saved_item) { 
+                //add that item in the grid with the one we got back
+                scope.lookupItems.push(saved_item);
+                scope.deselectAll();
+                scope.dataGridOptions.api.setRowData(scope.lookupItems);
+                scope.SaveMessage = "Success.";
+            });
+        };
+
 
     }
 

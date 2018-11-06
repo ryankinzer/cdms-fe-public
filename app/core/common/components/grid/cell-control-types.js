@@ -92,7 +92,9 @@ var DateControlType = function (cdms_field, col_def) {
             return params.value;
         else {
             the_date = moment(params.value);
-            return (the_date.isValid()) ? the_date.format("YYYY-MM-DD") : params.value;
+            if (!the_date.isValid())
+                console.log("could not format date: moment failed to parse : " + params.value);
+            return (the_date.isValid()) ? the_date.format("MM/DD/YYYY") : params.value;
         }
     };
 
@@ -101,7 +103,9 @@ var DateControlType = function (cdms_field, col_def) {
             return params.newValue;
         else {
             the_date = moment(params.newValue);
-            return (the_date.isValid()) ? the_date.format("YYYY-MM-DDTHH:mm:ss") : params.newValue; // 2017-12-19T14:03:10 (no timezone)
+            if (!the_date.isValid())
+                console.log("could not parse date: moment failed to parse : " + params.newValue);
+            return (the_date.isValid()) ? the_date.format("YYYY-MM-DD") : params.newValue; // 2017-12-19T14:03:10 (no timezone)
         }
     };
 

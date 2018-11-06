@@ -14,10 +14,10 @@ CDMSDateCellValidator.prototype.validateFieldControlTypeValidation = function (d
     if (data.value == null || data.value == "")
         return;
 
-    the_date = moment(data.value, ["MM-DD-YYYY", "YYYY-MM-DD"], true); //will try both formats, strict=true
+    the_date = moment(data.value, ["MM/DD/YYYY", "YYYY-MM-DD"], false); //will try both formats, strict=true
 
     if (!the_date.isValid())
-        this.errors.push(new ValidationError(this.cdms_field, "Value is not a date (mm-dd-yyyy)."));
+        this.errors.push(new ValidationError(this.cdms_field, "Value is not a date (mm/dd/yyyy)."));
     
     return this.errors;
 };

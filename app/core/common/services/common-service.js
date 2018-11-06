@@ -24,6 +24,10 @@ common_module.factory('GetLookupItems', ['$resource', function ($resource) {
     });
 }]);
 
+common_module.factory('SaveLookupTableItem', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/lookuptable/saveitem');
+}]);
+
 common_module.factory('SaveMetadataProperty', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/metadata/SaveMetadataProperty');
 }]);
@@ -99,6 +103,7 @@ common_module.service('CommonService', ['$q',
     'DeleteMetadataProperty',
     'GetProjectLookupTables',
     'GetLookupItems',
+    'SaveLookupTableItem',
     function ($q,
         GetMetadataProperties,
         SaveDatasetMetadata,
@@ -116,7 +121,8 @@ common_module.service('CommonService', ['$q',
         SaveMetadataProperty,
         DeleteMetadataProperty,
         GetProjectLookupTables,
-        GetLookupItems) {
+        GetLookupItems,
+        SaveLookupTableItem) {
 
         var service = {
 
@@ -275,6 +281,10 @@ common_module.service('CommonService', ['$q',
 
             getLookupItems: function (lookup) { 
                 return GetLookupItems.query({ id: lookup.Id })
+            },
+    
+            saveLookupTableItem: function (payload) {
+                return SaveLookupTableItem.save(payload);
             }
 
 
