@@ -4,30 +4,50 @@
 <div ng-show="AuthorizedToViewProject">
 
 
-    <div style="width: 100%; display: inline-block; margin-top:30px;">
-        <button project-role="editor" style="margin-left: 5px; margin-right:8px;" class="btn right" ng-click="addItem()">Create</button>
-        <button project-role="editor" class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteItems()">Delete {{dataGridOptions.selectedItems.length}} Items</button>
+    <div ng-show="selectedLookup && selectedLookup.DatasetId" project-role="editor" style="width: 100%; display: inline-block; margin-top:30px;">
+        <button style="margin-left: 5px; margin-right:8px;" class="btn right" ng-click="addItem()">Create</button>
+        <button class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteItems()">Delete {{dataGridOptions.selectedItems.length}} Items</button>
     </div>
 
-    <div class="container-notreally">
-        <div class="row">
-            <div class="col-3">
-                <h4>Lookup Tables in your project</h4>
-                <ul class="nav nav-pills flex-column">
-                    <li class="nav-item" ng-repeat="lookup in lookupTables">
-                        <a href class="nav-link" ng-class="{'active': selectedLookup && (lookup.Id == selectedLookup.Id) }" ng-click="selectLookup(lookup)">{{lookup.Name}}</a>
-                    </li>
+    <div class="row">
+        <div class="col-3">
+            <h4>Lookup Tables in your project</h4>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item" ng-repeat="lookup in lookupTables">
+                    <a href class="nav-link" ng-class="{'active': selectedLookup && (lookup.Id == selectedLookup.Id) }" ng-click="selectLookup(lookup)">{{lookup.Label}}</a>
+                </li>
 
-                </ul>
+            </ul>
+        </div>
+
+        <div ng-show="selectedLookup.Name != 'Instruments'" class="col-9">
+            <div>
+                <div id="lookups-grid" class="ag-theme-blue gridStyle-small"></div>
             </div>
+        </div>
 
-            <div class="col-9">
-                <div>
-                    <div id="lookups-grid" class="ag-theme-blue gridStyle-small"></div>
+        <div ng-show="selectedLookup.Name == 'Instruments'" class="col-9" ng-controller="LookupInstrumentsCtrl">
+                <div project-role="editor" class="panel-body" style="width: 600px;">
+                    <h3>Add an Instrument:</h3>
+
+                    <select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-model="selectedInstrument" style="width: 300px;">
+                        <option ng-repeat="instrument in allInstruments" value="{{instrument.Id}}">{{instrument.Name}} - SN:{{instrument.SerialNumber}}</option>
+                    </select>
+
+                    <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createInstrument()">Create New</button>
+                    <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addInstrument()">Add to Project</button>
+
                 </div>
+
+            <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                <div id="instruments-tab-grid" class="ag-theme-blue gridStyle-small"></div>
             </div>
+
+            <div class="data-tab-grid-footer">Total instruments in this project: {{project.Instruments.length}}</div>
+
 
         </div>
+
     </div>
 
 </div>

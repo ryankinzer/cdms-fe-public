@@ -15,11 +15,7 @@ require([
     'core/projects/components/project-detail/modal-edit-lookup-item',
 
     //tabs for the project detail page
-    'core/projects/components/project-detail/project-detail-tab-instruments',
-    'core/projects/components/project-detail/project-detail-tab-fishermen',
-    //'core/projects/components/project-detail/project-detail-tab-data',
-    //'core/projects/components/project-detail/project-detail-tab-documents',
-    //'core/projects/components/project-detail/project-detail-tab-gallery',
+    'core/projects/components/project-detail/project-lookup-instruments',
     'core/projects/components/project-detail/project-files',
     'core/projects/components/project-detail/project-data',
     'core/projects/components/project-detail/project-editors',
@@ -47,12 +43,7 @@ require([
     projects_module.controller('ProjectLocationsCtrl', project_locations);
     projects_module.controller('ProjectLookupsCtrl', project_lookups);
     
-    projects_module.controller('TabInstrumentsCtrl', tab_instruments);
-    projects_module.controller('TabFishermenCtrl', tab_fishermen);
-    //projects_module.controller('TabGalleryCtrl', tab_gallery);
-
-    //projects_module.controller('TabDataCtrl', tab_data);
-    //projects_module.controller('TabDocumentsCtrl', tab_docs);
+    projects_module.controller('LookupInstrumentsCtrl', lookup_instruments);
     
     projects_module.controller('ModalEditFileCtrl', modal_edit_file);
     projects_module.controller('ModalNewFileCtrl', modal_new_file);

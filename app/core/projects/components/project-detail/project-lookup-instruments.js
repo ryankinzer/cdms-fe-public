@@ -1,7 +1,7 @@
 ﻿//this is a nested controller used on the project-details page to load
 // the instruments tab if it is a water temperature project. 
 
-var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
+var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
     '$rootScope', '$uibModal', '$sce', '$window', '$http',
     'ServiceUtilities', 'ConvertStatus', '$location', '$anchorScroll',
     function (scope, $timeout, routeParams, SubprojectService, ProjectService, DatasetService, CommonService, UserService, $rootScope, $modal, $sce, $window, $http,
@@ -123,7 +123,7 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
             selectedItems: [],
             columnDefs:
             [
-                { colId: 'EditLinksMaster', cellRenderer: EditLinksTemplate, width: 120, menuTabs: [], hide: true },
+                { colId: 'EditLinksMaster', cellRenderer: EditLinksTemplate, width: 130, menuTabs: [], hide: true },
                 { field: 'Name', headerName: 'Name', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text', cellRenderer: 'group' },
                 { field: 'SerialNumber', headerName: 'SerialNumber', width: 120, menuTabs: ['filterMenuTab'], filter: 'text'},
                 { field: 'Manufacturer', headerName: 'Manufacturer', width: 150, menuTabs: ['filterMenuTab'], },
@@ -195,7 +195,7 @@ var tab_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectService',
                 scope.instrGridOptions.api.setRowData(scope.project.Instruments);
 
                 //if user can edit, unhide the edit links
-                if (scope.canEdit(scope.project)) {
+                if ($rootScope.Profile.canEdit(scope.project)) {
                     scope.instrGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
                     scope.instrDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [] }); //add this column to the front of the detail grid cols
                 }

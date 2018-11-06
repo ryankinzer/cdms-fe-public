@@ -19,12 +19,9 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
         scope.selectedLookup = null;
 
         scope.lookupTables.$promise.then(function () { 
-            console.dir(scope.lookupTables);
-
-            if (Object.keys(scope.lookupTables).length > 0) {
+            if (scope.lookupTables.length > 0) {
                 scope.selectLookup(scope.lookupTables[0]);
             }
-
         });
 
         scope.deselectAll = function () { 
@@ -36,6 +33,11 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
         scope.selectLookup = function (lookup) { 
 
             scope.selectedLookup = lookup;
+
+            //if a lookup doesn't have a dataset then don't try to load up the grid.
+            if (lookup.DatasetId == null)
+                return;
+
             scope.lookupItems = CommonService.getLookupItems(lookup);
 
             scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields;
