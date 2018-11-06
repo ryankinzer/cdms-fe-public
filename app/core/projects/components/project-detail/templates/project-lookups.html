@@ -19,27 +19,12 @@
                 </ul>
             </div>
 
-            <div class="col-3">
-                <h4>Lookups in dataset</h4>
-                
-            </div>
-
-            <div class="col-3" style="border: 2px solid black;">
+            <div class="col-9">
                 <div>
-                    <div id="sticky-box" style="float: right;" ng-show="selectedLookup">
-                        <div ng-hide="selectedLookup" class="col-md-6 admin-criteria-list-box"><H2 class="text-center">Select a field</H2></div>
-                        <div ng-show="selectedLookup" class="col-md-6 admin-criteria-list-box">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    {{selectedLookup.Name}}<br />
-                                    <textarea style="height: 150px;" ng-model="selectedLookup.DisplayListValues"></textarea><br />
-                                    <button class="btn btn-primary" ng-click="save()">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="lookups-grid" class="ag-theme-blue gridStyle-small"></div>
                 </div>
             </div>
+
         </div>
     </div>
 

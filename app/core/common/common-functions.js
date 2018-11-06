@@ -1412,13 +1412,18 @@ function getJsonObjects(vals) {
 
     objvals = vals;
 
-    if (typeof vals === 'string') { 
-        objvals = angular.fromJson(vals);
-        if (Array.isArray(objvals) && objvals.length > 0) {
-            if (objvals[0].hasOwnProperty('ID')) {
-                objvals = makeObjects(objvals, 'ID', 'LABEL'); //if our possible values are objectified (fisherman, etc. from LookupHelper)
+    try {
+        if (typeof vals === 'string') {
+            objvals = angular.fromJson(vals);
+            if (Array.isArray(objvals) && objvals.length > 0) {
+                if (objvals[0].hasOwnProperty('ID')) {
+                    objvals = makeObjects(objvals, 'ID', 'LABEL'); //if our possible values are objectified (fisherman, etc. from LookupHelper)
+                }
             }
         }
+    } catch (e) {
+        console.log("Failed converting to json most likely:" + vals);
+        console.dir(e);
     }
     
     //console.warn("possiblevalues");

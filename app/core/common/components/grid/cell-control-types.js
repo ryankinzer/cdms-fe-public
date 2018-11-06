@@ -52,11 +52,15 @@ var SelectControlType = function (cdms_field, col_def) {
     col_def.cellValidator = CDMSSelectCellValidator;
     col_def.valueFormatter = function (params) {
         var retval = null;
-        if (Array.isArray(params.colDef.cellEditorParams.values)) { //if array type of possible values, just return the value
-            retval = params.value; //params.data[params.column.colId];
-        }
-        else {
-            retval = params.colDef.cellEditorParams.values[params.value]; //[params.data[params.column.colId]];
+        if (params.colDef.cellEditorParams.values != null) {
+            if (Array.isArray(params.colDef.cellEditorParams.values)) { //if array type of possible values, just return the value
+                retval = params.value; //params.data[params.column.colId];
+            }
+            else {
+                retval = params.colDef.cellEditorParams.values[params.value]; //[params.data[params.column.colId]];
+            }
+        } else {
+            console.warn("Warning: Field " + params.colDef.Label + " is a select but no values are set.");
         }
         return retval;
     };
