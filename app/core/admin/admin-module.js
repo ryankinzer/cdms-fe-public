@@ -8,10 +8,13 @@ require([
     'core/admin/components/admin-page/admin-edit-dataset-config',
     'core/admin/components/admin-page/admin-edit-master',
     'core/admin/components/admin-page/admin-new-dataset',
+    'core/admin/components/admin-page/admin-metafields',
     'core/admin/components/admin-page/modal-edit-dataset-field',
     'core/admin/components/admin-page/modal-edit-master-field',
     'core/admin/components/admin-page/modal-choose-duplicate-fields',
     'core/admin/components/admin-page/modal-choose-activitylist-fields',
+    'core/admin/components/admin-page/modal-edit-metadataproperty',
+    
 
     //service
     'core/admin/admin-service',
@@ -26,10 +29,13 @@ require([
     admin_module.controller('AdminEditDatasetConfigCtrl', admin_edit_dataset_config);
     admin_module.controller('AdminEditMasterCtrl', admin_edit_master);
     admin_module.controller('AdminNewDatasetCtrl', admin_new_dataset);
+    admin_module.controller('AdminMetafieldsCtrl', admin_metafields);
     admin_module.controller('ModalEditDatasetFieldCtrl', modal_admin_edit_dataset_field);
     admin_module.controller('ModalEditMasterFieldCtrl', modal_admin_edit_master_field);
     admin_module.controller('ModalChooseDuplicateFieldsCtrl', modal_admin_choose_duplicate_fields);
     admin_module.controller('ModalChooseActivityListFieldsCtrl', modal_admin_choose_activitylist_fields);
+    admin_module.controller('ModalEditMetadataPropertyCtrl', modal_admin_edit_metadataproperty);
+
 
 
     //load services

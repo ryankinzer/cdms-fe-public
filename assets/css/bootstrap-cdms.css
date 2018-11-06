@@ -4080,7 +4080,7 @@ textarea.input-group-sm > .form-control, textarea.input-group-sm > .input-group-
     }
 
     .nav-pills > li + li {
-        margin-left: 2px
+        margin-left: 0px
     }
 
     .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {

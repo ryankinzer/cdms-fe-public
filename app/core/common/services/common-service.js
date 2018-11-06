@@ -8,6 +8,25 @@ common_module.factory('GetMetadataProperties', ['$resource', function($resource)
         return $resource(serviceUrl+'/api/v1/metadata/getmetadataproperties');
 }]);
 
+common_module.factory('GetMetadataEntities',  ['$resource', function($resource){
+        return $resource(serviceUrl+'/api/v1/metadata/GetMetadataEntities');
+}]);
+
+common_module.factory('GetProjectLookupTables', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/lookuptable/forproject', {}, {
+        query: { method: 'GET', isArray: true }
+    });
+}]);
+
+common_module.factory('SaveMetadataProperty', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/metadata/SaveMetadataProperty');
+}]);
+
+common_module.factory('DeleteMetadataProperty', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/metadata/DeleteMetadataProperty');
+}]);
+
+
 common_module.factory('SaveDatasetMetadata', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/metadata/setdatasetmetadata');
 }]);
@@ -69,6 +88,10 @@ common_module.service('CommonService', ['$q',
     'GetAllPossibleDatastoreLocations',
     'GetLocationTypes',
     'SaveProjectLocation',
+    'GetMetadataEntities',
+    'SaveMetadataProperty',
+    'DeleteMetadataProperty',
+    'GetProjectLookupTables',
     function ($q,
         GetMetadataProperties,
         SaveDatasetMetadata,
@@ -81,7 +104,11 @@ common_module.service('CommonService', ['$q',
         DeleteLocationAction,
         GetAllPossibleDatastoreLocations,
         GetLocationTypes,
-        SaveProjectLocation) {
+        SaveProjectLocation,
+        GetMetadataEntities,
+        SaveMetadataProperty,
+        DeleteMetadataProperty,
+        GetProjectLookupTables) {
 
         var service = {
 
@@ -196,6 +223,11 @@ common_module.service('CommonService', ['$q',
 
             },
 
+            getMetadataEntities: function () { 
+                return GetMetadataEntities.query();
+            },
+
+
             getMetadataFor: function (relationId, typeId) {
                 return GetMetadataFor.save({ RelationId: relationId, EntityTypeId: typeId });
             },
@@ -220,6 +252,22 @@ common_module.service('CommonService', ['$q',
                 return SaveDatasetMetadata.save(payload);
 
             },
+
+            saveMetadataProperty: function (property) {
+                return SaveMetadataProperty.save(property);
+            },
+
+            deleteMetadataProperty: function (property) {
+                return DeleteMetadataProperty.save({ Id: property.Id });
+            },
+
+            getProjectLookupTables: function (id) { 
+                return GetProjectLookupTables.query({ id: id });        
+            }
+
+
+
+
         };
 
         service.getMetadataProperty(1); //cause our metadata properties to be loaded early.

@@ -1,0 +1,46 @@
+<!-- Header shows project heading information, favorites and project image  -->
+<div ng-include="'app/core/projects/components/project-detail/templates/project-header.html'"></div>
+
+<div ng-show="AuthorizedToViewProject">
+
+
+    <div style="width: 100%; display: inline-block; margin-top:30px;">
+    </div>
+
+    <div class="container-notreally" >
+        <div class="row">
+            <div class="col-3">
+                <h4>Lookup Tables in your project</h4>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item" ng-repeat="lookup in lookupTables">
+                        <a href class="nav-link" ng-class="{'active': selectedLookup && (lookup.Id == selectedLookup.Id) }" ng-click="selectLookup(lookup)">{{lookup.Name}}</a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="col-3">
+                <h4>Lookups in dataset</h4>
+                
+            </div>
+
+            <div class="col-3" style="border: 2px solid black;">
+                <div>
+                    <div id="sticky-box" style="float: right;" ng-show="selectedLookup">
+                        <div ng-hide="selectedLookup" class="col-md-6 admin-criteria-list-box"><H2 class="text-center">Select a field</H2></div>
+                        <div ng-show="selectedLookup" class="col-md-6 admin-criteria-list-box">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{selectedLookup.Name}}<br />
+                                    <textarea style="height: 150px;" ng-model="selectedLookup.DisplayListValues"></textarea><br />
+                                    <button class="btn btn-primary" ng-click="save()">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

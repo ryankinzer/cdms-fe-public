@@ -70,6 +70,8 @@ define([
             $routeProvider.when('/admin', { templateUrl: 'app/core/admin/components/admin-page/templates/admin.html', controller: 'AdminCtrl'});
             $routeProvider.when('/admin-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-dataset-fields.html', controller: 'AdminEditDatasetFieldsCtrl'});
             $routeProvider.when('/admin-config/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-dataset-config.html', controller: 'AdminEditDatasetConfigCtrl'});
+            $routeProvider.when('/admin-metafields', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-metafields.html', controller: 'AdminMetafieldsCtrl'});
+
 
             $routeProvider.when('/admin-master/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-master.html', controller: 'AdminEditMasterCtrl' });
             $routeProvider.when('/admin-new-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-new-dataset.html', controller: 'AdminNewDatasetCtrl' });

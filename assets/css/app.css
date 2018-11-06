@@ -339,7 +339,7 @@ table.metadata td
 	border: solid 1px lightgray;
 }
 
-.nav-item{
+.navbar-nav .nav-item{
 	margin-left: 25px;
 	cursor: pointer;
 }

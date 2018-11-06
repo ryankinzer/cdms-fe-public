@@ -1,0 +1,30 @@
+
+<ul class="breadcrumb">
+    <li><a href="#!/projects">Projects</a> <span class="divider"></span> </li>
+    <li>Administration <span class="divider"></span></li>
+    <li class="active">Metafields </li>
+</ul>
+
+<h3>Edit Metafields (Metadata Entities and Properties)</h3>
+
+<div style="width: 100%; display: inline-block; margin-top:30px;">
+    <button style="margin-left: 5px; margin-right:10px;" class="btn right" ng-click="addProperty()">Create</button>
+    <button class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteProperty()">Delete Property</button>
+</div>
+
+<div>
+    <div class="row">
+        <div class="col-3">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item" ng-repeat="entity in entities">
+                    <a href class="nav-link" ng-class="{'active': selectedEntity && (entity.Id == selectedEntity.Id) }" ng-click="showEntityProperties(entity)">{{entity.Name}}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-9">
+            <div>
+                <div id="properties-grid" class="ag-theme-blue gridStyle-small"></div>
+            </div>
+        </div>
+    </div>
+</div>
