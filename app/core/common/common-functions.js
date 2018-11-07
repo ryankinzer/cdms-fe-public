@@ -1650,3 +1650,32 @@ function getParsedMetadataValues(raw_values) {
 }
 
 
+// from leasing - 
+//takes a json string of an array '["a","b","c"]' and returns a,b,c
+// if it isn't an array, it returns what we got.
+function valueFormatterArrayToList(the_array) {
+    if (is_empty(the_array))
+        return "";
+
+    var list = the_array;
+
+    var selectOptions = [];
+
+    try {
+        selectOptions = angular.fromJson(the_array);
+
+        //make array elements have same key/value
+        if (Array.isArray(selectOptions)) {
+            list = selectOptions.join();
+        }
+
+    } catch (e) {
+        console.log("problem parsing: " + the_array );
+    }
+
+    return list;
+
+}
+
+
+

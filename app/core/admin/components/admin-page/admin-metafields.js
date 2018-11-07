@@ -45,7 +45,11 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
                 { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'DataType', headerName: 'DataType', width: 100, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'ControlType', headerName: 'Control Type', width: 100, menuTabs: ['filterMenuTab'], filter: 'text' },
-                { field: 'PossibleValues', headerName: 'Possible Values', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { field: 'PossibleValues', headerName: 'Possible Values', width: 250, menuTabs: ['filterMenuTab'], filter: 'text',
+                    valueFormatter: function (params) {
+                        return valueFormatterArrayToList(params.node.data.PossibleValues);
+                    }
+                },
             ],
             rowSelection: 'single',
             onSelectionChanged: function (params) {

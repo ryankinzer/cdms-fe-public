@@ -8,6 +8,19 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
 
         scope.dataset = DatasetService.getDataset($routeParams.Id);
 
+        scope.metafields = CommonService.getMetadataProperties(METADATA_ENTITY_CORRESPONDENCE);
+        scope.metafields.$promise.then(function () { 
+            //console.dir(scope.metafields);
+            scope.metafields.forEach(function (field) { 
+                field.PossibleValues = getParsedMetadataValues(field.PossibleValues);
+            });
+            
+        });
+
+        scope.getMetafield = function (in_name) { 
+            return getByName(scope.metafields, in_name).PossibleValues;
+        };
+
         scope.dataset.$promise.then(function () {
             scope.project = ProjectService.getProject(scope.dataset.ProjectId);
 

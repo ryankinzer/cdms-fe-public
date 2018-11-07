@@ -1,14 +1,16 @@
 
-<div class="modal-header">
-    <h3 ng-show="field_to_edit.Id">Edit Metadata Property</h3>
-    <h3 ng-show="!field_to_edit.Id">Create Metadata Property</h3>
+<div class="modal-header" style="display:block;">
+    <div>
+        <h3 ng-show="field_to_edit.Id">Edit Metadata Property</h3>
+        <h3 ng-show="!field_to_edit.Id">Create Metadata Property</h3>
+    </div>
+    <div><i>Provide the information for this metafield. PossibleValues should be each on their own line with no punctuation or special characters.</i></div>
 </div>
 <div class="modal-body" id="modal-body">
-
     <table class="inherited-properties">
         <tr>
             <td class="prop-name">Name:</td>
-            <td class="prop-val"><input class="form-control" type="text" ng-model="field_to_edit.Name" name="Name"></td>
+            <td class="prop-val"><input style="margin-left:2px;" class="form-control" type="text" ng-model="field_to_edit.Name" name="Name"></td>
         </tr>
         <tr>
             <td class="prop-name">Description:</td>
@@ -22,20 +24,20 @@
             <td class="prop-name">Control Type:</td>
             <td class="prop-val"><select ng-model="field_to_edit.ControlType"><option>date</option><option>datetime</option><option>multiselect</option><option>number</option><option>select</option><option>select-number</option><option>text</option><option>textarea</option><option>currency</option><option>easting</option><option>northing</option></select></td>
         </tr>
-        <tr ng-hide="field_to_edit.DataSource">
+        <tr>
             <td class="prop-name">Possible Values:</td>
-            <td class="prop-val"><textarea rows="4" style="margin-left: 2px;" class="form-control" type="text" ng-change="parsePossibleValuesString()" ng-model="field_to_edit.PossibleValues" name="PossibleValues"></textarea></td>
+            <td class="prop-val"><textarea rows="10" style="margin-left: 2px;" class="form-control" type="text" ng-model="field_to_edit.Values" name="PossibleValues"></textarea></td>
         </tr>
 
-        <tr ng-hide="field_to_edit.DataSource">
-            <td class="prop-name">(Parsed):</td>
-            <td class="prop-val"><pre>{{field_to_edit.Values | arrayValues}}</pre></td>
-        </tr>
+
     </table>
 </div>
 <div class="modal-footer">
+    <button style="margin-top: 30px; margin-right:82px;" class="btn" ng-click="parseValues()">Remove punctuation from Possible Values</button>
     <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
     <button style="margin-top: 30px;" class="right btn" ng-click="save()">Save Changes</button>
+    
+    
     <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
 </div>
 

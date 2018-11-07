@@ -21,7 +21,8 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$uibModalInstance
 
     //setup some dropdown stuff
 
-    //sure would be nice to get these from a user-defined list somewhere...
+    //sure would be nice to get these from a user-defined list somewhere... DONE!
+/* -- this is in metadata now !
 	$scope.ceCorrespondenceType = [];
 		$scope.ceCorrespondenceType.push({Id: 0, Label: "Project Notification"});
 		$scope.ceCorrespondenceType.push({Id: 1, Label: "Notice of Application"});
@@ -30,7 +31,8 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$uibModalInstance
 		$scope.ceCorrespondenceType.push({Id: 4, Label: "Permit Review"});
 		$scope.ceCorrespondenceType.push({Id: 5, Label: "Sending materials for our records"});
 		$scope.ceCorrespondenceType.push({Id: 6, Label: "Other"});		
-	
+*/	
+/* -- this is in metadata now 
 	$scope.ceResponseType = [];
 		$scope.ceResponseType.push({Id: 0, Label: "APE letter"});
 		$scope.ceResponseType.push({Id: 1, Label: "Asked to be consulting party"});
@@ -64,13 +66,13 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$uibModalInstance
 	
 	console.log("$scope.ceResponseType is next...");
 	console.dir($scope.ceResponseType);
-	
+	*/
     var foundIt = false;
 
 	// If ce_row.CorrespondenceDate exists, then we are editing.
 	if ($scope.ce_row.CorrespondenceDate)
     {
-        $scope.ceResponseType.forEach(function (option) {
+        $scope.getMetafield('ResponseType').forEach(function (option) {
 			if ((option.Label === $scope.ce_row.ResponseType))	{
                 foundIt = true;
 			}
@@ -86,7 +88,7 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$uibModalInstance
 
         var foundIt = false;
 
-		$scope.ceCorrespondenceType.forEach(function(option){
+		$scope.getMetafield('CorrespondenceType').forEach(function(option){
 			if ((option.Label === $scope.ce_row.CorrespondenceType)){
 				foundIt = true;
 			}
@@ -100,17 +102,7 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$uibModalInstance
 			$scope.showOtherCorrespondenceType = true;		
 		}
 	}
-	/*console.log("Location of ResponseType = " + $scope.ceResponseType.indexOf($scope.ce_row.ResponseType));
-	if ($scope.ceResponseType.indexOf($scope.ce_row.ResponseType) < 0)
-	{
-		// The value of ResponseType IS NOT in our array of possible values, which means we have an odd item,
-		// so we must do some jiggling...
-		console.log("Value of ResponseType is not in the list...");
-		$scope.ce_row.OtherResponseType = $scope.ce_row.ResponseType;
-		$scope.ce_row.ResponseType = "Other";
-		$scope.showOtherResponseType = true;
-	}
-	*/
+
     if($scope.ce_row.Id > 0)
     {
         $scope.header_message = "Edit Event for Project " + $scope.viewSubproject.ProjectName;

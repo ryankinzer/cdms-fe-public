@@ -4,8 +4,8 @@
 //  List things (the common ones like: waterbodies, sources, timezones, departments)
 //  MetadataProperties (projects, datasets)
 
-common_module.factory('GetMetadataProperties', ['$resource', function($resource){
-        return $resource(serviceUrl+'/api/v1/metadata/getmetadataproperties');
+common_module.factory('GetMetadataPropertiesForEntity', ['$resource', function($resource){
+        return $resource(serviceUrl+'/api/v1/metadata/GetMetadataPropertiesForEntity');
 }]);
 
 common_module.factory('GetMetadataEntities',  ['$resource', function($resource){
@@ -86,7 +86,6 @@ common_module.factory('GetLocationTypes', ['$resource', function ($resource) {
 }]);
 
 common_module.service('CommonService', ['$q',
-    'GetMetadataProperties',
     'SaveDatasetMetadata',
     'GetMetadataFor',
     'GetWaterBodies',
@@ -104,8 +103,8 @@ common_module.service('CommonService', ['$q',
     'GetProjectLookupTables',
     'GetLookupItems',
     'SaveLookupTableItem',
+    'GetMetadataPropertiesForEntity',
     function ($q,
-        GetMetadataProperties,
         SaveDatasetMetadata,
         GetMetadataFor,
         GetWaterBodies,
@@ -122,7 +121,8 @@ common_module.service('CommonService', ['$q',
         DeleteMetadataProperty,
         GetProjectLookupTables,
         GetLookupItems,
-        SaveLookupTableItem) {
+        SaveLookupTableItem,
+        GetMetadataPropertiesForEntity) {
 
         var service = {
 
@@ -208,6 +208,7 @@ common_module.service('CommonService', ['$q',
                 return GetAllInstruments.query();
             },
 
+/*
             getMetadataProperty: function (propertyId) {
 
                 if (!service.metadataProperties) {
@@ -219,10 +220,14 @@ common_module.service('CommonService', ['$q',
                     return service.metadataProperties["ID_" + propertyId];
                 }
             },
+*/
+
 
             getMetadataProperties: function (propertyTypeId) {
 
-    
+                return GetMetadataPropertiesForEntity.query({ id: propertyTypeId });
+
+                /*
                 var properties = $q.defer();
 
                 if (!service.metadataProperties) {
@@ -234,6 +239,7 @@ common_module.service('CommonService', ['$q',
                 }
 
                 return properties;
+                */
 
             },
 
@@ -246,6 +252,7 @@ common_module.service('CommonService', ['$q',
                 return GetMetadataFor.save({ RelationId: relationId, EntityTypeId: typeId });
             },
 
+/*
             //returns promise so you can carry on once it loads.
             _loadMetadataProperties: function () {
                 return GetMetadataProperties.query(function (data) {
@@ -256,7 +263,7 @@ common_module.service('CommonService', ['$q',
                 });
 
             },
-
+*/
             saveDatasetMetadata: function (datasetId, metadata, saveResults) {
                 var payload = {
                     DatasetId: datasetId,
@@ -292,7 +299,7 @@ common_module.service('CommonService', ['$q',
 
         };
 
-        service.getMetadataProperty(1); //cause our metadata properties to be loaded early.
+        //service.getMetadataProperty(1); //cause our metadata properties to be loaded early.
 
         return service;
     }
