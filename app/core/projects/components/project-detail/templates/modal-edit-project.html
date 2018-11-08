@@ -10,7 +10,10 @@
                 <a class="nav-link active" data-toggle="tab" data-target="#basicinfo">Basic Information</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" data-target="#quad">Meta Fields</a>
+                <a class="nav-link" data-toggle="tab" data-target="#meta">Meta Fields</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" data-target="#config">Config</a>
             </li>
         </ul>
 
@@ -28,7 +31,7 @@
                     <div>
                         <div class="header-label">Description/Mission:</div>
                         <div class="header-value">
-                            <div title="Appears on Quad Report" class="quad-report"></div>
+                            <div title="Description" class="quad-report"></div>
                             <textarea rows="5" class="form-control" ng-model="row.Description"></textarea>
                         </div>
                     </div>
@@ -48,7 +51,7 @@
                     
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade in" id="quad">
+            <div role="tabpanel" class="tab-pane fade in" id="meta">
                 <div class="list-group media-list media-list-stream">
                     <div style="margin-top: 30px;"></div>
 
@@ -80,10 +83,14 @@
                                 <ctuir-text-field ng-switch-default></ctuir-text-field>
                             </div>
                         </div>
-                    </div>                    
+                    </div>     
 
-              
-        </div>
+            <div role="tabpanel" class="tab-pane" id="config">
+                <div class="list-group media-list media-list-stream">
+                    <div style="margin-top: 30px;"></div>
+                    <textarea class="form-control" rows="12" ng-model="row.Config">{{row.Config}}</textarea>
+                </div>
+            </div>
 
     </form>
 

@@ -13,15 +13,29 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
         scope.OnTab = "Lookups";
         scope.AuthorizedToViewProject = true;
 		
-		scope.lookupTables = CommonService.getProjectLookupTables(routeParams.Id);
         scope.project = ProjectService.getProject(routeParams.Id);
-
         scope.selectedLookup = null;
 
-        scope.lookupTables.$promise.then(function () { 
-            if (scope.lookupTables.length > 0) {
-                scope.selectLookup(scope.lookupTables[0]);
+        //to support metadata lookup editing
+        scope.metadataentities = CommonService.getMetadataEntities();
+        scope.selectedEntity = null;
+
+        scope.project.$promise.then(function () { 
+            try {
+                scope.project.Config = angular.fromJson(scope.project.Config);
+
+                if (scope.project.Config.hasOwnProperty('Lookups')) {
+                    scope.lookupTables = scope.project.Config.Lookups;
+                    if (scope.lookupTables.length > 0) {
+                        scope.selectLookup(scope.lookupTables[0]);
+                    }
+                    console.dir(scope.lookupTables);
+                }
+            } catch (e) { 
+                console.error("config could not be parsed for project: " + scope.project.Config);
+                console.dir(e);
             }
+            
         });
 
         scope.deselectAll = function () { 
@@ -31,8 +45,21 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
         }
 
         scope.selectLookup = function (lookup) { 
+            console.log("selected lookup ------");
+            console.dir(lookup);
 
             scope.selectedLookup = lookup;
+
+            if (lookup.hasOwnProperty('Type') && lookup.Type == "Metafields") {
+                scope.metadataentities.forEach(function (entity) {
+                    if (entity.Id == lookup.Id) {
+                        scope.selectedEntity = entity;
+                        console.log("selected entity = ");
+                        console.dir(entity);
+
+                    }
+                });
+            }
 
             //if a lookup doesn't have a dataset then don't try to load up the grid.
             if (lookup.DatasetId == null)
@@ -40,26 +67,31 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
 
             scope.lookupItems = CommonService.getLookupItems(lookup);
 
-            scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields;
-            scope.dataGridOptions.columnDefs.unshift({ field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, alwaysShowField: true, menuTabs: [], hide: true });
+            scope.selectedLookup.Dataset = DatasetService.getDataset(scope.selectedLookup.DatasetId);
 
-            console.dir(scope.dataGridOptions.columnDefs);
+            scope.selectedLookup.Dataset.$promise.then(function () { 
+                scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields;
+                scope.dataGridOptions.columnDefs.unshift({ field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, alwaysShowField: true, menuTabs: [], hide: true });
 
-            scope.lookupItems.$promise.then(function () {
-                if (!scope.datatab_ag_grid)
-                    scope.activateDataGrid();
-                else {
-                    scope.deselectAll();
-                    scope.dataGridOptions.api.setRowData(scope.lookupItems);
-                    scope.dataGridOptions.api.setColumnDefs(scope.dataGridOptions.columnDefs);  //redraws everything
-                }
+                scope.lookupItems.$promise.then(function () {
+                    if (!scope.datatab_ag_grid)
+                        scope.activateDataGrid();
+                    else {
+                        scope.deselectAll();
+                        scope.dataGridOptions.api.setRowData(scope.lookupItems);
+                        scope.dataGridOptions.api.setColumnDefs(scope.dataGridOptions.columnDefs);  //redraws everything
+                    }
 
-                //unhide the edit link column if they can edit.
-                if ($rootScope.Profile.canEdit(scope.project)) {
-                    scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
-                    scope.dataGridOptions.api.refreshHeader();
-                }
+                    //unhide the edit link column if they can edit.
+                    if ($rootScope.Profile.canEdit(scope.project)) {
+                        scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
+                        scope.dataGridOptions.api.refreshHeader();
+                    }
+                });
+
+
             });
+
             
         }
 

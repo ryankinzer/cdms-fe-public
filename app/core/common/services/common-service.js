@@ -12,12 +12,6 @@ common_module.factory('GetMetadataEntities',  ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/metadata/GetMetadataEntities');
 }]);
 
-common_module.factory('GetProjectLookupTables', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/lookuptable/forproject', {}, {
-        query: { method: 'GET', isArray: true }
-    });
-}]);
-
 common_module.factory('GetLookupItems', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/lookuptable/getitems', {}, {
         query: { method: 'GET', isArray: true }
@@ -100,7 +94,6 @@ common_module.service('CommonService', ['$q',
     'GetMetadataEntities',
     'SaveMetadataProperty',
     'DeleteMetadataProperty',
-    'GetProjectLookupTables',
     'GetLookupItems',
     'SaveLookupTableItem',
     'GetMetadataPropertiesForEntity',
@@ -119,7 +112,6 @@ common_module.service('CommonService', ['$q',
         GetMetadataEntities,
         SaveMetadataProperty,
         DeleteMetadataProperty,
-        GetProjectLookupTables,
         GetLookupItems,
         SaveLookupTableItem,
         GetMetadataPropertiesForEntity) {
@@ -280,10 +272,6 @@ common_module.service('CommonService', ['$q',
 
             deleteMetadataProperty: function (property) {
                 return DeleteMetadataProperty.save({ Id: property.Id });
-            },
-
-            getProjectLookupTables: function (id) { 
-                return GetProjectLookupTables.query({ id: id });        
             },
 
             getLookupItems: function (lookup) { 

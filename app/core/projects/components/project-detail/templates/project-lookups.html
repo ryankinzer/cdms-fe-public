@@ -20,33 +20,49 @@
             </ul>
         </div>
 
-        <div ng-show="selectedLookup.Name != 'Instruments'" class="col-9">
+        <div ng-show="selectedLookup.Label != 'Instruments' && selectedLookup.Type != 'Metafields'" class="col-9">
             <div>
                 <div id="lookups-grid" class="ag-theme-blue gridStyle-small"></div>
             </div>
         </div>
 
-        <div ng-show="selectedLookup.Name == 'Instruments'" class="col-9" ng-controller="LookupInstrumentsCtrl">
-                <div project-role="editor" class="panel-body" style="width: 600px;">
-                    <h3>Add an Instrument:</h3>
+        <div ng-show="selectedLookup.Label == 'Instruments'" class="col-9" ng-controller="LookupInstrumentsCtrl">
+            <div project-role="editor" class="panel-body" style="width: 600px;">
+                <h3>Add an Instrument:</h3>
 
-                    <select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-model="selectedInstrument" style="width: 300px;">
-                        <option ng-repeat="instrument in allInstruments" value="{{instrument.Id}}">{{instrument.Name}} - SN:{{instrument.SerialNumber}}</option>
-                    </select>
+                <select ui-select2="select2Options" data-placeholder="Add an Instrument" ng-model="selectedInstrument" style="width: 300px;">
+                    <option ng-repeat="instrument in allInstruments" value="{{instrument.Id}}">{{instrument.Name}} - SN:{{instrument.SerialNumber}}</option>
+                </select>
 
-                    <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createInstrument()">Create New</button>
-                    <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addInstrument()">Add to Project</button>
+                <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="createInstrument()">Create New</button>
+                <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="addInstrument()">Add to Project</button>
 
-                </div>
+            </div>
 
             <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
                 <div id="instruments-tab-grid" class="ag-theme-blue gridStyle-small"></div>
             </div>
 
             <div class="data-tab-grid-footer">Total instruments in this project: {{project.Instruments.length}}</div>
+        </div>
 
+
+        <div ng-show="selectedLookup.Type == 'Metafields'" class="col-9" ng-controller="AdminMetafieldsCtrl">
+
+            <div ng-if="showEntityProperties($parent.selectedEntity)">&nbsp;</div>
+
+            <div style="width: 100%; display: inline-block; margin-top:30px;">
+                <button style="margin-left: 5px; margin-right:10px;" class="btn right" ng-click="addProperty()">Create</button>
+                <button class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteProperty()">Delete Property</button>
+            </div>
+
+            <div>
+                <div id="properties-grid" class="ag-theme-blue gridStyle-small"></div>
+            </div>
 
         </div>
+
+
 
     </div>
 

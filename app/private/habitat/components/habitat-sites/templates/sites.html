@@ -1,4 +1,18 @@
-﻿<div class="container-fluid">
+﻿<div title="Toggle 'Favorite' status" class="fav-dataset">
+    <a href='' ng-click="toggleFavorite()">
+        <img id="favorite-active" ng-show="isFavorite" class="on" src='assets/images/favorite-on.png' />
+        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='assets/images/favorite-off.png' />
+    </a>
+</div>
+
+<ul class="breadcrumb">
+    <li><a href="#!/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#!/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li class="active">{{dataset.Name}}</li>
+</ul>
+
+
+<div class="container-fluid">
     <div class="row-fluid">
         <div class="span10">
             <div class="panel panel-default">
