@@ -41,7 +41,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.file_row = {};
         $scope.file_field = {};
 */
-        console.dir($location.path());
+        //console.dir($location.path());
 
         $scope.pagemode = $location.path().match(/\/(.*)\//)[1]; //edit, dataentryform, dataview - our 3 options from our route... nothing else is possible.
 
@@ -109,9 +109,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //    return rowNode.level === 1;
             //},
             onGridReady: function (params) {
-                console.log("GRID IS READY. ------------------------------------------>>>");
-                GridService.validateGrid(params);
-                console.dir($scope.row);
+                console.log("GRID READY fired. ------------------------------------------>>>");
+                //GridService.validateGrid(params);
+                //console.log("GRID IS DONE ------------------------------------------>>>");
+                //console.dir($scope.row);
             },
 
             defaultColDef: {
@@ -293,6 +294,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
                 
                 GridService.autosizeColumns($scope.dataAgGridOptions);
+
+                console.log("GRID Validate. ------------------------------------------>>>");
+                GridService.validateGrid($scope.dataAgGridOptions);
+                $scope.dataAgGridOptions.api.redrawRows();
+                console.log("GRID Validate IS DONE ------------------------------------------>>>");
 
             }, 0);
 

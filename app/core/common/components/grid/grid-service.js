@@ -264,18 +264,18 @@ datasets_module.service('GridService', ['$window', '$route',
 
 
 
-        service.validateGrid = function (params) {
+        service.validateGrid = function (gridOptions) {
             //get all of the columns for the grid
-            var gridColumns = params.columnApi.getAllColumns();
+            var gridColumns = gridOptions.columnApi.getAllColumns();
 
             //iterate each node, columns and validate the cell
-            params.api.forEachNode(function (node, index) {
+            gridOptions.api.forEachNode(function (node, index) {
                 gridColumns.forEach(function (column) {
                     service.validateCell({
                         node: node,
                         colDef: column.colDef,
                         value: node.data[column.colDef.field],
-                        api: params.api,
+                        api: gridOptions.api,
                     })
                 });
 

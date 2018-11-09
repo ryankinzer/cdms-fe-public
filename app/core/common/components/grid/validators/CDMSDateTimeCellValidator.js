@@ -11,14 +11,14 @@ CDMSDateTimeCellValidator.prototype = new CellValidator;
 
 CDMSDateTimeCellValidator.prototype.validateFieldControlTypeValidation = function (data) {
 
-    console.log("-- date validation --");
-    console.dir(data);
+    //console.log("-- date validation --");
+    //console.dir(data);
 
     if (data.value == null || data.value == "")
-        return;
+        return this.errors;
 
     var the_date = moment(data.value, ["MM-DD-YYYY h:m", "YYYY-MM-DD h:m"],false);
-    console.dir(the_date);
+    //console.dir(the_date);
     if (!the_date.isValid()) {
         this.errors.push(new ValidationError(this.cdms_field, "Value is not a date-time (mm-dd-yyyy hh:mm)."));
     }
