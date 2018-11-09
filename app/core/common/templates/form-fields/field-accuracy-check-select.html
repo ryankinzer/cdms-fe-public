@@ -2,7 +2,7 @@
     <div style="margin-top: 5px; margin-left: 5px; float:right;"><button class="btn btn-xs" ng-click="openAccuracyCheckModal()">Add</button></div>
     <div class="header-value" >
         <select style="width: 258px;" class="form-control" ng-blur="onHeaderEditingStopped(field)" ng-model="row.Activity.AccuracyCheckId" convert-to-number>
-            <option ng-repeat="check in row.Activity.Instrument.AccuracyChecks" value="{{check.Id}}">{{check | dataGrade}} on {{check.CheckDate | date}}</option>
+            <option ng-repeat="check in row.Activity.Instrument.AccuracyChecks" value="{{check.Id}}" ng-selected="check.Id == row.Activity.AccuracyCheckId">{{check | dataGrade}} on {{check.CheckDate | date}}</option>
         </select>
     </div>
     

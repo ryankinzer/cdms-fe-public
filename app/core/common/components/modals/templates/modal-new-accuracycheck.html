@@ -1,71 +1,99 @@
-<div class="modal">
-	<div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-  			<h4>Add an accuracy check to {{viewInstrument.Name}}</h4>
-  		</div>
-  		<div class="modal-body">
-
-  		<tabset justified="true">
-  			<tab heading="Add new record">
-  			<br/>
-		  	<form name="form" class="css-form" novalidate>
-		  			<div class="header-label">Check Date</div>
-		  			<div class="header-value">
-			  				<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="ac_row.CheckDate" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-			  		</div>
-
-					<div class="header-label">Check Method</div>
-					<div class="header-value">
-			  				<select class="form-control" ng-model="ac_row.CheckMethod" >
-			  					<option ng-repeat="method in DataGradeMethods" ng-selected="$index == 5" value="{{$index}}">{{method}}</option>
-			  				</select>
-			  		</div>
-
-			  		<div class="header-label">Bath 1 Grade</div>
-			  		<div class="header-value">
-			  				<select class="form-control" ng-model="ac_row.Bath1Grade">
-			  					<option value="">&nbsp;</option>
-			  					<option value="A">A</option>
-			  					<option value="B">B</option>
-			  					<option value="C">C</option>
-			  				</select>
-							
-					</div>
-
-					<div class="header-label">Bath 2 Grade</div>
-					<div class="header-value">
-			  				<select class="form-control" ng-model="ac_row.Bath2Grade">
-			  					<option value="">&nbsp;</option>
-			  					<option value="A">A</option>
-			  					<option value="B">B</option>
-			  					<option value="C">C</option>
-			  				</select>
-
-			  		</div>
-
-			  		<div class="header-label">Comments</div>
-			  		<div class="header-value">
-			  				<textarea class="form-control" ng-model="ac_row.Comments" name="Comments"></textarea>
-			  		</div>
-			  	
-			</form>
-
-            <button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="save()">Save</button>
-            <button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Close</button>
-
-		
-        </tab>
-        <tab heading="Existing records">
-        	<ng-include src="'app/core/common/templates/accuracychecks.html'" ></ng-include>
-        	<button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Cancel</button>
-        </tab>
-        </tabset>
-
-        </div>
-		<div class="modal-footer" style="margin-top: 30px;">
-
-        </div>
-
-  </div>
+<div class="modal-header">
+  	<h4>Add an accuracy check to {{row.Activity.Instrument.Name}}</h4>
 </div>
+<div class="modal-body modal-form" style="width:600px;">
+
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" data-target="#new-record">Add new record</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" data-target="#existing-records">Existing records</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="new-record">
+            <div class="list-group media-list media-list-stream">
+                <div style="margin-top: 30px;"></div>
+
+                <form name="form" class="css-form" novalidate>
+                    <div class="header-label">Check Date</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" datepicker-popup="longDate" ng-model="ac_row.CheckDate" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                    </div>
+
+                    <div class="header-label">Check Method</div>
+                    <div class="header-value">
+                        <select class="form-control" ng-model="ac_row.CheckMethod">
+                            <option ng-repeat="method in DataGradeMethods" ng-selected="$index == 5" value="{{$index}}">{{method}}</option>
+                        </select>
+                    </div>
+
+                    <div class="header-label">Bath 1 Grade</div>
+                    <div class="header-value">
+                        <select class="form-control" ng-model="ac_row.Bath1Grade">
+                            <option value="">&nbsp;</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                        </select>
+
+                    </div>
+
+                    <div class="header-label">Bath 2 Grade</div>
+                    <div class="header-value">
+                        <select class="form-control" ng-model="ac_row.Bath2Grade">
+                            <option value="">&nbsp;</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                        </select>
+
+                    </div>
+
+                    <div class="header-label">Comments</div>
+                    <div class="header-value">
+                        <textarea class="form-control" ng-model="ac_row.Comments" name="Comments"></textarea>
+                    </div>
+
+                </form>
+
+                
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade in" id="existing-records">
+            <div class="list-group media-list media-list-stream">
+                <div style="margin-top: 30px;"></div>
+
+
+                <h4>Accuracy checks for this instrument</h4>
+
+                <div ng-show="row.Activity.Instrument.AccuracyChecks.length == 0">There are no accuracy checks recorded for this Instrument.</div>
+
+                <div ng-show="row.Activity.Instrument.AccuracyChecks.length > 0">
+                    <table style="background-color: lightyellow;" class="table table-striped table-bordered table-condensed">
+                        <tr><th>Check Date</th><th>Method</th><th>Data Grade</th><th>Comments</th></tr>
+                        <tr class="accuracy-check-block" ng-repeat="check in row.Activity.Instrument.AccuracyChecks">
+                            <td>{{check.CheckDate | date}}</td>
+                            <td>{{check.CheckMethod | DataGradeMethod}}</td>
+                            <td>{{getDataGrade(check)}}</td>
+                            <td>{{check.Comments}}</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer" style="margin-top: 30px;">
+    <div float="right">
+        <button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="save()">Save</button>
+        <button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Close</button>
+    </div>
+
+</div>
+

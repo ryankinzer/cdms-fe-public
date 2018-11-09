@@ -1,8 +1,4 @@
-﻿//GridService - enables CDMS field validators and editors
-
-//This should include anything portable that extends our ag-grid 
-
-// to use: 
+﻿//GridService - enables CDMS field validators and editors on ag-grid
 
 datasets_module.service('GridService', ['$window', '$route',
     function ($window, $route, $q) {
@@ -12,9 +8,6 @@ datasets_module.service('GridService', ['$window', '$route',
             //brought over from Datasheet.js (though we might not need it?)
             initScope: function (scope) {
                 //anything we need to setup a scope for use with the grid...
-                //NOTE - previously said this:  config the fields for the datasheet - include mandatory location and activityDate fields
-                //lets do that now:
-
             },
 
             //sets the control for the field(defines renderers, editors, validators, formatters, etc.)
@@ -80,6 +73,7 @@ datasets_module.service('GridService', ['$window', '$route',
                 }
             },
 
+//TODO - still need this? - use a filter?
             convertStatus: function (aStatus) {
                 //console.log("Inside convertStatus...");
                 //console.log("aStatus = " + aStatus);
@@ -193,29 +187,29 @@ datasets_module.service('GridService', ['$window', '$route',
 
 
         // Called to validate a cell value (like after editing or first time display). 
-        //  once a cell is validated, if there are errors, here is the situation:
+        //  once a cell is validated, if there are errors, here is the resulting state:
         //  (data represents the row)
         //  data.validationErrors is an array of errors from this cell + previously set errors from other cells in this row
         //  data.rowHasError = true (or false if no error)
         //  data.rowErrorTooltip = "error messages" from all validation errors for this cell for display as a tooltip (displayed on hover)
-        // returns boolean as to whether the field was valid or not.
+        // returns boolean: have an error?
         service.validateCell = function (event) { 
 
             //console.log(" --- validate cell for event : ");
             //console.dir(event);
 
             if (!event.colDef.hasOwnProperty('validator'))
-                return false;
+                return false; //no error since no validator
 
-            var validator = event.colDef.validator;
+            //var validator = event.colDef.validator;
 
             //console.log(" -- running cell validator -- ");
             //console.dir(validator);
             //remove this field's validation errors from our row's validation errors (returns [] if none)
-            event.node.data.validationErrors = validator.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
+            event.node.data.validationErrors = event.colDef.validator.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
 
             //validate this cell's value - returns array of errors if any
-            var fieldValidationErrors = validator.validate(event);
+            var fieldValidationErrors = event.colDef.validator.validate(event);
             //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
@@ -271,16 +265,13 @@ datasets_module.service('GridService', ['$window', '$route',
 
 
         service.validateGrid = function (params) {
-            console.log(" -- NOT validating the whole grid FIXME! --");
-
-/*
             //get all of the columns for the grid
             var gridColumns = params.columnApi.getAllColumns();
 
             //iterate each node, columns and validate the cell
             params.api.forEachNode(function (node, index) {
                 gridColumns.forEach(function (column) {
-                    $scope.agValidateCell({
+                    service.validateCell({
                         node: node,
                         colDef: column.colDef,
                         value: node.data[column.colDef.field],
@@ -289,10 +280,8 @@ datasets_module.service('GridService', ['$window', '$route',
                 });
 
             });
-*/
+
         };
-
-
 
 
 

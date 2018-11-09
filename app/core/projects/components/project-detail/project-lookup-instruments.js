@@ -311,48 +311,46 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
                 controller: 'ModalCreateInstrumentCtrl',
                 scope: scope, //very important to pass the scope along...
+            }).result.then(function (saved_instrument) { 
+                //console.log("ok - we saved so update the grid...");
+                var total = scope.project.Instruments.length;
+                var count = 0;
+                var updated = false;
+                scope.project.Instruments.forEach(function (item, index) {
+                    if (item.Id === saved_instrument.Id) {
+                        updated = true;
+
+                        //console.log("ok we found a match! -- updating! before:");
+                        //console.dir(scope.subprojectList[index]);
+
+                        if (saved_instrument.AccuracyChecks !== undefined)
+                            delete saved_instrument.AccuracyChecks; //remove this before the copy.
+
+                        angular.extend(scope.project.Instruments[index], saved_instrument); //replace the data for that item
+                        //console.log("ok we found a match! -- updating! after:");
+                        scope.instrGridOptions.api.redrawRows();
+                        console.log("done reloading grid after editing an instrument.");
+                    }
+                    count++;
+                    if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
+                    {
+                        //console.log("ok we found never a match! -- adding!");
+                        saved_instrument.AccuracyChecks = [];
+                        scope.project.Instruments.push(saved_instrument); //add that item
+                        scope.instrGridOptions.api.setRowData([]);
+                        scope.instrGridOptions.api.setRowData(scope.project.Instruments);
+
+                        console.log("done reloading grid after adding an instrument.");
+                    }
+                });
+
+                //console.log("updated the list and the grid... now refreshing the instrument lists");
+                //scope.refreshSubprojectLists(); //funders, collaborators, etc.
+    
             });
         };
 
-        //fired after a user saves a new or edited instrument
-        // we update the item in project's instruments then refresh the grid.
-        scope.postSaveInstrumentUpdateGrid = function (the_promise) {
-            //console.log("ok - we saved so update the grid...");
-            var total = scope.project.Instruments.length;
-            var count = 0;
-            var updated = false;
-            scope.project.Instruments.forEach(function (item, index) {
-                if (item.Id === the_promise.Id) {
-                    updated = true;
-
-                    //console.log("ok we found a match! -- updating! before:");
-                    //console.dir(scope.subprojectList[index]);
-
-                    if (the_promise.AccuracyChecks !== undefined)
-                        delete the_promise.AccuracyChecks; //remove this before the copy.
-
-                    angular.extend(scope.project.Instruments[index], the_promise); //replace the data for that item
-                    //console.log("ok we found a match! -- updating! after:");
-                    scope.instrGridOptions.api.redrawRows();
-                    console.log("done reloading grid after editing an instrument.");
-                }
-                count++;
-                if (count == total && updated == false) //if we get all done and we never found it, lets add it to the end.
-                {
-                    //console.log("ok we found never a match! -- adding!");
-                    the_promise.AccuracyChecks = [];
-                    scope.project.Instruments.push(the_promise); //add that item
-                    scope.instrGridOptions.api.setRowData([]);
-                    scope.instrGridOptions.api.setRowData(scope.project.Instruments);
-
-                    console.log("done reloading grid after adding an instrument.");
-                }
-            });
-
-            console.log("updated the list and the grid... now refreshing the instrument lists");
-            //scope.refreshSubprojectLists(); //funders, collaborators, etc.
-
-        };
+        
 
 
         //returns the (last) node or null if none found.

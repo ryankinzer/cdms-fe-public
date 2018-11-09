@@ -1,6 +1,5 @@
 ﻿/**
-*  This component provides the data edit page (form + grid).
-*  /index.html#/edit/1004
+*  Data entry, date edit, import all use this controller
 */
 
 
@@ -57,8 +56,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $scope.dataset = DatasetService.getDataset($routeParams.Id);
             $scope.dataset.$promise.then(function () {
                 //$scope.row is the Header fields data row
-                $scope.row = { 'Activity': { 'ActivityDate': moment().format(), 'ActivityQAStatus': {} } }; //empty row
-
+                $scope.row = { 'Activity': { 'ActivityDate': moment().format(), 'ActivityQAStatus': {'QAStatusId': $scope.dataset.DefaultActivityQAStatusId} } }; //empty row
                 $scope.afterDatasetLoadedEvent();
             });
         }
@@ -72,10 +70,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.afterDatasetLoadedEvent();
             });
         }
-        
-        
-
-//        $scope.foundDuplicate = false;
+               
 
         //ag-grid - details
         $scope.dataAgGridOptions = {
@@ -116,6 +111,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             onGridReady: function (params) {
                 console.log("GRID IS READY. ------------------------------------------>>>");
                 GridService.validateGrid(params);
+                console.dir($scope.row);
             },
 
             defaultColDef: {
@@ -170,6 +166,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     $scope.dataAgGridOptions.editedRowIds.push(event.data.Id);
                 };
                 $scope.$apply();
+
+                //special case for water temp: fire dupecheck if readingdatetime changed
+                if($scope.dataset.Datastore.TablePrefix == "WaterTemp" && event.colDef.DbColumnName == "ReadingDateTime")
+                    $scope.checkForDuplicates();
+            
+
             },
         };
 
@@ -419,53 +421,53 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             });
 
-        };       
-       /*
-
-
-
-        $scope.setLocation = function () {
-            //$scope.row.Location = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
-            //$scope.viewLocation = getByField($scope.project.Locations, $scope.row.LocationId, "Id");
-        };
-
-
+        };     
 
         $scope.createInstrument = function () {
-            $scope.viewInstrument = null;
+            //$scope.viewInstrument = null;
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
                 controller: 'ModalCreateInstrumentCtrl',
                 scope: $scope, //very important to pass the scope along...
-            });
-        };
-
-        $scope.reloadProject = function () {
-            //reload project instruments -- this will reload the instruments, too
-            ProjectService.clearProject();
-            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
-            var watcher = $scope.$watch('project.Id', function () {
-                if (!$scope.project.Id) return;
-
+            }).result.then(function (saved_instrument) { 
+                //add saved_instrument to our list.
+                saved_instrument.AccuracyChecks = [];
+                $scope.project.Instruments.push(saved_instrument);
+                $scope.row.Activity.InstrumentId = saved_instrument.Id;
                 $scope.selectInstrument();
-                watcher();
+                $scope.row.dataChanged = true; //we have changed!
+                //aha! this is a trick to get the instruments select to rebuild after we change it programatically
+                $(function () { $("#instruments-select").select2(); });
+    
             });
-
         };
-*/
+       
         $scope.openAccuracyCheckModal = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/common/components/modals/templates/modal-new-accuracycheck.html',
                 controller: 'ModalQuickAddAccuracyCheckCtrl',
                 scope: $scope, //very important to pass the scope along...
+            }).result.then(function (saved_AC) { 
+                //add saved_AC to our list.
+                $scope.project.Instruments.forEach(function (inst) { 
+                    if (inst.Id == $scope.row.Activity.InstrumentId) {
+                        console.log("found that instrument!"); console.dir(inst);
+                        inst.AccuracyChecks.push(saved_AC);
+                        $scope.row.Activity.Instrument = inst;
+                    }
+                });
+                $scope.selectInstrument();
+                $scope.row.dataChanged = true; //we have changed a header!
+    
             });
         };
 
+        $scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias
 
         //when user selects an instrument, the directive model binding sets the row.Activity.InstrumentId. 
         // we need to set the row.Activity.Instrument to the matching one from project.Instruments
         // and then select the last AccuracyCheck and set it in row.Activity.AccuracyCheckId
-        $scope.selectInstrument = function () {
+        $scope.selectInstrument = function (field) {
             
             $scope.project.Instruments.forEach(function (inst) { 
                 if (inst.Id == $scope.row.Activity.InstrumentId) {
@@ -480,6 +482,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             if ($scope.row.Activity.AccuracyCheck)
                 $scope.row.Activity.AccuracyCheckId = $scope.row.Activity.AccuracyCheck.Id;
+
+            if(field)
+                $scope.onHeaderEditingStopped(field);
 
         };
 
@@ -593,8 +598,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         //Duplicate checking rules:
         // If checkforduplicates is enabled in the dataset config: 
-//TODO:            //   If we are editing and one of the key fields has changed then check for duplicates on save -- otherwise, editing that doesn't change a key field is not checked
-//TODO:            //   If we are on a new data entry, check for duplicates on save
+//TODO:            //   If we are editing grid key fields has changed then check for duplicates on save -- otherwise, editing that doesn't change a key field is not checked
         $scope.checkForDuplicates = function () {
             
             if ($scope.dataset.Config.EnableDuplicateChecking) {
@@ -607,16 +611,23 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //special case for water temp - update the Activity.Description field with the range... we'll use this to duplicate check
                 if ($scope.dataset.Datastore.TablePrefix == "WaterTemp") {
                     //sort, then get the first and last dates
-                    
-                    $scope.dataAgGridOptions.api.setSortModel({ colId: 'ReadingDateTime', sort: 'asc' });
-                    var oldest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(0);
-                    var newest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex($scope.dataAgGridOptions.api.getDisplayedRowCount()-1);
 
-                    var oldest_date = moment(oldest.data.ReadingDateTime).format('YYYY/MM/DD');
-                    var newest_date = moment(newest.data.ReadingDateTime).format('YYYY/MM/DD');
-                    var watertemp_range = oldest_date + " - " + newest_date;
-                    console.log("water temp date range is: " + watertemp_range);
-                    $scope.row.Activity.Description = watertemp_range;
+                    //are there rows? if so then use the readingdatetimes to build our range we use for duplicate checking
+                    if ($scope.dataAgGridOptions.api.getDisplayedRowCount() > 0) {
+
+                        $scope.dataAgGridOptions.api.setSortModel({ colId: 'ReadingDateTime', sort: 'asc' });
+                        var oldest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(0);
+                        var newest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex($scope.dataAgGridOptions.api.getDisplayedRowCount() - 1);
+
+                        var oldest_date = moment(oldest.data.ReadingDateTime).format('YYYY/MM/DD');
+                        var newest_date = moment(newest.data.ReadingDateTime).format('YYYY/MM/DD');
+                        var watertemp_range = oldest_date + " - " + newest_date;
+                        console.log("water temp date range is: " + watertemp_range);
+                        $scope.row.Activity.Description = watertemp_range;
+                    }
+                    else {
+                        console.log("There are no rows for this water temp, the Description (Date Range) will be empty.");
+                    }
                 }
 
                 //build up our duplicate checker query
@@ -627,24 +638,36 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     'QAStatusId' : 'all',
                 };
 
+                var AbortNoFullKey = false;
+
                 //add in the duplicate checker key fields configured for this dataset 
                 $scope.dataset.Config.DuplicateCheckFields.forEach(function (dc_field) {
+
+                    //if any of the key field values is empty, bail out -- only check if we have a full composite key.
+                    if ($scope.row.Activity[dc_field] == null)
+                        AbortNoFullKey = true;
+
                     query.Fields.push({ 'DbColumnName': dc_field, 'Value': $scope.row.Activity[dc_field] });
                 });
 
-                //console.dir(query);
+                if (AbortNoFullKey) {
+                    console.warn("Aborting duplicate check because not all key fields have values");
+                    return null; //early return -- we are bailing out because our key isn't full.
+                }
 
-                var dupe_check = DatasetService.checkForDuplicateActivity(query);
+                var dupe_check = DatasetService.checkForDuplicateActivity(query); // will return { DuplicateActivityId: null (if none), ActivityId (if match exists)
 
                 dupe_check.$promise.then(function () {
-                    if (dupe_check.count > 0) {
-                        $scope.hasDuplicateError = true;
-                        $scope.saveResult.error = "Duplicate record exists with these values: " + 
-                            $scope.dataset.Config.DuplicateCheckFields.toString().replace("Description","ReadingDateTimeRange").replace(/,/g,", ");
-                    }
-                    else {
+                    //console.log("Dupecheck back with id: " + dupe_check.DuplicateActivityId + " and our activity id is " + $scope.row.Activity.Id);
+
+                    //if the dupe_check.DuplicateActivityId is null or equals our own activityid, it is not a duplicate.
+                    if (dupe_check.DuplicateActivityId === null || dupe_check.DuplicateActivityId === $scope.row.Activity.Id) { 
                         $scope.hasDuplicateError = false;
                         $scope.saveResult.error = null;
+                    } else { //otherwise it is.
+                        $scope.hasDuplicateError = true;
+                        $scope.saveResult.error = "Duplicate record exists with these values: " + 
+                        $scope.dataset.Config.DuplicateCheckFields.toString().replace("Description","ReadingDateTimeRange").replace(/,/g,", ");
                     }
 
                     $scope.saveResult.saving = false;
@@ -681,7 +704,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //clean up some things from the row (header fields)
             var new_row = angular.copy($scope.row);
             delete new_row.Activity;
+            delete new_row.ActivityQAStatus;
             delete new_row.ByUser;
+            delete dataChanged;
 
             //compose our payload 
             var payload = {
