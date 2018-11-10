@@ -1,9 +1,9 @@
 ﻿
 var dataset_activities_list = ['$scope', '$routeParams',
-    'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'UserService',
+    'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'UserService','GridService',
     '$uibModal', '$location', '$window', '$rootScope',
     function ($scope, $routeParams,
-        DatasetService, SubprojectService, ProjectService, CommonService, UserService,
+        DatasetService, SubprojectService, ProjectService, CommonService, UserService, GridService,
         $modal, $location, $window, $rootScope) {
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
@@ -34,6 +34,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             $scope.activities.$promise.then(function () {
                 //now that the activities are loaded, tell the grid so that it can refresh.
                 $scope.agGridOptions.api.setRowData($scope.activities);
+                GridService.autosizeColumns($scope.agGridOptions);
             });
 
             $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
@@ -87,6 +88,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             $scope.agGridOptions.api.setColumnDefs(gridColDefs); 
             //console.log(" -- ok grid loaded and the coldefs are: ");
             //console.dir(gridColDefs);
+            
         });
 
 

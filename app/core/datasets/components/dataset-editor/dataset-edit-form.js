@@ -293,12 +293,13 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 if($scope.row.Activity)
                     $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
                 
-                GridService.autosizeColumns($scope.dataAgGridOptions);
-
                 console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);
                 $scope.dataAgGridOptions.api.redrawRows();
                 console.log("GRID Validate IS DONE ------------------------------------------>>>");
+
+                GridService.autosizeColumns($scope.dataAgGridOptions);
+
 
             }, 0);
 

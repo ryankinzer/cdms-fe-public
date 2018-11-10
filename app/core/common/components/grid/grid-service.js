@@ -180,9 +180,11 @@ datasets_module.service('GridService', ['$window', '$route',
         service.autosizeColumns = function (coldefObject) {
             var allColumnIds = [];
             coldefObject.columnApi.getAllColumns().forEach( function(columnDef) {
-                allColumnIds.push(columnDef);
+                allColumnIds.push(columnDef.colId);
             });
             coldefObject.columnApi.autoSizeColumns(allColumnIds);
+            console.log("tried to autosize: ");
+            console.dir(allColumnIds);
         };
 
 
