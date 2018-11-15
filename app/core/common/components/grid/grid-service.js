@@ -56,7 +56,7 @@ datasets_module.service('GridService', ['$window', '$route',
                                 params.node.data.validationErrors.forEach(function (error, index) {
                                     //console.log(" -- checking " + error.field.DbColumnName + " and " + params.colDef.field);
                                     //is there a validation error for this cell?
-                                    if (error.field.DbColumnName === params.colDef.field)
+                                    if (error.field.DbColumnName === params.colDef.DbColumnName)
                                         fieldHasErrors = true;
                                 });
                             }
@@ -205,19 +205,19 @@ datasets_module.service('GridService', ['$window', '$route',
 
             //var validator = event.colDef.validator;
 
-            //console.log(" -- running cell validator -- ");
+            console.log(" -- running cell validator -- ");
             //console.dir(validator);
             //remove this field's validation errors from our row's validation errors (returns [] if none)
             event.node.data.validationErrors = event.colDef.validator.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
 
             //validate this cell's value - returns array of errors if any
             var fieldValidationErrors = event.colDef.validator.validate(event);
-            //console.log(' ERRORS for this validation?');
-            //console.dir(fieldValidationErrors);
+            console.log(' ERRORS for this validation?');
+            console.dir(fieldValidationErrors);
 
             //merge in any row errors with this cell's errors.
             event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
-            //console.dir(fieldValidationErrors);
+            console.dir(event.node.data.validationErrors);
 
             //set validation status
             event.node.data.rowHasError = ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0));
@@ -231,8 +231,8 @@ datasets_module.service('GridService', ['$window', '$route',
                     event.node.data.rowErrorTooltip = event.node.data.rowErrorTooltip +
                         "[" + error.field.DbColumnName + "] " + error.message;
 
-                    //console.log("validation errors for [" + error.field.DbColumnName + "] " + event.node.data.rowErrorTooltip);
-                    //console.dir(event.node.data);
+                    console.log("validation errors for [" + error.field.DbColumnName + "] " + event.node.data.rowErrorTooltip);
+                    console.dir(event.node.data);
 
                 });
             }
@@ -267,6 +267,7 @@ datasets_module.service('GridService', ['$window', '$route',
 
 
         service.validateGrid = function (gridOptions) {
+            return;
             //get all of the columns for the grid
             var gridColumns = gridOptions.columnApi.getAllColumns();
 

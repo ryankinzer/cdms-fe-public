@@ -269,9 +269,11 @@
                         else //just add the value to the cell
                         {
                             if (field.Label == MAP_LOCATION) {
-                                new_row['Location'] = data_row[col];
+                                new_row['Activity'] = {};
+                                new_row['Activity']['Location'] = data_row[col];
                             } else if (field.Label == MAP_ACTIVITY_DATE) {
-                                new_row['ActivityDate'] = data_row[col];
+                                new_row['Activity']['ActivityDate'] = data_row[col];
+                                new_row['Activity']['QAStatusId'] = $scope.dataset.DefaultActivityQAStatusId;
                             } else {
                                 new_row[field.DbColumnName] = data_row[col];
                             }
@@ -305,7 +307,7 @@
             }).result.then(function (saved) { 
 
                 $scope.imported_rows.forEach(function (data_row) {
-                    data_row.LocationId = $scope.mappedLocations[data_row['Location']];
+                    data_row['Activity']['LocationId'] = $scope.mappedLocations[data_row['Activity']['Location']];
                 });    
 
                 $scope.openActivityGridModal();
@@ -326,7 +328,9 @@
                 templateUrl: 'app/core/datasets/components/dataset-import/templates/modal-activities-grid.html',
                 controller: 'ModalActivitiesGridCtrl',
                 scope: $scope, //very important to pass the scope along...
-                windowClass: 'modal-large'
+                windowClass: 'modal-large',
+                backdrop  : 'static',
+                keyboard  : false
             }).result.then(function (saved) { 
                 
             },

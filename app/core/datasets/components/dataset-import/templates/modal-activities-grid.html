@@ -4,15 +4,13 @@
 </div>
 <div class="modal-body" id="modal-body">
 
-    <div style="height: 500px; width: 100%; margin-top: 5px; margin-bottom: 115px;">
+    <div style="height: 500px; width: 100%; margin-top: 5px">
         <div id="data-import-grid" class="ag-theme-blue gridStyle-small"></div>
     </div>
 
     <div>
-        Total rows: {{dataAgGridOptions.api.getDisplayedRowCount()}} / Errors on page: {{PageErrorCount}}
-        <hr />
+        Total rows: {{dataAgGridOptions.api.getDisplayedRowCount()}} / Errors on page: {{PageErrorCount}} / Number of Activities: {{ActivityDates.length}}
     </div>
-
 </div>
 
 <div class="modal-footer">

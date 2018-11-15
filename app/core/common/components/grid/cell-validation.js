@@ -230,7 +230,7 @@ CellValidator.prototype.removeFieldValidationErrors = function (validationErrors
         if (typeof validationErrors !== 'undefined') {
             //if this error matches the field then skip, otherwise add to our otherValidationErrors array.
             validationErrors.forEach(function (error, index) {
-                if (error.field.DbColumnName !== colDef.field)
+                if (error.field.DbColumnName !== colDef.DbColumnName)
                     otherValidationErrors.push(error);
             });
         }

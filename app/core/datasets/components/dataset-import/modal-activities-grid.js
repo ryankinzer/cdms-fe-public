@@ -6,19 +6,31 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
 
 
-        $scope.getPageErrorCount = function () { 
+        $scope.calculateStatistics = function () { 
+            
+            $scope.ActivityDates = [];
+            $scope.PageErrorCount = 0;
+
             if (!$scope.dataAgGridOptions.hasOwnProperty('api'))
-                return 0; //not loaded yet.
+                return; //not loaded yet.
 
-            var count = 0;
-
-            $scope.dataAgGridOptions.api.forEachNode(function (node) { 
+            $scope.dataAgGridOptions.api.forEachNode(function (node) {
                 if (node.data.rowHasError)
-                    count ++;
+                    $scope.PageErrorCount++;
+
+                try {
+                    var the_date = moment(node.data.Activity.ActivityDate).format('l');
+                    if (!$scope.ActivityDates.contains(the_date)) {
+                        $scope.ActivityDates.push(the_date);
+                    }
+                }catch(e){ 
+                    console.warn("invalid date not added to ActivityDates calculation: "+node.data.Activity.ActivityDate);
+                    console.dir(e);
+                }
             });
 
-            return count;
         };
+
 
         //ag-grid - header + details --- all in one grid for multiple activities
         $scope.dataAgGridOptions = {
@@ -57,27 +69,26 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             },
             onCellEditingStopped: function (event) {
                 //save the row we just edited
-                //console.dir(event);
+                console.log("finished editing.");
+                console.dir(event);
 
                 if (GridService.validateCell(event)) {
                     GridService.fireRule("OnChange", event); //only fires when valid change is made
                 }
 
-                $scope.PageErrorCount = $scope.getPageErrorCount();
+                //this might be too slow, but it is nice to have...
+                $scope.calculateStatistics();
 
                 GridService.refreshRow(event);
 
-                $scope.dataAgGridOptions.dataChanged = true;
-
-                if (event.data.Id && (!$scope.dataAgGridOptions.editedRowIds.containsInt(event.data.Id))){ 
-                    $scope.dataAgGridOptions.editedRowIds.push(event.data.Id);
-                };
                 $scope.$apply();
 
-                //special case for water temp: fire dupecheck if readingdatetime changed
+                //duplicate checking - run for header keys and also ReadingDateTime for WaterTemp (special case)
                 if($scope.dataset.Datastore.TablePrefix == "WaterTemp" && event.colDef.DbColumnName == "ReadingDateTime")
                     $scope.checkForDuplicates();
             
+                console.log("all done edit validation");
+
             },
         };
 
@@ -90,17 +101,40 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
                 $scope.dataAgColumnDefs = GridService.getAgColumnDefs($scope.dataset);
                 
-                //spin through and set any sytem field detail possible values -----------------       //////TODO move the config.js fields into a systems dataset, then can use the Datasource technique to load these.
+                //setup any possible values that are needed - detail
                 angular.forEach($scope.dataAgColumnDefs.DetailFields, function (fieldDef) {
-                    if (fieldDef.field == "QAStatusId") { //RowQAStatusId
+                    if (fieldDef.field == "QAStatusId") { //RowQAStatusId because we're in the details
                         fieldDef.setPossibleValues(makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name'));
                     }
+
+                    if (fieldDef.ControlType == 'file' || fieldDef.ControlType == 'hidden')
+                        fieldDef.hide = true;
+
                 });
 
+                //setup activity fields to point to the right place
                 angular.forEach($scope.dataAgColumnDefs.HeaderFields, function (fieldDef) {
-                    if (fieldDef.field == "Location") { //RowQAStatusId
+                    if (fieldDef.field == "LocationId") { 
                         fieldDef.setPossibleValues(makeObjects($scope.project.Locations, 'Id', 'Label'));
+                        fieldDef.field = "Activity." + fieldDef.DbColumnName;
                     }
+
+                    if (fieldDef.field == "QAStatusId") { //ActivityQAStatusId 
+                        fieldDef.setPossibleValues(makeObjects($scope.dataset.QAStatuses, 'Id', 'Name'));
+                        fieldDef.field = "Activity." + fieldDef.DbColumnName;
+                    }
+
+                    if (fieldDef.field == "QAComments") { 
+                        fieldDef.field = "Activity." + fieldDef.DbColumnName;
+                    }
+
+                    if (fieldDef.field == "ActivityDate") { 
+                        fieldDef.field = "Activity." + fieldDef.DbColumnName;
+                    }
+
+                    if (fieldDef.ControlType == 'file' || fieldDef.ControlType == 'hidden')
+                        fieldDef.hide = true;
+
                 });
 
                 $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs.HeaderFields.concat($scope.dataAgColumnDefs.DetailFields);
@@ -124,6 +158,8 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 console.log("GRID Validate IS DONE ------------------------------------------>>>");
 
                 GridService.autosizeColumns($scope.dataAgGridOptions);
+
+                $scope.calculateStatistics();
 
             }, 0);
         };
