@@ -19,10 +19,13 @@ require([
     'core/datasets/components/dataset-view/modal-data-entry',
     'core/datasets/components/dataset-import/dataset-import',
     'core/datasets/components/dataset-import/modal-dataset-duplicates',
+    'core/datasets/components/dataset-import/modal-map-locations',
+    'core/datasets/components/dataset-import/modal-activities-grid',
     'core/datasets/components/dataset-query/dataset-query',
     'core/datasets/components/dataset-query/big-bucket-query',
     'core/datasets/components/dataset-seasons-list/dataset-seasons-list',
     'core/datasets/components/dataset-seasons-list/modal-create-season',
+
 
     //load the various dataset services
     'core/datasets/services/dataset-service',
@@ -47,6 +50,8 @@ require([
     datasets_module.controller('DatastoreQueryCtrl', big_bucket_query);
     datasets_module.controller('DatasetSeasonsCtrl', dataset_seasons_list);
     datasets_module.controller('ModalCreateSeasonCtrl', modal_create_season);
+    datasets_module.controller('ModalMapLocationsCtrl', modal_map_locations);
+    datasets_module.controller('ModalActivitiesGridCtrl', modal_activities_grid);
 
     datasets_module.filter('dataGrade', function () { 
         return function (check) {

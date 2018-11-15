@@ -243,6 +243,9 @@ var ControlTypeDefinitions = {
     'time': TimeControlType,
     'upload': UploadControlType,
     'qa-status-comment': TextAreaControlType,
+    'location-select' : SelectControlType,
+    'activity-date' : DateControlType,
+    'qa-status-select': SelectControlType,
 
 };
 

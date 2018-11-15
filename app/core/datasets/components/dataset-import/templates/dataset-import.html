@@ -16,7 +16,7 @@
 {{uploadErrorMessage}}
 </div>
 
-<div ng-include="'app/core/datasets/templates/messages.html'" ></div><!--Need the closing "/" here; otherwise services.js has a problem with it.-->
+<div ng-include="'app/core/datasets/templates/messages.html'" ></div>
 
 <div class="row">
 
@@ -55,7 +55,7 @@
 					<tr ng-repeat="column_name in UploadResults.Fields">
                         <td>{{column_name}}</td>
 						<td>
-							<select class="form-control" style="width: 160px;" ng-model="mapping[column_name]" ng-options="Value.Label for Value in mappableFields"></select>
+							<select class="form-control" style="width: 160px;" ng-change="selectMapColumn(column_name)" ng-model="mapping[column_name]" ng-options="Value.Label for Value in mappableFields"></select>
 						</td>
 					</tr>
 				</table>

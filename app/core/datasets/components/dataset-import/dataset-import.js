@@ -130,30 +130,85 @@
             }
         }
 
-        $scope.getMappableFields = function()
+        //return the mappable fields, default to detail
+        $scope.getMappableFields = function(field_role)
 		{
+            //default to returning detail fields
+            if (typeof field_role === 'undefined')
+                field_role = FIELD_ROLE_DETAIL;
 			
 			var mappableFields = [];
-			mappableFields.push({ Label: DO_NOT_MAP_VALUE });
+			mappableFields.push({ Label: MAP_DO_NOT_MAP_VALUE });
+            mappableFields.push({ Label: MAP_ACTIVITY_DATE });
+            mappableFields.push({ Label: MAP_LOCATION });   
+
             $scope.dataset.Fields.sort(orderByAlpha).forEach(function (field, index) { 
-                if(field.FieldRoleId === FIELD_ROLE_DETAIL)
-                    field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
+
+                field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
+
+                if (field.FieldRoleId === field_role) {
                     mappableFields.push(field);
+                }
+
             });
 			
 			return mappableFields;
 		};
+
+        $scope.selectMapColumn = function(column_name) { 
+            console.log("selected: " + column_name);
+            console.dir($scope.mapping[column_name]);
+            console.dir($scope.UploadResults);
+            console.dir($scope.mapping);
+        };
 
 
         //convert the incoming data rows to a format we can pass on to dataentry
         $scope.previewUpload = function () {
             $scope.enablePreview = false;
             $scope.importing = true;
-            $scope.imported_rows = [];
 
-            console.dir($scope.mapping);
+            //console.dir($scope.mapping);
 
-			$scope.UploadResults.Data.forEach( function(data_row){
+            //gets all rows with mapped data, ready for the grid
+            $scope.imported_rows = $scope.getRowsToImport();
+
+            //if we are importing a single activity, we hand off to the edit page, 
+            //  otherwise, map the locations and show the multiple-activity grid
+
+            //are we mapping an activitydate+location? If so, then are handling multiple activities
+            if ($scope.hasFieldMapped(MAP_LOCATION) || $scope.hasFieldMapped(MAP_ACTIVITY_DATE)) {
+
+                if ($scope.hasFieldMapped(MAP_LOCATION)) {
+                    $scope.openLocationMappingModal();
+                } else {
+                    $scope.openActivityGridModal();
+                }
+
+            } else {
+                //set rootscope and hand-off to dataset entry form
+                $rootScope.imported_rows = $scope.imported_rows;
+                angular.rootScope.go("/dataentryform/" + $scope.dataset.Id);
+            }
+        }
+
+        $scope.hasFieldMapped = function (field_mapped) {
+            var hasFieldMapped = false;
+            Object.keys($scope.mapping).forEach(function (col) {
+                var field = $scope.mapping[col];
+                if (field.Label === field_mapped)
+                    hasFieldMapped = true;
+            });
+            return hasFieldMapped;
+        }
+
+        //returns imported_rows
+        // with each row as an object, mapped to cdms fields, ready to use as a grid datasource.
+        $scope.getRowsToImport = function () { 
+
+            var imported_rows = [];
+
+            $scope.UploadResults.Data.forEach( function(data_row){
 				//console.dir(data_row);
 
 				//set default Row QA StatusId
@@ -168,7 +223,7 @@
 
                     //console.dir(field);
                     //console.dir(col);
-                    if (field.Label !== DO_NOT_MAP_VALUE) {
+                    if (field.Label !== MAP_DO_NOT_MAP_VALUE) {
 
                         //just ditch if it is an empty value
                         if (data_row[col] === null || data_row[col] === "") {
@@ -213,7 +268,14 @@
                         }
                         else //just add the value to the cell
                         {
-                            new_row[field.DbColumnName] = data_row[col]; 
+                            if (field.Label == MAP_LOCATION) {
+                                new_row['Location'] = data_row[col];
+                            } else if (field.Label == MAP_ACTIVITY_DATE) {
+                                new_row['ActivityDate'] = data_row[col];
+                            } else {
+                                new_row[field.DbColumnName] = data_row[col];
+                            }
+
                         }
 
                         //console.dir(new_row);
@@ -222,25 +284,82 @@
 
                 }); //iterate mappings
 			
-                $scope.imported_rows.push(new_row);
+                imported_rows.push(new_row);
 
 			}); //foreach data row
 
-            console.dir($scope.imported_rows);
-            $scope.importing = false;
+            return imported_rows;
 
-            //set rootscope and change view.
-            $rootScope.imported_rows = $scope.imported_rows;
-            angular.rootScope.go("/dataentryform/" + $scope.dataset.Id);
-
-        }
+        };
 
 
+        $scope.openLocationMappingModal = function () { 
+            
+            $scope.locationsToMap = $scope.getLocationsToMap();
+            $scope.mappedLocations = {}; //the locations will be mapped into here { "datalocation" : project.Location object }
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/datasets/components/dataset-import/templates/modal-map-locations.html',
+                controller: 'ModalMapLocationsCtrl',
+                scope: $scope, //very important to pass the scope along...
+            }).result.then(function (saved) { 
+
+                $scope.imported_rows.forEach(function (data_row) {
+                    data_row.LocationId = $scope.mappedLocations[data_row['Location']];
+                });    
+
+                $scope.openActivityGridModal();
+            },
+            function (dismissed) { 
+                $scope.enablePreview = true;
+                $scope.importing = false;
+            });
+
+        };
+
+
+        $scope.openActivityGridModal = function () { 
+
+            //map the activity date
+            
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/datasets/components/dataset-import/templates/modal-activities-grid.html',
+                controller: 'ModalActivitiesGridCtrl',
+                scope: $scope, //very important to pass the scope along...
+                windowClass: 'modal-large'
+            }).result.then(function (saved) { 
+                
+            },
+            function (dismissed) { 
+                $scope.enablePreview = true;
+                $scope.importing = false;
+            });
+
+        };
 
 
 
+        //iterate all incoming data and make a list of the unique locations
+        $scope.getLocationsToMap = function () { 
 
+            var locations = [];
 
+            //get the mapped field column name
+            Object.keys($scope.mapping).forEach(function (col) {
+                var field = $scope.mapping[col];
+                if (field.Label === MAP_LOCATION) {
+                    //got the field that was mapped to location. now look for unique values in that column:
+                    $scope.UploadResults.Data.forEach(function (data_row) {
+                        var in_location = data_row[col];
+                        if (!locations.contains(in_location))
+                            locations.push(in_location);
+                    });
+                }
+            });
+
+            return locations;
+
+        };
 
 
 /*

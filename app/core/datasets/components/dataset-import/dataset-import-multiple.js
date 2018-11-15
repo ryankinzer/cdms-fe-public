@@ -1,9 +1,11 @@
 ﻿/**
-*  Data entry, date edit, import all use this controller
+*  Import preview uses this controller when importing multiple activities.
+*  Single activity import hands off to dataset-edit, 
+*   multiple activity import pushes all headers and details into the grid (below).
 */
 
 
-var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
+var dataset_import_multiple = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
     'ActivityParser', 'GridService',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
         ActivityParser, GridService) {
@@ -35,31 +37,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             return count;
         };
 
-        //fields to support uploads // *** but is this the old or the new?
-/*
-        $scope.filesToUpload = {}; 
-        $scope.file_row = {};
-        $scope.file_field = {};
-*/
-        //console.dir($location.path());
-
-        $scope.pagemode = $location.path().match(/\/(.*)\//)[1]; //edit, dataentryform, dataview - our 3 options from our route... nothing else is possible.
-
-        // Are we editing or not?
-        if ($scope.pagemode.indexOf('dataentryform') !== -1) {
-            $scope.dataset_activities = { Header: [], Details: [] };
-
-            //are we importing?
             if ($rootScope.hasOwnProperty('imported_rows')) {
                 $scope.dataset_activities = { Header: [], Details: $rootScope.imported_rows };
             }
 
-            $scope.dataset = DatasetService.getDataset($routeParams.Id);
-            $scope.dataset.$promise.then(function () {
-                //$scope.row is the Header fields data row
-                $scope.row = { 'Activity': { 'ActivityDate': moment().format(), 'ActivityQAStatus': {'QAStatusId': $scope.dataset.DefaultActivityQAStatusId} } }; //empty row
+            //    $scope.row = { 'Activity': { 'ActivityDate': moment().format(), 'ActivityQAStatus': {'QAStatusId': $scope.dataset.DefaultActivityQAStatusId} } }; //empty row
                 $scope.afterDatasetLoadedEvent();
-            });
         }
         else {  //either edit or data view - both load a particular activity
             $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);

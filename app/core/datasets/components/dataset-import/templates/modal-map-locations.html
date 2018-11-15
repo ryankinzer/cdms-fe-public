@@ -1,0 +1,23 @@
+﻿<div class="modal-header">
+    <h3>Map locations from data to project locations</h3>
+</div>
+<div class="modal-body modal-form" id="modal-body">
+    <div class="row ">
+        <div class="col-lg">
+            <div ng-repeat="data_location in locationsToMap">
+                <div class="header-label">{{data_location}}</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="mappedLocations[data_location]">
+                        <option ng-repeat="project_location in project.Locations" ng-selected="data_location == project_location.Label" value="{{project_location.Id}}">{{project_location.Label}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button style="margin-top: 30px;" class="right btn" ng-click="save()">Save Changes</button>
+    <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
+</div>
+

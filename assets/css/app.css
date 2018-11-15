@@ -783,3 +783,19 @@ margin-left: -8px !important;
 .md-datepicker-calendar-pane {
     z-index: 1200
 }
+
+.modal-large .modal-content {
+    width: 100% !important;
+    height: 80%;
+}
+
+.modal-large .modal-dialog {
+    min-width: 88%;
+    min-height: 60%;
+}
+
+.modal-large .modal-form {
+    width:100%;
+    height: 80%
+}
+
