@@ -149,7 +149,7 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
 
             } else {
                 console.warn("Validation could not be parsed for this column: " + _this.cdms_field.DbColumnName);
-                console.dir(val);
+                //console.dir(val);
             }
 
         } catch (e) {

@@ -799,3 +799,7 @@ margin-left: -8px !important;
     max-height: 750px
 }
 
+.ag-popup-editor select {
+    width: 100%;
+    margin: 0px;
+}

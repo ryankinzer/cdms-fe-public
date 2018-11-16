@@ -3,8 +3,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
     function ($scope, $modal, $modalInstance, GridService, $timeout) {
 
-
-
+        $scope.hasDuplicateError = false;
 
         $scope.calculateStatistics = function () { 
             
@@ -28,7 +27,6 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                     console.dir(e);
                 }
             });
-
         };
 
 
@@ -157,6 +155,10 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 $scope.dataAgGridOptions.api.redrawRows();
                 console.log("GRID Validate IS DONE ------------------------------------------>>>");
 
+                console.log("GRID Dupe check ------------------------------------------>>>");
+                $scope.checkForDuplicates();
+                console.log("GRID Dupe check IS DONE ------------------------------------------>>>");
+
                 GridService.autosizeColumns($scope.dataAgGridOptions);
 
                 $scope.calculateStatistics();
@@ -165,6 +167,40 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
         };
 
         $scope.activateGrid();
+
+        //check for duplicates        
+        $scope.checkForDuplicates = function () {
+
+            if (!$scope.dataset.Config.EnableDuplicateChecking || !$scope.dataset.Config.DuplicateCheckFields.contains('ActivityDate')) {
+                return; //early return, bail out since we aren't configured to duplicate check or don't have ActivityDate as a key
+            }
+
+            var ActivityDatesChecked = [];
+            var hadAnyError = false;
+
+            //check for duplicate using each unique ActivityDate (if there is one defined (water temp doesn't have one))
+            $scope.dataAgGridOptions.api.forEachNode(function (node) { 
+                var the_date = moment(node.data.Activity.ActivityDate).format('l');
+                if (!ActivityDatesChecked.contains(the_date)) {
+                    ActivityDatesChecked.push(the_date);
+                    //ok, let's check this one.
+                    var row = {
+                        'Activity': {
+                            'ActivityDate': node.data.Activity.ActivityDate,
+                            'LocationId': node.data.Activity.LocationId,
+                        }
+                    };
+                    console.log("checking for duplicates: ");
+                    console.dir(row);
+                    hadAnyError = hadAnyError || GridService.checkForDuplicates($scope.dataset, $scope.dataAgGridOptions, row, {});
+                    console.log("result = " + hadAnyError);
+                }
+                
+            });
+
+            $scope.hasDuplicateError = hadAnyError;
+            
+        };
 
         $scope.save = function () {
             $modalInstance.close();

@@ -322,8 +322,6 @@
 
         $scope.openActivityGridModal = function () { 
 
-            //map the activity date
-            
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/datasets/components/dataset-import/templates/modal-activities-grid.html',
                 controller: 'ModalActivitiesGridCtrl',

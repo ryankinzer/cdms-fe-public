@@ -603,90 +603,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         };
 
 
-
-        //Duplicate checking rules:
-        // If checkforduplicates is enabled in the dataset config: 
-//TODO:            //   If we are editing grid key fields has changed then check for duplicates on save -- otherwise, editing that doesn't change a key field is not checked
+        //check for duplicates        
         $scope.checkForDuplicates = function () {
-            
-            if ($scope.dataset.Config.EnableDuplicateChecking) {
-
-                $scope.saveResult.saving = true;
-                $scope.saveResult.saveMessage = "Checking for duplicates...";
-
-                console.log("we are dupe checking!");
-
-                //special case for water temp - update the Activity.Description field with the range... we'll use this to duplicate check
-                if ($scope.dataset.Datastore.TablePrefix == "WaterTemp") {
-                    //sort, then get the first and last dates
-
-                    //are there rows? if so then use the readingdatetimes to build our range we use for duplicate checking
-                    if ($scope.dataAgGridOptions.api.getDisplayedRowCount() > 0) {
-
-                        $scope.dataAgGridOptions.api.setSortModel({ colId: 'ReadingDateTime', sort: 'asc' });
-                        var oldest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(0);
-                        var newest = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex($scope.dataAgGridOptions.api.getDisplayedRowCount() - 1);
-
-                        var oldest_date = moment(oldest.data.ReadingDateTime).format('YYYY/MM/DD');
-                        var newest_date = moment(newest.data.ReadingDateTime).format('YYYY/MM/DD');
-                        var watertemp_range = oldest_date + " - " + newest_date;
-                        console.log("water temp date range is: " + watertemp_range);
-                        $scope.row.Activity.Description = watertemp_range;
-                    }
-                    else {
-                        console.log("There are no rows for this water temp, the Description (Date Range) will be empty.");
-                    }
-                }
-
-                //build up our duplicate checker query
-                var query = {
-                    'DatasetId': $scope.dataset.Id,
-                    'Fields': [],
-                    'Locations': "["+ $scope.row.Activity.LocationId +"]",
-                    'QAStatusId' : 'all',
-                };
-
-                var AbortNoFullKey = false;
-
-                //add in the duplicate checker key fields configured for this dataset 
-                $scope.dataset.Config.DuplicateCheckFields.forEach(function (dc_field) {
-
-                    //if any of the key field values is empty, bail out -- only check if we have a full composite key.
-                    if ($scope.row.Activity[dc_field] == null)
-                        AbortNoFullKey = true;
-
-                    query.Fields.push({ 'DbColumnName': dc_field, 'Value': $scope.row.Activity[dc_field] });
-                });
-
-                if (AbortNoFullKey) {
-                    console.warn("Aborting duplicate check because not all key fields have values");
-                    return null; //early return -- we are bailing out because our key isn't full.
-                }
-
-                var dupe_check = DatasetService.checkForDuplicateActivity(query); // will return { DuplicateActivityId: null (if none), ActivityId (if match exists)
-
-                dupe_check.$promise.then(function () {
-                    //console.log("Dupecheck back with id: " + dupe_check.DuplicateActivityId + " and our activity id is " + $scope.row.Activity.Id);
-
-                    //if the dupe_check.DuplicateActivityId is null or equals our own activityid, it is not a duplicate.
-                    if (dupe_check.DuplicateActivityId === null || dupe_check.DuplicateActivityId === $scope.row.Activity.Id) { 
-                        $scope.hasDuplicateError = false;
-                        $scope.saveResult.error = null;
-                    } else { //otherwise it is.
-                        $scope.hasDuplicateError = true;
-                        $scope.saveResult.error = "Duplicate record exists with these values: " + 
-                        $scope.dataset.Config.DuplicateCheckFields.toString().replace("Description","ReadingDateTimeRange").replace(/,/g,", ");
-                    }
-
-                    $scope.saveResult.saving = false;
-                    $scope.saveResult.saveMessage = "Saving..."; //back to default
-
-                }, function (data) { 
-                    console.dir(data);
-                });
-
-                return dupe_check; //promise... can add more then's 
-            }
+            $scope.hasDuplicateError = GridService.checkForDuplicates($scope.dataset, $scope.dataAgGridOptions, $scope.row, $scope.saveResult);
         };
 
 

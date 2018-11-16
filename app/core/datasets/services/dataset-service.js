@@ -336,7 +336,7 @@ datasets_module.service('DatasetService', ['$q',
 
                 //objectify our dataset config for later use
                 console.log("dataset.Config is next...");
-                console.dir(dataset.Config);
+                //console.dir(dataset.Config);
                 //if(dataset.Config) // Original line.
                 // If we are verifying the variable is defined, this works the best.  Lastly, the database column config may either be null, or contain the text "NULL", so we must check for that too.
                 if ((typeof dataset.Config !== 'undefined') && (dataset.Config !== null) && (dataset.Config !== "NULL")) {

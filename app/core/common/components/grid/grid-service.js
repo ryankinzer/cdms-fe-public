@@ -1,7 +1,7 @@
 ﻿//GridService - enables CDMS field validators and editors on ag-grid
 
-datasets_module.service('GridService', ['$window', '$route',
-    function ($window, $route, $q) {
+datasets_module.service('GridService', ['$window', '$route','DatasetService',
+    function ($window, $route, DatasetService, $q) {
 
         var service = {
 
@@ -205,19 +205,19 @@ datasets_module.service('GridService', ['$window', '$route',
 
             //var validator = event.colDef.validator;
 
-            console.log(" -- running cell validator -- ");
+            //console.log(" -- running cell validator -- ");
             //console.dir(validator);
             //remove this field's validation errors from our row's validation errors (returns [] if none)
             event.node.data.validationErrors = event.colDef.validator.removeFieldValidationErrors(event.node.data.validationErrors, event.colDef);
 
             //validate this cell's value - returns array of errors if any
             var fieldValidationErrors = event.colDef.validator.validate(event);
-            console.log(' ERRORS for this validation?');
-            console.dir(fieldValidationErrors);
+            //console.log(' ERRORS for this validation?');
+            //console.dir(fieldValidationErrors);
 
             //merge in any row errors with this cell's errors.
             event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
-            console.dir(event.node.data.validationErrors);
+            //console.dir(event.node.data.validationErrors);
 
             //set validation status
             event.node.data.rowHasError = ((Array.isArray(event.node.data.validationErrors) && event.node.data.validationErrors.length > 0));
@@ -232,7 +232,7 @@ datasets_module.service('GridService', ['$window', '$route',
                         "[" + error.field.DbColumnName + "] " + error.message;
 
                     console.log("validation errors for [" + error.field.DbColumnName + "] " + event.node.data.rowErrorTooltip);
-                    console.dir(event.node.data);
+                    //console.dir(event.node.data);
 
                 });
             }
@@ -267,7 +267,6 @@ datasets_module.service('GridService', ['$window', '$route',
 
 
         service.validateGrid = function (gridOptions) {
-            return;
             //get all of the columns for the grid
             var gridColumns = gridOptions.columnApi.getAllColumns();
 
@@ -348,6 +347,97 @@ datasets_module.service('GridService', ['$window', '$route',
             });
 
             return obj;
+        };
+
+        //checks for duplicates if enabled for dataset. 
+        //dataset = dataset we are checking for duplicates in
+        //dataAgGridOptions = grid
+        //row = row that contains fields to check (header row)
+        //saveResult = provides status and message results
+        service.checkForDuplicates = function (dataset, dataAgGridOptions, row, saveResult ) { 
+
+            var hasDuplicateError = false;            
+
+            if (!dataset.Config.EnableDuplicateChecking) {
+                return hasDuplicateError; //early return, bail out.
+            }
+
+            saveResult.saving = true;
+            saveResult.saveMessage = "Checking for duplicates...";
+
+            console.log("we are dupe checking!");
+
+            //special case for water temp - update the Activity.Description field with the range... we'll use this to duplicate check
+            if (dataset.Datastore.TablePrefix == "WaterTemp") {
+                //sort, then get the first and last dates
+
+                //are there rows? if so then use the readingdatetimes to build our range we use for duplicate checking
+                if (dataAgGridOptions.api.getDisplayedRowCount() > 0) {
+
+                    dataAgGridOptions.api.setSortModel({ colId: 'ReadingDateTime', sort: 'asc' });
+                    var oldest = dataAgGridOptions.api.getDisplayedRowAtIndex(0);
+                    var newest = dataAgGridOptions.api.getDisplayedRowAtIndex(dataAgGridOptions.api.getDisplayedRowCount() - 1);
+
+                    var oldest_date = moment(oldest.data.ReadingDateTime).format('YYYY/MM/DD');
+                    var newest_date = moment(newest.data.ReadingDateTime).format('YYYY/MM/DD');
+                    var watertemp_range = oldest_date + " - " + newest_date;
+                    console.log("water temp date range is: " + watertemp_range);
+                    row.Activity.Description = watertemp_range;
+                }
+                else {
+                    console.log("There are no rows for this water temp, the Description (Date Range) will be empty.");
+                }
+            }
+
+            //build up our duplicate checker query
+            var query = {
+                'DatasetId': dataset.Id,
+                'Fields': [],
+                'Locations': "["+ row.Activity.LocationId +"]",
+                'QAStatusId' : 'all',
+            };
+
+            var AbortNoFullKey = false;
+
+            //add in the duplicate checker key fields configured for this dataset 
+            dataset.Config.DuplicateCheckFields.forEach(function (dc_field) {
+
+                //if any of the key field values is empty, bail out -- only check if we have a full composite key.
+                if (row.Activity[dc_field] == null)
+                    AbortNoFullKey = true;
+
+                query.Fields.push({ 'DbColumnName': dc_field, 'Value': row.Activity[dc_field] });
+            });
+
+            if (AbortNoFullKey) {
+                console.warn("Aborting duplicate check because not all key fields have values");
+                return null; //early return -- we are bailing out because our key isn't full.
+            }
+
+            var dupe_check = DatasetService.checkForDuplicateActivity(query); // will return { DuplicateActivityId: null (if none), ActivityId (if match exists)
+
+            dupe_check.$promise.then(function () {
+                //console.log("Dupecheck back with id: " + dupe_check.DuplicateActivityId + " and our activity id is " + row.Activity.Id);
+
+                //if the dupe_check.DuplicateActivityId is null or equals our own activityid, it is not a duplicate.
+                if (dupe_check.DuplicateActivityId === null || dupe_check.DuplicateActivityId === row.Activity.Id) { 
+                    hasDuplicateError = false;
+                    saveResult.error = null;
+                } else { //otherwise it is.
+                    hasDuplicateError = true;
+                    saveResult.error = "Duplicate record exists with these values: " + 
+                    dataset.Config.DuplicateCheckFields.toString().replace("Description","ReadingDateTimeRange").replace(/,/g,", ");
+                }
+
+                saveResult.saving = false;
+                saveResult.saveMessage = "Saving..."; //back to default
+
+            }, function (data) { 
+                console.dir(data);
+            });
+
+            return hasDuplicateError; 
+            
         };
 
 
