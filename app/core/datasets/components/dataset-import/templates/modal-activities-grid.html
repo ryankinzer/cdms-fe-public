@@ -3,13 +3,16 @@
     <h3>Edit Dataset Field Properties</h3>
 </div>
 <div class="modal-body" id="modal-body">
-
+    
+    <div>
+        <p ng-show="hasDuplicateError" class="alert alert-danger">Duplicate activities will not be saved.</p>
+    </div>
     <div style="height: 500px; width: 100%; margin-top: 5px">
         <div id="data-import-grid" class="ag-theme-blue gridStyle-small"></div>
     </div>
 
     <div>
-        Total rows: {{dataAgGridOptions.api.getDisplayedRowCount()}} / Errors on page: {{PageErrorCount}} / Number of Activities: {{ActivityDates.length}}
+        Total rows: {{dataAgGridOptions.api.getDisplayedRowCount()}} / Rows with errors: {{PageErrorCount}} / Number of Activities: {{ActivityDates.length}}
     </div>
 </div>
 
@@ -20,7 +23,7 @@
         </div>
         <div>
             <div style="float:right;">
-                <button class="btn" ng-disabled="(saveResult.saving || (PageErrorCount > 0 && (dataset.Config && dataset.Config.AllowSaveWithErrors == false)) )" ng-click="saveData()">Save and close</button>
+                <button class="btn" ng-disabled="(saveResult.saving || (PageErrorCount > 0 && (dataset.Config && dataset.Config.AllowSaveWithErrors == false)) )" ng-click="save()">Save and close</button>
                 <button class="btn btn-warning" ng-click="cancel()" style="margin-right: 10px;">Cancel</button>
                 <br />
                 <div ng-show="saveResult.saving" style="margin-right: 20px;" class="alert alert-success">{{saveResult.saveMessage}}</div>

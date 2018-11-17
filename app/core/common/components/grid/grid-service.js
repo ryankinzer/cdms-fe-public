@@ -56,7 +56,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                                 params.node.data.validationErrors.forEach(function (error, index) {
                                     //console.log(" -- checking " + error.field.DbColumnName + " and " + params.colDef.field);
                                     //is there a validation error for this cell?
-                                    if (error.field.DbColumnName === params.colDef.DbColumnName)
+                                    if (error.field && error.field.DbColumnName === params.colDef.DbColumnName)
                                         fieldHasErrors = true;
                                 });
                             }
@@ -244,6 +244,28 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
 
         };
 
+        //adds a single error to a node. Field can be null if it is a "row" error
+        service.addErrorToNode = function (node, message, field) {
+            //console.log("adding an error: " + message);
+            node.data.validationErrors.push({ 'field': field, 'message': message });
+            node.data.rowHasError = true;
+
+            //re-create the tooltip
+            node.data.validationErrors.forEach(function (error, index) {
+                //console.dir(error);
+                node.data.rowErrorTooltip = (index === 0) ? "" : node.data.rowErrorTooltip + "\n"; //either initialize to "" or add a newline
+
+                //flatten the error messages for this cell
+                var the_next_message = (error.field) ?  "[" + error.field.DbColumnName + "] " + error.message : error.message;
+
+                if (!error.field && node.data.rowErrorTooltip.indexOf(error.message) > -1)
+                    the_next_message = ""; //if a row message like this already exists, don't re-add it.
+                
+                node.data.rowErrorTooltip = node.data.rowErrorTooltip + the_next_message;
+                //console.warn(node.data.rowErrorTooltip);
+            });
+        }
+
 
         service.refreshRow = function (event) {
             //TODO: ok, this isn't working right, but is close enough for the moment.
@@ -356,16 +378,14 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
         //saveResult = provides status and message results
         service.checkForDuplicates = function (dataset, dataAgGridOptions, row, saveResult ) { 
 
-            var hasDuplicateError = false;            
-
             if (!dataset.Config.EnableDuplicateChecking) {
-                return hasDuplicateError; //early return, bail out.
+                return null; //early return, bail out.
             }
 
             saveResult.saving = true;
             saveResult.saveMessage = "Checking for duplicates...";
 
-            console.log("we are dupe checking!");
+            //console.log("we are dupe checking!");
 
             //special case for water temp - update the Activity.Description field with the range... we'll use this to duplicate check
             if (dataset.Datastore.TablePrefix == "WaterTemp") {
@@ -421,22 +441,23 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
 
                 //if the dupe_check.DuplicateActivityId is null or equals our own activityid, it is not a duplicate.
                 if (dupe_check.DuplicateActivityId === null || dupe_check.DuplicateActivityId === row.Activity.Id) { 
-                    hasDuplicateError = false;
+                    saveResult.hasError = false;
                     saveResult.error = null;
                 } else { //otherwise it is.
-                    hasDuplicateError = true;
-                    saveResult.error = "Duplicate record exists with these values: " + 
-                    dataset.Config.DuplicateCheckFields.toString().replace("Description","ReadingDateTimeRange").replace(/,/g,", ");
+                    saveResult.hasError = true;
+                    saveResult.error = "Duplicate record exists for: " + 
+                        dataset.Config.DuplicateCheckFields.toString().replace("Description","ReadingDateTimeRange").replace(/,/g,", ");
                 }
 
                 saveResult.saving = false;
                 saveResult.saveMessage = "Saving..."; //back to default
 
             }, function (data) { 
+                console.warn("duplicate check error:");
                 console.dir(data);
             });
 
-            return hasDuplicateError; 
+            return dupe_check;  //promise - can add other .then()'s
             
         };
 

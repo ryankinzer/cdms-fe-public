@@ -195,13 +195,13 @@ CDMSSelectCellEditor.prototype.focusIn = function () { this.eSelect.focus(); };
 CDMSTextareaCellEditor.prototype.init = function (params) {
     var _this = this;
 
-    _this.value = params.value;
+    _this.value = (params.value) ? params.value : "";
     _this.container = document.createElement('div');
     _this.container.style = "border-radius: 3px; border: 1px solid grey;background: #e6e6e6;padding: 1px;";
     _this.eSelect = document.createElement("textarea");
     _this.eSelect.rows = 7;
     _this.eSelect.cols = 40;
-    _this.eSelect.value = params.value;
+    _this.eSelect.value = _this.value;
     _this.container.appendChild(_this.eSelect);
 };
 
