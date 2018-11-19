@@ -3,33 +3,52 @@
     <h3>Edit Dataset Field Properties</h3>
 </div>
 <div class="modal-body" id="modal-body">
-    
-    <div>
-        <p ng-show="hasDuplicateError" class="alert alert-danger">Duplicate activities will not be saved.</p>
+    <div ng-show="ActivitiesToSave.length == 0">
+        <div>
+            <p ng-show="hasDuplicateError" class="alert alert-danger">Duplicate activities will not be saved.</p>
+        </div>
+        <div style="height: 500px; width: 100%; margin-top: 5px">
+            <div id="data-import-grid" class="ag-theme-blue gridStyle-small"></div>
+        </div>
+
+        <div>
+            Total rows: {{dataAgGridOptions.api.getDisplayedRowCount()}} / Rows with errors: {{PageErrorCount}} / Number of Activities: {{ActivityDates.length}}
+        </div>
     </div>
-    <div style="height: 500px; width: 100%; margin-top: 5px">
-        <div id="data-import-grid" class="ag-theme-blue gridStyle-small"></div>
+    <div ng-show="ActivitiesToSave.length > 0">
+        Saving Activities:
+        <table class="table striped">
+            <tr ng-repeat="activity in ActivitiesToSave">
+                <td class="modal-file-col1">{{activity.ActivityDate}}</td>
+                <td class="modal-file-col2">({{activity.numRecords}} records)</td>
+                <td class="modal-file-col3">
+                    <span ng-show="activity.result.success" >{{activity.result.success
+                    }}</span>
+                    <span ng-show="activity.result.error" >{{activity.result.error}}</span>
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <div>
-        Total rows: {{dataAgGridOptions.api.getDisplayedRowCount()}} / Rows with errors: {{PageErrorCount}} / Number of Activities: {{ActivityDates.length}}
-    </div>
 </div>
 
 <div class="modal-footer">
     <div style="width:100%;">
-        <div>
-            <p ng-show="saveResult.error" class="alert alert-danger">{{saveResult.error}}</p>
-        </div>
-        <div>
-            <div style="float:right;">
-                <button class="btn" ng-disabled="(saveResult.saving || (PageErrorCount > 0 && (dataset.Config && dataset.Config.AllowSaveWithErrors == false)) )" ng-click="save()">Save and close</button>
-                <button class="btn btn-warning" ng-click="cancel()" style="margin-right: 10px;">Cancel</button>
-                <br />
-                <div ng-show="saveResult.saving" style="margin-right: 20px;" class="alert alert-success">{{saveResult.saveMessage}}</div>
+        <div ng-show="ActivitiesToSave.length == 0">
+            <div>
+                <p ng-show="saveResult.error" class="alert alert-danger">{{saveResult.error}}</p>
             </div>
+            <div>
+                <div style="float:right;">
+                    <button class="btn" ng-click="save()">Save Activities</button>
+                    <button class="btn btn-warning" ng-click="cancel()" style="margin-right: 10px;">Cancel</button>
+                    <br />
+                    <div ng-show="saveResult.saving" style="margin-right: 20px;" class="alert alert-danger">{{saveResult.saveMessage}}</div>
+                </div>
 
+            </div>
         </div>
-
-    </div>
+        <div ng-show="ActivitiesToSave.length > 0">
+            <button class="btn btn-warning" ng-click="close()" style="margin-right: 10px;">Close</button>
+        </div>
 </div>

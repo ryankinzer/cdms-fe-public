@@ -109,6 +109,22 @@ function getMatchingByField(data, search, field) {
     return newlist;
 }
 
+//filters an array, returning only those objects where field matches search
+function getAllMatchingFromArray(data, search, field) { 
+
+    if (!Array.isArray(data))
+        return null;
+
+    var retval = [];
+    data.forEach(function (row) { 
+        if (row[field] == search)
+            retval.push(row);
+    });
+
+    return retval;
+
+}
+
 //returns array with matching field value
 function getMatchingByFieldArray(data, search, field) {
     var newlist = [];

@@ -605,7 +605,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         //check for duplicates        
         $scope.checkForDuplicates = function () {
-            $scope.hasDuplicateError = GridService.checkForDuplicates($scope.dataset, $scope.dataAgGridOptions, $scope.row, $scope.saveResult);
+            var promise = GridService.checkForDuplicates($scope.dataset, $scope.dataAgGridOptions, $scope.row, $scope.saveResult);
+            $scope.hasDuplicateError = $scope.saveResult.hasError;
+            return promise;
         };
 
 
@@ -647,11 +649,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 'details': [],
             };
 
-            
-
             // 1) all current detail records from the grid
             $scope.dataAgGridOptions.api.forEachNode(function (node) { 
-                payload.details.push(node.data); 
+                var data = angular.copy(node.data);
+                payload.details.push(data); 
             });
 
 			// If the user removed a row, the grid no longer contains that row.
@@ -661,15 +662,30 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 			// 2) add the deleted record to the detail payload, mark it as deleted
 			$scope.dataAgGridOptions.deletedItems.forEach(function(deletedItem){
                 if (deletedItem.Id) { //only push ones that were existing already (new rows that are deleted are ignored)
-                    deletedItem.RowStatusId = ROWSTATUS_DELETED; 
-                    payload.details.push(deletedItem);
-                    payload.deletedRowIds.push(deletedItem.Id);
+                    var data = angular.copy(deletedItem);
+                    data.RowStatusId = ROWSTATUS_DELETED; 
+                    payload.details.push(data);
+                    payload.deletedRowIds.push(data.Id);
                 }
 			});
 
             // 3) note which are edited
             payload.editedRowIds = $scope.dataAgGridOptions.editedRowIds; 
 
+            // 4) convert multiselects from array to json
+
+            //get all multiselect fields we need to convert
+            var DetailMultiselectFields = getAllMatchingFromArray($scope.dataAgColumnDefs.DetailFields, 'multiselect', 'ControlType');
+
+            payload.details.forEach(function (data) { 
+                DetailMultiselectFields.forEach(function (multiselect_field) { 
+                    if (Array.isArray(data[multiselect_field.DbColumnName]) && data[multiselect_field.DbColumnName].length > 0) {
+                        data[multiselect_field.DbColumnName] = angular.toJson(data[multiselect_field.DbColumnName]);
+                        console.log(" -- multiselect " + multiselect_field.DbColumnName + " == " + data[multiselect_field.DbColumnName]);
+                    }
+                });
+            });
+            
             console.dir(payload);
             //return;
 

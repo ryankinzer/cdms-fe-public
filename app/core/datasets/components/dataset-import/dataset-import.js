@@ -213,7 +213,7 @@
 
 				//set default Row QA StatusId
 				var new_row = {
-					QAStatusId: $scope.dataset.DefaultRowQAStatusId
+                    QAStatusId: ($scope.dataset.DefaultRowQAStatusId) ? $scope.dataset.DefaultRowQAStatusId : 1  //default to OK
 				};
 
 				// On each row of imported data (data_row), we only want to pull in the fields we have mapped.
@@ -330,7 +330,7 @@
                 backdrop  : 'static',
                 keyboard  : false
             }).result.then(function (saved) { 
-                
+                $location.path("/activities/" + $scope.dataset.Id);
             },
             function (dismissed) { 
                 $scope.enablePreview = true;

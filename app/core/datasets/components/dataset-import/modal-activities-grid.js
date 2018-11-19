@@ -1,10 +1,11 @@
 ﻿//multiple activities grid
-var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridService','$timeout','$rootScope',
+var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridService','$timeout','$rootScope','DatasetService',
 
-    function ($scope, $modal, $modalInstance, GridService, $timeout, $rootScope) {
+    function ($scope, $modal, $modalInstance, GridService, $timeout, $rootScope, DatasetService) {
 
         $scope.hasDuplicateError = false;
         $scope.ActivityDatesDuplicates = [];
+        $scope.ActivitiesToSave = [];
 
         $scope.calculateStatistics = function () { 
             
@@ -250,20 +251,20 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
         
             console.dir($scope.ActivityDatesDuplicates);
 
-            var ActivitiesToSave = [];
-
             var duplicates = [];
             $scope.ActivityDatesDuplicates.forEach(function (dupe) { duplicates.push(dupe.ActivityDate) });
 
             $scope.dataAgGridOptions.api.forEachNode(function (node) {
                 var the_date = moment(node.data.Activity.ActivityDate).format('l');
                 if (!duplicates.contains(the_date))
-                    ActivitiesToSave.push(the_date);
+                    $scope.ActivitiesToSave.push({ 'ActivityDate': the_date });
             });
 
-            alert("A total of " + ActivitiesToSave.length + " activities will be saved.");
+            if (!confirm("A total of " + $scope.ActivitiesToSave.length + " activities will be saved.")) {
+                return;
+            }
 
-            ActivitiesToSave.forEach(function (activity) { 
+            $scope.ActivitiesToSave.forEach(function (activity) { 
 
                 //compose our payload 
                 var payload = {
@@ -279,24 +280,61 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
                 $scope.dataAgGridOptions.api.forEachNode(function (node, index) { 
                     var the_date = moment(node.data.Activity.ActivityDate).format('l');
-                    if (activity == the_date) {
+                    if (activity.ActivityDate == the_date) {
+                        console.dir(node);
                         if (payload.header == null) {
                             payload.Activity = node.data.Activity;
                             payload.header = {};
                             $scope.dataAgColumnDefs.HeaderFields.forEach(function (header_field) { 
                                 payload.header[header_field.DbColumnName] = node.data[header_field.DbColumnName];
                             })
+                            //add the ActivityQAStatus back in with values from the activity
+                            payload.Activity.ActivityQAStatus = {
+                                'Comments': node.data.Activity.QAComments,
+                                'QAStatusId': node.data.Activity.QAStatusId,
+                            };
+                            delete payload.header['QAStatusId'];
+                            delete payload.header['QAComments'];
+                            delete payload.header['LocationId'];
+                            delete payload.header['ActivityDate'];
                         }
-                        var the_detail = {};
+                        var the_detail = { 'QAStatusId' : node.data['QAStatusId'] };
                         $scope.dataAgColumnDefs.DetailFields.forEach(function (detail_field) {
-                            the_detail[detail_field.DbColumnName] = node.data[detail_field.DbColumnName];
+                            if(detail_field.ControlType == "multiselect" && Array.isArray(node.data[detail_field.DbColumnName]))
+                                the_detail[detail_field.DbColumnName] = angular.toJson(node.data[detail_field.DbColumnName]);
+                            else
+                                the_detail[detail_field.DbColumnName] = node.data[detail_field.DbColumnName];
                         }); 
                         payload.details.push(the_detail);
+                        console.dir(the_detail);
+                        
                     }
                 });
 
-                console.log("send me to save!");
-                console.dir(payload); //kbhere!
+                activity.numRecords = payload.details.length;
+
+                console.dir(payload); 
+                activity.result = DatasetService.saveActivities(payload);
+
+                activity.result.$promise.then(
+                function () {
+                    activity.result.success = "Save successful.";
+                    console.log("Success!");
+                }, 
+                function (data) { 
+                    console.log("Failure!");
+                    console.dir(data);
+
+                    if (typeof data.data !== 'undefined') {
+                        if (typeof data.data.ExceptionMessage !== 'undefined') {
+                            theErrorText = data.data.ExceptionMessage;
+                            console.log("Save error:  theErrorText = " + theErrorText);
+                        }
+
+                    }
+                    activity.result.error = "Error: " + theErrorText ;
+
+                });
 
             });
 
@@ -316,5 +354,9 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
         $scope.cancel = function () {
             $modalInstance.dismiss();
         };
+
+        $scope.close = function () { 
+            $modalInstance.close();
+        }
     }
 ];
