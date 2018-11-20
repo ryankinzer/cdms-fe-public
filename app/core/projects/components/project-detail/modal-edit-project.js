@@ -2,27 +2,32 @@
 var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectService', 'CommonService',
     function (scope, $modal, $modalInstance, ProjectService, CommonService) {
 
-        //make the row of values that map to our field directives.
-        scope.project.MetaFields.forEach(function (field) { 
-            field.DbColumnName = field.Label = field.Name;
-            scope.row[field.DbColumnName] = field.Values;
-        });
-
         if (scope.row && scope.row.Id) {
             scope.header_message = "Edit project: " + scope.project.Name;
         }
         else {
             scope.header_message = "Create new project";
-            scope.row = {};
+            scope.row = scope.project;
         }
 
+        //make the row of values that map to our field directives.
+        scope.project.MetaFields.forEach(function (field) { 
+            field.DbColumnName = field.Label = field.Name;
+            if (field.Values)
+                scope.row[field.DbColumnName] = field.Values;
+            else
+                scope.row[field.DbColumnName] = null;
+        });
+
         scope.save = function () {
-            console.log("Inside ModalProjectEditorCtrl, save...");
-            console.log("scope.row is next...")
-            console.dir(scope.row);
 
             if (!scope.row.Name) {
                 alert("You must enter a Program/Project Name!");
+                return;
+            }
+
+            if (!scope.row['Program'] || !scope.row['Sub-program']) {
+                alert("You must choose a Program and Sub-program on the 'Project' tab.");
                 return;
             }
 
