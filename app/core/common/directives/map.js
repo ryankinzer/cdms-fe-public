@@ -70,6 +70,18 @@ define([
         };
 
         // declare our map
+        require(["esri/urlUtils"], function (urlUtils) {
+
+            urlUtils.addProxyRule({
+              urlPrefix: "restdata.ctuir.org",
+              proxyUrl: proxyUrl
+            });
+
+            //esriConfig.defaults.io.proxyUrl = proxyUrl; // From the config.js file.
+            //esriConfig.defaults.io.alwaysUseProxy = false;
+
+        });
+
         var map = new Map($attrs.id, mapOptions);
 
         map.selectedBasemap = defaultLayer;

@@ -16,13 +16,72 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                 'Location' : $scope.row,
             };
 
-            var save_location = CommonService.saveNewProjectLocation($scope.project.Id, $scope.row);
+            //OK -- if we are saving a NEW location then start off by adding the point to the featurelayer
+            if (!$scope.row.Id) {
+                console.log("Adding a NEW location -- $scope.row.Id = " + $scope.row.Id);
 
-            save_location.$promise.then(function () { 
-                $modalInstance.close(save_location);
-            }, function (error) {
-                $scope.SaveMessage = "Error: " + error.data.ExceptionMessage;
-            });
+                $scope.map.reposition(); //this is important or else we end up with our map points off somehow.
+
+                //nad83 zone 11...  might have to have this as alist somehwere...
+                var inSR = new esri.SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
+                var outSR = new esri.SpatialReference({ wkid: 102100 })
+                var geometryService = new esri.tasks.GeometryService(GEOMETRY_SERVICE_URL);
+                $scope.newPoint = new esri.geometry.Point($scope.row.GPSEasting, $scope.row.GPSNorthing, inSR);
+
+                //convert spatial reference
+                var PrjParams = new esri.tasks.ProjectParameters();
+
+                PrjParams.geometries = [$scope.newPoint];
+                // PrjParams.outSR is not set yet, so we must set it also.
+                PrjParams.outSR = outSR;
+
+                //do the projection (conversion)
+                geometryService.project(PrjParams, function (outputpoint) {
+
+                    $scope.newPoint = new esri.geometry.Point(outputpoint[0], outSR);
+                    $scope.newGraphic = new esri.Graphic($scope.newPoint, new esri.symbol.SimpleMarkerSymbol());
+                    $scope.map.graphics.add($scope.newGraphic);
+
+                    //add the graphic to the map and get SDE_ObjectId
+                    $scope.map.locationLayer.applyEdits([$scope.newGraphic], null, null).then(function (results) {
+                        if (results[0].success) {
+                            $scope.row.SdeObjectId = results[0].objectId;
+                            console.log("Created a new point! " + $scope.row.SdeObjectId);
+
+                            var new_location = CommonService.saveNewProjectLocation($scope.project.Id, $scope.row);
+                            new_location.$promise.then(function () {
+                                console.log("done and success!");
+                                //$scope.refreshProjectLocations();
+                                $modalInstance.close(new_location);
+                            });
+
+                        }
+                        else {
+                            $scope.SaveMessage = "There was a problem saving that location.";
+                            console.dir(results);
+                        }
+
+                    });
+                });
+            }
+            else //updating an existing...
+            {
+                //need to remove these info objects for saving
+                var save_row = angular.copy($scope.row);
+                save_row.LocationType = undefined;
+                save_row.WaterBody = undefined;
+
+                var new_location = CommonService.saveNewProjectLocation($scope.project.Id, save_row);
+                new_location.$promise.then(function () {
+                    //success
+                    $modalInstance.close(new_location);
+                },
+                    function (data) {
+                        //failed
+                        $scope.SaveMessage = "There was a problem saving that location.";
+                        console.dir(data);
+                    });
+            }
           
         };
 

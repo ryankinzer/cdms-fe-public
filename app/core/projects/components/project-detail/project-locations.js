@@ -46,7 +46,9 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             filter_component.selectValue(dataset.Datastore.LocationTypeId);
             scope.dataGridOptions.api.onFilterChanged();
             scope.dataGridOptions.api.deselectAll();
-            
+
+            scope.displayLocationsOnMap();            
+
         };
 
         scope.showProjectLocations = function () { 
@@ -54,7 +56,25 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             scope.dataGridOptions.api.setFilterModel(null)
             scope.dataGridOptions.api.onFilterChanged();
             scope.dataGridOptions.api.deselectAll();
+
+            scope.displayLocationsOnMap();
         };
+
+        scope.displayLocationsOnMap = function () { 
+            var locationIds = [];
+
+            scope.dataGridOptions.api.forEachNodeAfterFilter(function (node) { 
+                //console.dir(node);
+                locationIds.push(node.data.SdeObjectId);
+            });
+
+            if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
+                scope.map.locationLayer.showLocationsById(locationIds);
+
+            //console.log("showing these locations");
+            //console.dir(locationIds);
+
+        }
 
         
         var EditLinkTemplate = function (param) {
@@ -98,6 +118,9 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
                     scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
                     scope.dataGridOptions.api.refreshHeader();
                 }
+
+                scope.displayLocationsOnMap();
+
             });
 
         };
@@ -165,7 +188,34 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
         };
 
-        //scope.map = common_module.getLocationMapLayer();
+        scope.ShowMap = {
+            Display: false,
+            Message: "Show Map",
+            MessageToOpen: "Show Map",
+            MessageToClose: "Hide Map",
+        };
+
+        scope.toggleMap = function () {
+            if (scope.ShowMap.Display) {
+//                scope.removeFilter(); //also clears location
+                scope.ShowMap.Display = false;
+                scope.ShowMap.Message = scope.ShowMap.MessageToOpen;
+            }
+            else {
+                scope.ShowMap.Display = true;
+                scope.ShowMap.Message = scope.ShowMap.MessageToClose;
+
+                //setTimeout(function () {
+  //                  scope.map.reposition();
+                  //  console.log("repositioned");
+                //}, 400);
+
+            }
+        };
+
+        scope.click = function () { } //don't do anything for clicking for now...
+
+
 
     }
 
