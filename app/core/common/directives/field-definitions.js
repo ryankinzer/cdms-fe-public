@@ -241,6 +241,34 @@ common_module.directive('ctuirMultiselectField',
 
     });
 
+common_module.directive('ctuirMultiselectCheckboxField',
+    function(){
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-multiselect-checkbox.html',
+            restrict: 'E',
+            controller: function($scope, $element, $attrs) {
+               $scope.selectOptions = makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
+                /*
+                console.dir("have a multiselect-checkbox!");
+                console.dir($scope.selectOptions);
+                console.dir($scope.field);
+                console.dir($scope.row);
+                if (typeof $scope.row[$scope.field.DbColumnName] === 'string') {
+                    try {
+                        $scope.row[$scope.field.DbColumnName] = angular.fromJson($scope.row[$scope.field.DbColumnName]);
+                    }catch(e){
+                        console.log(" Could not convert "+ $scope.field.DbColumnName + " values " + $scope.row[$scope.field.DbColumnName] + " to an array.");
+                    }
+                }*/
+            }
+        };
+        
+        return result;
+
+    });
+
+
 common_module.directive('ctuirFileField',
     function($uibModal){
         var result = {

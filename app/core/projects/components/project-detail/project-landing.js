@@ -19,11 +19,27 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
         scope.UserIsOwner = false;
         scope.UserIsEditor = false;
         
-        scope.metadataList = {};
+        //scope.metadataList = {};
         scope.CellOptions = {}; //for metadata dropdown options
 
         
         scope.project.$promise.then(function () {
+            scope.afterProjectLoaded();
+        });
+
+        scope.openProjectEditor = function () {
+            scope.row = scope.project; //
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
+                controller: 'ModalProjectEditorCtrl',
+                scope: scope, //very important to pass the scope along...
+            }).result.then(function (saved_project) { 
+                scope.project = saved_project;
+                scope.afterProjectLoaded();
+            });
+        };
+
+        scope.afterProjectLoaded = function () { 
             //load the metafields for this project once it loads
             scope.project.MetaFields = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_PROJECT);
 
@@ -40,15 +56,16 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 
                         //prep the values if it is a multiselect
                         scope.project.MetaFields.forEach(function (field) {
-                            if (field.Values && field.ControlType == "multiselect")
+                            if (field.Values && (field.ControlType == "multiselect" || field.ControlType == "multiselect-checkbox")) {
                                 field.Values = getParsedMetadataValues(field.Values);
+                            }
                         });
                     });
                 } else {
 
                     //prep the values if it is a multiselect
                     scope.project.MetaFields.forEach(function (field) {
-                        if (field.Values && field.ControlType == "multiselect") {
+                        if (field.Values && (field.ControlType == "multiselect" || field.ControlType == "multiselect-checkbox")) {
                             field.Values = getParsedMetadataValues(field.Values);
                         }
                     });
@@ -56,21 +73,7 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 
                 console.dir(scope.project);
             });
-        });
-
-        scope.openProjectEditor = function () {
-            scope.row = scope.project; //
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
-                controller: 'ModalProjectEditorCtrl',
-                scope: scope, //very important to pass the scope along...
-            }).result.then(function (saved_project) { 
-                scope.project = ProjectService.getProject(routeParams.Id);
-                scope.project.$promise.then(function () { 
-                    scope.prepareMetadataforProject();
-                });
-            });
-        };
+        }
 
 
 		scope.uploadFileType = "";

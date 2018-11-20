@@ -29,17 +29,35 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
             scope.row.Metadata = [];
             
             //need to make multi-selects into json objects
-            angular.forEach(scope.metadataList, function (md) {
-                //flatten multiselect values into an json array string
-                if (md.Values && md.controlType == "multiselect") {
-                    md = angular.copy(md);
-                    md.Values = angular.toJson(md.Values).toString(); 
-                }
+            angular.forEach(scope.row.MetaFields, function (md) {
+                if (scope.row[md.DbColumnName]) {
 
-                scope.row.Metadata.push(md);
+                    //flatten multiselect values into an json array string
+                    if (md.ControlType == "multiselect" || md.ControlType == "multiselect-checkbox") {
+                        md = angular.copy(md);
+                        md.Values = angular.toJson(scope.row[md.DbColumnName]);
+                    }
+                    else {
+                        md.Values = scope.row[md.DbColumnName];
+                    }
+                    md.RelationId = scope.project.Id; 
+                    md.UserId = scope.currentUserId;
+                    delete md.EffDt;
+                    scope.row.Metadata.push(md);
+                } else
+                    console.log("No value for metafield " + md.DbColumnName);
             });
+            
+            var saveRow = angular.copy(scope.row);
+            delete saveRow.Editors;
+            delete saveRow.Files;
+            delete saveRow.Instruments;
+            delete saveRow.Editors;
+            delete saveRow.Locations;
+            delete saveRow.MetaFields;
+            delete saveRow.Owner;
 
-            var promise = ProjectService.saveProject(scope.row);
+            var promise = ProjectService.saveProject(saveRow);
             promise.$promise.then(function (saved_project) {
                 $modalInstance.close(saved_project);
             });
