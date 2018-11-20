@@ -7,7 +7,6 @@ require([
     'core/projects/components/project-detail/modal-new-file',
     'core/projects/components/project-detail/modal-edit-file',
     'core/projects/components/project-detail/modal-edit-project',
-    'core/projects/components/project-detail/modal-delete-file',
     'core/projects/components/project-detail/modal-choose-summary-images',
     'core/projects/components/project-detail/modal-choose-map',
     'core/projects/components/project-detail/modal-add-accuracy-check',
@@ -48,7 +47,6 @@ require([
     projects_module.controller('ModalEditFileCtrl', modal_edit_file);
     projects_module.controller('ModalNewFileCtrl', modal_new_file);
     projects_module.controller('ModalProjectEditorCtrl', modal_edit_project);
-    projects_module.controller('ModalDeleteFileCtrl', modal_delete_file);
     projects_module.controller('ModalChooseSummaryImagesCtrl', modal_choose_summary_images);
     projects_module.controller('ModalChooseMapCtrl', modal_choose_map);
     projects_module.controller('ModalEditLocationCtrl', modal_edit_location);

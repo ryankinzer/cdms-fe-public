@@ -97,18 +97,6 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
         }
 
 
-        //both docs and gallery tabs use these:
-        scope.openDeleteFileModal = function (a_selection, a_callback) {
-            scope.row = a_selection;
-            scope.callback = a_callback;
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/core/projects/components/project-detail/templates/modal-delete-file.html',
-                controller: 'ModalDeleteFileCtrl',
-                scope: scope, //very important to pass the scope along...
-            });
-        };
-
         //selection to edit, callback to fire on success.
         scope.openEditFileModal = function (a_selection, a_callback) {
             scope.row = a_selection;
@@ -125,6 +113,9 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-upload-files.html',
                 controller: 'ModalNewFileCtrl',
+                windowClass: 'modal-large',
+                backdrop  : 'static',
+                keyboard  : false,
                 scope: scope, //very important to pass the scope along...
             });
         };
@@ -133,7 +124,7 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
         scope.removeFromFiles = function (removed_item) {
             scope.project.Files.forEach(function (item, index) {
                 //console.log("item id is " + item.Id + " looking for " + removed_item.File.Id);
-                if (item.Id === removed_item.File.Id) {
+                if (item.Id === removed_item.Id) {
                     //console.log("FOund an ID that matches for delete");
                     scope.project.Files.splice(index, 1);
                 }
@@ -167,7 +158,7 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                scope.openDeleteFileModal(param.data, scope.afterDeleteGalleryFile);
+                scope.deleteGalleryFile(param.data);
             });
             div.appendChild(delBtn);
 
@@ -224,8 +215,6 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
             ]
         };
 
-        //$document.ready(function () {
-            //after the project files are loaded by our parent, they are split into two arrays. project.Images is ours.
         scope.activateGalleryGrid = function () {
 
             //////// Load the gallery grid
@@ -245,37 +234,6 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
 
         };
 
-        //});
-
-
-        ///////// file handling for Gallery tab
-
-        //open the new file modal
-        scope.newGalleryFile = function () {
-            scope.openNewFileModal(scope.afterNewGalleryFile);
-        };
-
-        //after create a new file
-        scope.afterNewGalleryFile = function (new_item) {
-            console.log("After saved a image");
-            //scope.galleryGridOptions.api.setRowData(scope.project.Images);
-            if (new_item[0].FileTypeId === 1) {
-                var ag_grid_div = undefined;
-                scope.project.Images.push(new_item[0]);
-                scope.project.Files.push(new_item[0]);
-                scope.galleryGridOptions.api.setRowData(scope.project.Images); // This line refreshes the grid on the gallery tab.
-            }
-            else {
-                scope.project.Docs.push(new_item[0]);
-                scope.project.Files.push(new_item[0]);
-
-                //TODO -- no longer parent
-                scope.$parent.grids.docsGridOptions.api.setRowData(scope.project.Docs); // This line refreshes the grid on the documents tab.
-            }
-
-            console.log("done reloading grid after editing gallery item.");
-        };
-
         //edit our project images list and then reload the grid.
         scope.afterEditGalleryFile = function (edited_item) {
             scope.project.Images.forEach(function (item, index) {
@@ -289,17 +247,25 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
         };
 
         //remove an image from our project docs list and then reload the grid.
-        scope.afterDeleteGalleryFile = function (removed_item) {
-            scope.project.Images.forEach(function (item, index) {
-                if (item.Id === removed_item.File.Id) {
-                    scope.project.Images.splice(index, 1);
-                }
-            });
+        scope.deleteGalleryFile = function (removed_item) {
 
-            scope.removeFromFiles(removed_item);
+            if (confirm("Are you sure you want to delete this file? (there is no undo)")) { 
+                var promise = ProjectService.deleteFile(scope.project.Id, removed_item);
 
-            scope.galleryGridOptions.api.setRowData(scope.project.Images);
-            console.log("done reloading grid after removing image item.");
+                promise.$promise.then(function () { 
+                    scope.project.Images.forEach(function (item, index) {
+                        if (item.Id === removed_item.Id) {
+                            scope.project.Images.splice(index, 1);
+                        }
+                    });
+
+                    scope.removeFromFiles(removed_item);
+
+                    scope.galleryGridOptions.api.setRowData(scope.project.Images);
+                    console.log("done reloading grid after removing image item.");
+                });
+            }
+            
         };
 
 
@@ -326,7 +292,7 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                scope.openDeleteFileModal(param.data, scope.afterDeleteDocsFile);
+                scope.deleteDocFile(param.data);
             });
             div.appendChild(delBtn);
 
@@ -395,11 +361,11 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
 
         //open the new file modal
         scope.newFile = function () {
-            scope.openNewFileModal(scope.afterNewDocsFile);
+            scope.openNewFileModal(scope.afterNewFile);
         };
 
         //after create a new file
-        scope.afterNewDocsFile = function (new_item) {
+        scope.afterNewFile = function (new_item) {
             console.log("After saved a doc");
             //console.dir(new_item[0]);
             if (new_item[0].FileTypeId === 1)
@@ -407,33 +373,35 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
                 var ag_grid_div = undefined;
                 scope.project.Images.push(new_item[0]);
                 scope.project.Files.push(new_item[0]);
-
-//TODO -- no longer parent
-                scope.$parent.grids.galleryGridOptions.api.setRowData(scope.project.Images); // This line refreshes the grid on the gallery tab.
+                scope.galleryGridOptions.api.setRowData(scope.project.Images); 
             }
             else {
                 scope.project.Docs.push(new_item[0]);
                 scope.project.Files.push(new_item[0]);
                 scope.docsGridOptions.api.setRowData(scope.project.Docs); // This line refreshes the grid on the documents tab.
             }
-            console.log("done reloading grid after editing docs item.");
+            console.log("done reloading grid after adding docs item.");
         };
 
 
         //remove an item from our project docs list and then reload the grid.
-        scope.afterDeleteDocsFile = function (removed_item) {        
-            scope.project.Docs.forEach(function (item, index) {
-                console.log("item id is " + item.Id + " looking for " + removed_item.File.Id);
-                if (item.Id === removed_item.File.Id) {
-                    console.log("Found an ID that matches for delete");
-                    scope.project.Docs.splice(index, 1);
-                }
-            });
+        scope.deleteDocFile = function (removed_item) {        
+            if (confirm("Are you sure you want to delete this file? (there is no undo)")) { 
+                var promise = ProjectService.deleteFile(scope.project.Id, removed_item);
 
-            scope.removeFromFiles(removed_item);
+                promise.$promise.then(function () { 
+                    scope.project.Docs.forEach(function (item, index) {
+                        if (item.Id === removed_item.Id) {
+                            scope.project.Docs.splice(index, 1);
+                        }
+                    });
 
-            scope.docsGridOptions.api.setRowData(scope.project.Docs);
-            console.log("done reloading grid after removing doc item.");
+                    scope.removeFromFiles(removed_item);
+
+                    scope.docsGridOptions.api.setRowData(scope.project.Docs);
+                    console.log("done reloading grid after removing doc item.");
+                });
+            }
         };
 
         //edit our project docs list and then reload the grid.

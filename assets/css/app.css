@@ -787,6 +787,7 @@ margin-left: -8px !important;
 .modal-large .modal-content {
     width: 100% !important;
     min-height: 700px;
+    min-width: 790px;
 }
 
 .modal-large .modal-dialog {

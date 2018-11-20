@@ -49,8 +49,7 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
                     md.UserId = scope.currentUserId;
                     delete md.EffDt;
                     scope.row.Metadata.push(md);
-                } else
-                    console.log("No value for metafield " + md.DbColumnName);
+                } 
             });
             
             var saveRow = angular.copy(scope.row);
