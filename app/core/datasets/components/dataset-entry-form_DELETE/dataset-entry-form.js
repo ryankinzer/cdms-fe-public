@@ -1,4 +1,7 @@
-﻿// Data entry page
+﻿// NOTE - this is just for history, now, and should be deleted when we're done with it.
+
+
+// Data entry page
 var dataset_entry_form = ['$scope', '$routeParams',
     'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
     'ActivityParser', 'DataSheet', '$route', '$upload',

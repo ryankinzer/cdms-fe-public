@@ -330,12 +330,12 @@ datasets_module.service('DatasetService', ['$q',
 			
             //configureDataset: function(dataset)
             configureDataset: function (dataset, scope) {
-                console.log("configuring dataset.Name = " + dataset.Name);
+                //console.log("configuring dataset.Name = " + dataset.Name);
                 //default page routes
                 dataset.activitiesRoute = "activities"; //default route -- when they click to go to "activities" this is the route they should use.
 
                 //objectify our dataset config for later use
-                console.log("dataset.Config is next...");
+                //console.log("dataset.Config is next...");
                 //console.dir(dataset.Config);
                 //if(dataset.Config) // Original line.
                 // If we are verifying the variable is defined, this works the best.  Lastly, the database column config may either be null, or contain the text "NULL", so we must check for that too.
@@ -347,7 +347,7 @@ datasets_module.service('DatasetService', ['$q',
                         dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
 
                     if (typeof scope == 'undefined') {
-                        console.log("SKIPPING dataset config - no scope is set!");
+                        //console.log("SKIPPING dataset config - no scope is set!");
                     }
                     else {
                         //part of configuration is authorization.  If the user isn't authorized

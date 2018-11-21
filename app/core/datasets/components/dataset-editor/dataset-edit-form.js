@@ -1,5 +1,5 @@
 ﻿/**
-*  Data entry, date edit, import all use this controller
+*  Data entry, date edit, import (single activity) all use this controller
 */
 
 
@@ -209,7 +209,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $scope.row.dataChanged = true;
 
             //if one of the duplicatecheck fields change then check for duplicates.
-            if($scope.dataset.Config.DuplicateCheckFields.contains(field.DbColumnName))
+            if($scope.dataset.Config.DuplicateCheckFields && $scope.dataset.Config.DuplicateCheckFields.contains(field.DbColumnName))
                 $scope.checkForDuplicates();
 
             //console.dir($scope.row);
@@ -353,6 +353,24 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     $location.path("/unauthorized");
                 }
 
+                try {
+                    $scope.project.Config = ($scope.project.Config) ? angular.fromJson($scope.project.Config) : {};
+                } catch (e) { 
+                    console.error("config could not be parsed for project" + $scope.project.Config);
+                    console.dir(e);
+                }
+
+                //do we need to pull in habitat site locations?
+                if ($scope.project.Config.ShowHabitatSitesForDatasets && $scope.project.Config.ShowHabitatSitesForDatasets.contains($scope.dataset.Name)) { 
+                    $scope.project.Locations.forEach(function (loc) {
+                        if (loc.LocationTypeId == LOCATION_TYPE_Hab) {
+                            //switch the type to say "it is one of us" and add the label...
+                            loc.LocationTypeId = $scope.dataset.Datastore.LocationTypeId;
+                            loc.Label = loc.Label + " (Hab Site)";
+                        }
+                    });
+                }
+                
 
                 //TODO - needed?
                 //$rootScope.projectId = $scope.projectId = $scope.project.Id;
@@ -522,13 +540,17 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             console.log(" -- save -- ");
 
-            dupe_check.$promise.then(function () { 
-                //TODO: IF we have errors don't save unless config.savewitherrors = true
-                if (!$scope.hasDuplicateError)
-                    $scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
-                else
-                    console.log("Aborting saving because we have a duplicate error");
-            });
+            if (dupe_check) {
+                dupe_check.$promise.then(function () {
+                    //TODO: IF we have errors don't save unless config.savewitherrors = true
+                    if (!$scope.hasDuplicateError)
+                        $scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
+                    else
+                        console.log("Aborting saving because we have a duplicate error");
+                });
+            } else {
+                $scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
+            }
 
 
             //console.dir($scope.row);

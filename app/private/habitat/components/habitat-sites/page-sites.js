@@ -37,13 +37,23 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                     scope.sitesGridOptions.api.setRowData(scope.subprojectList);
                     scope.refreshSubprojectLists();
                 });
+
+                scope.isFavorite = $rootScope.Profile.isProjectFavorite(scope.project.Id);
+
+                try {
+                    if (!scope.project.Config) {
+                        scope.project.Config = {};
+                    } else {
+                        scope.project.Config = angular.fromJson(scope.project.Config);
+                    }
+                } catch (e) { 
+                    scope.project.Config = {};
+                    console.error("config could not be parsed for project: " + scope.project.Config);
+                    console.dir(e);
+                }
+
             });
         });
-
-
-
-
-
 
         var ItemCount = function (params) {
             if (params.node.data.HabitatItems === undefined || params.node.data.HabitatItems === null)
@@ -472,6 +482,18 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             });
         };
 
+
+        scope.openChooseDatasetsForHabitatSites = function () { 
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-choose-showdatasets.html',
+                controller: 'ModalChooseShowDatasetsCtrl',
+                scope: scope, //very important to pass the scope along...
+            }).result.then(function () { 
+
+            });
+        };
+
+
         scope.openGeospatialDataPage = function () {
             //console.log("Inside openGeospatialDataPage...");
 
@@ -816,6 +838,11 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             scope.sitesGridOptions.api.refreshInMemoryRowModel('group');
             //console.log("redrawgroupmodel!");
         };
+
+        //handle favorite toggle
+        scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteProject(scope, $rootScope); 
+        }
       
     }
 ];

@@ -53,6 +53,10 @@ projects_module.factory('SaveProject', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/project/saveproject');
 }]);
 
+projects_module.factory('SaveProjectConfig', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/project/SaveProjectConfig');
+}]);
+
 projects_module.factory('GetAllInstruments', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/instrument/getinstruments');
 }]);
@@ -152,6 +156,7 @@ projects_module.service('ProjectService', ['$q',
     'RemoveProjectFisherman',
     'RemoveInstrumentAccuracyCheck',
 	'GetCrppStaff',
+    'SaveProjectConfig',
     function ($q,
         ProjectFunders,
         ProjectCollaborators,
@@ -178,7 +183,8 @@ projects_module.service('ProjectService', ['$q',
         GetProjectFishermen,
         RemoveProjectFisherman,
         RemoveInstrumentAccuracyCheck,
-		GetCrppStaff
+		GetCrppStaff,
+        SaveProjectConfig
 		) {
 
         var service = {
@@ -222,6 +228,10 @@ projects_module.service('ProjectService', ['$q',
 
             saveProject: function (project) {
                 return SaveProject.save({ Project: project });
+            },
+        
+            saveProjectConfig: function (project) {
+                return SaveProjectConfig.save({ Project: project });
             },
 
             getProjectFiles: function (projectId) {
