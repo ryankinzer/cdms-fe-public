@@ -78,6 +78,11 @@ var project_data = ['$scope', '$routeParams','SubprojectService', 'ProjectServic
 
         };
 
+        //handle favorite toggle
+        scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
+        scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteProject(scope, $rootScope); 
+        }
 
     }
 

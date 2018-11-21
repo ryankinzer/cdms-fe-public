@@ -183,8 +183,8 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 allColumnIds.push(columnDef.colId);
             });
             coldefObject.columnApi.autoSizeColumns(allColumnIds);
-            console.log("tried to autosize: ");
-            console.dir(allColumnIds);
+            //console.log("tried to autosize: ");
+            //console.dir(allColumnIds);
         };
 
 

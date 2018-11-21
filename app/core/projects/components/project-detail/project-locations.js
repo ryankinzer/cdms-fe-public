@@ -215,7 +215,11 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
         scope.click = function () { } //don't do anything for clicking for now...
 
-
+        //handle favorite toggle
+        scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
+        scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteProject(scope, $rootScope); 
+        }
 
     }
 

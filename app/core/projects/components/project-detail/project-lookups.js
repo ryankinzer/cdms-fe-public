@@ -183,6 +183,11 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
             });
         };
 
+        //handle favorite toggle
+        scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
+        scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteProject(scope, $rootScope); 
+        }
 
     }
 

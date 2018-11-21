@@ -81,9 +81,7 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 		scope.projectId = theUrl.substring(theLastSlashLoc + 1);
 		console.log("scope.projectId = " + scope.projectId);
 
-		scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
-
-
+		
 		scope.ShowMap = {
 			Display: false,
 			Message: "Show Map",
@@ -91,30 +89,6 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 			MessageToClose: "Hide Map",
 		};
 		
-
-		
-        scope.toggleFavorite = function(){
-            scope.isFavorite = !scope.isFavorite; //make the visible change instantly.
-
-            scope.results = {};
-
-            $rootScope.Profile.toggleProjectFavorite(scope.project);
-
-            UserService.saveUserPreference("Projects", $rootScope.Profile.favoriteProjects.join(), scope.results);
-
-            var watcher = scope.$watch('results', function(){
-                if(scope.results.done)
-                {
-                    //if something goes wrong, roll it back.
-                    if(scope.results.failure)
-                    {
-                        scope.isFavorite = !scope.isFavorite;
-                        $rootScope.Profile.toggleProjectFavorite(scope.project);
-                    }
-                    watcher();
-                }
-            },true);
-        }
 		
 		scope.toggleMap = function(){
 			if(scope.ShowMap.Display)
@@ -176,6 +150,12 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
             });
 
         };
+
+        //handle favorite toggle
+        scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
+        scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteProject(scope, $rootScope); 
+        }
 
 
     }

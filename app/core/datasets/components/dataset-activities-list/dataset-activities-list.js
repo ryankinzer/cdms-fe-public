@@ -8,8 +8,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
-        $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
-
         //this is the default columns (fields) to show in the activities grid, 
         //  but it will be overridden if there is one configured in the dataset.
         var DefaultActivityListFields = [
@@ -717,29 +715,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             }
         };
 */
-        $scope.toggleFavorite = function () {
-            $scope.isFavorite = !$scope.isFavorite; //make the visible change instantly.
-
-            $scope.results = {};
-
-            $rootScope.Profile.toggleDatasetFavorite($scope.dataset);
-
-            UserService.saveUserPreference("Datasets", $rootScope.Profile.favoriteDatasets.join(), $scope.results);
-
-            var watcher = $scope.$watch('results', function () {
-                if ($scope.results.done) {
-                    //if something goes wrong, roll it back.
-                    if ($scope.results.failure) {
-                        $scope.isFavorite = !$scope.isFavorite;
-                        $rootScope.Profile.toggleDatasetFavorite($scope.dataset);
-                    }
-                    watcher();
-                }
-            }, true);
-
-
-        }
-
+        
 /*
         $scope.refreshProjectLocations = function () {
             ProjectService.clearProject();
@@ -929,49 +905,12 @@ var dataset_activities_list = ['$scope', '$routeParams',
             $location.path("/dataentryform/" + $scope.dataset.Id); 
         };
 
+        //handle favorite toggle
+        $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
+        $scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteDataset($scope, $rootScope); 
+        }
 
-/*
-        //Ok -- this is pretty ugly and non-angular-ish.  This is because in the context of a dijit I'm not sure
-        //  how to get angular to process any content here... so we'll have to compose the content " by hand "
-        $scope.getInfoContent = function (graphic) {
-            var location = getByField($scope.locationsArray, graphic.attributes.OBJECTID, "SdeObjectId");
-            $scope.map.infoWindow.setTitle(location.Label);
-
-            var html = "";
-
-            if (location.Description)
-                html += "<i>" + location.Description + "</i><br/><br/>";
-
-            html += "<b>Type: </b>" + location.LocationType.Name;
-
-            if (location.Elevation)
-                html += "<br/><b>Elevation: </b>" + location.Elevation;
-            if (location.GPSEasting)
-                html += "<br/><b>Easting: </b>" + location.GPSEasting;
-            if (location.GPSNorthing)
-                html += "<br/><b>Northing: </b>" + location.GPSNorthing;
-            if (location.Latitude)
-                html += "<br/><b>Latitude: </b>" + location.Latitude;
-            if (location.Longitude)
-                html += "<br/><b>Longitude: </b>" + location.Longitude;
-            if (location.OtherAgencyId)
-                html += "<br/><b>Other Agency Id: </b>" + location.OtherAgencyId;
-            if (location.WettedWidth)
-                html += "<br/><b>Wetted Width: </b>" + location.WettedWidth;
-            if (location.WettedDepth)
-                html += "<br/><b>Wetted Depth: </b>" + location.WettedDepth;
-            if (location.RiverMile)
-                html += "<br/><b>River Mile: </b>" + location.RiverMile;
-            if (location.ImageLink)
-                html += "<br/><br/><a href='" + location.ImageLink + "' target='_blank'><img width='200px' src='" + location.ImageLink + "'/></a>"
-
-            if ($scope.Profile.isProjectOwner($scope.project) || $scope.Profile.isProjectEditor($scope.project))
-                html += "<br/><div class='right'><a href='#/datasetimport/" + $scope.dataset.Id + "?LocationId=" + location.Id + "'>Import data</a></div>";
-
-            return html;
-
-        };
-*/
     }
 
    

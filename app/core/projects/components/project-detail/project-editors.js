@@ -130,7 +130,13 @@ var project_editors = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
         scope.canEdit = function (project) {
             return $rootScope.Profile.canEdit(project);
         };
-        
+     
+        //handle favorite toggle
+        scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
+        scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteProject(scope, $rootScope); 
+        }
+
     }
 
 ];

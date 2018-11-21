@@ -282,12 +282,8 @@ common_module.service('CommonService', ['$q',
                 return SaveLookupTableItem.save(payload);
             }
 
-
-
-
+            
         };
-
-        //service.getMetadataProperty(1); //cause our metadata properties to be loaded early.
 
         return service;
     }
