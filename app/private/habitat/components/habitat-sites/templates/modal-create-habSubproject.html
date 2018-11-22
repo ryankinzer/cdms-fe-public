@@ -3,261 +3,197 @@
 	<h4>{{header_message}}</h4>
 </div>
 			
-<div class="import-has-errors"  ng-show="subprojectSave.error">		
-	<div class="alert alert-danger" ng-show="subprojectSave.error">
-		{{subprojectSave.errorMessage}}
-	</div>
-	<!--<div class="alert alert-info" ng-show="!subprojectSave.error" >
-		Fisherman does not exist.
-	</div>-->
-</div>
 			
-<div class="modal-body">
+<div class="modal-body" id="modal-body">
+
+    <div class="import-has-errors" ng-show="subprojectSave.error">
+        <div class="alert alert-danger" ng-show="subprojectSave.error">
+            {{subprojectSave.errorMessage}}
+        </div>
+    </div>
     <div ng-show="showFormItems">
 
-        <form name="form" class="css-form modal-form" novalidate>
-            <!-- We need this line, to make the directives work.-->
-            <!--<button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Cancel</button>-->
-            <p>* = Required Items.</p>
-            <div class="header-label">* Project Name</div>
-            <div class="header-value">
-                <input class="form-control" type="text" ng-model="subproject_row.ProjectName" />
-            </div>
+        <div class="right"><p>* = Required Items.</p></div>
 
-            <div class="header-label">Waterbody:</div>
-            <div class="header-value">
-                <select class="form-control" ng-model="subproject_row.WaterBodyId" ng-options="p.Id as p.Name for p in waterbodies"></select>
-            </div>
+        <div class="row">
 
-            <div class="header-label">Project Summary</div>
-            <div class="header-value">
-                <textarea class="form-control" type="text" rows="4" maxlength="255" ng-model="subproject_row.ProjectSummary"></textarea>
-            </div>
-            <div class="header-label">Project Description</div>
-            <div class="header-value">
-                <textarea class="form-control" type="text" rows="4" ng-model="subproject_row.ProjectDescription"></textarea>
-            </div>
+            <form name="form" class="row-form modal-form" novalidate>
 
-                <div class="form-group" ng-class="{'has-error' : currentFiles.length > 1}" style="margin-bottom: 0px;">
-                    <div class="header-label">Feature Image</div>
-                    <div class="header-value form-file" >
-                        <button class="right btn btn-xs" ng-click="openFileModal(subproject_row, 'ItemFiles')">Add/Remove</button>
-                        <div ng-bind-html="subproject_row['ItemFiles'] | fileNamesFromString">&nbsp;</div>
-                    </div>
-                    <div class="has-error" ng-if="currentFiles.length > 1">Error: Only one Featured Image allowed; remove one.</div>
-                </div>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" data-target="#project">Project</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" data-target="#loc">Location</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" data-target="#hab">Habitat</a>
+                    </li>
+                </ul>
 
-                <div class="form-group" ng-class="{ 'has-error' :  form.Easting.$error.float}" style="margin-bottom: 0px;">
-                    <div class="header-label">* Easting</div>
-                    <div class="header-value">
-                        <input class="form-control" name="Easting" ng-model="subproject_row.GPSEasting" placeholder="ex: 541324" sixfloat />
-                        <p class="field-error-block" ng-show="form.Easting.$error.float">This is not a valid Easting</p>
-                    </div>
-                </div>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="project">
+                        <div class="list-group media-list media-list-stream" style="display:block;">
+                            <div style="margin-top: 30px;"></div>
 
-                <div class="form-group" ng-class="{ 'has-error' :  form.Northing.$error.float}" style="margin-bottom: 0px;">
-                    <div class="header-label">* Northing</div>
-                    <div class="header-value">
-                        <input class="form-control" name="Northing" ng-model="subproject_row.GPSNorthing" placeholder="ex: 7896254" sevenfloat />
-                        <p class="field-error-block" ng-show="form.Northing.$error.float">This is not a valid Northing</p>
-                    </div>
-                </div>
+                            <div class="header-label">* Project Name</div>
+                            <div class="header-value">
+                                <input class="form-control" type="text" ng-model="row.ProjectName" />
+                            </div>
 
-                <div class="header-label">Projection:</div>
-                <div class="header-value">
-                    <input type="text" class="form-control" ng-model="subproject_row.Projection" />
-                </div>
+                            <div class="header-label">Waterbody:</div>
+                            <div class="header-value">
+                                <select class="form-control" ng-model="row.WaterBodyId" ng-options="p.Id as p.Name for p in waterbodies"></select>
+                            </div>
 
-                <div class="header-label">UTM Zone:</div>
-                <div class="header-value">
-                    <input type="text" class="form-control" ng-model="subproject_row.UTMZone" />
-                </div>
+                            <div class="header-label">Project Summary</div>
+                            <div class="header-value">
+                                <textarea class="form-control" type="text" rows="4" maxlength="255" ng-model="row.ProjectSummary"></textarea>
+                            </div>
+                            <div class="header-label">Project Description</div>
+                            <div class="header-value">
+                                <textarea class="form-control" type="text" rows="4" ng-model="row.ProjectDescription"></textarea>
+                            </div>
 
-                <div class="header-label">Project Start Date</div>
-                <div class="header-value">
-                    <input class="form-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="subproject_row.ProjectStartDate" is-open="aopened" min="'2000-01-01'" max="'2020-12-31'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-                </div>
+                            <div class="form-group" ng-class="{'has-error' : currentFiles.length > 1}" style="margin-bottom: 0px;">
+                                <div class="header-label">Feature Image</div>
+                                <div class="header-value form-file">
+                                    <button class="right btn btn-xs" ng-click="openFileModal(row, 'ItemFiles')">Add/Remove</button>
+                                    <div ng-bind-html="row['ItemFiles'] | fileNamesFromString">&nbsp;</div>
+                                </div>
+                                <div class="has-error" ng-if="currentFiles.length > 1">Error: Only one Featured Image allowed; remove one.</div>
+                            </div>
 
-                <div class="header-label">Project End Date</div>
-                <div class="header-value">
-                    <input class="form-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="subproject_row.ProjectEndDate" is-open="bopened" min="'2000-01-01'" max="'2020-12-31'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-                </div>
+                            <div class="header-label">Project Start Date</div>
+                            <div class="header-value">
+                                <md-datepicker class="form-control" ng-model="row.ProjectStartDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                            </div>
 
-                <div class="header-label">First Foods</div>
-                <div class="header-value">
-                    <div class="checkbox-itemlist">
-                        <div ng-repeat="item in metadataList['First Foods'].options">
-                            <input type="checkbox" checklist-model="subproject_row.FirstFoods" checklist-value="item" /> {{item}}
-                        </div>
-                    </div>
-                </div>
+                            <div class="header-label">Project End Date</div>
+                            <div class="header-value">
+                                <md-datepicker class="form-control" ng-model="row.ProjectEndDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                            </div>
 
-                <div class="header-label">River Vision Touchstone</div>
-                <div class="header-value">
-                    <div class="checkbox-itemlist">
-                        <div ng-repeat="item in metadataList['River Vision Touchstone'].options">
-                            <input type="checkbox" checklist-model="subproject_row.RiverVisionTouchstone" checklist-value="item" /> {{item}}
-                        </div>
-                    </div>
-                </div>
+                            <div class="form-group" ng-class="{ 'has-error' :  form.Funding.$error.float}" style="margin-bottom: 0px;">
+                                <div class="header-label">Funding Agency</div>
+                                <div class="header-value">
+                                    <button class="right btn btn-xs" ng-click="addFundingAgency()" style="margin: 2px; margin-right:20px;">+</button>
+                                    <button class="right btn btn-xs" ng-click="removeFundingAgency()" style="margin: 2px;">-</button>
 
-                <div class="header-label">Limiting Factors</div>
-                <div class="header-value">
-                    <div class="checkbox-itemlist">
-                        <div ng-repeat="item in metadataList['Limiting Factors'].options">
-                            <input type="checkbox" checklist-model="subproject_row.LimitingFactors" checklist-value="item" /> {{item}}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="header-label">Habitat Objectives</div>
-                <div class="header-value">
-                    <div class="checkbox-itemlist">
-                        <div ng-repeat="item in metadataList['Habitat Objectives'].options">
-                            <input type="checkbox" checklist-model="subproject_row.HabitatObjectives" checklist-value="item" /> {{item}}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="header-label">NOAA Ecological Concerns</div>
-                <div class="header-value">
-                    <div class="checkbox-itemlist">
-                        <div ng-repeat="item in metadataList['NOAA Ecological Concerns'].options">
-                            <input type="checkbox" checklist-model="subproject_row.NoaaEcologicalConcerns" checklist-value="item" /> {{item}}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="header-label">NOAA Ecological Concerns: Sub-categories</div>
-                <div class="header-value">
-                    <div class="checkbox-itemlist">
-                        <div ng-repeat="item in metadataList['NOAA Ecological Concerns: Sub-categories'].options">
-                            <input type="checkbox" checklist-model="subproject_row.NoaaEcologicalConcernsSubcategories" checklist-value="item" /> {{item}}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group" ng-class="{ 'has-error' :  form.Funding.$error.float}" style="margin-bottom: 0px;">
-                    <div class="header-label">Funding Agency</div>
-                    <div class="header-value">
-                        <table>
-                            <tr>
-                                <td>
-                                    <select class="form-control" ng-model="subproject_row.fundingName" ng-change="selectFunder()">
-                                        <option value="Blue Mountain Habitat Restoration Council">Blue Mountain Habitat Restoration Council</option>
-                                        <option value="Bonneville Power Authority">Bonneville Power Authority</option>
-                                        <option value="Bureau of Reclamation">Bureau of Reclamation</option>
-                                        <option value="CTUIR">CTUIR</option>
-                                        <option value="Eco Trust">Eco Trust</option>
-                                        <option value="Grande Ronde Model Watershed">Grande Ronde Model Watershed</option>
-                                        <option value="NF John Day Watershed Council">NF John Day Watershed Council</option>
-                                        <option value="Oregon Department of Fish and Wildlife">Oregon Department of Fish and Wildlife</option>
-                                        <option value="Oregon Watershed Enhancement Board">Oregon Watershed Enhancement Board</option>
-                                        <option value="Other">Other</option>
-                                        <option value="Pacific Coastal Salmon Recovery Fund">Pacific Coastal Salmon Recovery Fund</option>
-                                        <option value="Snake River Salmon Recovery Board">Snake River Salmon Recovery Board</option>
-                                        <option value="Umatilla County Soil and Water Conservation District">Umatilla County Soil and Water Conservation District</option>
-                                        <option value="Umatilla National Forest">Umatilla National Forest</option>
-                                        <option value="US Forest Service">US Forest Service</option>
-                                        <option value="Wallowa Whitman National Forest">Wallowa Whitman National Forest</option>
-                                        <option value="Washington Department of Fish and Wildlife">Washington Department of Fish and Wildlife</option>
+                                    <select class="form-control" style="margin-top: 4px;" ng-model="row.fundingName" ng-change="selectFunder()">
+                                        <option ng-repeat="funder in getMetafield('Funder')" value="{{funder}}">{{funder}}</option>
                                     </select>
-                                </td>
-                                <td>
-                                    <input class="form-control-smallNumber" name="Funding" ng-model="subproject_row.fundingAmount" placeholder="ex: 1000" smartfloat />
-                                    <!--<input class="form-control-smallNumber" name="Funding" ng-model="subproject_row.Funding.Amount" placeholder="ex: 1000" integer />-->
-                                </td>
-                                <td><button class="right btn btn-xs" ng-click="addFundingAgency()">+</button></td>
-                                <td><button class="right btn btn-xs" ng-click="removeFundingAgency()">-</button></td>
-                            </tr>
-                            <tr>
-                                <td colspan=4>
+                                    <input class="form-control-smallNumber" style="margin-left: 240px;" name="Funding" ng-model="row.fundingAmount" placeholder="ex: 1000" smartfloat />
+
                                     <p class="field-error-block" ng-show="form.Funding.$error.float">This is not a valid number.</p>
-                                    <!--<p class="field-error-block" ng-show="form.Funding.$error.integer">This is not a valid number.</p>-->
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+                                </div>
+                            </div>
 
-                <div>
-                    <div ng-show="showOtherFunder">
-                        <div class="header-label">Other Funding Agency</div>
-                        <div class="header-value">
-                            <input class="form-control" type="text" ng-model="subproject_row.OtherFundingAgency" />
-                        </div>
-                    </div>
-                </div>
+                            <div>
+                                <div ng-show="showOtherFunder">
+                                    <div class="header-label">Other Funding Agency</div>
+                                    <div class="header-value">
+                                        <input class="form-control" type="text" ng-model="row.OtherFundingAgency" />
+                                    </div>
+                                </div>
+                            </div>
 
-                <!--<div ng-show="showFundingBox">-->
-                <div class="header-label">Funders</div>
-                <div class="header-value">
-                    <div ng-show="true">
-                        <textarea class="form-control" type="text" rows="4" readonly ng-model="subproject_row.strFunders"></textarea>
-                    </div>
-                </div>
+                            <!--<div ng-show="showFundingBox">-->
+                            <div class="header-label">Funders</div>
+                            <div class="header-value">
+                                <div ng-show="true">
+                                    <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strFunders"></textarea>
+                                </div>
+                            </div>
 
-                <div class="form-group" style="margin-bottom: 0px;">
-                    <div class="header-label">Collaborators</div>
-                    <div class="header-value">
-                        <table>
-                            <tr>
-                                <td>
-                                    <select class="form-control" ng-model="subproject_row.Collaborators" ng-change="selectCollaborator()">
-                                        <option value="Blue Mountain Habitat Restoration Council">Blue Mountain Habitat Restoration Council</option>
-                                        <option value="Bureau of Reclamation">Bureau of Reclamation</option>
-                                        <option value="Bonneville Power Authority">Bonneville Power Authority</option>
-                                        <option value="Columbia Conservation District">Columbia Conservation District</option>
-                                        <option value="CTUIR">CTUIR</option>
-                                        <option value="Eco Trust">Eco Trust</option>
-                                        <option value="Grande Ronde Model Watershed">Grande Ronde Model Watershed</option>
-                                        <option value="Landowners">Landowners</option>
-                                        <option value="Nez Perce Tribe">Nez Perce Tribe</option>
-                                        <option value="NF John Day Watershed Council">NF John Day Watershed Council</option>
-                                        <option value="Natural Resource Conservation Service">Natural Resource Conservation Service</option>
-                                        <option value="Oregon Department of Fish and Wildlife">Oregon Department of Fish and Wildlife</option>
-                                        <option value="Oregon Department of Transportation">Oregon Department of Transportation</option>
-                                        <option value="Oregon Watershed Enhancement Board">Oregon Watershed Enhancement Board</option>
-                                        <option value="Other">Other</option>
-                                        <option value="Pacific Coastal Salmon Recovery Fund">Pacific Coastal Salmon Recovery Fund</option>
-                                        <option value="Pomeroy Conservation District">Pomeroy Conservation District</option>
-                                        <option value="Salmon Recovery Funding Board">Salmon Recovery Funding Board</option>
-                                        <option value="Snake River Salmon Recovery Board">Snake River Salmon Recovery Board</option>
-                                        <option value="Umatilla County Soil and Water Conservation District">Umatilla County Soil and Water Conservation District</option>
-                                        <option value="Umatilla National Forest">Umatilla National Forest</option>
-                                        <option value="US Forest Service">US Forest Service</option>
-                                        <option value="Wallowa Whitman National Forest">Wallowa Whitman National Forest</option>
-                                        <option value="Washington Department of Fish and Wildlife">Washington Department of Fish and Wildlife</option>
+                            <div class="form-group" style="margin-bottom: 0px;">
+                                <div class="header-label">Collaborators</div>
+                                <div class="header-value">
+                                    <button class="right btn btn-xs" ng-click="addCollaborator()" style="margin: 2px;  margin-right:20px;">+</button>
+                                    <button class="right btn btn-xs" ng-click="removeCollaborator()" style="margin: 2px; ">-</button>
+                                    <select class="form-control" style="margin-top: 4px;" ng-model="row.Collaborators" ng-change="selectCollaborator()">
+                                        <option ng-repeat="collab in getMetafield('Collaborator')" value="{{collab}}">{{collab}}</option>
                                     </select>
-                                </td>
-                                <td><button class="right btn btn-xs" ng-click="addCollaborator()">+</button></td>
-                                <td><button class="right btn btn-xs" ng-click="removeCollaborator()">-</button></td>
-                            </tr>
-                        </table>
+
+                                </div>
+                            </div>
+                            <div class="header-label">Selected Collaborators</div>
+                            <div class="header-value">
+                                <!--<textarea class="form-control" type="text" rows="4"  readonly ng-model="row.txtCollaborators"  ng-focus="enteredSelectedCollaborators()" ng-keydown="checkKeyPress($event)"></textarea>-->
+                                <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strCollaborators"></textarea>
+                            </div>
+                            <div>
+                                <div ng-show="showOtherCollaborators">
+                                    <div class="header-label">Other Collaborator Name</div>
+                                    <div class="header-value">
+                                        <input class="form-control" type="text" ng-model="row.OtherCollaborators" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="header-label">Comments</div>
+                            <div class="header-value">
+                                <textarea type="text" rows="4" class="form-control" ng-model="row.Comments" ng-focus="enteredSomethingElse()"></textarea>
+                            </div>
+
+
+                        </div>
                     </div>
-                </div>
-                <div class="header-label">Selected Collaborators</div>
-                <div class="header-value">
-                    <!--<textarea class="form-control" type="text" rows="4"  readonly ng-model="subproject_row.txtCollaborators"  ng-focus="enteredSelectedCollaborators()" ng-keydown="checkKeyPress($event)"></textarea>-->
-                    <textarea class="form-control" type="text" rows="4" readonly ng-model="subproject_row.strCollaborators"></textarea>
-                </div>
-                <div>
-                    <div ng-show="showOtherCollaborators">
-                        <div class="header-label">Other Collaborator Name</div>
-                        <div class="header-value">
-                            <input class="form-control" type="text" ng-model="subproject_row.OtherCollaborators" />
+                    <div role="tabpanel" class="tab-pane fade in" id="loc">
+                        <div class="list-group media-list media-list-stream" style="display:block;">
+                            <div style="margin-top: 30px;"></div>
+
+                            <div class="form-group" ng-class="{ 'has-error' :  form.Easting.$error.float}" style="margin-bottom: 0px;">
+                                <div class="header-label">* Easting</div>
+                                <div class="header-value">
+                                    <input class="form-control" name="Easting" ng-model="row.GPSEasting" placeholder="ex: 541324" sixfloat />
+                                    <p class="field-error-block" ng-show="form.Easting.$error.float">This is not a valid Easting</p>
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-class="{ 'has-error' :  form.Northing.$error.float}" style="margin-bottom: 0px;">
+                                <div class="header-label">* Northing</div>
+                                <div class="header-value">
+                                    <input class="form-control" name="Northing" ng-model="row.GPSNorthing" placeholder="ex: 7896254" sevenfloat />
+                                    <p class="field-error-block" ng-show="form.Northing.$error.float">This is not a valid Northing</p>
+                                </div>
+                            </div>
+
+                            <div class="header-label">Projection:</div>
+                            <div class="header-value">
+                                <input type="text" class="form-control" ng-model="row.Projection" />
+                            </div>
+
+                            <div class="header-label">UTM Zone:</div>
+                            <div class="header-value">
+                                <input type="text" class="form-control" ng-model="row.UTMZone" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade in" id="hab">
+                        <div class="list-group media-list media-list-stream habitat-form-items" style="display:block;">
+                            <div style="margin-top: 30px;"></div>
+                            <div ng-repeat="field in project.MetaFields | filter:{ControlType:'!hidden', isHabitat:'true'}" ng-switch on="field.ControlType">
+                                <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                                <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                                <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                                <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                                <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                                <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                                <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
+                                <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                                <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                                <ctuir-multiselect-checkbox-field ng-switch-when="multiselect-checkbox"></ctuir-multiselect-checkbox-field>
+                                <ctuir-text-field ng-switch-default></ctuir-text-field>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-
-                <div class="header-label">Comments</div>
-                <div class="header-value">
-                    <textarea type="text" rows="4" class="form-control" ng-model="subproject_row.Comments" ng-focus="enteredSomethingElse()"></textarea>
-                </div>
-                            
-    </form>
-</div>
-
+            </form>
+        </div>
+    </div>
 
     <div ng-show="!showFormItems && filesToUpload[file_field].length > 0">
         <h4>Files to upload:</h4>

@@ -14,6 +14,22 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
         
         scope.dataset = DatasetService.getDataset($routeParams.Id);
 
+        scope.metafields = CommonService.getMetadataProperties(METADATA_ENTITY_HABSITES);
+        scope.metafields.$promise.then(function () { 
+            //console.dir(scope.metafields);
+            scope.metafields.forEach(function (field) { 
+                field.PossibleValues = getParsedMetadataValues(field.PossibleValues);
+            });
+            
+        });
+
+        scope.getMetafield = function (in_name) { 
+            return getByName(scope.metafields, in_name).PossibleValues;
+        };
+
+
+
+
         scope.dataset.$promise.then(function () {
             scope.project = ProjectService.getProject(scope.dataset.ProjectId);
 
@@ -681,6 +697,9 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
                 controller: 'ModalCreateHabSubprojectCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop  : 'static',
+                windowClass: 'modal-medium',
+                keyboard  : false
             });
         };
 

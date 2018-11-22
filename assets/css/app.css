@@ -800,6 +800,26 @@ margin-left: -8px !important;
     max-height: 750px
 }
 
+
+.modal-medium .modal-content {
+    width: 100% !important;
+    
+}
+
+.modal-medium .modal-dialog {
+    min-width: 700px;
+        
+}
+
+.modal-medium .modal-form {
+    width: 100%;
+    
+}
+
+.habitat-form-items .checkbox-itemlist {
+    width: 400px;
+}
+
 .ag-popup-editor select {
     width: 100%;
     margin: 0px;

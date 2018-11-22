@@ -22,17 +22,17 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	$scope.fundersPresent = false;
 	$scope.collaboratorPresent = false;
 	$scope.featureImagePresent = false;
-    $scope.subproject_row = {
+    $scope.row = {
         StatusId: 0,
         //OwningDepartmentId: 1,
     };
     $scope.subprojectId = 0; 
 	
 	// This line pulls in the Projection and the UTMZone
-	$scope.subproject_row = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
+	$scope.row = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
 	
-	$scope.subproject_row.strFunders = "";
-	$scope.subproject_row.Funding = [];
+	$scope.row.strFunders = "";
+	$scope.row.Funding = [];
 	
 	//var fundtionOptionCount = 0;
 	/*angular.forEach($scope.metadataList['Funding'].options, function(value){
@@ -44,182 +44,189 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		fundingOption.Amount = 0;
 		
 		fundingOption.Name = value;
-		$scope.subproject_row.Funding.push(fundingOption);
+		$scope.row.Funding.push(fundingOption);
 	});
-	console.dir($scope.subproject_row.Funding);
+	console.dir($scope.row.Funding);
 	*/
 	
-	
-		
-	$scope.collaboratorList = [];
-		$scope.collaboratorList.push("Blue Mountain Habitat Restoration Council");
-		$scope.collaboratorList.push("Bureau of Reclamation");
-		$scope.collaboratorList.push("Bonneville Power Authority");
-		$scope.collaboratorList.push("Columbia Conservation District");
-		$scope.collaboratorList.push("CTUIR");
-		$scope.collaboratorList.push("Eco Trust");
-		$scope.collaboratorList.push("Grande Ronde Model Watershed");
-		$scope.collaboratorList.push("Landowners");
-		$scope.collaboratorList.push("Nez Perce Tribe");
-		$scope.collaboratorList.push("NF John Day Watershed Council");
-		$scope.collaboratorList.push("Natural Resource Conservation Service");
-		$scope.collaboratorList.push("Oregon Department of Fish and Wildlife");
-		$scope.collaboratorList.push("Oregon Department of Transportation");
-		$scope.collaboratorList.push("Oregon Watershed Enhancement Board");
-		$scope.collaboratorList.push("Other");
-		$scope.collaboratorList.push("Pacific Coastal Salmon Recovery Fund");
-		$scope.collaboratorList.push("Pomeroy Conservation District");
-		$scope.collaboratorList.push("Salmon Recovery Funding Board");
-		$scope.collaboratorList.push("Snake River Salmon Recovery Board");
-		$scope.collaboratorList.push("Umatilla County Soil and Water Conservation District");
-		$scope.collaboratorList.push("Umatilla National Forest");
-		$scope.collaboratorList.push("US Forest Service");
-		$scope.collaboratorList.push("Wallowa Whitman National Forest");
-		$scope.collaboratorList.push("Washington Department of Fish and Wildlife");
-	
-	//console.log("$scope.collaboratorList is next...");
-	//console.dir($scope.collaboratorList);
 	
 	$scope.showCollaboratorOptions = false;
 	$scope.showOtherCollaborators = false;
 	$scope.showOtherFundingAgency = false;
 	$scope.showFunders = false;
 	$scope.showFundingOptions = false;
-	$scope.subproject_row.strCollaborators = "";
-	$scope.subproject_row.Collaborators = [];
+	$scope.row.strCollaborators = "";
+	$scope.row.Collaborators = [];
 	$scope.uploadComplete = false;
 	var values = null;
 	
-	//console.log("$scope.subproject_row (after initialization) is next...");
-	//console.dir($scope.subproject_row);
+
+    $scope.setupHabitatMetaFields = function () {
+        var habfields = CommonService.getMetadataFor($scope.project.Id, METADATA_ENTITY_HABITAT);
+        habfields.$promise.then(function () {
+
+            if (!$scope.project.MetaFields)
+                $scope.project.MetaFields = [];
+
+            habfields.forEach(function (habfield) {
+                habfield.isHabitat = true;
+                $scope.project.MetaFields.push(habfield);
+            });
+
+            //prep the values if it is a multiselect
+            $scope.project.MetaFields.forEach(function (field) {
+                if (field.Values && (field.ControlType == "multiselect" || field.ControlType == "multiselect-checkbox")) {
+                    field.Values = getParsedMetadataValues(field.Values);
+                }
+
+                field.DbColumnName = field.Label = field.Name;
+
+                if (field.Values)
+                    $scope.row[field.DbColumnName] = field.Values;
+                else
+                    $scope.row[field.DbColumnName] = null;
+            });
+
+            console.dir($scope.project.MetaFields);
+            console.dir($scope.row);
+        });
+    }
+
+
+	//console.log("$scope.row (after initialization) is next...");
+	//console.dir($scope.row);
 	
 	//if we are editing, viewSubproject will be set. -- prepare scope for editing...
-    if ($scope.viewSubproject) {
-        $scope.header_message = "Edit Habitat project: " + $scope.viewSubproject.ProjectName;
-        $rootScope.newSubproject = $scope.newSubproject = false;
-        $scope.subprojectFileList = $rootScope.subprojectFileList;
+        if (!$scope.viewSubproject) {
+            //mixin the properties and functions to enable the modal file chooser for this controller...
+            $scope.setupHabitatMetaFields();
+            modalFiles_setupControllerForFileChooserModal($scope, $modal, []); //last param is files to check for duplicates... we are new, so we don't have any.
+        } else {
+            $scope.header_message = "Edit Habitat project: " + $scope.viewSubproject.ProjectName;
+            $rootScope.newSubproject = $scope.newSubproject = false;
+            $scope.subprojectFileList = $rootScope.subprojectFileList;
 
-        $scope.subproject_row = angular.copy($scope.viewSubproject);
-        $scope.subprojectId = $scope.subproject_row.Id;
-
-        $scope.showAddDocument = false;
-
-        /* kb commented out 11/21 - not used?
-        if ((typeof $scope.subproject_row.Collaborators !== 'undefined') && ($scope.subproject_row.Collaborators !== null))
-        {
-            //console.log("$scope.subproject_row.Collaborators is next...");
-            //console.dir($scope.subproject_row.Collaborators);
-            	
-            var strCollaborators = $scope.subproject_row.Collaborators;
-            strCollaborators = strCollaborators.replace(/(\r\n|\r|\n)/gm, ""); // Remove any newlines
-            strCollaborators = strCollaborators.replace(/["\[\]]+/g, ''); // Remove any brackets []
-            strCollaborators = strCollaborators.trim();
-            console.log("strCollaborators = " + strCollaborators);
-            	
-            //$scope.subproject_row.strCollaborators = null; // dump the previous contents.
-            $scope.subproject_row.strCollaborators = strCollaborators; // reset its value
-            //console.log("$scope.subproject_row.strCollaborators = " + $scope.subproject_row.strCollaborators);
-            if ($scope.subproject_row.strCollaborators.indexOf("Other") > -1)
-                $scope.showOtherCollaborators = true;
-            	
-            $scope.subproject_row.strCollaborators = strCollaborators;
-            	
-        }
-        */
-
-        if ($scope.subproject_row.FeatureImage !== null) {
-            $scope.subproject_row.ItemFiles = '[{"Name":"' + $scope.subproject_row.FeatureImage + '"}]';
-        }
+            $scope.row = angular.copy($scope.viewSubproject);
+            $scope.setupHabitatMetaFields();
 
 
-        values = null; // Set/reuse this variable.
-        var strFirstFoods = null
-        try {
-            values = angular.fromJson($scope.subproject_row.FirstFoods);
-            //console.log("First Foods was an object.");
-            //console.log("First Foods = " + values);
-            strFirstFoods = values.toString();
-            //console.log("strFirstFoods = " + strFirstFoods);
-        }
-        catch (e) {
-            if ($scope.subproject_row.FirstFoods) {
-                values = $scope.subproject_row.FirstFoods.split(",");
-                strFirstFoods = $scope.subproject_row.FirstFoods.toString();
+            $scope.subprojectId = $scope.row.Id;
+
+            $scope.showAddDocument = false;
+
+            /* kb commented out 11/21 - not used?
+            if ((typeof $scope.row.Collaborators !== 'undefined') && ($scope.row.Collaborators !== null))
+            {
+                //console.log("$scope.row.Collaborators is next...");
+                //console.dir($scope.row.Collaborators);
+                	
+                var strCollaborators = $scope.row.Collaborators;
+                strCollaborators = strCollaborators.replace(/(\r\n|\r|\n)/gm, ""); // Remove any newlines
+                strCollaborators = strCollaborators.replace(/["\[\]]+/g, ''); // Remove any brackets []
+                strCollaborators = strCollaborators.trim();
+                console.log("strCollaborators = " + strCollaborators);
+                	
+                //$scope.row.strCollaborators = null; // dump the previous contents.
+                $scope.row.strCollaborators = strCollaborators; // reset its value
+                //console.log("$scope.row.strCollaborators = " + $scope.row.strCollaborators);
+                if ($scope.row.strCollaborators.indexOf("Other") > -1)
+                    $scope.showOtherCollaborators = true;
+                	
+                $scope.row.strCollaborators = strCollaborators;
+                	
             }
-            else {
-                values = "";
-                strFirstFoods = "";
+            */
+
+            if ($scope.row.FeatureImage !== null) {
+                $scope.row.ItemFiles = '[{"Name":"' + $scope.row.FeatureImage + '"}]';
             }
-                
-            //console.log("First Foods was a string.");
-            
-            //console.log(strFirstFoods);
-        }
-        $scope.subproject_row.FirstFoods = values;
 
-        values = null; // Set/reuse this variable.		
-        try {
-            values = angular.fromJson($scope.subproject_row.RiverVisionTouchstone);
-            //console.log("It was an object.");
-        }
-        catch (e) {
-            values = $scope.subproject_row.RiverVisionTouchstone.split(",");
-            //console.log("It was a string.");
-        }
-        $scope.subproject_row.RiverVisionTouchstone = values;
 
-        values = null; // Set/reuse this variable.
-        try {
-            values = angular.fromJson($scope.subproject_row.HabitatObjectives);
-            //console.log("It was an object.");
-        }
-        catch (e) {
-            values = $scope.subproject_row.HabitatObjectives.split(",");
-            //console.log("It was a string.");
-        }
-        $scope.subproject_row.HabitatObjectives = values;
+            values = null; // Set/reuse this variable.
+            var strFirstFoods = null
+            try {
+                values = angular.fromJson($scope.row.FirstFoods);
+                //console.log("First Foods was an object.");
+                //console.log("First Foods = " + values);
+                strFirstFoods = values.toString();
+                //console.log("strFirstFoods = " + strFirstFoods);
+            }
+            catch (e) {
+                if ($scope.row.FirstFoods) {
+                    values = $scope.row.FirstFoods.split(",");
+                    strFirstFoods = $scope.row.FirstFoods.toString();
+                }
+                else {
+                    values = "";
+                    strFirstFoods = "";
+                }
 
-        values = null; // Set/reuse this variable.
-        try {
-            values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcerns);
-            //console.log("It was an object.");
-        }
-        catch (e) {
-            values = $scope.subproject_row.NoaaEcologicalConcerns.split(",");
-            //console.log("It was a string.");
-        }
-        $scope.subproject_row.NoaaEcologicalConcerns = values;
+                //console.log("First Foods was a string.");
 
-        values = null; // Set/reuse this variable.
-        try {
-            values = angular.fromJson($scope.subproject_row.NoaaEcologicalConcernsSubcategories);
-            //console.log("It was an object.");
-        }
-        catch (e) {
-            values = $scope.subproject_row.NoaaEcologicalConcernsSubcategories.split(",");
-            //console.log("It was a string.");
-        }
-        $scope.subproject_row.NoaaEcologicalConcernsSubcategories = values;
+                //console.log(strFirstFoods);
+            }
+            $scope.row.FirstFoods = values;
 
-        values = null; // Set/reuse this variable.
-        try {
-            values = angular.fromJson($scope.subproject_row.LimitingFactors);
-            //console.log("It was an object.");
-        }
-        catch (e) {
-            values = $scope.subproject_row.LimitingFactors.split(",");
-            //console.log("It was a string.");
-        }
-        $scope.subproject_row.LimitingFactors = values;
+            values = null; // Set/reuse this variable.		
+            try {
+                values = angular.fromJson($scope.row.RiverVisionTouchstone);
+                //console.log("It was an object.");
+            }
+            catch (e) {
+                values = $scope.row.RiverVisionTouchstone.split(",");
+                //console.log("It was a string.");
+            }
+            $scope.row.RiverVisionTouchstone = values;
 
-        //ok, all initialized... now:
-        //mixin the properties and functions to enable the modal file chooser for this controller...
-        modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files);
+            values = null; // Set/reuse this variable.
+            try {
+                values = angular.fromJson($scope.row.HabitatObjectives);
+                //console.log("It was an object.");
+            }
+            catch (e) {
+                values = $scope.row.HabitatObjectives.split(",");
+                //console.log("It was a string.");
+            }
+            $scope.row.HabitatObjectives = values;
 
-    } else {
-        //mixin the properties and functions to enable the modal file chooser for this controller...
-        modalFiles_setupControllerForFileChooserModal($scope, $modal, []); //last param is files to check for duplicates... we are new, so we don't have any.
-    }
+            values = null; // Set/reuse this variable.
+            try {
+                values = angular.fromJson($scope.row.NoaaEcologicalConcerns);
+                //console.log("It was an object.");
+            }
+            catch (e) {
+                values = $scope.row.NoaaEcologicalConcerns.split(",");
+                //console.log("It was a string.");
+            }
+            $scope.row.NoaaEcologicalConcerns = values;
+
+            values = null; // Set/reuse this variable.
+            try {
+                values = angular.fromJson($scope.row.NoaaEcologicalConcernsSubcategories);
+                //console.log("It was an object.");
+            }
+            catch (e) {
+                values = $scope.row.NoaaEcologicalConcernsSubcategories.split(",");
+                //console.log("It was a string.");
+            }
+            $scope.row.NoaaEcologicalConcernsSubcategories = values;
+
+            values = null; // Set/reuse this variable.
+            try {
+                values = angular.fromJson($scope.row.LimitingFactors);
+                //console.log("It was an object.");
+            }
+            catch (e) {
+                values = $scope.row.LimitingFactors.split(",");
+                //console.log("It was a string.");
+            }
+            $scope.row.LimitingFactors = values;
+
+            //ok, all initialized... now:
+            //mixin the properties and functions to enable the modal file chooser for this controller...
+            modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files);
+
+        }
 	
 	console.log("inside ModalCreateHabSubprojectCtrl, after initializing");
 
@@ -227,7 +234,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
     //this is called to after the location is saved (if necessary) by the save() function.
     $scope.saveFilesAndParent = function () {
 
-        var saveRow = angular.copy($scope.subproject_row);
+        var saveRow = angular.copy($scope.row);
         console.log("saveRow (before wiping HabitatItems) is next..");
         console.dir(saveRow);
 
@@ -245,7 +252,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
                 console.log(save_subproject_promise);
 
                 $scope.subprojectId = save_subproject_promise.Id;
-                $scope.subproject_row.Id = save_subproject_promise.Id;
+                $scope.row.Id = save_subproject_promise.Id;
                 $scope.saveFilesAndParent(); //call ourselves again now that our ID is set.
             }, function (error) {
                 console.error("something went wrong: ", error);
@@ -283,13 +290,13 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
         if ($scope.NewPoint) {
             console.log(" -------------- creating a new point 000000000000000000 ");
             // Normally, scope.SdeObjectId is set to 0; if it is > 0, then we just saved a new location and need to handle it.
-            //console.log("promise in $scope.$watch('subproject_row.LocationId' is next...");
+            //console.log("promise in $scope.$watch('row.LocationId' is next...");
             //console.dir(promise);
             //console.dir($scope);
             //$scope.subprojectId = $rootScope.subprojectId = promise.Id;
             console.log("$scope.subprojectId = " + $scope.subprojectId);
             //$scope.locationId = promise.LocationId;
-            $scope.locationId = $scope.subproject_row.LocationId;
+            $scope.locationId = $scope.row.LocationId;
 
             console.log("$scope.locationId = " + $scope.locationId);
 
@@ -378,18 +385,18 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	$scope.selectFunder = function () {
 		console.log("Inside selectFunder...");
 		//console.dir($scope);
-		console.log("$scope.subproject_row is next...");
-		console.dir($scope.subproject_row);
+		console.log("$scope.row is next...");
+		console.dir($scope.row);
 				
-		if ($scope.subproject_row.fundingName === "Other")
+		if ($scope.row.fundingName === "Other")
 		{
 			$scope.showOtherFunder = true;
-			$scope.subproject_row.OtherFundingAgency = "";
+			$scope.row.OtherFundingAgency = "";
 		}
 		else
 		{
 			$scope.showOtherFunder = false;
-			$scope.subproject_row.OtherFundingAgency = 'undefined';
+			$scope.row.OtherFundingAgency = 'undefined';
 		}
 		
 		console.log("$scope.showOtherAgency = " + $scope.showOtherAgency);
@@ -398,18 +405,18 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	$scope.selectCollaborator = function () {
 		console.log("Inside selectCollaborator...");
 		//console.dir($scope);
-		console.log("$scope.subproject_row is next...");
-		console.dir($scope.subproject_row);
+		console.log("$scope.row is next...");
+		console.dir($scope.row);
 						
-		if ($scope.subproject_row.Collaborators === "Other")
+		if ($scope.row.Collaborators === "Other")
 		{
 			$scope.showOtherCollaborators = true;
-			$scope.subproject_row.OtherCollaborators = "";
+			$scope.row.OtherCollaborators = "";
 		}
 		else
 		{
 			$scope.showOtherCollaborators = false;
-			$scope.subproject_row.OtherCollaborators = 'undefined';
+			$scope.row.OtherCollaborators = 'undefined';
 		}
 		
 		console.log("$scope.OtherCollaborators = " + $scope.OtherCollaborators);
@@ -425,18 +432,18 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	
 	$scope.collaboratorChanged = function() {
 		console.log("Inside collaboratorChanged...");
-		console.log("$scope.subproject_row is next...");
-		console.dir($scope.subproject_row);
+		console.log("$scope.row is next...");
+		console.dir($scope.row);
 		
-		$scope.subproject_row.strCollaborators = $scope.subproject_row.Collaborators.toString();
-		if ($scope.subproject_row.strCollaborators.indexOf("Other") > -1)
+		$scope.row.strCollaborators = $scope.row.Collaborators.toString();
+		if ($scope.row.strCollaborators.indexOf("Other") > -1)
 		{
 			$scope.showOtherCollaborators = true;
 		}
 		else
 		{
 			$scope.showOtherCollaborators = false;
-			$scope.subproject_row.OtherCollaborators = null;
+			$scope.row.OtherCollaborators = null;
 		}
 		
 		console.log("$scope.showOtherCollaborators = " + $scope.showOtherCollaborators);
@@ -444,35 +451,35 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	
 	$scope.addCollaborator = function() {
 		console.log("+C clicked...");
-		console.log("$scope.subproject_row.strCollaborators = " + $scope.subproject_row.strCollaborators);	
+		console.log("$scope.row.strCollaborators = " + $scope.row.strCollaborators);	
 		
-		if (typeof $scope.subproject_row.strCollaborators === 'undefined')
-			$scope.subproject_row.strCollaborators = "";
+		if (typeof $scope.row.strCollaborators === 'undefined')
+			$scope.row.strCollaborators = "";
 
 		// We will add a new line at the end, so that the string presents well on the page.
-		if ($scope.subproject_row.Collaborators === "Other")
+		if ($scope.row.Collaborators === "Other")
 		{
-			$scope.subproject_row.strCollaborators += $scope.subproject_row.OtherCollaborators + ";\n";			
+			$scope.row.strCollaborators += $scope.row.OtherCollaborators + ";\n";			
 		}
 		else
 		{
-			$scope.subproject_row.strCollaborators += $scope.subproject_row.Collaborators + ";\n";
+			$scope.row.strCollaborators += $scope.row.Collaborators + ";\n";
 		}
 		
-		console.log("$scope.subproject_row.strCollaborators = " + $scope.subproject_row.strCollaborators);		
+		console.log("$scope.row.strCollaborators = " + $scope.row.strCollaborators);		
 	};
 	
 	$scope.removeCollaborator = function() {
 		console.log("-C clicked...");
-		console.log("$scope.subproject_row.strCollaborators before stripping = " + $scope.subproject_row.strCollaborators);
+		console.log("$scope.row.strCollaborators before stripping = " + $scope.row.strCollaborators);
 		
 		// First, strip out the new line characters.
-		$scope.subproject_row.strCollaborators = $scope.subproject_row.strCollaborators.replace(/(\r\n|\r|\n)/gm, "");
-		console.log("$scope.subproject_row.strCollaborators after stripping = " + $scope.subproject_row.strCollaborators);
+		$scope.row.strCollaborators = $scope.row.strCollaborators.replace(/(\r\n|\r|\n)/gm, "");
+		console.log("$scope.row.strCollaborators after stripping = " + $scope.row.strCollaborators);
 		
 		// Note, we still have the trailing semicolon.
 		// Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
-		var aryCollaborators = $scope.subproject_row.strCollaborators.split(";");
+		var aryCollaborators = $scope.row.strCollaborators.split(";");
 		
 		// Next, get rid of that trailing semicolon.
 		aryCollaborators.splice(-1, 1);
@@ -482,23 +489,23 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		var aryCollaboratorsLength = aryCollaborators.length;
 		
 		// First check if the user entered an "other" funder.
-		if (($scope.subproject_row.Collaborators === "Other") && ($scope.subproject_row.OtherCollaborators))
+		if (($scope.row.Collaborators === "Other") && ($scope.row.OtherCollaborators))
 		{	
 			for (var i = 0; i < aryCollaboratorsLength; i++)
 			{
 				console.log("aryCollaborators[i] = " + aryCollaborators[i]);
-				if (aryCollaborators[i].indexOf($scope.subproject_row.OtherCollaborators) > -1)
+				if (aryCollaborators[i].indexOf($scope.row.OtherCollaborators) > -1)
 				{
 					console.log("Found the item...");
 					aryCollaborators.splice(i,1);
 					console.log("Removed the item.");
 					
-					$scope.subproject_row.strCollaborators = "";
-					console.log("Wiped $scope.subproject_row.strCollaborators...");
+					$scope.row.strCollaborators = "";
+					console.log("Wiped $scope.row.strCollaborators...");
 					
 					// Rebuild the string now, adding the semicolon and newline after every line.
 					angular.forEach(aryCollaborators, function(item){
-						$scope.subproject_row.strCollaborators += item + ";\n";
+						$scope.row.strCollaborators += item + ";\n";
 						console.log("Added item...");
 					});
 					
@@ -512,18 +519,18 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 			for (var i = 0; i < aryCollaboratorsLength; i++)
 			{
 				console.log("aryCollaborators[i] = " + aryCollaborators[i]);
-				if (aryCollaborators[i].indexOf($scope.subproject_row.Collaborators) > -1)
+				if (aryCollaborators[i].indexOf($scope.row.Collaborators) > -1)
 				{
 					console.log("Found the item...");
 					aryCollaborators.splice(i,1);
 					console.log("Removed the item.");
 					
-					$scope.subproject_row.strCollaborators = "";
-					console.log("Wiped $scope.subproject_row.strCollaborators...");
+					$scope.row.strCollaborators = "";
+					console.log("Wiped $scope.row.strCollaborators...");
 					
 					// Rebuild the string now, adding the semicolon and newline after every line.
 					angular.forEach(aryCollaborators, function(item){
-						$scope.subproject_row.strCollaborators += item + ";\n";
+						$scope.row.strCollaborators += item + ";\n";
 						console.log("Added item...");
 					});
 					
@@ -537,9 +544,9 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	
 	/*$scope.fundingItemClicked = function(itemChecked) {
 		console.log("itemChecked = " + itemChecked);
-		console.log("$scope.subproject_row.Funding is next...");
-		console.dir($scope.subproject_row.Funding);
-		if ($scope.subproject_row.Funding.Checked)
+		console.log("$scope.row.Funding is next...");
+		console.dir($scope.row.Funding);
+		if ($scope.row.Funding.Checked)
 			$scope.showFundingBox = false;
 		else
 			$scope.showFundingBox = true;
@@ -549,23 +556,23 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	
 	$scope.addFundingAgency = function() {
 		console.log("+FA clicked...");
-		console.log("$scope.subproject_row.strFunders = " + $scope.subproject_row.strFunders);
-		//console.log("$scope.subproject_row.Funding.Amount = " + $scope.subproject_row.Funding.Amount + ", typeof $scope.subproject_row.Funding.Amount = " + typeof $scope.subproject_row.Funding.Amount);
-		console.log("$scope.subproject_row.fundingAmount = " + $scope.subproject_row.fundingAmount + ", typeof $scope.subproject_row.fundingAmount = " + typeof $scope.subproject_row.fundingAmount);
+		console.log("$scope.row.strFunders = " + $scope.row.strFunders);
+		//console.log("$scope.row.Funding.Amount = " + $scope.row.Funding.Amount + ", typeof $scope.row.Funding.Amount = " + typeof $scope.row.Funding.Amount);
+		console.log("$scope.row.fundingAmount = " + $scope.row.fundingAmount + ", typeof $scope.row.fundingAmount = " + typeof $scope.row.fundingAmount);
 		
-		//if (!$scope.subproject_row.Funding.Amount) //|| (!$scope.subproject_row.Funding.Amount.trim()))
-		if (!$scope.subproject_row.fundingAmount) //|| (!$scope.subproject_row.Funding.Amount.trim()))
+		//if (!$scope.row.Funding.Amount) //|| (!$scope.row.Funding.Amount.trim()))
+		if (!$scope.row.fundingAmount) //|| (!$scope.row.Funding.Amount.trim()))
 		{
 			alert("If you add a Funding Agency, you MUST enter a funding amount.");
 			return;
 		}
 		
 		// First, capture what we really need for a number ($ and commas are OK, but we strip them out).
-		//var amt1 = $scope.subproject_row.Funding.Amount.replace(/(,|\$)/gm, "");  // Remove the $ and commas.
+		//var amt1 = $scope.row.Funding.Amount.replace(/(,|\$)/gm, "");  // Remove the $ and commas.
 		
 		// Next, locate the decimal; there should only be one.
-		//var decimalLoc1 = $scope.subproject_row.Funding.Amount.indexOf(".");  // Find the decimal.
-		//var decimalLoc2 = $scope.subproject_row.Funding.Amount.lastIndexOf(".");  // Find the last decimal; the number can have only one decimal.
+		//var decimalLoc1 = $scope.row.Funding.Amount.indexOf(".");  // Find the decimal.
+		//var decimalLoc2 = $scope.row.Funding.Amount.lastIndexOf(".");  // Find the last decimal; the number can have only one decimal.
 		
 		// Remove the decimals.
 		//var noDecimal = amt1.replace(/./gm, "");  // Remove the decimals now.
@@ -580,42 +587,42 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		//	alert("Only one decimal (.) is allowed.");
 		//	return;
 		//}
-		//$scope.subproject_row.Funding.Amount = $scope.subproject_row.Funding.Amount.replace(/(,|\$)/gm, "");
+		//$scope.row.Funding.Amount = $scope.row.Funding.Amount.replace(/(,|\$)/gm, "");
 		
-		//console.log("$scope.subproject_row.Funding.Name = " + $scope.subproject_row.Funding.Name);
-		console.log("$scope.subproject_row.fundingName = " + $scope.subproject_row.fundingName);
-		//console.log("$scope.subproject_row.Funding.Amount = " + $scope.subproject_row.Funding.Amount);
-		console.log("$scope.subproject_row.fundingAmount = " + $scope.subproject_row.fundingAmount);
+		//console.log("$scope.row.Funding.Name = " + $scope.row.Funding.Name);
+		console.log("$scope.row.fundingName = " + $scope.row.fundingName);
+		//console.log("$scope.row.Funding.Amount = " + $scope.row.Funding.Amount);
+		console.log("$scope.row.fundingAmount = " + $scope.row.fundingAmount);
 
-		if (typeof $scope.subproject_row.strFunders === 'undefined')
-			$scope.subproject_row.strFunders = "";
+		if (typeof $scope.row.strFunders === 'undefined')
+			$scope.row.strFunders = "";
 		
 		// We will add a new line at the end, so that the string presents well on the page.
-		if ($scope.subproject_row.fundingName === "Other")
+		if ($scope.row.fundingName === "Other")
 		{
-			$scope.subproject_row.strFunders += $scope.subproject_row.OtherFundingAgency + ", " + $scope.subproject_row.fundingAmount + ";\n";			
+			$scope.row.strFunders += $scope.row.OtherFundingAgency + ", " + $scope.row.fundingAmount + ";\n";			
 		}
 		else
 		{
-			//$scope.subproject_row.strFunders += $scope.subproject_row.Funding.Name + ", " + $scope.subproject_row.Funding.Amount + ";\n";
-			$scope.subproject_row.strFunders += $scope.subproject_row.fundingName + ", " + $scope.subproject_row.fundingAmount + ";\n";
+			//$scope.row.strFunders += $scope.row.Funding.Name + ", " + $scope.row.Funding.Amount + ";\n";
+			$scope.row.strFunders += $scope.row.fundingName + ", " + $scope.row.fundingAmount + ";\n";
 		}
 		
-		console.log("$scope.subproject_row.strFunders = " + $scope.subproject_row.strFunders);
+		console.log("$scope.row.strFunders = " + $scope.row.strFunders);
 	};
 	
 	$scope.removeFundingAgency = function() {
 		console.log("- clicked...");
-		console.log("$scope.subproject_row.strFunders before stripping = " + $scope.subproject_row.strFunders);
+		console.log("$scope.row.strFunders before stripping = " + $scope.row.strFunders);
 		
 		// First, strip out the new line characters.
-		//$scope.subproject_row.strFunders = $scope.subproject_row.strFunders.replace(/[^\x00-\x1F]/gmi, "");
-		$scope.subproject_row.strFunders = $scope.subproject_row.strFunders.replace(/(\r\n|\r|\n)/gm, "");
-		console.log("$scope.subproject_row.strFunders after stripping = " + $scope.subproject_row.strFunders);
+		//$scope.row.strFunders = $scope.row.strFunders.replace(/[^\x00-\x1F]/gmi, "");
+		$scope.row.strFunders = $scope.row.strFunders.replace(/(\r\n|\r|\n)/gm, "");
+		console.log("$scope.row.strFunders after stripping = " + $scope.row.strFunders);
 		
 		// Note, we still have the trailing semicolon.
 		// Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
-		var aryFunders = $scope.subproject_row.strFunders.split(";");
+		var aryFunders = $scope.row.strFunders.split(";");
 		
 		// Next, get rid of that trailing semicolon.
 		aryFunders.splice(-1, 1);
@@ -625,23 +632,23 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		var aryFundersLength = aryFunders.length;
 		
 		// First check if the user entered an "other" funder.
-		if (($scope.subproject_row.fundingName === "Other") && ($scope.subproject_row.OtherFundingAgency))
+		if (($scope.row.fundingName === "Other") && ($scope.row.OtherFundingAgency))
 		{	
 			for (var i = 0; i < aryFundersLength; i++)
 			{
 				console.log("aryFunders[i] = " + aryFunders[i]);
-				if (aryFunders[i].indexOf($scope.subproject_row.OtherFundingAgency) > -1)
+				if (aryFunders[i].indexOf($scope.row.OtherFundingAgency) > -1)
 				{
 					console.log("Found the item...");
 					aryFunders.splice(i,1);
 					console.log("Removed the item.");
 					
-					$scope.subproject_row.strFunders = "";
-					console.log("Wiped $scope.subproject_row.strFunders...");
+					$scope.row.strFunders = "";
+					console.log("Wiped $scope.row.strFunders...");
 					
 					// Rebuild the string now, adding the semicolon and newline after every line.
 					angular.forEach(aryFunders, function(item){
-						$scope.subproject_row.strFunders += item + ";\n";
+						$scope.row.strFunders += item + ";\n";
 						console.log("Added item...");
 					});
 					
@@ -655,18 +662,18 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 			for (var i = 0; i < aryFundersLength; i++)
 			{
 				console.log("aryFunders[i] = " + aryFunders[i]);
-				if (aryFunders[i].indexOf($scope.subproject_row.fundingName) > -1)
+				if (aryFunders[i].indexOf($scope.row.fundingName) > -1)
 				{
 					console.log("Found the item...");
 					aryFunders.splice(i,1);
 					console.log("Removed the item.");
 					
-					$scope.subproject_row.strFunders = "";
-					console.log("Wiped $scope.subproject_row.strFunders...");
+					$scope.row.strFunders = "";
+					console.log("Wiped $scope.row.strFunders...");
 					
 					// Rebuild the string now, adding the semicolon and newline after every line.
 					angular.forEach(aryFunders, function(item){
-						$scope.subproject_row.strFunders += item + ";\n";
+						$scope.row.strFunders += item + ";\n";
 						console.log("Added item...");
 					});
 					
@@ -689,21 +696,21 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		$scope.subprojectSave.error = false;
 		$scope.subprojectSave.errorMessage = "";
 		$scope.savingHabSubproject = false;
-		$scope.subproject_row.Funding = []; // Declare this again.
-		$scope.subproject_row.Collaborators = []; // Declare this again.
+		$scope.row.Funding = []; // Declare this again.
+		$scope.row.Collaborators = []; // Declare this again.
 		$scope.createNewSubproject = false;
 		//$scope.featureImage = null;
 		$scope.locationId = 0;
 		$scope.NewPoint = false;
 		
-		if ((typeof $scope.subproject_row.ProjectName === 'undefined') || ($scope.subproject_row.ProjectName === null))
+		if ((typeof $scope.row.ProjectName === 'undefined') || ($scope.row.ProjectName === null))
 		{
 			console.log("Project name is empty...");
 			$scope.subprojectSave.error = true;
 			$scope.subprojectSave.errorMessage = "Project Name cannot be blank!  ";
 		}
 		
-		if ((typeof $scope.subproject_row.GPSEasting === 'undefined') || (typeof $scope.subproject_row.GPSNorthing === 'undefined'))
+		if ((typeof $scope.row.GPSEasting === 'undefined') || (typeof $scope.row.GPSNorthing === 'undefined'))
 		{
 			console.log("Easting or Northing is blank...");
 			$scope.subprojectSave.error = true;
@@ -714,15 +721,15 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
             return;
 
 
-		console.log("$scope.subproject_row, full is next...");
-		console.dir($scope.subproject_row);
+		console.log("$scope.row, full is next...");
+		console.dir($scope.row);
 
 		// Capture the AddDocument flag, before discarding it.			
-		$scope.addDocument = $scope.subproject_row.AddDocument;
-		$scope.subproject_row.AddDocument = null;
+		$scope.addDocument = $scope.row.AddDocument;
+		$scope.row.AddDocument = null;
 			
-		if (!$scope.subproject_row.LocationId)
-			$scope.subproject_row.LocationId = 0;
+		if (!$scope.row.LocationId)
+			$scope.row.LocationId = 0;
 			
 		/********* A note about time start ***********/
 		/* 	When we save the subproject, when the backend converts the ProjectStartDate and ProjectEndDate to UTC (adds 8 hours).
@@ -733,22 +740,22 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 			There may be a better way to handle this issue, but this technique works too...
 		*/
 			
-		if ($scope.subproject_row.ProjectStartDate)
+		if ($scope.row.ProjectStartDate)
 		{
-			var psDate = new Date(Date.parse($scope.subproject_row.ProjectStartDate));
-			$scope.subproject_row.ProjectStartDate = setDateTo0000(psDate);
+			var psDate = new Date(Date.parse($scope.row.ProjectStartDate));
+			$scope.row.ProjectStartDate = setDateTo0000(psDate);
 		}
 			
-		if ($scope.subproject_row.ProjectEndDate)
+		if ($scope.row.ProjectEndDate)
 		{
-			var peDate = new Date(Date.parse($scope.subproject_row.ProjectEndDate));
-			$scope.subproject_row.ProjectEndDate = setDateTo0000(peDate);
+			var peDate = new Date(Date.parse($scope.row.ProjectEndDate));
+			$scope.row.ProjectEndDate = setDateTo0000(peDate);
 		}
 		/********* A note about time end ***********/
 
 		console.log("$scope.addDocument = " + $scope.addDocument);
-		console.log("$scope.subproject_row, after del is next...");
-		console.dir($scope.subproject_row);			
+		console.log("$scope.row, after del is next...");
+		console.dir($scope.row);			
 			
 		$scope.saveResults = {};
 		//console.log("$scope is next...");
@@ -759,21 +766,21 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		$scope.subprojectSave.errorMessage = "";
 			
 		// First Foods
-		console.log("First Foods = " + $scope.subproject_row.FirstFoods);
+		console.log("First Foods = " + $scope.row.FirstFoods);
 			
 		// Funding
-		console.log("$scope.subproject_row.Funding is next...");
-		console.dir($scope.subproject_row.Funding);
-		console.log("type of $scope.subproject_row.Funding = " + typeof $scope.subproject_row.Funding);
+		console.log("$scope.row.Funding is next...");
+		console.dir($scope.row.Funding);
+		console.log("type of $scope.row.Funding = " + typeof $scope.row.Funding);
 			
-		//if ($scope.subproject_row.Funding.length > 0)
-		if ((typeof $scope.subproject_row.strFunders !== 'undefined') && ($scope.subproject_row.strFunders !== null) && ($scope.subproject_row.strFunders.length > 0))
+		//if ($scope.row.Funding.length > 0)
+		if ((typeof $scope.row.strFunders !== 'undefined') && ($scope.row.strFunders !== null) && ($scope.row.strFunders.length > 0))
 		{
-			if ($scope.subproject_row.strFunders.length > 0)
+			if ($scope.row.strFunders.length > 0)
 			{
 				$rootScope.fundersPresent = $scope.fundersPresent = true;
-				var strFunders = $scope.subproject_row.strFunders.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
-				var aryFunders = $scope.subproject_row.strFunders.split(";");  // 
+				var strFunders = $scope.row.strFunders.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
+				var aryFunders = $scope.row.strFunders.split(";");  // 
 				aryFunders.splice(-1, 1);
 					
 				angular.forEach(aryFunders, function(item) {
@@ -798,22 +805,22 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 					fundingOption.Amount = parseFloat(funderRecord[1]);
 					console.log("fundingOption.Amount = " + fundingOption.Amount);
 						
-					$scope.subproject_row.Funding.push(fundingOption);		
+					$scope.row.Funding.push(fundingOption);		
 				});
-				$scope.subproject_row.strFunders = undefined;
+				$scope.row.strFunders = undefined;
 			}
 		}
 			
 		// Collaborators
-		console.log("$scope.subproject_row.strCollaborators = " + $scope.subproject_row.strCollaborators);
-		console.log("type of $scope.subproject_row.strCollaborators = " + typeof $scope.subproject_row.strCollaborators);
+		console.log("$scope.row.strCollaborators = " + $scope.row.strCollaborators);
+		console.log("type of $scope.row.strCollaborators = " + typeof $scope.row.strCollaborators);
 	
-		if ((typeof $scope.subproject_row.strCollaborators !== 'undefined') && ($scope.subproject_row.strCollaborators !== null) && ($scope.subproject_row.strCollaborators.length > 0))
+		if ((typeof $scope.row.strCollaborators !== 'undefined') && ($scope.row.strCollaborators !== null) && ($scope.row.strCollaborators.length > 0))
 		{
 			$rootScope.collaboratorPresent = $scope.collaboratorPresent = true;
-			var strCollaborators = $scope.subproject_row.strCollaborators.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
+			var strCollaborators = $scope.row.strCollaborators.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
 			console.log("strCollaborators = " + strCollaborators);
-			var aryCollaborators = $scope.subproject_row.strCollaborators.split(";");  // 
+			var aryCollaborators = $scope.row.strCollaborators.split(";");  // 
 			//aryCollaborators.splice(-1, 1);
 				
 			angular.forEach(aryCollaborators, function(item) {
@@ -832,10 +839,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 					collaboratorOption.Name = item.trim();
 					//console.log("collaboratorOption.Name = " + collaboratorOption.Name);
 						
-					$scope.subproject_row.Collaborators.push(collaboratorOption);
+					$scope.row.Collaborators.push(collaboratorOption);
 				}
 			});
-			$scope.subproject_row.strCollaborators = undefined;
+			$scope.row.strCollaborators = undefined;
 		}
 			
 		var subprojectId = 0;
@@ -856,13 +863,13 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 			// Next, we add/save the location.
 			console.log("This is a new subproject; creating a new location...");
 			var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
-			newLocation.Label = $scope.subproject_row.ProjectName;
-			newLocation.Description = $scope.subproject_row.ProjectDescription;
-			newLocation.GPSEasting = $scope.subproject_row.GPSEasting;
-			newLocation.GPSNorthing = $scope.subproject_row.GPSNorthing;
+			newLocation.Label = $scope.row.ProjectName;
+			newLocation.Description = $scope.row.ProjectDescription;
+			newLocation.GPSEasting = $scope.row.GPSEasting;
+			newLocation.GPSNorthing = $scope.row.GPSNorthing;
 			newLocation.ProjectId = parseInt($scope.projectId);
 			newLocation.LocationTypeId = LOCATION_TYPE_Hab;
-			newLocation.WaterBodyId = $scope.subproject_row.WaterBodyId;
+			newLocation.WaterBodyId = $scope.row.WaterBodyId;
 			//newLocation.SubprojectId = $scope.subprojectId; // When we are creating a new subproject, we do not have the subprojectId yet; this is from the old one.
 			console.log("newLocation is next...");
 			console.dir(newLocation);
@@ -908,8 +915,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 								if (key === "Id")
 								{
 									//$scope.locationId = promise.LocationId;
-									$scope.subproject_row.LocationId = item;
-									console.log("$scope.subproject_row.LocationId = " + $scope.subproject_row.LocationId);
+									$scope.row.LocationId = item;
+									console.log("$scope.row.LocationId = " + $scope.row.LocationId);
 
                                     //ok - new location is saved and we are prepped to save the subproject so handoff to next step:
                                     $scope.saveFilesAndParent();
@@ -951,7 +958,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
         // we need to reset it back to the real, actual existing files.
 
         if ($scope.originalExistingFiles && $scope.originalExistingFiles.hasOwnProperty($scope.file_field)) {
-            $scope.subproject_row.ItemFiles = $scope.originalExistingFiles[$scope.file_field];
+            $scope.row.ItemFiles = $scope.originalExistingFiles[$scope.file_field];
         }
         $modalInstance.dismiss();
     };
