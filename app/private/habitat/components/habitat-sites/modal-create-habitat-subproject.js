@@ -61,34 +61,44 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	var values = null;
 	
 
+    
+    //fetch all of the habitat metafields and two of the project metafields that are used for habitat sites ("subprojects")
     $scope.setupHabitatMetaFields = function () {
+        if ($scope.project.MetaFields)
+            return;
+
         var habfields = CommonService.getMetadataFor($scope.project.Id, METADATA_ENTITY_HABITAT);
         habfields.$promise.then(function () {
+            
+            $scope.project.MetaFields = [];
 
-            if (!$scope.project.MetaFields)
-                $scope.project.MetaFields = [];
+            var projFields = CommonService.getMetadataFor($scope.project.Id, METADATA_ENTITY_PROJECT);
 
-            habfields.forEach(function (habfield) {
-                habfield.isHabitat = true;
-                $scope.project.MetaFields.push(habfield);
+            projFields.$promise.then(function () { 
+                
+                projFields.forEach(function (projfield) {
+                    if (projfield.Name == "First Foods" || projfield.Name == "River Vision Touchstone") { //include only these from proj
+                        projfield.isHabitat = true;
+                        $scope.project.MetaFields.push(projfield);
+                    }
+                });
+
+                habfields.forEach(function (habfield) {
+                    if (habfield.Name !== "Collaborators") { //exclude
+                        habfield.isHabitat = true;
+                        $scope.project.MetaFields.push(habfield);
+                    }
+                });
+
+                $scope.project.MetaFields.forEach(function (field) {
+                    field.DbColumnName = field.Label = field.Name;
+                });
+
+                console.dir($scope.project.MetaFields);
+                console.dir($scope.row);
+
             });
-
-            //prep the values if it is a multiselect
-            $scope.project.MetaFields.forEach(function (field) {
-                if (field.Values && (field.ControlType == "multiselect" || field.ControlType == "multiselect-checkbox")) {
-                    field.Values = getParsedMetadataValues(field.Values);
-                }
-
-                field.DbColumnName = field.Label = field.Name;
-
-                if (field.Values)
-                    $scope.row[field.DbColumnName] = field.Values;
-                else
-                    $scope.row[field.DbColumnName] = null;
-            });
-
-            console.dir($scope.project.MetaFields);
-            console.dir($scope.row);
+            
         });
     }
 
@@ -141,86 +151,27 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
                 $scope.row.ItemFiles = '[{"Name":"' + $scope.row.FeatureImage + '"}]';
             }
 
+            // row.column (from database) and metadata name
+            $scope.HabitatMetaFieldColumns = {
+                "FirstFoods": "First Foods",
+                "RiverVisionTouchstone": "River Vision Touchstone",
+                "HabitatObjectives": "Habitat Objectives",
+                "NoaaEcologicalConcerns": "NOAA Ecological Concerns",
+                "NoaaEcologicalConcernsSubcategories": "NOAA Ecological Concerns: Sub-categories",
+                "LimitingFactors": "Limiting Factors"
+            };
 
-            values = null; // Set/reuse this variable.
-            var strFirstFoods = null
-            try {
-                values = angular.fromJson($scope.row.FirstFoods);
-                //console.log("First Foods was an object.");
-                //console.log("First Foods = " + values);
-                strFirstFoods = values.toString();
-                //console.log("strFirstFoods = " + strFirstFoods);
-            }
-            catch (e) {
-                if ($scope.row.FirstFoods) {
-                    values = $scope.row.FirstFoods.split(",");
-                    strFirstFoods = $scope.row.FirstFoods.toString();
+            //our metadata fields bind to: row["River Vision Touchstone"] so we need to copy in and out from the columns coming from the db.
+            Object.keys($scope.HabitatMetaFieldColumns).forEach(function (field) { 
+                values = null; 
+                try {
+                    values = angular.fromJson($scope.row[field]); //copy from the incoming column (multiselect/multiselect-checkbox)
                 }
-                else {
-                    values = "";
-                    strFirstFoods = "";
+                catch (e) {
+                    values = $scope.row[field].split(","); //copy from the incoming column (select)
                 }
-
-                //console.log("First Foods was a string.");
-
-                //console.log(strFirstFoods);
-            }
-            $scope.row.FirstFoods = values;
-
-            values = null; // Set/reuse this variable.		
-            try {
-                values = angular.fromJson($scope.row.RiverVisionTouchstone);
-                //console.log("It was an object.");
-            }
-            catch (e) {
-                values = $scope.row.RiverVisionTouchstone.split(",");
-                //console.log("It was a string.");
-            }
-            $scope.row.RiverVisionTouchstone = values;
-
-            values = null; // Set/reuse this variable.
-            try {
-                values = angular.fromJson($scope.row.HabitatObjectives);
-                //console.log("It was an object.");
-            }
-            catch (e) {
-                values = $scope.row.HabitatObjectives.split(",");
-                //console.log("It was a string.");
-            }
-            $scope.row.HabitatObjectives = values;
-
-            values = null; // Set/reuse this variable.
-            try {
-                values = angular.fromJson($scope.row.NoaaEcologicalConcerns);
-                //console.log("It was an object.");
-            }
-            catch (e) {
-                values = $scope.row.NoaaEcologicalConcerns.split(",");
-                //console.log("It was a string.");
-            }
-            $scope.row.NoaaEcologicalConcerns = values;
-
-            values = null; // Set/reuse this variable.
-            try {
-                values = angular.fromJson($scope.row.NoaaEcologicalConcernsSubcategories);
-                //console.log("It was an object.");
-            }
-            catch (e) {
-                values = $scope.row.NoaaEcologicalConcernsSubcategories.split(",");
-                //console.log("It was a string.");
-            }
-            $scope.row.NoaaEcologicalConcernsSubcategories = values;
-
-            values = null; // Set/reuse this variable.
-            try {
-                values = angular.fromJson($scope.row.LimitingFactors);
-                //console.log("It was an object.");
-            }
-            catch (e) {
-                values = $scope.row.LimitingFactors.split(",");
-                //console.log("It was a string.");
-            }
-            $scope.row.LimitingFactors = values;
+                $scope.row[$scope.HabitatMetaFieldColumns[field]] = values; //map to the metadata name
+            });
 
             //ok, all initialized... now:
             //mixin the properties and functions to enable the modal file chooser for this controller...
@@ -235,6 +186,13 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
     $scope.saveFilesAndParent = function () {
 
         var saveRow = angular.copy($scope.row);
+
+        //copy the bound vars into the column fields to save
+        Object.keys($scope.HabitatMetaFieldColumns).forEach(function (col) { 
+            saveRow[col] = angular.toJson($scope.row[$scope.HabitatMetaFieldColumns[col]]);
+            delete saveRow[$scope.HabitatMetaFieldColumns[col]];
+        });
+
         console.log("saveRow (before wiping HabitatItems) is next..");
         console.dir(saveRow);
 
@@ -764,8 +722,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		// First, a little cleanup.
 		$scope.subprojectSave.error = false;
 		$scope.subprojectSave.errorMessage = "";
-			
-		// First Foods
+		
+        // First Foods
 		console.log("First Foods = " + $scope.row.FirstFoods);
 			
 		// Funding

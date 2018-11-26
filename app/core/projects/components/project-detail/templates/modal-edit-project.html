@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane fade in" id="hab">
-                <div class="list-group media-list media-list-stream">
+                <div class="list-group media-list media-list-stream habitat-form-items">
                     <div style="margin-top: 30px;"></div>
                     <div ng-repeat="field in project.MetaFields | filter:{ControlType:'!hidden', isHabitat:'true'}" ng-switch on="field.ControlType">
                         <ctuir-text-field ng-switch-when="text"></ctuir-text-field>

@@ -806,6 +806,9 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-create-habSubproject.html',
                 controller: 'ModalCreateHabSubprojectCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop  : 'static',
+                windowClass: 'modal-medium',
+                keyboard  : false
             });
         };
 

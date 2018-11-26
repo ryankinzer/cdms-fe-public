@@ -33,6 +33,9 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-project.html',
                 controller: 'ModalProjectEditorCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop  : 'static',
+                windowClass: 'modal-medium',
+                keyboard  : false
             }).result.then(function (saved_project) { 
                 scope.project = saved_project;
                 scope.afterProjectLoaded();
