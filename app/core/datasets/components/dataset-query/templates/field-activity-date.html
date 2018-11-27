@@ -1,0 +1,11 @@
+<p class="text-left">Choose a date expression:</p>
+<div class="row">
+	<div class="col-md-12">
+		<input class="hidden" type="radio" ng-model="Criteria.Value.ParamFieldDateType" value="between" ng-init="Criteria.Value.ParamFieldDateType='between'"></input>
+		Between
+		<br/>
+		<input  class="query-date-control" type="text" datepicker-popup="shortDate" ng-model="Criteria.Value.BetweenFromFieldDate" is-open="copened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+		and
+		<input  class="query-date-control" type="text" datepicker-popup="shortDate" ng-model="Criteria.Value.BetweenToFieldDate" is-open="dopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+	</div>
+</div>

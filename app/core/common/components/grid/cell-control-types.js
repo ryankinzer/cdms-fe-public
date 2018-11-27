@@ -25,7 +25,7 @@ var MultiselectControlType = function (cdms_field, col_def) {
     col_def.cellValidator = CDMSMultiselectCellValidator;
     col_def.valueGetter = function (params) {
         //console.dir(params);
-        return angular.fromJson(params.data[params.column.colId]);
+        return getParsedMetadataValues(params.data[params.column.colId]);
     };
     return col_def;
 

@@ -268,8 +268,10 @@
                         }
                         else //just add the value to the cell
                         {
-                            if (field.Label == MAP_LOCATION) {
+                            if(!new_row.Activity)
                                 new_row['Activity'] = {};
+
+                            if (field.Label == MAP_LOCATION) {
                                 new_row['Activity']['Location'] = data_row[col];
                             } else if (field.Label == MAP_ACTIVITY_DATE) {
                                 new_row['Activity']['ActivityDate'] = data_row[col];

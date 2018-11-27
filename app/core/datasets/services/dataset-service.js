@@ -487,18 +487,7 @@ datasets_module.service('DatasetService', ['$q',
 			
             queryActivities: function (query) {
                 //using "save" here because we need to POST our query criteria object
-                QueryActivitiesAction.save(query.criteria, function (data) {
-                    query.results = data;
-                    query.errors = undefined;
-                    console.log("success!");
-                    query.loading = false;
-                }, function (data) {
-                    query.results = undefined;
-                    query.errors = ["There was a problem running your querying.  Please try again or contact support."];
-                    console.log("Failure!");
-                    console.dir(data);
-                    query.loading = false;
-                });
+                return QueryActivitiesAction.save(query.criteria);
 
             },
 			
