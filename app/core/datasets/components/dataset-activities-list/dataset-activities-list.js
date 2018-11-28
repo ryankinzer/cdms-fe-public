@@ -1,10 +1,10 @@
 ﻿
 var dataset_activities_list = ['$scope', '$routeParams',
     'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', 'UserService','GridService',
-    '$uibModal', '$location', '$window', '$rootScope',
+    '$uibModal', '$location', '$window', '$rootScope', '$timeout',
     function ($scope, $routeParams,
         DatasetService, SubprojectService, ProjectService, CommonService, UserService, GridService,
-        $modal, $location, $window, $rootScope) {
+        $modal, $location, $window, $rootScope, $timeout) {
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
@@ -17,6 +17,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
             "UserId",
         ];
 
+        $scope.InstrumentCache = {};
+
         $scope.dataset.$promise.then(function () {
 
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
@@ -26,17 +28,19 @@ var dataset_activities_list = ['$scope', '$routeParams',
                     $scope.agGridOptions.columnApi.setColumnVisible("EditLink", true);
                     $scope.agGridOptions.api.refreshHeader();
                 }
+
+                $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
+                $scope.activities.$promise.then(function () {
+                    //now that the activities are loaded, tell the grid so that it can refresh.
+                    $scope.agGridOptions.api.setRowData($scope.activities);
+                    GridService.autosizeColumns($scope.agGridOptions);
+                });
+
             });
 
-            $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
-            $scope.activities.$promise.then(function () {
-                //now that the activities are loaded, tell the grid so that it can refresh.
-                $scope.agGridOptions.api.setRowData($scope.activities);
-                GridService.autosizeColumns($scope.agGridOptions);
-            });
 
             $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
-
+            
             //once the dataset loads, determine our columns
 
             var gridColumnNames = DefaultActivityListFields;
@@ -84,8 +88,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             //tell the grid we've changed the coldefs
             $scope.agGridOptions.api.setColumnDefs(gridColDefs); 
-            //console.log(" -- ok grid loaded and the coldefs are: ");
-            //console.dir(gridColDefs);
+
+            console.log(" -- ok grid loaded and the coldefs are: ");
+            console.dir(gridColDefs);
             
         });
 
@@ -118,6 +123,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 //console.dir(params);
                 return '<span>'+$scope.QAStatusList[params.node.data[params.colDef.DbColumnName]]+'</span>';
             },
+            
         };
 
         $scope.ValueGetters = {
@@ -140,6 +146,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
             'qa-status-select': function (params) {
                 return params.node.data[params.colDef.DbColumnName];
             },
+            'instrument-select': function (params) {
+                
+                if ($scope.project.Instruments && !$scope.InstrumentCache.hasOwnProperty(params.colDef.DbColumnName)) {
+                    var instrument = getByField($scope.project.Instruments, params.node.data[params.colDef.DbColumnName], "Id");
+                    $scope.InstrumentCache[params.colDef.DbColumnName] = instrument.Name + "(SN:" + instrument.SerialNumber + ")";
+                }
+                return $scope.InstrumentCache[params.colDef.DbColumnName];
+            },
         };
 
 
@@ -150,6 +164,156 @@ var dataset_activities_list = ['$scope', '$routeParams',
         var editTemplate = function (params) {
             return '<div project-role="editor"><a href="#!/edit/' + params.node.data.ActivityId + '">Edit</a></div>';
         };
+
+
+        $scope.agGridOptions = {
+            animateRows: true,
+            enableSorting: true,
+            enableFilter: true,
+            enableColResize: true,
+            showToolPanel: false,
+            columnDefs: [],
+            rowData: [],
+            rowSelection: 'multiple',
+            onSelectionChanged: function (params) {
+                $scope.agGridOptions.selectedItems = $scope.agGridOptions.api.getSelectedRows();
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+            onFilterModified: function () {
+                $scope.agGridOptions.api.deselectAll();
+            },
+            selectedItems: []
+        };
+
+        //setup the grid
+        var ag_grid_div = document.querySelector('#activity-list-grid');    //get the container id...
+        $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.agGridOptions); //bind the grid to it.
+        $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
+
+       $scope.openQueryWindow = function (p) {
+            $location.path("/datasetquery/" + $scope.dataset.Id);
+        };
+
+        $scope.openDetailsWindow = function (p) {
+            $location.path("/dataset-details/" + $scope.dataset.Id);
+        };
+
+        $scope.openImportWindow = function () {
+            $scope.activities = null; // Dump the activities to free up memory.
+            $location.path("/datasetimport/" + $scope.dataset.Id);
+        };
+
+        $scope.deleteActivities = function () {
+
+            $scope.saveResults = {};
+
+            if (!confirm("Are you sure you want to delete " + $scope.agGridOptions.selectedItems.length + " activities (and all associated files)?  There is no undo for this operation."))
+                return;
+
+            //ok, well lets give them a list of all files that will be deleted along with this activity... just to make sure!
+            var activities_to_delete = [];
+            var num_activities = $scope.agGridOptions.selectedItems.length;
+            $scope.loading_progress = 0;
+            
+            angular.forEach($scope.agGridOptions.selectedItems, function (activity) {
+                //console.log("loading activity : " + activity.Id);
+                DatasetService.getActivityData(activity.Id).$promise.then(function (in_activity) {
+                    //console.log(" loaded! adding: ", in_activity);
+                    activities_to_delete.push(in_activity);
+                    $scope.loading_progress++;
+                });
+            });
+
+            var progress_watcher = $scope.$watch('loading_progress', function () {
+
+                //console.log("Progress watcher: " + num_activities + " + " + $scope.loading_progress);
+
+                if ($scope.loading_progress < num_activities)
+                    return;
+
+                progress_watcher();
+
+                var files_to_delete = getFilenamesForTheseActivities($scope.dataset, activities_to_delete);
+                //console.log("ok! files we got back: " + files_to_delete);
+
+                //if there are no files to delete, just go ahead, otherwise confirm
+                if (files_to_delete != null)
+                    if(!confirm("Last chance! - Deleting this activity will also permanently delete the following files: " + files_to_delete))
+                        return;
+
+                DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.agGridOptions, $scope.saveResults);
+                
+            });
+            
+            var deleteWatcher = $scope.$watch('saveResults', function () {
+                if ($scope.saveResults.success) {
+                    //great! so remove those from the grid; no sense reloading
+
+                    //console.log("Ok - let's delete from the activities array. Starting with: " + $scope.activities.length);
+
+                    //make an array of the ActivityIds to remove from our grid...
+                    var SelectedActivityIds = [];
+                    var activitiesProcessed = 0;
+                    var activitiesToProcess = $scope.activities.length;
+
+                    $scope.agGridOptions.selectedItems.forEach(function (item) {
+                        SelectedActivityIds.push(item.Id);
+                    });
+
+                    //console.log("Ok these are the ones we'll remove from the grid");
+                    console.dir(SelectedActivityIds);
+
+                    $scope.allActivities = []; //this will be our activities to keep (skipping the ones to delete) 
+
+                    //spin through allActivities and remove the selected activities from our activities
+                    // remember: we can't splice items out of arrays we are foreaching or else unexpected results occur.
+                    $scope.activities.forEach(function (activity, index) {
+
+                        //////console.log(" -- checking == " + activity.Id + " at index: " + index);
+
+                        if (!SelectedActivityIds.containsInt(activity.Id)) {
+                            $scope.allActivities.push(activity);
+
+                        } else {
+
+                            //console.log("Ok we are deleting this one...");
+                            console.dir(activity);
+                            //$scope.activities.splice(index, 1); //note: we remove this from activities not allActivities
+                        } 
+
+                        activitiesProcessed++;
+                        if (activitiesProcessed === activitiesToProcess) //wait for all the foreaches to come back...
+                        {
+                            //all done, so now refresh the view.
+                            //console.log("done! refreshing view");
+                            $scope.agGridOptions.api.deselectAll();  //clear selection
+                            //console.log("after selection");
+                            $scope.activities = $scope.allActivities; //update our activities with the new set of activities
+                            //console.log("ready for grid update");
+                            $scope.agGridOptions.api.setRowData($scope.activities); //update the grid.
+                            //console.log("all done.");
+                            deleteWatcher();
+                        }
+                    });
+                }
+                else if ($scope.saveResults.failure) {
+                    deleteWatcher();
+                    //console.log("delete failure!");
+                }
+            }, true);
+        };
+
+        $scope.openDataEntry = function (p) { 
+            delete $rootScope.imported_rows;
+            $location.path("/dataentryform/" + $scope.dataset.Id); 
+        };
+
+        //handle favorite toggle
+        $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
+        $scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteDataset($scope, $rootScope); 
+        }
+
 
         //$scope.columnDefs = []; // the one we'll bind to the grid; starts out empty...
 
@@ -218,30 +382,6 @@ var dataset_activities_list = ['$scope', '$routeParams',
         //$scope.selectedLocation = null;
         //$scope.newPoint = null;
         //$scope.newGraphic = null;
-
-        $scope.agGridOptions = {
-            animateRows: true,
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
-            showToolPanel: false,
-            columnDefs: [],
-            rowData: [],
-            rowSelection: 'multiple',
-            onSelectionChanged: function (params) {
-                $scope.agGridOptions.selectedItems = $scope.agGridOptions.api.getSelectedRows();
-                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-            },
-            onFilterModified: function () {
-                $scope.agGridOptions.api.deselectAll();
-            },
-            selectedItems: []
-        };
-
-        //setup the grid
-        var ag_grid_div = document.querySelector('#activity-list-grid');    //get the container id...
-        $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.agGridOptions); //bind the grid to it.
-        $scope.agGridOptions.api.showLoadingOverlay(); //show loading...
 
 /*
         $scope.activities.$promise.then( function () {
@@ -787,129 +927,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             $scope.activities = DatasetService.getActivitiesForView($routeParams.Id);
         }
 */
-        $scope.openQueryWindow = function (p) {
-            $location.path("/datasetquery/" + $scope.dataset.Id);
-        };
-
-        $scope.openDetailsWindow = function (p) {
-            $location.path("/dataset-details/" + $scope.dataset.Id);
-        };
-
-        $scope.openImportWindow = function () {
-            $scope.activities = null; // Dump the activities to free up memory.
-            $location.path("/datasetimport/" + $scope.dataset.Id);
-        };
-
-        $scope.deleteActivities = function () {
-
-            $scope.saveResults = {};
-
-            if (!confirm("Are you sure you want to delete " + $scope.agGridOptions.selectedItems.length + " activities (and all associated files)?  There is no undo for this operation."))
-                return;
-
-            //ok, well lets give them a list of all files that will be deleted along with this activity... just to make sure!
-            var activities_to_delete = [];
-            var num_activities = $scope.agGridOptions.selectedItems.length;
-            $scope.loading_progress = 0;
-            
-            angular.forEach($scope.agGridOptions.selectedItems, function (activity) {
-                //console.log("loading activity : " + activity.Id);
-                DatasetService.getActivityData(activity.Id).$promise.then(function (in_activity) {
-                    //console.log(" loaded! adding: ", in_activity);
-                    activities_to_delete.push(in_activity);
-                    $scope.loading_progress++;
-                });
-            });
-
-            var progress_watcher = $scope.$watch('loading_progress', function () {
-
-                //console.log("Progress watcher: " + num_activities + " + " + $scope.loading_progress);
-
-                if ($scope.loading_progress < num_activities)
-                    return;
-
-                progress_watcher();
-
-                var files_to_delete = getFilenamesForTheseActivities($scope.dataset, activities_to_delete);
-                //console.log("ok! files we got back: " + files_to_delete);
-
-                //if there are no files to delete, just go ahead, otherwise confirm
-                if (files_to_delete != null)
-                    if(!confirm("Last chance! - Deleting this activity will also permanently delete the following files: " + files_to_delete))
-                        return;
-
-                DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.agGridOptions, $scope.saveResults);
-                
-            });
-            
-            var deleteWatcher = $scope.$watch('saveResults', function () {
-                if ($scope.saveResults.success) {
-                    //great! so remove those from the grid; no sense reloading
-
-                    //console.log("Ok - let's delete from the activities array. Starting with: " + $scope.activities.length);
-
-                    //make an array of the ActivityIds to remove from our grid...
-                    var SelectedActivityIds = [];
-                    var activitiesProcessed = 0;
-                    var activitiesToProcess = $scope.activities.length;
-
-                    $scope.agGridOptions.selectedItems.forEach(function (item) {
-                        SelectedActivityIds.push(item.Id);
-                    });
-
-                    //console.log("Ok these are the ones we'll remove from the grid");
-                    console.dir(SelectedActivityIds);
-
-                    $scope.allActivities = []; //this will be our activities to keep (skipping the ones to delete) 
-
-                    //spin through allActivities and remove the selected activities from our activities
-                    // remember: we can't splice items out of arrays we are foreaching or else unexpected results occur.
-                    $scope.activities.forEach(function (activity, index) {
-
-                        //////console.log(" -- checking == " + activity.Id + " at index: " + index);
-
-                        if (!SelectedActivityIds.containsInt(activity.Id)) {
-                            $scope.allActivities.push(activity);
-
-                        } else {
-
-                            //console.log("Ok we are deleting this one...");
-                            console.dir(activity);
-                            //$scope.activities.splice(index, 1); //note: we remove this from activities not allActivities
-                        } 
-
-                        activitiesProcessed++;
-                        if (activitiesProcessed === activitiesToProcess) //wait for all the foreaches to come back...
-                        {
-                            //all done, so now refresh the view.
-                            //console.log("done! refreshing view");
-                            $scope.agGridOptions.api.deselectAll();  //clear selection
-                            //console.log("after selection");
-                            $scope.activities = $scope.allActivities; //update our activities with the new set of activities
-                            //console.log("ready for grid update");
-                            $scope.agGridOptions.api.setRowData($scope.activities); //update the grid.
-                            //console.log("all done.");
-                            deleteWatcher();
-                        }
-                    });
-                }
-                else if ($scope.saveResults.failure) {
-                    deleteWatcher();
-                    //console.log("delete failure!");
-                }
-            }, true);
-        };
-
-        $scope.openDataEntry = function (p) { 
-            delete $rootScope.imported_rows;
-            $location.path("/dataentryform/" + $scope.dataset.Id); 
-        };
-
-        //handle favorite toggle
-        $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
-        $scope.toggleFavorite = function () { 
-            UserService.toggleFavoriteDataset($scope, $rootScope); 
-        }
+ 
 
     }
 

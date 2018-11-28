@@ -1,6 +1,6 @@
 <div class="header-label">{{field.Label}}: </div>
 <div class="header-value">
-    <select class="form-control" ng-blur="onHeaderEditingStopped(field)" ng-model="row.Activity.PostAccuracyCheckId">
+    <select class="form-control" ng-blur="onHeaderEditingStopped(field)" ng-model="row.Activity.PostAccuracyCheckId" convert-to-number>
         <option ng-repeat="check in row.Activity.Instrument.AccuracyChecks" ng-selected="check.Id == row.Activity.PostAccuracyCheckId" value="{{check.Id}}">{{check | dataGrade}} on {{check.CheckDate | date}}</option>
     </select>
 </div>

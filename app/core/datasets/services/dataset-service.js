@@ -50,6 +50,12 @@ datasets_module.factory('Datasets', ['$resource', function ($resource) {
     });
 }]);
 
+datasets_module.factory('GetDatasetsList', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/dataset/getdatasetslist', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
 datasets_module.factory('Data', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/activity/getdatasetactivitydata', {}, {
         query: { method: 'GET', params: { id: 'activityId' }, isArray: false }
@@ -246,6 +252,7 @@ datasets_module.service('DatasetService', ['$q',
     'AddDatasetToProject',
     'UpdateDataset',
     'HasExistingActivity',
+    'GetDatasetsList',
     function ($q,
         DatasetFiles,
         Activities,
@@ -284,7 +291,8 @@ datasets_module.service('DatasetService', ['$q',
         SpecificScrewTrapActivities,
         AddDatasetToProject,
         UpdateDataset,
-        HasExistingActivity)
+        HasExistingActivity,
+        GetDatasetsList)
     {
 
         var service = {
@@ -328,6 +336,10 @@ datasets_module.service('DatasetService', ['$q',
                 return Datasets.query();
             },
 			
+            getDatasetsList: function () {
+                return GetDatasetsList.query();
+            },
+
             //configureDataset: function(dataset)
             configureDataset: function (dataset, scope) {
                 //console.log("configuring dataset.Name = " + dataset.Name);

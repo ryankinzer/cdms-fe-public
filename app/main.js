@@ -42,6 +42,7 @@ define([
             $routeProvider.when('/dashboard', { templateUrl: 'app/core/user/components/landing-page/templates/landing-page.html', controller: 'LandingPage'});
 
             $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'ProjectListCtrl'});
+            $routeProvider.when('/datasets', { templateUrl: 'app/core/datasets/components/datasets-list/templates/datasets.html', controller: 'DatasetsListCtrl'});
             $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-landing.html', controller: 'ProjectLandingCtrl'});
             $routeProvider.when('/projectFiles/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-files.html', controller: 'ProjectFilesCtrl'});
             $routeProvider.when('/projectData/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-data.html', controller: 'ProjectDataCtrl'});

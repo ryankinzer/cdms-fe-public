@@ -47,17 +47,19 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         // Are we editing or not?
         if ($scope.pagemode.indexOf('dataentryform') !== -1) {
-            $scope.dataset_activities = { Header: [], Details: [] };
+            $scope.dataset_activities = { Header: {}, Details: [] };
 
             //are we importing?
             if ($rootScope.hasOwnProperty('imported_rows')) {
-                $scope.dataset_activities = { Header: [], Details: $rootScope.imported_rows };
+                $scope.dataset_activities = { Header: $rootScope.imported_header, Details: $rootScope.imported_rows };
+                //console.dir($scope.dataset_activities);
             }
 
             $scope.dataset = DatasetService.getDataset($routeParams.Id);
             $scope.dataset.$promise.then(function () {
                 //$scope.row is the Header fields data row
-                $scope.row = { 'Activity': { 'ActivityDate': moment().format(), 'ActivityQAStatus': {'QAStatusId': $scope.dataset.DefaultActivityQAStatusId} } }; //empty row
+                $scope.row = Object.assign({ 'Activity': { 'ActivityDate': moment().format(), 'ActivityQAStatus': { 'QAStatusId': $scope.dataset.DefaultActivityQAStatusId } } }, $scope.dataset_activities.Header);
+                //console.dir($scope.row);
                 $scope.afterDatasetLoadedEvent();
             });
         }
@@ -212,7 +214,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             if($scope.dataset.Config.DuplicateCheckFields && $scope.dataset.Config.DuplicateCheckFields.contains(field.DbColumnName))
                 $scope.checkForDuplicates();
 
-            //console.dir($scope.row);
+            console.dir($scope.row);
         };
 
         //add a row
@@ -448,6 +450,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             });
 
         };     
+
+        $scope.openEdit = function () {
+            $location.path("/edit/" + $scope.dataset_activities.Header.Activity.Id);
+        }
+
 
         $scope.createInstrument = function () {
             //$scope.viewInstrument = null;

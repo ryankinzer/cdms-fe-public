@@ -130,13 +130,9 @@
             }
         }
 
-        //return the mappable fields, default to detail
-        $scope.getMappableFields = function(field_role)
-		{
-            //default to returning detail fields
-            if (typeof field_role === 'undefined')
-                field_role = FIELD_ROLE_DETAIL;
-			
+        //return the mappable fields (header + details)
+        $scope.getMappableFields = function()
+		{	
 			var mappableFields = [];
 			mappableFields.push({ Label: MAP_DO_NOT_MAP_VALUE });
             mappableFields.push({ Label: MAP_ACTIVITY_DATE });
@@ -145,10 +141,7 @@
             $scope.dataset.Fields.sort(orderByAlpha).forEach(function (field, index) { 
 
                 field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
-
-                if (field.FieldRoleId === field_role) {
-                    mappableFields.push(field);
-                }
+                mappableFields.push(field);
 
             });
 			
@@ -179,6 +172,8 @@
             //are we mapping an activitydate+location? If so, then are handling multiple activities
             if ($scope.hasFieldMapped(MAP_LOCATION) || $scope.hasFieldMapped(MAP_ACTIVITY_DATE)) {
 
+                $scope.importing = false; //turn off the fishies, they are distracting
+
                 if ($scope.hasFieldMapped(MAP_LOCATION)) {
                     $scope.openLocationMappingModal();
                 } else {
@@ -188,6 +183,7 @@
             } else {
                 //set rootscope and hand-off to dataset entry form
                 $rootScope.imported_rows = $scope.imported_rows;
+                $rootScope.imported_header = $scope.imported_header;
                 angular.rootScope.go("/dataentryform/" + $scope.dataset.Id);
             }
         }
@@ -207,6 +203,7 @@
         $scope.getRowsToImport = function () { 
 
             var imported_rows = [];
+            $scope.imported_header = {};
 
             $scope.UploadResults.Data.forEach( function(data_row){
 				//console.dir(data_row);
@@ -242,11 +239,15 @@
                             new_row[field.DbColumnName] = [];
 
                             //split on commas -- if any
-                            var row_items = data_row[col].trim().split(",");
+                            if (typeof data_row[col] === 'string') {
+                                var row_items = data_row[col].trim().split(",");
 
-                            for (var a = 0; a < row_items.length; a++) {
-                                var row_item = row_items[a].trim();
-                                new_row[field.DbColumnName].push(row_item);
+                                for (var a = 0; a < row_items.length; a++) {
+                                    var row_item = row_items[a].trim();
+                                    new_row[field.DbColumnName].push(row_item);
+                                }
+                            } else { 
+                                console.warn("multiselect field with a value that isn't a string: " + field.DbColumnName);
                             }
 
                         }
@@ -282,6 +283,12 @@
 
                         }
 
+                        //map to header if its the first one
+                        if (field.FieldRoleId == FIELD_ROLE_HEADER && !$scope.imported_header.hasOwnProperty(field.DbColumnName)) {
+                            $scope.imported_header[field.DbColumnName] = new_row[field.DbColumnName];
+                            //console.log("Adding a field to import header: " + field.DbColumnName);
+                        }
+
                         //console.dir(new_row);
 
                     }//if is mapped
@@ -291,7 +298,7 @@
                 imported_rows.push(new_row);
 
 			}); //foreach data row
-
+            //console.dir($scope.imported_header);
             return imported_rows;
 
         };
