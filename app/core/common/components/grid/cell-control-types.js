@@ -1,4 +1,4 @@
-﻿//Cell Control Types are defined below.
+﻿//Cell Control Types are defined below with their validators and their formatters
 // Each type of control that can be in a grid needs to have a basic
 // definition that will be used to configure a column of that type with the
 // cell editors, cell validators, formatters, etc. so that they function properly according to their type (dropdown, currency, date, etc.).
@@ -158,7 +158,7 @@ var TimeControlType = function (cdms_field, col_def) {
             return params.value;
         else {
             the_date = moment(params.value);
-            return (the_date.isValid()) ? the_date.format("HH:mm:ss") : params.value;
+            return (the_date.isValid()) ? the_date.format("HH:mm") : params.value;
         }
     };
 

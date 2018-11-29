@@ -22,6 +22,7 @@ var datasets_list = ['$scope', 'DatasetService', 'ProjectService','CommonService
             var agColumnDefs = [
                 { field: 'Name', headerName: 'Dataset Name', sort: 'asc', cellRenderer: agCellRendererName, width: 300, menuTabs: ['filterMenuTab'], filter: 'text'},
                 { field: 'ProjectName', headerName: 'Project', width: 300, menuTabs: ['filterMenuTab'], filter: 'text'},
+                { field: 'DatastoreName', headerName: 'Type', width: 300, menuTabs: ['filterMenuTab']},
             ];
 
             scope.agGridOptions = {

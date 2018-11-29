@@ -462,6 +462,44 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
         };
 
 
+        service.errorComparator = function (one, two, nodeone, nodetwo) { 
+            if (nodeone.data.rowHasError && nodetwo.data.rowHasError)
+                return 0;
+
+            if (!nodeone.data.rowHasError && !nodetwo.data.rowHasError)
+                return 0;
+
+            if (nodeone.data.rowHasError && !nodetwo.data.rowHasError)
+                return 1;
+
+            if (!nodeone.data.rowHasError && nodetwo.data.rowHasError)
+                return -1;
+
+        };
+
+        service.bubbleErrors = function (dataAgGridOptions) {
+            var col = dataAgGridOptions.columnApi.getColumn('hasError');
+            if (col == null) {
+                var new_col = {
+                    'headerName': 'Has Error', 'field': 'hasError', 'hide': true, 
+                    'comparator': service.errorComparator, 
+                    'valueFormatter': function (params) {
+                        return (params.node.data.rowHasError) ? "Yes" : "No"
+                    } 
+                };
+                dataAgGridOptions.columnDefs.unshift(new_col);
+                dataAgGridOptions.api.setColumnDefs(dataAgGridOptions.columnDefs);
+            }
+            
+            var sort = [
+                { colId: 'hasError' , sort: 'desc' }
+            ];
+            
+            dataAgGridOptions.api.setSortModel(sort);
+            //console.log("set comparator");
+        };
+
+
 
         return service;
 

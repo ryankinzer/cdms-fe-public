@@ -63,17 +63,22 @@
 
                     <div ng-switch-when="file" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div style="min-height: 25px; margin-left: 200px;" ng-show="field.ControlType" class="header-value" ng-bind-html="row[field.DbColumnName] | fileNamesFromString">&nbsp;</div>
+                        <div style="min-height: 25px; margin-left: 200px;" class="header-value" ng-bind-html="row[field.DbColumnName] | fileNamesFromString">&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="link" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div style="min-height: 25px; margin-left: 200px;" ng-show="field.ControlType" class="header-value" ng-bind-html="row[field.DbColumnName] | urlsFromString">&nbsp;</div>
+                        <div style="min-height: 25px; margin-left: 200px;" class="header-value" ng-bind-html="row[field.DbColumnName] | urlsFromString">&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="date" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
                         <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date}}&nbsp;</div>
+                    </div>
+
+                    <div ng-switch-when="datetime" class="header-column">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date : 'yyyy-MM-dd HH:MM'}}&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="time" class="header-column">
@@ -104,19 +109,19 @@
                         <div class="header-label">{{field.Label}}:</div>
                         <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName]}}&nbsp;</div>
                     </div>
-                    
 
 
-                                                        <!--
-                                        <div>
-                                            <div ng-show="showProjectLeads">
-                                                <div class="header-label">Selected Project Leads:</div>
-                                                <div class="header-value">
-                                                    <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strProjectLead"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    -->
+
+                    <!--
+        <div>
+            <div ng-show="showProjectLeads">
+                <div class="header-label">Selected Project Leads:</div>
+                <div class="header-value">
+                    <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strProjectLead"></textarea>
+                </div>
+            </div>
+        </div>
+    -->
 
                 </div>
             </div>

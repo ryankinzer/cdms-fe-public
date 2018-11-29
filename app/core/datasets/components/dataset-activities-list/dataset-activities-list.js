@@ -69,8 +69,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
                         PossibleValues: field.Field.PossibleValues, 
                         cellRenderer: $scope.CellRenderers[field.ControlType],
                         valueGetter: $scope.ValueGetters[field.ControlType],
-                        //cdmsField: field, //our own we can use later
-                        //menuTabs: [],
+                        filter: 'text',
+                        menuTabs: ['filterMenuTab'],
                     };
 
                     gridColDefs.push(newColDef); 
@@ -101,6 +101,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
             },
 
             'time': function (params) {
+                return moment(params.node.data[params.colDef.DbColumnName]).format('HH:mm');
+            },
+
+            'datetime': function (params) {
                 return moment(params.node.data[params.colDef.DbColumnName]).format('YYYY-MM-DD HH:mm');
             },
 
@@ -123,15 +127,30 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 //console.dir(params);
                 return '<span>'+$scope.QAStatusList[params.node.data[params.colDef.DbColumnName]]+'</span>';
             },
+
+            'instrument-select': function (params) {
+                
+                if ($scope.project.Instruments && !$scope.InstrumentCache.hasOwnProperty(params.node.data[params.colDef.DbColumnName])) {
+                    var instrument = getByField($scope.project.Instruments, params.node.data[params.colDef.DbColumnName], "Id");
+                    if(instrument)
+                        $scope.InstrumentCache[params.node.data[params.colDef.DbColumnName]] = instrument.Name + "(SN:" + instrument.SerialNumber + ")";
+                }
+                return $scope.InstrumentCache[params.node.data[params.colDef.DbColumnName]];
+            }
             
         };
 
         $scope.ValueGetters = {
+/*
             'activity-date': function (params) {
                 return moment(params.node.data[params.colDef.DbColumnName]);
             },
 
             'time': function (params) {
+                return moment(params.node.data[params.colDef.DbColumnName]);
+            },
+
+            'datetime': function (params) {
                 return moment(params.node.data[params.colDef.DbColumnName]);
             },
 
@@ -146,6 +165,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             'qa-status-select': function (params) {
                 return params.node.data[params.colDef.DbColumnName];
             },
+
             'instrument-select': function (params) {
                 
                 if ($scope.project.Instruments && !$scope.InstrumentCache.hasOwnProperty(params.colDef.DbColumnName)) {
@@ -154,6 +174,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 }
                 return $scope.InstrumentCache[params.colDef.DbColumnName];
             },
+*/
         };
 
 

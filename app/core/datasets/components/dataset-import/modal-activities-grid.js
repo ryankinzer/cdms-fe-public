@@ -162,6 +162,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 GridService.autosizeColumns($scope.dataAgGridOptions);
 
                 $scope.calculateStatistics();
+                GridService.bubbleErrors($scope.dataAgGridOptions);
 
             }, 0);
         };

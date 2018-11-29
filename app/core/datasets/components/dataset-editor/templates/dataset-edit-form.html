@@ -88,10 +88,12 @@
             </form>
         </div>
     </div>
-    <div style="margin-top: 10px; height: 30px;">
-        <button class="btn btn-sm" ng-hide="dataset.Config && (dataset.Config.DataEntryPage.HiddenFields.contains('addNewRow'))" ng-click="addNewRow()">Add Row</button>
+    <div style="margin-top: 10px; height: 30px; width:100%">
+        <button class="btn btn-sm" ng-click="addNewRow()">Add Row</button>
         <button class="btn btn-sm btn-warning" ng-disabled="dataAgGridOptions.selectedItems.length == 0" ng-click="removeRow()">Remove Row</button>
         <button ng-show="deletedRows.length" class="btn btn-sm" ng-click="undoRemoveRow()">Undo</button>
+
+        <div class="right" ng-show="PageErrorCount > 0"><button class="btn btn-sm" ng-click="bubbleErrors()">Float Errors</button></div>
 
         <div ng-show="dataset.Config && (!dataset.Config.DataEntryPage.HiddenFields.contains('BulkQaChange')) && dataAgGridOptions.selectedItems.length > 0" style="display: inline; margin-left: 20px;">
             <button class="btn btn-sm" ng-click="dataAgGridOptions.api.deselectAll()">Clear selections</button>

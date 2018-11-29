@@ -71,7 +71,7 @@ CDMSMultiselectCellEditor.prototype.init = function (params) {
             var option = document.createElement('option');
             option.value = value;
             option.text = value;
-            if (params.value.contains(value)) { //is this one already selected?
+            if (params.value && params.value.contains(value)) { //is this one already selected?
                 option.selected = true;
             }
             _this.eSelect.appendChild(option);

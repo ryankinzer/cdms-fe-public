@@ -28,8 +28,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             var count = Object.keys($scope.headerFieldErrors).length; //start with number of header errors
             $scope.dataAgGridOptions.api.forEachNode(function (node) { 
-                if (node.data.rowHasError)
-                    count ++;
+                if (node.data.rowHasError) {
+                    count++;
+                }
             });
 
             return count;
@@ -179,6 +180,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
         };
 
+
+        $scope.bubbleErrors = function () {
+            GridService.bubbleErrors($scope.dataAgGridOptions);
+            console.log("bubbling!");
+        };
+
         $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
             //build event to send for validation
             console.log("onHeaderEditingStopped: " + field.DbColumnName);
@@ -283,7 +290,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     }
                 });
 
-
                 var ag_grid_div = document.querySelector('#data-edit-grid');    //get the container id...
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
@@ -302,6 +308,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 console.log("GRID Validate IS DONE ------------------------------------------>>>");
 
                 GridService.autosizeColumns($scope.dataAgGridOptions);
+
+                $scope.PageErrorCount = $scope.getPageErrorCount();
+
+                if ($rootScope.imported_rows)
+                    $scope.bubbleErrors();
 
 
             }, 0);
@@ -526,8 +537,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 if (!confirm("Looks like you've made changes.  Are you sure you want to leave this page?"))
                     return;
             }
+            //console.dir($scope.dataset);
+            //console.log("#!/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
 
-            $location.path("#!/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
+            $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
         };
 
 
@@ -536,7 +549,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             if (!$scope.dataAgGridOptions.dataChanged && !$scope.row.dataChanged) {
                 if (confirm("Nothing to save. Return to Activities?")) {
-                    $location.path("#!/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
+                    $location.path("/" + $scope.dataset.activitiesRoute + "/" + $scope.dataset.Id);
                 }
                 else {
                     return;

@@ -30,7 +30,7 @@ function initEdit() {
         //enter key intercepted in order to prevent the form submit
         if (event.keyCode == 13) {
             var d = event.srcElement || event.target;
-            console.log(d);
+            //console.log(d);
             if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE'))) {
                 doPrevent = true;
             }
