@@ -14,7 +14,7 @@
                 <div class="header-label">Copy of the Received Document</div>
                 <div class="header-value form-file">
                     <button class="right btn btn-xs" ng-click="openFileModal(ce_row, 'EventFiles')">Add/Remove</button>
-                    <div ng-bind-html="ce_row['EventFiles'] | fileNamesFromString">&nbsp;</div>
+                    <div ng-bind-html="ce_row['EventFiles'] | fileNamesFromString:this">&nbsp;</div>
                 </div>
 
                 <div class="header-label">Type of Correspondence</div>

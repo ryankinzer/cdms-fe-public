@@ -23,9 +23,14 @@ var MultiselectControlType = function (cdms_field, col_def) {
         values: getJsonObjects(cdms_field.PossibleValues)
     };
     col_def.cellValidator = CDMSMultiselectCellValidator;
+
     col_def.valueGetter = function (params) {
         //console.dir(params);
+        //console.dir(params.data[params.column.colId]);
+        //console.dir(col_def.cellEditorParams.values);
+        //console.dir(getParsedMetadataValues(params.data[params.column.colId]));
         return getParsedMetadataValues(params.data[params.column.colId]);
+        //return col_def.cellEditorParams.values[params.data[params.column.colId]];
     };
     return col_def;
 
@@ -35,8 +40,9 @@ var MultiselectControlType = function (cdms_field, col_def) {
 var SelectControlType = function (cdms_field, col_def) {
 
     //check for master field's possible values and copy them if they exist.
-    if (cdms_field.hasOwnProperty('Field') && cdms_field.Field.hasOwnProperty('PossibleValues'))
-        col_def.PossibleValues = getJsonObjects(cdms_field.Field.PossibleValues);
+//?? this already done? kbhere 11/30
+    //if (cdms_field.hasOwnProperty('Field') && cdms_field.Field.hasOwnProperty('PossibleValues'))
+    //    col_def.PossibleValues = (cdms_field.Field.PossibleValues);
 
     //now either directly set or copied from master, do we have possible values?
     if (!col_def.hasOwnProperty('PossibleValues')) {

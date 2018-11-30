@@ -3,7 +3,7 @@
         <div class="header-label">{{field.Label}}:</div>
         <div class="header-value form-file">
             <button class="right btn btn-xs" ng-click="openFileModal(row, field.DbColumnName)">Add/Remove</button>
-            <div ng-bind-html="row[field.DbColumnName] | fileNamesFromString">&nbsp;</div>
+            <div ng-bind-html="row[field.DbColumnName] | fileNamesFromString:this">&nbsp;</div>
             <p class="field-error-block" ng-show="headerFieldErrors[field.DbColumnName]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>
         </div>
     </div>

@@ -1236,6 +1236,26 @@ if (!Array.prototype.contains) {
     }
 }
 
+//case sensitive contains
+if (!Array.prototype.containsExactly) {
+    Array.prototype.containsExactly = function (searchElement) {
+
+        if (this == null)
+            throw new TypeError('Array.contains: "this" is null or not defined');
+
+        if (this.length == 0)
+            return false;
+
+        for (var i = this.length - 1; i >= 0; i--) {
+            if (this[i] == searchElement)
+                return true;
+        };
+
+        return false;
+    }
+}
+
+
 //if(somearray.contains(17))...  -- use with ints
 if (!Array.prototype.containsInt) {
     Array.prototype.containsInt = function (searchElement) {

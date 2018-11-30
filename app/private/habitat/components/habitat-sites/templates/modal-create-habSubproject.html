@@ -59,7 +59,7 @@
                                 <div class="header-label">Feature Image</div>
                                 <div class="header-value form-file">
                                     <button class="right btn btn-xs" ng-click="openFileModal(row, 'ItemFiles')">Add/Remove</button>
-                                    <div ng-bind-html="row['ItemFiles'] | fileNamesFromString">&nbsp;</div>
+                                    <div ng-bind-html="row['ItemFiles'] | fileNamesFromString:this">&nbsp;</div>
                                 </div>
                                 <div class="has-error" ng-if="currentFiles.length > 1">Error: Only one Featured Image allowed; remove one.</div>
                             </div>

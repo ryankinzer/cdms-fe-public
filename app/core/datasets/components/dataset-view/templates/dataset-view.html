@@ -63,7 +63,7 @@
 
                     <div ng-switch-when="file" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div style="min-height: 25px; margin-left: 200px;" class="header-value" ng-bind-html="row[field.DbColumnName] | fileNamesFromString">&nbsp;</div>
+                        <div style="min-height: 25px; margin-left: 200px;" class="header-value" ng-bind-html="row[field.DbColumnName] | fileNamesFromString:this">&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="link" class="header-column">

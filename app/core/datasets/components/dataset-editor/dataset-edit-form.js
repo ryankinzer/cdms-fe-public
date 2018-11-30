@@ -323,6 +323,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         //called after the dataset is loaded
         $scope.afterDatasetLoadedEvent = function () { 
+            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
+
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
             $scope.activateGrid();
@@ -356,7 +358,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
-            $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
+            
 
             //once the project is loaded...
             $scope.project.$promise.then(function () {

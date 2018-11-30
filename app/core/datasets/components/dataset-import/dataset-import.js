@@ -141,8 +141,11 @@
             $scope.dataset.Fields.sort(orderByAlpha).forEach(function (field, index) { 
 
                 //skip Location and ActivityDate because these are special mapped fields above..
-                if (field.DbColumnName != 'ActivityDate' && field.DbColumnName != 'Location') {
+                if (field.DbColumnName != 'ActivityDate' && field.DbColumnName != 'LocationId') {
                     field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
+                    if (field.Field.PossibleValues) { 
+                        field.PossibleValues = getJsonObjects(field.Field.PossibleValues);
+                    }
                     mappableFields.push(field);
                 }
 
@@ -256,7 +259,21 @@
 
                         }
                         else if (field.ControlType === "select" && data_row[col] && typeof data_row[col] === "string") {
-                            new_row[field.DbColumnName] = data_row[col].trim();
+                            //map select value - 
+                            
+                            //IF the value actually matches VALUE in PV then map the ID of the PV...
+                            if (field.PossibleValues && !Array.isArray(field.PossibleValues) && typeof field.PossibleValues === 'object') {
+                                if (!field.PossibleValues[data_row[col]]) {  //if this fails, the value isn't a key in the PV, so try the value
+                                    Object.keys(field.PossibleValues).forEach(function (key) { 
+                                        if (field.PossibleValues[key] == data_row[col]) {
+                                            console.log(" found that " + key + " is the key for " + data_row[col]);
+                                            data_row[col] = key; //actually CHANGE the incoming value to the KEY value. (fisherman id in place of fisherman name, etc.)
+                                        }
+                                    });
+                                }
+                            }
+
+                            new_row[field.DbColumnName] = data_row[col];
                         }
                         else if (field.ControlType == "datetime" || field.ControlType == "time") {
                             try {
@@ -279,7 +296,7 @@
                                 new_row['Activity']['ActivityDate'] = data_row[col];
                                 new_row['Activity']['QAStatusId'] = $scope.dataset.DefaultActivityQAStatusId;
                             } else {
-                                new_row[field.DbColumnName] = data_row[col];
+                                new_row[field.DbColumnName] = data_row[col]; //default mapping
                             }
 
                         }
@@ -364,12 +381,12 @@
                     //got the field that was mapped to location. now look for unique values in that column:
                     $scope.UploadResults.Data.forEach(function (data_row) {
                         var in_location = data_row[col];
-                        if (!locations.contains(in_location))
+                        if (in_location && !locations.contains(in_location))
                             locations.push(in_location);
                     });
                 }
             });
-
+            //console.dir(locations);
             return locations;
 
         };

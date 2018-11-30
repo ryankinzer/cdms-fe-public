@@ -133,9 +133,10 @@ datasets_module
             return $sce.trustAsHtml(retval);
 		};
 	})
-    .filter('fileNamesFromString', function($sce, $rootScope){
-        return function(input)
+    .filter('fileNamesFromString', function($sce){ // to use this filter you need to pass in the scope in the filter call: "| fileNamesFromString:this"
+        return function(input, $scope) 
         {
+            //console.log($scope.project.Id);
 			//console.log("Inside fileNamesFromString...");
 			//console.log("input is next...");
 			//console.dir(input);
@@ -156,85 +157,53 @@ datasets_module
 					fileIsString = true;
 				}
 				
-                //angular.forEach(files, function(file){
                 angular.forEach(files, function(file, value){
-                    //retval.push("<a href='" + file.Link + "'>" + file.Name + "</a>"); // Original line
 					
 					var theTarget = "_blank";
-					//console.log("$rootScope.DatastoreTablePrefix = " + $rootScope.DatastoreTablePrefix);
-					//console.log("$rootScope.viewSubproject is next...");
-					//console.dir($rootScope.viewSubproject);
-					/*if (($rootScope.DatastoreTablePrefix === "CrppContracts") && ($rootScope.viewSubproject))
-					{
-						//retval.push("<a href='" + serviceUrl + "/uploads/subprojects/" + $rootScope.subprojectId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
-						//retval.push("<a href='" + crppUrl + "uploads/subprojects/" + $rootScope.subprojectId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
-						//retval.push("<a href='" + crppUrl + "\\uploads\\subprojects\\" + $rootScope.subprojectId + "\\" + file.Name + "' target=\\\"_blank\\\">" + file.Name + "</a>");
-						retval.push("<a href='" + crppUrl + $rootScope.subprojectId + "\\" + file.Name + "' target=\\\"_blank\\\">" + file.Name + "</a>");
-					}
-					//else if ($rootScope.projectId === 1223) //&& ($rootScope.viewSubproject)) // Habitat
-					else if ($rootScope.subprojectType === "Habitat") //&& ($rootScope.viewSubproject)) // Habitat
-					{
-						//console.log("file is next...");
-						//console.dir(file);
-						//console.log("value is next...");
-						//console.dir(value);
-						//retval.push("<a href='" + habUrl + "uploads\\subprojects\\" + $rootScope.subprojectId + "\\" + file.Name + "' target=\\\"_blank\\\">" + file.Name + "</a>");
-						if (value === "Name")
-							retval.push("<a href='" + habUrl + $rootScope.subprojectId + "\\" + file + "' target=\\\"_blank\\\">" + file + "</a>");
-						else if (!isNaN(value))
-							retval.push("<a href='" + habUrl + $rootScope.subprojectId + "\\" + file.Name + "' target=\\\"_blank\\\">" + file.Name + "</a>");
-					}
-					else if (fileIsString)
-					{
-						retval.push("<a href='" + serviceUrl + "/uploads/" + $rootScope.projectId + "/" + file + "' target=\"_blank\">" + file + "</a>");
-					}
-					else
-						retval.push("<a href='" + serviceUrl + "/uploads/" + $rootScope.projectId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
-					*/
 					
-					if (!$rootScope.viewSubproject) // We are working with a project, dataset, or new subproject file.
+					if (!$scope.viewSubproject) // We are working with a project, dataset, or new subproject file.
 					{
-						if ($rootScope.datasetId) // It's a dataset
+						if ($scope.dataset.Id) // It's a dataset
 						{
 							//console.log("This is a dataset file.");
 							if (fileIsString)
 							{
-								retval.push("<a href='" + cdmsShareUrl + "P/" + $rootScope.projectId + "/D/" + $rootScope.datasetId + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
+								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
 							}
 							else
-								retval.push("<a href='" + cdmsShareUrl + "P/" + $rootScope.projectId + "/D/" + $rootScope.datasetId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");	
+								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");	
 						}
-						else if ($rootScope.newSubproject) // New subproject, with no viewSubproject yet.
+						else if ($scope.newSubproject) // New subproject, with no viewSubproject yet.
 						{
 							//console.log("This is a subproject file.");
 							if (fileIsString)
 							{
-								retval.push("<a href='" + cdmsShareUrl + "P/" + $rootScope.projectId + "/S/[TBD]" + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
+								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/S/[TBD]" + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
 							}
 							else
-								retval.push("<a href='" + cdmsShareUrl + "P/" + $rootScope.projectId + "/S/[TBD]" + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/S/[TBD]" + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
 						}
 						else // It's a project
 						{
-							//console.log("This is a project file.");
+							console.log("This is a project file.");
 							if (fileIsString)
 							{
-								retval.push("<a href='" + cdmsShareUrl + "P/" + $rootScope.projectId + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
+								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
 							}
 							else
-								retval.push("<a href='" + cdmsShareUrl + "P/" + $rootScope.projectId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
 						}
 					}
-					else if ($rootScope.viewSubproject) // We are working with a subproject file.
+					else if ($scope.viewSubproject) // We are working with a subproject file.
 					{
 						//console.log("This is a subproject file.");
 						//console.log("$rootScope.projectId = " + $rootScope.projectId);
 						if (fileIsString)
 						{
-							retval.push("<a href='" + cdmsShareUrl + "P/" + $rootScope.projectId + "/S/" + $rootScope.subprojectId + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
+							retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/S/" + $scope.subprojectId + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
 						}
 						else
-							retval.push("<a href='" + cdmsShareUrl + "P/" + $rootScope.projectId + "/S/" + $rootScope.subprojectId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+							retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/S/" + $scope.subprojectId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
 
 					}
                 });

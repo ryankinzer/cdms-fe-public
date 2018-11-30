@@ -41,7 +41,7 @@
 			<div class="header-label">Copy of the Document</div>
 			<div class="header-value form-file">
 				<button class="right btn btn-xs" ng-click="openFileModal(hi_row, 'ItemFiles')">Add/Remove</button>
-				<div ng-bind-html="hi_row['ItemFiles'] | fileNamesFromString">&nbsp;</div>
+				<div ng-bind-html="hi_row['ItemFiles'] | fileNamesFromString:this">&nbsp;</div>
 			</div>
 					
 			<div class="header-label">External Links</div>

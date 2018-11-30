@@ -156,7 +156,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
                 var ag_grid_div = document.querySelector('#data-import-grid');    //get the container id...
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
-                $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
+                //$scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
 
                 //set the detail values into the grid
                 console.log("setting grid data");
@@ -271,14 +271,25 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
             var unique_dates = [];
             $scope.ActivityDatesDuplicates.forEach(function (dupe) { unique_dates.push(dupe.ActivityDate) });
+            
+            var missing_fields = false;
 
             $scope.dataAgGridOptions.api.forEachNode(function (node) {
+                if (!node.data.Activity.ActivityDate || !node.data.Activity.LocationId) {
+                    missing_fields = true;
+                }
                 var the_date = moment(node.data.Activity.ActivityDate).format('l');
                 if (!unique_dates.contains(the_date)) {
                     unique_dates.push(the_date);
                     $scope.ActivitiesToSave.push({ 'ActivityDate': the_date });
                 }
             });
+
+            if (missing_fields) {
+                alert("All rows require an ActivityDate and Location. Please check your data and try again.");
+                $scope.ActivitiesToSave.length = 0;
+                return;
+            }
 
             //console.dir($scope.ActivitiesToSave);
 

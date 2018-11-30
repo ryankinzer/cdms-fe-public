@@ -27,13 +27,15 @@ CDMSSelectCellValidator.prototype.validateFieldControlTypeValidation = function 
     {
         //is the multiselect possiblevalues an array? if not, we need to compare the keys not the values because possible values is using aliases
         if (Array.isArray(data.colDef.cellEditorParams.values)) {
-            if (!data.colDef.cellEditorParams.values.contains(data.value))
+            if (!data.colDef.cellEditorParams.values.containsExactly(data.value)) {
                 this.errors.push(new ValidationError(this.cdms_field, "Invalid selection (" + data.value + " not in PossibleValues)."));
+            }
         }
         else
         {
-            if (!Object.keys(data.colDef.cellEditorParams.values).contains(data.value))
+            if (!Object.keys(data.colDef.cellEditorParams.values).containsExactly(data.value)) {
                 this.errors.push(new ValidationError(this.cdms_field, "Invalid selection (" + data.value + " not in PossibleValues)."));
+            }
         }
     }
 

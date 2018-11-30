@@ -17,8 +17,7 @@ CDMSMultiselectCellValidator.prototype.validateFieldControlTypeValidation = func
 
     //first, make sure our PossibleValues is properly defined for this field...
     if (typeof data.colDef.cellEditorParams === 'undefined' ||
-        typeof data.colDef.cellEditorParams.values === 'undefined' ||
-        !Array.isArray(data.colDef.cellEditorParams.values)) {
+        typeof data.colDef.cellEditorParams.values === 'undefined' || !Array.isArray(data.colDef.cellEditorParams.values)) {
 
         console.error("Configuration error: [" + data.colDef.cdmsField.DbColumnName + "] is a MULTISELECT but PossibleValues is undefined.");
         console.dir(data);
