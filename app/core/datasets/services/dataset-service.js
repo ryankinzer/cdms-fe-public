@@ -599,27 +599,15 @@ datasets_module.service('DatasetService', ['$q',
             },
 			
             //delete selectedItems activities
-            deleteActivities: function (userId, datasetId, grid, saveResults) {
-
-                if (!grid.selectedItems) {
-                    saveResults.success = true;
-                    saveResults.message = "Nothing to do.";
-                    return;
-                }
+            deleteActivities: function (userId, datasetId, activityids) {
 
                 var payload = {
                     UserId: userId,
                     DatasetId: datasetId,
-                    Activities: grid.selectedItems,
+                    ActivityIds: activityids,
                 }
 
-                DeleteActivitiesAction.save(payload, function (data) {
-                    saveResults.success = true;
-                    saveResults.message = "Activities Deleted.";
-                }, function (data) {
-                    saveResults.failure = true;
-                    saveResults.message = "There was a problem deleting the records.  Please try again or contact support.";
-                });
+                return DeleteActivitiesAction.save(payload);
 
             },
 			

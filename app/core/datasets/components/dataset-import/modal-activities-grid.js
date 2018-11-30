@@ -3,6 +3,16 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
     function ($scope, $modal, $modalInstance, GridService, $timeout, $rootScope, DatasetService) {
 
+        $modalInstance.rendered.then(function() {
+            console.log("Rendered, so now we will activate.");
+            $scope.activateGrid();
+        });
+
+        $scope.Ready = { 
+            done: false, 
+            messages: [ "Processing data and preparing the grid..."]
+        };
+
         $scope.hasDuplicateError = false;
         $scope.ActivityDatesDuplicates = [];
         $scope.ActivitiesToSave = [];
@@ -81,7 +91,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 GridService.refreshRow(event);
                 $scope.$apply();
 
-                if ($scope.dataset.Config.DuplicateCheckFields.contains(event.colDef.DbColumnName)) {
+                if ($scope.dataset.Config.DuplicateCheckFields && $scope.dataset.Config.DuplicateCheckFields.contains(event.colDef.DbColumnName)) {
                     $scope.checkRowForDuplicates(event.node);
                 }
             
@@ -94,13 +104,13 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
         //call to fire up the grid after the $scope.dataset is ready
         $scope.activateGrid = function () {
             console.log("activating grid!");
+            $scope.Ready.messages.push("Preparing data for grid...");
             //setup grid and coldefs and then go!
-            $timeout(function () {
 
                 $scope.dataAgColumnDefs = GridService.getAgColumnDefs($scope.dataset);
                 
                 //setup any possible values that are needed - detail
-                angular.forEach($scope.dataAgColumnDefs.DetailFields, function (fieldDef) {
+                $scope.dataAgColumnDefs.DetailFields.forEach(function (fieldDef) {
                     if (fieldDef.field == "QAStatusId") { //RowQAStatusId because we're in the details
                         fieldDef.setPossibleValues(makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name'));
                     }
@@ -111,7 +121,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 });
 
                 //setup activity fields to point to the right place
-                angular.forEach($scope.dataAgColumnDefs.HeaderFields, function (fieldDef) {
+                $scope.dataAgColumnDefs.HeaderFields.forEach(function (fieldDef) {
                     if (fieldDef.field == "LocationId") { 
                         fieldDef.setPossibleValues(makeObjects($scope.project.Locations, 'Id', 'Label'));
                         fieldDef.field = "Activity." + fieldDef.DbColumnName;
@@ -134,6 +144,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                         fieldDef.hide = true;
 
                 });
+                $scope.Ready.messages.push("Preparing grid...");
 
                 $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs.HeaderFields.concat($scope.dataAgColumnDefs.DetailFields);
                 //$scope.fields = { header: $scope.dataAgColumnDefs.HeaderFields, detail: $scope.dataAgColumnDefs.DetailFields };
@@ -148,12 +159,14 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
 
                 //set the detail values into the grid
+                console.log("setting grid data");
                 $scope.dataAgGridOptions.api.setRowData($scope.imported_rows);
-                
+
                 console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);
                 console.log("GRID Validate IS DONE ------------------------------------------>>>");
 
+                $scope.Ready.messages.push("Checking for duplicates...");
                 console.log("GRID Dupe check ------------------------------------------>>>");
                 $scope.checkAllRowsForDuplicates();
                 console.log("GRID Dupe check IS DONE ------------------------------------------>>>");
@@ -161,13 +174,15 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 $scope.dataAgGridOptions.api.redrawRows();  
                 GridService.autosizeColumns($scope.dataAgGridOptions);
 
+                $scope.Ready.messages.push("Calculating statistics...");
                 $scope.calculateStatistics();
                 GridService.bubbleErrors($scope.dataAgGridOptions);
 
-            }, 0);
-        };
+                $scope.Ready.messages.push("Done...");
+                $scope.Ready.done = true;
 
-        $scope.activateGrid();
+            //}, 0);
+        };
 
         //check for duplicates in all rows
         $scope.checkAllRowsForDuplicates = function () {
@@ -181,6 +196,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             //check for duplicate using each unique ActivityDate (if there is one defined (water temp doesn't have one))
             $scope.dataAgGridOptions.api.forEachNode(function (node) { 
                 var the_date = moment(node.data.Activity.ActivityDate).format('l');
+        
                 if (!ActivityDatesChecked.contains(the_date)) {
                     //ok, let's check this one...
                     ActivityDatesChecked.push(the_date);
@@ -241,6 +257,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 $scope.hasDuplicateError = hadAnyError;
                 $scope.dataAgGridOptions.api.redrawRows();
                 $scope.calculateStatistics();
+                GridService.bubbleErrors($scope.dataAgGridOptions);
             }
 
         },true);
@@ -250,18 +267,23 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
             //lets get a list of all activities that we will save
         
-            console.dir($scope.ActivityDatesDuplicates);
+            //console.dir($scope.ActivityDatesDuplicates);
 
-            var duplicates = [];
-            $scope.ActivityDatesDuplicates.forEach(function (dupe) { duplicates.push(dupe.ActivityDate) });
+            var unique_dates = [];
+            $scope.ActivityDatesDuplicates.forEach(function (dupe) { unique_dates.push(dupe.ActivityDate) });
 
             $scope.dataAgGridOptions.api.forEachNode(function (node) {
                 var the_date = moment(node.data.Activity.ActivityDate).format('l');
-                if (!duplicates.contains(the_date))
+                if (!unique_dates.contains(the_date)) {
+                    unique_dates.push(the_date);
                     $scope.ActivitiesToSave.push({ 'ActivityDate': the_date });
+                }
             });
 
+            //console.dir($scope.ActivitiesToSave);
+
             if (!confirm("A total of " + $scope.ActivitiesToSave.length + " activities will be saved.")) {
+                $scope.ActivitiesToSave.length = 0;
                 return;
             }
 
@@ -282,7 +304,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 $scope.dataAgGridOptions.api.forEachNode(function (node, index) { 
                     var the_date = moment(node.data.Activity.ActivityDate).format('l');
                     if (activity.ActivityDate == the_date) {
-                        console.dir(node);
+                        //console.dir(node);
                         if (payload.header == null) {
                             payload.Activity = node.data.Activity;
                             payload.header = {};
@@ -307,14 +329,14 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                                 the_detail[detail_field.DbColumnName] = node.data[detail_field.DbColumnName];
                         }); 
                         payload.details.push(the_detail);
-                        console.dir(the_detail);
+                        //console.dir(the_detail);
                         
                     }
                 });
 
                 activity.numRecords = payload.details.length;
 
-                console.dir(payload); 
+                //console.dir(payload); 
                 activity.result = DatasetService.saveActivities(payload);
 
                 activity.result.$promise.then(
@@ -324,7 +346,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 }, 
                 function (data) { 
                     console.log("Failure!");
-                    console.dir(data);
+                    //console.dir(data);
 
                     if (typeof data.data !== 'undefined') {
                         if (typeof data.data.ExceptionMessage !== 'undefined') {

@@ -140,8 +140,11 @@
 
             $scope.dataset.Fields.sort(orderByAlpha).forEach(function (field, index) { 
 
-                field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
-                mappableFields.push(field);
+                //skip Location and ActivityDate because these are special mapped fields above..
+                if (field.DbColumnName != 'ActivityDate' && field.DbColumnName != 'Location') {
+                    field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
+                    mappableFields.push(field);
+                }
 
             });
 			
@@ -210,6 +213,7 @@
 
 				//set default Row QA StatusId
 				var new_row = {
+                    Activity: {},
                     QAStatusId: ($scope.dataset.DefaultRowQAStatusId) ? $scope.dataset.DefaultRowQAStatusId : 1  //default to OK
 				};
 
@@ -269,9 +273,6 @@
                         }
                         else //just add the value to the cell
                         {
-                            if(!new_row.Activity)
-                                new_row['Activity'] = {};
-
                             if (field.Label == MAP_LOCATION) {
                                 new_row['Activity']['Location'] = data_row[col];
                             } else if (field.Label == MAP_ACTIVITY_DATE) {
@@ -317,9 +318,10 @@
 
                 $scope.imported_rows.forEach(function (data_row) {
                     data_row['Activity']['LocationId'] = $scope.mappedLocations[data_row['Activity']['Location']];
-                });    
+                });  
 
                 $scope.openActivityGridModal();
+                
             },
             function (dismissed) { 
                 $scope.enablePreview = true;

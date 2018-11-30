@@ -237,7 +237,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
             $scope.loading_progress = 0;
             
             angular.forEach($scope.agGridOptions.selectedItems, function (activity) {
-                //console.log("loading activity : " + activity.Id);
+                //console.dir(activity);
+                console.log("loading activity : " + activity.ActivityId);
                 DatasetService.getActivityData(activity.Id).$promise.then(function (in_activity) {
                     //console.log(" loaded! adding: ", in_activity);
                     activities_to_delete.push(in_activity);
@@ -259,17 +260,22 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
                 //if there are no files to delete, just go ahead, otherwise confirm
                 if (files_to_delete != null)
-                    if(!confirm("Last chance! - Deleting this activity will also permanently delete the following files: " + files_to_delete))
+                    if (!confirm("Last chance! - Deleting this activity will also permanently delete the following files: " + files_to_delete))
                         return;
+                //console.warn("NOT actually deleting:");
+                //console.dir(activities_to_delete);
 
-                DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, $scope.agGridOptions, $scope.saveResults);
+                var activityids_to_delete = [];
+                activities_to_delete.forEach(function (activity) { activityids_to_delete.push(activity.Header.Activity.Id) });
                 
-            });
-            
-            var deleteWatcher = $scope.$watch('saveResults', function () {
-                if ($scope.saveResults.success) {
-                    //great! so remove those from the grid; no sense reloading
 
+                console.log("ok we are deleting these ids");
+                console.dir(activityids_to_delete);
+
+                var deleted = DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, activityids_to_delete);
+
+                deleted.$promise.then(function () {
+                    //great! so remove those from the grid; no sense reloading
                     //console.log("Ok - let's delete from the activities array. Starting with: " + $scope.activities.length);
 
                     //make an array of the ActivityIds to remove from our grid...
@@ -282,7 +288,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                     });
 
                     //console.log("Ok these are the ones we'll remove from the grid");
-                    console.dir(SelectedActivityIds);
+                    //console.dir(SelectedActivityIds);
 
                     $scope.allActivities = []; //this will be our activities to keep (skipping the ones to delete) 
 
@@ -298,9 +304,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
                         } else {
 
                             //console.log("Ok we are deleting this one...");
-                            console.dir(activity);
+                            //console.dir(activity);
                             //$scope.activities.splice(index, 1); //note: we remove this from activities not allActivities
-                        } 
+                        }
 
                         activitiesProcessed++;
                         if (activitiesProcessed === activitiesToProcess) //wait for all the foreaches to come back...
@@ -313,14 +319,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
                             //console.log("ready for grid update");
                             $scope.agGridOptions.api.setRowData($scope.activities); //update the grid.
                             //console.log("all done.");
-                            deleteWatcher();
+                            //deleteWatcher();
                         }
                     });
-                }
-                else if ($scope.saveResults.failure) {
-                    deleteWatcher();
-                    //console.log("delete failure!");
-                }
+                });
             }, true);
         };
 

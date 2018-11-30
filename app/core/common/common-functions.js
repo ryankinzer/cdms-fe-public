@@ -1478,9 +1478,9 @@ function getFilenamesForTheseActivities(dataset, activities) {
         //for each header file field
         file_fields.Header.forEach(function (header_file_field) {
             var file_json = activity.Header[header_file_field.DbColumnName]; //like "FarmingLeaseFiles"
-            console.log("typeof file_json = " + typeof file_json);
-            console.log("file_json is next...");
-            console.dir(file_json);
+            //console.log("typeof file_json = " + typeof file_json);
+            //console.log("file_json is next...");
+            //console.dir(file_json);
             if (file_json) {
                 var file_obj = angular.fromJson(file_json); //the files turned into the array in the file field, e.g. "FarmingLeaseFiles"
                 if (Array.isArray(file_obj)) {
