@@ -1719,4 +1719,18 @@ function valueFormatterArrayToList(the_array) {
 }
 
 
+function getAgGridFilterByType(type) { 
+
+    if(type == 'textarea' || type == 'easting'|| type == 'northing'|| type == 'time' || type == 'activity-text')
+        return 'agTextColumnFilter';
+    
+    if (type == 'number')
+        return "agNumberColumnFilter";
+
+    if (type == "date" || type == 'datetime' || type == 'activity-date')
+        return "agDateColumnFilter";
+
+    return null; //default to the checkboxy filter
+}
+
 

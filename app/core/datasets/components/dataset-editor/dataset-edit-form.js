@@ -84,7 +84,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             enableColResize: true,
             showToolPanel: false,
             columnDefs: null,
-            rowData: null,
+            rowData: [],
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             dataChanged: false, //updated to true if ever any data is changed
             rowSelection: 'multiple',

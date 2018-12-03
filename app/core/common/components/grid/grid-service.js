@@ -134,8 +134,9 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                         ControlType: field.Field.ControlType,     
                         PossibleValues: getJsonObjects(field.Field.PossibleValues), 
                         cdmsField: field, //our own we can use later
+                        filter: getAgGridFilterByType(field.Field.ControlType),
                         DatastoreId: field.Field.DatastoreId,
-                        //menuTabs: [],
+                        menuTabs: ['filterMenuTab'],
                     };
 
                     //setup column def for HEADER and add it to our list
@@ -156,13 +157,14 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                         headerName: field.Label,
                         field: field.DbColumnName,
                         width: SystemDefaultColumnWidth,
-                        menuTabs: [],
+                        menuTabs: ['filterMenuTab'],
                         Label: field.Label,                 
                         DbColumnName: field.DbColumnName,   
                         ControlType: field.Field.ControlType,     
                         PossibleValues: getJsonObjects(field.Field.PossibleValues), 
                         cdmsField: field,        
                         DatastoreId: field.Field.DatastoreId,
+                        filter: getAgGridFilterByType(field.Field.ControlType),
                     };
 
                     //setup column def for DETAIL  and add it to our list
