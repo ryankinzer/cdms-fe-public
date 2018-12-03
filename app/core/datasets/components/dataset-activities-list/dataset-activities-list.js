@@ -67,9 +67,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
                         DbColumnName: field.DbColumnName,   
                         ControlType: field.ControlType,     
                         PossibleValues: field.Field.PossibleValues, 
-                        cellRenderer: $scope.CellRenderers[field.ControlType],
+                        //cellRenderer: $scope.CellRenderers[field.ControlType],
                         valueGetter: $scope.ValueGetters[field.ControlType],
-                        filter: 'text',
+                        //filter: 'text',
                         menuTabs: ['filterMenuTab'],
                     };
 
@@ -84,6 +84,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
             gridColDefs.push({
                 headerName: "By User",
                 field: "UserFullname", //column from the activities list
+                menuTabs: ['filterMenuTab'],
             });
 
             //tell the grid we've changed the coldefs
@@ -95,7 +96,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
         });
 
 
-        $scope.CellRenderers = {
+        $scope.ValueGetters = {
             'activity-date': function (params) {
                 return moment(params.node.data[params.colDef.DbColumnName]).format('L');
             },
@@ -116,8 +117,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
             },
 
             'location-select': function (params) {
-                return '<span>' + params.node.data.LocationLabel + '</span>'
-                    + ((params.node.data.OtherAgencyId) ? ('<span> (' + params.node.data.OtherAgencyId + ')</span>' ) : ''); //ternery: if otheragencyid then show it
+                return params.node.data.LocationLabel
+                    + ((params.node.data.OtherAgencyId) ? (' (' + params.node.data.OtherAgencyId + ')' ) : ''); //ternery: if otheragencyid then show it
                 //return params.node.data[params.colDef.DbColumnName];
             },
 
@@ -125,7 +126,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 //return $scope.QAStatusList[params.node.data.ActivityQAStatus.QAStatusId];
                 //console.dir($scope.QAStatusList);
                 //console.dir(params);
-                return '<span>'+$scope.QAStatusList[params.node.data[params.colDef.DbColumnName]]+'</span>';
+                return $scope.QAStatusList[params.node.data[params.colDef.DbColumnName]];
             },
 
             'instrument-select': function (params) {
@@ -133,15 +134,16 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 if ($scope.project.Instruments && !$scope.InstrumentCache.hasOwnProperty(params.node.data[params.colDef.DbColumnName])) {
                     var instrument = getByField($scope.project.Instruments, params.node.data[params.colDef.DbColumnName], "Id");
                     if(instrument)
-                        $scope.InstrumentCache[params.node.data[params.colDef.DbColumnName]] = instrument.Name + "(SN:" + instrument.SerialNumber + ")";
+                        $scope.InstrumentCache[params.node.data[params.colDef.DbColumnName]] = instrument.Name + " (SN:" + instrument.SerialNumber + ")";
                 }
                 return $scope.InstrumentCache[params.node.data[params.colDef.DbColumnName]];
             }
             
         };
 
-        $scope.ValueGetters = {
 /*
+        $scope.ValueGetters = {
+
             'activity-date': function (params) {
                 return moment(params.node.data[params.colDef.DbColumnName]);
             },
@@ -174,8 +176,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 }
                 return $scope.InstrumentCache[params.colDef.DbColumnName];
             },
-*/
+
         };
+*/
 
 
         var viewTemplate = function (params) {
