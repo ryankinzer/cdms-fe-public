@@ -34,7 +34,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             enableColResize: true,
             showToolPanel: false,
             columnDefs: null,
-            rowData: null,
+            rowData: [],
         
             onGridReady: function (params) {
                 console.log("GRID READY fired. ------------------------------------------>>>");
@@ -55,7 +55,9 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 //setup any possible values that are needed - detail
                 angular.forEach($scope.dataAgColumnDefs.DetailFields, function (fieldDef) {
                     if (fieldDef.field == "QAStatusId") { //RowQAStatusId because we're in the details
-                        fieldDef.PossibleValuesList = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');
+                        //fieldDef.PossibleValuesList = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');
+                        fieldDef.hide = true; 
+                        
                     } else {
                         fieldDef.PossibleValuesList = getParsedMetadataValues(fieldDef.PossibleValues);
                     }
@@ -67,18 +69,21 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                 //setup activity fields to point to the right place
                 angular.forEach($scope.dataAgColumnDefs.HeaderFields, function (fieldDef) {
+                    //console.dir(fieldDef);
                     if (fieldDef.field == "LocationId") {
                         fieldDef.PossibleValuesList = makeObjects($scope.project.Locations, 'Id', 'Label');
                         fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
                     }else if (fieldDef.field == "QAStatusId") { //ActivityQAStatusId 
-                        fieldDef.PossibleValuesList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
-                        fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+                        fieldDef.field = fieldDef.DbColumnName = "ActivityQAStatusId"; 
+                        //fieldDef.PossibleValuesList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
+                        //fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+                        fieldDef.hide = true;
                     } else if(fieldDef.ControlType == "select" || fieldDef.ControlType == "multiselect") {
                         fieldDef.PossibleValuesList = getParsedMetadataValues(fieldDef.PossibleValues);
                         fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
                     }
 
-                    if (fieldDef.ControlType == 'file' || fieldDef.ControlType == 'hidden')
+                    if (fieldDef.ControlType == 'file' || fieldDef.ControlType == 'hidden' || fieldDef.field == "QAComments")
                         fieldDef.hide = true;
 
                 });
@@ -112,6 +117,9 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 Id: 				$scope.Criteria.ParamFieldSelect[0].cdmsField.Id,
                 Value: 				$scope.Criteria.Value,
             });
+
+            console.dir($scope.Criteria.ParamFieldSelect[0]);
+            console.dir($scope.criteriaList);
         
             $scope.Criteria.Value = null;
         
@@ -145,7 +153,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             var queryCriteriaList = angular.copy($scope.criteriaList);
             queryCriteriaList.forEach(function (criteria) { 
                 try {
-                    criteria.Value = angular.toJson(criteria.Value);
+                    if(Array.isArray(criteria.Value))
+                        criteria.Value = angular.toJson(criteria.Value);
                 } catch (e) { 
                     //oh well.
                 }

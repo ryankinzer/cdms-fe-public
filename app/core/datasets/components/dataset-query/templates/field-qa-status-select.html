@@ -1,0 +1,4 @@
+<select size="10" class="form-control" ng-model="Criteria.Value" convert-to-number>
+    <option value="">- Is Empty -</option>
+    <option ng-repeat="(id, name) in Criteria.ParamFieldSelect[0].PossibleValuesList" value="{{id}}">{{name}}</option>
+</select>
