@@ -8,6 +8,16 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
             if (!$scope.Profile.hasRole("DECD"))
                 angular.rootScope.go("/unauthorized");
 
+
+
+
+
+
+
+
+
+
+/*
             $scope.dataset = DatasetService.getDataset($routeParams.Id);
             $scope.activities = DatasetService.getActivities($routeParams.Id);
             $scope.loading = true;
@@ -62,7 +72,7 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
             $scope.showFilter = false;
 
             $scope.selectedActivity = [];
-
+*/
 			/*******************
 			* Some notes about sorting with the gridOptions below.
 			* Referring to the sortInfo line, Angular sorts weirdly.
@@ -73,6 +83,7 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
 			* that we do not have the sortInfo line set up correctly.  However, uiGridConstants causes Angular to barf.
 			* I (gc) am thinking that we need a newer version of Angular for this to work.  We have 1.2.13.
 			*/
+/*
             $scope.gridOptionsFilter = {};
             $scope.gridOptions = {
             	data: 'activities',
@@ -501,6 +512,9 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
                 return html;
 
             };
+
+
+*/
 
 		}
 

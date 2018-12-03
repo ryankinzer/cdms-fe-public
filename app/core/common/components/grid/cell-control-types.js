@@ -190,8 +190,41 @@ var NorthingControlType = function (cdms_field, col_def) {
     return col_def;
 };
 
-//file - just in header fields...
+//file
+
+var FileListCellTemplate = function (params) {
+    var list = '<div class="event-file-list"><ul>';
+    //console.dir(params);
+    //console.dir(this);
+    var file_links = getProjectFilesArrayAsLinks(params.colDef.ProjectId, params.colDef.DatasetId, params.node.data[params.colDef.DbColumnName]);
+    console.dir(file_links);
+    file_links.forEach(function (link) {
+        list += '<li>' + link + '</li>';
+    });
+
+    list += '</ul></div>';
+    //console.dir(list);
+    return list;
+};
+
 var FileControlType = function (cdms_field, col_def) {
+/*
+    col_def.valueFormatter = function (params) {
+        retval = params.value;
+        
+        console.dir(params.value);
+        var filenames = [];
+        if (params.value) {
+            var files = angular.fromJson(params.value);
+            files.forEach(function (file) { 
+                filenames.push(file.Name);
+            });
+            retval = filenames.join("\n");
+        }
+        return retval;
+    };
+*/
+    col_def.cellRenderer = FileListCellTemplate;
     return col_def;
 };
 
@@ -261,3 +294,27 @@ function getControlDefinition(def) {
     else
         return null;
 }
+
+
+
+
+/*
+
+var LinkListCellTemplate = function (params) {
+    if (!params.node.data.ExternalLinks)
+        return;
+
+    var list = '<div class="event-link-list"><ul>';
+
+    var links = angular.fromJson(params.node.data.ExternalLinks);
+    if (Array.isArray(links)) {
+        links.forEach(function (link) {
+            list += '<li><a href="' + link.Link + '" target="_blank">' + link.Name + '</a></li>';
+        });
+    }
+            
+    list += '</ul></div>';
+
+    return list;
+}
+*/

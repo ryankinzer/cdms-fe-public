@@ -1668,6 +1668,19 @@ function getSubprojectFilesArrayAsLinks (a_projectId, a_subprojectId, a_files)
     return retval;
 }
 
+//return an array of file links to cdmsShareUrl (defined in config) for project
+function getProjectFilesArrayAsLinks (a_projectId, a_datasetId, a_files)
+{
+    var files = getFilesArrayAsList(a_files);
+    var retval = [];
+
+    files.forEach(function (file) {
+        retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/D/" + a_datasetId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+    });
+
+    return retval;
+}
+
 
 function getParsedMetadataValues(raw_values) { 
     //get the value no matter what if we have it.

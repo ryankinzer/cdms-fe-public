@@ -136,6 +136,8 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                         cdmsField: field, //our own we can use later
                         filter: getAgGridFilterByType(field.Field.ControlType),
                         DatastoreId: field.Field.DatastoreId,
+                        DatasetId: dataset.Id,
+                        ProjectId: dataset.ProjectId,
                         menuTabs: ['filterMenuTab'],
                     };
 
@@ -164,6 +166,8 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                         PossibleValues: getJsonObjects(field.Field.PossibleValues), 
                         cdmsField: field,        
                         DatastoreId: field.Field.DatastoreId,
+                        DatasetId: dataset.Id,
+                        ProjectId: dataset.ProjectId,
                         filter: getAgGridFilterByType(field.Field.ControlType),
                     };
 

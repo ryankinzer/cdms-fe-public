@@ -17,6 +17,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.hasDuplicateError = false;
 
         $scope.userId = $rootScope.Profile.Id;
+        $scope.IsFileCell = false;
         
         $scope.PageErrorCount = 0;
 
@@ -88,6 +89,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             dataChanged: false, //updated to true if ever any data is changed
             rowSelection: 'multiple',
+            onCellFocused: function (params) {
+                console.dir(params.column.colDef.ControlType);
+                $scope.IsFileCell = (params.column.colDef.ControlType == 'file');
+                $scope.$apply();
+                //var cell = $scope.dataAgGridOptions.api.getFocusedCell();
+            },
             onSelectionChanged: function (params) {
                 //console.log("selection changed fired!");
                 //console.dir(params);
@@ -121,6 +128,22 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             defaultColDef: {
                 editable: ($scope.pagemode!=='dataview'),
+            },
+
+            getRowHeight: function (params) {
+                //set the rowheight of this row to be the largest of the file count in this row...
+                if (!params.node.file_height) {
+                    var file_fields = getMatchingByField($scope.dataAgGridOptions.columnDefs, 'file','ControlType');
+                    max_file_field = 1;
+                    file_fields.forEach(function (file_field) { 
+                        var curr_file_count = getFilesArrayAsList(params.node.data[file_field.DbColumnName]).length;
+                        if (curr_file_count > max_file_field)
+                            max_file_field = curr_file_count;
+                    });
+                    params.node.file_height = max_file_field;
+                }
+                var file_height = 25 * (params.node.file_height); 
+                return (file_height > 25) ? file_height : 25;
             },
 
             //getRowHeight: function (params) {
@@ -221,7 +244,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             if($scope.dataset.Config.DuplicateCheckFields && $scope.dataset.Config.DuplicateCheckFields.contains(field.DbColumnName))
                 $scope.checkForDuplicates();
 
-            console.dir($scope.row);
+            //console.dir($scope.row);
         };
 
         //add a row
@@ -452,6 +475,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             $scope.dataAgGridOptions.api.deselectAll();
         };
+
+        $scope.editCellFiles = function () { 
+            console.log("edit cell files:");
+            var the_cell = $scope.dataAgGridOptions.api.getFocusedCell();
+            var the_row = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(the_cell.rowIndex)
+            console.dir(the_cell);
+            console.dir(the_row);
+            $scope.openFileModal(the_row.data, the_cell.column.colDef.DbColumnName);
+        }
 
         $scope.openBulkQAChange = function () {
 

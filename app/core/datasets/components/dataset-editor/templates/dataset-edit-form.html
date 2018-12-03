@@ -89,6 +89,7 @@
         </div>
     </div>
     <div style="margin-top: 10px; height: 30px; width:100%">
+        <button class="btn btn-sm right" ng-show="IsFileCell" style="margin-right: 10px;" ng-click="editCellFiles()">Edit Files</button>
         <button class="btn btn-sm" ng-click="addNewRow()">Add Row</button>
         <button class="btn btn-sm btn-warning" ng-disabled="dataAgGridOptions.selectedItems.length == 0" ng-click="removeRow()">Remove Row</button>
         <button ng-show="deletedRows.length" class="btn btn-sm" ng-click="undoRemoveRow()">Undo</button>
