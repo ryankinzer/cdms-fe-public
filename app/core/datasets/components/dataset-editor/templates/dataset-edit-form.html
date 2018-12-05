@@ -131,10 +131,10 @@
 
             <div>
                 <!-- We will hide and show some buttons on Creel Survey that are either present or not present on the other datasets. -->
-                <button class="btn" ng-show="pagemode == 'dataentryform' && dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('addSection')" ng-click="addSection()">Add Section</button>
                 <button class="btn" ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('addInterview')" ng-click="addNewInterview()">Add Interview</button>
                 <button class="btn" ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('addFisherman')" ng-click="addFisherman()">Add a Fisherman</button>
                 <button class="btn" ng-show="dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('addAnotherFish')" ng-click="addAnotherFish()">Add Another Fish</button>
+                <button class="btn" ng-show="pagemode == 'dataentryform' && dataset.Config && dataset.Config.DataEntryPage.ShowFields.contains('addSection')" ng-click="addSection()">Save and Add Section</button>
             </div>
 
         </div>

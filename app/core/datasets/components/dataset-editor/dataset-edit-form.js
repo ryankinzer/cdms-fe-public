@@ -13,6 +13,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
 
         $scope.saveResult = { saving: false, error: null, success: null, saveMessage: "Saving..."};
+        $scope.background_save = false;
         
         $scope.fields = { header: [], detail: [] };
         $scope.headerFieldErrors = [];
@@ -414,54 +415,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                         }
                     });
                 }
-                
-
-                //TODO - needed?
-                //$rootScope.projectId = $scope.projectId = $scope.project.Id;
-
-                //I think these come back already with getProject? TODO
-                //$scope.project.Files = null;
-                //$scope.project.Files = ProjectService.getProjectFiles($scope.project.Id);
-
-                
-    /*
-                if ($scope.project.Locations) {
-                    for (var i = 0; i < $scope.project.Locations.length; i++) {
-                        //console.log("projectLocations Index = " + $scope.project.Locations[i].Label);
-                        //console.log($scope.project.Locations[i].LocationTypeId + "  " + $scope.datasetLocationType); //$scope.project.Locations[i]);
-                        if (($scope.DatastoreTablePrefix === "Metrics") ||
-                            ($scope.DatastoreTablePrefix === "Benthic") ||
-                            ($scope.DatastoreTablePrefix === "Drift")
-                        ) {
-                            if (($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType) || ($scope.project.Locations[i].LocationTypeId === LOCATION_TYPE_Hab)) {
-                                //console.log("Found Habitat-related location");
-                                $scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
-                            }
-                        }
-                        else {
-                            if ($scope.project.Locations[i].LocationTypeId === $scope.datasetLocationType) {
-                                //console.log("Found non-Habitat-related location");
-                                $scope.datasetLocations.push([$scope.project.Locations[i].Id, $scope.project.Locations[i].Label]);
-                            }
-
-                            if ($scope.DatastoreTablePrefix === "FishScales") {
-                                //console.log("Setting $scope.primaryDatasetLocation...");
-                                $scope.primaryDatasetLocation = $scope.project.Locations[i].Id;
-                            }
-                        }
-
-                   
-                    }
-                    //console.log("datasetLocations is next...");
-                    //console.dir($scope.datasetLocations);
-                    $scope.finishLocationProcessing();
-                }
-    */
-
-
-
             });
-            
         };
 
 
@@ -641,7 +595,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
   */          
         };
 
-        //special buttons for creel data entry
+        //** special buttons for creel data entry **
         $scope.addNewInterview = function () {
             $scope.addNewRow();
         };
@@ -678,46 +632,46 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             col.colDef.setPossibleValues(col.colDef.PossibleValues);
         };
 
+        //save this record and reset a few fields.
+        $scope.addSection = function () { 
 
+            $scope.background_save = true;    
+            $scope.saveData();
 
-/*
+            $scope.row.locationId = null; //60; //59; // Blank
+            $scope.row.TimeStart = null;
+            $scope.row.TimeEnd = null;
+            $scope.row.NumberAnglersObserved = 0;
+            $scope.row.NumberAnglersInterviewed = 0;
+            $scope.row.SurveyComments = null;
+            $scope.row.FieldSheetFile = null;
 
-        // For Creel Survey only. 
-        $scope.addSection = function () {
-            $scope.invalidOperationTitle = "Add Section is an Invalid Operation";
-            $scope.invalidOperationMessage = "The Add Section button can only be used on a Data Entry page.";
+            // Dump the contents of the datasheet and add the new row.
+            $scope.dataAgGridOptions.api.setRowData([]);
+            //$scope.addNewRow();
+
+            // Set the file buckets for Creel to undefined or empty; otherwise, the last saved file will still be
+            // dangling and interphere with the save operation (trying to resave the same file - a duplicate).
+            if($scope.originalExistingFiles && $scope.row.originalExistingFiles)
+                $scope.originalExistingFiles.FieldSheetFile = $scope.row.originalExistingFiles.FieldSheetFile = undefined;
+
+            $scope.row.fieldFilesToUpload = [];
+
+            // If this is not set to undefined, it will incorrectly register an empty FieldSheetFile as 1,
+            // and cause problems during the save process.
+            $scope.filesToUpload = undefined;
+
+            // This pops the Save Success modal after Add Section.
             var modalInstance = $modal.open({
-                templateUrl: 'app/core/common/components/modals/templates/modal-invalid-operation.html',
-                controller: 'ModalInvalidOperation',
+                templateUrl: 'app/core/common/components/modals/templates/modal-save-success.html',
+                controller: 'ModalSaveSuccess',
                 scope: $scope, //very important to pass the scope along...
             });
-        }
-
-        // For Creel Survey only. 
-        $scope.addNewInterview = function () {
-            var row = makeNewRow($scope.datasheetColDefs);
-            row.QAStatusId = $scope.dataset.DefaultRowQAStatusId;
-            $scope.dataSheetDataset.push(row);
-            $scope.onRow = row;
-
-            for (var i = 0; i < $scope.datasheetColDefs.length; i++) {
-                if (($scope.datasheetColDefs[i].field === "InterviewTime") ||
-                    ($scope.datasheetColDefs[i].field === "GPSEasting") ||
-                    ($scope.datasheetColDefs[i].field === "GPSNorthing") ||
-                    ($scope.datasheetColDefs[i].field === "CarcassComments") ||
-                    ($scope.datasheetColDefs[i].field === "TotalTimeFished")
-                ) {
-                    $scope.datasheetColDefs[i].enableCellEdit = true;
-                    //$scope.datasheetColDefs[i].cellEditableCondition = true;
-                    //$scope.disabledFont();
-                }
-
-            }
+            
         };
 
-        
+        //** end special creel buttons **
 
-*/
         //remove file from dataset.
         $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
             return DatasetService.deleteDatasetFile($scope.projectId, $scope.datasetId, file_to_remove);
@@ -731,7 +685,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             return promise;
         };
 
-
+        //finish saving after file saving completes...
         $scope.modalFile_saveParentItem = function (saveRow) {
             
             //clean up some things from the copy of activity that we don't need to send to the backend.
@@ -835,21 +789,25 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             else if ($scope.pagemode == 'dataentryform')
                 save_promise = DatasetService.saveActivities(payload);
             else
-                return;
+                console.log("this shouldn't be possible - pagemode is unexpected: "+ $scope.pagemode);
 
             save_promise.$promise.then(
                 function () {
-                    $scope.saveResult.success = "Save successful.";
+                    if(!$scope.background_save)
+                        $scope.saveResult.success = "Save successful.";
+
+                    $scope.background_save = false; //reset
+
                     $scope.saveResult.error = false;
                     console.log("Success!");
-                    $scope.saveResult.saving = false; 
-                      
-                }, 
-                function (data) { 
+                    $scope.saveResult.saving = false;
+
+                },
+                function (data) {
                     $scope.saveResult.success = false;
                     console.log("Failure!");
                     console.dir(data);
-                    $scope.saveResult.saving = false; 
+                    $scope.saveResult.saving = false;
 
                     if (typeof data.data !== 'undefined') {
                         if (typeof data.data.ExceptionMessage !== 'undefined') {
@@ -866,9 +824,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                         }
                     }
                     $scope.saveResult.error = "There was a problem saving your data (" + theErrorText + ").  Please try again or contact support.";
-
-                });
-			
+                }
+            );
         };
 		
         $scope.doneButton = function () {
