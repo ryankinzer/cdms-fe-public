@@ -61,10 +61,10 @@
                             </span>
                             <a href ng-click="openChooseDuplicateFields()">Choose fields...</a><br />
                         </span>
-                        <input type="checkbox" ng-model="dataset.Config.SpecifyActivityListFields" /> Specify Activities page fields
+                        <input type="checkbox" ng-model="dataset.Config.SpecifyActivityListFields" /> Specify fields for Activities Page:
                         <span ng-show="dataset.Config.SpecifyActivityListFields">
                             <span ng-show="dataset.Config.ActivityListFields">
-                                on key fields: <span ng-repeat="field in dataset.Config.ActivityListFields"><b>{{field}}</b> </span>
+                                <span ng-repeat="field in dataset.Config.ActivityListFields"><b>{{field}}</b> </span>
                             </span>
                             <a href ng-click="openChooseActivityListFields()">Choose fields...</a><br />
                         </span>
