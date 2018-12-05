@@ -12,9 +12,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" data-target="#meta">Project</a>
             </li>
-            <li class="nav-item" ng-show="row['Sub-program']=='Habitat'">
+            <!-- <li class="nav-item" ng-show="row['Sub-program']=='Habitat'">
                 <a class="nav-link" data-toggle="tab" data-target="#hab">Habitat</a>
-            </li>
+            </li> -->
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" data-target="#config">Config</a>
             </li>
@@ -72,25 +72,26 @@
                     </div>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade in" id="hab">
-                <div class="list-group media-list media-list-stream habitat-form-items">
-                    <div style="margin-top: 30px;"></div>
-                    <div ng-repeat="field in project.MetaFields | filter:{ControlType:'!hidden', isHabitat:'true'}" ng-switch on="field.ControlType">
-                        <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                        <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
-                        <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
-                        <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
-                        <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                        <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
-                        <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
-                        <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
-                        <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                        <ctuir-multiselect-checkbox-field ng-switch-when="multiselect-checkbox"></ctuir-multiselect-checkbox-field>
-                        <ctuir-text-field ng-switch-default></ctuir-text-field>
+            <!-- not used
+                <div role="tabpanel" class="tab-pane fade in" id="hab">
+                    <div class="list-group media-list media-list-stream habitat-form-items">
+                        <div style="margin-top: 30px;"></div>
+                        <div ng-repeat="field in project.MetaFields | filter:{ControlType:'!hidden', isHabitat:'true'}" ng-switch on="field.ControlType">
+                            <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                            <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                            <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                            <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                            <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                            <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                            <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
+                            <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                            <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                            <ctuir-multiselect-checkbox-field ng-switch-when="multiselect-checkbox"></ctuir-multiselect-checkbox-field>
+                            <ctuir-text-field ng-switch-default></ctuir-text-field>
+                        </div>
                     </div>
                 </div>
-            </div>
-
+            -->
             <div role="tabpanel" class="tab-pane" id="config">
                 <div class="list-group media-list media-list-stream">
                     <div style="margin-top: 30px;"></div>

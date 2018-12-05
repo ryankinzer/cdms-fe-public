@@ -7,7 +7,7 @@
 
 <h3>Edit Metafields (Metadata Entities and Properties)</h3>
 
-<div style="width: 100%; display: inline-block; margin-top:30px;">
+<div ng-show="Profile.isAdmin()" style="width: 100%; display: inline-block; margin-top:30px;" >
     <button style="margin-left: 5px; margin-right:10px;" class="btn right" ng-click="addProperty()">Create</button>
     <button class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteProperty()">Delete Property</button>
 </div>
