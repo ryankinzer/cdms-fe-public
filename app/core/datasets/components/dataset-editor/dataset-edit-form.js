@@ -252,7 +252,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             if($scope.dataset.Config.DuplicateCheckFields && $scope.dataset.Config.DuplicateCheckFields.contains(field.DbColumnName))
                 $scope.checkForDuplicates();
 
-            //console.dir($scope.row);
+            console.dir($scope.row);
         };
 
         //add a row
@@ -596,7 +596,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
-            var dupe_check = $scope.checkForDuplicates();
+            var dupe_check = $scope.checkForDuplicates(); 
 
             console.log(" -- save -- ");
 
@@ -755,7 +755,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             payload.editedRowIds = $scope.dataAgGridOptions.editedRowIds; 
 
             // 4) convert multiselects from array to json
-
             //get all multiselect fields we need to convert
             var DetailMultiselectFields = getAllMatchingFromArray($scope.dataAgColumnDefs.DetailFields, 'multiselect', 'ControlType');
 
@@ -763,12 +762,31 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 DetailMultiselectFields.forEach(function (multiselect_field) { 
                     if (Array.isArray(data[multiselect_field.DbColumnName]) && data[multiselect_field.DbColumnName].length > 0) {
                         data[multiselect_field.DbColumnName] = angular.toJson(data[multiselect_field.DbColumnName]);
-                        console.log(" -- multiselect " + multiselect_field.DbColumnName + " == " + data[multiselect_field.DbColumnName]);
+                        //console.log(" -- multiselect " + multiselect_field.DbColumnName + " == " + data[multiselect_field.DbColumnName]);
                     }
                 });
             });
             
-            console.dir(payload);
+            // 5) convert time fields in header to be based on activity date
+            var HeaderTimeFields = getAllMatchingFromArray($scope.dataAgColumnDefs.HeaderFields, 'time', 'ControlType');
+            HeaderTimeFields.forEach(function (time_field) {
+                var activity_date = moment(payload['Activity']['ActivityDate']);
+                //console.log(" our activity date: " + activity_date.format('L'));
+                //console.dir(time_field);
+                var the_date = moment(payload.header[time_field.DbColumnName], ["HH:mm"], true);
+
+                var the_combined_date = the_date.set(
+                    {
+                        year: activity_date.year(),
+                        month: activity_date.month(),
+                        date: activity_date.date()
+                    });
+
+                payload.header[time_field.DbColumnName] = the_combined_date.format('YYYY-MM-DDTHH:mm');
+                //console.log(" >> final date = " + payload.header[time_field.DbColumnName]);
+            });
+
+            //console.dir(payload);
             //return;
 
             var save_promise = null;
