@@ -486,8 +486,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             console.log("edit cell files:");
             var the_cell = $scope.dataAgGridOptions.api.getFocusedCell();
             var the_row = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(the_cell.rowIndex)
-            console.dir(the_cell);
-            console.dir(the_row);
+            //console.dir(the_cell);
+            //console.dir(the_row);
             $scope.openFileModal(the_row.data, the_cell.column.colDef.DbColumnName);
         }
 
@@ -641,6 +641,45 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
   */          
         };
 
+        //special buttons for creel data entry
+        $scope.addNewInterview = function () {
+            $scope.addNewRow();
+        };
+
+        //this just duplicates the current row
+        $scope.addAnotherFish = function () {
+            var the_cell = $scope.dataAgGridOptions.api.getFocusedCell();
+
+            if (!the_cell) {
+                alert("Please select an Interview row that you want to copy");
+                return;
+            }
+
+            var the_row = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(the_cell.rowIndex);
+            var result = $scope.dataAgGridOptions.api.updateRowData({ add: [the_row.data] });
+            $scope.dataAgGridOptions.dataChanged = true;
+            //console.dir(the_row);
+        };
+
+        //open the add fisherman modal
+        $scope.addFisherman = function () {
+            $scope.viewFisherman = null;
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/common/components/modals/templates/modal-create-fisherman.html',
+                controller: 'ModalCreateFishermanCtrl',
+                scope: $scope, //very important to pass the scope along...
+            });
+        };
+		
+        //callback after adding a fisherman -- push it into the dropdown list.
+        $scope.postSaveFishermanUpdateGrid = function (new_fisherman) {
+            var col = $scope.dataAgGridOptions.columnApi.getColumn('FishermanId');
+            col.colDef.PossibleValues[new_fisherman.Id] = new_fisherman.FullName;
+            col.colDef.setPossibleValues(col.colDef.PossibleValues);
+        };
+
+
+
 /*
 
         // For Creel Survey only. 
@@ -793,7 +832,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             if ($scope.pagemode == 'edit')
                 save_promise = DatasetService.updateActivities(payload);
-            else if ($scope.pagemode = 'dataentryform')
+            else if ($scope.pagemode == 'dataentryform')
                 save_promise = DatasetService.saveActivities(payload);
             else
                 return;
