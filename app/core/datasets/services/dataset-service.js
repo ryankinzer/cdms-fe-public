@@ -83,7 +83,9 @@ datasets_module.factory('ExportActivitiesAction', ['$resource', function ($resou
 }]);
 
 datasets_module.factory('DeleteActivitiesAction', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/activity/deletedatasetactivities');
+    return $resource(serviceUrl + '/api/v1/activity/deletedatasetactivities', {}, {
+        save: { method: 'POST', isArray: false }
+    });
 }]);
 
 datasets_module.factory('SetQaStatusAction', ['$resource', function ($resource) {

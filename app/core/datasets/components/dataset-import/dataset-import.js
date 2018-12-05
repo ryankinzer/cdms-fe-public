@@ -213,10 +213,11 @@
 
             $scope.UploadResults.Data.forEach( function(data_row){
 				//console.dir(data_row);
-
+                
 				//set default Row QA StatusId
 				var new_row = {
                     Activity: {},
+                    data_row_hasdata: false,
                     QAStatusId: ($scope.dataset.DefaultRowQAStatusId) ? $scope.dataset.DefaultRowQAStatusId : 1  //default to OK
 				};
 
@@ -231,7 +232,9 @@
 
                         //just ditch if it is an empty value
                         if (data_row[col] === null || data_row[col] === "") {
-                            return; 
+                            return;
+                        } else if (field.FieldRoleId == FIELD_ROLE_DETAIL) { //if we have data and we are a detail field then note that we have data. later, if there are no detail data we won't include a detail row.
+                            new_row.data_row_hasdata = true;
                         }
 
                         // Handle control types*******************************************************
@@ -266,7 +269,7 @@
                                 if (!field.PossibleValues[data_row[col]]) {  //if this fails, the value isn't a key in the PV, so try the value
                                     Object.keys(field.PossibleValues).forEach(function (key) { 
                                         if (field.PossibleValues[key] == data_row[col]) {
-                                            console.log(" found that " + key + " is the key for " + data_row[col]);
+                                            //console.log(" found that " + key + " is the key for " + data_row[col]);
                                             data_row[col] = key; //actually CHANGE the incoming value to the KEY value. (fisherman id in place of fisherman name, etc.)
                                         }
                                     });
@@ -279,7 +282,10 @@
                             try {
                                 if (data_row[col]) {
                                     var d = moment(data_row[col]);
-                                    new_row[field.DbColumnName] = d.toISOString();
+                                    new_row[field.DbColumnName] = d.format('YYYY-MM-DDTHH:mm:ss');
+                                    //console.log(" --- here we are comparing our datetimes... ---");
+                                    //console.log(field.ControlType + " - " + field.DbColumnName + " = " + data_row[col]);
+                                    //console.dir(d.format('YYYY-MM-DDTHH:MM'));
                                 }
                             }
                             catch (e) {
@@ -316,7 +322,7 @@
                 imported_rows.push(new_row);
 
 			}); //foreach data row
-            //console.dir($scope.imported_header);
+            console.dir(imported_rows);
             return imported_rows;
 
         };
@@ -325,7 +331,21 @@
         $scope.openLocationMappingModal = function () { 
             
             $scope.locationsToMap = $scope.getLocationsToMap();
+            //console.dir($scope.locationsToMap);
             $scope.mappedLocations = {}; //the locations will be mapped into here { "datalocation" : project.Location object }
+
+            //pre-populate our matches if we can find them...
+            $scope.locationsToMap.forEach(function (data_location) {
+                $scope.project.Locations.forEach(function (location) { 
+                    if (location.Label == data_location) {
+                        //console.log("found one!: " + location.Label + " - " + data_location.Id);
+                        $scope.mappedLocations[data_location] = location.Id;
+                    }
+                });
+            });
+
+            //console.dir($scope.mappedLocations);
+            
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/datasets/components/dataset-import/templates/modal-map-locations.html',
@@ -335,6 +355,8 @@
 
                 $scope.imported_rows.forEach(function (data_row) {
                     data_row['Activity']['LocationId'] = $scope.mappedLocations[data_row['Activity']['Location']];
+                    //console.log(" Mapped location - " + data_row['Activity']['LocationId']);
+                    //console.dir(data_row);
                 });  
 
                 $scope.openActivityGridModal();

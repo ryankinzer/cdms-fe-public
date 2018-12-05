@@ -30,7 +30,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                     $scope.PageErrorCount++;
 
                 try {
-                    var the_date = moment(node.data.Activity.ActivityDate).format('l');
+                    var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
                     if (!$scope.ActivityDates.contains(the_date)) {
                         $scope.ActivityDates.push(the_date);
                     }
@@ -195,7 +195,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
             //check for duplicate using each unique ActivityDate (if there is one defined (water temp doesn't have one))
             $scope.dataAgGridOptions.api.forEachNode(function (node) { 
-                var the_date = moment(node.data.Activity.ActivityDate).format('l');
+                var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
         
                 if (!ActivityDatesChecked.contains(the_date)) {
                     //ok, let's check this one...
@@ -208,7 +208,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
         //checks a row(node) for duplicate record. if so, pushes to ActivityDatesDuplicates
         $scope.checkRowForDuplicates = function (node) {
             
-            var the_date = moment(node.data.Activity.ActivityDate).format('l');
+            var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
 
             var row = {
                 'Activity': {
@@ -234,7 +234,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             }
         };
 
-
+//TODO: I think this is slooowww... ************************************************
         //mark all rows that are duplicates as duplicates (if not already marked)
         $scope.$watch('ActivityDatesDuplicates', function(){ 
 
@@ -244,7 +244,8 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 if (!dupe.marked && $scope.dataAgGridOptions.api) {
                     dupe.marked = true;
                     $scope.dataAgGridOptions.api.forEachNode(function (node) {
-                        var the_date = moment(node.data.Activity.ActivityDate).format('l');
+                        var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+                        
                         if (the_date == dupe.ActivityDate) {
                             hadAnyError = true;
                             GridService.addErrorToNode(node, dupe.message, null);
@@ -278,7 +279,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 if (!node.data.Activity.ActivityDate || !node.data.Activity.LocationId) {
                     missing_fields = true;
                 }
-                var the_date = moment(node.data.Activity.ActivityDate).format('l');
+                var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
                 if (!unique_dates.contains(the_date)) {
                     unique_dates.push(the_date);
                     $scope.ActivitiesToSave.push({ 'ActivityDate': the_date });
@@ -313,7 +314,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 };
 
                 $scope.dataAgGridOptions.api.forEachNode(function (node, index) { 
-                    var the_date = moment(node.data.Activity.ActivityDate).format('l');
+                    var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
                     if (activity.ActivityDate == the_date) {
                         //console.dir(node);
                         if (payload.header == null) {
@@ -332,15 +333,21 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                             delete payload.header['LocationId'];
                             delete payload.header['ActivityDate'];
                         }
-                        var the_detail = { 'QAStatusId' : node.data['QAStatusId'] };
-                        $scope.dataAgColumnDefs.DetailFields.forEach(function (detail_field) {
-                            if(detail_field.ControlType == "multiselect" && Array.isArray(node.data[detail_field.DbColumnName]))
-                                the_detail[detail_field.DbColumnName] = angular.toJson(node.data[detail_field.DbColumnName]);
-                            else
-                                the_detail[detail_field.DbColumnName] = node.data[detail_field.DbColumnName];
-                        }); 
-                        payload.details.push(the_detail);
-                        //console.dir(the_detail);
+                        console.dir(node);
+                        if (node.data.data_row_hasdata) {
+
+                            var the_detail = { 'QAStatusId': node.data['QAStatusId'] };
+                            $scope.dataAgColumnDefs.DetailFields.forEach(function (detail_field) {
+                                if (detail_field.ControlType == "multiselect" && Array.isArray(node.data[detail_field.DbColumnName]))
+                                    the_detail[detail_field.DbColumnName] = angular.toJson(node.data[detail_field.DbColumnName]);
+                                else
+                                    the_detail[detail_field.DbColumnName] = node.data[detail_field.DbColumnName];
+                            });
+                            payload.details.push(the_detail);
+                            //console.dir(the_detail);
+                        } else { 
+                            console.log("skipping data for this row because it was empty!");
+                        }
                         
                     }
                 });

@@ -69,6 +69,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                         PossibleValues: field.Field.PossibleValues, 
                         //cellRenderer: $scope.CellRenderers[field.ControlType],
                         valueGetter: $scope.ValueGetters[field.ControlType],
+                        valueFormatter: $scope.ValueFormatters[field.ControlType],
                         //filter: 'text',
                         menuTabs: ['filterMenuTab'],
                     };
@@ -98,7 +99,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.ValueGetters = {
             'activity-date': function (params) {
-                return moment(params.node.data[params.colDef.DbColumnName]).format('L');
+                return moment(params.node.data[params.colDef.DbColumnName]).format('YYYY-MM-DD HH:mm');
             },
 
             'time': function (params) {
@@ -141,13 +142,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
             
         };
 
-/*
-        $scope.ValueGetters = {
+
+        $scope.ValueFormatters = {
 
             'activity-date': function (params) {
-                return moment(params.node.data[params.colDef.DbColumnName]);
+                //console.dir(params);
+                return moment(params.value).format('L');
             },
-
+/*
             'time': function (params) {
                 return moment(params.node.data[params.colDef.DbColumnName]);
             },
@@ -175,10 +177,10 @@ var dataset_activities_list = ['$scope', '$routeParams',
                     $scope.InstrumentCache[params.colDef.DbColumnName] = instrument.Name + "(SN:" + instrument.SerialNumber + ")";
                 }
                 return $scope.InstrumentCache[params.colDef.DbColumnName];
-            },
+            },*/
 
         };
-*/
+
 
 
         var viewTemplate = function (params) {
@@ -231,102 +233,107 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
             $scope.saveResults = {};
 
+
             if (!confirm("Are you sure you want to delete " + $scope.agGridOptions.selectedItems.length + " activities (and all associated files)?  There is no undo for this operation."))
                 return;
 
             //ok, well lets give them a list of all files that will be deleted along with this activity... just to make sure!
-            var activities_to_delete = [];
             var num_activities = $scope.agGridOptions.selectedItems.length;
-            $scope.loading_progress = 0;
-            
-            angular.forEach($scope.agGridOptions.selectedItems, function (activity) {
-                //console.dir(activity);
-                console.log("loading activity : " + activity.ActivityId);
-                DatasetService.getActivityData(activity.Id).$promise.then(function (in_activity) {
-                    //console.log(" loaded! adding: ", in_activity);
-                    activities_to_delete.push(in_activity);
-                    $scope.loading_progress++;
-                });
-            });
+            var activities_deleted = [];
+            var check_for_files = true;
 
-            var progress_watcher = $scope.$watch('loading_progress', function () {
-
-                //console.log("Progress watcher: " + num_activities + " + " + $scope.loading_progress);
-
-                if ($scope.loading_progress < num_activities)
+            //if deleting more than 100 records, ask if they want to disable file checking
+            if (num_activities > 100) {
+                if (!confirm("You are deleting more than a hundred records. File checking will be disabled. Are you sure?"))
                     return;
+                else
+                    check_for_files = false;
+            }
 
-                progress_watcher();
+            if (check_for_files) {
 
-                var files_to_delete = getFilenamesForTheseActivities($scope.dataset, activities_to_delete);
-                //console.log("ok! files we got back: " + files_to_delete);
+                angular.forEach($scope.agGridOptions.selectedItems, function (activity) {
+                    //console.dir(activity);
+                    console.log("deleting activity : " + activity.ActivityId);
 
-                //if there are no files to delete, just go ahead, otherwise confirm
-                if (files_to_delete != null)
-                    if (!confirm("Last chance! - Deleting this activity will also permanently delete the following files: " + files_to_delete))
-                        return;
-                //console.warn("NOT actually deleting:");
-                //console.dir(activities_to_delete);
+                    DatasetService.getActivityData(activity.ActivityId).$promise.then(function (in_activity) {
+                        //console.dir(in_activity);
+                        var files_to_delete = getFilenamesForTheseActivities($scope.dataset, Array(in_activity));
 
-                var activityids_to_delete = [];
-                activities_to_delete.forEach(function (activity) { activityids_to_delete.push(activity.Header.Activity.Id) });
-                
+                        //console.log("ok! files we got back: " + files_to_delete);
+                        //if there are no files to delete, just go ahead, otherwise confirm
+                        if (files_to_delete != null)
+                            if (!confirm("Last chance! - Deleting this activity will also permanently delete the following files: " + files_to_delete))
+                                return;
 
-                console.log("ok we are deleting these ids");
-                console.dir(activityids_to_delete);
 
-                var deleted = DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, activityids_to_delete);
+                        var deleted = DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, Array("" + activity.ActivityId));
 
-                deleted.$promise.then(function () {
-                    //great! so remove those from the grid; no sense reloading
-                    //console.log("Ok - let's delete from the activities array. Starting with: " + $scope.activities.length);
+                        deleted.$promise.then(function () {
+                            //great! so remove those from the grid; no sense reloading
+                            //console.log("Ok - let's add to the activities array: " + activity.ActivityId);
 
-                    //make an array of the ActivityIds to remove from our grid...
-                    var SelectedActivityIds = [];
-                    var activitiesProcessed = 0;
-                    var activitiesToProcess = $scope.activities.length;
+                            activities_deleted.push(activity.ActivityId);
 
-                    $scope.agGridOptions.selectedItems.forEach(function (item) {
-                        SelectedActivityIds.push(item.Id);
-                    });
+                            if (activities_deleted.length == num_activities) {
+                                //console.log("OK all done - now remove them all...");
+                                //console.dir(activities_deleted);
+                                $scope.allActivities = []; //this will be our activities to keep (skipping the ones to delete) 
 
-                    //console.log("Ok these are the ones we'll remove from the grid");
-                    //console.dir(SelectedActivityIds);
+                                //spin through allActivities and remove the selected activities from our activities
+                                // remember: we can't splice items out of arrays we are foreaching or else unexpected results occur.
+                                $scope.activities.forEach(function (activity, index) {
 
-                    $scope.allActivities = []; //this will be our activities to keep (skipping the ones to delete) 
+                                    //console.log(" -- checking == " + activity.Id + " is in deleted list? ");
 
-                    //spin through allActivities and remove the selected activities from our activities
-                    // remember: we can't splice items out of arrays we are foreaching or else unexpected results occur.
-                    $scope.activities.forEach(function (activity, index) {
-
-                        //////console.log(" -- checking == " + activity.Id + " at index: " + index);
-
-                        if (!SelectedActivityIds.containsInt(activity.Id)) {
-                            $scope.allActivities.push(activity);
-
-                        } else {
-
-                            //console.log("Ok we are deleting this one...");
-                            //console.dir(activity);
-                            //$scope.activities.splice(index, 1); //note: we remove this from activities not allActivities
-                        }
-
-                        activitiesProcessed++;
-                        if (activitiesProcessed === activitiesToProcess) //wait for all the foreaches to come back...
-                        {
-                            //all done, so now refresh the view.
-                            //console.log("done! refreshing view");
-                            $scope.agGridOptions.api.deselectAll();  //clear selection
-                            //console.log("after selection");
-                            $scope.activities = $scope.allActivities; //update our activities with the new set of activities
-                            //console.log("ready for grid update");
-                            $scope.agGridOptions.api.setRowData($scope.activities); //update the grid.
-                            //console.log("all done.");
-                            //deleteWatcher();
-                        }
+                                    if (!activities_deleted.containsInt(activity.Id)) {
+                                        //console.log("nope, not in there, add it to the ones we'll keep.");
+                                        $scope.allActivities.push(activity);
+                                    } else {
+                                        //console.log("Yep! skipping! "+activity.Id);
+                                    }
+                                });
+                                //console.log("these are the ones we keep.");
+                                //console.dir($scope.allActivities);
+                                //all done, so now refresh the view.
+                                //console.log("done! refreshing view");
+                                $scope.agGridOptions.api.deselectAll();  //clear selection
+                                //console.log("after selection");
+                                $scope.activities = $scope.allActivities; //update our activities with the new set of activities
+                                //console.log("ready for grid update");
+                                $scope.agGridOptions.api.setRowData($scope.activities); //update the grid.
+                                //console.log("all done.");
+                                //deleteWatcher();
+                            }
+                        });
                     });
                 });
-            }, true);
+            } else {
+                //delete without checking for files is much faster. :)
+                var activities_to_delete = [];
+                $scope.agGridOptions.selectedItems.forEach(function (activity) { 
+                    activities_to_delete.push("" + activity.ActivityId);
+                });
+
+                var deleted = DatasetService.deleteActivities($rootScope.Profile.Id, $scope.dataset.Id, activities_to_delete);
+        
+                deleted.$promise.then(function () { 
+                    $scope.allActivities = []; //this will be our activities to keep (skipping the ones to delete) 
+                    $scope.activities.forEach(function (activity, index) {
+                        if (!activities_to_delete.containsInt(activity.Id)) {
+                            //console.log("nope, not in there, add it to the ones we'll keep.");
+                            $scope.allActivities.push(activity);
+                        } else {
+                            //console.log("Yep! skipping! "+activity.Id);
+                        }
+                    });
+                    $scope.agGridOptions.api.deselectAll();  //clear selection
+                    $scope.activities = $scope.allActivities; //update our activities with the new set of activities
+                    $scope.agGridOptions.api.setRowData($scope.activities); //update the grid.
+                });
+
+            }
+
         };
 
         $scope.openDataEntry = function (p) { 

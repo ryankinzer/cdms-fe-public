@@ -78,12 +78,12 @@
 
                     <div ng-switch-when="datetime" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date : 'yyyy-MM-dd HH:MM'}}&nbsp;</div>
+                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date : 'yyyy-MM-dd HH:mm'}}&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="time" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date: 'HH:MM'}}&nbsp;</div>
+                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date: 'HH:mm'}}&nbsp;</div>
                     </div>
 
 
