@@ -7,7 +7,9 @@
     <li class="active">Query</li>
 </ul>
 
-<div class="container-fluid">
+<ng-include src="'app/core/common/templates/system-header.html'"></ng-include>
+
+<div class="container-fluid" ng-show="!system.loading">
     <div class="row-fluid">
         <div class="span6">
             <h4 ng-show="dataset.Name">Dataset Query Tool for {{dataset.Name}}</h4>
@@ -58,20 +60,18 @@
             <hr />
             <div>Rows: {{query.results.length}}<img ng-show="query.loading" src="assets/images/FishLoading.gif" /></div>
 
-            <div style="height: 500px; width: 100%; margin-top: 5px">
+            <div style="height: 500px; width: 100%; margin-top: 5px; margin-bottom: 45px;">
                 <div id="query-grid" class="ag-theme-blue gridStyle-small"></div>
+                <div ng-include="'app/core/datasets/templates/bottom-bar.html'"></div>
             </div>
-
-
-            <div ng-include="'app/core/datasets/templates/bottom-bar.html'"></div>
-
-            <button class="btn right" ng-disabled="!onRow" ng-click="openActivity()">View Activity</button>
+            
+            <button class="btn" ng-disabled="!selectedRow.ActivityId" ng-click="openActivity()">View Activity</button>
 
             <!--
-                <div class="large-graph-box" id="chart-div">
-                    <ng-include src="'app/core/common/components/chart/templates/view-inset-' + dataset.Datastore.TablePrefix + '.html'"></ng-include>
-                </div>
-            -->
+        <div class="large-graph-box" id="chart-div">
+            <ng-include src="'app/core/common/components/chart/templates/view-inset-' + dataset.Datastore.TablePrefix + '.html'"></ng-include>
+        </div>
+    -->
 
         </div>
     </div>

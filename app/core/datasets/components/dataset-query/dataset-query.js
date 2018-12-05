@@ -3,9 +3,13 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
     'ProjectService', 'CommonService', 'SubprojectService','GridService','$timeout', 
     function ($scope, $routeParams, DatasetService, $location, $modal, DataSheet, $rootScope, ChartService, ProjectService, CommonService, SubprojectService, GridService, $timeout) {
 
+        $scope.system = { loading: true, messages : [] };
+
         $scope.Criteria = {};
         $scope.criteriaList = [];
         $scope.AutoExecuteQuery = false;
+        $scope.selectedRow = {};
+        $scope.onField = {};
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
@@ -35,9 +39,26 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             showToolPanel: false,
             columnDefs: null,
             rowData: [],
+            rowSelection: 'single',
+
+            onSelectionChanged: function (params) {
+                $scope.selectedRow = $scope.dataAgGridOptions.api.getSelectedRows()[0];
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
         
+            onCellFocused: function (params) {
+                //console.dir(params);
+                if (!params.column)
+                    return;
+
+                $scope.onField = (params.column.colDef.cdmsField);
+                $scope.$apply();
+            },
+
             onGridReady: function (params) {
                 console.log("GRID READY fired. ------------------------------------------>>>");
+                $scope.system.loading = false;
+                $scope.$apply();
             },
 
             defaultColDef: {
@@ -118,8 +139,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 Value: 				$scope.Criteria.Value,
             });
 
-            console.dir($scope.Criteria.ParamFieldSelect[0]);
-            console.dir($scope.criteriaList);
+            //console.dir($scope.Criteria.ParamFieldSelect[0]);
+            //console.dir($scope.criteriaList);
         
             $scope.Criteria.Value = null;
         
@@ -187,6 +208,13 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             $scope.criteriaList.splice(idx,1);
             if($scope.AutoExecuteQuery)
                 $scope.executeQuery();
+        };
+
+
+        $scope.openActivity = function()
+        {
+            console.dir($scope.selectedRow);
+            $location.path("/dataview/"+$scope.selectedRow.ActivityId);
         };
 
 

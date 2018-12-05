@@ -7,6 +7,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
     'ActivityParser', 'GridService',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
         ActivityParser, GridService) {
+
+        $scope.system = { loading: true, messages : [] };
         
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
 
@@ -90,7 +92,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             dataChanged: false, //updated to true if ever any data is changed
             rowSelection: 'multiple',
             onCellFocused: function (params) {
-                console.dir(params.column.colDef.ControlType);
+                //console.dir(params.column.colDef.ControlType);
+                if (!params.column)
+                    return;
+
                 $scope.IsFileCell = (params.column.colDef.ControlType == 'file');
                 $scope.$apply();
                 //var cell = $scope.dataAgGridOptions.api.getFocusedCell();
@@ -124,6 +129,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //GridService.validateGrid(params);
                 //console.log("GRID IS DONE ------------------------------------------>>>");
                 //console.dir($scope.row);
+                $scope.system.loading = false;
+                $scope.$apply();
+                GridService.autosizeColumns($scope.dataAgGridOptions);
             },
 
             defaultColDef: {
@@ -329,8 +337,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 GridService.validateGrid($scope.dataAgGridOptions);
                 $scope.dataAgGridOptions.api.redrawRows();
                 console.log("GRID Validate IS DONE ------------------------------------------>>>");
-
-                GridService.autosizeColumns($scope.dataAgGridOptions);
 
                 $scope.PageErrorCount = $scope.getPageErrorCount();
 

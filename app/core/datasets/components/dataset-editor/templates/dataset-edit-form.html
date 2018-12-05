@@ -5,10 +5,14 @@
     <li><a href="#!/{{dataset.activitiesRoute}}/{{dataset.Id}}">{{dataset.Name}} Activities</a> <span class="divider"></span></li>
     <li class="active">Edit data</li>
 </ul>
-<h4 ng-show="pagemode=='edit'">Editing activity in: {{dataset.Name}}</h4>
-<h4 ng-show="pagemode=='dataentryform'">New activity in: {{dataset.Name}}</h4>
-<br/>
 
+<ng-include src="'app/core/common/templates/system-header.html'"></ng-include>
+
+<div ng-show="!system.loading">
+    <h4 ng-show="pagemode=='edit'">Editing activity in: {{dataset.Name}}</h4>
+    <h4 ng-show="pagemode=='dataentryform'">New activity in: {{dataset.Name}}</h4>
+    <br />
+</div>
 <div ng-show="saveResult.success" style="margin-bottom: 50px;">
 
     <div class="alert alert-success">
@@ -49,7 +53,7 @@
 
 <div ng-show="errors.heading.length>0" class="alert alert-danger"><div ng-repeat="error in errors.heading">{{error}}</div></div>
 
-<div class="row" ng-show="!saveResult.success">
+<div class="row" ng-show="!saveResult.success && !system.loading">
 
     <!-- header fields -->
     <div style="width:100%;">
