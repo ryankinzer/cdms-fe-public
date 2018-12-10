@@ -506,7 +506,14 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         // we need to set the row.Activity.Instrument to the matching one from project.Instruments
         // and then select the last AccuracyCheck and set it in row.Activity.AccuracyCheckId
         $scope.selectInstrument = function (field) {
-            
+            console.log("selectInstrument. InstrumentId is " + $scope.row.Activity.InstrumentId);
+            if (isNaN($scope.row.Activity.InstrumentId)) {
+                console.log("is nan");
+                delete $scope.row.Activity.AccuracyCheck; delete $scope.row.Activity.AccuracyCheckId; delete $scope.row.Activity.PostAccuracyCheck; delete $scope.row.Activity.PostAccuracyCheck.Id;
+                return;
+            }
+             
+
             $scope.project.Instruments.forEach(function (inst) { 
                 if (inst.Id == $scope.row.Activity.InstrumentId) {
                     console.log("found that instrument!"); console.dir(inst);

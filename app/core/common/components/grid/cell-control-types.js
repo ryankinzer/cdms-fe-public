@@ -172,8 +172,27 @@ var TimeControlType = function (cdms_field, col_def) {
         if (params.newValue == null)
             return params.newValue;
         else {
-            the_date = moment(params.newValue);
-            return (the_date.isValid()) ? the_date.format("YYYY-MM-DDTHH:mm:ss") : params.newValue; // 2017-12-19T14:03:10 (no timezone)
+            try {
+                the_old_date = moment(params.oldValue); //get the date from the old value.
+                //console.dir(the_old_date);
+
+                the_date = moment(params.newValue, ["HH:mm"],true);
+                //console.dir(the_date);
+                var the_combined_date = the_date.set(
+                    {
+                        year: the_old_date.year(),
+                        month: the_old_date.month(),
+                        date: the_old_date.date()
+                    });
+                //console.dir(the_combined_date);
+                return (the_combined_date.isValid()) ? the_combined_date.format("YYYY-MM-DDTHH:mm:ss") : params.newValue; // 2017-12-19T14:03:10 (no timezone)
+
+            } catch (e) {
+                console.error("failed to convert time: ");
+                console.dir(params);
+                return "error";
+            }
+            
         }
     };
     col_def.cellValidator = CDMSTimeCellValidator;

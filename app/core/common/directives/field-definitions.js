@@ -154,6 +154,19 @@ common_module.directive('ctuirTimeField',
         var result = {
             templateUrl: 'app/core/common/templates/form-fields/field-time.html',
             restrict: 'E',
+            controller: function($scope, $element, $attrs) {
+                //console.dir("have a time!");
+                //console.dir($scope.field);
+                //console.dir($scope.row);
+                if (typeof $scope.row[$scope.field.DbColumnName] === 'string') {
+                    try {
+                        var time_only = moment($scope.row[$scope.field.DbColumnName]).format('HH:mm');
+                        $scope.row[$scope.field.DbColumnName] = time_only;
+                    }catch(e){
+                        console.log(" Could not convert "+ $scope.field.DbColumnName + " values " + $scope.row[$scope.field.DbColumnName] + " to a date.");
+                    }
+                }
+            }
         };
 
         return result;

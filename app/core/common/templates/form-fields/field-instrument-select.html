@@ -4,6 +4,7 @@
     <div style="margin-top: 5px; margin-left: 7px; float:right;"><button class="btn btn-xs" ng-click="createInstrument()">Add</button></div>
     <div class="header-value">
         <select style="width: 256px;" id="instruments-select" ui-select2="select2Options" data-placeholder="Choose an Instrument" ng-change="selectInstrument(field)" ng-model="row.Activity.InstrumentId" convert-to-number>
+            <option></option>
             <option ng-repeat="instrument in project.Instruments | orderBy:'Name'" value="{{instrument.Id}}">{{instrument.Name}} ({{instrument.SerialNumber}})</option>
         </select>
         <p class="field-error-block" ng-show="headerFieldErrors[field.DbColumnName]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>

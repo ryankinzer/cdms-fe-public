@@ -36,6 +36,11 @@ CDMSTimeCellValidator.prototype.validateFieldControlTypeValidation = function (d
         return this.errors;
 
     var the_date = moment(data.value, ["HH:mm"],true);
+
+    if (!the_date.isValid()) {
+        the_date = moment(data.value); //is it a "full" date?
+    }
+
     //console.dir(the_date);
     if (!the_date.isValid()) {
         this.errors.push(new ValidationError(this.cdms_field, "Value is not a time (hh:mm)."));
