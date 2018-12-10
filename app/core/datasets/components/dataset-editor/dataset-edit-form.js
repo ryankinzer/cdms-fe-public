@@ -423,15 +423,17 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         $scope.setSelectedBulkQAStatus = function (rowQAId) {
             angular.forEach($scope.dataAgGridOptions.selectedItems, function (item, key) {
-                console.log("bulk changing: ");
-                console.dir(item);
+                //console.log("bulk changing: ");
+                //console.dir(item);
                 item.QAStatusId = rowQAId;
                 GridService.refreshGrid($scope.dataAgGridOptions);
                 //mark the row as updated so it will get saved.
-                if (item.Id && $scope.dataAgGridOptions.editedItems.indexOf(item.Id) == -1) {
+                if (item.Id && $scope.dataAgGridOptions.editedRowIds.indexOf(item.Id) == -1) {
                     $scope.dataAgGridOptions.editedRowIds.push(item.Id);
                 }
             });
+
+            $scope.dataAgGridOptions.dataChanged = true;
 
             $scope.dataAgGridOptions.api.deselectAll();
         };
