@@ -4,9 +4,9 @@
 
 
 var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
-    'ActivityParser', 'GridService',
+    'ActivityParser', 'GridService','Upload',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
-        ActivityParser, GridService) {
+        ActivityParser, GridService, Upload) {
 
         $scope.system = { loading: true, messages : [] };
         
@@ -140,8 +140,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
 
             getRowHeight: function (params) {
+                console.log("get row height -------------------");
                 //set the rowheight of this row to be the largest of the file count in this row...
-                if (!params.node.file_height) {
+                if (!params.node.file_height || $scope.redrawing) {
                     var file_fields = getMatchingByField($scope.dataAgGridOptions.columnDefs, 'file','ControlType');
                     max_file_field = 1;
                     file_fields.forEach(function (file_field) { 
@@ -150,35 +151,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                             max_file_field = curr_file_count;
                     });
                     params.node.file_height = max_file_field;
+                    console.log(" -- MAX number of files in cell file field " + max_file_field);
                 }
                 var file_height = 25 * (params.node.file_height); 
                 return (file_height > 25) ? file_height : 25;
             },
 
-            //getRowHeight: function (params) {
-                /*
-                var rowIsDetailRow = params.node.level === 1;
-                // return dynamic height when detail row, otherwise return 25
-                if (rowIsDetailRow) {
-                    return 300;
-                } else {
-                    var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
-                    return 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                }
-                //return rowIsDetailRow ? 200 : 25;
-                */
-            //},
-            /*
-            onRowDoubleClicked: function (row) {
-
-                scope.corrAgGridOptions.api.collapseAll();
-                row.node.setSelected(true);
-                row.node.setExpanded(true);
-            },
-            onRowClicked: function (row) {
-                row.node.setSelected(true);
-            },
-            */
             rowClassRules: {
                 'row-validation-error': function(params) { return params.node.data.rowHasError; }
             },
@@ -444,7 +422,26 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             var the_row = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(the_cell.rowIndex)
             //console.dir(the_cell);
             //console.dir(the_row);
-            $scope.openFileModal(the_row.data, the_cell.column.colDef.DbColumnName);
+            $scope.openFileModal(the_row.data, the_cell.column.colDef.DbColumnName, $scope.afterEditCellFiles);
+        }
+
+        $scope.afterEditCellFiles = function () { 
+            console.log("after edit cell files!");
+            var the_cell = $scope.dataAgGridOptions.api.getFocusedCell();
+            var the_row = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(the_cell.rowIndex)
+        //    console.dir(the_cell);
+        //    console.dir(the_row);
+            delete the_row.file_height;
+
+            $scope.dataAgGridOptions.api.redrawRows();
+            $scope.dataAgGridOptions.api.resetRowHeights(); //redraw so that the files in the cell are displayed properly.
+
+            $scope.row.dataChanged = true;
+
+        };
+
+        $scope.afterFileModal = function () { 
+            $scope.row.dataChanged = true;
         }
 
         $scope.openBulkQAChange = function () {
@@ -563,9 +560,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             console.log(" -- save -- ");
 
+            /* -- we dynamically duplicate check, so don't check AGAIN --
             if (dupe_check) {
                 dupe_check.$promise.then(function () {
-                    //TODO: IF we have errors don't save unless config.savewitherrors = true
                     if (!$scope.hasDuplicateError)
                         $scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
                     else
@@ -574,19 +571,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             } else {
                 $scope.modalFile_saveParentItem(); //saverow - this is just for temporary TODO......
             }
-
+            */
 
             //console.dir($scope.row);
 
-
-            
-/*
-            $scope.errors.heading = []; //reset errors if there are any.
-
-            if ($scope.gridHasErrors) {
-                if (!confirm("There are validation errors.  Are you sure you want to save anyway?"))
-                    return;
-            }
 
             //handle saving the files.
             var data = {
@@ -597,11 +585,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             var target = '/api/v1/file/uploaddatasetfile';
 
 			console.log("$scope.row is next...");
-			console.dir($scope.row);
+//			console.dir($scope.row);
             var saveRow = $scope.row;
 
-            $scope.handleFilesToUploadRemove(saveRow, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
-  */          
+            $scope.handleFilesToUploadRemove(saveRow, data, target, Upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+  
         };
 
         //** special buttons for creel data entry **
@@ -683,7 +671,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         //remove file from dataset.
         $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
-            return DatasetService.deleteDatasetFile($scope.projectId, $scope.datasetId, file_to_remove);
+            return DatasetService.deleteDatasetFile($scope.project.Id, $scope.dataset.Id, file_to_remove);
         };
 
 

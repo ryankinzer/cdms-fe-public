@@ -154,7 +154,7 @@ var modal_files = ['$scope', '$uibModalInstance', 'DatasetService','SubprojectSe
 				console.dir($scope.file_row);
                 console.dir($scope.currentFiles);
 
-            $modalInstance.dismiss();
+            $modalInstance.close();
 			
         };
 
@@ -236,7 +236,7 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
     //opens the file modal. pass in the datarow and the field that we're managing files for
     //we set $scope.file_row and $scope.file_field so they are available later while we work with this field.
 
-    $scope.openFileModal = function (row, field) {
+    $scope.openFileModal = function (row, field, callback) {
 
         //setup our files buckets on the row if it isn't already...
         if (!row.originalExistingFiles) {
@@ -293,6 +293,9 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
             templateUrl: 'app/core/common/components/file/templates/modal-file.html',
             controller: 'FileModalCtrl',
             scope: $scope, //scope to make a child of
+        }).result.then(function (saved_field) { 
+            console.log(" (*(((*(9************ we are back! ");
+            callback();
         });
     };
 
