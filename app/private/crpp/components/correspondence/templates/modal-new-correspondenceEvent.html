@@ -8,7 +8,7 @@
                 <p>* = Required Items</p>
                 <div class="header-label">*Date on Correspondence</div>
                 <div class="header-value">
-                    <input class="form-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="ce_row.CorrespondenceDate" is-open="aopened" min="'2000-01-01'" max="'2020-12-31'" datepicker-options="dateOptions" ng-required="false" close-text="Close" ng-change="calculateDateOfResponse()" />
+                    <md-datepicker class="form-control" ng-model="ce_row.CorrespondenceDate" md-hide-icons="triangle" md-placeholder="Enter date" ng-blur="calculateDateOfResponse()"></md-datepicker>
                 </div>
 
                 <div class="header-label">Copy of the Received Document</div>
@@ -65,7 +65,7 @@
                 <div class="header-label">Date of Response</div>
                 <div ng-class="{'hidden': ce_row.other}">
                     <div class="header-value">
-                        <input class="form-control" type="text" datepicker-popup="MM/dd/yyyy" ng-model="ce_row.ResponseDate" is-open="bopened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                        <md-datepicker class="form-control" ng-model="ce_row.ResponseDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                     </div>
 
                     <div class="header-label">*Staff Member</div>
