@@ -505,8 +505,8 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                                 $scope.filesWithErrors++;
                                 file.success = "Failed (unknown error)"
                             } else {
-                                $scope.modalFiles_filesToCheckForDuplicates.push(data[0]); //add this file to the duplicate file list
                                 file.success = "Success";
+                                $scope.modalFiles_filesToCheckForDuplicates.push(data[0]); //add this file to the duplicate file list
                             }
 
                             $scope.fileProgress++;

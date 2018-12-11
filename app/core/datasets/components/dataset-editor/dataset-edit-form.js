@@ -430,13 +430,19 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             var the_cell = $scope.dataAgGridOptions.api.getFocusedCell();
             var the_row = $scope.dataAgGridOptions.api.getDisplayedRowAtIndex(the_cell.rowIndex)
         //    console.dir(the_cell);
-        //    console.dir(the_row);
+            console.dir(the_row);
             delete the_row.file_height;
 
             $scope.dataAgGridOptions.api.redrawRows();
             $scope.dataAgGridOptions.api.resetRowHeights(); //redraw so that the files in the cell are displayed properly.
 
+            //mark the row as changed and edited.
             $scope.row.dataChanged = true;
+
+            if (the_row.data.Id && $scope.dataAgGridOptions.editedRowIds.indexOf(the_row.data.Id) == -1) {
+                $scope.dataAgGridOptions.editedRowIds.push(the_row.data.Id);
+                console.log("edited row: " + the_row.data.Id);
+            }
 
         };
 
@@ -685,6 +691,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         //finish saving after file saving completes...
         $scope.modalFile_saveParentItem = function (saveRow) {
             
+console.log("SaveParentItem!");
+
             //clean up some things from the copy of activity that we don't need to send to the backend.
             var new_activity = angular.copy($scope.row.Activity);
             delete new_activity.AccuracyCheck;
@@ -776,7 +784,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log(" >> final date = " + payload.header[time_field.DbColumnName]);
             });
 
-            //console.dir(payload);
+            console.dir(payload);
             //return;
 
             var save_promise = null;
