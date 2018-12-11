@@ -40,14 +40,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             return count;
         };
 
-        //fields to support uploads // *** but is this the old or the new?
-/*
-        $scope.filesToUpload = {}; 
-        $scope.file_row = {};
-        $scope.file_field = {};
-*/
-        //console.dir($location.path());
-
         $scope.pagemode = $location.path().match(/\/(.*)\//)[1]; //edit, dataentryform, dataview - our 3 options from our route... nothing else is possible.
 
         // Are we editing or not?
@@ -300,6 +292,20 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     }
                 });
 
+                //multiselect header fields - convert from json
+                var HeaderMultiselectFields = getAllMatchingFromArray($scope.dataAgColumnDefs.HeaderFields, 'multiselect', 'ControlType');
+
+                HeaderMultiselectFields.forEach(function (multiselect_field) { 
+                    if ($scope.row[multiselect_field.DbColumnName]) {
+                        $scope.row[multiselect_field.DbColumnName] = getParsedMetadataValues($scope.row[multiselect_field.DbColumnName]);
+                        if (!Array.isArray($scope.row[multiselect_field.DbColumnName])) {  //backwards compatible - some multiselects just have the value saved... turn it into an array
+                            $scope.row[multiselect_field.DbColumnName] = [$scope.row[multiselect_field.DbColumnName]];
+                        }
+                    }
+                    console.dir($scope.row[multiselect_field.DbColumnName]);
+                });
+
+
                 var ag_grid_div = document.querySelector('#data-edit-grid');    //get the container id...
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
@@ -346,9 +352,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log("---------------- setting up dataset file chooser ----------------");
                 modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.dataset.Files);
             });
-
-
-            //TODO -(((
 
             //if the activity qa status is already set in the header (editing), copy it in to this row's activityqastatus 
             if ($scope.dataset_activities.Header.Activity && $scope.dataset_activities.Header.Activity.ActivityQAStatus) {
@@ -755,6 +758,7 @@ console.log("SaveParentItem!");
             // 4) convert multiselects from array to json
             //get all multiselect fields we need to convert
             var DetailMultiselectFields = getAllMatchingFromArray($scope.dataAgColumnDefs.DetailFields, 'multiselect', 'ControlType');
+            var HeaderMultiselectFields = getAllMatchingFromArray($scope.dataAgColumnDefs.HeaderFields, 'multiselect', 'ControlType');
 
             payload.details.forEach(function (data) { 
                 DetailMultiselectFields.forEach(function (multiselect_field) { 
@@ -764,6 +768,13 @@ console.log("SaveParentItem!");
                     }
                 });
             });
+
+            HeaderMultiselectFields.forEach(function (multiselect_field) { 
+                if (Array.isArray(payload.header[multiselect_field.DbColumnName]) && payload.header[multiselect_field.DbColumnName].length > 0) {
+                    payload.header[multiselect_field.DbColumnName] = angular.toJson(payload.header[multiselect_field.DbColumnName]);
+                }
+            });
+            
             
             // 5) convert time fields in header to be based on activity date
             var HeaderTimeFields = getAllMatchingFromArray($scope.dataAgColumnDefs.HeaderFields, 'time', 'ControlType');

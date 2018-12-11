@@ -138,6 +138,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
                         $scope.InstrumentCache[params.node.data[params.colDef.DbColumnName]] = instrument.Name + " (SN:" + instrument.SerialNumber + ")";
                 }
                 return $scope.InstrumentCache[params.node.data[params.colDef.DbColumnName]];
+            },
+              
+            'multiselect': function (params) { 
+                var the_str = valueFormatterArrayToList(params.node.data[params.colDef.DbColumnName]);
+                if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                    the_str = the_str.replace(/"/g, '');
+
+                return the_str;
             }
             
         };
