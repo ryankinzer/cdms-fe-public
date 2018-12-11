@@ -234,7 +234,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                         if (existing_dupe) {
                             existing_dupe.marked = false;
                         } else {
-                            $scope.ActivityDatesDuplicates.push({ 'ActivityDate': the_date, 'marked': false, 'message': saveResult.error, 'row': row }); //will be marked by a watcher
+                            $scope.ActivityDatesDuplicates.push({ 'ActivityDate': the_date, 'LocationId': node.data.Activity.LocationId, 'marked': false, 'message': saveResult.error, 'row': row }); //will be marked by a watcher
                         }
                     }
                     if ($scope.num_checked == $scope.ActivityDatesChecked.length) {
@@ -276,7 +276,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             $scope.system.loading = true;
 
             var unique_dates = [];
-            $scope.ActivityDatesDuplicates.forEach(function (dupe) { unique_dates.push(dupe.ActivityDate) });
+            $scope.ActivityDatesDuplicates.forEach(function (dupe) { unique_dates.push(dupe.ActivityDate+"_"+dupe.LocationId) });
             
             var missing_fields = false;
 
@@ -304,6 +304,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             //console.dir($scope.ActivitiesToSave);
 
             if (!confirm("A total of " + $scope.ActivitiesToSave.length + " activities will be saved.")) {
+                $scope.system.loading = false;
                 $scope.ActivitiesToSave.length = 0;
                 return;
             }
