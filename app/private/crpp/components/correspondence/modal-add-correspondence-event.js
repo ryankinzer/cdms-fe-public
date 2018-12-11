@@ -15,58 +15,6 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$uibModalInstance
 	$scope.showOtherResponseType = false;
 	$scope.showOtherCorrespondenceType = false;
 	
-    //$scope.ce_row = angular.copy($scope.ce_row); ??
-
-    
-
-    //setup some dropdown stuff
-
-    //sure would be nice to get these from a user-defined list somewhere... DONE!
-/* -- this is in metadata now !
-	$scope.ceCorrespondenceType = [];
-		$scope.ceCorrespondenceType.push({Id: 0, Label: "Project Notification"});
-		$scope.ceCorrespondenceType.push({Id: 1, Label: "Notice of Application"});
-		$scope.ceCorrespondenceType.push({Id: 2, Label: "Seeking Concurrence"});
-		$scope.ceCorrespondenceType.push({Id: 3, Label: "Document Review"});
-		$scope.ceCorrespondenceType.push({Id: 4, Label: "Permit Review"});
-		$scope.ceCorrespondenceType.push({Id: 5, Label: "Sending materials for our records"});
-		$scope.ceCorrespondenceType.push({Id: 6, Label: "Other"});		
-*/	
-/* -- this is in metadata now 
-	$scope.ceResponseType = [];
-		$scope.ceResponseType.push({Id: 0, Label: "APE letter"});
-		$scope.ceResponseType.push({Id: 1, Label: "Asked to be consulting party"});
-		$scope.ceResponseType.push({Id: 2, Label: "Defer to other tribe(s)"});
-		$scope.ceResponseType.push({Id: 3, Label: "Determination of Eligibility"});
-		$scope.ceResponseType.push({Id: 4, Label: "Did not review"});
-		$scope.ceResponseType.push({Id: 5, Label: "Emailed Comments"});
-		$scope.ceResponseType.push({Id: 6, Label: "Finding of Effect"});
-		$scope.ceResponseType.push({Id: 7, Label: "Issued survey/excavation permit"});
-		$scope.ceResponseType.push({Id: 8, Label: "Let it go"});
-		$scope.ceResponseType.push({Id: 9, Label: "Missed opportunity to review"});
-		$scope.ceResponseType.push({Id: 10, Label: "NAGPRA FR Notice"});
-		$scope.ceResponseType.push({Id: 11, Label: "NAGPRA inventory/summary"});
-		$scope.ceResponseType.push({Id: 12, Label: "none--ok"});
-		$scope.ceResponseType.push({Id: 13, Label: "Notice of Application"});
-		$scope.ceResponseType.push({Id: 14, Label: "Other"});
-		$scope.ceResponseType.push({Id: 15, Label: "Out of area"});
-		$scope.ceResponseType.push({Id: 16, Label: "Permit Application"});
-		$scope.ceResponseType.push({Id: 17, Label: "Report for Review"});
-		$scope.ceResponseType.push({Id: 18, Label: "Requested a monitor"});
-		$scope.ceResponseType.push({Id: 19, Label: "Requested a survey"});
-		$scope.ceResponseType.push({Id: 20, Label: "Requested additional information"});
-		$scope.ceResponseType.push({Id: 21, Label: "Requested report"});
-		$scope.ceResponseType.push({Id: 22, Label: "Requested testing"});
-		$scope.ceResponseType.push({Id: 23, Label: "Response to comments"});
-		$scope.ceResponseType.push({Id: 24, Label: "Reviewed report"});
-		$scope.ceResponseType.push({Id: 25, Label: "Same as previously reviewed project"});
-		$scope.ceResponseType.push({Id: 26, Label: "Sent letter"});
-		$scope.ceResponseType.push({Id: 27, Label: "Signed off on"});
-		$scope.ceResponseType.push({Id: 28, Label: "Simple Notification"});
-	
-	console.log("$scope.ceResponseType is next...");
-	console.dir($scope.ceResponseType);
-	*/
     var foundIt = false;
 
 	// If ce_row.CorrespondenceDate exists, then we are editing.
@@ -253,6 +201,10 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$uibModalInstance
     $scope.save = function () {
         console.log("Inside ModalAddCorrespondenceEventCtrl, save...");
 
+        if (!$scope.ce_row.CorrespondenceDate) {
+            alert("Correspondence Date is required.");
+            return;
+        }
 
         //console.log("$scope.ce_row.ResponseType.Id = " + $scope.ce_row.ResponseType.Id);
         //console.log("$scope.ce_row.ResponseType.Name = " + $scope.ce_row.ResponseType.Name);
