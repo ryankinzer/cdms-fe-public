@@ -31,8 +31,9 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
                 try {
                     var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-                    if (!$scope.ActivityDates.contains(the_date)) {
-                        $scope.ActivityDates.push(the_date);
+                    var the_key = the_date + "_" + node.data.Activity.LocationId;
+                    if (!$scope.ActivityDates.contains(the_key)) {
+                        $scope.ActivityDates.push(the_key);
                     }
                 }catch(e){ 
                     console.warn("invalid date not added to ActivityDates calculation: "+node.data.Activity.ActivityDate);
@@ -286,9 +287,11 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                     console.dir(node.data.Activity);
                 }
                 var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-                if (!unique_dates.contains(the_date)) {
-                    unique_dates.push(the_date);
-                    $scope.ActivitiesToSave.push({ 'ActivityDate': the_date });
+                var the_key = the_date + "_" + node.data.Activity.LocationId;
+                
+                if (!unique_dates.contains(the_key)) {
+                    unique_dates.push(the_key);
+                    $scope.ActivitiesToSave.push({ 'ActivityDate': the_date, 'Key': the_key, 'LocationId': node.data.Activity.LocationId });
                 }
             });
 
@@ -321,7 +324,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 $scope.dataAgGridOptions.api.forEachNode(function (node, index) { 
                     var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
 
-                    if (activity.ActivityDate == the_date) {
+                    if (activity.ActivityDate == the_date && node.data.Activity.LocationId == activity.LocationId) {
                         //console.dir(node);
                         if (payload.header == null) {
                             payload.Activity = node.data.Activity;
