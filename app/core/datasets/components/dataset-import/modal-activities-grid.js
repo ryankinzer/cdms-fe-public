@@ -282,6 +282,8 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             $scope.dataAgGridOptions.api.forEachNode(function (node) {
                 if (!node.data.Activity.ActivityDate || !node.data.Activity.LocationId) {
                     missing_fields = true;
+                    console.log("uhoh - missing stuff from activity:");
+                    console.dir(node.data.Activity);
                 }
                 var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
                 if (!unique_dates.contains(the_date)) {
@@ -304,7 +306,6 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             }
 
             $scope.ActivitiesToSave.forEach(function (activity) { 
-
                 //compose our payload 
                 var payload = {
                     'Activity': null,
@@ -319,11 +320,13 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
                 $scope.dataAgGridOptions.api.forEachNode(function (node, index) { 
                     var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+
                     if (activity.ActivityDate == the_date) {
                         //console.dir(node);
                         if (payload.header == null) {
                             payload.Activity = node.data.Activity;
                             payload.header = {};
+
                             $scope.dataAgColumnDefs.HeaderFields.forEach(function (header_field) { 
                                 payload.header[header_field.DbColumnName] = node.data[header_field.DbColumnName];
                             })
@@ -336,11 +339,13 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                             delete payload.header['QAComments'];
                             delete payload.header['LocationId'];
                             delete payload.header['ActivityDate'];
+
                         }
                         //console.dir(node);
                         if (node.data.data_row_hasdata) {
 
                             var the_detail = { 'QAStatusId': node.data['QAStatusId'] };
+
                             $scope.dataAgColumnDefs.DetailFields.forEach(function (detail_field) {
                                 if (detail_field.ControlType == "multiselect" && Array.isArray(node.data[detail_field.DbColumnName]))
                                     the_detail[detail_field.DbColumnName] = angular.toJson(node.data[detail_field.DbColumnName]);

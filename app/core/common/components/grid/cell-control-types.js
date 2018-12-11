@@ -169,12 +169,14 @@ var TimeControlType = function (cdms_field, col_def) {
     };
 
     col_def.valueParser = function (params) { //formats for saving in the grid
+        
         if (params.newValue == null)
             return params.newValue;
         else {
             try {
                 the_old_date = moment(params.oldValue); //get the date from the old value.
-                //console.dir(the_old_date);
+                if (!the_old_date.isValid())
+                    the_old_date = moment(params.api._headerrow.Activity.ActivityDate);
 
                 the_date = moment(params.newValue, ["HH:mm"],true);
                 //console.dir(the_date);

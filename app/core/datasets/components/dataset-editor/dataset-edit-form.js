@@ -328,6 +328,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 if ($rootScope.imported_rows)
                     $scope.bubbleErrors();
 
+                $scope.dataAgGridOptions.api._headerrow = $scope.row;
 
             }, 0);
 
