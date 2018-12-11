@@ -404,8 +404,8 @@
                 if (field.Label === MAP_LOCATION) {
                     //got the field that was mapped to location. now look for unique values in that column:
                     $scope.UploadResults.Data.forEach(function (data_row) {
-                        var in_location = data_row[col];
-                        if (in_location && !locations.contains(in_location))
+                        var in_location = ""+data_row[col];
+                        if (in_location != "" && !locations.contains(in_location))
                             locations.push(in_location);
                     });
                 }
