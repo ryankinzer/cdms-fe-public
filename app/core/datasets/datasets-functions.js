@@ -705,17 +705,22 @@ function validateField(field, row, key, scope, row_errors) {
 
 //convert a F to C
 function convertFtoC(fahr) {
-    if (fahr != null)
-        return ((parseFloat(fahr) - 32) * (5 / 9)).toFixed(NUM_FLOAT_DIGITS);
+    if (fahr != null) {
+        var celsius = ((parseFloat(fahr) - 32) * (5 / 9)).toFixed(NUM_FLOAT_DIGITS);
+        if (!isNaN(celsius))
+            return celsius;
+    }
 
-    return fahr;
+    return null;
 }
 
 function convertCtoF(cels) {
     if (cels != null)
-        return (parseFloat(cels) * 9 / 5 + 32).toFixed(NUM_FLOAT_DIGITS);
+        var fahr = (parseFloat(cels) * 9 / 5 + 32).toFixed(NUM_FLOAT_DIGITS);
+    if (!isNaN(fahr))
+        return fahr;
 
-    return cels;
+    return null;
 }
 
 

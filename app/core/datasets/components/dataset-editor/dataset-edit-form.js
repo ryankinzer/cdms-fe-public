@@ -43,7 +43,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.pagemode = $location.path().match(/\/(.*)\//)[1]; //edit, dataentryform, dataview - our 3 options from our route... nothing else is possible.
 
         // Are we editing or not?
-        if ($scope.pagemode.indexOf('dataentryform') !== -1) {
+        if ($scope.pagemode == 'dataentryform') {
             $scope.dataset_activities = { Header: {}, Details: [] };
 
             //are we importing?
@@ -90,6 +90,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     return;
 
                 $scope.IsFileCell = (params.column.colDef.ControlType == 'file');
+                $scope.onField = (params.column.colDef.cdmsField);
+
                 $scope.$apply();
                 //var cell = $scope.dataAgGridOptions.api.getFocusedCell();
             },
@@ -132,9 +134,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
 
             getRowHeight: function (params) {
-                console.log("get row height -------------------");
+                //console.log("get row height -------------------");
                 //set the rowheight of this row to be the largest of the file count in this row...
-                if (!params.node.file_height || $scope.redrawing) {
+                if (!params.node.file_height) {
                     var file_fields = getMatchingByField($scope.dataAgGridOptions.columnDefs, 'file','ControlType');
                     max_file_field = 1;
                     file_fields.forEach(function (file_field) { 
@@ -143,7 +145,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                             max_file_field = curr_file_count;
                     });
                     params.node.file_height = max_file_field;
-                    console.log(" -- MAX number of files in cell file field " + max_file_field);
+                    //console.log(" -- MAX number of files in cell file field " + max_file_field);
                 }
                 var file_height = 25 * (params.node.file_height); 
                 return (file_height > 25) ? file_height : 25;
@@ -230,6 +232,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.addNewRow = function () {
             var new_row = GridService.getNewRow($scope.dataAgColumnDefs.DetailFields);
             new_row.QAStatusId = $scope.dataset.DefaultRowQAStatusId;
+
+            //set defaults for detail fields
+            $scope.dataAgColumnDefs.DetailFields.forEach(function (detail) { 
+                if (detail.DefaultValue) { 
+                    new_row[detail.DbColumnName] = detail.DefaultValue;
+                    console.log("Setting default value for " + detail.DbColumnName + " to " + detail.DefaultValue);
+                }
+            });
+
             var result = $scope.dataAgGridOptions.api.updateRowData({add: [new_row]});
             $scope.dataAgGridOptions.dataChanged = true;
         };
@@ -305,6 +316,17 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     console.dir($scope.row[multiselect_field.DbColumnName]);
                 });
 
+                //if we are on data entry page (and not importing), set the header values to any defaults.
+                if ($scope.pagemode == 'dataentryform' && !$rootScope.hasOwnProperty('imported_rows')) {
+                    console.log("applying defaults to header fields");
+                    $scope.dataAgColumnDefs.HeaderFields.forEach(function (header) {
+                        //console.dir(header);
+                        if (header.DefaultValue) {
+                            $scope.row[header.DbColumnName] = header.DefaultValue;
+                            console.log("Setting default value for " + header.DbColumnName + " to " + $scope.row[header.DbColumnName]);
+                        }
+                    });
+                }
 
                 var ag_grid_div = document.querySelector('#data-edit-grid');    //get the container id...
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
@@ -566,11 +588,21 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
-            var dupe_check = $scope.checkForDuplicates(); 
+            
+            var HeaderLocation = getAllMatchingFromArray($scope.dataAgColumnDefs.HeaderFields, 'LocationId', 'DbColumnName');
+            if (Array.isArray(HeaderLocation) && HeaderLocation.length == 1 && !$scope.row.Activity.hasOwnProperty("LocationId")) { 
+                alert("Location is required. Please choose a location and try again.");
+            console.dir(HeaderLocation);
+            console.dir($scope.row);
+                return;
+            }
+
+
 
             console.log(" -- save -- ");
 
             /* -- we dynamically duplicate check, so don't check AGAIN --
+            var dupe_check = $scope.checkForDuplicates(); 
             if (dupe_check) {
                 dupe_check.$promise.then(function () {
                     if (!$scope.hasDuplicateError)
@@ -688,6 +720,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         //check for duplicates        
         $scope.checkForDuplicates = function () {
             var promise = GridService.checkForDuplicates($scope.dataset, $scope.dataAgGridOptions, $scope.row, $scope.saveResult);
+
             $scope.hasDuplicateError = $scope.saveResult.hasError;
             return promise;
         };

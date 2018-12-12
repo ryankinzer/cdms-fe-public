@@ -72,7 +72,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                     console.warn("Notice: There isn't a ControlTypeDefinition for " + cdms_field.DbColumnName + " with ControlType = " + cdms_field.ControlType);
                 }
             },
-
+/*
 //TODO - still need this? - use a filter?
             convertStatus: function (aStatus) {
                 //console.log("Inside convertStatus...");
@@ -107,7 +107,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 return strStatus;
             },
         };
-
+*/
         //This method builds the column definitions of a dataset for use on any grid view.
         // and returns them as an object: {HeaderFields: [], DetailFields: []}
         //@param dataset - the dataset we're building for (uses the fields and config)
@@ -221,6 +221,10 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
             //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
+            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.data });
+            //console.dir(fieldRuleValidationErrors);
+            fieldRuleValidationErrors.forEach(function (error) { fieldValidationErrors.push({ "field": event.colDef, "message": error }) });
+            
             //merge in any row errors with this cell's errors.
             event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
             //console.dir(event.node.data.validationErrors);
@@ -314,7 +318,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
         };
 
 
-
+        //fires the given rule and returns row_errors
         service.fireRule = function (type, event, scope) { //row, field, value, headers, errors, scope) {
             
             if (!event.colDef.hasOwnProperty('cdmsField')) {
@@ -322,6 +326,8 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 console.dir(event);
                 return;
             }
+
+            var row_errors = [];
 
             try {
 
@@ -336,21 +342,30 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 //fire MasterFieldRule rule if it exists
                 if (MasterFieldRule && MasterFieldRule.hasOwnProperty(type)) {
 
-                        console.log("Firing a rule: " + type + " on " + field.DbColumnName);
+                    console.log("Firing a master rule: " + type + " on " + field.DbColumnName);
 
-                        if (type == "DefaultValue")
-                            event.colDef.DefaultValue = MasterFieldRule[type];
+                    if (type == "DefaultValue") {
+                        if (typeof DatasetFieldRule[type] == 'string')
+                            event.colDef.DefaultValue = MasterFieldRule[type].replace(/"/g, '');
                         else
-                            eval(MasterFieldRule[type]);
+                            console.log(MasterFieldRule[type] + " was not a string, skipping.");
                     }
+                    else {
+                        eval(MasterFieldRule[type]);
+                    }
+                }
 
                 //fire DatasetFieldRule rule if it exists. this will override any results of the MasterFieldRule
                 if (DatasetFieldRule && DatasetFieldRule.hasOwnProperty(type)) {
         
                     console.log("Firing a rule: " + type + " on " + field.DbColumnName);
 
-                    if (type == "DefaultValue")
-                        event.colDef.DefaultValue = DatasetFieldRule[type];
+                    if (type == "DefaultValue") {
+                        if (typeof DatasetFieldRule[type] == 'string')
+                            event.colDef.DefaultValue = DatasetFieldRule[type].replace(/"/g, '');
+                        else
+                            console.log(DatasetFieldRule[type] + " was not a string, skipping.");
+                    }
                     else
                         eval(DatasetFieldRule[type]);
                 }
@@ -359,9 +374,13 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
             } catch (e) {
                 //so we don't die if the rule fails....
                 console.warn("Looks like a rule failed: "+type);
+                console.dir(DatasetFieldRule);
                 console.dir(event);
                 console.dir(e);
             }
+
+            return row_errors;
+            
         };
 
 
@@ -437,6 +456,8 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
 
             if (AbortNoFullKey) {
                 console.warn("Aborting duplicate check because not all key fields have values");
+                saveResult.saving = false;
+                delete saveResult.saveMessage;
                 return null; //early return -- we are bailing out because our key isn't full.
             }
 
