@@ -1,7 +1,7 @@
-<div class="right" ng-show="activities">
-    <img ng-click="previousActivity()" title="Previous Activity" class="nav-buttons" src="assets/images/icon-prev.png" />
+<div class="right" ng-show="activities && dataset && !system.loading">
+    <a href="#!/dataview/{{PreviousActivity}}"><img title="Previous Activity" class="nav-buttons" src="assets/images/icon-prev.png" width="30" /></a>
     <span>&nbsp;</span>
-    <img ng-click="nextActivity()" title="Next Activity" class="nav-buttons" src="assets/images/icon-next.png" />
+    <a href="#!/dataview/{{NextActivity}}"><img title="Next Activity" class="nav-buttons" src="assets/images/icon-next.png" width="30"/></a>
 </div>
 
 <ul class="breadcrumb">

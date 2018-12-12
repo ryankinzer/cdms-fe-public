@@ -1454,7 +1454,7 @@ function getJsonObjects(vals) {
     objvals = vals;
 
     try {
-        if (typeof vals === 'string') {
+        if (typeof vals === 'string' && vals != "") {
             objvals = angular.fromJson(vals);
             if (Array.isArray(objvals) && objvals.length > 0) {
                 if (objvals[0].hasOwnProperty('ID')) {

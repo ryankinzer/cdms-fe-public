@@ -23,6 +23,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.IsFileCell = false;
         
         $scope.PageErrorCount = 0;
+        $scope.NextActivity = $scope.PreviousActivity = 0;
 
         //returns the number of errors on the page, headers + details
         //TODO this is probably expensive for big grids, maybe not...
@@ -69,6 +70,31 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
                 $scope.afterDatasetLoadedEvent();
             });
+
+            //setup our next/previous
+            if ($rootScope.activities) {
+                $rootScope.activities.forEach(function (act_list, index) {
+                    if (act_list.Id == $routeParams.Id) {
+                        console.log("found the index: " + index);
+                        console.dir(act_list);
+                        if (index == 0) {
+                            $scope.NextActivity = $rootScope.activities[index + 1].Id;
+                            $scope.PreviousActivity = $rootScope.activities[index].Id;
+
+                        } else if (index == $rootScope.activities.length-1) {
+                            $scope.NextActivity = $rootScope.activities[index].Id;
+                            $scope.PreviousActivity = $rootScope.activities[index - 1].Id;
+
+                        } else { 
+                            $scope.NextActivity = $rootScope.activities[index + 1].Id;
+                            $scope.PreviousActivity = $rootScope.activities[index - 1].Id;
+                        }
+                        console.log("NextActivity = " + $scope.NextActivity);
+                        console.log("PreviousActivity = " + $scope.PreviousActivity);
+                    }
+                });
+            }
+
         }
                
 
@@ -225,7 +251,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             if($scope.dataset.Config.DuplicateCheckFields && $scope.dataset.Config.DuplicateCheckFields.contains(field.DbColumnName))
                 $scope.checkForDuplicates();
 
-            console.dir($scope.row);
+            //console.dir($scope.row);
         };
 
         //add a row

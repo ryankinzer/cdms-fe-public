@@ -192,6 +192,14 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
 
         var viewTemplate = function (params) {
+
+            //push our activityids into rootscope so that we can NEXT/PREV
+            $rootScope.activities = [];
+
+            $scope.agGridOptions.api.forEachNodeAfterFilterAndSort(function (node) { 
+                $rootScope.activities.push({ Id: node.data.ActivityId });
+            });
+            
             return '<div><a href="#!/dataview/' + params.node.data.ActivityId + '">View</a></div>';
         };
 

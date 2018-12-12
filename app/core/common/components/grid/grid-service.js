@@ -106,8 +106,9 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
 
                 return strStatus;
             },
-        };
 */
+        };
+
         //This method builds the column definitions of a dataset for use on any grid view.
         // and returns them as an object: {HeaderFields: [], DetailFields: []}
         //@param dataset - the dataset we're building for (uses the fields and config)
