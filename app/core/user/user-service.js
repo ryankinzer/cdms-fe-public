@@ -68,15 +68,7 @@ user_module.service('UserService', ['$q',
                 console.log("Inside services, DatasetService.saveUserInfo...");
                 var payload = { User: user };
 
-                SaveUserInfo.save(payload, function (data) {
-                    //scope.savePreferencesResults.done = true;
-                    scope.savePreferencesResults.success = true;
-                    console.log("scope.savePreferencesResults.success = " + scope.savePreferencesResults.success);
-                }, function (data) {
-                    //scope.savePreferencesResults.done = true;
-                    scope.savePreferencesResults.failure = true;
-                    console.log("scope.savePreferencesResults.failure = " + scope.savePreferencesResults.failure);
-                });
+                return SaveUserInfo.save(payload);
 
             },
 

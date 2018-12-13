@@ -4,9 +4,9 @@
 
 
 var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
-    'ActivityParser', 'GridService','Upload',
+    'ActivityParser', 'GridService','Upload','ChartService',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
-        ActivityParser, GridService, Upload) {
+        ActivityParser, GridService, Upload, ChartService) {
 
         $scope.system = { loading: true, messages : [] };
         
@@ -377,6 +377,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     $scope.bubbleErrors();
 
                 $scope.dataAgGridOptions.api._headerrow = $scope.row;
+
+                ChartService.buildChart($scope, $scope.dataset_activities.Details, $scope.dataset.Datastore.TablePrefix);
 
             }, 0);
 

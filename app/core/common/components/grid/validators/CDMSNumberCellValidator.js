@@ -75,8 +75,8 @@ CDMSNumberCellValidator.prototype.validateFieldControlTypeValidation = function 
                         _this.errors.push(new ValidationError(_this.cdms_field, "Value must be an integer."));
                     } else {
 
-                        console.log("is an integer we're checking... ");
-                        console.dir(val);
+                        //console.log("is an integer we're checking... ");
+                        //console.dir(val);
 
                         //the number of digits specified for validation
                         if (typeof val.number.num_length === 'number' && !Number.isNaN(val.number.num_length)) {

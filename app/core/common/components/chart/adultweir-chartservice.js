@@ -27,10 +27,10 @@
 
 
             getChartData: function (data) {
-                //console.log("Inside getChartData...");
+                console.log("Inside getChartData...");
                 var dataCalc = {};
 
-                angular.forEach(data, function (row, key) {
+                data.forEach(function (row, key) {
                     var num = (row.TotalFishRepresented) ? row.TotalFishRepresented : 1;
                     //console.log(row);
 
@@ -63,21 +63,24 @@
                     ]
                 };
 
-                angular.forEach(dataCalc, function (vals, species) {
+                console.dir(dataCalc);
+
+                Object.keys(dataCalc).forEach( function (species) {
+                    var vals = dataCalc[species];
                     data['data'].push({
                         "x": species,
                         "y": [vals.total, vals.males, vals.females],
                     });
                 });
 
-                //console.log(data);
+                console.log(data);
 
                 return data;
 
             },
 
             buildChart: function () {
-
+                console.log("buildchart? ----------------------");
             },
 
         };

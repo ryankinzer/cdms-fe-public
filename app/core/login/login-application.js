@@ -89,7 +89,7 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 
 										if(pref.Name == USER_PREFERENCE_LANDINGPAGE)
 										{
-											successUrl = serverUrl + '/index.html#' + pref.Value;
+											successUrl = serverUrl + '/index.html#!' + pref.Value;
 										}
 									};
 								}

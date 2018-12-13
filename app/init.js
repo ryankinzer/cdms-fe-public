@@ -33,7 +33,7 @@
       'private/all-modules',
       'private/crpp/crpp-module',
       'private/habitat/habitat-module',
-      'private/appraisals/appraisals-module',
+      //'private/appraisals/appraisals-module',
 
     ], function (angular, parser) {
    

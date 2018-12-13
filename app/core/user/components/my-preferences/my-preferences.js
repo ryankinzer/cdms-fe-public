@@ -14,31 +14,32 @@
                 DepartmentId: $scope.Profile.DepartmentId,
                 Fullname: $scope.Profile.Fullname
             }
-            console.log("$scope.preferencesUpdate is next...");
-            console.dir($scope.preferencesUpdate);
+//            console.log("$scope.preferencesUpdate is next...");
+//            console.dir($scope.preferencesUpdate);
 
             $scope.savePreferencesResults = [];
-            console.log("$scope.savePreferencesResults = " + $scope.savePreferencesResults);
+//            console.log("$scope.savePreferencesResults = " + $scope.savePreferencesResults);
 
-            UserService.saveUserInfo($scope.User, $scope);
+            var userresult = UserService.saveUserInfo($scope.User, $scope);
+            
+            userresult.$promise.then(function () { 
+                var prefresult = UserService.saveUserPreference("LandingPage", $scope.Profile.LandingPage);
+                prefresult.$promise.then(function () { 
+                    $scope.Message = "Success";
+                }, function (data) { 
+                    console.dir(data);
+                    $scope.Message = "Failure";
+                });
+            }, function (data) { 
+                console.dir(data);
+                $scope.Message = "Failed to save user.";
+            });
+            
         };
 
         $scope.cancel = function () {
             window.location = "index.html";
         };
 
-        $scope.$watch('savePreferencesResults.success', function () {
-			/* We will check if savePreferencesResults.success exists.  
-			If it does, it will always = true.
-			If the save failed, then savePreferencesResults.failed gets set.
-			savePreferencesResults does not exist after the page loads; it gets declared/set after the user clicks the Save button.
-			*/
-            if ((typeof $scope.savePreferencesResults !== 'undefined') && ($scope.savePreferencesResults !== null)) {
-                console.log("Inside MyPreferencesControllers, savePreferencesResults.success watcher...");
-
-                // OK.  We were successful, now we can go back to the index page.  Comment this line out, if we must keep the page for troubleshooting.
-                window.location = "index.html";
-            }
-        });
     }
 ];

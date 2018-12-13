@@ -18,52 +18,53 @@ var chart_services = ['AdultWeir_ChartService', 'WaterTemp_ChartService',
 		var service = {
 			buildChart: function(scope, data_in, dataset, config){
 				console.log("Inside ChartService, buildChart...");
-					console.log("dataset = " + dataset);
-					//console.log("data_in is next...");
-					//console.dir(data_in);
+				console.log("dataset = " + dataset);
+				console.log("data_in is next...");
+//					console.dir(data_in);
 
-    				if(dataset == "AdultWeir") 
-					{
-						scope.chartConfig = AdultWeir_ChartService.getChartConfig();
-		    			scope.chartData = AdultWeir_ChartService.getChartData(data_in);
-					}
-		    		else if(dataset == "WaterTemp")
-		    		{
-		    			WaterTemp_ChartService.buildChart(data_in, config);
-		    		}
-		    		else if(dataset == "SnorkelFish")
-		    		{
-		    			scope.chartConfig = SnorkelFish_ChartService.getChartConfig();
-		    			scope.chartData   = SnorkelFish_ChartService.getChartData(data_in);
-		    		}		    		
-		    		else if(dataset == "Electrofishing" || dataset == "ScrewTrap" || dataset == "FishScales" || dataset == "SpawningGroundSurvey")
-		    		{
-		    			scope.chartConfig = ElectroFishing_ChartService.getChartConfig();
-		    			scope.chartData   = ElectroFishing_ChartService.getChartData(data_in);
-		    		}	
-		    		else if(dataset == "WaterQuality")
-		    		{
-		    			scope.chartConfig = WaterQuality_ChartService.getChartConfig();
-		    			scope.chartData   = WaterQuality_ChartService.getChartData(data_in);
-		    		}
-					else if(dataset == "CreelSurvey")
-		    		{
-						scope.chartConfig = CreelSurvey_ChartService.getChartConfig();
-		    			scope.chartData = CreelSurvey_ChartService.getChartData(data_in);
-		    		}
-					else if(dataset == "ArtificialProduction")
-		    		{
-						scope.chartConfig = ArtificialProduction_ChartService.getChartConfig();
-		    			scope.chartData = ArtificialProduction_ChartService.getChartData(data_in);
-					}
-    				else if(dataset == "BSample") 
-					{
-						scope.chartConfig = BSample_ChartService.getChartConfig();
-		    			scope.chartData = BSample_ChartService.getChartData(data_in);
-					}
-		    		else 
-		    			console.log("No charting configured for " + dataset);
-		    	},
+    			if(dataset == "AdultWeir") 
+				{
+					scope.chartConfig = AdultWeir_ChartService.getChartConfig();
+		    		scope.chartData = AdultWeir_ChartService.getChartData(data_in);
+				}
+		    	else if(dataset == "WaterTemp")
+		    	{
+		    		WaterTemp_ChartService.buildChart(data_in, config);
+		    	}
+		    	else if(dataset == "SnorkelFish")
+		    	{
+		    		scope.chartConfig = SnorkelFish_ChartService.getChartConfig();
+		    		scope.chartData   = SnorkelFish_ChartService.getChartData(data_in);
+		    	}		    		
+		    	else if(dataset == "Electrofishing" || dataset == "ScrewTrap" || dataset == "FishScales" || dataset == "SpawningGroundSurvey")
+		    	{
+		    		scope.chartConfig = ElectroFishing_ChartService.getChartConfig();
+		    		scope.chartData   = ElectroFishing_ChartService.getChartData(data_in);
+		    	}	
+		    	else if(dataset == "WaterQuality")
+		    	{
+		    		scope.chartConfig = WaterQuality_ChartService.getChartConfig();
+		    		scope.chartData   = WaterQuality_ChartService.getChartData(data_in);
+		    	}
+				else if(dataset == "CreelSurvey")
+		    	{
+					scope.chartConfig = CreelSurvey_ChartService.getChartConfig();
+		    		scope.chartData = CreelSurvey_ChartService.getChartData(data_in);
+		    	}
+				else if(dataset == "ArtificialProduction")
+		    	{
+					scope.chartConfig = ArtificialProduction_ChartService.getChartConfig();
+		    		scope.chartData = ArtificialProduction_ChartService.getChartData(data_in);
+				}
+    			else if(dataset == "BSample") 
+				{
+					scope.chartConfig = BSample_ChartService.getChartConfig();
+		    		scope.chartData = BSample_ChartService.getChartData(data_in);
+				}
+		    	else 
+		    		console.log("No charting configured for " + dataset);
+
+		    },
 		};
 
 		return service;

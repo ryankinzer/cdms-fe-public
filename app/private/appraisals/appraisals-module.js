@@ -1,5 +1,8 @@
 ﻿// defines the appraisals module
 
+
+//not used anymore!
+
 require([
     //controllers
     'private/appraisals/components/appraisal-activities/appraisal-activities',

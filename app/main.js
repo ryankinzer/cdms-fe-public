@@ -103,6 +103,8 @@ define([
 		  $location.path( path );
 	  };
 
+      $rootScope.$location = $location;
+
 	  angular.rootScope = $rootScope; //just so we can get to it later. :)
 
 	  $rootScope.SystemTimezones = SystemTimezones; //defined in init.js
@@ -159,7 +161,11 @@ function configureProfile(profile)
 	else
 		profile.favoriteProjects = [];
 
-
+    //landing page
+    profile.LandingPage = getByName(profile.UserPreferences, "LandingPage");
+    if (profile.LandingPage)
+        profile.LandingPage = profile.LandingPage.Value;
+    
 	if(profile.Roles)
 		profile.Roles = angular.fromJson(profile.Roles);
 
@@ -216,6 +222,12 @@ function configureProfile(profile)
 
         return isEditor;
 	};
+
+    profile.setLandingPage = function () { 
+        //console.log(" our location: " + angular.rootScope.$location.url());
+        profile.LandingPage = angular.rootScope.$location.url();
+        angular.rootScope.go("/mypreferences");
+    };
 
 	profile.isDatasetFavorite = function(datasetId){
 		return (profile.favoriteDatasets.indexOf(datasetId+"") != -1);
