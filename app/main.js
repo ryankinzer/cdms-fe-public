@@ -50,6 +50,8 @@ define([
             $routeProvider.when('/projectLookups/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-lookups.html', controller: 'ProjectLookupsCtrl'});
             $routeProvider.when('/projectLocations/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-locations.html', controller: 'ProjectLocationsCtrl'});
 
+            $routeProvider.when('/analytics', { templateUrl: 'app/core/user/components/analytics/templates/user-analytics.html', controller: 'UserAnalyticsCtrl'});
+
             $routeProvider.when('/mydata', { templateUrl: 'app/core/user/components/dataset-preferences/templates/mydatasets.html', controller: 'MyDatasetsCtrl'});
             $routeProvider.when('/myprojects', { templateUrl: 'app/core/user/components/project-preferences/templates/myprojects.html', controller: 'MyProjectsCtrl'});
             $routeProvider.when('/mypreferences', { templateUrl: 'app/core/user/components/my-preferences/templates/mypreferences.html', controller: 'MyPreferencesCtrl'});

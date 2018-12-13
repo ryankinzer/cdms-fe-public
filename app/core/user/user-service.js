@@ -29,6 +29,13 @@ user_module.factory('GetMyLastUpdatedDatasets', ['$resource', function ($resourc
     });
 }]);
 
+user_module.factory('GetAnalytics', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/syslog/GetAnalytics', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
+
 
 /*
 * define the service that can be used by any module in our application to work with projects.
@@ -39,15 +46,21 @@ user_module.service('UserService', ['$q',
     'SaveUserPreferenceAction',
     'GetMyDatasetsAction',
     'GetMyLastUpdatedDatasets',
+    'GetAnalytics',
 
     function ($q,
         SaveUserInfo,
         GetMyProjectsAction,
         SaveUserPreferenceAction,
         GetMyDatasetsAction,
-        GetMyLastUpdatedDatasets) {
+        GetMyLastUpdatedDatasets,
+        GetAnalytics) {
 
         var service = {
+
+            getAnalytics: function () { 
+                return GetAnalytics.query();
+            },
 
             getMyDatasets: function () {
                 return GetMyDatasetsAction.query();
