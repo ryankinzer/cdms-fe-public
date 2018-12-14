@@ -39,7 +39,19 @@ define([
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 
-<<<<<<< HEAD
+            /* 
+            if (typeof TRIBALCDMS_TEMPLATES !== 'undefined') {
+                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/' + TRIBALCDMS_TEMPLATES +'/projects.html', controller: 'project-list-ctrl' });
+                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/' + TRIBALCDMS_TEMPLATES +'/project-datasets.html', controller: 'project-detail-ctrl' });
+                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/' + TRIBALCDMS_TEMPLATES +'/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
+            }
+            else {
+                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'project-list-ctrl' });
+                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets.html', controller: 'project-detail-ctrl' });
+                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
+            }
+            */
+
             $routeProvider.when('/dashboard', { templateUrl: 'app/core/user/components/landing-page/templates/landing-page.html', controller: 'LandingPage'});
 
             $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'ProjectListCtrl'});
@@ -57,50 +69,24 @@ define([
             $routeProvider.when('/myprojects', { templateUrl: 'app/core/user/components/project-preferences/templates/myprojects.html', controller: 'MyProjectsCtrl'});
             $routeProvider.when('/mypreferences', { templateUrl: 'app/core/user/components/my-preferences/templates/mypreferences.html', controller: 'MyPreferencesCtrl'});
             $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit'});
-            //$routeProvider.when('/dataview/:Id', { templateUrl: 'app/core/datasets/components/dataset-view/templates/dataset-view.html', controller: 'DatasetViewCtrl'});
-            //$routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-form/templates/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});
             $routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-editor/templates/dataset-edit-form.html', controller: 'DataEditCtrl', permission: 'Edit'});
-=======
-            if (typeof TRIBALCDMS_TEMPLATES !== 'undefined') {
-                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/' + TRIBALCDMS_TEMPLATES +'/projects.html', controller: 'project-list-ctrl' });
-                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/' + TRIBALCDMS_TEMPLATES +'/project-datasets.html', controller: 'project-detail-ctrl' });
-                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/' + TRIBALCDMS_TEMPLATES +'/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
-            }
-            else {
-                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'project-list-ctrl' });
-                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets.html', controller: 'project-detail-ctrl' });
-                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
-            }
-                
-            $routeProvider.when('/mydata', { templateUrl: 'app/core/preferences/components/dataset-preferences/templates/mydatasets.html', controller: 'MyDatasetsCtrl'});
-            $routeProvider.when('/myprojects', { templateUrl: 'app/core/preferences/components/project-preferences/templates/myprojects.html', controller: 'MyProjectsCtrl'});
-            $routeProvider.when('/mypreferences', { templateUrl: 'app/core/preferences/components/my-preferences/templates/mypreferences.html', controller: 'MyPreferencesCtrl'});
-            
-            $routeProvider.when('/dataview/:Id', { templateUrl: 'app/core/datasets/components/dataset-view/templates/dataset-view.html', controller: 'DatasetViewCtrl'});
-            $routeProvider.when('/dataentry/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-sheet/templates/dataset-entry-sheet.html', controller: 'DataEntryDatasheetCtrl', permission: 'Edit'});
-            $routeProvider.when('/dataentryform/:Id', { templateUrl: 'app/core/datasets/components/dataset-entry-form/templates/dataset-entry-form.html', controller: 'DataEntryFormCtrl', permission: 'Edit'});
->>>>>>> master
+       
             $routeProvider.when('/edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-editor/templates/dataset-edit-form.html', controller: 'DataEditCtrl', permission: 'Edit'});
             $routeProvider.when('/dataview/:Id', { templateUrl: 'app/core/datasets/components/dataset-view/templates/dataset-view.html', controller: 'DataEditCtrl'});
 
             $routeProvider.when('/datasetquery/:Id', { templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DataQueryCtrl'});
             $routeProvider.when('/dataset-details/:Id', { templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-view.html', controller: 'DatasetDetailsCtrl'});
             $routeProvider.when('/datasetimport/:Id', { templateUrl: 'app/core/datasets/components/dataset-import/templates/dataset-import.html', controller: 'DatasetImportCtrl', permission: 'Edit'});
-            //$routeProvider.when('/dataset-edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-edit.html', controller: 'DatasetDetailsCtrl', permission: 'Edit'});
-            //$routeProvider.when('/datasetseasons/:Id', { templateUrl: 'app/core/datasets/components/dataset-seasons-list/templates/dataset-seasons.html', controller: 'DatasetSeasonsCtrl', permission: 'Edit'});
-
 
             $routeProvider.when('/query/:Id', { templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DatastoreQueryCtrl'});
             $routeProvider.when('/admin', { templateUrl: 'app/core/admin/components/admin-page/templates/admin.html', controller: 'AdminCtrl'});
-<<<<<<< HEAD
+
             $routeProvider.when('/admin-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-dataset-fields.html', controller: 'AdminEditDatasetFieldsCtrl'});
             $routeProvider.when('/admin-config/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-dataset-config.html', controller: 'AdminEditDatasetConfigCtrl'});
             $routeProvider.when('/admin-metafields', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-metafields.html', controller: 'AdminMetafieldsCtrl'});
 
-=======
             $routeProvider.when('/admin-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-dataset.html', controller: 'AdminEditDatasetCtrl' });
             $routeProvider.when('/admin-users', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-users.html', controller: 'AdminUsersCtrl' });
->>>>>>> master
 
             $routeProvider.when('/admin-master/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-master.html', controller: 'AdminEditMasterCtrl' });
             $routeProvider.when('/admin-new-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-new-dataset.html', controller: 'AdminNewDatasetCtrl' });
