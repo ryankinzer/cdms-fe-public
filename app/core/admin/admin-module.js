@@ -14,7 +14,8 @@ require([
     'core/admin/components/admin-page/modal-choose-duplicate-fields',
     'core/admin/components/admin-page/modal-choose-activitylist-fields',
     'core/admin/components/admin-page/modal-edit-metadataproperty',
-    
+    'core/admin/components/admin-page/admin-users',
+    'core/admin/components/admin-page/admin-manage-users-modal',
 
     //service
     'core/admin/admin-service',
@@ -35,8 +36,8 @@ require([
     admin_module.controller('ModalChooseDuplicateFieldsCtrl', modal_admin_choose_duplicate_fields);
     admin_module.controller('ModalChooseActivityListFieldsCtrl', modal_admin_choose_activitylist_fields);
     admin_module.controller('ModalEditMetadataPropertyCtrl', modal_admin_edit_metadataproperty);
-
-
+    admin_module.controller('AdminUsersCtrl', admin_users);
+    admin_module.controller('ModalManageUserCtrl', modal_manage_user);
 
     //load services
 

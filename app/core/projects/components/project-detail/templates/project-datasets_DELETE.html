@@ -1,8 +1,9 @@
 ﻿<div style="" title="Toggle 'Favorite' status" class="fav-dataset">
     <a href ng-click="toggleFavorite()">
-        <img id="favorite-active" ng-show="isFavorite" class="on" src='assets/images/favorite-on.png'/>
-        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='assets/images/favorite-off.png'/>
-    </a></div>
+        <img id="favorite-active" ng-show="isFavorite" class="on" src='assets/images/favorite-on.png' />
+        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='assets/images/favorite-off.png' />
+    </a>
+</div>
 
 <ul class="breadcrumb">
     <li><a href="#!/projects">Projects</a> <span class="divider"></span> </li>
@@ -14,19 +15,19 @@
 <button project-role="editor" ng-mouseover="showMapButton=true" ng-click="openChooseMapImage()" ng-show="!mapHtml" class="right btn">Choose Map Image</button>
 <h3>{{project.Name}}</h3>
 <p>{{project.Description}}</p>
-<div ng-show="ShowHabitat" >
-	<button style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>
-	<!-- img class="map-center" src="assets/images/map_image1.png"  -->
-	<div ng-show="ShowMap.Display">
-		<div style="margin-left:125px; margin-top: -45px; margin-bottom: 25px;" id="basemapDropdown">
-			<img src="assets/images/imgBaseMap.png" width="35px"/>
-			<select class="form-control" style="display: inline" ng-options="b.name as b.label for b in map.basemaps" ng-model="map.selectedBasemap" ng-change="map.updateLayers()"></select>
-		</div>
+<div ng-show="ShowHabitat">
+    <button style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>
+    <!-- img class="map-center" src="assets/images/map_image1.png"  -->
+    <div ng-show="ShowMap.Display">
+        <div style="margin-left:125px; margin-top: -45px; margin-bottom: 25px;" id="basemapDropdown">
+            <img src="assets/images/imgBaseMap.png" width="35px" />
+            <select class="form-control" style="display: inline" ng-options="b.name as b.label for b in map.basemaps" ng-model="map.selectedBasemap" ng-change="map.updateLayers()"></select>
+        </div>
 
-		<esri-map class="claro" id="map" center="-118.45,45.56" zoom="10" basemap="streets" onclick="click">
-			<esri-feature-layer url="//arcserv.ctuir.org/arcgis/rest/services/CDMS_ProjectPoints/FeatureServer/0" filter="location"></esri-feature-layer>
-		</esri-map>
-	</div>
+        <esri-map class="claro" id="map" center="-118.45,45.56" zoom="10" basemap="streets" onclick="click">
+            <esri-feature-layer url="//arcserv.ctuir.org/arcgis/rest/services/CDMS_ProjectPoints/FeatureServer/0" filter="location"></esri-feature-layer>
+        </esri-map>
+    </div>
 </div>
 
 <tabset justified="true">
@@ -233,7 +234,7 @@
 </tabset>
 
 <div ng-show="project.Name == 'StreamNet'">
-	<button ng-click="syncToStreamnet()" class="btn btn-xs">Upload to StreamNet</button>
+    <button ng-click="syncToStreamnet()" class="btn btn-xs">Upload to StreamNet</button>
 </div>
 
-<br/>
+<br />

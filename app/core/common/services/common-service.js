@@ -63,6 +63,16 @@ common_module.factory('Users', ['$resource', function ($resource) {
     });
 }]);
 
+common_module.factory('GetAllUsers', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/getallusers', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
+common_module.factory('SaveUser', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/saveuser');
+}]);
+
 common_module.factory('SaveProjectLocation', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/location/saveprojectlocation');
 }]);
@@ -87,6 +97,8 @@ common_module.service('CommonService', ['$q',
     'GetTimeZones',
     'GetDepartments',
     'Users',
+    'GetAllUsers',
+    'SaveUser',
     'DeleteLocationAction',
     'GetAllPossibleDatastoreLocations',
     'GetLocationTypes',
@@ -105,6 +117,8 @@ common_module.service('CommonService', ['$q',
         GetTimeZones,
         GetDepartments,
         Users,
+        GetAllUsers,
+        SaveUser,
         DeleteLocationAction,
         GetAllPossibleDatastoreLocations,
         GetLocationTypes,
@@ -160,6 +174,10 @@ common_module.service('CommonService', ['$q',
                 return Users.query();
             },
 
+            getAllUsers: function () {
+                return GetAllUsers.query();
+            },
+
             getDepartments: function () {
                 return GetDepartments.query();
             },
@@ -186,6 +204,7 @@ common_module.service('CommonService', ['$q',
                 angular.forEach(instrumentList, function (item) {
                     // Have we found a match yet? If so, we do not need to check the rest of the items.
                     if (blnKeepGoing) {
+                        //console.log("item.Name = " + item.Name + ", instrument.Name = " + instrument.Name + ", item.SerialNumber = " + item.SerialNumber + ", instrument.SerialNumber = " + instrument.SerialNumber); 
                         if ((item.Name === instrument.Name) && (item.SerialNumber === instrument.SerialNumber)) {
                             blnInstrumentExists = true;
                             blnKeepGoing = false;
@@ -264,6 +283,10 @@ common_module.service('CommonService', ['$q',
 
                 return SaveDatasetMetadata.save(payload);
 
+            },
+
+            saveUser: function (user) {
+                return SaveUser.save({ User: user });
             },
 
             saveMetadataProperty: function (property) {

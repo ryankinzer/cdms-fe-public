@@ -428,32 +428,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                 }
 
                 else {
-                    var coldefs = [
-                        {
-                            field: 'locationId',
-                            Label: 'Location',
-                            displayName: 'Location',
-                            cellFilter: 'locationNameFilter',
-                            editableCellTemplate: LocationCellEditTemplate,
-                            Field: { Description: "What location is this record related to?" }
-                        },
-                        {
-                            field: 'activityDate',
-                            Label: 'Activity Date',
-                            displayName: 'Activity Date (MM/DD/YYYY)',
-                            cellFilter: 'date: \'MM/dd/yyyy\'',
-                            editableCellTemplate: '<input ng-blur="updateCell(row,\'activityDate\')" type="text" ng-pattern="' + date_pattern + '" ng-model="COL_FIELD" ng-input="COL_FIELD" />',
-                            Field: { Description: "Date of activity in format: '10/22/2014'" }
-                        },
-                        {
-                            field: 'QAStatusId',
-                            Label: 'QA Status',
-                            displayName: 'QA Status',
-                            cellFilter: 'QAStatusFilter',
-                            editableCellTemplate: QACellEditTemplate,
-                            Field: { Description: "Quality Assurance workflow status" }
-                        }
-                    ];
+                    var coldefs = [ ];
                 }
 
                 return coldefs;
@@ -616,8 +591,8 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
             updateHeaderField: function (row, field_name, scope) {
                 scope.dataChanged = true;
                 console.log("Inside datasheet.js, updateHeaderField...");
-                console.log("scope is next...");
-                console.dir(scope);
+                //console.log("scope is next...");
+                //console.dir(scope);
 
                 //var value = scope.row[field_name];
                 if (typeof field_name === 'undefined') {
@@ -641,15 +616,18 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                 if (errors.length > 0) {
                     scope.headerFieldErrors[field_name] = errors;
                     row.isValid = false;
-                    //if (typeof scope.onRow !== 'undefined')
-                    //{
-                    scope.onRow.errors = errors;
-                    scope.gridHasErrors = true;
-                    //}
+                    scope.headerHasErrors = true;
+                    if (typeof scope.onRow !== 'undefined')
+                    {
+                        scope.onRow.errors = errors;
+                    }
+                    //scope.gridHasErrors = true;
+
                 }
                 else {
                     delete scope.headerFieldErrors[field_name];
                     row.isValid = true;
+                    scope.headerHasErrors = false;
                     //row.errors = undefined;
                     if (typeof scope.onRow !== 'undefined')
                         scope.onRow.errors = undefined;
@@ -672,7 +650,17 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                 fireRules("OnChange", row, field, value, headers, errors, scope);
 
                 scope.headerHasErrors = (array_count(scope.headerFieldErrors) > 0);
+                //console.log("scope is next...");
+                //console.dir(scope);
+                //console.log("row is next...");
+                //console.dir(row);
 
+                //console.log("scope.headerHasErrors = " + scope.headerHasErrors);
+                //console.log("row.isValid = " + row.isValid);
+                //console.log("scope.gridHasErrors = " + scope.gridHasErrors);
+                //console.log("scope.duplicateEntry = " + scope.duplicateEntry);
+                //console.log("scope.DupeCheckRunning = " + scope.DupeCheckRunning);
+                //console.log("scope.activities.saving = " + scope.activities.saving);
             },
 
             onTimeChange: function (scope) {
@@ -952,12 +940,13 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
 					if ((typeof data_row.errors !== 'undefined') && (data_row.errors !== null))
 					{
 						data_row.errors.forEach(function(errorRow){
-							//console.log("errorRow = " + errorRow);
+							console.log("errorRow = " + errorRow);
 							if (errorRow.indexOf("Duplicate:") < 0)
 							{
-								//console.log("Deleting non-duplicate-type error...");
-								const index = data_row.errors.indexOf(errorRow);
-								
+								console.log("Deleting non-duplicate-type error...");
+                                const index = data_row.errors.indexOf(errorRow);
+
+                                console.log("index = " + index);
 								if (index !== -1)
 								{
 									data_row.errors.splice(index, 1);
@@ -967,14 +956,17 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
 					}
 					
                     service.validate(data_row, scope);
-					//console.log("data_row (after validate) is next...");
-					//console.dir(data_row);
-					//console.log("scope.gridHasErrors = " + scope.gridHasErrors);
+					console.log("data_row (after validate) is next...");
+                    console.dir(data_row);
+                    // The following scope.gridHasErrors is just a progress check, to verify that we caught errors,
+                    // when they exist.
+                    // However, when we have corrected errors, it is not helpful.
+					console.log("scope.gridHasErrors = " + scope.gridHasErrors);
                     if (!data_row.isValid)
                         scope.validation_error_count++;
                 });
 
-                //scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
+                scope.gridHasErrors = (scope.validation_error_count == 0) ? false : true;
                 //if (scope.DatastoreTablePrefix === "ScrewTrap") {
                 //    if ((scope.gridHasErrors) && (scope.validation_error_count > 0))
                 //        scope.gridHasErrors = true;
@@ -1214,7 +1206,7 @@ datasets_module.service('DataSheet', ['Logger', '$window', '$route', 'GridServic
                 else {
                     console.log("typeof scope.row.activityDate = " + typeof scope.row.activityDate);
                     console.log(scope.row.activityDate);
-                    console.dir(scope);
+                    //console.dir(scope);
 
                     // If the ActivityDate is blank, we can stop right now.
                     if ((typeof scope.row.activityDate === 'undefined') || (scope.row.activityDate === null))

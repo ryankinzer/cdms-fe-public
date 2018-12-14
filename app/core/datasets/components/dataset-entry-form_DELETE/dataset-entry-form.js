@@ -408,6 +408,10 @@ var dataset_entry_form = ['$scope', '$routeParams',
                 console.dir($scope.project.Locations);
 
                 for (var i = 0; i < $scope.project.Locations.length; i++) {
+
+                    if ($scope.project.Locations[i].Status !== 0) //0=ACTIVE - Fix #23: only show active locations in dataentry
+                        continue;
+
                     if (($scope.DatastoreTablePrefix === "Metrics") ||
                         ($scope.DatastoreTablePrefix === "Benthic") ||
                         ($scope.DatastoreTablePrefix === "Drift")

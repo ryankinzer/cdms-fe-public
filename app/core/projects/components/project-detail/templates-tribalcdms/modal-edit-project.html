@@ -1,0 +1,89 @@
+<div class="modal">
+	<div class="modal-dialog edit-project-modal">
+	<div class="modal-content">
+		<div class="modal-header">
+  			<h4>{{header_message}}</h4>
+  		</div>
+  		<div class="modal-body">
+
+  		<tabset justified="true">
+  			<tab heading="Basic Information">
+  				<div style="margin-top: 30px;"></div>
+	  			<div class="header-label">Program/Project Name:</div>
+	  			<div class="header-value">
+		  			<input style="width: 400px;" class="form-control" type="text" ng-model="row.Name" />
+		  		</div>
+
+		  		<div class="header-label">Description/Mission:</div>
+	  			<div class="header-value">
+	  				<div title="Appears on Quad Report" class="quad-report"></div>
+		  			<textarea rows="5" class="form-control" ng-model="row.Description" ></textarea>
+		  		</div>
+
+				<div class="header-label">Program:</div>
+		  		<div class="header-value">
+		  				<select class="form-control" ng-model="metadataList['Program'].Values" ng-options="id as name for (id, name) in metadataList['Program'].options"></select>
+				</div>
+				
+				<div class="header-label">Sub-program:</div>
+		  		<div class="header-value">
+		  				<select class="form-control" ng-model="metadataList['Sub-program'].Values" ng-options="id as name for (id, name) in metadataList['Sub-program'].options"></select>
+				</div>
+
+				<div class="header-label">Project Start Date</div>
+	  			<div class="header-value">
+					<!-- It seems that min/max items can cause the datepicker not to work, when you click on a date... -->
+						<!--<input class="form-control" type="text" datepicker-popup="longDate" ng-model="row.StartDate" is-open="aopened" min="'2000-01-01'" max="'2015-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
+						<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row.StartDate" is-open="aopened" min="'2000-01-01'" max="'2020-12-31'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+		  		</div>
+
+		  		<div class="header-label">Project End Date</div>
+	  			<div class="header-value">
+						<!--<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row.EndDate" is-open="bopened" min="'2000-01-01'" max="'2015-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />-->
+						<input  class="form-control" type="text" datepicker-popup="longDate" ng-model="row.EndDate" is-open="bopened" min="'2000-01-01'" max="'2020-12-31'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+		  		</div>
+
+	  		
+				<div style="margin-top: 30px;"></div>
+				
+				<div class="header-label">Program/Project Statement/Goal:</div>
+	  			<div class="header-value">
+		  			<textarea rows="5" class="form-control" ng-model="metadataList['Project Goal Statement'].Values" ></textarea>
+		  		</div>
+
+				<div class="header-label">Program/Project Objectives:</div>
+	  			<div class="header-value">
+		  			<textarea rows="5" class="form-control" ng-model="metadataList['Project Objectives'].Values" ></textarea>
+		  		</div>
+
+				<div class="header-label">Inputs - Funding:</div>
+	  			<div class="header-value">
+		  			<textarea rows="5" class="form-control" ng-model="metadataList['Inputs: Funding'].Values" ></textarea>
+		  		</div>
+
+				<div class="header-label">Inputs - Staff:</div>
+	  			<div class="header-value">
+		  			<textarea rows="5" class="form-control" ng-model="metadataList['Inputs: Staff'].Values" ></textarea>
+		  		</div>
+
+
+				<div class="header-label">Inputs - Collaborators:</div>
+	  			<div class="header-value">
+		  			<textarea rows="5" class="form-control" ng-model="metadataList['Inputs: Collaborators'].Values" ></textarea>
+		  		</div>
+				
+
+			</tab>
+
+
+		</tabset>
+  		
+  		</div>
+		<div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="save()">Save</button>
+        </div>
+
+
+  </div>
+</div>
