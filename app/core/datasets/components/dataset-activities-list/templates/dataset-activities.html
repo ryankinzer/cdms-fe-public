@@ -10,6 +10,22 @@
     <li class="active">{{dataset.Name}}</li>  
 </ul>
 
+<div ng-if="dataset.Datastore.Name == 'Appraisals'">
+    <div ng-controller="AppraisalMapCtrl">
+        <button style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>
+        <div ng-show="ShowMap.Display">
+            <button class="btn btn-sm right" ng-click="clearAll()">Clear</button>
+            <button ng-show="agGridOptions.selectedItems.length == 1" class="btn btn-sm right" style="margin-right: 10px;" ng-click="findSelection()">Find Selection on Map</button>
+            <form ng-submit="searchParcel()">
+                <div style="display: flex; margin-bottom: 20px;">
+                    <input class="form-control" type="text" ng-model="SearchParcelId" placeholder="Parcel Id" /><button type="submit" class="btn btn-sm" style="height:30px;margin-top:5px;" ng-click="searchParcel()">Search</button>
+                </div>
+            </form>
+            <appraisal-map class="claro" id="map" center="-118.45,45.56" zoom="4" onclick="click"></appraisal-map>
+        </div>
+    </div>
+</div>
+
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span2">

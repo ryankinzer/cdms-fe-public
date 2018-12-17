@@ -363,6 +363,32 @@ var dataset_activities_list = ['$scope', '$routeParams',
             UserService.toggleFavoriteDataset($scope, $rootScope); 
         }
 
+        $scope.ShowMap = {
+            Display: false,
+            Message: "Show Map",
+            MessageToOpen: "Show Map",
+            MessageToClose: "Hide Map",
+        };
+
+        $scope.toggleMap = function () {
+            if ($scope.ShowMap.Display) {
+//                $scope.removeFilter(); //also clears location
+                $scope.ShowMap.Display = false;
+                $scope.ShowMap.Message = $scope.ShowMap.MessageToOpen;
+            }
+            else {
+                $scope.ShowMap.Display = true;
+                $scope.ShowMap.Message = $scope.ShowMap.MessageToClose;
+
+                //setTimeout(function () {
+  //                  $scope.map.reposition();
+                  //  console.log("repositioned");
+                //}, 400);
+
+            }
+        };
+
+
 
         //$scope.columnDefs = []; // the one we'll bind to the grid; starts out empty...
 

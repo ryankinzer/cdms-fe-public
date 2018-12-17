@@ -67,6 +67,16 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
         if ($scope.project.MetaFields)
             return;
 
+        // row.column (from database) and metadata name
+        $scope.HabitatMetaFieldColumns = {
+            "FirstFoods": "First Foods",
+            "RiverVisionTouchstone": "River Vision Touchstone",
+            "HabitatObjectives": "Habitat Objectives",
+            "NoaaEcologicalConcerns": "NOAA Ecological Concerns",
+            "NoaaEcologicalConcernsSubcategories": "NOAA Ecological Concerns: Sub-categories",
+            "LimitingFactors": "Limiting Factors"
+        };
+
         var habfields = CommonService.getMetadataFor($scope.project.Id, METADATA_ENTITY_HABITAT);
         habfields.$promise.then(function () {
             
@@ -94,16 +104,6 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
                     field.DbColumnName = field.Label = field.Name;
                 });
 
-                // row.column (from database) and metadata name
-                $scope.HabitatMetaFieldColumns = {
-                    "FirstFoods": "First Foods",
-                    "RiverVisionTouchstone": "River Vision Touchstone",
-                    "HabitatObjectives": "Habitat Objectives",
-                    "NoaaEcologicalConcerns": "NOAA Ecological Concerns",
-                    "NoaaEcologicalConcernsSubcategories": "NOAA Ecological Concerns: Sub-categories",
-                    "LimitingFactors": "Limiting Factors"
-                };
-
                 console.dir($scope.project.MetaFields);
                 console.dir($scope.row);
 
@@ -119,8 +119,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	//if we are editing, viewSubproject will be set. -- prepare scope for editing...
         if (!$scope.viewSubproject) {
             //mixin the properties and functions to enable the modal file chooser for this controller...
-            $scope.setupHabitatMetaFields();
             modalFiles_setupControllerForFileChooserModal($scope, $modal, []); //last param is files to check for duplicates... we are new, so we don't have any.
+
+            $scope.setupHabitatMetaFields();
+            
         } else {
             $scope.header_message = "Edit Habitat project: " + $scope.viewSubproject.ProjectName;
             $rootScope.newSubproject = $scope.newSubproject = false;

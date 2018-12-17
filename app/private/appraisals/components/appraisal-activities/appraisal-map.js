@@ -1,169 +1,134 @@
-var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService', '$uibModal', '$location', '$window', '$rootScope', 'ProjectService',
+var appraisal_map = ['$scope', '$route', '$routeParams', 'DatasetService', '$uibModal', '$location', '$window', '$rootScope', 'ProjectService',
     'CommonService','UserService',
     	function ($scope, $route, $routeParams, DatasetService, $modal, $location, $window, $rootScope, ProjectService,CommonService, UserService) {
-			console.log("Inside appraisalController...");
+			console.log("Inside appraisalMapController...");
 			console.log("$routeParams.Id = " + $routeParams.Id);
 
             //TODO: a nicer global route authorization scheme...
             if (!$scope.Profile.hasRole("DECD"))
                 angular.rootScope.go("/unauthorized");
 
-
-
-
-
-
-
-
-
-
-/*
-            $scope.dataset = DatasetService.getDataset($routeParams.Id);
-            $scope.activities = DatasetService.getActivities($routeParams.Id);
-            $scope.loading = true;
-            $scope.project = null;
-            $scope.saveResults = null;
-            $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
-            $scope.allActivities = null;
-            $scope.headerdata = DatasetService.getHeadersDataForDataset($routeParams.Id);
             $scope.filteringActivities = false;
-			$scope.startAppraisalDisabled = true;
 
-            //console.log("Profile = ");
-            //console.dir($rootScope.Profile);
+            // expose a method for handling clicks ON THE MAP - this is linked to from the Map.js directive
+            $scope.click = function(e){
+                $scope.map.loading = true;
+                $scope.clearAll();
+                $scope.map.reposition(); //this is important or else we end up with our map points off somehow.
 
-            var linkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' + 
-            				   '<a href="#!/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("ActivityDate") | date:\'MM/dd/yyyy\'}}</a>' +
-            				   '</div>';
+                $scope.map.querySelectParcel(e.mapPoint, null, function(features){
+                    console.dir(features);
+                    if (features.length == 0) { 
+                      alert('No parcel found at that location.');
+                      $scope.map.loading = false;
+                      $scope.$apply(); //bump angular
+                      return;
+                    };
 
-            var desclinkTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' + 
-                               '<a href="#!/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("Description") }}</a>' +
-                               '</div>';
+                    $scope.map.addParcelToMap(features[0]);
 
-            var allotmentTemplate = '<div class="ngCellText" ng-class="col.colIndex()">' + 
-                               '<a href="#!/dataview/{{row.getProperty(\'Id\')}}">{{row.getProperty("headerdata.Allotment") }}</a>' +
-                               '</div>';
+                    //show the infowindow
+                    $scope.map.infoWindow.resize(250, 300);
+                    $scope.map.infoWindow.setContent($scope.getInfoWindowContent(features[0]));
+                    $scope.map.infoWindow.show($scope.map.selectedGraphic.geometry.getExtent().getCenter());
+
+                    var objectid = $scope.map.selectedFeature.attributes.OBJECTID;
+                    console.log("Found objectid: " + objectid);	
+
+                    $scope.filterGridForParcel(features[0].attributes.PARCELID);
+
+                    $scope.$apply(); //bump angular
 
 
-            var QATemplate = '<div class="ngCellText" ng-class="col.colIndex()">{{QAStatusList[row.getProperty("ActivityQAStatus.QAStatusId")]}}</div>';
 
-            //performance idea: if project-role evaluation ends up being slow, you can conditionally include here...
-          	var editButtonTemplate = '<div project-role="editor" class="ngCellText" ng-class="col.colIndex()">' + 
-            				   '<a href="#!/edit/{{row.getProperty(\'Id\')}}">Edit</a>' +
-            				   '</div>';
+                });
+            };
 
-            $scope.columnDefs = [
-                        {field:'ActivityDate', displayName:'Activity Date', cellTemplate: linkTemplate, width:'100px', visible: false},
+            $scope.searchParcel = function () { 
+                console.log("searching for : " + $scope.SearchParcelId);
+                $scope.findOnMap($scope.SearchParcelId);
+                $scope.filterGridForParcel($scope.SearchParcelId);
+            }
 
-                        {field:'headerdata.Allotment',displayName: 'Parcel Id', cellTemplate: allotmentTemplate, width: '140px'},
-                        {field:'headerdata.AllotmentStatus',displayName: 'Status'},
-                        {field:'headerdata.CobellAppraisalWave',displayName: 'Wave', width: '200px'},
+            $scope.findOnMap = function (in_allotment) {
+                console.log("finding on map " + in_allotment);
 
-                        {field:'headerdata.LastAppraisalRequestDate',displayName: 'Request Date', width: '200px', cellFilter: 'date'},
-
-                        //{field:'Location.Label',displayName: 'Location'},
+                $scope.map.queryMatchParcel(in_allotment, function (features) {
+                    if (features.length == 0) {
+                        console.log("allotment not found: " + in_allotment);
+                    }
+                    else {
+                        //that doesn't include geometry so we need to get it
+                        $scope.map.querySelectParcel(null, features[0].attributes.OBJECTID, function (geo_features) {
+                            $scope.map.addParcelToMap(geo_features[0]);
+                            $scope.map.centerAndZoomToGraphic($scope.map.selectedGraphic, 2);
+                        });
                     
-                        {field:'User.Fullname',displayName: 'By User', width: '120px'},
-                        {field:'QAStatus', displayName: 'QA Status', cellTemplate: QATemplate, width: '100px', visible: false},
-                        {field:'Actions',displayName: '', cellTemplate: editButtonTemplate, width: '40px'},
+                    }
+                });
 
-                    ];
+            }
 
-            $scope.showFilter = false;
 
-            $scope.selectedActivity = [];
-*/
-			/*******************
-			* Some notes about sorting with the gridOptions below.
-			* Referring to the sortInfo line, Angular sorts weirdly.
-			* Rather than a true numeric, or true alphabetic sort, it ignors the letters, and sorts the allotments 
-			* in true numeric order.  While incorrect, it is at least somewhat helpful, and predictable.
-			* After noticing this oddity, the work-around is a training issue.
-			* To fix this issue, this page (http://stackoverflow.com/questions/30873468/sortinfo-does-not-work) indicates 
-			* that we do not have the sortInfo line set up correctly.  However, uiGridConstants causes Angular to barf.
-			* I (gc) am thinking that we need a newer version of Angular for this to work.  We have 1.2.13.
-			*/
-/*
-            $scope.gridOptionsFilter = {};
-            $scope.gridOptions = {
-            	data: 'activities',
-                selectedItems: $scope.selectedActivity,
-            	showColumnMenu: true,
-                sortInfo: {fields:['headerdata.Allotment'], directions: ['desc']},
-            	columnDefs: 'columnDefs',
-                filterOptions: $scope.gridOptionsFilter,
-                multiSelect: false,
+            $scope.findSelection = function () { 
+                console.dir($scope.agGridOptions.selectedItems[0]);
+                $scope.findOnMap($scope.agGridOptions.selectedItems[0].Allotment);
+            }
+
+            $scope.clearAll = function()
+            {
+                //$scope.activities = $scope.allActivities;
+                //$scope.filteredActivities = undefined;
+                $scope.map.clearGraphics();
+                $scope.map.infoWindow.hide();
+                $scope.filteringActivities = false;
+                $scope.agGridOptions.api.setFilterModel(null)
+                $scope.agGridOptions.api.onFilterChanged();
+                $scope.agGridOptions.api.deselectAll();
+                $scope.SearchParcelId = "";
+				
+            };
+
+            $scope.getInfoWindowContent = function(feature)
+            {
+                var attributes = feature.attributes;
+                //var location = getByField($scope.locationsArray,feature.attributes.OBJECTID,"SdeObjectId"); //is there already a location for this OBJECTID?
+
+                //if(location)
+                //    var allotment = getByField($scope.activities,location.Id,"LocationId"); //is there already an allotment associated with this location?
+
+                $scope.map.infoWindow.setTitle(feature.attributes.PARCELID);
+
+                var html = "";
+                
+                if(attributes.Address && attributes.Address.trim() != "")
+                    html += "<b>Address: </b>" + attributes.Address + "<br/>";
+                if(attributes.OWNERSHIPS)
+                    html += "<b>Ownership: </b>" + attributes.OWNERSHIPS + "<br/>";
+                if(attributes.ACRES_GIS)
+                    html += "<b>Acres (GIS): </b>" + attributes.ACRES_GIS;
+                
+                //if(allotment && allotment.Id)
+                //    html += "<br/><div class='right'><a href='#dataview/"+allotment.Id+"'>View</a></div>";
+                
+                return html;
 
             };
-			
-            $scope.$watch('dataset.Fields', function() { 
-                if(!$scope.dataset.Fields ) return;
-				
-				console.log("Inside appraisalController, watch dataset.Fields...");
-				$rootScope.datasetId = $scope.dataset.Id;
-				
-                //load our project based on the projectid we get back from the dataset
-                $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
-				$scope.dataset.Files = DatasetService.getDatasetFiles($scope.dataset.Id);
 
-                $scope.QAStatusList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
+            $scope.filterGridForParcel = function (parcel_id) { 
+                console.log(" filtering for " + parcel_id);
+                var filter_component = $scope.agGridOptions.api.getFilterInstance('Allotment');
+                filter_component.selectNothing();
+                filter_component.selectValue(parcel_id);
+                $scope.agGridOptions.api.onFilterChanged();
+                //scope.dataGridOptions.api.deselectAll();
 
-				$rootScope.DatastoreTablePrefix = $scope.DatastoreTablePrefix = $scope.dataset.Datastore.TablePrefix;
-                console.log("$scope.DatastoreTablePrefix = " + $scope.DatastoreTablePrefix);
+            };
 
 
 
-            });
-			
-            $scope.$watch('project.Name', function(){
-                if($scope.project && $scope.project.$resolved){
-                    $scope.reloadProjectLocations();
-					
-					$rootScope.projectId = $scope.project.Id;
-                }
-            });
-
-            $scope.$watch('activities.$resolved', function(){ 
-                $scope.loading = true;
-                if($scope.activities && $scope.activities.$resolved)
-                {
-
-                    if(!$scope.allActivities)
-                       $scope.allActivities = $scope.activities;
-
-                    $scope.loading = false;
-                    
-                    if($scope.activities.length > 0)
-                    {
-						console.log("$scope.gridOptions is next...");
-                        $scope.gridOptions.ngGrid.data.$promise.then(function(){
-                            $rootScope.GridActivities = $scope.gridOptions.ngGrid.data;
-                        });
-						$scope.startAppraisalDisabled = true;
-                    }
-					else
-					{
-						$scope.startAppraisalDisabled = false;
-					}
-
-                }
-
-                //turn off the wheel of fishies
-                if(typeof $scope.activities.$resolved == "undefined")
-                    $scope.loading = false;
-                
-            });
-
-            //Maybe there is a better way?!
-            $scope.activities.$promise.then(function(){
-                $scope.headerdata.$promise.then(function(){
-                    angular.forEach($scope.activities, function(activity, key){
-                        activity.headerdata = getByField($scope.headerdata, activity.Id, "ActivityId");
-                    });
-                });
-				console.log("$scope at end of activities.$promise...");
-				//console.dir($scope);
-            });
+/*
+            
 			
 			// Someone clicks on an item in the grid.
             // When someone clicks an item in the grid, angular will add it to the selectedItems array, so we watch that.
@@ -271,57 +236,7 @@ var appraisal_activities = ['$scope', '$route', '$routeParams', 'DatasetService'
 				$scope.startAppraisalDisabled = true;
             };
             
-            // expose a method for handling clicks ON THE MAP - this is linked to from the Map.js directive
-            $scope.click = function(e){
-                $scope.map.loading = true;
-                $scope.clearAll();
-                $scope.map.reposition(); //this is important or else we end up with our map points off somehow.
-
-                $scope.map.querySelectParcel(e.mapPoint, null, function(features){
-                    if (features.length == 0) { 
-                      alert('No parcel found at that location.');
-                      $scope.map.loading = false;
-                      $scope.$apply(); //bump angular
-                      return;
-                    };
-
-                    $scope.map.addParcelToMap(features[0]);
-
-                    //show the infowindow
-                    $scope.map.infoWindow.resize(250, 300);
-                    $scope.map.infoWindow.setContent($scope.getInfoWindowContent(features[0]));
-                    $scope.map.infoWindow.show($scope.map.selectedGraphic.geometry.getExtent().getCenter());
-
-                    var objectid = $scope.map.selectedFeature.attributes.OBJECTID;
-                    console.log("Found objectid: " + objectid);	
-
-                    $scope.filteredActivities = [];
-
-                    //now select the item in the grid
-                    angular.forEach($scope.allActivities, function(item, index){
-
-                        if(item.Location.SdeObjectId == objectid){
-                            $scope.filteredActivities.push(item);                       
-                        }
-                    });
-
-                    
-                    $scope.activities = $scope.filteredActivities;
-					console.log("$scope.activities is next...");
-					console.dir($scope.activities);
-					
-					if ($scope.activities.length === 0)
-					{
-						$scope.startAppraisalDisabled = false;  // Enable the Start Appraisal button
-						//console.log("$scope.startAppraisalDisabled (in $scope.click) = " + $scope.startAppraisalDisabled);
-					}
-					
-                    $scope.filteringActivities = true; //need this because we also filter to empty...
-                    $scope.map.loading = false;
-                    $scope.$apply(); //bump angular
-
-                });
-            };
+            
           
             //start a new appraisal record (really just an activity data entry for appraisal dataset)
             $scope.newRecord = function()

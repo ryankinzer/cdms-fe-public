@@ -75,22 +75,26 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             if ($rootScope.activities) {
                 $rootScope.activities.forEach(function (act_list, index) {
                     if (act_list.Id == $routeParams.Id) {
-                        console.log("found the index: " + index);
-                        console.dir(act_list);
-                        if (index == 0) {
-                            $scope.NextActivity = $rootScope.activities[index + 1].Id;
-                            $scope.PreviousActivity = $rootScope.activities[index].Id;
+                        try {
+                            console.log("found the index: " + index);
+                            console.dir(act_list);
+                            if (index == 0) {
+                                $scope.NextActivity = $rootScope.activities[index + 1].Id;
+                                $scope.PreviousActivity = $rootScope.activities[index].Id;
 
-                        } else if (index == $rootScope.activities.length-1) {
-                            $scope.NextActivity = $rootScope.activities[index].Id;
-                            $scope.PreviousActivity = $rootScope.activities[index - 1].Id;
+                            } else if (index == $rootScope.activities.length - 1) {
+                                $scope.NextActivity = $rootScope.activities[index].Id;
+                                $scope.PreviousActivity = $rootScope.activities[index - 1].Id;
 
-                        } else { 
-                            $scope.NextActivity = $rootScope.activities[index + 1].Id;
-                            $scope.PreviousActivity = $rootScope.activities[index - 1].Id;
+                            } else {
+                                $scope.NextActivity = $rootScope.activities[index + 1].Id;
+                                $scope.PreviousActivity = $rootScope.activities[index - 1].Id;
+                            }
+                            console.log("NextActivity = " + $scope.NextActivity);
+                            console.log("PreviousActivity = " + $scope.PreviousActivity);
+                        } catch (e) {
+                            console.error("prev/next index error");
                         }
-                        console.log("NextActivity = " + $scope.NextActivity);
-                        console.log("PreviousActivity = " + $scope.PreviousActivity);
                     }
                 });
             }
