@@ -144,7 +144,7 @@ var modal_verify_action = ['$scope', '$rootScope', '$uibModalInstance', 'Subproj
 			
 			//promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id);
 			//promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id, theSdeObjectId);
-            promise = SubprojectService.removeHabSubproject(parseInt($scope.projectId), $scope.viewSubproject.Id, $scope.viewSubproject.LocationId);
+            promise = SubprojectService.removeHabSubproject(parseInt($scope.project.Id), $scope.viewSubproject.Id, $scope.viewSubproject.LocationId);
             promise.$promise.then(function () {
                 $scope.postRemoveHabitatSubprojectUpdateGrid();
                 $modalInstance.dismiss();

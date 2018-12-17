@@ -1,5 +1,5 @@
 ﻿
-var admin_users = ['$scope', '$modal', 'CommonService',
+var admin_users = ['$scope', '$uibModal', 'CommonService',
     function (scope, $modal, CommonService) {
 
         if (!scope.Profile.isAdmin())

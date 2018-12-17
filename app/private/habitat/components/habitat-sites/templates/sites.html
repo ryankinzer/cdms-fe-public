@@ -11,6 +11,14 @@
     <li class="active">{{dataset.Name}}</li>
 </ul>
 
+<button style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>
+
+<div ng-show="ShowMap.Display">
+    <esri-map class="claro" id="map" center="-118.6836,45.6704" zoom="10" basemap="streets" onclick="click">
+        <esri-feature-layer url="https://restdata.ctuir.org/arcgis/rest/services/CDMS_ProjectPoints/FeatureServer/0" filter="location"></esri-feature-layer>
+    </esri-map>
+</div>
+
 
 <div class="container-fluid">
     <div class="row-fluid">

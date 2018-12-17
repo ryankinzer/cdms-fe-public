@@ -1,5 +1,5 @@
 ﻿
-var modal_manage_user = ['$scope', '$modalInstance', 'CommonService',
+var modal_manage_user = ['$scope', '$uibModalInstance', 'CommonService',
     function (scope, $modalInstance, CommonService) {
 
         scope.UserStatuses = [ 

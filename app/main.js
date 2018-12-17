@@ -6,7 +6,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', ANALYTICS_CODE, 'auto');
 ga('send', 'pageview');
 
-var BUILD_VERSION = "1.3.0"; //increment the last number as desired to show in the footer
+var BUILD_VERSION = "2.0.0"; //increment the last number as desired to show in the footer
 
 define([
   'angular'
@@ -85,7 +85,6 @@ define([
             $routeProvider.when('/admin-config/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-dataset-config.html', controller: 'AdminEditDatasetConfigCtrl'});
             $routeProvider.when('/admin-metafields', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-metafields.html', controller: 'AdminMetafieldsCtrl'});
 
-            $routeProvider.when('/admin-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-dataset.html', controller: 'AdminEditDatasetCtrl' });
             $routeProvider.when('/admin-users', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-users.html', controller: 'AdminUsersCtrl' });
 
             $routeProvider.when('/admin-master/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-master.html', controller: 'AdminEditMasterCtrl' });

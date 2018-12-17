@@ -18,7 +18,14 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
         });
 
         scope.getMetafield = function (in_name) { 
-            return getByName(scope.metafields, in_name).PossibleValues;
+            if (!in_name)
+                return null;
+
+            var field = getByName(scope.metafields, in_name);
+            if (!field)
+                return null;
+
+            return field.PossibleValues;
         };
 
         scope.dataset.$promise.then(function () {

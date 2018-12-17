@@ -28,12 +28,28 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
         };
 
 
+        scope.displayLocationsOnMap = function () { 
+            var locationIds = [];
 
+            scope.project.Locations.forEach(function (location) { 
+                if(location.LocationTypeId == LOCATION_TYPE_Hab)
+                    locationIds.push(location.SdeObjectId);
+            });
+
+            if (scope.map && scope.map.locationLayer && scope.map.locationLayer.hasOwnProperty('showLocationsById'))
+                scope.map.locationLayer.showLocationsById(locationIds);
+
+            console.log("showing these locations");
+            console.dir(locationIds);
+
+        }
 
         scope.dataset.$promise.then(function () {
             scope.project = ProjectService.getProject(scope.dataset.ProjectId);
 
             scope.project.$promise.then(function () {
+
+                scope.displayLocationsOnMap();
 
                 var ag_grid_div = document.querySelector('#hab-sites-grid');    //get the container id...
                 //console.dir(ag_grid_div);
@@ -866,5 +882,42 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             UserService.toggleFavoriteProject(scope, $rootScope); 
         }
       
+        scope.ShowMap = {
+            Display: false,
+            Message: "Show Map",
+            MessageToOpen: "Show Map",
+            MessageToClose: "Hide Map",
+        };
+
+        scope.toggleMap = function () {
+            if (scope.ShowMap.Display) {
+//                scope.removeFilter(); //also clears location
+                scope.ShowMap.Display = false;
+                scope.ShowMap.Message = scope.ShowMap.MessageToOpen;
+            }
+            else {
+                scope.ShowMap.Display = true;
+                scope.ShowMap.Message = scope.ShowMap.MessageToClose;
+
+                //setTimeout(function () {
+  //                  scope.map.reposition();
+                  //  console.log("repositioned");
+                //}, 400);
+
+            }
+        };
+
+		scope.setSdeObjectId = function(sdeObjectId)
+		{
+			//scope.project = ProjectService.getProject(scope.dataset.ProjectId);
+            //scope.project.$promise.then(function () {
+            //    scope.displayLocationsOnMap();
+            //});
+		};
+
+        scope.click = function () { } //don't do anything for clicking for now...
+
+
+
     }
 ];

@@ -94,6 +94,16 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
                     field.DbColumnName = field.Label = field.Name;
                 });
 
+                // row.column (from database) and metadata name
+                $scope.HabitatMetaFieldColumns = {
+                    "FirstFoods": "First Foods",
+                    "RiverVisionTouchstone": "River Vision Touchstone",
+                    "HabitatObjectives": "Habitat Objectives",
+                    "NoaaEcologicalConcerns": "NOAA Ecological Concerns",
+                    "NoaaEcologicalConcernsSubcategories": "NOAA Ecological Concerns: Sub-categories",
+                    "LimitingFactors": "Limiting Factors"
+                };
+
                 console.dir($scope.project.MetaFields);
                 console.dir($scope.row);
 
@@ -150,16 +160,6 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
             if ($scope.row.FeatureImage !== null) {
                 $scope.row.ItemFiles = '[{"Name":"' + $scope.row.FeatureImage + '"}]';
             }
-
-            // row.column (from database) and metadata name
-            $scope.HabitatMetaFieldColumns = {
-                "FirstFoods": "First Foods",
-                "RiverVisionTouchstone": "River Vision Touchstone",
-                "HabitatObjectives": "Habitat Objectives",
-                "NoaaEcologicalConcerns": "NOAA Ecological Concerns",
-                "NoaaEcologicalConcernsSubcategories": "NOAA Ecological Concerns: Sub-categories",
-                "LimitingFactors": "Limiting Factors"
-            };
 
             //our metadata fields bind to: row["River Vision Touchstone"] so we need to copy in and out from the columns coming from the db.
             Object.keys($scope.HabitatMetaFieldColumns).forEach(function (field) { 

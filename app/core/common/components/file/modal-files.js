@@ -295,7 +295,8 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
             scope: $scope, //scope to make a child of
         }).result.then(function (saved_field) { 
             console.log(" (*(((*(9************ we are back! ");
-            callback();
+            if(callback)
+                callback();
         });
     };
 
