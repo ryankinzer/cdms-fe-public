@@ -217,6 +217,25 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             $location.path("/dataview/"+$scope.selectedRow.ActivityId);
         };
 
+        //export the data - button click
+        $scope.doExport = function () { 
+            var params = {
+                fileName: $scope.ExportFilename,
+                processCellCallback : function(params) {
+                    //here we do any special formatting since export does NOT call cell renderers or cell formatters...
+
+                    //Location.Id --> Location.Label
+                    if (params.column.colDef.DbColumnName == "LocationId") {
+                        return getById($scope.project.Locations, params.value).Label; 
+                    }
+
+                    //default
+                    return params.value;
+                },
+            };
+            $scope.dataAgGridOptions.api.exportDataAsExcel(params);
+        }
+
 
 
         /*
