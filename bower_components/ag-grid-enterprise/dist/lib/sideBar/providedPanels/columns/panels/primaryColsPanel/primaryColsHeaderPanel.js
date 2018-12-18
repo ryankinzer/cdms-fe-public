@@ -1,9 +1,12 @@
-// ag-grid-enterprise v19.0.0
+// ag-grid-enterprise v19.1.4
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -112,7 +115,11 @@ var PrimaryColsHeaderPanel = /** @class */ (function (_super) {
         main_1._.setVisible(this.eExpandIndeterminate, this.expandState === SELECTED_STATE.INDETERMINIATE);
     };
     PrimaryColsHeaderPanel.prototype.setColumnsCheckedState = function () {
-        var columns = this.columnController.getAllPrimaryColumns().filter(function (col) { return !col.isLockVisible(); });
+        var allPrimaryColumns = this.columnController.getAllPrimaryColumns();
+        var columns = [];
+        if (allPrimaryColumns !== null) {
+            columns = allPrimaryColumns.filter(function (col) { return !col.isLockVisible(); });
+        }
         var pivotMode = this.columnController.isPivotMode();
         var checkedCount = 0;
         var uncheckedCount = 0;

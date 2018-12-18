@@ -1,9 +1,12 @@
-// ag-grid-enterprise v19.0.0
+// ag-grid-enterprise v19.1.4
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -73,7 +76,7 @@ var SideBarComp = /** @class */ (function (_super) {
                 _this.sideBarButtonsComp.registerPanelComp(key, currentComp);
                 currentComp.setVisible(false);
             });
-            if (ag_grid_community_1._.exists(_this.sideBarButtonsComp.defaultPanelKey)) {
+            if (ag_grid_community_1._.exists(_this.sideBarButtonsComp.defaultPanelKey) && _this.sideBarButtonsComp.defaultPanelKey) {
                 _this.sideBarButtonsComp.setPanelVisibility(_this.sideBarButtonsComp.defaultPanelKey, true);
             }
         });
@@ -91,9 +94,11 @@ var SideBarComp = /** @class */ (function (_super) {
         _super.prototype.setVisible.call(this, show);
         if (show) {
             var keyOfTabToShow = this.getActiveToolPanelItem();
+            if (!keyOfTabToShow)
+                return;
             keyOfTabToShow = keyOfTabToShow ? keyOfTabToShow : ag_grid_community_1._.get(this.gridOptionsWrapper.getSideBar(), 'defaultToolPanel', null);
             keyOfTabToShow = keyOfTabToShow ? keyOfTabToShow : this.gridOptionsWrapper.getSideBar().defaultToolPanel;
-            var tabToShow = this.panelComps[keyOfTabToShow];
+            var tabToShow = keyOfTabToShow ? this.panelComps[keyOfTabToShow] : null;
             if (!tabToShow) {
                 console.warn("ag-grid: can't set the visibility of the tool panel item [" + keyOfTabToShow + "] since it can't be found");
                 return;

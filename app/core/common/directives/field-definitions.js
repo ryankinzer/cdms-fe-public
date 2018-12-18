@@ -317,7 +317,7 @@ common_module.directive('ctuirLinkField',
                     $scope.link_row = row;
                     $scope.link_field = field;
                     
-                    var modalInstance = $modal.open({
+                    var modalInstance = $uibModal.open({
                         templateUrl: 'app/core/common/components/modals/templates/modal-link-field.html',
                         controller: 'LinkModalCtrl',
                         scope: $scope, //scope to make a child of

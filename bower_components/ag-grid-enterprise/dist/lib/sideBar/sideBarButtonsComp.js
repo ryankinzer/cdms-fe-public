@@ -1,9 +1,12 @@
-// ag-grid-enterprise v19.0.0
+// ag-grid-enterprise v19.1.4
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -58,7 +61,7 @@ var SideBarButtonsComp = /** @class */ (function (_super) {
         });
         this.defaultPanelKey = ag_grid_community_1._.get(this.gridOptionsWrapper.getSideBar(), 'defaultToolPanel', null);
         var defaultButtonElement = this.getRefElement("toggle-button-" + this.defaultPanelKey);
-        if (defaultButtonElement) {
+        if (defaultButtonElement && defaultButtonElement.parentElement) {
             ag_grid_community_1._.addOrRemoveCssClass(defaultButtonElement.parentElement, 'ag-selected', true);
         }
     };
@@ -87,7 +90,9 @@ var SideBarButtonsComp = /** @class */ (function (_super) {
         }
         panelToProcess.setVisible(show);
         var button = this.getRefElement("toggle-button-" + key);
-        ag_grid_community_1._.addOrRemoveCssClass(button.parentElement, 'ag-selected', show);
+        if (button.parentElement) {
+            ag_grid_community_1._.addOrRemoveCssClass(button.parentElement, 'ag-selected', show);
+        }
     };
     SideBarButtonsComp.prototype.clear = function () {
         this.setTemplate(SideBarButtonsComp.TEMPLATE);

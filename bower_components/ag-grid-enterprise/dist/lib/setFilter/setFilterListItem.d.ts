@@ -1,5 +1,5 @@
-// ag-grid-enterprise v19.0.0
-import { Component, Column, AgEvent } from "ag-grid-community";
+// ag-grid-enterprise v19.1.4
+import { AgEvent, Column, Component } from "ag-grid-community";
 export interface SelectedEvent extends AgEvent {
 }
 export declare class SetFilterListItem extends Component {
@@ -22,3 +22,4 @@ export declare class SetFilterListItem extends Component {
     private updateCheckboxIcon;
     render(): void;
 }
+//# sourceMappingURL=setFilterListItem.d.ts.map

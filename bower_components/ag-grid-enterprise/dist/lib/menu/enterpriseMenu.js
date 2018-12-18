@@ -1,9 +1,12 @@
-// ag-grid-enterprise v19.0.0
+// ag-grid-enterprise v19.1.4
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -78,10 +81,10 @@ var EnterpriseMenuFactory = /** @class */ (function () {
             menu.destroy();
             column.setMenuVisible(false, "contextMenu");
         });
-        positionCallback(menu);
         menu.afterGuiAttached({
             hidePopup: hidePopup
         });
+        positionCallback(menu);
         if (!defaultTab) {
             menu.showTabBasedOnPreviousSelection();
         }
@@ -353,7 +356,8 @@ var EnterpriseMenu = /** @class */ (function (_super) {
             suppressColumnExpandAll: false,
             suppressColumnFilter: false,
             suppressColumnSelectAll: false,
-            suppressSideButtons: false
+            suppressSideButtons: false,
+            api: this.gridApi
         });
         this.context.wireBean(this.columnSelectPanel);
         eWrapperDiv.appendChild(this.columnSelectPanel.getGui());

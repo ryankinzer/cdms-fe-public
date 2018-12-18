@@ -257,6 +257,17 @@ var LinkControlType = function (cdms_field, col_def) {
 //number - no special handling
 var NumberControlType = function (cdms_field, col_def) {
     col_def.cellValidator = CDMSNumberCellValidator;
+/*
+    col_def.suppressKeyboardEvent = function (params) { 
+        console.log('cell is editing: ' + params.editing);
+        console.log('keyboard event:', params.event);
+
+        // return true (to suppress) if editing and user hit up/down keys
+        var keyCode = params.event.keyCode;
+        var gridShouldDoNothing = params.editing && (keyCode===9 );
+        return gridShouldDoNothing;
+    };
+*/
     return col_def;
 };
 

@@ -21,7 +21,7 @@ var onKeyDown = function (event) {
         key == 38)    // up
         {    
             //console.log("stopping progopation for "+ key);
-            if (key == 9) {
+            if (key == 9 || key == 40 || key == 38) {
                 event.preventDefault();
             }
             event.stopPropagation();
@@ -96,6 +96,7 @@ CDMSMultiselectCellEditor.prototype.init = function (params) {
 };
 
 CDMSMultiselectCellEditor.prototype.getGui = function () {
+    this.eSelect.focus();
     return this.container;
 };
 
@@ -113,7 +114,7 @@ CDMSMultiselectCellEditor.prototype.getValue = function () {
 
 CDMSMultiselectCellEditor.prototype.destroy = function () {};
 CDMSMultiselectCellEditor.prototype.isPopup = function () { return true; };
-CDMSMultiselectCellEditor.prototype.afterGuiAttached = function () { this.eSelect.focus(); };
+CDMSMultiselectCellEditor.prototype.afterGuiAttached = function () { console.log("afterguiattched");this.eSelect.focus(); };
 
 
 //SELECT cell edit control provides standard ["label"] as well as {"id":"label"}
@@ -131,14 +132,9 @@ CDMSSelectCellEditor.prototype.init = function (params) {
     _this.eSelect.size = 7;
     _this.container.appendChild(_this.eSelect);
 
-    /*
-    console.log(" typeof values ");
-    console.log(typeof params.values);
-    console.log("values:");
-    console.dir(params.values);
-    console.log("value: ");
-    console.dir(params.value);
-    */
+    //_this.keypress = function (event) { console.dir(event); }
+
+    //this.cancelBeforeStart = (params.charPress == null && params.keyPress == null) ? true : false;
 
     if (params.value === null)
         params.value = [];
@@ -171,11 +167,19 @@ CDMSSelectCellEditor.prototype.init = function (params) {
         });
     }
 
+    _this.eSelect.focus();
+
+};
+
+CDMSSelectCellEditor.prototype.isCancelBeforeStart = function () { 
+    //console.log("cancel before start: " + this.cancelBeforeStart);
+    return this.cancelBeforeStart;
 };
 
 CDMSSelectCellEditor.prototype.getGui = function () {
     console.log("getgui fired");
     //console.dir(this.container);
+    this.eSelect.focus();
     return this.container;
 };
 
@@ -186,8 +190,15 @@ CDMSSelectCellEditor.prototype.getValue = function () {
 
 CDMSSelectCellEditor.prototype.destroy = function () { };
 CDMSSelectCellEditor.prototype.isPopup = function () { return true; };
-CDMSSelectCellEditor.prototype.afterGuiAttached = function () { this.eSelect.focus(); };
-CDMSSelectCellEditor.prototype.focusIn = function () { this.eSelect.focus(); };
+CDMSSelectCellEditor.prototype.afterGuiAttached = function () { 
+    console.log("afterguiattched"); 
+    var _this = this;
+    //setTimeout(function () {
+    //    console.log("timout reached! focusing");
+        this.eSelect.focus();
+    //}, 500);
+    
+};
 
 
 

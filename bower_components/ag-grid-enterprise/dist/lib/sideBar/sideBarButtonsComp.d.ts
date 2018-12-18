@@ -1,8 +1,8 @@
-// ag-grid-enterprise v19.0.0
+// ag-grid-enterprise v19.1.4
 import { Component, GridPanel } from "ag-grid-community";
 export declare class SideBarButtonsComp extends Component {
     private panels;
-    defaultPanelKey: string;
+    defaultPanelKey: string | null;
     private gridOptionsWrapper;
     private eventService;
     private gridPanel;
@@ -18,3 +18,4 @@ export declare class SideBarButtonsComp extends Component {
     setPanelVisibility(key: string, show: boolean): void;
     clear(): void;
 }
+//# sourceMappingURL=sideBarButtonsComp.d.ts.map

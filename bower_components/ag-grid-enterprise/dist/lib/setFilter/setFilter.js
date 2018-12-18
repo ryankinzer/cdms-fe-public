@@ -1,9 +1,12 @@
-// ag-grid-enterprise v19.0.0
+// ag-grid-enterprise v19.1.4
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -73,7 +76,10 @@ var SetFilter = /** @class */ (function (_super) {
         var _this = this;
         this.virtualList = new virtualList_1.VirtualList();
         this.context.wireBean(this.virtualList);
-        this.getGui().querySelector('#richList').appendChild(this.virtualList.getGui());
+        var richList = this.getGui().querySelector('#richList');
+        if (richList) {
+            richList.appendChild(this.virtualList.getGui());
+        }
         if (ag_grid_community_1.Utils.exists(this.filterParams.cellHeight)) {
             this.virtualList.setRowHeight(this.filterParams.cellHeight);
         }

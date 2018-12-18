@@ -1640,6 +1640,11 @@ function parseToFloat(value, decimal) {
 
 //Takes a string or number, however formatted, and returns it filtered for USD currency.
 function filterToCurrency(value) {
+    var p_val = parseToFloat(value);
+
+    if (isNaN(p_val))
+        return value;
+
     return (parseToFloat(value)).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 }
 
