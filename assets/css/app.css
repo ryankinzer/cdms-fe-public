@@ -832,3 +832,11 @@ margin-left: -8px !important;
     
     color: black;
 }
+
+.ag-header-cell-text {
+    color: white !important;
+}
+
+.map .container {
+    max-width: 100%;
+}

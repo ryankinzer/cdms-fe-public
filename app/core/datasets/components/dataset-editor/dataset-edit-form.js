@@ -163,6 +163,13 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 editable: ($scope.pagemode!=='dataview'),
             },
 
+            onCellDoubleClicked: function (event) { 
+                //console.dir(event);
+                if (event.colDef.ControlType == "file")
+                    $scope.editCellFiles();
+
+            },
+
             getRowHeight: function (params) {
                 //console.log("get row height -------------------");
                 //set the rowheight of this row to be the largest of the file count in this row...

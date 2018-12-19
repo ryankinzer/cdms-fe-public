@@ -2,7 +2,7 @@
     <button style="margin-bottom: 15px;" type="button" ng-click="toggleMap()">{{ShowMap.Message}} <span ng-show="!ShowMap.Display" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowMap.Display" class="glyphicon glyphicon-circle-arrow-down"></span></button>
     <div ng-show="ShowMap.Display">
         <button class="btn btn-sm right" ng-click="clearAll()">Clear</button>
-        <button ng-show="agGridOptions.api.getDisplayedRowCount() == 0 && parcelShowing" class="btn btn-sm right" style="margin-right: 10px;" ng-click="startAppraisal()">Create Location and Enter Data</button>
+        <button ng-show="agGridOptions.api.getDisplayedRowCount() == 0 && parcelShowing" class="btn btn-sm right" style="margin-right: 10px;" ng-click="startAppraisal()">Start Appraisal</button>
         <button ng-show="agGridOptions.selectedItems.length == 1" class="btn btn-sm right" style="margin-right: 10px;" ng-click="findSelection()">Find Selection on Map</button>
         <form ng-submit="searchParcel()">
             <div style="display: flex; margin-bottom: 20px;">

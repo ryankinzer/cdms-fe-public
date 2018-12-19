@@ -140,8 +140,61 @@ var appraisal_map = ['$scope', '$route', '$routeParams', 'DatasetService', '$uib
 
             };
 
-            $scope.startAppraisal = function () { 
-                console.log("Create a location for : " + $scope.parcelShowing);
+            //to start an appraisal, we'll create a location for the selected parcel (with the OBJECTID from arcgis)
+            // then hand off to data entry (edit) just like import.
+            $scope.startAppraisal = function () {
+                console.log("Find or create a location for : " + $scope.parcelShowing);
+
+                var acres = $scope.map.selectedFeature.attributes.ACRES_GIS;
+
+                //check to see if this location already exists in our project, if not create it.
+                var project_location = getByField($scope.project.Locations, $scope.parcelShowing, "SdeObjectId");
+
+                if (!project_location) {
+                    //create a new location from the map feature selected
+                    console.log("create a new location from the map feature selected");
+                    var new_location = {
+                        LocationTypeId: LOCATION_TYPE_APPRAISAL,
+                        SdeFeatureClassId: SDE_FEATURECLASS_TAXLOTQUERY,
+                        SdeObjectId: $scope.map.selectedFeature.attributes.OBJECTID,
+                        Label: $scope.map.selectedFeature.attributes.PARCELID,
+                    };
+
+                    var location = CommonService.saveNewProjectLocation($scope.project.Id, new_location);
+
+                    location.$promise.then(function () {
+
+                        console.log("done saving project location and success!");
+                        console.dir(location);
+
+
+                        //bounce the user to the data entry form with that location selected.
+                        $rootScope.imported_header = {
+                            'Activity': { 'ActivityDate': moment().format('YYYY-MM-DD'), 'LocationId': location.Id },
+                            'Acres': acres, 
+                            'Allotment': location.Label,
+                        };
+
+                        $rootScope.imported_rows = {};
+
+                        $location.path("/dataentryform/" + $scope.dataset.Id);
+                    });
+
+                } else { 
+                    console.log("found a location, so handing off to edit");
+
+                    //bounce the user to the data entry form with that location selected.
+                    $rootScope.imported_header = {
+                        'Activity': { 'ActivityDate': moment().format('YYYY-MM-DD'), 'LocationId': project_location.Id },
+                        'Acres': acres, 
+                        'Allotment': project_location.Label 
+                    };
+
+                    $rootScope.imported_rows = [];
+
+                    $location.path("/dataentryform/"+$scope.dataset.Id);
+                }
+
             }
 
 

@@ -224,6 +224,7 @@ var FileListCellTemplate = function (params) {
     });
 
     list += '</ul></div>';
+    //list += '</ul><button class="right btn btn-xs" style="margin: 0" ng-click="editCellFiles()">[*]</button></div>';
     //console.dir(list);
     return list;
 };
@@ -245,6 +246,7 @@ var FileControlType = function (cdms_field, col_def) {
         return retval;
     };
 */
+    col_def.editable = false;
     col_def.cellRenderer = FileListCellTemplate;
     return col_def;
 };
