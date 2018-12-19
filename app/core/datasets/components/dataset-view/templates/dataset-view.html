@@ -61,56 +61,55 @@
 
                     <div ng-switch-when="multiselect,select" ng-switch-when-separator="," class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | arrayValues}}&nbsp;</div>
+                        <div class="header-value">{{row[field.DbColumnName] | arrayValues}}&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="file" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div style="min-height: 25px; margin-left: 200px;" class="header-value" ng-bind-html="row[field.DbColumnName] | fileNamesFromString:this">&nbsp;</div>
+                        <div class="header-value" ng-bind-html="row[field.DbColumnName] | fileNamesFromString:this">&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="link" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div style="min-height: 25px; margin-left: 200px;" class="header-value" ng-bind-html="row[field.DbColumnName] | urlsFromString">&nbsp;</div>
+                        <div class="header-value" ng-bind-html="row[field.DbColumnName] | urlsFromString">&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="date" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date}}&nbsp;</div>
+                        <div class="header-value">{{row[field.DbColumnName] | date}}&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="datetime" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date : 'yyyy-MM-dd HH:mm'}}&nbsp;</div>
+                        <div class="header-value">{{row[field.DbColumnName] | date : 'yyyy-MM-dd HH:mm'}}&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="time" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName] | date: 'HH:mm'}}&nbsp;</div>
+                        <div class="header-value">{{row[field.DbColumnName] | date: 'HH:mm'}}&nbsp;</div>
                     </div>
 
 
                     <div class="header-column" ng-switch-when="qa-status-select">
                         <div class="header-label">{{field.Label}}:</div>
                         <div class="header-value">
-                            {{row.Activity.ActivityQAStatus.QAStatus.Name}} ({{row.Activity.ActivityQAStatus.User.Fullname}}) <button project-role="editor" class="btn btn-xs" ng-click="changeQa()">Change</button>
-                            <div class="alert alert-danger" ng-show="QaSaveResults.failure">Failed to update.</div>
+                            {{row.Activity.ActivityQAStatus.QAStatus.Name}} ({{row.Activity.ActivityQAStatus.User.Fullname}}) 
                         </div>
                     </div>
 
                     <div class="header-column" ng-switch-when="qa-status-comment">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div class="header-value">{{row.Activity.ActivityQAStatus.Comments}}</div>
+                        <div class="header-value">{{row.Activity.ActivityQAStatus.Comments}}&nbsp;</div>
                     </div>
 
                     <div ng-hide="dataset.Config.DuplicateCheckFields.contains(field.DbColumnName)" ng-switch-when="activity-text" class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{row.Activity[field.DbColumnName]}}&nbsp;</div>
+                        <div class="header-value">{{row.Activity[field.DbColumnName]}}&nbsp;</div>
                     </div>
 
                     <div ng-switch-default class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div ng-show="field.ControlType" class="header-value">{{row[field.DbColumnName]}}&nbsp;</div>
+                        <div class="header-value">{{row[field.DbColumnName]}}&nbsp;</div>
                     </div>
 
 
