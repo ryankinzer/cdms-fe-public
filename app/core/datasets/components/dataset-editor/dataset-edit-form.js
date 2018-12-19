@@ -417,20 +417,22 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             //if the activity qa status is already set in the header (editing), copy it in to this row's activityqastatus 
             if ($scope.dataset_activities.Header.Activity && $scope.dataset_activities.Header.Activity.ActivityQAStatus) {
+                //console.warn("Header activity copying in activityqastatus");
                 $scope.row.ActivityQAStatus = {
                     QAStatusId: "" + $scope.dataset_activities.Header.Activity.ActivityQAStatus.QAStatusId,
                     Comments: $scope.dataset_activities.Header.Activity.ActivityQAStatus.Comments,
                 }
             }
             //otherwise (new record), set it to the default. 
-            else {
-                //console.warn("The ActivityQAStatus for this activity is not set, setting to default.");
+            else  {
+                console.warn("The ActivityQAStatus for this activity is not set, setting to default.");
                 $scope.row.ActivityQAStatus = {
                     QAStatusId: "" + $scope.dataset.DefaultRowQAStatusId,
                     Comments: ""
                 }
             }
 
+            console.dir($scope.row);
             
 
             //once the project is loaded...

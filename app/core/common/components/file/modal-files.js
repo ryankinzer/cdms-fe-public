@@ -21,7 +21,7 @@ var modal_files = ['$scope', '$uibModalInstance', 'DatasetService','SubprojectSe
 
             //only show the files that we aren't uploading
             var existing_files = [];
-            var from_current_files = angular.fromJson($scope.file_row[$scope.file_field]);
+            var from_current_files = getFilesArrayAsList($scope.file_row[$scope.file_field]);
             if (from_current_files && Array.isArray(from_current_files)) {
                 from_current_files.forEach(function (file) {
                     if (!isFileInList(file, $scope.filesToUpload[$scope.file_field]))

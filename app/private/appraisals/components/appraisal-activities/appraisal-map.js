@@ -9,6 +9,7 @@ var appraisal_map = ['$scope', '$route', '$routeParams', 'DatasetService', '$uib
                 angular.rootScope.go("/unauthorized");
 
             $scope.parcelShowing = false;
+            $scope.MapSearchResults = { 'Message': "" };
 
             // expose a method for handling clicks ON THE MAP - this is linked to from the Map.js directive
             $scope.click = function(e){
@@ -19,10 +20,12 @@ var appraisal_map = ['$scope', '$route', '$routeParams', 'DatasetService', '$uib
                 $scope.map.querySelectParcel(e.mapPoint, null, function(features){
 
                     $scope.parcelShowing = false;
+                    $scope.MapSearchResults.Message = "";
 
                     if (features.length == 0) { 
                       alert('No parcel found at that location.');
                       $scope.map.loading = false;
+                      $scope.MapSearchResults.Message = "Not found.";
                       $scope.$apply(); //bump angular
                       return;
                     };
@@ -51,12 +54,18 @@ var appraisal_map = ['$scope', '$route', '$routeParams', 'DatasetService', '$uib
             $scope.searchParcel = function () { 
                 console.log("searching for : " + $scope.SearchParcelId);
 
+                if (!$scope.SearchParcelId)
+                    return;
+
+                $scope.SearchParcelId = $scope.SearchParcelId.toUpperCase();
+
                 //clear
                 $scope.map.clearGraphics();
                 $scope.map.infoWindow.hide();
                 $scope.agGridOptions.api.setFilterModel(null)
                 $scope.agGridOptions.api.onFilterChanged();
                 $scope.agGridOptions.api.deselectAll();
+                $scope.MapSearchResults.Message = "";
 
                 $scope.findOnMap($scope.SearchParcelId);
                 $scope.filterGridForParcel($scope.SearchParcelId);
@@ -65,21 +74,28 @@ var appraisal_map = ['$scope', '$route', '$routeParams', 'DatasetService', '$uib
             $scope.findOnMap = function (in_allotment) {
                 console.log("finding on map " + in_allotment);
                 $scope.parcelShowing = false;
+                $scope.MapSearchResults.Message = "";
 
                 $scope.map.queryMatchParcel(in_allotment, function (features) {
                     if (features.length == 0) {
                         console.log("allotment not found: " + in_allotment);
+                        $scope.MapSearchResults.Message = "Not found on map.";
                     }
                     else {
                         //that doesn't include geometry so we need to get it
                         $scope.map.querySelectParcel(null, features[0].attributes.OBJECTID, function (geo_features) {
                             $scope.map.addParcelToMap(geo_features[0]);
                             $scope.map.centerAndZoomToGraphic($scope.map.selectedGraphic, 2);
+
+                            //show the infowindow
+                            $scope.map.infoWindow.resize(250, 300);
+                            $scope.map.infoWindow.setContent($scope.getInfoWindowContent(features[0]));
+                            $scope.map.infoWindow.show($scope.map.selectedGraphic.geometry.getExtent().getCenter());
                         });
 
                         $scope.parcelShowing = features[0].attributes.OBJECTID;
-                        $scope.$apply(); //bump angular
                     }
+                    $scope.$apply(); //bump angular
                 });
 
             }
@@ -101,6 +117,7 @@ var appraisal_map = ['$scope', '$route', '$routeParams', 'DatasetService', '$uib
                 $scope.agGridOptions.api.deselectAll();
                 $scope.SearchParcelId = "";
                 $scope.parcelShowing = false;
+                $scope.MapSearchResults.Message = "";
 				
             };
 

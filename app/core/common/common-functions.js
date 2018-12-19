@@ -1652,10 +1652,19 @@ function filterToCurrency(value) {
 
 //return an array from the eventfiles.
 function getFilesArrayAsList (theFiles) {
+
     if (theFiles === undefined || theFiles === null)
         return [];
 
-    var files = angular.fromJson(theFiles);
+    var files = null;
+
+    try {
+        files = angular.fromJson(theFiles);
+    }
+    catch (e) { 
+        console.error("could not parse files: " + theFiles);
+    }
+
     return (files === null || !Array.isArray(files)) ? [] : files; //if it isn't an array, make an empty array
 
 };

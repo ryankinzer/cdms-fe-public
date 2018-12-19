@@ -7,6 +7,7 @@
         <form ng-submit="searchParcel()">
             <div style="display: flex; margin-bottom: 20px;">
                 <input class="form-control" type="text" ng-model="SearchParcelId" placeholder="Parcel Id" /><input type="submit" value="Search" class="btn btn-sm" style="height:30px;margin-top:5px;" ng-click="searchParcel()"/>
+                <div ng-show="MapSearchResults.Message" style="margin-left: 10px; margin-top: -6px;" class="alert alert-warning">{{MapSearchResults.Message}}</div>
             </div>
         </form>
         <appraisal-map class="claro" id="map" center="-118.45,45.56" zoom="4" onclick="click"></appraisal-map>
