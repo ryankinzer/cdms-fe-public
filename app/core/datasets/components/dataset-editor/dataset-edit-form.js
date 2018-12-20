@@ -114,7 +114,30 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             dataChanged: false, //updated to true if ever any data is changed
             rowSelection: 'multiple',
+
+            
+            tabToNextCell: function (params) { 
+                console.dir(params);
+                var previousCell = params.previousCellDef;
+                var nextCell = params.nextCellDef;
+
+                var result = {
+                    rowIndex: previousCell.rowIndex,
+                    column: nextCell.column,
+                    floating: previousCell.floating
+                };
+
+                if(previousCell.column.colDef.ControlType == "number" || previousCell.column.colDef.ControlType == "text")
+                    params.nextCellDef.column.tabbingIn = true;
+
+                return result;
+            },
+            
+
             onCellFocused: function (params) {
+
+                //console.log("Cell Focused!!  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
                 //console.dir(params.column.colDef.ControlType);
                 if (!params.column)
                     return;
@@ -123,10 +146,14 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.onField = (params.column.colDef.cdmsField);
 
                 $scope.$apply();
+
                 //var cell = $scope.dataAgGridOptions.api.getFocusedCell();
+                //if(cell.column.colId != "RunYear")
+                //    debugger
             },
+
             onSelectionChanged: function (params) {
-                //console.log("selection changed fired!");
+                //console.log("selection changed fired!  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 //console.dir(params);
                 
                 var rows = params.api.getSelectedRows();
@@ -191,11 +218,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             rowClassRules: {
                 'row-validation-error': function(params) { return params.node.data.rowHasError; }
             },
-            onCellEditingStarted: function (event) {
-                //console.log('cellEditingStarted');
-            },
+            //onCellEditingStarted: function (event) {
+                //console.log('cellEditingStarted >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+            //},
             onCellEditingStopped: function (event) {
                 //save the row we just edited
+                //console.log("cell editing stopped >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 //console.dir(event);
 
                 if (GridService.validateCell(event)) {
@@ -377,10 +405,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 if($scope.row.Activity)
                     $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
                 
-                console.log("GRID Validate. ------------------------------------------>>>");
+                //console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);
                 $scope.dataAgGridOptions.api.redrawRows();
-                console.log("GRID Validate IS DONE ------------------------------------------>>>");
+                //console.log("GRID Validate IS DONE ------------------------------------------>>>");
 
                 $scope.PageErrorCount = $scope.getPageErrorCount();
 
@@ -856,8 +884,10 @@ console.log("SaveParentItem!");
             HeaderTimeFields.forEach(function (time_field) {
                 var activity_date = moment(payload['Activity']['ActivityDate']);
                 //console.log(" our activity date: " + activity_date.format('L'));
-                //console.dir(time_field);
                 var the_date = moment(payload.header[time_field.DbColumnName], ["HH:mm"], true);
+
+                if (!the_date.isValid())
+                    return; //continue
 
                 var the_combined_date = the_date.set(
                     {
