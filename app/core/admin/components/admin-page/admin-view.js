@@ -27,7 +27,7 @@ var admin_view = ['$scope', '$uibModal', 'DatasetService','ProjectService',
         $scope.addNewProjectDataset = function (datastore) {
             $scope.datastore = datastore;
             var modalInstance = $modal.open({
-                templateUrl: 'app/core/admin/components/admin-page/templates/addNewProjectDataset.html',
+                templateUrl: 'app/core/admin/components/admin-page/templates/add-new-project-dataset.html',
                 controller: 'ModalAddProjectDatasetCtrl',
                 scope: $scope, //very important to pass the scope along... 
 
