@@ -98,6 +98,49 @@ datasets_module
             return result;
         };
     })
+.filter('arrayDisplayValue', function(){
+        return function(input,field) {
+            console.log(" ----- Field: " + field.DbColumnName);
+            console.dir(input);
+            console.dir(field.PossibleValues);
+
+            var result = '';
+            var the_val = '';
+
+            if(input)
+            {
+
+                try{
+                    the_val = angular.fromJson(input).toString();
+                    //console.dir(the_val);
+                    //console.dir(field.PossibleValues);
+                    
+                }
+                catch(e){
+                    console.dir(e);
+                    the_val = input;
+                }
+            }
+
+
+            //if multiselect and we have more than one value, compose them
+            if (Array.isArray(the_val)) {
+                var arr_result = [];
+                the_val.forEach(function (val) {
+                    arr_result.push(field.PossibleValues[val]);
+                });
+                result = arr_result.join(",");
+            } else {
+                //otherwise single select, return the matched value
+                result = field.PossibleValues[the_val];
+            }
+
+            if (!result)
+                result = input;
+
+            return result;
+        };
+    })
 	.filter('RowQAStatusFilter', function( $rootScope ) {
 		return function(input) {
             if ($rootScope.RowQAStatuses[input]) {

@@ -61,7 +61,7 @@
 
                     <div ng-switch-when="multiselect,select" ng-switch-when-separator="," class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
-                        <div class="header-value">{{row[field.DbColumnName] | arrayValues}}&nbsp;</div>
+                        <div class="header-value">{{row[field.DbColumnName] | arrayDisplayValue:field}}&nbsp;</div>
                     </div>
 
                     <div ng-switch-when="file" class="header-column">
