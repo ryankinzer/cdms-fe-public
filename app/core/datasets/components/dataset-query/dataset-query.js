@@ -71,52 +71,80 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             //setup grid and coldefs and then go!
             $timeout(function () {
 
+                //need to set some header field possible values manually before we load our coldefs - so that the named value will display in the grid.
+                var instrument_coldef = getByField($scope.dataset.Fields,"InstrumentId", "DbColumnName");
+                instrument_coldef.Field.PossibleValues = instrumentsToPossibleValues($scope.project.Instruments);
+
+                
+                var hidden_header_controltypes = ["file", "hidden", "accuracy-check-select", "activity-text", "instrument-select", "post-accuracy-check-select", "qa-status-comment", "timezone-select"];
+                var hidden_grid_controltypes = ["hidden", "accuracy-check-select", "activity-text", "post-accuracy-check-select", "timezone-select"];
+
+
                 $scope.dataAgColumnDefs = GridService.getAgColumnDefs($scope.dataset);
                 
                 //setup any possible values that are needed - detail
+                //note: the "hide" property hides the column in the results grid; the "hide_header" hides it in the header list in columns multiselect
                 angular.forEach($scope.dataAgColumnDefs.DetailFields, function (fieldDef) {
                     if (fieldDef.field == "QAStatusId") { //RowQAStatusId because we're in the details
-                        //fieldDef.PossibleValuesList = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');
-                        fieldDef.hide = true; 
+                        fieldDef.field = fieldDef.DbColumnName = "RowQAStatusId"; 
+                        fieldDef.PossibleValuesList = makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name');
+                        fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+                        fieldDef.hide_header = true; 
                         
                     } else {
                         fieldDef.PossibleValuesList = getParsedMetadataValues(fieldDef.PossibleValues);
                     }
 
                     if (fieldDef.ControlType == 'file' || fieldDef.ControlType == 'hidden')
-                        fieldDef.hide = true;
+                        fieldDef.hide_header = true;
 
+                    
                 });
 
                 //setup activity fields to point to the right place
+                //note: the "hide" property hides the column in the results grid; the "hide_header" hides it in the header list in columns multiselect
                 angular.forEach($scope.dataAgColumnDefs.HeaderFields, function (fieldDef) {
                     //console.dir(fieldDef);
                     if (fieldDef.field == "LocationId") {
                         var dataset_locations = getAllMatchingFromArray($scope.project.Locations, $scope.dataset.Datastore.LocationTypeId, 'LocationTypeId');
-                        console.dir(dataset_locations);
+                        //console.dir(dataset_locations);
                         dataset_locations = dataset_locations.sort(orderByAlpha);
-                        fieldDef.PossibleValuesList = dataset_locations; //makeObjects(dataset_locations, 'Id', 'Label');
+                        fieldDef.PossibleValuesList = dataset_locations; //makeObjects(dataset_locations, 'Id', 'Label'); //used in the headers
+                        fieldDef.setPossibleValues(makeObjects(dataset_locations, 'Id', 'Label')); //used in the grid
+                    } else if (fieldDef.field == "QAStatusId") { //ActivityQAStatusId 
+                        fieldDef.field = fieldDef.DbColumnName = "ActivityQAStatusId";
+                        fieldDef.PossibleValuesList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
                         fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
-                    }else if (fieldDef.field == "QAStatusId") { //ActivityQAStatusId 
-                        fieldDef.field = fieldDef.DbColumnName = "ActivityQAStatusId"; 
-                        //fieldDef.PossibleValuesList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
-                        //fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
-                        fieldDef.hide = true;
-                    } else if(fieldDef.ControlType == "select" || fieldDef.ControlType == "multiselect") {
+                        fieldDef.hide_header = true; //hide in header
+                    }
+                    else if (fieldDef.field == "QAComments") { //ActivityQAStatusId 
+                        fieldDef.field = fieldDef.DbColumnName = "ActivityQAComments";
+                    }
+
+                    if (fieldDef.ControlType == "select" || fieldDef.ControlType == "multiselect") {
                         fieldDef.PossibleValuesList = getParsedMetadataValues(fieldDef.PossibleValues);
+                        fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+
+                    } else if (fieldDef.ControlType == "instrument-select") {
+                        fieldDef.PossibleValuesList = makeObjects(fieldDef.PossibleValues, 'Id', 'Label'); 
                         fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
                     }
 
-                    var hidden_controltypes = ["file", "hidden", "accuracy-check-select", "activity-text", "instrument-select", "post-accuracy-check-select", "qa-status-comment", "timezone-select"];
-                    if (hidden_controltypes.contains(fieldDef.ControlType))
-                        fieldDef.hide = true;
+                    //hidden headers
+                    if (hidden_header_controltypes.contains(fieldDef.ControlType))
+                        fieldDef.hide_header = true; //just the headers
+
+                    //hidden in grid
+                    if (hidden_grid_controltypes.contains(fieldDef.ControlType))
+                        fieldDef.hide = true; //just the detail
+                    
 
                 });
 
                 $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs.HeaderFields.concat($scope.dataAgColumnDefs.DetailFields);
 
                 console.log("Ready to go!");
-                //console.dir($scope.dataAgGridOptions.columnDefs);
+                console.dir($scope.dataAgGridOptions.columnDefs);
                 //console.dir($scope.imported_rows);
 
 
@@ -227,14 +255,25 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 fileName: $scope.ExportFilename,
                 processCellCallback : function(params) {
                     //here we do any special formatting since export does NOT call cell renderers or cell formatters...
-
-                    //Location.Id --> Location.Label
                     if (params.column.colDef.DbColumnName == "LocationId") {
-                        return getById($scope.project.Locations, params.value).Label; 
+                        return params.column.colDef.PossibleValues[params.value];
+                    }
+
+                    if (params.column.colDef.DbColumnName == "InstrumentId") {
+                        return params.column.colDef.PossibleValues[params.value];
+                    }
+
+                    if (params.column.colDef.DbColumnName == "ActivityQAStatusId" ) {
+                        return params.column.colDef.PossibleValues[params.value];
+                    }
+
+                    if (params.column.colDef.DbColumnName == "RowQAStatusId") {
+                        return params.column.colDef.PossibleValues[params.value];
                     }
 
                     //default
                     return params.value;
+
                 },
             };
             $scope.dataAgGridOptions.api.exportDataAsExcel(params);

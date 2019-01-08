@@ -190,6 +190,18 @@ function makeInstrumentObjects(optionList) {
     return objects;
 }
 
+//takes project.Instruments and returns them as works for possiblevalues
+function instrumentsToPossibleValues(instruments) {
+
+    var result = [];
+
+    instruments.forEach(function (item) {
+        result.push({ Id: item.Id, Label: item.Name + ' (' + item.SerialNumber + ')'})
+    });
+
+    return result;
+}
+
 //TODO: this will be handy in the future when we refactor the way lookupOptions works to use
 // an array of objects instead of properties of a single object.
 function sortObjectsByValue(list) {

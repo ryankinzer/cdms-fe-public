@@ -308,6 +308,7 @@ var ControlTypeDefinitions = {
     'northing': NumberControlType,
     'number': NumberControlType,
     'select': SelectControlType,
+    'instrument-select': SelectControlType,
     'select-number': SelectControlType,
     'string': TextControlType, //just use the Text renderer
     'temp-waypoint-file': TempWaypointFileControlType,

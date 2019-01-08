@@ -6,7 +6,7 @@
 
             <div class="row">
                 <div class="col-md-5">
-                    <select multiple size="17" style="width:235px;" ng-model="Criteria.ParamFieldSelect" ng-change="clearValue()" ng-options="Value.Label for Value in dataAgGridOptions.columnDefs | filter: {hide:'!'} | orderBy:'Label'" />
+                    <select multiple size="17" style="width:235px;" ng-model="Criteria.ParamFieldSelect" ng-change="clearValue()" ng-options="Value.Label for Value in dataAgGridOptions.columnDefs | filter: {hide_header:'!'} | orderBy:'Label'" />
                 </div>
                 <div class="col-md-7 selected-field-description">
                     {{Criteria.ParamFieldSelect[0].cdmsField.Field.Description}}
