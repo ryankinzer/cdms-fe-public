@@ -258,6 +258,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
             //build event to send for validation
             console.log("onHeaderEditingStopped: " + field.DbColumnName);
+
+            //timezone - TODO: until we just use the id, we need to set the object (since the ID gets changed but not the whole object...)
+            if (field.DbColumnName == 'Timezone') {
+                $scope.row.Activity.Timezone = getById(SystemTimezones, $scope.row.Activity.Timezone.Id);
+            }
+
             var event = {
                 colDef: field,
                 node: { data: $scope.row },
@@ -402,8 +408,14 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 
                 
                 //convert timezone to object if it exists
-                if($scope.row.Activity)
+                if ($scope.row.Activity) {
                     $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
+                    //workaround - sometimes the stored timezone hasn't always included an Id for some reason...
+                    if (!$scope.row.Activity.Timezone.hasOwnProperty("Id")) {
+                        $scope.row.Activity.Timezone = getByField(SystemTimezones, $scope.row.Activity.Timezone.Name, "Name");
+                        console.dir($scope.row.Activity.Timezone);
+                    }
+                }
                 
                 //console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);
@@ -808,8 +820,8 @@ console.log("SaveParentItem!");
             delete new_activity.Source;
             delete new_activity.User;
             delete new_activity.ActivityQAStatus;
-            new_activity.Timezone = angular.toJson(new_activity.Timezone); //why don't we just save the id?
-
+            new_activity.Timezone = angular.toJson(new_activity.Timezone); //TODO: why don't we just save the id?
+            
             //add the ActivityQAStatus back in with values from the activity
             new_activity.ActivityQAStatus = {
                 'Comments': $scope.row.Activity.ActivityQAStatus.Comments,
