@@ -1,4 +1,4 @@
-<div ng-hide="dataset.Config.DuplicateCheckFields.contains(field.DbColumnName)" class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;" >
+<div ng-hide="true" class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;" >
     <div class="header-label">{{field.Label}}:</div>
     <div class="header-value">
 	    <input class="form-control" type="text" ng-blur="onHeaderEditingStopped(field)" ng-model="row.Activity[field.DbColumnName]" name="{{field.DbColumnName}}">

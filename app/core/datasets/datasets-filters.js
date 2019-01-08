@@ -100,9 +100,9 @@ datasets_module
     })
 .filter('arrayDisplayValue', function(){
         return function(input,field) {
-            console.log(" ----- Field: " + field.DbColumnName);
-            console.dir(input);
-            console.dir(field.PossibleValues);
+            //console.log(" ----- Field: " + field.DbColumnName);
+            //console.dir(input);
+            //console.dir(field.PossibleValues);
 
             var result = '';
             var the_val = '';
@@ -117,7 +117,7 @@ datasets_module
                     
                 }
                 catch(e){
-                    console.dir(e);
+                    //console.dir(e);
                     the_val = input;
                 }
             }
