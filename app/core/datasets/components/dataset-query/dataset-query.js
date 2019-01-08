@@ -73,8 +73,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                 //need to set some header field possible values manually before we load our coldefs - so that the named value will display in the grid.
                 var instrument_coldef = getByField($scope.dataset.Fields,"InstrumentId", "DbColumnName");
-                instrument_coldef.Field.PossibleValues = instrumentsToPossibleValues($scope.project.Instruments);
-
+                if(instrument_coldef)
+                    instrument_coldef.Field.PossibleValues = instrumentsToPossibleValues($scope.project.Instruments);
                 
                 var hidden_header_controltypes = ["file", "hidden", "accuracy-check-select", "activity-text", "instrument-select", "post-accuracy-check-select", "qa-status-comment", "timezone-select"];
                 var hidden_grid_controltypes = ["hidden", "accuracy-check-select", "activity-text", "post-accuracy-check-select", "timezone-select"];
