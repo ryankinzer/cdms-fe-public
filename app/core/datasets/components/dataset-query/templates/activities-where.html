@@ -1,29 +1,28 @@
 
 <div class="query-box">
-	<div class="row">
-		<div class="col-md-7 field-list-box">
-			<p class="text-center query-header-text">Activities where: selected field</p>
+    <div class="row">
+        <div class="col-md-7 field-list-box">
+            <p class="text-center query-header-text">Activities where: selected field</p>
 
-			<div class="row">
-				<div class="col-md-5">
-					<select multiple size="17" style="width:235px;" ng-model="Criteria.ParamFieldSelect" ng-change="clearValue()" ng-options="Value.Label for Value in dataAgGridOptions.columnDefs | filter: {hide:'!'} | orderBy:'Label'"/>
-				</div>
-				<div class="col-md-7 selected-field-description">
-					{{Criteria.ParamFieldSelect[0].cdmsField.Field.Description}}
-				</div>
-			</div>
+            <div class="row">
+                <div class="col-md-5">
+                    <select multiple size="17" style="width:235px;" ng-model="Criteria.ParamFieldSelect" ng-change="clearValue()" ng-options="Value.Label for Value in dataAgGridOptions.columnDefs | filter: {hide:'!'} | orderBy:'Label'" />
+                </div>
+                <div class="col-md-7 selected-field-description">
+                    {{Criteria.ParamFieldSelect[0].cdmsField.Field.Description}}
+                </div>
+            </div>
 
-		</div>
-		<div class="col-md-5 criteria-list-box">
-			<p class="text-center query-header-text">matches criteria</p>
-			<div class="row">
-				<div class="col-md-12" style="height: 250px;">
-					<ng-include src="'app/core/datasets/components/dataset-query/templates/field-' + Criteria.ParamFieldSelect[0].ControlType + '.html'"></ng-include>
-				</div>
-			</div>
-			<button class="btn right" ng-click="addCriteria()">Add criteria</button>
+        </div>
+        <div class="col-md-5 criteria-list-box">
+            <p class="text-center query-header-text">matches criteria</p>
+            <div class="row">
+                <div class="col-md-12" style="height: 250px;">
+                    <ng-include src="'app/core/datasets/components/dataset-query/templates/field-' + Criteria.ParamFieldSelect[0].ControlType + '.html'"></ng-include>
+                </div>
+            </div>
+            <button class="btn right" ng-click="addCriteria()">Add criteria</button>
 
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
-

@@ -92,7 +92,10 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 angular.forEach($scope.dataAgColumnDefs.HeaderFields, function (fieldDef) {
                     //console.dir(fieldDef);
                     if (fieldDef.field == "LocationId") {
-                        fieldDef.PossibleValuesList = makeObjects($scope.project.Locations, 'Id', 'Label');
+                        var dataset_locations = getAllMatchingFromArray($scope.project.Locations, $scope.dataset.Datastore.LocationTypeId, 'LocationTypeId');
+                        console.dir(dataset_locations);
+                        dataset_locations = dataset_locations.sort(orderByAlpha);
+                        fieldDef.PossibleValuesList = dataset_locations; //makeObjects(dataset_locations, 'Id', 'Label');
                         fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
                     }else if (fieldDef.field == "QAStatusId") { //ActivityQAStatusId 
                         fieldDef.field = fieldDef.DbColumnName = "ActivityQAStatusId"; 
@@ -104,7 +107,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                         fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
                     }
 
-                    if (fieldDef.ControlType == 'file' || fieldDef.ControlType == 'hidden' || fieldDef.field == "QAComments")
+                    var hidden_controltypes = ["file", "hidden", "accuracy-check-select", "activity-text", "instrument-select", "post-accuracy-check-select", "qa-status-comment", "timezone-select"];
+                    if (hidden_controltypes.contains(fieldDef.ControlType))
                         fieldDef.hide = true;
 
                 });

@@ -168,6 +168,7 @@ function makeObjects(optionList, keyProperty, valueProperty) {
         //console.log("item is next...");
         //console.dir(item);
         //console.log("item[keyProperty] = " + item[keyProperty] + ", item[valueProperty] = " + item[valueProperty]);
+
         objects[item[keyProperty]] = item[valueProperty];
         //console.log("string = " + item[keyProperty].toString());
     });

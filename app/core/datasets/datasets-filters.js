@@ -270,7 +270,22 @@ datasets_module
             }
             return $sce.trustAsHtml(retval);
         }
-    })
+    }).filter('orderByObjectValue', function () {
+          
+          return function (obj) {
+            var array = [];
+
+            Object.keys(obj).forEach(function (key) {
+                array.push({ Id: key, Label: obj[key] });
+            });
+
+            // apply a custom sorting function
+            array.sort(orderByAlpha);
+
+            console.dir(array);
+            return array;
+          };
+        })
     
 
 ;
