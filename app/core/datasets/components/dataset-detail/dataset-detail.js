@@ -88,7 +88,7 @@ var dataset_detail = ['$scope', '$routeParams', 'DatasetService', 'ProjectServic
 
 		//these are all the metadata properties configured for all datasets
 		// -- add in the ones that aren't already being used in this particular dataset.
-		scope.metadataProperties.promise.then(function(list){
+		scope.metadataProperties.$promise.then(function(list){
             scope.metadataProperties = list;
     	    angular.forEach(scope.metadataProperties, function(property, key){
 		    	//if it isn't already there, add it as an available option
