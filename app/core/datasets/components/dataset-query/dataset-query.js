@@ -106,8 +106,29 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 angular.forEach($scope.dataAgColumnDefs.HeaderFields, function (fieldDef) {
                     //console.dir(fieldDef);
                     if (fieldDef.field == "LocationId") {
+
+                        //load the config so that we can check if we are supposed to include the habitat sites for this project                        
+                        try {
+                            $scope.project.Config = ($scope.project.Config) ? angular.fromJson($scope.project.Config) : {};
+                        } catch (e) { 
+                            console.error("config could not be parsed for project" + $scope.project.Config);
+                            console.dir(e);
+                        }
+
+                        //do we need to pull in habitat site locations?
+                        if ($scope.project.Config.ShowHabitatSitesForDatasets && $scope.project.Config.ShowHabitatSitesForDatasets.contains($scope.dataset.Name)) { 
+                            console.log("yep - we are one");
+                            $scope.project.Locations.forEach(function (loc) {
+                                if (loc.LocationTypeId == LOCATION_TYPE_Hab) {
+                                    //switch the type to say "it is one of us" and add the label...
+                                    loc.LocationTypeId = $scope.dataset.Datastore.LocationTypeId;
+                                    loc.Label = loc.Label + " (Hab Site)";
+                                }
+                            });
+                        }
+
                         var dataset_locations = getAllMatchingFromArray($scope.project.Locations, $scope.dataset.Datastore.LocationTypeId, 'LocationTypeId');
-                        //console.dir(dataset_locations);
+
                         dataset_locations = dataset_locations.sort(orderByAlpha);
                         fieldDef.PossibleValuesList = dataset_locations; //makeObjects(dataset_locations, 'Id', 'Label'); //used in the headers
                         fieldDef.setPossibleValues(makeObjects(dataset_locations, 'Id', 'Label')); //used in the grid
