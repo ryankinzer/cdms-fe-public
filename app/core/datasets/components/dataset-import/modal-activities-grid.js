@@ -46,9 +46,9 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
         //ag-grid - header + details --- all in one grid for multiple activities
         $scope.dataAgGridOptions = {
             animateRows: true,
-            enableSorting: true,
-            enableFilter: true, 
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true, 
+            //enableColResize: true,
             showToolPanel: false,
             columnDefs: null,
             rowData: null,
@@ -73,6 +73,8 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
             defaultColDef: {
                 editable: true,
+                sortable: true,
+                resizable: true,
             },
             rowClassRules: {
                 'row-validation-error': function(params) { return params.node.data.rowHasError; }

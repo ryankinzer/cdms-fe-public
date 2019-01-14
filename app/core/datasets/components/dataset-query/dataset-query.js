@@ -33,10 +33,10 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
         //ag-grid - header + details --- all in one grid for multiple activities
         $scope.dataAgGridOptions = {
             animateRows: true,
-            enableSorting: true,
-            enableFilter: true, 
-            enableColResize: true,
-            showToolPanel: false,
+            //enableSorting: true,
+            //enableFilter: true, 
+            //enableColResize: true,
+            //showToolPanel: false,
             columnDefs: null,
             rowData: [],
             rowSelection: 'multiple',
@@ -63,6 +63,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
             defaultColDef: {
                 editable: false,
+                sortable: true,
+                resizable: true,
             },
         };
 

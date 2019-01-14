@@ -105,9 +105,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         //ag-grid - details
         $scope.dataAgGridOptions = {
             animateRows: true,
-            enableSorting: true,
-            enableFilter: true, 
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true, 
+            //enableColResize: true,
             showToolPanel: false,
             columnDefs: null,
             rowData: [],
@@ -188,6 +188,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             defaultColDef: {
                 editable: ($scope.pagemode!=='dataview'),
+                sortable: true,
+                resizable: true,
             },
 
             onCellDoubleClicked: function (event) { 

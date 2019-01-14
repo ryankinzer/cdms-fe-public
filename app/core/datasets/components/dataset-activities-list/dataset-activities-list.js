@@ -210,9 +210,9 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.agGridOptions = {
             animateRows: true,
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             showToolPanel: false,
             columnDefs: [],
             rowData: [],
@@ -224,7 +224,12 @@ var dataset_activities_list = ['$scope', '$routeParams',
             onFilterModified: function () {
                 $scope.agGridOptions.api.deselectAll();
             },
-            selectedItems: []
+            selectedItems: [],
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
         };
 
         //setup the grid
