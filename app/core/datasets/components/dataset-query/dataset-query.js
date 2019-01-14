@@ -71,14 +71,14 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             //setup grid and coldefs and then go!
             $timeout(function () {
 
-                //need to set some header field possible values manually before we load our coldefs - so that the named value will display in the grid.
+                //need to set some header field possible values manually BEFORE we load our coldefs - so that the named value will display in the grid.
                 var instrument_coldef = getByField($scope.dataset.Fields,"InstrumentId", "DbColumnName");
-                if(instrument_coldef)
+                if (instrument_coldef) {
                     instrument_coldef.Field.PossibleValues = instrumentsToPossibleValues($scope.project.Instruments);
+                }
                 
                 var hidden_header_controltypes = ["file", "hidden", "accuracy-check-select", "activity-text", "instrument-select", "post-accuracy-check-select", "qa-status-comment", "timezone-select"];
-                var hidden_grid_controltypes = ["hidden", "activity-text"];
-
+                var hidden_grid_controltypes = ["hidden", "activity-text","accuracy-check-select","timezone-select","post-accuracy-check-select"];
 
                 $scope.dataAgColumnDefs = GridService.getAgColumnDefs($scope.dataset);
                 
@@ -97,7 +97,6 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                     if (fieldDef.ControlType == 'file' || fieldDef.ControlType == 'hidden')
                         fieldDef.hide_header = true;
-
                     
                 });
 
@@ -117,7 +116,6 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                         //do we need to pull in habitat site locations?
                         if ($scope.project.Config.ShowHabitatSitesForDatasets && $scope.project.Config.ShowHabitatSitesForDatasets.contains($scope.dataset.Name)) { 
-                            console.log("yep - we are one");
                             $scope.project.Locations.forEach(function (loc) {
                                 if (loc.LocationTypeId == LOCATION_TYPE_Hab) {
                                     //switch the type to say "it is one of us" and add the label...
@@ -186,14 +184,25 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
 
         $scope.addCriteria = function(){
+            
+            //possible values that are associative arrays will need to dereference from the value to the key
+            if ($scope.Criteria.ParamFieldSelect[0].PossibleValues && !Array.isArray($scope.Criteria.ParamFieldSelect[0].PossibleValues)) {
+                Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValues).forEach(function (key) { 
+                    if ($scope.Criteria.ParamFieldSelect[0].PossibleValues[key] == $scope.Criteria.Value)
+                        $scope.Criteria.Value = key; //convert it to the key instead of the value...
+                });
+            }           
+
             $scope.criteriaList.push({
                 DbColumnName: 		$scope.Criteria.ParamFieldSelect[0].DbColumnName,
                 Id: 				$scope.Criteria.ParamFieldSelect[0].cdmsField.Id,
                 Value: 				$scope.Criteria.Value,
             });
 
+            
+            //console.log($scope.Criteria.ParamFieldSelect[0].PossibleValues
             //console.dir($scope.Criteria.ParamFieldSelect[0]);
-            //console.dir($scope.criteriaList);
+            console.dir($scope.criteriaList);
         
             $scope.Criteria.Value = null;
         
@@ -204,7 +213,6 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
 
         $scope.executeQuery = function(){
-           console.log("Inside DataQueryCtrl.executeQuery...");
                         	
             $scope.query = $scope.buildQuery();
         
@@ -219,10 +227,6 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
 
         $scope.buildQuery = function(){
-            console.log("Inside DataQueryCtrl.buildQuery...");
-                    	
-            console.log("$scope.Criteria is next...");
-            console.dir($scope.Criteria);
                     	
             var queryCriteriaList = angular.copy($scope.criteriaList);
             queryCriteriaList.forEach(function (criteria) { 
@@ -251,8 +255,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 loading: true,
             };
                     	
-            console.log("query in buildQuery is next...");
-            console.dir(query);
+            //console.log("query in buildQuery is next...");
+            //console.dir(query);
         
             return query;
         };

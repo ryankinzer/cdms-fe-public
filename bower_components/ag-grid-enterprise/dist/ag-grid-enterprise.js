@@ -1148,7 +1148,7 @@ var GridOptionsWrapper = /** @class */ (function () {
             //console.warn("ag-grid: invalid " + containerName + " property '" + invalidPropertyKey + "' did you mean any of these: " + fuzzySuggestions.slice(0, 8).join(","));
         });
         if (invalidPropertyKeys.length > 0) {
-            console.warn("ag-grid: to see all the valid " + containerName + " properties please check: " + docsUrl);
+            //console.warn("ag-grid: to see all the valid " + containerName + " properties please check: " + docsUrl);
         }
     };
     // returns the dom data, or undefined if not found

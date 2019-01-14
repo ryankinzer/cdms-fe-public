@@ -1770,7 +1770,7 @@ function getAgGridFilterByType(type) {
     if (type == "date" || type == 'datetime' || type == 'activity-date')
         return "agDateColumnFilter";
 
-    return null; //default to the checkboxy filter
+    return true; //default to the checkboxy filter
 }
 
 
