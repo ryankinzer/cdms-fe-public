@@ -39,7 +39,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             showToolPanel: false,
             columnDefs: null,
             rowData: [],
-            rowSelection: 'single',
+            rowSelection: 'multiple',
 
             onSelectionChanged: function (params) {
                 $scope.selectedRow = $scope.dataAgGridOptions.api.getSelectedRows()[0];
@@ -77,7 +77,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                     instrument_coldef.Field.PossibleValues = instrumentsToPossibleValues($scope.project.Instruments);
                 
                 var hidden_header_controltypes = ["file", "hidden", "accuracy-check-select", "activity-text", "instrument-select", "post-accuracy-check-select", "qa-status-comment", "timezone-select"];
-                var hidden_grid_controltypes = ["hidden", "accuracy-check-select", "activity-text", "post-accuracy-check-select", "timezone-select"];
+                var hidden_grid_controltypes = ["hidden", "activity-text"];
 
 
                 $scope.dataAgColumnDefs = GridService.getAgColumnDefs($scope.dataset);
@@ -125,7 +125,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                         fieldDef.PossibleValuesList = getParsedMetadataValues(fieldDef.PossibleValues);
                         fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
 
-                    } else if (fieldDef.ControlType == "instrument-select") {
+                    } else if (fieldDef.ControlType == "instrument-select") {// || fieldDef.ControlType == "accuracy-check-select" || fieldDef.ControlType =="post-accuracy-check-select" || fieldDef.ControlType == "timezone-select") {
                         fieldDef.PossibleValuesList = makeObjects(fieldDef.PossibleValues, 'Id', 'Label'); 
                         fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
                     }
