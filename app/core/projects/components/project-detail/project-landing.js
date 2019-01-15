@@ -49,13 +49,14 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
             //if habitat project then load those fields, too...
             scope.project.MetaFields.$promise.then(function () { 
 
-                var habfields = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITAT);
-                habfields.$promise.then(function () {
+                /* -- not adding in the habitat level metafields anymore -- */
+                //var habfields = CommonService.getMetadataFor(scope.project.Id, METADATA_ENTITY_HABITAT);
+                //habfields.$promise.then(function () {
 
-                    habfields.forEach(function (habfield) {
-                        habfield.isHabitat = true;
-                        scope.project.MetaFields.push(habfield);
-                    });
+                //    habfields.forEach(function (habfield) {
+                //        habfield.isHabitat = true;
+                //        scope.project.MetaFields.push(habfield);
+                //    });
 
                     //prep the values if it is a multiselect
                     scope.project.MetaFields.forEach(function (field) {
@@ -63,7 +64,7 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
                             field.Values = getParsedMetadataValues(field.Values);
                         }
                     });
-                });
+                //});
                 
 
                 //console.dir(scope.project);

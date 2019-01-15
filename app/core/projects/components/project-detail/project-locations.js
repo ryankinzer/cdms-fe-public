@@ -160,7 +160,7 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             scope.row = GridService.getNewRow(scope.dataGridOptions.columnDefs); //sets the DefaultValue, etc.
             scope.row.Status = 0;
 
-            console.dir(scope.row);
+            //console.dir(scope.row);
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-location.html',
