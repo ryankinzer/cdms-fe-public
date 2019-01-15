@@ -35,6 +35,7 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.locationDataset).HeaderFields;
             scope.dataGridOptions.columnDefs.unshift({ field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, alwaysShowField: true, menuTabs: [], hide: true }),
             scope.activateDataGrid();
+            //console.dir(scope.dataGridOptions.columnDefs);
         });
 
         scope.showLocations = function (dataset) { 
@@ -156,7 +157,10 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
         scope.addLocation = function (a_selection) {
             scope.SaveMessage = null;
-            scope.row = { 'Status': 0 };
+            scope.row = GridService.getNewRow(scope.dataGridOptions.columnDefs); //sets the DefaultValue, etc.
+            scope.row.Status = 0;
+
+            console.dir(scope.row);
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-location.html',
