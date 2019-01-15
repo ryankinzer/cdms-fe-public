@@ -93,10 +93,14 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         ];
 
         scope.instrDetailGridOptions = {
-                enableSorting: true,
-                enableFilter: true,
-                enableColResize: true,
+                //enableSorting: true,
+                //enableFilter: true,
+                //enableColResize: true,
                 columnDefs: instrDetailColDefs,
+                defaultColDef: {
+                    sortable: true,
+                    resizable: true,
+                },
         };
 
         ///////////////instruments grid
@@ -108,9 +112,9 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                     params.successCallback(params.data.AccuracyChecks);
                 },
             },
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
                 console.log("selection changed!");
@@ -132,7 +136,11 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 //{ field: 'OwningDepartment.Name', headerName: 'Owner', width: 250, menuTabs: ['filterMenuTab'], },
                 
                 
-            ]
+            ],
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
         

@@ -37,9 +37,9 @@ var admin_edit_dataset_fields = ['$scope', '$uibModal', '$timeout', '$routeParam
         };
 
         $scope.fieldGridOptions = {
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             rowSelection: 'multiple',
             //getRowHeight: function () { return 120; },
             //onFilterModified: function () {
@@ -65,7 +65,11 @@ var admin_edit_dataset_fields = ['$scope', '$uibModal', '$timeout', '$routeParam
                 { field: 'Field.DataSource', headerName: 'Master Data Source', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Field.Validation', headerName: 'Master Validation', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Field.Rule', headerName: 'Master Rule', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
-            ]
+            ],
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
 

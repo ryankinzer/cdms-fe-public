@@ -270,9 +270,9 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
 
         //detail grid options correspondence events
         scope.sitesDetailGridOptions = {
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             //rowSelection: 'single',
             //onSelectionChanged: function (params) {
             //    console.log("selection changed!");
@@ -304,6 +304,10 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             //    editable: true
             //},
             //enableRangeSelection: true
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
 
@@ -318,9 +322,9 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             },
 
             animateRows: true,
-            enableSorting: true,
-            enableFilter: true, 
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true, 
+            //enableColResize: true,
             showToolPanel: false,
             columnDefs: scope.sitesColumnDefs,
             rowData: null,
@@ -388,6 +392,10 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             },
             onRowClicked: function (row) {
                 row.node.setSelected(true);
+            },
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
             },
         };
 

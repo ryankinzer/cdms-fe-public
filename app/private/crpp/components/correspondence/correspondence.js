@@ -242,9 +242,9 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
 
         //detail grid options correspondence events
         scope.corrDetailGridOptions = {
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             //rowSelection: 'single',
             //onSelectionChanged: function (params) {
             //    console.log("selection changed!");
@@ -276,6 +276,10 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
             //    editable: true
             //},
             //enableRangeSelection: true
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
 
@@ -291,9 +295,9 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
             },
 
             animateRows: true,
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             showToolPanel: false,
             columnDefs: scope.corrAgColumnDefs,
             rowData: null,
@@ -367,6 +371,10 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
             },
             onRowClicked: function (row) {
                 row.node.setSelected(true);
+            },
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
             },
         };
 

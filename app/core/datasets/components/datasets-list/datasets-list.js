@@ -27,16 +27,20 @@ var datasets_list = ['$scope', 'DatasetService', 'ProjectService','CommonService
 
             scope.agGridOptions = {
                 animateRows: true,
-                enableSorting: true,
-                enableFilter: true,
-                enableColResize: true,
+                //enableSorting: true,
+                //enableFilter: true,
+                //enableColResize: true,
                 showToolPanel: false,
                 columnDefs: agColumnDefs,
                 rowData: scope.projects,
                 debug: false,
                 onGridReady: function (params) {
                     params.api.sizeColumnsToFit();
-                }
+                },
+                defaultColDef: {
+                    sortable: true,
+                    resizable: true,
+                },
             };
 
             var ag_grid_div = document.querySelector('#datasets-list-grid');    //get the container id...

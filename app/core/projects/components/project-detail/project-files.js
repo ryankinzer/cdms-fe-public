@@ -190,9 +190,9 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
     
         /////////// gallery grid
         scope.galleryGridOptions = {
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
                 console.log("selection changed!");
@@ -212,7 +212,11 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
                 { field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
-            ]
+            ],
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
         scope.activateGalleryGrid = function () {
@@ -314,9 +318,9 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
 
         ///////////////documents grid
         scope.docsGridOptions = {
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
                 console.log("selection changed!");
@@ -334,7 +338,11 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
                 { field: 'Title', headerName: 'Title', sort: 'asc', cellRenderer: LinkTemplate, width: 230, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Description', headerName: 'Description', menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
-            ]
+            ],
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
 

@@ -44,9 +44,9 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
 
         scope.dataGridOptions = {
             //data: 'datasets',
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             columnDefs: [
                 { field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, menuTabs: []},
                 { field: 'Name', headerName: 'Name', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -64,7 +64,11 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
                 scope.dataGridOptions.selectedItems = scope.dataGridOptions.api.getSelectedRows();
                 scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
-            selectedItems: []
+            selectedItems: [],
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
         scope.activateDataGrid = function () {

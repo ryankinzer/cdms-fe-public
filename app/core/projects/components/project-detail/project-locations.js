@@ -94,16 +94,20 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
         //datasets tab grid
         scope.dataGridOptions = {
             //data: 'datasets',
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             columnDefs: [],
             rowSelection: 'multiple',
             onSelectionChanged: function (params) {
                 scope.dataGridOptions.selectedItems = scope.dataGridOptions.api.getSelectedRows();
                 scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
-            selectedItems: []
+            selectedItems: [],
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
         scope.activateDataGrid = function () {

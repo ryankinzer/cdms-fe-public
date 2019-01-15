@@ -123,16 +123,20 @@ var dataset_seasons_list = ['$scope', '$routeParams',
 
                     $scope.agGridOptions = {
                         animateRows: true,
-                        enableSorting: true,
-                        enableFilter: true,
-                        enableColResize: true,
+                        //enableSorting: true,
+                        //enableFilter: true,
+                        //enableColResize: true,
                         showToolPanel: false,
                         columnDefs: agColumnDefs,
                         rowData: $scope.seasonsList,
-                        debug: true,
+                        debug: false,
                         onGridReady: function (params) {
                             params.api.sizeColumnsToFit();
-                        }
+                        },
+                        defaultColDef: {
+                            sortable: true,
+                            resizable: true,
+                        },
                     };
 
                     console.log("Inside dataset-seasons-list.js, number of seasons: " + $scope.seasonsList.length);

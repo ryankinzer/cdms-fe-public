@@ -54,9 +54,9 @@ var project_data = ['$scope', '$routeParams','SubprojectService', 'ProjectServic
         //datasets tab grid
         scope.dataGridOptions = {
             //data: 'datasets',
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             onGridReady: function (params) {
                 params.api.sizeColumnsToFit();
             },
@@ -64,7 +64,11 @@ var project_data = ['$scope', '$routeParams','SubprojectService', 'ProjectServic
             [
                 { field: 'Name', headerName: 'Dataset Name', cellRenderer: linkTemplate, width: 280 },
                 { field: 'Description', headerName: 'Description', width: 450 },
-            ]
+            ],
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
         scope.activateDataGrid = function () {

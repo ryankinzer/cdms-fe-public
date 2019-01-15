@@ -113,9 +113,9 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
         //datasets tab grid
         scope.dataGridOptions = {
             //data: 'datasets',
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             columnDefs: [],
             rowSelection: 'multiple',
             onSelectionChanged: function (params) {
@@ -123,7 +123,11 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                 scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                 console.dir(params);
             },
-            selectedItems: []
+            selectedItems: [],
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
         scope.activateDataGrid = function () {

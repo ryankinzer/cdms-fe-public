@@ -29,9 +29,9 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
         };
 
         $scope.fieldGridOptions = {
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
+            //enableSorting: true,
+            //enableFilter: true,
+            //enableColResize: true,
             rowSelection: 'multiple',
 
             columnDefs:
@@ -48,7 +48,11 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
                 { field: 'FieldRoleId', headerName: 'Field Role', width: 100, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Validation', headerName: 'Master Validation', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Rule', headerName: 'Master Rule', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
-            ]
+            ],
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+            },
         };
 
 
