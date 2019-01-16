@@ -66,6 +66,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 sortable: true,
                 resizable: true,
             },
+
+            processCellForClipboard: $scope.processCellDataForOutput, 
         };
 
         $scope.activateGrid = function () {
@@ -277,34 +279,67 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
         };
 
         //export the data - button click
-        $scope.doExport = function () { 
+        $scope.doExport = function () {
+
+            if (!$scope.ExportFilename) {
+                alert("Please enter a name for your export file like: 'TucannonJune25Export'.");
+                return;
+            }
+
             var params = {
-                fileName: $scope.ExportFilename,
-                processCellCallback : function(params) {
-                    //here we do any special formatting since export does NOT call cell renderers or cell formatters...
-                    if (params.column.colDef.DbColumnName == "LocationId") {
-                        return params.column.colDef.PossibleValues[params.value];
-                    }
-
-                    if (params.column.colDef.DbColumnName == "InstrumentId") {
-                        return params.column.colDef.PossibleValues[params.value];
-                    }
-
-                    if (params.column.colDef.DbColumnName == "ActivityQAStatusId" ) {
-                        return params.column.colDef.PossibleValues[params.value];
-                    }
-
-                    if (params.column.colDef.DbColumnName == "RowQAStatusId") {
-                        return params.column.colDef.PossibleValues[params.value];
-                    }
-
-                    //default
-                    return params.value;
-
-                },
+                fileName: $scope.ExportFilename + ".xlsx",
+                processCellCallback : $scope.processCellDataForOutput,
             };
+
             $scope.dataAgGridOptions.api.exportDataAsExcel(params);
-        }
+        };
+
+        //this is used by both export and copy functions to de-reference our values
+        $scope.processCellDataForOutput = function (params) { 
+
+            //here we do any special formatting since export does NOT call cell renderers or cell formatters...
+            if (params.column.colDef.DbColumnName == "LocationId") {
+                return params.column.colDef.PossibleValues[params.value];
+            }
+
+            if (params.column.colDef.DbColumnName == "InstrumentId") {
+                return params.column.colDef.PossibleValues[params.value];
+            }
+
+            if (params.column.colDef.DbColumnName == "ActivityQAStatusId" ) {
+                return params.column.colDef.PossibleValues[params.value];
+            }
+
+            if (params.column.colDef.DbColumnName == "RowQAStatusId") {
+                return params.column.colDef.PossibleValues[params.value];
+            }
+
+            if (params.column.colDef.ControlType == "datetime" || params.column.colDef.ControlType == "time") { 
+                retval = params.value;
+                try {
+                    retval = moment(params.value).format("YYYY-MM-DD HH:mm:ss");
+                } catch (e) { 
+                    console.log("problem converting: " + retval + " to datetime text");
+                    console.dir(e);
+                }
+                return retval;
+            }
+
+            if (params.column.colDef.ControlType == "date") { 
+                retval = params.value;
+                try {
+                    retval = moment(params.value).format("YYYY-MM-DD");
+                } catch (e) { 
+                    console.log("problem converting: " + retval + " to datetime text");
+                    console.dir(e);
+                }
+                return retval;
+            }
+                    
+            //default
+            return params.value;
+
+        };
 
 
 

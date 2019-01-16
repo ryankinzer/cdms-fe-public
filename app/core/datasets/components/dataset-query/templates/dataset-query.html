@@ -68,7 +68,7 @@
             </div>
 
             <form class="right" style="display: flex;" ng-show="query.results.length > 0">
-                <span style="margin-top: 10px; margin-right: 5px;">Export and download: </span><input class="form-control" type="text" ng-model="ExportFilename" placeholder="export.xlsx" /><button class="btn" type="submit" ng-click="doExport()" >Export</button>
+                <span style="margin-top: 10px; margin-right: 5px;">Filename to export: </span><input class="form-control" type="text" ng-model="ExportFilename" placeholder="filename" /><button class="btn" type="submit" ng-click="doExport()" >Export</button>
             </form>
 
             <button class="btn" ng-disabled="!selectedRow.ActivityId" ng-click="openActivity()">View Activity</button>
