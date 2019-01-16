@@ -1773,6 +1773,27 @@ function getAgGridFilterByType(type) {
     return true; //default to the checkboxy filter
 }
 
+function getAgGridFilterParamsByType(type) { 
+    if (type == "date" || type == 'datetime' || type == 'activity-date')
+        return { comparator: momentComparator, apply: true };
+
+    return null; //default to nothing
+}
+
+
+//compare two dates just using the day (ignoring the time)
+function momentComparator(moment1, moment2) {
+
+    if (moment(moment1).isSame(moment2, 'day'))
+        return 0;
+    
+    if (moment(moment1).isBefore(moment2, 'day'))
+        return 1;
+
+    if (moment(moment1).isAfter(moment2, 'day'))
+        return -1;
+
+}
 
 //polyfill for @%#@ IE
 if (typeof Object.assign != 'function') {
@@ -1796,3 +1817,5 @@ if (typeof Object.assign != 'function') {
     return target;
   };
 }
+
+

@@ -410,14 +410,16 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 
                 
                 //convert timezone to object if it exists
-                if ($scope.row.Activity) {
+                if ($scope.row.Activity && $scope.row.Activity.Timezone) {
                     $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
                     //workaround - sometimes the stored timezone hasn't always included an Id for some reason...
-                    if (!$scope.row.Activity.Timezone.hasOwnProperty("Id")) {
+                    if ($scope.row.Activity.Timezone && !$scope.row.Activity.Timezone.hasOwnProperty("Id")) {
                         $scope.row.Activity.Timezone = getByField(SystemTimezones, $scope.row.Activity.Timezone.Name, "Name");
-                        console.dir($scope.row.Activity.Timezone);
                     }
                 }
+
+                console.log("in the end our timezone is:");
+                console.dir($scope.row.Activity.Timezone);
                 
                 //console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);

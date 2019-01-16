@@ -136,6 +136,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                         PossibleValues: getJsonObjects(field.Field.PossibleValues), 
                         cdmsField: field, //our own we can use later
                         filter: getAgGridFilterByType(field.Field.ControlType),
+                        filterParams: getAgGridFilterParamsByType(field.Field.ControlType),
                         DatastoreId: field.Field.DatastoreId,
                         DatasetId: dataset.Id,
                         ProjectId: dataset.ProjectId,
@@ -170,6 +171,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                         DatasetId: dataset.Id,
                         ProjectId: dataset.ProjectId,
                         filter: getAgGridFilterByType(field.Field.ControlType),
+                        filterParams: getAgGridFilterParamsByType(field.Field.ControlType),
                     };
 
                     //setup column def for DETAIL  and add it to our list
