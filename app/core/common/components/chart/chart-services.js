@@ -24,7 +24,7 @@ var chart_services = ['AdultWeir_ChartService', 'WaterTemp_ChartService',
 				console.log("data_in is next...");
 //					console.dir(data_in);
 
-    			if(dataset == "AdultWeir") 
+    			if(dataset == "AdultWeir" || dataset == "ArtificialProduction" || dataset == "BSample" || dataset == "CreelSurvey") 
 				{
 					scope.chartConfig = AdultWeir_ChartService.getChartConfig();
 		    		scope.chartData = AdultWeir_ChartService.getChartData(data_in);
@@ -48,21 +48,6 @@ var chart_services = ['AdultWeir_ChartService', 'WaterTemp_ChartService',
 		    		scope.chartConfig = WaterQuality_ChartService.getChartConfig();
 		    		scope.chartData   = WaterQuality_ChartService.getChartData(data_in);
 		    	}
-				else if(dataset == "CreelSurvey")
-		    	{
-					scope.chartConfig = CreelSurvey_ChartService.getChartConfig();
-		    		scope.chartData = CreelSurvey_ChartService.getChartData(data_in);
-		    	}
-				else if(dataset == "ArtificialProduction")
-		    	{
-					scope.chartConfig = ArtificialProduction_ChartService.getChartConfig();
-		    		scope.chartData = ArtificialProduction_ChartService.getChartData(data_in);
-				}
-    			else if(dataset == "BSample") 
-				{
-					scope.chartConfig = BSample_ChartService.getChartConfig();
-		    		scope.chartData = BSample_ChartService.getChartData(data_in);
-				}
 		    	else 
 		    		console.log("No charting configured for " + dataset);
 

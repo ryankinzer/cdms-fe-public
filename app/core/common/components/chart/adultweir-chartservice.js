@@ -10,7 +10,7 @@
                     chart: {
                         type: 'multiBarChart',
                         height: 230,
-                        width: 400,
+                        width: 500,
                         x: function (d) { return d.label; },
                         y: function (d) { return d.value; },
                         showLabels: true,
@@ -18,6 +18,11 @@
                         labelThreshold: 0.01,
                         //labelSunbeamLayout: true,
                         showLegend: false,
+                        yAxis: {
+                            tickFormat: function (d) {
+                                return d3.format("~.0")(d);
+                            },
+                        }
                     },
                     title: {
                         enable: true,
@@ -71,9 +76,12 @@
                 var dataCalc = {};
 
                 data.forEach(function (row, key) {
-                    var num = (row.TotalFishRepresented) ? row.TotalFishRepresented : 1;
-                    console.log(row);
-
+                    var num = 1;
+                    if (row.TotalFishRepresented)
+                        num = row.TotalFishRepresented;
+                    else if (row.FishCount)
+                        num = row.FishCount;
+                    
                     if (row.Sex && row.Species) {
 
                         if (!dataCalc[row.Sex])

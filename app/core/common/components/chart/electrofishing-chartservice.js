@@ -5,69 +5,74 @@ var electrofishing_chartservice = [
 
         	dataset: "ElectroFishing",
 
-			getChartConfig: function(){
-				var config = {
-    			  title : 'Fish Count',
-				  tooltips: true,
-				  labels : false,
-				  
-				  legend: {
-				    display: true,
-				    position: 'right'
-				  }
-				};
+			 getChartConfig: function () {
 
-				return config;
-			},
+                var options = {
+                    chart: {
+                        type: 'multiBarChart',
+                        height: 230,
+                        width: 500,
+                        x: function (d) { return d.label; },
+                        y: function (d) { return d.value; },
+                        showLabels: true,
+                        //duration: 500,
+                        labelThreshold: 0.01,
+                        //labelSunbeamLayout: true,
+                        showLegend: false,
+                        yAxis: {
+                            tickFormat: function (d) {
+                                return d3.format("~.0")(d);
+                            },
+                        }
+                    },
+                    title: {
+                        enable: true,
+                        text: 'Fish Count'
+                    },
+                };
 
+                return options;
 
-			getDefaultChartData: function()
-			{
-				var defaultChartData = {"series": [], "data":[{ "x": "Loading...", "y": [0],"tooltip": ""}]}; //default
-				return defaultChartData;
-			},
+            },
 
+            getChartData: function (data) {
 
-			getChartData: function(data)
-			{
-			    var dataCalc = {};
+                var dataCalc = {
+                    'Total': {}
+                };
 
-			    angular.forEach(data, function(row, key){
-			        var num = row.FishCount || 1;
+                //count up the total by species
+                data.forEach(function (row, key) {
+
+                    var num = row.FishCount || 1;
 			        var species = row.SpeciesRunRearing || row.OtherSpecies || row.Species || 'Not specified';
-			        //console.log("species = " + species);
 
-			        if(species)
-			        {
-			            if(!dataCalc[species])
-			                dataCalc[species] = { total: 0 };
+                    if(!dataCalc['Total'][species])
+                        dataCalc['Total'][species] = num;
+                    else
+                        dataCalc['Total'][species] += num;
 
-			            dataCalc[species].total += num;
-			        }
-			    });
+                });
 
-			    var data = {
-			              "series": ["Total"],
-			              "data": [] 
-			          };
+                var data = [];
+                
+                Object.keys(dataCalc).forEach(function (key) {
+                    var the_count = [];
+                    Object.keys(dataCalc[key]).forEach(function (species) {
+                        var val = dataCalc[key][species];
+                        the_count.push({ 'label': species, 'value': val });
+                    });
 
-			    angular.forEach(dataCalc, function(vals, species){
-			        data['data'].push({
-			          "x": species,
-			          "y": [vals.total],
-			        });
-			    });
+                    data.push({
+                        "key": key,
+                        //"color": color[sex],
+                        "values": the_count
+                    });
+                });
 
-				console.log("Inside chartservices.js, getChartData (EF, ST, FS, SGS), data is next...");
-			    console.dir(data);
+                return data;
+            },
 
-			    return data;
-
-			},
-
-			buildChart: function(){
-
-			},
 
         };
 

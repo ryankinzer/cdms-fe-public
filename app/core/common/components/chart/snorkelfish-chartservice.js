@@ -5,72 +5,77 @@
 
         	dataset: "SnorkelFish",
 
-			getChartConfig: function(){
-				var config = {
-    			  title : 'Fish Count',
-				  tooltips: true,
-				  labels : false,
-				  
-				  legend: {
-				    display: true,
-				    position: 'right'
-				  }
-				};
+			getChartConfig: function () {
 
-				return config;
-			},
+                var options = {
+                    chart: {
+                        type: 'multiBarChart',
+                        height: 230,
+                        width: 500,
+                        x: function (d) { return d.label; },
+                        y: function (d) { return d.value; },
+                        showLabels: true,
+                        //duration: 500,
+                        labelThreshold: 0.01,
+                        //labelSunbeamLayout: true,
+                        showLegend: false,
+                        yAxis: {
+                            tickFormat: function (d) {
+                                return d3.format("~.0")(d);
+                            },
+                        }
+                    },
+                    title: {
+                        enable: true,
+                        text: 'Fish Count'
+                    },
+                    
+                };
 
+                return options;
 
-			getDefaultChartData: function()
-			{
-				var defaultChartData = {"series": [], "data":[{ "x": "Loading...", "y": [0],"tooltip": ""}]}; //default
-				return defaultChartData;
-			},
+            },
 
+            getChartData: function (data) {
 
-			getChartData: function(data)
-			{
-			    var dataCalc = {};
+                var dataCalc = {
+                    'Total': {}
+                };
 
-			    angular.forEach(data, function(row, key){
-			        //var num = (row.TotalFishRepresented) ? row.TotalFishRepresented : 1; // From AdultWeir
-			        var num = row.FishCount;
-			        //console.log("row is next...");
-					//console.dir(row);
-					//console.log("num = " + num);
+                //count up the total by species
+                data.forEach(function (row, key) {
 
-			        if(row.Species)
-			        {
-						//console.log("Inside row.Species if...");
-			            if(!dataCalc[row.Species])
-			                dataCalc[row.Species] = { total: 0 };
+                if (row.Species) {
 
-			            dataCalc[row.Species].total += num;
-			        }
-			    });
+                        var num = row.FishCount || 1;
+                        var species = row.Species;
 
-			    var data = {
-			              "series": ["Total"],
-			              "data": [] 
-			          };
+                        if (!dataCalc['Total'][species])
+                            dataCalc['Total'][species] = num;
+                        else
+                            dataCalc['Total'][species] += num;
 
-			    angular.forEach(dataCalc, function(vals, species){
-			        data['data'].push({
-			          "x": species,
-			          "y": [vals.total],
-			        });
-			    });
+                    }
+                });
 
-				console.log("Inside chartservices.js, snorkelfish at end of getChartData, data is next...");
-			    console.dir(data);
+                var data = [];
+                
+                Object.keys(dataCalc).forEach(function (key) {
+                    var the_count = [];
+                    Object.keys(dataCalc[key]).forEach(function (species) {
+                        var val = dataCalc[key][species];
+                        the_count.push({ 'label': species, 'value': val });
+                    });
 
-			    return data;
+                    data.push({
+                        "key": key,
+                        //"color": color[sex],
+                        "values": the_count
+                    });
+                });
 
-			},
-
-			buildChart: function(){
-
-			},
+                return data;
+            },
 
         };
 

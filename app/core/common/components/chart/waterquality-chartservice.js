@@ -4,64 +4,74 @@
 
         	dataset: "WaterQuality",
 
-			getChartConfig: function(){
-				var config = {
-    			  title : 'Sample Count',
-				  tooltips: true,
-				  labels : false,
-				  
-				  legend: {
-				    display: true,
-				    position: 'right'
-				  }
-				};
+			getChartConfig: function () {
 
-				return config;
-			},
+                var options = {
+                    chart: {
+                        type: 'multiBarChart',
+                        height: 230,
+                        width: 500,
+                        x: function (d) { return d.label; },
+                        y: function (d) { return d.value; },
+                        showLabels: true,
+                        //duration: 500,
+                        labelThreshold: 0.01,
+                        //labelSunbeamLayout: true,
+                        showLegend: false,
+                        yAxis: {
+                            tickFormat: function (d) {
+                                return d3.format("~.0")(d);
+                            },
+                        }
+                    },
+                    title: {
+                        enable: true,
+                        text: 'Sample Count'
+                    },
+                    
+                };
 
+                return options;
 
-			getDefaultChartData: function()
-			{
-				var defaultChartData = {"series": [], "data":[{ "x": "Loading...", "y": [0],"tooltip": ""}]}; //default
-				return defaultChartData;
-			},
+            },
 
+            getChartData: function (data) {
 
-			getChartData: function(data)
-			{
-			    var dataCalc = {};
+                var dataCalc = {
+                    'Total': {}
+                };
 
-			    angular.forEach(data, function(row, key){
+                //count up the total by species
+                data.forEach(function (row, key) {
+
+                    var num = 1;
 			        var characteristic = row.CharacteristicName || 'Unknown';
 
-			        if(characteristic)
-			        {
-			            if(!dataCalc[characteristic])
-			                dataCalc[characteristic] = { total: 0 };
+                    if (!dataCalc['Total'][characteristic])
+                        dataCalc['Total'][characteristic] = num;
+                    else
+                        dataCalc['Total'][characteristic] += num;
+                });
 
-			            dataCalc[characteristic].total++;
-			        }
-			    });
+                var data = [];
+                
+                Object.keys(dataCalc).forEach(function (key) {
+                    var the_count = [];
+                    Object.keys(dataCalc[key]).forEach(function (species) {
+                        var val = dataCalc[key][species];
+                        the_count.push({ 'label': species, 'value': val });
+                    });
 
-			    var data = {
-			              "series": ["Total"],
-			              "data": [] 
-			          };
+                    data.push({
+                        "key": key,
+                        //"color": color[sex],
+                        "values": the_count
+                    });
+                });
 
-			    angular.forEach(dataCalc, function(vals, characteristic){
-			        data['data'].push({
-			          "x": characteristic,
-			          "y": [vals.total],
-			        });
-			    });
+                return data;
+            },
 
-			    return data;
-
-			},
-
-			buildChart: function(){
-
-			},
 
         };
 
