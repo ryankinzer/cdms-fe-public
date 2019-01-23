@@ -4,16 +4,18 @@
 //  you'll just need to create your own chart service named "YourDataset_ChartService" for each one.
 //  and use the below as example/ideas
 
+//examples here: http://krispo.github.io/angular-nvd3/#/quickstart 
+
 /*
 		Each dataset type that you want to provide a generated graph needs to live here.
 		You can do your graphing however you like for the particular kind of chart.
 */
 var chart_services = ['AdultWeir_ChartService', 'WaterTemp_ChartService',
     'SnorkelFish_ChartService', 'ElectroFishing_ChartService', 'WaterQuality_ChartService', 
-	'CreelSurvey_ChartService', 'ArtificialProduction_ChartService', 'BSample_ChartService',
+	'CreelSurvey_ChartService', 'ArtificialProduction_ChartService', 'BSample_ChartService','$compile',
     function (AdultWeir_ChartService, WaterTemp_ChartService,
         SnorkelFish_ChartService, ElectroFishing_ChartService, WaterQuality_ChartService,
-        CreelSurvey_ChartService, ArtificialProduction_ChartService, BSample_ChartService){
+        CreelSurvey_ChartService, ArtificialProduction_ChartService, BSample_ChartService, $compile){
 		console.log("Inside chartservices.js, ChartService...");
 		var service = {
 			buildChart: function(scope, data_in, dataset, config){
@@ -63,6 +65,14 @@ var chart_services = ['AdultWeir_ChartService', 'WaterTemp_ChartService',
 				}
 		    	else 
 		    		console.log("No charting configured for " + dataset);
+
+                //build the chart!
+                console.log("building the chart!");
+                if (scope.chartConfig) {
+                    console.log("we have a chart config ... building");
+                    var template = '<nvd3 options="chartConfig" data="chartData"></nvd3>';
+                    angular.element("#chart-inset").append($compile(template)(scope));
+                }
 
 		    },
 		};

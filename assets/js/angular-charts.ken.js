@@ -58,6 +58,7 @@ angular.module('angularCharts').directive('acChart', [
 			setHeightWidth();
 			setContainers();
 			var chartFunc = getChartFunction(chartType);
+            console.dir(chartFunc);
 			chartFunc();
 			drawLegend();
 		}
@@ -98,6 +99,8 @@ angular.module('angularCharts').directive('acChart', [
           angular.extend(config, scope.acConfig);
           config.colors = config.colors.concat(defaultColors);
         }
+          console.dir(data);
+          console.dir(config);
       }
       function getChartFunction(type) {
         var charts = {
@@ -110,6 +113,7 @@ angular.module('angularCharts').directive('acChart', [
         return charts[type];
       }
       function barChart() {
+          console.log("running barchart");
         var margin = {
             top: 0,
             right: 20,
@@ -205,6 +209,7 @@ angular.module('angularCharts').directive('acChart', [
           });
         }
         svg.append('line').attr('x1', width).attr('y1', y(0)).attr('y2', y(0)).style('stroke', 'silver');
+          console.log("done bar charting");
       }
       function lineChart() {
         var margin = {

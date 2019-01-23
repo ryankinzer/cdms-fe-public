@@ -5,84 +5,119 @@
             dataset: "AdultWeir",
 
             getChartConfig: function () {
-                var config = {
-                    title: 'Fish by Species',
-                    tooltips: true,
-                    labels: false,
 
-                    legend: {
-                        display: true,
-                        position: 'right'
-                    }
+                var options = {
+                    chart: {
+                        type: 'multiBarChart',
+                        height: 230,
+                        width: 400,
+                        x: function (d) { return d.label; },
+                        y: function (d) { return d.value; },
+                        showLabels: true,
+                        //duration: 500,
+                        labelThreshold: 0.01,
+                        //labelSunbeamLayout: true,
+                        showLegend: false,
+                    },
+                    title: {
+                        enable: true,
+                        text: 'Fish by Species'
+                    },
                 };
 
-                return config;
-            },
+                return options;
 
-
-            getDefaultChartData: function () {
-                var defaultChartData = { "series": [], "data": [{ "x": "Loading...", "y": [0], "tooltip": "" }] }; //default
-                return defaultChartData;
             },
 
 
             getChartData: function (data) {
-                console.log("Inside getChartData...");
+
+                /* -- this is the format we need to return for the series to work -- 
+                var retvaldata = [
+                    {
+                        "key": "Female",
+                        "color": "#d62728",
+                        "values": [
+                            {
+                                "label": "CHS",
+                                "value": 4
+                            },
+                            {
+                                "label": "STH",
+                                "value": 3
+                            },
+                            
+                        ]
+                    },
+                    {
+                        "key": "Male",
+                        "color": "#1f77b4",
+                        "values": [
+                            {
+                                "label": "CHS",
+                                "value": 2
+                            },
+                            {
+                                "label": "STH",
+                                "value": 13
+                            },
+                            
+                        ]
+                    }
+                ];
+                */
+
+                
                 var dataCalc = {};
 
                 data.forEach(function (row, key) {
                     var num = (row.TotalFishRepresented) ? row.TotalFishRepresented : 1;
-                    //console.log(row);
+                    console.log(row);
 
-                    if (row.Species) {
+                    if (row.Sex && row.Species) {
 
-                        if (!dataCalc[row.Species])
-                            dataCalc[row.Species] = { total: 0, males: 0, females: 0 };
+                        if (!dataCalc[row.Sex])
+                            dataCalc[row.Sex] = {};
 
-                        dataCalc[row.Species].total += num;
-
-                        if (row.Sex == "M")
-                            dataCalc[row.Species].males += num;
-                        if (row.Sex == "F")
-                            dataCalc[row.Species].females += num;
+                        if(!dataCalc[row.Sex][row.Species])
+                            dataCalc[row.Sex][row.Species] = num;
+                        else
+                            dataCalc[row.Sex][row.Species] += num;
 
                     }
 
-                    //console.log(row.Species + " = ");
-                    //console.dir(dataCalc[row.Species]);
-
                 });
 
-                var data = {
-                    "series": [
-                        "Total",
-                        "Male",
-                        "Female"
-                    ],
-                    "data": [
-                    ]
+                var color = {
+                    'M': "#1f77b4",
+                    'F': "#d62728",
+                    'UNK': "#f4b042",
                 };
 
-                console.dir(dataCalc);
+                var label = {
+                    'M': "Male",
+                    'F': "Female",
+                    'UNK': "Unknown",
+                };
 
-                Object.keys(dataCalc).forEach( function (species) {
-                    var vals = dataCalc[species];
-                    data['data'].push({
-                        "x": species,
-                        "y": [vals.total, vals.males, vals.females],
+                var data = [];
+                
+                Object.keys(dataCalc).forEach(function (sex) {
+                    var the_count = [];
+                    Object.keys(dataCalc[sex]).forEach(function (species) {
+                        var val = dataCalc[sex][species];
+                        the_count.push({ 'label': species, 'value': val });
+                    });
+
+                    data.push({
+                        "key": label[sex],
+                        "color": color[sex],
+                        "values": the_count
                     });
                 });
 
-                console.log(data);
-
                 return data;
-
             },
-
-            buildChart: function () {
-                console.log("buildchart? ----------------------");
-            },
-
         };
 
         return service;

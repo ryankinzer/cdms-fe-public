@@ -27,7 +27,7 @@ define([
       'UserModule',
 
       'ngFileUpload',				
-      'angularCharts',					
+      'nvd3',					
 
       //these are ctuir specific
       'CrppModule',

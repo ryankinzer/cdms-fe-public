@@ -1,12 +1,12 @@
 ﻿/**
-*  Data entry, date edit, import (single activity) all use this controller
+*  Data entry, date edit, data view, import (single activity) all use this controller
 */
 
 
 var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
-    'ActivityParser', 'GridService','Upload','ChartService',
+    'ActivityParser', 'GridService','Upload','ChartService','$compile',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
-        ActivityParser, GridService, Upload, ChartService) {
+        ActivityParser, GridService, Upload, ChartService, $compile) {
 
         $scope.system = { loading: true, messages : [] };
         
@@ -184,6 +184,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.system.loading = false;
                 $scope.$apply();
                 GridService.autosizeColumns($scope.dataAgGridOptions);
+
             },
 
             defaultColDef: {
@@ -433,16 +434,81 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
                 $scope.dataAgGridOptions.api._headerrow = $scope.row;
 
+
                 ChartService.buildChart($scope, $scope.dataset_activities.Details, $scope.dataset.Datastore.TablePrefix);
+
+/*
+                $scope.chartConfig = {
+                    chart: {
+                        type: 'pieChart',
+                        height: 500,
+                        width: 400,
+                        x: function (d) { return d.key; },
+                        y: function (d) { return d.y; },
+                        showLabels: true,
+                        duration: 500,
+                        labelThreshold: 0.01,
+                        labelSunbeamLayout: true,
+                        legend: {
+                            margin: {
+                                top: 5,
+                                right: 35,
+                                bottom: 5,
+                                left: 0
+                            }
+                        }
+                    }
+                };
+
+                $scope.chartData = [
+                            {
+                                key: "One",
+                                y: 5
+                            },
+                            {
+                                key: "Two",
+                                y: 2
+                            },
+                            {
+                                key: "Three",
+                                y: 9
+                            },
+                            {
+                                key: "Four",
+                                y: 7
+                            },
+                            {
+                                key: "Five",
+                                y: 4
+                            },
+                            {
+                                key: "Six",
+                                y: 3
+                            },
+                            {
+                                key: "Seven",
+                                y: .5
+                            }
+                        ];
+
+var template = '<nvd3 options="chartConfig" data="chartData"></nvd3>';
+                angular.element("#chart-inset").append($compile(template)($scope));
+
+*/
+                
+                
+
 
             }, 0);
 
+           
             
 
         };
 
         //called after the dataset is loaded
         $scope.afterDatasetLoadedEvent = function () { 
+
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities

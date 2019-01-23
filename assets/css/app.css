@@ -265,23 +265,16 @@ ul.dropdown-menu .btn {
 .chart {
 	height: 100%;
 	width: 100%;
-	background-color: #E6E6E6;
-	border: 1px solid lightgrey;
-	border-radius: 6px;
+	
 }
 
 .large-graph-box {
 	width: 800px;
 	height: 380px;
-	border: 1px solid lightgrey;
-	border-radius: 6px;
-	margin: 50px auto 0 auto;
 }
 
 #chart-div
 {
-	border: 1px solid lightgrey;
-	border-radius: 6px;
 }
 
 .map
