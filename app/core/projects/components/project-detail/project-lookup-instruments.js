@@ -32,7 +32,7 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 scope.editInstrument(param.data);
             });
             div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
@@ -40,7 +40,7 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 scope.removeInstrument(param.data);
             });
             div.appendChild(delBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add AC';
             addBtn.addEventListener('click', function (event) {
@@ -62,7 +62,7 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 scope.openAccuracyCheckForm(getById(scope.project.Instruments, param.data.InstrumentId), param.data);
             });
             div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
@@ -70,7 +70,7 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 scope.removeAccuracyCheck(param.data);
             });
             div.appendChild(delBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
             addBtn.addEventListener('click', function (event) {
@@ -127,7 +127,7 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
             selectedItems: [],
             columnDefs:
             [
-                { colId: 'EditLinksMaster', cellRenderer: EditLinksTemplate, width: 130, menuTabs: [], hide: true },
+                { colId: 'EditLinksMaster', cellRenderer: EditLinksTemplate, width: 160, menuTabs: [], hide: true },
                 { field: 'Name', headerName: 'Name', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text', cellRenderer: 'group' },
                 { field: 'SerialNumber', headerName: 'SerialNumber', width: 120, menuTabs: ['filterMenuTab'], filter: 'text'},
                 { field: 'Manufacturer', headerName: 'Manufacturer', width: 150, menuTabs: ['filterMenuTab'], },
@@ -205,7 +205,7 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 //if user can edit, unhide the edit links
                 if ($rootScope.Profile.canEdit(scope.project)) {
                     scope.instrGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
-                    scope.instrDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [] }); //add this column to the front of the detail grid cols
+                    scope.instrDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 140, menuTabs: [] }); //add this column to the front of the detail grid cols
                 }
                 
             }, 0);
@@ -412,7 +412,11 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         scope.openAccuracyCheckForm = function (a_instrument, ac_row) {
 
             scope.viewInstrument = a_instrument;
-            console.dir(a_instrument);
+
+            //use this format so that our accuracy check form works on the quick-edit on data entry
+            scope.row = {
+                Activity: { Instrument: a_instrument }
+            };
 
             if (ac_row)
                 scope.ac_row = ac_row;

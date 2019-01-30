@@ -21,7 +21,7 @@
                 <form name="form" class="css-form" novalidate>
                     <div class="header-label">Check Date</div>
                     <div class="header-value">
-                        <input class="form-control" type="text" datepicker-popup="longDate" ng-model="ac_row.CheckDate" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                        <md-datepicker class="form-control" ng-model="ac_row.CheckDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                     </div>
 
                     <div class="header-label">Check Method</div>
