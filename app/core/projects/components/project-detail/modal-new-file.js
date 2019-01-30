@@ -7,6 +7,11 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
         $scope.header_message = "Add file(s) to " + $scope.project.Name;
         $scope.doneUploading = false;
 
+        //options from config.js
+        $scope.SHARINGLEVEL_PRIVATE = SHARINGLEVEL_PRIVATE;
+        $scope.SHARINGLEVEL_PUBLICREAD = SHARINGLEVEL_PUBLICREAD;
+        $scope.SharingLevel = SharingLevel;
+
 		$scope.onFileSelect = function(files)
 		{
             console.log("Inside modal_new_file, onFileSelect!  Files is next...");
@@ -87,7 +92,7 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
 						method: "POST",
 						// headers: {'headerKey': 'headerValue'},
 						// withCredential: true,
-						data: {ProjectId: $scope.project.Id, Description: file.Info.Description, Title: file.Info.Title},
+						data: {ProjectId: $scope.project.Id, Description: file.Info.Description, Title: file.Info.Title, SharingLevel: file.Info.SharingLevel},
 						file: file,
 
                         }).progress(function (evt) {

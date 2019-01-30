@@ -11,6 +11,10 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
         scope.funderList = null;
         scope.collaboratorList = null;
 
+        //options from config.js for sharing level field
+        scope.SHARINGLEVEL_PRIVATE = SHARINGLEVEL_PRIVATE;
+        scope.SHARINGLEVEL_PUBLICREAD = SHARINGLEVEL_PUBLICREAD;
+        scope.SharingLevel = SharingLevel;	
         
         scope.dataset = DatasetService.getDataset($routeParams.Id);
 
@@ -44,6 +48,15 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
 
         }
 
+        scope.getProjectFileByName = function (name) { 
+            var retval = null;
+            scope.project.Files.forEach(function (file) { 
+                if (file.Name == name)
+                    retval = file;
+            });
+            return retval;
+        };
+
         scope.dataset.$promise.then(function () {
             scope.project = ProjectService.getProject(scope.dataset.ProjectId);
 
@@ -62,7 +75,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 //if user can edit, unhide the edit links
                 if ($rootScope.Profile.canEdit(scope.project)) {
                     scope.sitesGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
-                    scope.sitesDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 120, menuTabs: [] }); //add this column to the front of the detail grid cols
+                    scope.sitesDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 150, menuTabs: [] }); //add this column to the front of the detail grid cols
                 }
 
                 scope.subprojectList.$promise.then( function () {
@@ -104,7 +117,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 scope.editHabitatSubproject(param.data);
             });
             div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
@@ -112,7 +125,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 scope.removeHabitatSubproject(param.data);
             });
             div.appendChild(delBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Item';
             addBtn.addEventListener('click', function (event) {
@@ -172,7 +185,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 scope.openHabitatItemForm(subproject, detailparam.data); //parent subproject, detail line.
             });
             div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
@@ -180,7 +193,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 scope.removeHabitatFileItem(subproject, detailparam.data);
             });
             div.appendChild(delBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
             addBtn.addEventListener('click', function (event) {
@@ -197,7 +210,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
 
         //grid columns for sites tab (master/subprojects)
         scope.sitesColumnDefs = [  //in order the columns will display, by the way...
-            { colId: 'EditLinksMaster', width: 145, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
+            { colId: 'EditLinksMaster', width: 160, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             {
                 field: 'ProjectName', headerName: 'Name', width: 325, cellRenderer: 'agGroupCellRenderer',
                 cellRendererParams: { suppressCount: true },
@@ -217,7 +230,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 menuTabs: [],
             },
             {
-                headerName: 'Items', width: 60,
+                headerName: 'Items', width: 70,
                 cellRenderer: ItemCount,
                 valueGetter: function (params) {
                     return (params.data.HabitatItems !== undefined && params.data.HabitatItems.length > 0) ? params.data.HabitatItems.length : 0;
@@ -249,18 +262,29 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             },
         ];
 
-        //details for the correspondence
+        //details 
         var detailColumnDefs = [
             //{ headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [], }, 
-            { headerName: 'Item Type', field: 'ItemType', cellClass: 'item-record-cell', width: 100, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Item Name', field: 'ItemName', cellClass: 'item-record-cell', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+            
+            { headerName: 'Item Name', field: 'ItemName', cellClass: 'item-record-cell', width: 170, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: 'Documents', field: 'ItemFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: [], },
+            { headerName: 'Sharing Level', field: 'SharingLevel', width: 150, 
+                cellRenderer: function (params) { 
+                    if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
+                        return SharingLevel['SHARINGLEVEL_PRIVATE'];
+                    else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
+                        return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
+                    else return 'Unknown';
+                }, menuTabs: [], 
+            },
             { headerName: 'External Links', field: 'ExternalLinks', cellRenderer: LinkListCellTemplate, cellClass: 'item-record-cell', width: 250, menuTabs: [], },
+            { headerName: 'Item Type', field: 'ItemType', cellClass: 'item-record-cell', width: 100, menuTabs: ['filterMenuTab'], },
             {
                 field: 'EffDt',
                 headerName: 'Updated',
                 width: 150,
                 valueFormatter: function (params) {
+                    //console.dir(params.node.data.EffDt);
                     if (params.node.data.EffDt !== undefined && params.node.data.EffDt !== null)
                         return moment(params.node.data.EffDt).format('L');
                 },
@@ -268,7 +292,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             },
         ];
 
-        //detail grid options correspondence events
+        //detail grid options 
         scope.sitesDetailGridOptions = {
             //enableSorting: true,
             //enableFilter: true,

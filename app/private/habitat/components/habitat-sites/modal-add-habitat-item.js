@@ -8,7 +8,6 @@ var modal_add_habitat = ['$scope', '$rootScope', '$uibModalInstance', '$uibModal
     //mixin the properties and functions to enable the modal file chooser for this controller...
     modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files);
 
-	
     if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
     {
         $rootScope.subprojectId = $scope.viewSubproject.Id;

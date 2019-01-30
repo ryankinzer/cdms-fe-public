@@ -4,6 +4,11 @@ var modal_edit_file = ['$scope', '$uibModalInstance', 'ProjectService',
 
 		$scope.header_message = "Edit file";
 
+        //options from config.js
+        $scope.SHARINGLEVEL_PRIVATE = SHARINGLEVEL_PRIVATE;
+        $scope.SHARINGLEVEL_PUBLICREAD = SHARINGLEVEL_PUBLICREAD;
+        $scope.SharingLevel = SharingLevel;
+
 		$scope.save = function(){
 			var promise = ProjectService.updateFile($scope.project.Id, $scope.row);
 			promise.$promise.then(function(){

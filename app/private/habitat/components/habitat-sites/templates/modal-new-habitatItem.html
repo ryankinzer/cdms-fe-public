@@ -4,52 +4,61 @@
 <div class="modal-body">
 
 	<div ng-show="showFormItems">
-		<form name="form" class="css-form modal-form" novalidate>
-				<div class="header-label">Item Type</div>
-				<div class="header-value">
-                    <select class="form-control" type="text" ng-model="hi_row.ItemType">
-                        <option value="Communication">Communication</option>
-                        <option value="Design">Design</option>
-                        <option value="EC Document">EC Document</option>
-                        <option value="FISMA Attestation">FISMA Attestation</option>
-                        <option value="HEP Report">HEP Report</option>
-                        <option value="Line Item Budget">Line Item Budget</option>
-                        <option value="Management Plan">Management Plan</option>
-                        <option value="Map">Map</option>
-                        <option value="Monitoring Data">Monitoring Data</option>
-                        <option value="Monitoring Report">Monitoring Report</option>
-                        <option value="MOU/MOA">MOU/MOA</option>
-                        <option value="Other">Other</option>
-                        <option value="Permits">Permits</option>
-                        <option value="Photo">Photo</option>
-                        <option value="Presentation">Presentation</option>
-                        <option value="Progress (Annual) Report">Progress (Annual) Report</option>
-                        <option value="Progress (Annual) Report Comments">Progress (Annual) Report Comments</option>
-                        <option value="Property Inventory">Property Inventory</option>
-                        <option value="SOW Review">SOW Review</option>
-                        <option value="Transmittal Memo">Transmittal Memo</option>
-                        <option value="Water Right Certificate">Water Right Certificate</option>
-                        <option value="Water Survey ">Water Survey </option>
-                        <option value="Water Transaction List">Water Transaction List</option>
-                    </select>
-				</div>
-				<div class="header-label">Item Name</div>
-				<div class="header-value">
-					<input class="form-control" type="text" ng-model="hi_row.ItemName" />
-				</div>
-					
-			<div class="header-label">Copy of the Document</div>
-			<div class="header-value form-file">
-				<button class="right btn btn-xs" ng-click="openFileModal(hi_row, 'ItemFiles')">Add/Remove</button>
-				<div ng-bind-html="hi_row['ItemFiles'] | fileNamesFromString:this">&nbsp;</div>
-			</div>
-					
-			<div class="header-label">External Links</div>
-			<div class="header-value form-file">
-				<button class="right btn btn-xs" ng-click="openLinkModal(hi_row, field)">Add/Remove</button>
-				<div ng-bind-html="hi_row['ExternalLinks'] | urlsFromString">&nbsp;</div>
-			</div>
-		</form>
+        <form name="form" class="css-form modal-form" novalidate>
+            <div class="header-label">Item Type</div>
+            <div class="header-value">
+                <select class="form-control" type="text" ng-model="hi_row.ItemType">
+                    <option value="Communication">Communication</option>
+                    <option value="Design">Design</option>
+                    <option value="EC Document">EC Document</option>
+                    <option value="FISMA Attestation">FISMA Attestation</option>
+                    <option value="HEP Report">HEP Report</option>
+                    <option value="Line Item Budget">Line Item Budget</option>
+                    <option value="Management Plan">Management Plan</option>
+                    <option value="Map">Map</option>
+                    <option value="Monitoring Data">Monitoring Data</option>
+                    <option value="Monitoring Report">Monitoring Report</option>
+                    <option value="MOU/MOA">MOU/MOA</option>
+                    <option value="Other">Other</option>
+                    <option value="Permits">Permits</option>
+                    <option value="Photo">Photo</option>
+                    <option value="Presentation">Presentation</option>
+                    <option value="Progress (Annual) Report">Progress (Annual) Report</option>
+                    <option value="Progress (Annual) Report Comments">Progress (Annual) Report Comments</option>
+                    <option value="Property Inventory">Property Inventory</option>
+                    <option value="SOW Review">SOW Review</option>
+                    <option value="Transmittal Memo">Transmittal Memo</option>
+                    <option value="Water Right Certificate">Water Right Certificate</option>
+                    <option value="Water Survey ">Water Survey </option>
+                    <option value="Water Transaction List">Water Transaction List</option>
+                </select>
+            </div>
+            <div class="header-label">Item Name</div>
+            <div class="header-value">
+                <input class="form-control" type="text" ng-model="hi_row.ItemName" />
+            </div>
+
+            <div class="header-label">File</div>
+            <div class="header-value form-file">
+                <button class="right btn btn-xs" ng-click="openFileModal(hi_row, 'ItemFiles')">Add/Remove</button>
+                <div ng-bind-html="hi_row['ItemFiles'] | fileNamesFromString:this">&nbsp;</div>
+            </div>
+
+            <div class="header-label">File sharing level</div>
+            <div class="header-value">
+                <select class="form-control" ng-model="hi_row.SharingLevel" convert-to-number>
+                    <option value="{{SHARINGLEVEL_PRIVATE}}" ng-selected="hi_row.SharingLevel == SHARINGLEVEL_PRIVATE">{{SharingLevel['SHARINGLEVEL_PRIVATE']}}</option>
+                    <option value="{{SHARINGLEVEL_PUBLICREAD}}" ng-selected="hi_row.SharingLevel == SHARINGLEVEL_PUBLICREAD">{{SharingLevel['SHARINGLEVEL_PUBLICREAD']}}</option>
+                </select>
+            </div>
+
+            <div class="header-label">External Links</div>
+            <div class="header-value form-file">
+                <button class="right btn btn-xs" ng-click="openLinkModal(hi_row, field)">Add/Remove</button>
+                <div ng-bind-html="hi_row['ExternalLinks'] | urlsFromString">&nbsp;</div>
+            </div>
+
+        </form>
 	</div>
 
         <div ng-show="!showFormItems && filesToUpload['ItemFiles'].length > 0">

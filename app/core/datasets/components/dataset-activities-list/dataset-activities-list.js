@@ -70,7 +70,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                         //cellRenderer: $scope.CellRenderers[field.ControlType],
                         valueGetter: $scope.ValueGetters[field.ControlType],
                         valueFormatter: $scope.ValueFormatters[field.ControlType],
-                        //filter: 'text',
+                        filter: getAgGridFilterByType(field.ControlType),
                         menuTabs: ['filterMenuTab'],
                     };
 
@@ -86,6 +86,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 headerName: "By User",
                 field: "UserFullname", //column from the activities list
                 menuTabs: ['filterMenuTab'],
+                filter: true,
             });
 
             //tell the grid we've changed the coldefs

@@ -153,7 +153,7 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
                 scope.openEditFileModal(param.data, scope.afterEditGalleryFile);
             });
             div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
@@ -211,6 +211,15 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
                 { headerName: 'File', cellRenderer: ImageTemplate, width: 190, menuTabs: [] },
                 { field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
+                { headerName: 'Sharing Level', field: 'SharingLevel', width: 150, 
+                    cellRenderer: function (params) { 
+                        if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
+                            return SharingLevel['SHARINGLEVEL_PRIVATE'];
+                        else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
+                            return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
+                        else return 'Unknown';
+                    }, menuTabs: [], 
+                },
                 { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             ],
             defaultColDef: {
@@ -291,7 +300,7 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
                 scope.openEditFileModal(param.data, scope.afterEditDocsFile);
             });
             div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
@@ -333,10 +342,19 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
             //selectedItems: [],
             columnDefs:
             [
-                { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 80, menuTabs: [], hide: true },
+                { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 120, menuTabs: [], hide: true },
                 //{ field: 'Name', headerName: 'File', width: 250, sort: 'asc', cellRenderer: LinkTemplate },
                 { field: 'Title', headerName: 'Title', sort: 'asc', cellRenderer: LinkTemplate, width: 230, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Description', headerName: 'Description', menuTabs: ['filterMenuTab'], filter: 'text' },
+                { headerName: 'Sharing Level', field: 'SharingLevel', width: 150, 
+                    cellRenderer: function (params) { 
+                        if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
+                            return SharingLevel['SHARINGLEVEL_PRIVATE'];
+                        else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
+                            return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
+                        else return 'Unknown';
+                    }, menuTabs: [], 
+                },
                 { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             ],
             defaultColDef: {
