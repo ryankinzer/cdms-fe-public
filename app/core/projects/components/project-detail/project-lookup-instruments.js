@@ -133,6 +133,9 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 { field: 'Manufacturer', headerName: 'Manufacturer', width: 150, menuTabs: ['filterMenuTab'], },
                 { field: 'Model', headerName: 'Model', width: 150, menuTabs: ['filterMenuTab'], },
                 { field: 'InstrumentType.Name', headerName: 'Type', menuTabs: ['filterMenuTab'], },
+                { field: 'StatusId', headerName: 'Status', width: 150, menuTabs: ['filterMenuTab'], 
+                    cellRenderer: function (params) { return (params.node.data.StatusId == 0) ? 'Active' : 'Inactive'; },
+                },
                 //{ field: 'OwningDepartment.Name', headerName: 'Owner', width: 250, menuTabs: ['filterMenuTab'], },
                 
                 
