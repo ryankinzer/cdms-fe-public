@@ -549,7 +549,7 @@ var template = '<nvd3 options="chartConfig" data="chartData"></nvd3>';
             $scope.project.$promise.then(function () {
 
                 //check authorization -- need to have project loaded before we can check project-level auth
-                if (!$rootScope.Profile.isProjectOwner($scope.project) && !$rootScope.Profile.isProjectEditor($scope.project)) {
+                if ($scope.pagemode != 'dataview' && !$rootScope.Profile.isProjectOwner($scope.project) && !$rootScope.Profile.isProjectEditor($scope.project)) {
                     $location.path("/unauthorized");
                 }
 

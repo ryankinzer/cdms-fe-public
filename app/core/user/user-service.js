@@ -29,8 +29,29 @@ user_module.factory('GetMyLastUpdatedDatasets', ['$resource', function ($resourc
     });
 }]);
 
-user_module.factory('GetAnalytics', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/syslog/GetAnalytics', {}, {
+//analytics
+
+user_module.factory('UserLoginsPastMonth', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/analytics/UserLoginsPastMonth', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
+
+user_module.factory('UserRequestsTotalPastMonth', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/analytics/UserRequestsTotalPastMonth', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
+user_module.factory('DatasetRequestsTotalPastMonth', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/analytics/DatasetRequestsTotalPastMonth', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
+user_module.factory('LastUpdatedDatasets', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/analytics/LastUpdatedDatasets', {}, {
         query: { method: 'GET', params: {}, isArray: true }
     });
 }]);
@@ -46,7 +67,10 @@ user_module.service('UserService', ['$q',
     'SaveUserPreferenceAction',
     'GetMyDatasetsAction',
     'GetMyLastUpdatedDatasets',
-    'GetAnalytics',
+    'UserLoginsPastMonth',
+    'UserRequestsTotalPastMonth',
+    'DatasetRequestsTotalPastMonth',
+    'LastUpdatedDatasets',
 
     function ($q,
         SaveUserInfo,
@@ -54,12 +78,28 @@ user_module.service('UserService', ['$q',
         SaveUserPreferenceAction,
         GetMyDatasetsAction,
         GetMyLastUpdatedDatasets,
-        GetAnalytics) {
+        UserLoginsPastMonth,
+        UserRequestsTotalPastMonth,
+        DatasetRequestsTotalPastMonth,
+        LastUpdatedDatasets
+) {
 
         var service = {
 
-            getAnalytics: function () { 
-                return GetAnalytics.query();
+            getUserLoginsPastMonth: function () { 
+                return UserLoginsPastMonth.query();
+            },
+
+            getUserRequestsTotalPastMonth: function () { 
+                return UserRequestsTotalPastMonth.query();
+            },
+
+            getDatasetRequestsTotalPastMonth: function () { 
+                return DatasetRequestsTotalPastMonth.query();
+            },
+
+            getLastUpdatedDatasets: function () { 
+                return LastUpdatedDatasets.query();
             },
 
             getMyDatasets: function () {

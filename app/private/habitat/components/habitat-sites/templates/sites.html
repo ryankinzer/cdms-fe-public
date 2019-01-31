@@ -44,11 +44,12 @@
                     <div ng-show="subprojectList.length==0">No Habitat items are associated with this project.</div>
 
                     <hr />
-                    <span>
-                        Show sites in these datasets: <span ng-repeat="dataset in project.Config.ShowHabitatSitesForDatasets"><b>{{dataset}}</b> </span>
-                    </span>
-                    <a href ng-click="openChooseDatasetsForHabitatSites()">Choose datasets...</a><br />
-
+                    <div project-role="editor">
+                        <span>
+                            Show sites in these datasets: <span ng-repeat="dataset in project.Config.ShowHabitatSitesForDatasets"><b>{{dataset}}</b> </span>
+                        </span>
+                        <a href ng-click="openChooseDatasetsForHabitatSites()">Choose datasets...</a><br />
+                    </div>
                 </div>
             </div>
         </div>

@@ -3,18 +3,98 @@
     <li class="active">User Analytics</li>
 </ul>
 
-<h3>User Analytics</h3>
-<p>Below is a summary of user requests to the system for the past month.</p>
+<h3>CDMS Metrics (last 30 days)</h3>
 
-<div class="panel panel-default"  style="width: 60%">
 
-    <table class="table table-striped">
-        <tr><th>Username</th><th>Date</th><th>Requests</th></tr>
-        <tr ng-repeat="line in analytics">
-            <td class="modal-file-col1">{{line.username}}</td>
-            <td class="modal-file-col2">{{line.OnDate}}</td>
-            <td class="modal-file-col2">{{line.hits}}</td>
-        </tr>
-    </table>
+<div class="container" style="margin-top: 30px;">
 
+    <div class="row">
+
+        <div class="col-md">
+            <div style="display: flex">
+
+                <div class="card" style="width:18rem;">
+                    <div class="card-body">
+                        <h1 class="card-title">{{LoginsToday}}</h1>
+                        <p class="card-text">Total logins today</p>
+                    </div>
+                </div>
+
+                <div class="card" style="width:18rem;">
+                    <div class="card-body">
+                        <h1 class="card-title">{{LoginsMonth}}</h1>
+                        <p class="card-text">Total logins this month</p>
+                    </div>
+                </div>
+
+                <div class="card" style="width:18rem;">
+                    <div class="card-body">
+                        <h1 class="card-title">{{TopRequestsMonth}}</h1>
+                        <p class="card-text">Top requests this month</p>
+                    </div>
+                </div>
+
+                <div class="card" style="width:18rem;">
+                    <div class="card-body">
+                        <h3 class="card-title">{{LatestUpload}}</h3>
+                        <p class="card-text">Last data upload</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h4>Logins by Day</h4>
+                <nvd3 options="loginOptions" data="loginData"></nvd3>
+            </div>
+
+            <div class="panel panel-default" style="padding: 20px; margin-top: 40px;">
+                <h4>Recent Dataset Uploads</h4>
+                <table class="table table-striped">
+                    <tr><th>Project</th><th>Dataset</th><th>Updated</th><th>By User</th></tr>
+                    <tr ng-repeat="line in LastUpdatedDatasets">
+                        <td class="modal-file-col1">{{line.ProjectName}}</td>
+                        <td class="modal-file-col1">{{line.DatasetName}}</td>
+                        <td class="modal-file-col1">{{line.LastUpdated}}</td>
+                        <td class="modal-file-col1">{{line.Fullname}}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="col-md">
+
+            <div class="panel panel-default" style="padding: 20px;">
+                <h4>Top Requests by User</h4>
+                <table class="table table-striped">
+                    <tr><th>User</th><th>Department</th><th>Requests</th></tr>
+                    <tr ng-repeat="line in UserRequestsTotalPastMonth">
+                        <td class="modal-file-col1">{{line.Fullname}}</td>
+                        <td class="modal-file-col2">{{line.Name}}</td>
+                        <td class="modal-file-col2">{{line.Logins}}</td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <div class="panel panel-default" style="padding: 20px;">
+                <h4>Top Requests by Dataset</h4>
+                <table class="table table-striped">
+                    <tr><th>Dataset</th><th>Requests</th></tr>
+                    <tr ng-repeat="line in DatasetRequestsTotalPastMonth">
+                        <td class="modal-file-col1">{{line.Name}}</td>
+                        <td class="modal-file-col2">{{line.Requests}}</td>
+                    </tr>
+                </table>
+            </div>
+
+
+        </div>
+
+    </div>
 </div>
+
+
+
+
