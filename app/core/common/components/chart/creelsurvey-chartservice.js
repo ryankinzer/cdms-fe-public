@@ -10,6 +10,7 @@ var creelsurvey_chartservice = [
 				var config = {
     			  title : 'Fish by Species',
 				  tooltips: true,
+                  showControls: false,
 				  labels : false,
 				  
 				  legend: {

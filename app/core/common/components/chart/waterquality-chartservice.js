@@ -16,6 +16,7 @@
                         showLabels: true,
                         //duration: 500,
                         labelThreshold: 0.01,
+                        showControls: false,
                         //labelSunbeamLayout: true,
                         showLegend: false,
                         yAxis: {

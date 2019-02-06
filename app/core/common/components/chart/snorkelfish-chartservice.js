@@ -15,6 +15,7 @@
                         x: function (d) { return d.label; },
                         y: function (d) { return d.value; },
                         showLabels: true,
+                        showControls: false,
                         //duration: 500,
                         labelThreshold: 0.01,
                         //labelSunbeamLayout: true,

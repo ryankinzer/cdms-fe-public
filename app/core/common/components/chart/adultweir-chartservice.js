@@ -17,6 +17,7 @@
                         //duration: 500,
                         labelThreshold: 0.01,
                         //labelSunbeamLayout: true,
+                        showControls: false,
                         showLegend: false,
                         yAxis: {
                             tickFormat: function (d) {

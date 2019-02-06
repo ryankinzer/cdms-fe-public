@@ -9,6 +9,7 @@
     			  title : 'Fish by Species',
 				  tooltips: true,
 				  labels : false,
+                  showControls: false,
 				  
 				  legend: {
 				    display: true,
