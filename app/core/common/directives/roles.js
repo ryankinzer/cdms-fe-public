@@ -35,8 +35,8 @@ common_module.directive('projectRole', function($rootScope){
 
             var role = attrs.projectRole.trim();
 
-            if(role != 'owner' && role != 'editor')
-                throw new Exception("Configuration error: project-role attribute must be 'owner' or 'editor'.");
+            if(role != 'owner' && role != 'editor' && role != 'not-external')
+                throw new Exception("Configuration error: project-role attribute must be 'owner' or 'editor' or 'not-external'.");
 
             var show = false; //default to NOT show.
 
@@ -52,6 +52,11 @@ common_module.directive('projectRole', function($rootScope){
                 if(role == 'editor' && ($rootScope.Profile.isProjectOwner(scope.project) || $rootScope.Profile.isProjectEditor(scope.project)))
                 {
                     //console.log("Showing role 'editor' because user is owner or editor.");
+                    show = true;
+                }
+
+                if (role == 'not-external' && !$rootScope.Profile.isExternal() )
+                {
                     show = true;
                 }
 

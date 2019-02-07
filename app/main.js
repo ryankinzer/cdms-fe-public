@@ -218,6 +218,11 @@ function configureProfile(profile)
 		return false;
 	};
 
+    //is the user marked with group "ExternalUser"?
+    profile.isExternal = function () {
+        return profile.hasRole("ExternalUser");
+    }
+
 	//is the profile editor for the given project?
 	profile.isProjectEditor = function(project){
 
