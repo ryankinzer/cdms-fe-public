@@ -71,7 +71,7 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
 
             scope.selectedLookup.Dataset.$promise.then(function () { 
                 scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields;
-                scope.dataGridOptions.columnDefs.unshift({ field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, alwaysShowField: true, menuTabs: [], hide: true });
+                scope.dataGridOptions.columnDefs.unshift({ field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, menuTabs: [], hide: true }); //alwaysShowField: true, ?
 
                 scope.lookupItems.$promise.then(function () {
                     if (!scope.datatab_ag_grid)
@@ -82,8 +82,8 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                         scope.dataGridOptions.api.setColumnDefs(scope.dataGridOptions.columnDefs);  //redraws everything
                     }
 
-                    //unhide the edit link column if they can edit.
-                    if ($rootScope.Profile.canEdit(scope.project)) {
+                    //unhide the edit link column if they are owner/admin.
+                    if ($rootScope.Profile.isProjectOwner(scope.project)) {
                         scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
                         scope.dataGridOptions.api.refreshHeader();
                     }

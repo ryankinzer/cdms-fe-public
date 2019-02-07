@@ -48,7 +48,7 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
             //enableFilter: true,
             //enableColResize: true,
             columnDefs: [
-                { field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, menuTabs: []},
+                { field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, menuTabs: [], hide: true },
                 { field: 'Name', headerName: 'Name', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'DataType', headerName: 'DataType', width: 100, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -73,10 +73,22 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
 
         scope.activateDataGrid = function () {
             console.log("activating grid...");
+
             var ag_grid_div = document.querySelector('#properties-grid');    //get the container id...
             scope.datatab_ag_grid = new agGrid.Grid(ag_grid_div, scope.dataGridOptions); //bind the grid to it.
             scope.dataGridOptions.api.showLoadingOverlay(); //show loading...
             scope.dataGridOptions.api.setRowData(scope.selectedEntity.Properties);           
+
+            scope.project.$promise.then(function () { 
+                //unhide the edit link column if they are the owner or editor.
+                if ($rootScope.Profile.isProjectOwner(scope.project)) {
+                    scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
+                    scope.dataGridOptions.api.refreshHeader();
+                }
+            });
+
+            
+
 
         };
 
