@@ -279,6 +279,7 @@ projects_module.service('ProjectService', ['$q',
                 //return service.project;
             },
 
+/*
             // We don't really like to set things this way...  Is there a better way?
             // TODO: look at the Project's "program" metadata (propertyid = 23)
             //       and the "subprogram" metadata (propertyid = 24)
@@ -307,6 +308,7 @@ projects_module.service('ProjectService', ['$q',
 
                 return theType;
             },
+*/
 
             saveEditors: function (userId, projectId, editors, saveResults) {
                 saveResults.saving = true;
