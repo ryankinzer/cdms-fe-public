@@ -79,7 +79,8 @@ var dataset_activities_list = ['$scope', '$routeParams',
             });
 
             //set the first column to be the sort column:
-            gridColDefs[2].sort = "desc";
+            if(gridColDefs[2])
+                gridColDefs[2].sort = "desc";
 
             //add the user fullname to the end. this will appear for all datasets.
             gridColDefs.push({

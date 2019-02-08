@@ -175,7 +175,7 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 menuTabs: ['filterMenuTab'],
             },
             {
-                headerName: 'Events', width: 60,
+                headerName: '# Events', width: 60,
                 cellRenderer: EventCount,
                 valueGetter: function (params) {
                     return (params.data.CorrespondenceEvents !== undefined && params.data.CorrespondenceEvents.length > 0) ? params.data.CorrespondenceEvents.length : 0;

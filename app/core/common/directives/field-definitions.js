@@ -13,6 +13,18 @@ common_module.directive('ctuirTextField',
 
     });
 
+common_module.directive('ctuirHiddenField',
+    function(){
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-hidden.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+
 common_module.directive('ctuirTextareaField',
     function(){
 

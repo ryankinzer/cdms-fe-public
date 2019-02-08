@@ -1470,8 +1470,17 @@ function getJsonObjects(vals) {
         if (typeof vals === 'string' && vals != "") {
             objvals = angular.fromJson(vals);
             if (Array.isArray(objvals) && objvals.length > 0) {
+                //console.dir(objvals);
                 if (objvals[0].hasOwnProperty('ID')) {
                     objvals = makeObjects(objvals, 'ID', 'LABEL'); //if our possible values are objectified (fisherman, etc. from LookupHelper)
+                }
+                else if (typeof objvals[0] == 'object' && 'POSSIBLEVALUES' in objvals[0]) {  //true when a datasource is a metafield (select PossibleValues from metadataproperties where name = 'ProjectLead')
+                    //console.log("have possible values");
+                    //console.dir(objvals[0]);
+                    objvals = angular.fromJson(objvals[0].POSSIBLEVALUES);
+                    if (Array.isArray(objvals))
+                        objvals = objvals.sort();
+                    //console.dir(objvals);
                 }
             }
         }

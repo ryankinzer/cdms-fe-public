@@ -410,6 +410,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
                 
                 
+                console.dir($scope.dataAgColumnDefs);
+
                 //convert timezone to object if it exists
                 if ($scope.row.Activity && $scope.row.Activity.Timezone) {
                     $scope.row.Activity.Timezone = angular.fromJson($scope.row.Activity.Timezone);
@@ -419,8 +421,24 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     }
                 }
 
-                console.log("in the end our timezone is:");
-                console.dir($scope.row.Activity.Timezone);
+                //console.log("in the end our timezone is:");
+                //console.dir($scope.row.Activity.Timezone);
+
+                //set our location if only one project location exists.
+                $scope.project.$promise.then(function () { 
+                    var HeaderLocation = getAllMatchingFromArray($scope.dataAgColumnDefs.HeaderFields, 'LocationId', 'DbColumnName');
+                    if (HeaderLocation && $scope.project.Locations.length == 1 && !$scope.row.Activity.LocationId) {
+                        $scope.project.Locations.forEach(function (loc) { 
+                            if (loc.LocationTypeId == PRIMARY_PROJECT_LOCATION_TYPEID) {
+                                $scope.row.Activity.LocationId = loc.Id;
+                                console.log(" --> setting Activity.LocationId to primary project location because there is only one defined.");
+                            }
+                        });
+                    }
+                });
+                
+
+                
                 
                 //console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);
@@ -436,68 +454,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
 
                 ChartService.buildChart($scope, $scope.dataset_activities.Details, $scope.dataset.Datastore.TablePrefix);
-
-/*
-                $scope.chartConfig = {
-                    chart: {
-                        type: 'pieChart',
-                        height: 500,
-                        width: 400,
-                        x: function (d) { return d.key; },
-                        y: function (d) { return d.y; },
-                        showLabels: true,
-                        duration: 500,
-                        labelThreshold: 0.01,
-                        labelSunbeamLayout: true,
-                        legend: {
-                            margin: {
-                                top: 5,
-                                right: 35,
-                                bottom: 5,
-                                left: 0
-                            }
-                        }
-                    }
-                };
-
-                $scope.chartData = [
-                            {
-                                key: "One",
-                                y: 5
-                            },
-                            {
-                                key: "Two",
-                                y: 2
-                            },
-                            {
-                                key: "Three",
-                                y: 9
-                            },
-                            {
-                                key: "Four",
-                                y: 7
-                            },
-                            {
-                                key: "Five",
-                                y: 4
-                            },
-                            {
-                                key: "Six",
-                                y: 3
-                            },
-                            {
-                                key: "Seven",
-                                y: .5
-                            }
-                        ];
-
-var template = '<nvd3 options="chartConfig" data="chartData"></nvd3>';
-                angular.element("#chart-inset").append($compile(template)($scope));
-
-*/
-                
-                
-
 
             }, 0);
 
@@ -743,8 +699,8 @@ var template = '<nvd3 options="chartConfig" data="chartData"></nvd3>';
             var HeaderLocation = getAllMatchingFromArray($scope.dataAgColumnDefs.HeaderFields, 'LocationId', 'DbColumnName');
             if (Array.isArray(HeaderLocation) && HeaderLocation.length == 1 && !$scope.row.Activity.hasOwnProperty("LocationId")) { 
                 alert("Location is required. Please choose a location and try again.");
-            console.dir(HeaderLocation);
-            console.dir($scope.row);
+                console.dir(HeaderLocation);
+                console.dir($scope.row);
                 return;
             }
 
