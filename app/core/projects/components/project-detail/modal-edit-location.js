@@ -1,13 +1,15 @@
 ﻿//modal to edit location
-var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridService','CommonService',
+var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridService','CommonService','Upload','ProjectService',
 
-    function ($scope, $modal, $modalInstance, GridService, CommonService) {
+    function ($scope, $modal, $modalInstance, GridService, CommonService, $upload, ProjectService) {
 
         $scope.mode = "edit";
 
         if (!$scope.row.Id) {
             $scope.mode = "new";
         }
+
+        modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.project.Files); 
 
         $scope.save = function () {
 
@@ -48,13 +50,14 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                             $scope.row.SdeObjectId = results[0].objectId;
                             console.log("Created a new point! " + $scope.row.SdeObjectId);
 
-                            var new_location = CommonService.saveNewProjectLocation($scope.project.Id, $scope.row);
-                            new_location.$promise.then(function () {
-                                console.log("done and success!");
-                                //$scope.refreshProjectLocations();
-                                $modalInstance.close(new_location);
-                            });
+                            var data = {
+                                ProjectId: $scope.project.Id,
+                            };
 
+                            var target = '/api/v1/file/UploadProjectFile';
+
+                            $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+        
                         }
                         else {
                             $scope.SaveMessage = "There was a problem saving that location.";
@@ -66,23 +69,35 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
             }
             else //updating an existing...
             {
-                //need to remove these info objects for saving
-                var save_row = angular.copy($scope.row);
-                save_row.LocationType = undefined;
-                save_row.WaterBody = undefined;
+                var data = {
+                    ProjectId: $scope.project.Id,
+                };
 
-                var new_location = CommonService.saveNewProjectLocation($scope.project.Id, save_row);
-                new_location.$promise.then(function () {
-                    //success
-                    $modalInstance.close(new_location);
-                },
-                    function (data) {
-                        //failed
-                        $scope.SaveMessage = "There was a problem saving that location.";
-                        console.dir(data);
-                    });
+                var target = '/api/v1/file/UploadProjectFile';
+
+                $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+                
             }
           
+        };
+
+        //call back from save above once the files are done processing and we're ready to save the item
+        $scope.modalFile_saveParentItem = function (saveRow) {
+
+            saveRow.LocationType = undefined;
+            saveRow.WaterBody = undefined;
+
+            var new_location = CommonService.saveNewProjectLocation($scope.project.Id, saveRow);
+            new_location.$promise.then(function () {
+                console.log("done and success!");
+                $modalInstance.close(new_location);
+            });
+        };
+
+        //callback that is called from modalFile to do the actual file removal (varies by module)
+        $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
+            console.dir(file_to_remove);
+            return ProjectService.deleteFile($scope.project.Id, file_to_remove);
         };
 
         //used as a filter to exclude the edit link - only show bonafide fields

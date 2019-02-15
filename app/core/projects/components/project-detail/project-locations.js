@@ -49,8 +49,7 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             scope.dataGridOptions.api.onFilterChanged();
             scope.dataGridOptions.api.deselectAll();
 
-            scope.displayLocationsOnMap();            
-
+            scope.displayLocationsOnMap();
         };
 
         scope.showProjectLocations = function () { 
@@ -105,10 +104,12 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
                 scope.dataGridOptions.selectedItems = scope.dataGridOptions.api.getSelectedRows();
                 scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
+            onGridReady: function (params) { console.log("Grid ready!"); },
             selectedItems: [],
             defaultColDef: {
                 sortable: true,
                 resizable: true,
+                width: 180,
             },
         };
 
@@ -126,7 +127,7 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
                 }
 
                 scope.displayLocationsOnMap();
-
+                GridService.autosizeColumns(scope.dataGridOptions);
             });
 
         };

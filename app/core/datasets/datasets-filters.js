@@ -206,7 +206,7 @@ datasets_module
 					
 					if (!$scope.viewSubproject) // We are working with a project, dataset, or new subproject file.
 					{
-						if ($scope.dataset.Id) // It's a dataset
+						if ($scope.dataset && $scope.dataset.Id) // It's a dataset
 						{
 							//console.log("This is a dataset file.");
 							if (fileIsString)
