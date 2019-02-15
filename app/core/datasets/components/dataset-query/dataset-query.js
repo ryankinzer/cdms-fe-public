@@ -314,6 +314,18 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 return params.column.colDef.PossibleValues[params.value];
             }
 
+            if (params.column.colDef.ControlType == 'file' || params.column.colDef.ControlType == 'link') {
+                var retvalue = [];
+                var files = getFilesArrayAsList(params.value);
+                files.forEach(function (file) { 
+                    if (params.column.colDef.ControlType == 'file')
+                        retvalue.push(file.Name);
+                    else if (params.column.colDef.ControlType == 'link')
+                        retvalue.push(file.Link);
+                });
+                return retvalue.join();
+            }
+
             if (params.column.colDef.ControlType == "datetime" || params.column.colDef.ControlType == "time") { 
                 retval = params.value;
                 try {
