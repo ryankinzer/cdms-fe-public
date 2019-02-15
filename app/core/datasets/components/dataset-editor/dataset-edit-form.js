@@ -526,11 +526,23 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                         }
                     });
                 }
+
+                console.dir($scope.project.Locations);
+                console.dir($scope.dataset.Datastore);
+                $scope.project.Locations.forEach(function (loc) { 
+                    if (loc.LocationTypeId == $scope.dataset.Datastore.LocationTypeId)
+                        console.log(" --> " + loc.Label + " = " + loc.LocationTypeId);
+
+                    if (loc.Label == "Wujek Treatment")
+                        console.dir(loc);
+
+                });
+
             });
         };
 
-
-       
+        //this is a workaround for angularjs' either too loose matching or too strict...
+        $scope.locequals = function (actual, expected) { return actual == expected; };
 
         $scope.setSelectedBulkQAStatus = function (rowQAId) {
             angular.forEach($scope.dataAgGridOptions.selectedItems, function (item, key) {

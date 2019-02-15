@@ -24,7 +24,7 @@
                     <li class="nav-item" style="margin-left: 3px;">
                         <a class="nav-link" ng-click="showProjectLocations()" ng-class="{'active': !selectedDataset}" href>Project</a>
                     </li>
-                    <li class="nav-item" ng-repeat="dataset in datasets | filter:{ Name : '!Habitat Sites' }">
+                    <li class="nav-item" ng-repeat="dataset in datasets">
                         <a href class="nav-link" ng-class="{'active': selectedDataset && (dataset.Id == selectedDataset.Id) }" ng-click="showLocations(dataset)">{{dataset.Name}}</a>
                     </li>
 

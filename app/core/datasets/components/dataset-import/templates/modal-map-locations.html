@@ -8,7 +8,7 @@
                 <div class="header-label">{{data_location}}</div>
                 <div class="header-value">
                     <select class="form-control" ng-model="mappedLocations[data_location]" convert-to-number>
-                        <option ng-repeat="project_location in project.Locations | filter:{LocationTypeId:dataset.Datastore.LocationTypeId} | orderBy: 'Label'" value="{{project_location.Id}}">{{project_location.Label}}</option>
+                        <option ng-repeat="project_location in project.Locations | filter:{LocationTypeId:dataset.Datastore.LocationTypeId} : locequals | orderBy: 'Label'" value="{{project_location.Id}}">{{project_location.Label}}</option>
                     </select>
                 </div>
             </div>
