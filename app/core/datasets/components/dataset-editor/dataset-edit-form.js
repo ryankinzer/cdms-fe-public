@@ -527,17 +527,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     });
                 }
 
-                console.dir($scope.project.Locations);
-                console.dir($scope.dataset.Datastore);
-                $scope.project.Locations.forEach(function (loc) { 
-                    if (loc.LocationTypeId == $scope.dataset.Datastore.LocationTypeId)
-                        console.log(" --> " + loc.Label + " = " + loc.LocationTypeId);
-
-                    if (loc.Label == "Wujek Treatment")
-                        console.dir(loc);
-
-                });
-
             });
         };
 
