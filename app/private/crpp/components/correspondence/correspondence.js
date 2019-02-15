@@ -43,7 +43,7 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 //if user can edit, unhide the edit links
                 if ($rootScope.Profile.canEdit(scope.project)) {
                     scope.corrAgGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
-                    scope.corrDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 110, menuTabs: [] }); //add this column to the front of the detail grid cols
+                    scope.corrDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 140, menuTabs: [] }); //add this column to the front of the detail grid cols
                 }
 
                 scope.subprojectList.$promise.then( function () {
@@ -79,7 +79,7 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 scope.editCrppSubproject(param.data);
             });
             div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
@@ -87,7 +87,7 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 scope.removeCrppSubproject(param.data);
             });
             div.appendChild(delBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Event';
             addBtn.addEventListener('click', function (event) {
@@ -128,7 +128,7 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 scope.openCorrespondenceEventForm(subproject, detailparam.data); //parent subproject, detail line.
             });
             div.appendChild(editBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
             delBtn.addEventListener('click', function (event) {
@@ -136,7 +136,7 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 scope.removeCrppCorrespondenceEvent(subproject, detailparam.data);
             });
             div.appendChild(delBtn);
-            div.appendChild(document.createTextNode("|"));
+            div.appendChild(document.createTextNode(" | "));
 
             var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
             addBtn.addEventListener('click', function (event) {
@@ -152,7 +152,7 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
 
         //grid columns for crpp correspondence tab (master/subprojects)
         scope.corrAgColumnDefs = [  //in order the columns will display, by the way...
-            { colId: 'EditLinksMaster', width: 150, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
+            { colId: 'EditLinksMaster', width: 180, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             {
                 headerName: 'ID',
                 field: 'Id',
@@ -175,7 +175,7 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 menuTabs: ['filterMenuTab'],
             },
             {
-                headerName: '# Events', width: 60,
+                headerName: '# Events', width: 110,
                 cellRenderer: EventCount,
                 valueGetter: function (params) {
                     return (params.data.CorrespondenceEvents !== undefined && params.data.CorrespondenceEvents.length > 0) ? params.data.CorrespondenceEvents.length : 0;
@@ -183,17 +183,17 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 menuTabs: [],
             },
             { field: 'ProjectName', headerName: 'Name', width: 275, menuTabs: ['filterMenuTab'], filter: 'text' },
-            { field: 'ProjectLead', headerName: 'Project Lead', width: 150, menuTabs: ['filterMenuTab'], },
-            { field: 'Closed', headerName: 'Additional Action?', width: 80, menuTabs: ['filterMenuTab'], },
+            { field: 'ProjectLead', headerName: 'Project Lead', width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'Closed', headerName: 'Additional Action?', width: 160, menuTabs: ['filterMenuTab'], filter: true},
             {
                 //note: white-space here causes word-wrap
-                field: 'Comments', headerName: 'Comments', width: 300, cellStyle: { 'white-space': 'normal' }, menuTabs: ['filterMenuTab'], filter: 'text'
+                field: 'Comments', headerName: 'Comments', width: 380, cellStyle: { 'white-space': 'normal' }, menuTabs: ['filterMenuTab'], filter: 'text'
             },
-            { field: 'TrackingNumber', headerName: 'Tracking #', width: 100, menuTabs: ['filterMenuTab'], },
-            { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150, menuTabs: ['filterMenuTab'], },
+            { field: 'TrackingNumber', headerName: 'Tracking #', width: 120, menuTabs: ['filterMenuTab'], filter: 'text'},
+            { field: 'Agency', headerName: 'Agency', cellRenderer: otherAgencyTemplate, width: 150, menuTabs: ['filterMenuTab'], filter: true},
             //{ field: 'County', headerName: 'County', width: 150, menuTabs: ['filterMenuTab'], },
-            { field: 'strCounties', headerName: 'County', width: 150, menuTabs: ['filterMenuTab'], },
-            { field: 'ProjectProponent', headerName: 'Project Proponent', width: 150, menuTabs: ['filterMenuTab'], },
+            { field: 'strCounties', headerName: 'County', width: 150, menuTabs: ['filterMenuTab'], filter: 'text'},
+            { field: 'ProjectProponent', headerName: 'Project Proponent', width: 170, menuTabs: ['filterMenuTab'], filter: true},
 
         ];
 
@@ -203,7 +203,7 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
             {
                 headerName: 'Notice Date',
                 field: 'CorrespondenceDate',
-                width: 120,
+                width: 150,
                 cellClass: 'event-record-cell',
                 valueGetter: function (params) { return moment(params.node.data.CorrespondenceDate) }, //date filter needs js date object			
                 valueFormatter: function (params) {
@@ -213,15 +213,15 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],
             },
-            { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Days to Respond', field: 'NumberOfDays', cellClass: 'event-record-cell', width: 100, menuTabs: [], },
+            { headerName: 'Notice Type', field: 'CorrespondenceType', cellClass: 'event-record-cell', width: 160, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Type of Response', field: 'ResponseType', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Days to Respond', field: 'NumberOfDays', cellClass: 'event-record-cell', width: 150, menuTabs: [], },
 
             {
                 field: 'ResponseDate',
                 headerName: 'Date of Response',
                 valueGetter: function (params) { return moment(params.node.data.ResponseDate) }, //date filter needs js date object			
-                width: 120,
+                width: 150,
                 valueFormatter: function (params) {
                     return valueFormatterDate(params.node.data.ResponseDate);
                 },
@@ -230,12 +230,12 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
             },
             { headerName: 'Technician', field: 'StaffMember', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
             {
-                headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 300, cellStyle: {
+                headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 380, cellStyle: {
                     'white-space': 'normal'
                 },
                 menuTabs: ['filterMenuTab'], filter: 'text'
             },
-            { headerName: 'Documents', field: 'EventFiles', width: 300, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
         ];

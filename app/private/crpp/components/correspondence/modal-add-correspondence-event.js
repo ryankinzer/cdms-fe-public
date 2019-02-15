@@ -206,6 +206,11 @@ var modal_add_correspondence_event = ['$scope', '$rootScope', '$uibModalInstance
             return;
         }
 
+        if (!$scope.ce_row.StaffMember) {
+            alert("Staff member is required.");
+            return;
+        }
+
         //console.log("$scope.ce_row.ResponseType.Id = " + $scope.ce_row.ResponseType.Id);
         //console.log("$scope.ce_row.ResponseType.Name = " + $scope.ce_row.ResponseType.Name);
         console.log("$scope.ce_row.ResponseType = " + $scope.ce_row.ResponseType);
