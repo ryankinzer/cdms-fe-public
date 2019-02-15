@@ -1,12 +1,12 @@
 <div class="modal-header">
-  	<h4>Add an accuracy check to {{row.Activity.Instrument.Name}}</h4>
+  	<h4>{{pagemode}} accuracy check: {{row.Activity.Instrument.Name}}</h4>
 </div>
 <div class="modal-body modal-form" style="width:600px;">
 
 
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" data-target="#new-record">Add new record</a>
+            <a class="nav-link active" data-toggle="tab" data-target="#new-record">Accuracy Check</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" data-target="#existing-records">Existing records</a>
@@ -26,8 +26,8 @@
 
                     <div class="header-label">Check Method</div>
                     <div class="header-value">
-                        <select class="form-control" ng-model="ac_row.CheckMethod">
-                            <option ng-repeat="method in DataGradeMethods" ng-selected="$index == 5" value="{{$index}}">{{method}}</option>
+                        <select class="form-control" ng-model="ac_row.CheckMethod" convert-to-number>
+                            <option ng-repeat="method in DataGradeMethods" value="{{$index}}">{{method}}</option>
                         </select>
                     </div>
 

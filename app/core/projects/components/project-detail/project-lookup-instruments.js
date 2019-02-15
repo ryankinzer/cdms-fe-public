@@ -85,11 +85,11 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
         //Instrument Accuracy Checks
         var instrDetailColDefs = [
             //{ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 100, menuTabs: [], hide: true },
-            { field: 'CheckDate', headerName: 'Check Date', width: 100, sort: 'desc', cellRenderer: CheckDateRenderer, menuTabs: []},
-            { field: 'CheckMethod', headerName: 'Check Method', cellRenderer: CheckMethodRenderer, width: 230, menuTabs: ['filterMenuTab'] },
-            { field: 'Bath1Grade', headerName: 'Bath 1 Grade', width: 100, menuTabs: ['filterMenuTab'] },
-            { field: 'Bath2Grade', headerName: 'Bath 2 Grade', width: 100, menuTabs: ['filterMenuTab'] },
-            { field: 'Comments', headerName: 'Comments', width: 275, menuTabs: [] },
+            { field: 'CheckDate', headerName: 'Check Date', width: 140, sort: 'desc', cellRenderer: CheckDateRenderer, menuTabs: []},
+            { field: 'CheckMethod', headerName: 'Check Method', cellRenderer: CheckMethodRenderer, width: 300, menuTabs: ['filterMenuTab'] },
+            { field: 'Bath1Grade', headerName: 'Bath 1 Grade', width: 130, menuTabs: ['filterMenuTab'] },
+            { field: 'Bath2Grade', headerName: 'Bath 2 Grade', width: 130, menuTabs: ['filterMenuTab'] },
+            { field: 'Comments', headerName: 'Comments', width: 340, menuTabs: [] },
         ];
 
         scope.instrDetailGridOptions = {
@@ -129,9 +129,9 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
             [
                 { colId: 'EditLinksMaster', cellRenderer: EditLinksTemplate, width: 160, menuTabs: [], hide: true },
                 { field: 'Name', headerName: 'Name', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text', cellRenderer: 'group' },
-                { field: 'SerialNumber', headerName: 'SerialNumber', width: 120, menuTabs: ['filterMenuTab'], filter: 'text'},
+                { field: 'SerialNumber', headerName: 'Serial Number', width: 150, menuTabs: ['filterMenuTab'], filter: 'text'},
                 { field: 'Manufacturer', headerName: 'Manufacturer', width: 150, menuTabs: ['filterMenuTab'], },
-                { field: 'Model', headerName: 'Model', width: 150, menuTabs: ['filterMenuTab'], },
+                { field: 'Model', headerName: 'Model', width: 180, menuTabs: ['filterMenuTab'], },
                 { field: 'InstrumentType.Name', headerName: 'Type', menuTabs: ['filterMenuTab'], },
                 { field: 'StatusId', headerName: 'Status', width: 150, menuTabs: ['filterMenuTab'], 
                     cellRenderer: function (params) { return (params.node.data.StatusId == 0) ? 'Active' : 'Inactive'; },

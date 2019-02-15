@@ -2,6 +2,11 @@
 module_add_accuracy_check = ['$scope', '$uibModalInstance', 'ProjectService',
     function ($scope, $modalInstance, ProjectService) {
 
+        if ($scope.ac_row.hasOwnProperty('CheckDate'))
+            $scope.pagemode = "Edit";
+        else
+            $scope.pagemode = "Add new";
+
         $scope.ac_row = angular.copy($scope.ac_row);
 
         $scope.save = function () {
