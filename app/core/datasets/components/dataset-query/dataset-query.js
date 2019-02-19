@@ -131,13 +131,29 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                         var dataset_locations = getAllMatchingFromArray($scope.project.Locations, $scope.dataset.Datastore.LocationTypeId, 'LocationTypeId');
 
+                        //if no locations for this dataset, use the primary project location
+                        if (dataset_locations.length == 0) {
+                            $scope.project.Locations.forEach(function (loc) { 
+                                if (loc.LocationTypeId == PRIMARY_PROJECT_LOCATION_TYPEID) {
+                                    dataset_locations.push(loc);
+                                }
+                            });
+                        }
+
                         dataset_locations = dataset_locations.sort(orderByAlpha);
+
                         fieldDef.PossibleValuesList = dataset_locations; //makeObjects(dataset_locations, 'Id', 'Label'); //used in the headers
-                        fieldDef.setPossibleValues(makeObjects(dataset_locations, 'Id', 'Label')); //used in the grid
+
+                        if (fieldDef.hasOwnProperty('setPossibleValues')) 
+                            fieldDef.setPossibleValues(makeObjects(dataset_locations, 'Id', 'Label')); //used in the grid
+
                     } else if (fieldDef.field == "QAStatusId") { //ActivityQAStatusId 
                         fieldDef.field = fieldDef.DbColumnName = "ActivityQAStatusId";
                         fieldDef.PossibleValuesList = makeObjects($scope.dataset.QAStatuses, 'Id', 'Name');
-                        fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+
+                        if (fieldDef.hasOwnProperty('setPossibleValues'))
+                            fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+
                         fieldDef.hide_header = true; //hide in header
                     }
                     else if (fieldDef.field == "QAComments") { //ActivityQAStatusId 
@@ -146,11 +162,15 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                     if (fieldDef.ControlType == "select" || fieldDef.ControlType == "multiselect") {
                         fieldDef.PossibleValuesList = getParsedMetadataValues(fieldDef.PossibleValues);
-                        fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+
+                        if (fieldDef.hasOwnProperty('setPossibleValues'))
+                            fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
 
                     } else if (fieldDef.ControlType == "instrument-select") {// || fieldDef.ControlType == "accuracy-check-select" || fieldDef.ControlType =="post-accuracy-check-select" || fieldDef.ControlType == "timezone-select") {
                         fieldDef.PossibleValuesList = makeObjects(fieldDef.PossibleValues, 'Id', 'Label'); 
-                        fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+
+                        if (fieldDef.hasOwnProperty('setPossibleValues'))
+                            fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
                     }
 
                     //hidden headers
@@ -166,8 +186,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                 $scope.dataAgGridOptions.columnDefs = $scope.dataAgColumnDefs.HeaderFields.concat($scope.dataAgColumnDefs.DetailFields);
 
-                console.log("Ready to go!");
-                console.dir($scope.dataAgGridOptions.columnDefs);
+                //console.log("Ready to go!");
+                //console.dir($scope.dataAgGridOptions.columnDefs);
                 //console.dir($scope.imported_rows);
 
 
