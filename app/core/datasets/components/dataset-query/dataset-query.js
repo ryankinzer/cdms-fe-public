@@ -357,7 +357,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 return retval;
             }
 
-            if (params.column.colDef.ControlType == "date") { 
+            if (params.column.colDef.ControlType == "date" || params.column.colDef.ControlType == "activity-date") { 
                 retval = params.value;
                 try {
                     retval = moment(params.value).format("YYYY-MM-DD");
