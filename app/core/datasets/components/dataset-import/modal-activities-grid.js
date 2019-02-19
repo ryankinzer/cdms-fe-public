@@ -69,6 +69,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 console.log("GRID READY fired. ------------------------------------------>>>");
                 $scope.system.loading = false;
                 $scope.$apply();
+                GridService.autosizeColumns($scope.dataAgGridOptions);
             },
 
             defaultColDef: {
@@ -164,21 +165,20 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 //$scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
 
                 //set the detail values into the grid
-                console.log("setting grid data");
+                //console.log("setting grid data");
                 $scope.dataAgGridOptions.api.setRowData($scope.imported_rows);
 
-                console.log("GRID Validate. ------------------------------------------>>>");
+                //console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);
-                console.log("GRID Validate IS DONE ------------------------------------------>>>");
+                //console.log("GRID Validate IS DONE ------------------------------------------>>>");
 
                 $scope.system.messages.push("Checking for duplicates...");
-                console.log("GRID Dupe check ------------------------------------------>>>");
+                //console.log("GRID Dupe check ------------------------------------------>>>");
                 $scope.checkAllRowsForDuplicates();
-                console.log("GRID Dupe check IS DONE ------------------------------------------>>>");
+                //console.log("GRID Dupe check IS DONE ------------------------------------------>>>");
 
                 $scope.dataAgGridOptions.api.redrawRows();  
-                GridService.autosizeColumns($scope.dataAgGridOptions);
-
+                
                 $scope.system.messages.push("Calculating statistics...");
                 $scope.calculateStatistics();
                 GridService.bubbleErrors($scope.dataAgGridOptions);

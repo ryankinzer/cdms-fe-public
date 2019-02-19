@@ -90,8 +90,7 @@
                 
                 $scope.afterFileUploaded();
 
-            })
-                .error(function (data) {
+            }).error(function (data) {
                     //$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
                     var errorStem = "There was a problem uploading your file.\n";
                     var errorSpecificPart1 = "The form says the column headers start on line " + $scope.startOnLine + ".  ";
@@ -180,11 +179,11 @@
 
                 $scope.importing = false; //turn off the fishies, they are distracting
 
-                if ($scope.hasFieldMapped(MAP_LOCATION)) {
+                //if ($scope.hasFieldMapped(MAP_LOCATION)) {
                     $scope.openLocationMappingModal();
-                } else {
-                    $scope.openActivityGridModal();
-                }
+                //} else {
+                //    $scope.openActivityGridModal();
+                //}
 
             } else {
                 //set rootscope and hand-off to dataset entry form
@@ -355,9 +354,17 @@
                 scope: $scope, //very important to pass the scope along...
             }).result.then(function (saved) { 
 
+                //console.dir($scope.mappedLocations);
                 $scope.imported_rows.forEach(function (data_row) {
-                    data_row['Activity']['LocationId'] = $scope.mappedLocations[data_row['Activity']['Location']];
-                    //console.log(" Mapped location - " + data_row['Activity']['LocationId']);
+
+                    var the_loc = $scope.mappedLocations[data_row['Activity']['Location']];
+
+                    if ($scope.mappedLocations.hasOwnProperty("Map all rows to:")) {    //this is the case when a location column is not specified but activity date is.
+                        the_loc = $scope.mappedLocations["Map all rows to:"];
+                    }
+
+                    data_row['Activity']['LocationId'] = the_loc; //map the location of the incoming data to the one they've mapped
+                    //console.log(" Mapped location - " + the_loc);
                     //console.dir(data_row);
                 });  
 
@@ -410,6 +417,12 @@
                     });
                 }
             });
+    
+            //if we have no locations, add a blank one we'll use to map all the activities to
+            if (locations.length == 0) {
+                locations.push("Map all rows to:");
+            }
+
             //console.dir(locations);
             return locations;
 
