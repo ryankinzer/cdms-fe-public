@@ -1,16 +1,17 @@
 ﻿<div class="modal-header">
     <h3>Map locations from data to project locations</h3>
 </div>
-<div class="modal-body modal-form" id="modal-body">
+<div class="modal-body modal-form" id="modal-body" >
     <div class="row ">
-        <div class="col-lg">
+        <div class="col-lg" style="display: grid; display: -ms-grid;">
             <div ng-repeat="data_location in locationsToMap">
-                <div class="header-label">{{data_location}}</div>
+                <div class="header-label" style="width: 280px;">{{data_location}}</div>
                 <div class="header-value">
                     <select class="form-control" ng-model="mappedLocations[data_location]" convert-to-number>
                         <option ng-repeat="project_location in project.Locations | filter:{LocationTypeId:dataset.Datastore.LocationTypeId} : locequals | orderBy: 'Label'" value="{{project_location.Id}}">{{project_location.Label}}</option>
                     </select>
                 </div>
+                <hr />
             </div>
         </div>
     </div>
