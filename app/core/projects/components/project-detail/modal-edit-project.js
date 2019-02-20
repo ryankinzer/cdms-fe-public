@@ -10,6 +10,10 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
             scope.row = scope.project;
         }
 
+        scope.project.Config.ShowHabitatSitesForDatasetsValues = parseArrayToStringValues(scope.project.Config.ShowHabitatSitesForDatasets);
+
+        scope.SavedConfig = scope.project.Config;
+
         //make the row of values that map to our field directives.
         scope.project.MetaFields.forEach(function (field) { 
             field.DbColumnName = field.Label = field.Name;
@@ -26,12 +30,30 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
                 controller: 'ModalProjectConfigLists',
                 scope: scope, //very important to pass the scope along...
             }).result.then(function (saved_field) { 
+                
+            });
+        };
 
+        scope.openChooseHabitatSitesDatasets = function () {
+            
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-choose-showdatasets.html',
+                controller: 'ModalProjectConfigDatasets',
+                scope: scope, //very important to pass the scope along...
+            }).result.then(function (saved_field) { 
+                scope.project.Config.ShowHabitatSitesForDatasetsValues = parseArrayToStringValues(scope.project.Config.ShowHabitatSitesForDatasets);
             });
         };
 
         scope.getConfig = function () { 
-            return angular.toJson(scope.project.Config);
+            var result = "";
+            try {
+                result = angular.toJson(scope.project.Config);
+            } catch (e) {
+                //nothing in config.
+            }
+
+            return result;
         };
 
         scope.save = function () {
@@ -68,6 +90,9 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
             });
             
             var saveRow = angular.copy(scope.row);
+
+            //saveRow.Config.ShowHabitatSitesForDatasets = parseStringValuesToArray(saveRow.Config.ShowHabitatSitesForDatasetsValues);
+
             delete saveRow.Editors;
             delete saveRow.Files;
             delete saveRow.Instruments;
@@ -75,6 +100,10 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
             delete saveRow.Locations;
             delete saveRow.MetaFields;
             delete saveRow.Owner;
+
+            delete scope.project.Config.ShowHabitatSitesForDatasetsValues;
+            
+            saveRow.Config = scope.getConfig();
 
             var promise = ProjectService.saveProject(saveRow);
             promise.$promise.then(function (saved_project) {
@@ -84,8 +113,11 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
         };
 
         scope.cancel = function () {
+            scope.project.Config = scope.SavedConfig;
             $modalInstance.dismiss();
         };
+
+        
 
     }
 ];

@@ -75,7 +75,7 @@
                     <div style="margin-top: 30px;"></div>
                     <table class="inherited-properties">
                         <tr>
-                            <td class="prop-name">Restrict Role:</td>
+                            <td class="prop-name">Restrict to Role:</td>
                             <td class="prop-val"><input type="text" class="form-control" ng-model="row.Config.RestrictRoles" name="RestrictRoles"/></td>
                         </tr>
                         <tr>
@@ -87,11 +87,10 @@
                         </tr>
                         <tr>
                             <td class="prop-name">Datasets to show Habitat Sites:</td>
-                            <td class="prop-val"><textarea rows="10" style="margin-left: 2px;" class="form-control" type="text" ng-model="row.Config.ShowHabitatSitesForDatasets" name="ShowSites"></textarea></td>
-                            <td><a href ng-click="openChooseActivityListFields()">Choose datasets...</a><br /></td>
+                            <td class="prop-val"><textarea rows="10" style="margin-left: 2px;" class="form-control" type="text" ng-model="row.Config.ShowHabitatSitesForDatasetsValues" name="ShowSites"></textarea></td>
+                            <td><a href ng-click="openChooseHabitatSitesDatasets()">Choose datasets...</a><br /></td>
                         </tr>
                     </table>
-                    {{getConfig()}}
                 </div>
             </div>
         </div>

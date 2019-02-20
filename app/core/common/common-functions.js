@@ -1804,6 +1804,31 @@ function momentComparator(moment1, moment2) {
 
 }
 
+//takes an array and returns a string list
+function parseArrayToStringValues (array_in) {
+    var result = '';
+    array_in.forEach(function (item) {
+        result += item + "\n";
+    })
+                
+    return result;
+}
+
+//takes a string list (like a textarea) and returns an array
+function parseStringValuesToArray (string_values) { 
+    //do some cleanup of the incoming data
+    string_values = string_values.replace(/,|"/g, "");
+
+    var ListValues = string_values.trim().split('\n');
+    
+    for (i = 0; i < ListValues.length; i++) {
+        ListValues[i] = ListValues[i].trim();
+    }
+
+    return ListValues;
+
+};
+
 //polyfill for @%#@ IE
 if (typeof Object.assign != 'function') {
   Object.assign = function(target) {

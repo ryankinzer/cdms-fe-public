@@ -21,6 +21,7 @@ require([
     'core/projects/components/project-detail/project-lookups',
     'core/projects/components/project-detail/project-locations',
     'core/projects/components/project-detail/modal-choose-project-lists',    
+    'core/projects/components/project-detail/modal-choose-project-datasets',    
 
     'core/projects/components/project-list/project-list',
     
@@ -56,6 +57,8 @@ require([
     projects_module.controller('ModalAddAccuracyCheckCtrl', module_add_accuracy_check);
 
     projects_module.controller('ModalProjectConfigLists', modal_projectconfig_choose_lists);
+    projects_module.controller('ModalProjectConfigDatasets', modal_projectconfig_choose_datasets);
+
 
     
 });
