@@ -81,6 +81,8 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
                         console.log("User not authorized for this role: " + scope.project.Config.RestrictRoles);
                     }
                 }
+            } else {
+                scope.project.Config = {};
             }
 
         }

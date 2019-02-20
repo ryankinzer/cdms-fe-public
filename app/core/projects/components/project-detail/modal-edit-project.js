@@ -10,7 +10,8 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
             scope.row = scope.project;
         }
 
-        scope.project.Config.ShowHabitatSitesForDatasetsValues = parseArrayToStringValues(scope.project.Config.ShowHabitatSitesForDatasets);
+        if(scope.project.Config.ShowHabitatSitesForDatasetsValues)
+            scope.project.Config.ShowHabitatSitesForDatasetsValues = parseArrayToStringValues(scope.project.Config.ShowHabitatSitesForDatasets);
 
         scope.SavedConfig = scope.project.Config;
 
