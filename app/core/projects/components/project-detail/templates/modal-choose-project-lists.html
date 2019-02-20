@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <h3>Choose lists to appear on Project Lists page</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <p>Specify which list(s) will be the displayed on the Project Lists page. List items will be editable by Project Editors.</p>
+    <select size="8" class="form-control" multiple ng-model="project.Config.Lookups" ng-options="list as list.Label for list in lists | orderBy:'Label'">
+    </select>
+</div>
+<div class="modal-footer">
+    <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button style="margin-top: 30px;" class="right btn" ng-click="save()">Ok</button>
+</div>
+

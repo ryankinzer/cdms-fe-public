@@ -20,9 +20,9 @@ require([
     'core/projects/components/project-detail/project-editors',
     'core/projects/components/project-detail/project-lookups',
     'core/projects/components/project-detail/project-locations',
-    
+    'core/projects/components/project-detail/modal-choose-project-lists',    
+
     'core/projects/components/project-list/project-list',
-    
     
 
     //load project service
@@ -54,6 +54,8 @@ require([
 
     projects_module.controller('ProjectListCtrl', project_list);
     projects_module.controller('ModalAddAccuracyCheckCtrl', module_add_accuracy_check);
+
+    projects_module.controller('ModalProjectConfigLists', modal_projectconfig_choose_lists);
 
     
 });

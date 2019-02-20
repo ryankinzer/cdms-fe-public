@@ -19,6 +19,21 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
                 scope.row[field.DbColumnName] = null;
         });
 
+        scope.openChooseLookupLists = function () {
+            
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/projects/components/project-detail/templates/modal-choose-project-lists.html',
+                controller: 'ModalProjectConfigLists',
+                scope: scope, //very important to pass the scope along...
+            }).result.then(function (saved_field) { 
+
+            });
+        };
+
+        scope.getConfig = function () { 
+            return angular.toJson(scope.project.Config);
+        };
+
         scope.save = function () {
 
             if (!scope.row.Name) {
