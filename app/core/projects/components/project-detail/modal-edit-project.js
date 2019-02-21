@@ -10,7 +10,7 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
             scope.row = scope.project;
         }
 
-        if(scope.project.Config.ShowHabitatSitesForDatasetsValues)
+        if(scope.project.Config && scope.project.Config.hasOwnProperty('ShowHabitatSitesForDatasets'))
             scope.project.Config.ShowHabitatSitesForDatasetsValues = parseArrayToStringValues(scope.project.Config.ShowHabitatSitesForDatasets);
 
         scope.SavedConfig = scope.project.Config;
@@ -102,7 +102,8 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
             delete saveRow.MetaFields;
             delete saveRow.Owner;
 
-            delete scope.project.Config.ShowHabitatSitesForDatasetsValues;
+            if(scope.project.Config && scope.project.Config.hasOwnProperty('ShowHabitatSitesForDatasetsValues'))
+                delete scope.project.Config.ShowHabitatSitesForDatasetsValues;
             
             saveRow.Config = scope.getConfig();
 
