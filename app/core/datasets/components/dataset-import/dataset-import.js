@@ -28,6 +28,27 @@
                 if (!$rootScope.Profile.canEdit($scope.project)) {
                     angular.rootScope.go("/unauthorized");
                 }
+
+                //load the config so that we can check if we are supposed to include the habitat sites in this project's locations                        
+                try {
+                    $scope.project.Config = ($scope.project.Config) ? angular.fromJson($scope.project.Config) : {};
+                } catch (e) { 
+                    console.error("config could not be parsed for project" + $scope.project.Config);
+                    console.dir(e);
+                }
+
+                //do we need to pull in habitat site locations?
+                if ($scope.project.Config && $scope.project.Config.ShowHabitatSitesForDatasets && $scope.project.Config.ShowHabitatSitesForDatasets.contains($scope.dataset.Name)) { 
+                    $scope.project.Locations.forEach(function (loc) {
+                        if (loc.LocationTypeId == LOCATION_TYPE_Hab) {
+                            //switch the type to say "it is one of us" and add the label...
+                            loc.LocationTypeId = $scope.dataset.Datastore.LocationTypeId;
+                            loc.Label = loc.Label + " (Hab Site)";
+                        }
+                    });
+                }
+
+
             });
         });
 
