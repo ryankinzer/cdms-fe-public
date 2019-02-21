@@ -190,10 +190,17 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
         var saveRow = angular.copy($scope.row);
 
         //copy the bound vars into the column fields to save
-        Object.keys($scope.HabitatMetaFieldColumns).forEach(function (col) { 
-            saveRow[col] = angular.toJson($scope.row[$scope.HabitatMetaFieldColumns[col]]);
-            delete saveRow[$scope.HabitatMetaFieldColumns[col]];
-        });
+        if ($scope.HabitatMetaFieldColumns) {
+            Object.keys($scope.HabitatMetaFieldColumns).forEach(function (col) {
+                try {
+                    saveRow[col] = angular.toJson($scope.row[$scope.HabitatMetaFieldColumns[col]]);
+                    delete saveRow[$scope.HabitatMetaFieldColumns[col]];
+                } catch (e) { 
+                    console.warn("had a problem but carrying on...");
+                    console.dir(e);
+                }
+            });
+        }
 
         console.log("saveRow (before wiping HabitatItems) is next..");
         console.dir(saveRow);
