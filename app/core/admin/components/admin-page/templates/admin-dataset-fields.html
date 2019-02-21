@@ -13,10 +13,10 @@
 
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link" ng-class="{'active': OnTab == 'Fields'}" href="/index.html#!/admin-dataset/{{dataset.Id}}">Fields</a>
+                    <a class="nav-link" ng-class="{'active': OnTab == 'Fields'}" href="{{serverUrl}}/index.html#!/admin-dataset/{{dataset.Id}}">Fields</a>
                 </li>
                 <li class="nav-item" ng-class="{'active': OnTab == 'Configuration'}">
-                    <a class="nav-link" href="/index.html#!/admin-config/{{dataset.Id}}">Configuration</a>
+                    <a class="nav-link" href="{{serverUrl}}/index.html#!/admin-config/{{dataset.Id}}">Configuration</a>
                 </li>
 
             </ul>

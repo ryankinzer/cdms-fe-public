@@ -14,7 +14,7 @@ var datasets_list = ['$scope', 'DatasetService', 'ProjectService','CommonService
             var agCellRendererName = function (params) {
                 return '<div>' +
                     '<a title="' + params.node.data.Description
-                    + '" href="/index.html#!/'+ params.node.data.activitiesRoute +'/' + params.node.data.Id + '">'
+                    + '" href="'+serverUrl+'/index.html#!/'+ params.node.data.activitiesRoute +'/' + params.node.data.Id + '">'
                     + params.node.data.Name + '</a>' +
                     '</div>';
             };

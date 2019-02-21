@@ -68,7 +68,7 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
                 var agCellRendererProjectName = function (params) {
                     return '<div>' +
                         '<a title="' + params.node.data.Description
-                        + '" href="/index.html#!/projects/' + params.node.data.Id + '">'
+                        + '" href="'+serverUrl+'/index.html#!/projects/' + params.node.data.Id + '">'
                         + params.node.data.Name + '</a>' +
                         '</div>';
                 };
