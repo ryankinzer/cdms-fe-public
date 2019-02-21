@@ -111,6 +111,8 @@ define([
           DISPLAY_NAME: DISPLAY_NAME,
 	  };
 
+      $rootScope.serverUrl = serverUrl; 
+
 	  $rootScope.Cache = {};
 	  $rootScope.Profile = configureProfile(profile); // profile defined in init.js
 
