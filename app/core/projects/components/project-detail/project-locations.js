@@ -54,7 +54,7 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
         scope.showProjectLocations = function () { 
             scope.selectedDataset = null;
-            scope.dataGridOptions.api.setFilterModel(null)
+            scope.dataGridOptions.api.setFilterModel(null);
             scope.dataGridOptions.api.onFilterChanged();
             scope.dataGridOptions.api.deselectAll();
 
