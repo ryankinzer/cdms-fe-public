@@ -13,27 +13,27 @@ var admin_new_dataset = ['$scope', '$uibModal', 'DatasetService', 'AdminService'
 
         $scope.SelectedProject = null;
 
-        $scope.$watch('datastore.Id', function () {
-            if ($scope.datastore.Id > 0)
-                $scope.datastoreFields = AdminService.getMasterFields($scope.datastore.FieldCategoryId); //AdminService.getFields($routeParams.Id);
+        $scope.datastore.$promise.then( function () {
+            if ($scope.datastore.Id > 0) {
+                $scope.datastoreFields = AdminService.getMasterFields($scope.datastore.Id); 
+
+                $scope.datastoreFields.$promise.then(function () { 
+                    if (!$scope.datastoreFields)
+                        return;
+
+                    angular.forEach($scope.datastoreFields, function (field) {
+                        //parseField(field, $scope);
+                        if (field.PossibleValues)
+                            field.Values = makeObjectsFromValues($scope.datastore.Id + field.DbColumnName, field.PossibleValues);
+
+                    });
+                });
+
+            }
         });
 
-        $scope.$watch('datastoreFields', function () {
-            if (!$scope.datastoreFields)
-                return;
-
-            angular.forEach($scope.datastoreFields, function (field) {
-                //parseField(field, $scope);
-                if (field.PossibleValues)
-                    field.Values = makeObjectsFromValues($scope.datastore.Id + field.DbColumnName, field.PossibleValues);
-
-            });
-
-
-        }, true);
-
-        $scope.$watch('projects.0.Id', function () {
-            console.log("Inside watch projects[0].Id...");
+        
+        $scope.projects.$promise.then(function () {
             if ((typeof $scope.projects === 'undefined') || ($scope.projects === null))
                 return;
             else if ((typeof $scope.projects[0] === 'undefined') || ($scope.projects[0] === null))
