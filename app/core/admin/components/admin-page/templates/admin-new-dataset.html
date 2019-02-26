@@ -1,7 +1,7 @@
 ﻿
 
 <div class="panel-body" style="width: 600px;">
-    <h3>Add Dataset to Project</h3>
+    <h3>Select Project to add this Dataset to:</h3>
     <hr/>
     <div>
         Add <b>{{datastore.Name}}</b> to:
@@ -13,14 +13,15 @@
         </select>
     </div>
     <div style="margin-top: 30px;">
-        With these fields (click to exclude field from dataset):
+        <p>The fields that are "green" below will be included in this dataset. Click to exclude.</p>
+        <p>Note: Some system fields are excluded by default and are "red". Click to include them.</p>
     </div>
     <div>
         <div class="list-group">
             <a href ng-click="removeField(field)" 
                class="list-group-item list-group-group-item-action" 
                ng-class="{'list-group-item-red': field.exclude, 'list-group-item-green':!field.exclude}" 
-               ng-repeat="field in datastoreFields">
+               ng-repeat="field in datastoreFields | orderBy: 'Name'">
                {{field.Name}} {{field.Units}}
             </a>
         </div>

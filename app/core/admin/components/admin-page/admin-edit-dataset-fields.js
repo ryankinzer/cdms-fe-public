@@ -49,7 +49,7 @@ var admin_edit_dataset_fields = ['$scope', '$uibModal', '$timeout', '$routeParam
             columnDefs:
             [
                 { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 120, menuTabs: [] },
-                { field: 'Field.FieldRoleId', headerName: 'Field Role', width: 100, menuTabs: ['filterMenuTab'] },
+                { field: 'Field.FieldRoleId', headerName: 'Field Role', width: 120, menuTabs: ['filterMenuTab'] },
                 { field: 'Label', headerName: 'Label', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'OrderIndex', headerName: 'Order Index', sort:'asc', width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Validation', headerName: 'Local Validation', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -94,7 +94,16 @@ var admin_edit_dataset_fields = ['$scope', '$uibModal', '$timeout', '$routeParam
 
             promise.$promise.then(function (data) {
                 $scope.allFields = promise;
-                $scope.populateAddFieldDropdown();
+    
+                //also add in the activity system fields
+                var systemFields = AdminService.getMasterFields(DATASTORE_ACTIVITYSYSTEMFIELDS);
+                systemFields.$promise.then(function () {
+                    systemFields.forEach(function (systemfield) { 
+                        $scope.allFields.push(systemfield);
+                    });
+
+                    $scope.populateAddFieldDropdown();
+                });
             });
 
             $scope.activateGrid();
