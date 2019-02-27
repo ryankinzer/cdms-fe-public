@@ -64,8 +64,6 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
     
     //fetch all of the habitat metafields and two of the project metafields that are used for habitat sites ("subprojects")
     $scope.setupHabitatMetaFields = function () {
-        if ($scope.project.MetaFields)
-            return;
 
         // row.column (from database) and metadata name
         $scope.HabitatMetaFieldColumns = {
@@ -77,6 +75,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
             "LimitingFactors": "Limiting Factors"
         };
 
+        if ($scope.project.MetaFields)
+            return;
+
+        
         var habfields = CommonService.getMetadataFor($scope.project.Id, METADATA_ENTITY_HABITAT);
         habfields.$promise.then(function () {
             
