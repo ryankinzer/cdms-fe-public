@@ -11,6 +11,12 @@ user_module.factory('GetMyProjectsAction', ['$resource', function ($resource) {
     });
 }]);
 
+user_module.factory('GetMyProjectsList', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/getmyprojectslist', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
 user_module.factory('SaveUserPreferenceAction', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/user/saveuserpreference', {}, {
         save: { method: 'POST', isArray: false }
@@ -19,6 +25,12 @@ user_module.factory('SaveUserPreferenceAction', ['$resource', function ($resourc
 
 user_module.factory('GetMyDatasetsAction', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/user/getmydatasets', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
+user_module.factory('GetMyDatasetsList', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/getmydatasetslist', {}, {
         query: { method: 'GET', params: {}, isArray: true }
     });
 }]);
@@ -71,6 +83,8 @@ user_module.service('UserService', ['$q',
     'UserRequestsTotalPastMonth',
     'DatasetRequestsTotalPastMonth',
     'LastUpdatedDatasets',
+    'GetMyProjectsList',
+    'GetMyDatasetsList',
 
     function ($q,
         SaveUserInfo,
@@ -81,7 +95,9 @@ user_module.service('UserService', ['$q',
         UserLoginsPastMonth,
         UserRequestsTotalPastMonth,
         DatasetRequestsTotalPastMonth,
-        LastUpdatedDatasets
+        LastUpdatedDatasets,
+        GetMyProjectsList,
+        GetMyDatasetsList
 ) {
 
         var service = {
@@ -108,6 +124,14 @@ user_module.service('UserService', ['$q',
 
             getMyProjects: function () {
                 return GetMyProjectsAction.query();
+            },
+
+            getMyDatasetsList: function () {
+                return GetMyDatasetsList.query();
+            },
+
+            getMyProjectsList: function () {
+                return GetMyProjectsList.query();
             },
 
             saveUserPreference: function (name, value) {

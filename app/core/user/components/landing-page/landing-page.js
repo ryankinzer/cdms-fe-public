@@ -2,8 +2,8 @@
 var landing_page = ['$scope', '$rootScope', '$location', 'DatasetService','UserService','$window',
     function ($scope, $rootScope, $location, DatasetService, UserService, $window){
 
-        $scope.myprojects = UserService.getMyProjects();
-		$scope.mydatasets = UserService.getMyDatasets();
+        $scope.myprojects = UserService.getMyProjectsList();
+		$scope.mydatasets = UserService.getMyDatasetsList();
 
         //if the user doesn't have any projects or datasets, bounce them to the projects page
         $scope.myprojects.$promise.then(function () { 

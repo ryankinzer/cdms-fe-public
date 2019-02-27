@@ -639,6 +639,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             });
         };
 
+        $scope.changeQa = function () {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/datasets/components/dataset-view/templates/changeqa-modal.html',
+                controller: 'ModalQaUpdateCtrl',
+                scope: $scope, //very important to pass the scope along... 
+            });
+        };
+
         $scope.getDataGrade = function (check) { return getDataGrade(check) }; //alias
 
         //when user selects an instrument, the directive model binding sets the row.Activity.InstrumentId. 

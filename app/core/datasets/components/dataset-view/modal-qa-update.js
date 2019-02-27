@@ -1,22 +1,32 @@
 ﻿var modal_qa_update = ['$scope', 'DatasetService', 'ProjectService', '$uibModalInstance',
     function ($scope, DatasetService, ProjectService, $modalInstance) {
+
+        $scope.NewActivityStatus = {};
+
+        $scope.message = "";        
+
         $scope.save = function () {
+            var result = DatasetService.updateQaStatus(
+                $scope.row.Activity.Id,
+                $scope.NewActivityStatus.QAStatusId,
+                $scope.NewActivityStatus.Comments,
+            );
 
-            DatasetService.updateQaStatus(
-                $scope.grid.Header.ActivityId,
-                $scope.row.ActivityQAStatus.QAStatusId,
-                $scope.row.ActivityQAStatus.Comments,
-                $scope.QaSaveResults);
+            console.dir(result);
+            result.$promise.then(function () { 
 
-            ProjectService.clearProject();
+                $scope.row.Activity.ActivityQAStatus.QAStatus = getById($scope.dataset.QAStatuses,$scope.NewActivityStatus.QAStatusId);
+                $scope.row.Activity.ActivityQAStatus.User = $scope.Profile;
+                $scope.row.Activity.ActivityQAStatus.QAStatusId = $scope.NewActivityStatus.QAStatusId;
+                $scope.row.Activity.ActivityQAStatus.Comments = $scope.NewActivityStatus.Comments;
 
-            $scope.fields = { header: [], detail: [], relation: [] };
-            $scope.datasheetColDefs = [];
-            $scope.dataSheetDataset = [];
-            $scope.fieldsloaded = false;
+                console.dir($scope.row.Activity.ActivityQAStatus);
 
-            $scope.reloadProject();
-            $modalInstance.dismiss();
+                $modalInstance.dismiss();
+            }, function () { 
+                $scope.message = "There was a problem saving the new status.";
+            });
+            
         };
 
         $scope.cancel = function () {
