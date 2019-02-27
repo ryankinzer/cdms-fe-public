@@ -101,15 +101,15 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.ValueGetters = {
             'activity-date': function (params) {
-                return moment(params.node.data[params.colDef.DbColumnName]).format('YYYY-MM-DD HH:mm');
+                return moment(params.node.data[params.colDef.DbColumnName]);
             },
 
             'time': function (params) {
-                return moment(params.node.data[params.colDef.DbColumnName]).format('HH:mm');
+                return moment(params.node.data[params.colDef.DbColumnName]);
             },
 
             'datetime': function (params) {
-                return moment(params.node.data[params.colDef.DbColumnName]).format('YYYY-MM-DD HH:mm');
+                return moment(params.node.data[params.colDef.DbColumnName]);
             },
 
             'text': function (params) {
@@ -159,15 +159,15 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 //console.dir(params);
                 return moment(params.value).format('L');
             },
-/*
+
             'time': function (params) {
-                return moment(params.node.data[params.colDef.DbColumnName]);
+                return moment(params.node.data[params.colDef.DbColumnName]).format('HH:mm');
             },
 
             'datetime': function (params) {
-                return moment(params.node.data[params.colDef.DbColumnName]);
+                return moment(params.node.data[params.colDef.DbColumnName]).format('YYYY-MM-DD HH:mm');
             },
-
+/*
             'text': function (params) {
                 return params.node.data[params.colDef.DbColumnName];
             },
