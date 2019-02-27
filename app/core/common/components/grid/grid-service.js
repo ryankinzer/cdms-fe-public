@@ -417,24 +417,11 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
 
             //special case for water temp - update the Activity.Description field with the range... we'll use this to duplicate check
             if (dataset.Datastore.TablePrefix == "WaterTemp") {
-                //sort, then get the first and last dates
+                row.Activity.Description = getRangeForDetailField("ReadingDateTime", dataAgGridOptions);
+            }
 
-                //are there rows? if so then use the readingdatetimes to build our range we use for duplicate checking
-                if (dataAgGridOptions.api.getDisplayedRowCount() > 0) {
-
-                    dataAgGridOptions.api.setSortModel({ colId: 'ReadingDateTime', sort: 'asc' });
-                    var oldest = dataAgGridOptions.api.getDisplayedRowAtIndex(0);
-                    var newest = dataAgGridOptions.api.getDisplayedRowAtIndex(dataAgGridOptions.api.getDisplayedRowCount() - 1);
-
-                    var oldest_date = moment(oldest.data.ReadingDateTime).format('YYYY/MM/DD');
-                    var newest_date = moment(newest.data.ReadingDateTime).format('YYYY/MM/DD');
-                    var watertemp_range = oldest_date + " - " + newest_date;
-                    console.log("water temp date range is: " + watertemp_range);
-                    row.Activity.Description = watertemp_range;
-                }
-                else {
-                    console.log("There are no rows for this water temp, the Description (Date Range) will be empty.");
-                }
+            if (dataset.Datastore.TablePrefix == "WaterQuality") {
+                row.Activity.Description = getRangeForDetailField("SampleDate", dataAgGridOptions);
             }
 
             //build up our duplicate checker query
@@ -450,14 +437,17 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
             //add in the duplicate checker key fields configured for this dataset 
             dataset.Config.DuplicateCheckFields.forEach(function (dc_field) {
 
-                //if any of the key field values is empty, bail out -- only check if we have a full composite key.
-                //if (row.Activity[dc_field] == null)
-                //    AbortNoFullKey = true;
-
-                if ((row[dc_field] == null) && (row.Activity[dc_field] == null)) // Row and Activity blank
+                if (row[dc_field] == null && row.Activity[dc_field] == null) { // field isn't set (row or activity)
                     AbortNoFullKey = true;
+                    //console.log("will abort for empty field: " + dc_field);
+                } else {
+                    if(row[dc_field])
+                        query.Fields.push({ 'DbColumnName': dc_field, 'Value': row[dc_field] });
+                    else(row.Activity[dc_field])
+                        query.Fields.push({ 'DbColumnName': dc_field, 'Value': row.Activity[dc_field] });
+                }
 
-                query.Fields.push({ 'DbColumnName': dc_field, 'Value': row.Activity[dc_field] });
+
             });
 
             if (AbortNoFullKey) {
@@ -466,6 +456,9 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 delete saveResult.saveMessage;
                 return null; //early return -- we are bailing out because our key isn't full.
             }
+
+            //console.log("running query: ");
+            //console.dir(query);
 
             var dupe_check = DatasetService.checkForDuplicateActivity(query); // will return { DuplicateActivityId: null (if none), ActivityId (if match exists)
 
@@ -476,10 +469,12 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 if (dupe_check.DuplicateActivityId === null || dupe_check.DuplicateActivityId === row.Activity.Id) { 
                     saveResult.hasError = false;
                     saveResult.error = null;
+                    //console.log("no duplicate.");
                 } else { //otherwise it is.
                     saveResult.hasError = true;
                     saveResult.error = "Duplicate record exists for: " + 
-                        dataset.Config.DuplicateCheckFields.toString().replace("Description","ReadingDateTimeRange").replace(/,/g,", ");
+                        dataset.Config.DuplicateCheckFields.toString().replace("Description","DateRange").replace(/,/g,", ");
+                    //console.log("has duplicate.");
                 }
 
                 saveResult.saving = false;
@@ -537,3 +532,30 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
         return service;
 
     }]);
+
+//helper function to get the beginning and end date as a range - used in description field for water temp, water quality
+function getRangeForDetailField(fieldname, dataAgGridOptions) {
+
+    var range = "";
+
+    //sort, then get the first and last dates
+
+    //are there rows? if so then use the readingdatetimes to build our range we use for duplicate checking
+    if (dataAgGridOptions.api.getDisplayedRowCount() > 0) {
+
+        dataAgGridOptions.api.setSortModel({ colId: fieldname, sort: 'asc' });
+        var oldest = dataAgGridOptions.api.getDisplayedRowAtIndex(0);
+        var newest = dataAgGridOptions.api.getDisplayedRowAtIndex(dataAgGridOptions.api.getDisplayedRowCount() - 1);
+
+        var oldest_date = moment(oldest.data[fieldname]).format('YYYY/MM/DD');
+        var newest_date = moment(newest.data[fieldname]).format('YYYY/MM/DD');
+        var range = oldest_date + " - " + newest_date;
+        //console.log(fieldname + " date range is: " + range);
+        
+    }
+    else {
+        console.log("There are no rows for this water temp, the Description (Date Range) will be empty.");
+    }
+
+    return range;
+}
