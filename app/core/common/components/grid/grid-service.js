@@ -451,7 +451,10 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
             dataset.Config.DuplicateCheckFields.forEach(function (dc_field) {
 
                 //if any of the key field values is empty, bail out -- only check if we have a full composite key.
-                if (row.Activity[dc_field] == null)
+                //if (row.Activity[dc_field] == null)
+                //    AbortNoFullKey = true;
+
+                if ((row[dc_field] == null) && (row.Activity[dc_field] == null)) // Row and Activity blank
                     AbortNoFullKey = true;
 
                 query.Fields.push({ 'DbColumnName': dc_field, 'Value': row.Activity[dc_field] });
