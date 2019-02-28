@@ -613,8 +613,8 @@ datasets_module.service('DatasetService', ['$q',
 
             },
 			
-            updateQaStatus: function (ActivityId, QAStatusId, Comments, saveResults) {
-                saveResults.saving = true;
+            updateQaStatus: function (ActivityId, QAStatusId, Comments) {
+                
                 var payload = {
                     QAStatusId: QAStatusId,
                     ActivityId: ActivityId,
@@ -623,14 +623,7 @@ datasets_module.service('DatasetService', ['$q',
 
                 console.dir(payload);
 
-                SetQaStatusAction.save(payload, function (data) {
-                    saveResults.saving = false;
-                    saveResults.success = true;
-                },
-                    function (data) {
-                        saveResults.saving = false;
-                        saveResults.failure = true;
-                    });
+                return SetQaStatusAction.save(payload);
             },
 			
             getRelationData: function (relationFieldId, activityId, rowId) {

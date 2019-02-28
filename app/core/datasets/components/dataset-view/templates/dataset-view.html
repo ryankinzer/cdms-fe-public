@@ -94,7 +94,7 @@
                     <div class="header-column" ng-switch-when="qa-status-select">
                         <div class="header-label">{{field.Label}}:</div>
                         <div class="header-value">
-                            {{row.Activity.ActivityQAStatus.QAStatus.Name}} ({{row.Activity.ActivityQAStatus.User.Fullname}}) 
+                            {{row.Activity.ActivityQAStatus.QAStatus.Name}} ({{row.Activity.ActivityQAStatus.User.Fullname}}) <button project-role="editor" class="btn btn-xs" ng-click="changeQa()">Change</button>
                         </div>
                     </div>
 

@@ -247,6 +247,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //special case for water temp: fire dupecheck if readingdatetime changed
                 if($scope.dataset.Datastore.TablePrefix == "WaterTemp" && event.colDef.DbColumnName == "ReadingDateTime")
                     $scope.checkForDuplicates();
+
+                //bah - another special case for water quality: fire dupecheck if sampledate changed
+                if($scope.dataset.Datastore.TablePrefix == "WaterQuality" && event.colDef.DbColumnName == "SampleDate")
+                    $scope.checkForDuplicates();
             
 
             },
@@ -636,6 +640,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.selectInstrument();
                 $scope.row.dataChanged = true; //we have changed a header!
     
+            });
+        };
+
+        $scope.changeQa = function () {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/datasets/components/dataset-view/templates/changeqa-modal.html',
+                controller: 'ModalQaUpdateCtrl',
+                scope: $scope, //very important to pass the scope along... 
             });
         };
 
