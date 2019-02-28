@@ -169,16 +169,62 @@ var TimeControlType = function (cdms_field, col_def) {
     };
 
     col_def.valueParser = function (params) { //formats for saving in the grid
-        
+        var strHours = "";
+        var strMinutes = "";
+
         if (params.newValue == null)
             return params.newValue;
+        else if (params.oldValue == null)
+        {
+            try {
+                var the_new_date = moment(params.api._headerrow.Activity.ActivityDate);
+                the_new_date.set({
+                    'hour': 0,
+                    'minute': 0,
+                    'second': 0
+                });
+
+                if (params.newValue.length == 4) { // Exmample:  Time = 1300
+                    strHours = params.newValue.substr(0, 2);
+                    strMinutes = params.newValue.substr(2, 2);
+                    the_new_date.set({
+                        hour: parseInt(strHours),
+                        minute: parseInt(strMinutes)
+                    });
+
+                    return (the_new_date.isValid()) ? the_new_date.format("HH:mm") : params.newValue;
+                }
+                if (params.newValue.length == 5) { // Exmample:  Time = 13:00
+                    strHours = params.newValue.substr(0, 2);
+                    strMinutes = params.newValue.substr(3, 2);
+                    the_new_date.set({
+                        hour: parseInt(strHours),
+                        minute: parseInt(strMinutes)
+                    });
+
+                    return (the_new_date.isValid()) ? the_new_date.format("HH:mm") : params.newValue;
+                }
+            } catch (e) {
+                console.error("failed to convert time: ");
+                console.dir(params);
+                return "error";
+            }
+            
+        }
         else {
             try {
+                if (params.newValue.length == 4) { // Exmample:  Time = 1300
+                    strHours = params.newValue.substr(0, 2);
+                    strMinutes = params.newValue.substr(2, 2);
+                    params.newValue = strHours + ":" + strMinutes;  // Reformat Time to 13:00
+                }
+
                 the_old_date = moment(params.oldValue); //get the date from the old value.
                 if (!the_old_date.isValid())
                     the_old_date = moment(params.api._headerrow.Activity.ActivityDate);
 
-                the_date = moment(params.newValue, ["HH:mm"],true);
+                the_date = moment(params.newValue, ["HH:mm"], true);
+                //console.log("the_date is next...");
                 //console.dir(the_date);
                 var the_combined_date = the_date.set(
                     {
@@ -186,6 +232,7 @@ var TimeControlType = function (cdms_field, col_def) {
                         month: the_old_date.month(),
                         date: the_old_date.date()
                     });
+                //console.log("the_combined_date is next...");
                 //console.dir(the_combined_date);
                 return (the_combined_date.isValid()) ? the_combined_date.format("YYYY-MM-DDTHH:mm:ss") : params.newValue; // 2017-12-19T14:03:10 (no timezone)
 
