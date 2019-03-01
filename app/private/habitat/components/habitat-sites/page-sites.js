@@ -83,7 +83,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                     scope.refreshSubprojectLists();
                 });
 
-                scope.isFavorite = $rootScope.Profile.isProjectFavorite(scope.project.Id);
+                scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
 
                 try {
                     if (!scope.project.Config) {
@@ -911,7 +911,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
 
         //handle favorite toggle
         scope.toggleFavorite = function () { 
-            UserService.toggleFavoriteProject(scope, $rootScope); 
+            UserService.toggleFavoriteDataset(scope, $rootScope); 
         }
       
         scope.ShowMap = {

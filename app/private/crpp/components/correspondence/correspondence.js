@@ -656,5 +656,12 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
         scope.refreshMemory = function () {
             scope.corrAgGridOptions.api.refreshInMemoryRowModel('group');
         };
+
+        //handle favorite toggle
+        $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
+        $scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteDataset($scope, $rootScope); 
+        }
+
     }
 ];
