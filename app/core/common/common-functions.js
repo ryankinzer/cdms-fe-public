@@ -1853,3 +1853,45 @@ if (typeof Object.assign != 'function') {
 }
 
 
+/// validation functions
+function validateOriginFinClip(row, row_errors) {
+    console.dir(row);
+    if (row['Origin'] == 'NAT') {
+        //then we shouldn't have a tag or fin clip
+        if (row['Tag'] && (row['Tag'].indexOf('WIRE')>-1 || row['Tag'].indexOf('VIE')>-1))
+            row_errors.push('NAT is incompatible with Tag WIRE or VIE');
+
+    }
+    else if (row['Origin'] == 'HAT') {
+        if (!row['Tag'] || (row['Tag'].indexOf('WIRE')==-1 && row['Tag'].indexOf('VIE')==-1))
+            row_errors.push('HAT expects Tag to be WIRE or VIE (not '+row['Tag']+')');
+    }
+
+    if (!row['FinClip'] || row['FinClip'] == 'NONE' || row['FinClip'] == 'NA') {
+        if (row['Origin'] != 'UNK' && row['Origin'] != 'NAT')
+            row_errors.push(row['Origin'] + ' expects a FinClip');
+    }
+
+/* original rule:
+ * 
+    var valid_origin = 'HAT'; 
+
+    if(!row['FinClip'] || row['FinClip'] == 'NONE' || row['FinClip'] == 'NA') 
+    {
+	    valid_origin = 'NAT'; 
+
+	    if(row['Origin'] == 'UNK') 
+	    { 
+		    valid_origin = 'UNK';  
+	    } 
+
+	    if(row['Tag'] && (row['Tag'].indexOf('WIRE')>-1 || row['Tag'].indexOf('VIE')>-1)) {
+		    valid_origin = 'HAT'; 
+	    }  
+    } 
+
+    if(row['Origin'] != valid_origin) {
+	    row_errors.push('Tag/FinClip selection is not compatible with Origin selection.'); 
+    }
+*/
+}

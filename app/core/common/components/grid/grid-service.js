@@ -224,7 +224,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
             //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
-            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.data });
+            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data });
             //console.dir(fieldRuleValidationErrors);
             fieldRuleValidationErrors.forEach(function (error) { fieldValidationErrors.push({ "field": event.colDef, "message": error }) });
             
