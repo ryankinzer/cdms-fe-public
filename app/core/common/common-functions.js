@@ -1855,21 +1855,32 @@ if (typeof Object.assign != 'function') {
 
 /// validation functions
 function validateOriginFinClip(row, row_errors) {
-    console.dir(row);
+    //console.dir(row);
     if (row['Origin'] == 'NAT') {
         //then we shouldn't have a tag or fin clip
         if (row['Tag'] && (row['Tag'].indexOf('WIRE')>-1 || row['Tag'].indexOf('VIE')>-1))
             row_errors.push('NAT is incompatible with Tag WIRE or VIE');
 
+        //if there is a finclip give an error
+        if (row['FinClip'] && !(row['FinClip'].indexOf('NONE') > -1 || row['FinClip'].indexOf('NA') > -1 )) {
+            row_errors.push(row['Origin'] + ' should not have a FinClip');
+        }
+
     }
     else if (row['Origin'] == 'HAT') {
-        if (!row['Tag'] || (row['Tag'].indexOf('WIRE')==-1 && row['Tag'].indexOf('VIE')==-1))
+        //then if a tag is set it should be wire or vie
+        if (row['Tag'] && (row['Tag'].indexOf('WIRE')==-1 && row['Tag'].indexOf('VIE')==-1))
             row_errors.push('HAT expects Tag to be WIRE or VIE (not '+row['Tag']+')');
-    }
 
-    if (!row['FinClip'] || row['FinClip'] == 'NONE' || row['FinClip'] == 'NA') {
-        if (row['Origin'] != 'UNK' && row['Origin'] != 'NAT')
+        //and if there is no finclip we expect one 
+        if (!row['FinClip'] || row['FinClip'].indexOf('NONE') > -1) {
             row_errors.push(row['Origin'] + ' expects a FinClip');
+        }
+
+        //if finclip is NA and tag is not wire/vie, we expect a different finclip
+        if(row['FinClip'] == 'NA' && (['Tag'].indexOf('WIRE')==-1 || row['Tag'].indexOf('VIE')==-1))
+            row_errors.push(row['Origin'] + ' expects a FinClip or a Tag of WIRE or VIE');
+
     }
 
 /* original rule:
