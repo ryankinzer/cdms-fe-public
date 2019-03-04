@@ -658,9 +658,9 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
         };
 
         //handle favorite toggle
-        $scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
-        $scope.toggleFavorite = function () { 
-            UserService.toggleFavoriteDataset($scope, $rootScope); 
+        scope.isFavorite = $rootScope.Profile.isDatasetFavorite($routeParams.Id);
+        scope.toggleFavorite = function () { 
+            UserService.toggleFavoriteDataset(scope, $rootScope); 
         }
 
     }
