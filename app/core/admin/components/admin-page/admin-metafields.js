@@ -11,7 +11,9 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
         scope.entities = CommonService.getMetadataEntities();
 
         scope.entities.$promise.then(function () {
-            scope.selectedEntity = scope.entities[0];
+            if(!scope.selectedEntity) //only set if it isn't already
+                scope.selectedEntity = scope.entities[0];
+
             scope.activateDataGrid();
         });
 

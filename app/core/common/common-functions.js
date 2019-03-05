@@ -1883,26 +1883,4 @@ function validateOriginFinClip(row, row_errors) {
 
     }
 
-/* original rule:
- * 
-    var valid_origin = 'HAT'; 
-
-    if(!row['FinClip'] || row['FinClip'] == 'NONE' || row['FinClip'] == 'NA') 
-    {
-	    valid_origin = 'NAT'; 
-
-	    if(row['Origin'] == 'UNK') 
-	    { 
-		    valid_origin = 'UNK';  
-	    } 
-
-	    if(row['Tag'] && (row['Tag'].indexOf('WIRE')>-1 || row['Tag'].indexOf('VIE')>-1)) {
-		    valid_origin = 'HAT'; 
-	    }  
-    } 
-
-    if(row['Origin'] != valid_origin) {
-	    row_errors.push('Tag/FinClip selection is not compatible with Origin selection.'); 
-    }
-*/
 }
