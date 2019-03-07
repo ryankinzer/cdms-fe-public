@@ -25,8 +25,8 @@ var modal_projectconfig_choose_lists = ['$scope', '$uibModal','$uibModalInstance
                     $scope.lists.push({ 'Id': entity.Id, 'Label': entity.Name, 'Type': 'Metafields' });
             });
     
-            $scope.lists.push({ 'Label': 'Fishermen', 'DatasetId':FISHERMEN_DATASETID });
-            $scope.lists.push({ 'Label': 'Seasons', 'DatasetId': SEASONS_DATASETID });
+            $scope.lists.push({ 'Label': 'Fishermen', 'DatasetId':FISHERMEN_DATASETID, 'Id': 1 }); //id here is the LookupTable.Id
+            $scope.lists.push({ 'Label': 'Seasons', 'DatasetId': SEASONS_DATASETID, 'Id': 2 }, );
             $scope.lists.push({ 'Label': 'Instruments' });
             console.dir($scope.lists);
         });
