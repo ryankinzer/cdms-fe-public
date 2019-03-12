@@ -1,0 +1,229 @@
+﻿<style>
+    .view-lease-fields-table {
+        margin-top: 10px;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+
+
+
+            <table class="table view-lease-fields-table table-striped">
+                <tr>
+                    <td>Allotment Name</td>
+                    <td>{{lease.AllotmentName}}</td>
+                </tr>
+
+                <tr>
+                    <td>Lease Number</td>
+                    <td>{{lease.LeaseNumber}}</td>
+                </tr>
+
+                <tr>
+                    <td>TAAMS Number</td>
+                    <td>{{lease.TAAMSNumber}}</td>
+                </tr>
+
+                <tr>
+                    <td>Status</td>
+                    <td>{{ lease.Status | leaseStatus }}</td>
+                </tr>
+
+                <tr>
+                    <td>Last Status Update</td>
+                    <td>{{lease.StatusBy}} @ {{ lease.StatusDate | date : shortDate }}</td>
+                </tr>
+
+                <tr>
+                    <td>Lease Type</td>
+                    <td>{{lease.LeaseType}}</td>
+                </tr>
+
+                <tr>
+                    <td>FSA Tract #</td>
+                    <td>{{lease.FSATractNumber}}</td>
+                </tr>
+
+                <tr>
+                    <td>FSA Field #</td>
+                    <td>{{lease.FieldNumber}}</td>
+                </tr>
+
+                <tr>
+                    <td>Transaction Date</td>
+                    <td>{{lease.TransactionDate | date : shortDate}}</td>
+                </tr>
+
+                <tr>
+                    <td>Length</td>
+                    <td>{{lease.LeaseDuration}}</td>
+                </tr>
+
+                <tr>
+                    <td>Lease Start</td>
+                    <td>{{lease.LeaseStart | date : shortDate}}</td>
+                </tr>
+
+                <tr>
+                    <td>Lease End</td>
+                    <td>{{lease.LeaseEnd | date : shortDate}}</td>
+                </tr>
+
+
+                <tr>
+                    <td>Leased Acres</td>
+                    <td>{{lease.LeaseAcres}}</td>
+                </tr>
+
+                <tr>
+                    <td>Productive Acres</td>
+                    <td>{{lease.ProductiveAcres}}</td>
+                </tr>
+
+                <tr ng-show="lease.LeaseType == 'Grazing'">
+                    <td>Graze Start</td>
+                    <td>{{lease.GrazeStart | date : shortDate}}</td>
+                </tr>
+
+                <tr ng-show="lease.LeaseType == 'Grazing'">
+                    <td>Graze End</td>
+                    <td>{{lease.GrazeEnd | date : shortDate}}</td>
+                </tr>
+
+                <tr ng-show="lease.LeaseType == 'Grazing'">
+                    <td>Graze Animal</td>
+                    <td>{{lease.GrazeAnimal | arrayValues}}</td>
+                </tr>
+
+
+                <tr>
+                    <td>Negotiate Date</td>
+                    <td>{{lease.NegotiateDate | date : shortDate}}</td>
+                </tr>
+
+                <tr>
+                    <td>Approved Date</td>
+                    <td>{{lease.ApprovedDate | date : shortDate}}</td>
+                </tr>
+
+                <tr>
+                    <td>Withdrawl Date</td>
+                    <td>{{lease.WithdrawlDate | date : shortDate}}</td>
+                </tr>
+
+
+
+                <tr ng-show="canViewCropFields">
+                    <td>Green Cover Required Pct</td>
+                    <td>{{lease.GreenCoverRequiredPct}}</td>
+                </tr>
+
+                <tr ng-show="canViewCropFields">
+                    <td>Residue Required Pct</td>
+                    <td>{{lease.ResidueRequiredPct}}</td>
+                </tr>
+
+                <tr ng-show="canViewCropFields">
+                    <td>Clod Required Pct</td>
+                    <td>{{lease.ClodRequiredPct}}</td>
+                </tr>
+                <tr ng-show="canViewCropFields">
+                    <td>Optional Alternative Crop</td>
+                    <td>{{lease.OptionalAlternativeCrop | boolYesNo }}</td>
+                </tr>
+                <tr ng-show="canViewCropFields">
+                    <td>AUMs</td>
+                    <td>{{lease.AUMs}}</td>
+                </tr>
+
+                <tr>
+                    <td>Notes</td>
+                    <td>{{lease.Notes}}</td>
+                </tr>
+
+            </table>
+
+        </div>
+        <div class="col-lg-6">
+
+
+            <table class="table view-lease-fields-table table-striped">
+
+                <tr>
+                    <td>Under Internal Review?</td>
+                    <td>{{lease.UnderInternalReview | boolYesNo }}</td>
+                </tr>
+
+                <tr>
+                    <td>Number of Inspections</td>
+                    <td>{{lease.LeaseInspections.length}}</td>
+                </tr>
+
+                <tr>
+                    <td>Number of Compliance Actions</td>
+                    <td>{{lease.LeaseComplianceActions.length}}</td>
+                </tr>
+
+                <tr>
+                    <td>Lease Fee</td>
+                    <td>{{lease.LeaseFee  | currency}}</td>
+                </tr>
+
+                <tr>
+                    <td>Dollar Advance</td>
+                    <td>{{lease.DollarAdvance | currency}}</td>
+                </tr>
+
+                <tr>
+                    <td>Dollar Bond</td>
+                    <td>{{lease.DollarBond  | currency}}</td>
+                </tr>
+
+                <tr>
+                    <td>Dollar Per Annum</td>
+                    <td>{{lease.DollarPerAnnum  | currency}}</td>
+                </tr>
+
+                <tr>
+                    <td>Due Date</td>
+                    <td>{{lease.DueDate}}</td>
+                </tr>
+
+                <tr>
+                    <td>Payment Due Type</td>
+                    <td>{{lease.PaymentDueType}}</td>
+                </tr>
+
+                <tr>
+                    <td>Payment Due Description</td>
+                    <td>{{lease.PaymentDueDescription}}</td>
+                </tr>
+
+                <tr>
+                    <td>Payment Unit</td>
+                    <td>{{lease.PaymentUnit}}</td>
+                </tr>
+
+            </table>
+
+            <div style="margin-top:20px"></div>
+            <h4>Crop Sharing</h4>
+
+            <table class="table table-striped">
+                <tr><th>Crop</th><th>Crop Share Type</th><th>Crop Share %</th><th>Cost Share %</th><th>Comment</th></tr>
+                <tr ng-repeat="share in lease.LeaseCropShares">
+                    <td>{{share.Crop}}</td>
+                    <td>{{share.CropShareType}}</td>
+                    <td>{{share.CropSharePercent}}</td>
+                    <td>{{share.CostSharePercent}}</td>
+                    <td>{{share.Comment}}</td>
+                </tr>
+        
+            </table>
+
+
+        </div>
+    </div>
+</div>

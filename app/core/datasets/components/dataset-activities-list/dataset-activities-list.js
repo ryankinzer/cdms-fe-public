@@ -832,93 +832,98 @@ var dataset_activities_list = ['$scope', '$routeParams',
         // expose a method for handling clicks ON THE MAP - this is linked to from the Map.js directive
         $scope.click = function (e) {
 
-            //clear the delete selection if they click on the map somewhere...
-            $scope.agGridOptions.api.deselectAll();
+            require([
+                        'esri/symbols/SimpleMarkerSymbol',
+                        'esri/graphic',
+            ], function (SimpleMarkerSymbol, Graphic) {
 
-            try {
+                //clear the delete selection if they click on the map somewhere...
+                $scope.agGridOptions.api.deselectAll();
 
-                if (!$scope.map.graphics.infoTemplate) {
-                    $scope.map.graphics.infoTemplate = $scope.template;
-                    console.log("graphics layer infotemplate defined.");
-                }
+                try {
 
-
-                $scope.map.infoWindow.resize(250, 300);
-
-                //show the infowindow
-                if (e.graphic) {
-                    console.log("e.graphic is next...");
-                    console.dir(e.graphic);
-                    $scope.map.infoWindow.setContent($scope.getInfoContent(e.graphic));
-                }
-                else {
-                    $scope.map.infoWindow.setTitle("New Location");
-                    $scope.map.infoWindow.setContent($scope.getFormContent());
-                }
-
-                $scope.map.infoWindow.show(e.mapPoint);
-
-
-
-                //now... did they click an existing map point?
-                if (e.graphic) {
-                    //filter activities based on the location they clicked.
-                    var filterActivities = [];
-                    var location = getByField($scope.locationsArray, e.graphic.attributes.OBJECTID, "SdeObjectId");
-
-                    //console.log("Filtering --- looking for location: "+location.Id); 
-                    //console.dir(location);
-
-                    angular.forEach($scope.allActivities, function (item, key) {
-                        if (item.LocationId == location.Id) {
-                            //console.log("Found: item with location id");
-                            filterActivities.push(item);
-                        }
-                    });
-
-                    console.log("number of filteractivities: " + filterActivities.length);
-                    //set the filtered activities
-                    $scope.activities = filterActivities;
-                    $scope.agGridOptions.api.setRowData($scope.activities);
-
-
-                    
-                    //console.log("$scope.activities is next...");
-                    //console.dir($scope.activities);
-
-                    $scope.selectedLocation = location;
-                    if ($scope.newGraphic) {
-                        $scope.map.graphics.remove($scope.newGraphic);
-                        $scope.newGraphic = null; // just to clear the buttons on the UI.
+                    if (!$scope.map.graphics.infoTemplate) {
+                        $scope.map.graphics.infoTemplate = $scope.template;
+                        console.log("graphics layer infotemplate defined.");
                     }
 
-                    //$scope.center = [e.mapPoint.x,e.mapPoint.y];
+
+                    $scope.map.infoWindow.resize(250, 300);
+
+                    //show the infowindow
+                    if (e.graphic) {
+                        console.log("e.graphic is next...");
+                        console.dir(e.graphic);
+                        $scope.map.infoWindow.setContent($scope.getInfoContent(e.graphic));
+                    }
+                    else {
+                        $scope.map.infoWindow.setTitle("New Location");
+                        $scope.map.infoWindow.setContent($scope.getFormContent());
+                    }
+
+                    $scope.map.infoWindow.show(e.mapPoint);
+
+
+
+                    //now... did they click an existing map point?
+                    if (e.graphic) {
+                        //filter activities based on the location they clicked.
+                        var filterActivities = [];
+                        var location = getByField($scope.locationsArray, e.graphic.attributes.OBJECTID, "SdeObjectId");
+
+                        //console.log("Filtering --- looking for location: "+location.Id); 
+                        //console.dir(location);
+
+                        angular.forEach($scope.allActivities, function (item, key) {
+                            if (item.LocationId == location.Id) {
+                                //console.log("Found: item with location id");
+                                filterActivities.push(item);
+                            }
+                        });
+
+                        console.log("number of filteractivities: " + filterActivities.length);
+                        //set the filtered activities
+                        $scope.activities = filterActivities;
+                        $scope.agGridOptions.api.setRowData($scope.activities);
+
+
+
+                        //console.log("$scope.activities is next...");
+                        //console.dir($scope.activities);
+
+                        $scope.selectedLocation = location;
+                        if ($scope.newGraphic) {
+                            $scope.map.graphics.remove($scope.newGraphic);
+                            $scope.newGraphic = null; // just to clear the buttons on the UI.
+                        }
+
+                        //$scope.center = [e.mapPoint.x,e.mapPoint.y];
+                    }
+                    else // no -- maybe they are making a new point?
+                    {
+                        $scope.selectedLocation = null; //since we didn't select an existing one.
+
+                        $scope.map.reposition(); //this is important or else we end up with our map points off somehow.
+
+                        $scope.newPoint = e.mapPoint;
+
+                        //if they had already clicked somewhere, remove that point.
+                        if ($scope.newGraphic)
+                            $scope.map.graphics.remove($scope.newGraphic);
+
+                        $scope.newGraphic = new Graphic(
+                            e.mapPoint,
+                            new SimpleMarkerSymbol()
+                        );
+
+                        $scope.map.graphics.add($scope.newGraphic);
+
+                    }
+
+                } catch (e) {
+                    console.dir(e);
                 }
-                else // no -- maybe they are making a new point?
-                {
-                    $scope.selectedLocation = null; //since we didn't select an existing one.
-
-                    $scope.map.reposition(); //this is important or else we end up with our map points off somehow.
-
-                    $scope.newPoint = e.mapPoint;
-
-                    //if they had already clicked somewhere, remove that point.
-                    if ($scope.newGraphic)
-                        $scope.map.graphics.remove($scope.newGraphic);
-
-                    $scope.newGraphic = new esri.Graphic(
-                        e.mapPoint,
-                        new esri.symbol.SimpleMarkerSymbol()
-                    );
-
-                    $scope.map.graphics.add($scope.newGraphic);
-
-                }
-
-            } catch (e) {
-                console.dir(e);
-            }
-
+            });//require
         };
 
 */

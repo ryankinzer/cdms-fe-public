@@ -1,0 +1,83 @@
+﻿<div class="modal">
+    <div class="modal-dialog new-lease-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>{{header_message}}</h4>
+                <ul style="list-style: none;">
+                     <li><b>Inspection Type:</b> {{violation_modal.InspectionType}}</li>
+                     <li><b>Crop Present:</b> {{violation_modal.CropPresent}}</li>
+                     <li><b>Notes:</b> {{violation_modal.InspectionNotes}}</li>
+                </ul>
+            </div>
+
+            
+            <div class="modal-body">
+                <div style="margin-top: 30px;"></div>
+                <div class="header-label">Lease Number</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="violation_modal.LeaseNumber" disabled="disabled" />
+                </div>
+
+                <div style="margin-top: 10px;"></div>
+
+                <div class="header-label">Date of Inspection</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="violation_modal.InspectionDateTime" is-open="opened" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" disabled="disabled" />
+                </div>
+
+                <div class="header-label">Resolved?</div>
+                <div class="header-value">
+                    <input class="form-control" type="checkbox" ng-model="violation_modal.ViolationIsResolved" />
+                </div>
+
+                <div class="header-label">Resolution:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="violation_modal.ViolationResolution">
+                        <option ng-repeat="resolution in violationResolutions.ListValues" ng-selected="violation_modal.ViolationResolution==resolution" value="{{resolution}}">{{resolution}}</option>
+                    </select>
+                </div>
+
+
+                <div class="header-label">Fee Collected</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="violation_modal.ViolationFeeCollected" ui-currency/>
+                </div>
+
+                <div class="header-label">Date Fee Collected</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="violation_modal.ViolationDateFeeCollected" is-open="opened2" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                </div>
+
+
+                <div class="header-label">Fee Collected By</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="violation_modal.ViolationFeeCollectedBy" />
+                </div>
+
+
+                <div class="header-label">Hours Spent</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="violation_modal.ViolationHoursSpent" />
+                </div>
+
+
+                <div style="margin-top: 5px;">
+                    <div class="header-label">Comments</div>
+                    <div class="header-value">
+                        <textarea class="form-control" rows="4" cols="50" ng-model="violation_modal.ViolationComments"></textarea>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+            </div>
+
+
+        </div>
+    </div>
+</div>

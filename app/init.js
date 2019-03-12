@@ -34,7 +34,8 @@
       'private/all-modules',
       'private/crpp/crpp-module',
       'private/habitat/habitat-module',
-      'private/appraisals/appraisals-module',
+        'private/appraisals/appraisals-module',
+        'private/leasing/leasing-module',
 
     ], function (angular, parser) {
    
@@ -59,7 +60,7 @@
                     setTimeout(function () {
                         angular.bootstrap(document.body, ['app']);
                         console.log("Inside init.js, all systems GO!")
-                    }, 2000);
+                    }, 2500);
                 });
                 
                 

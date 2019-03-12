@@ -495,15 +495,14 @@ table.metadata td
 
 .checkbox-itemlist
 {
-	
 	display: inline-block;
-	width: 240px;
+	width: 200px;
+	margin-left: 300px;
 	border: lightgrey 1px solid;
 	border-radius:6px;
 	padding: 8px;
     margin-bottom: 3px;
 }
-
 
 .basemap-menu {
 	color: white;
@@ -832,4 +831,15 @@ margin-left: -8px !important;
 
 .map .container {
     max-width: 100%;
+}
+
+.ag-cell-edit-input {
+    margin: 0px;
+    border-radius: 0px;
+}
+
+.nav-pills .nav-link.active {
+    color: #fff;
+    background-color: #007bff;
+
 }

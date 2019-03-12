@@ -1,0 +1,153 @@
+﻿<div class="modal">
+    <div class="modal-dialog add-operator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>{{header_message}}</h4>
+            </div>
+
+            <div class="modal-body">
+                <div style="margin-top: 30px;"></div>
+
+                <div class="header-label">Organization:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="operator_modal.Organization" />
+                </div>
+
+                <div class="header-label">Prefix:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="operator_modal.Prefix">
+                        <option>Mr.</option>
+                        <option>Mrs.</option>
+                        <option>Ms.</option>
+                        <option>Dr.</option>
+                    </select>
+                </div>
+
+                <div class="header-label">First Name:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="operator_modal.FirstName" />
+                </div>
+
+                <div class="header-label">Last Name:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="operator_modal.LastName" />
+                </div>
+
+                <div class="header-label">Suffix:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="operator_modal.Suffix" />
+                </div>
+
+
+                <div class="header-label">Physical Address 1:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="operator_modal.PhysicalAddress1" />
+                </div>
+
+                <div class="header-label">Physical Address 2:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="operator_modal.PhysicalAddress2" />
+                </div>
+
+                <div class="header-label">Physical City:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="operator_modal.PhysicalCity">
+                        <option ng-repeat="opcity in operatorCities.ListValues" ng-selected="operator_modal.PhysicalCity==opcity" value="{{opcity}}">{{opcity}}</option>
+                    </select>
+                </div>
+
+                <div class="header-label">Physical State:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="operator_modal.PhysicalState">
+                        <option ng-repeat="opstate in operatorStates.ListValues" ng-selected="operator_modal.PhysicalState==opstate" value="{{opstate}}">{{opstate}}</option>
+                    </select>
+                </div>
+
+                <div class="header-label">Physical Zip:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ui-mask="99999" ng-model="operator_modal.PhysicalZip" />
+                </div>
+
+                <div class="header-label">IsMailingDifferent:</div>
+                <div class="header-value">
+                    <input class="form-control" type="checkbox" ng-model="operator_modal.IsMailingDifferent" />
+                </div>
+
+                <div id="mailing-div" ng-show="operator_modal.IsMailingDifferent">
+
+                    <div class="header-label">Mailing Address 1:</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" ng-model="operator_modal.MailingAddress1" />
+                    </div>
+
+                    <div class="header-label">Mailing Address 2:</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" ng-model="operator_modal.MailingAddress2" />
+                    </div>
+
+                    <div class="header-label">Mailing City:</div>
+                    <div class="header-value">
+                        <select class="form-control" ng-model="operator_modal.MailingCity">
+                            <option ng-repeat="opcity in operatorCities.ListValues" ng-selected="operator_modal.MailingCity==opcity" value="{{opcity}}">{{opcity}}</option>
+                        </select>
+                    </div>
+
+                    <div class="header-label">Mailing State:</div>
+                    <div class="header-value">
+                        <select class="form-control" ng-model="operator_modal.MailingState">
+                            <option ng-repeat="opstate in operatorStates.ListValues" ng-selected="operator_modal.MailingState==opstate" value="{{opstate}}">{{opstate}}</option>
+                        </select>
+                    </div>
+
+                    <div class="header-label">Mailing Zip:</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" ui-mask="99999" ng-model="operator_modal.MailingZip" />
+                    </div>
+                </div>
+
+                <div class="header-label">Phone:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ui-mask="(999) 999-9999" ng-model="operator_modal.Phone" />
+                    
+                </div>
+
+                <div class="header-label">Cell:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="operator_modal.Cell" ui-mask="(999) 999-9999"  />
+                </div>
+
+                <div class="header-label">Fax:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="operator_modal.Fax" ui-mask="(999) 999-9999"  />
+                </div>
+
+                <div class="header-label">Email:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="operator_modal.Email" />
+                </div>
+
+                <div>
+                    <hr />
+                    <div class="header-label">Changed by:</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" value="{{currentUser}}" ng-disabled="true" />
+                    </div>
+
+                    <div class="header-label">Changed date:</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" value="{{currentDay | date : shortDate}}" ng-disabled="true" />
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
