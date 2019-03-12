@@ -192,7 +192,8 @@ var TimeControlType = function (cdms_field, col_def) {
                         minute: parseInt(strMinutes)
                     });
 
-                    return (the_new_date.isValid()) ? the_new_date.format("HH:mm") : params.newValue;
+                    //return (the_new_date.isValid()) ? the_new_date.format("HH:mm") : params.newValue;
+                    return (the_new_date.isValid()) ? the_new_date.format("YYYY-MM-DDTHH:mm:ss") : params.newValue;
                 }
                 if (params.newValue.length == 5) { // Exmample:  Time = 13:00
                     strHours = params.newValue.substr(0, 2);
@@ -202,7 +203,8 @@ var TimeControlType = function (cdms_field, col_def) {
                         minute: parseInt(strMinutes)
                     });
 
-                    return (the_new_date.isValid()) ? the_new_date.format("HH:mm") : params.newValue;
+                    //return (the_new_date.isValid()) ? the_new_date.format("HH:mm") : params.newValue;
+                    return (the_new_date.isValid()) ? the_new_date.format("YYYY-MM-DDTHH:mm:ss") : params.newValue;
                 }
             } catch (e) {
                 console.error("failed to convert time: ");
