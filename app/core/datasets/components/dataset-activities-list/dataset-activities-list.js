@@ -71,6 +71,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                         valueGetter: $scope.ValueGetters[field.ControlType],
                         valueFormatter: $scope.ValueFormatters[field.ControlType],
                         filter: getAgGridFilterByType(field.ControlType),
+                        filterParams: getAgGridFilterParamsByType(field.ControlType),
                         menuTabs: ['filterMenuTab'],
                     };
 
