@@ -468,6 +468,9 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/add-fall-inspection-modal.html',
                 controller: 'FallInspectionModalController',
                 scope: $scope, 
+                backdrop  : 'static',
+                windowClass: 'modal-medium',
+                keyboard  : false
             });
         }
 
@@ -490,6 +493,9 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/add-spring-inspection-modal.html',
                 controller: 'SpringInspectionModalController',
                 scope: $scope, 
+                backdrop  : 'static',
+                windowClass: 'modal-medium',
+                keyboard  : false
             });
         }
 
@@ -512,6 +518,9 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/add-grazing-inspection-modal.html',
                 controller: 'GrazingInspectionModalController',
                 scope: $scope,
+                backdrop  : 'static',
+                windowClass: 'modal-medium',
+                keyboard  : false
             });
         }
         

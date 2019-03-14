@@ -1,6 +1,4 @@
-﻿<div class="modal">
-    <div class="modal-dialog new-lease-modal">
-        <div class="modal-content">
+﻿        <div class="modal-content">
             <div class="modal-header">
                 <h4>{{header_message}}: {{lease.LeaseNumber}}</h4>
             </div>
@@ -61,7 +59,7 @@
 
                 <div class="header-label">Date of Inspection</div>
                 <div class="header-value">
-                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="inspection_modal.InspectionDateTime" is-open="opened" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                    <md-datepicker class="form-control" ng-model="inspection_modal.InspectionDateTime" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                 </div>
 
                 <div class="header-label">Inspector</div>
@@ -165,5 +163,3 @@
 
 
         </div>
-    </div>
-</div>

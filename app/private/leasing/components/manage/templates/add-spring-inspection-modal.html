@@ -1,6 +1,4 @@
-﻿<div class="modal">
-    <div class="modal-dialog" id="spring-inspection-modal">
-        <div class="modal-content">
+﻿        <div class="modal-content">
             <div class="modal-header">
                 <h4>{{header_message}}: {{lease.LeaseNumber}}</h4>
             </div>
@@ -34,7 +32,7 @@
                 </div>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body modal-form">
 
                 <div style="margin-top: 30px;"></div>
 
@@ -49,7 +47,7 @@
 
                 <div class="header-label">Date of Inspection</div>
                 <div class="header-value">
-                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="inspection_modal.InspectionDateTime" is-open="opened" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                    <md-datepicker class="form-control" ng-change="updateLeaseNumber()" ng-model="inspection_modal.InspectionDateTime" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                 </div>
 
                 <div class="header-label">Inspector</div>
@@ -60,7 +58,7 @@
                 <div class="header-label">Crop Present:</div>
                 <div class="header-value">
                     <select class="form-control" ng-model="inspection_modal.CropPresent">
-                        <option ng-repeat="option in cropOptions.ListValues" ng-selected="inspection_modal.CropPresent == option" value="{{option}}">{{option}}</option>
+                        <option ng-repeat="option in cropOptions.ListValues | orderBy:'+'" ng-selected="inspection_modal.CropPresent == option" value="{{option}}">{{option}}</option>
                     </select>
                 </div>
 
@@ -68,21 +66,21 @@
                 <div class="header-label">Weeds 1</div>
                 <div class="header-value">
                     <select class="form-control" ng-model="inspection_modal.Weeds1">
-                        <option ng-repeat="weed in weeds.ListValues" ng-selected="inspection_modal.Weeds1 == weed" value="{{weed}}">{{weed}}</option>
+                        <option ng-repeat="weed in weeds.ListValues | orderBy:'+'" ng-selected="inspection_modal.Weeds1 == weed" value="{{weed}}">{{weed}}</option>
                     </select>
                 </div>
 
                 <div class="header-label">Weeds 2</div>
                 <div class="header-value">
                     <select class="form-control" ng-model="inspection_modal.Weeds2">
-                        <option ng-repeat="weed in weeds.ListValues" ng-selected="inspection_modal.Weeds2 == weed" value="{{weed}}">{{weed}}</option>
+                        <option ng-repeat="weed in weeds.ListValues | orderBy:'+'" ng-selected="inspection_modal.Weeds2 == weed" value="{{weed}}">{{weed}}</option>
                     </select>
                 </div>
 
                 <div class="header-label">Weeds 3</div>
                 <div class="header-value">
                     <select class="form-control" ng-model="inspection_modal.Weeds3">
-                        <option ng-repeat="weed in weeds.ListValues" ng-selected="inspection_modal.Weeds3 == weed" value="{{weed}}">{{weed}}</option>
+                        <option ng-repeat="weed in weeds.ListValues | orderBy:'+'" ng-selected="inspection_modal.Weeds3 == weed" value="{{weed}}">{{weed}}</option>
                     </select>
                 </div>
 
@@ -121,5 +119,3 @@
 
 
         </div>
-    </div>
-</div>

@@ -141,7 +141,7 @@
         $scope.currentDay = moment().format();
 
         $scope.viewOnMap = function (params) {
-            window.location = "index.html#leasing?allotment=" + params.AllotmentName;
+            window.location = "index.html#!leasing?allotment=" + params.AllotmentName;
         }
 
         /* pattern = 

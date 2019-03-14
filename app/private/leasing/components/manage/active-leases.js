@@ -224,11 +224,11 @@
 
 
         $scope.viewLease = function (params) {
-            window.location="index.html#view-lease/"+params.Id;
+            window.location="index.html#!view-lease/"+params.Id;
         };
 
         $scope.viewOnMap = function (params) {
-            window.location = "index.html#leasing?allotment=" + params.AllotmentName;
+            window.location = "index.html#!leasing?allotment=" + params.AllotmentName;
         }
 
 }];

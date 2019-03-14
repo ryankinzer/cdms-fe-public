@@ -1,6 +1,4 @@
-﻿<div class="modal">
-    <div class="modal-dialog" id="spring-inspection-modal">
-        <div class="modal-content">
+﻿        <div class="modal-content">
             <div class="modal-header">
                 <h4>{{header_message}} for lease: {{lease.LeaseNumber}}</h4>
                 <div><b>Allotment:</b> {{lease.AllotmentName}}</div>
@@ -44,7 +42,7 @@
                                 <div class="header-label">Crop</div>
                                 <div class="header-value">
                                     <select class="form-control" ng-model="production_modal.HarvestedCrop">
-                                        <option ng-repeat="option in cropOptions.ListValues" ng-selected="production_modal.HarvestedCrop == option" value="{{option}}">{{option}}</option>
+                                        <option ng-repeat="option in cropOptions.ListValues  | orderBy:'+'" ng-selected="production_modal.HarvestedCrop == option" value="{{option}}">{{option}}</option>
                                     </select>
                                 </div>
 
@@ -58,7 +56,7 @@
                                 <div class="header-label">Type</div>
                                 <div class="header-value">
                                     <select class="form-control" ng-model="production_modal.CropType">
-                                        <option ng-repeat="type in productionTypes.ListValues" ng-selected="production_modal.CropType == type" value="{{type}}">{{type}}</option>
+                                        <option ng-repeat="type in productionTypes.ListValues | orderBy:'+'" ng-selected="production_modal.CropType == type" value="{{type}}">{{type}}</option>
                                     </select>
                                 </div>
 
@@ -69,8 +67,7 @@
 
                                 <div class="header-label">Harvest Date</div>
                                 <div class="header-value">
-                                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="production_modal.HarvestDate" is-open="opened2" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-
+                                    <md-datepicker class="form-control" ng-model="production_modal.HarvestDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                 </div>
 
                                 <div class="header-label">Delivery</div>
@@ -177,7 +174,7 @@
 
                                 <div class="header-label">Date of Income</div>
                                 <div class="header-value">
-                                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="production_modal.IncomeDate" is-open="opened" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                    <md-datepicker class="form-control" ng-model="production_modal.IncomeDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                 </div>
 
 
@@ -194,5 +191,3 @@
 
 
         </div>
-    </div>
-</div>

@@ -843,3 +843,7 @@ margin-left: -8px !important;
     background-color: #007bff;
 
 }
+
+.list-group {
+    display: block !important;
+}

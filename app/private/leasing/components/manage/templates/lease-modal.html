@@ -1,15 +1,11 @@
-﻿<div class="modal">
-    <div class="modal-dialog lease-modal">
-        <div class="modal-content">
-            <div class="modal-header">
+﻿            <div class="modal-header" style="display:block;">
                 <h4>{{headerMessage}}</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body modal-form" style="width: 600px;">
 
-                <form name="form" class="css-form modal-form" novalidate>
 
                     <ul class="nav nav-tabs">
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link active" data-toggle="tab" data-target="#basicinfo">Basic Information</a>
                         </li>
                         <li class="nav-item">
@@ -44,22 +40,22 @@
 
                                 <div class="header-label">Operator *</div>
                                 <div class="header-value">
-                                    <button type="button" style="float:right; margin-right:100px;" ng-click="addOperatorPopup()" class="btn btn-sm" tabindex="-1">Add</button>
-                                    <select class="form-control" ng-model="lease_modal.LeaseOperatorId">
+                                    <button type="button" style="float:right; margin-right:20px;" ng-click="addOperatorPopup()" class="btn btn-sm" tabindex="-1">Add</button>
+                                    <select class="form-control" ng-model="lease_modal.LeaseOperatorId" convert-to-number>
                                         <option ng-repeat="operator in operators | orderBy:'SortName'" ng-selected="operator.Id == lease_modal.LeaseOperatorId" value="{{operator.Id}}">{{operator | operOrgName}}</option>
                                     </select>
                                 </div>
 
                                 <div class="header-label">Status *</div>
                                 <div class="header-value">
-                                    <select class="form-control" ng-model="lease_modal.Status">
+                                    <select class="form-control" ng-model="lease_modal.Status" convert-to-number>
                                         <option ng-repeat="status in leaseStatuses" ng-selected="$index == lease_modal.Status" value="{{$index}}">{{status}}</option>
                                     </select>
                                 </div>
 
                                 <div class="header-label">Lease Level *</div>
                                 <div class="header-value">
-                                    <select class="form-control" ng-model="lease_modal.Level">
+                                    <select class="form-control" ng-model="lease_modal.Level" convert-to-number>
                                         <option ng-repeat="level in leaseLevels" ng-selected="$index == lease_modal.Level" value="{{$index}}">{{level}}</option>
                                     </select>
                                 </div>
@@ -83,7 +79,7 @@
 
                                 <div class="header-label">Transaction Date</div>
                                 <div class="header-value">
-                                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="lease_modal.TransactionDate" is-open="opened6" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                    <md-datepicker class="form-control" ng-model="lease_modal.TransactionDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                 </div>
 
                                 <div class="header-label">Length</div>
@@ -93,12 +89,12 @@
 
                                 <div class="header-label">Lease Start Date *</div>
                                 <div class="header-value">
-                                    <input class="form-control" ng-change="updateLeaseNumber()" type="text" datepicker-popup="longDate" ng-model="lease_modal.LeaseStart" is-open="opened" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                    <md-datepicker class="form-control" ng-change="updateLeaseNumber()" ng-model="lease_modal.LeaseStart" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                 </div>
 
                                 <div class="header-label">Lease End Date</div>
                                 <div class="header-value">
-                                    <input class="form-control" ng-change="updateLeaseNumber()" type="text" datepicker-popup="longDate" ng-model="lease_modal.LeaseEnd" is-open="opened2" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                    <md-datepicker class="form-control" ng-change="updateLeaseNumber()" ng-model="lease_modal.LeaseEnd" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                 </div>
 
 
@@ -117,13 +113,12 @@
 
                                     <div class="header-label">Graze Start Date</div>
                                     <div class="header-value">
-                                        <input class="form-control" type="text" datepicker-popup="longDate" ng-model="lease_modal.GrazeStart" is-open="opened3" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-
+                                        <md-datepicker class="form-control" ng-model="lease_modal.GrazeStart" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                     </div>
 
                                     <div class="header-label">Graze End Date</div>
                                     <div class="header-value">
-                                        <input class="form-control" type="text" datepicker-popup="longDate" ng-model="lease_modal.GrazeEnd" is-open="opened4" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                        <md-datepicker class="form-control" ng-model="lease_modal.GrazeEnd" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                     </div>
 
                                     <div class="header-label">Graze Animal</div>
@@ -139,7 +134,7 @@
 
                                 <div class="header-label">Negotiate Date</div>
                                 <div class="header-value">
-                                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="lease_modal.NegotiateDate" is-open="opened5" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                    <md-datepicker class="form-control" ng-model="lease_modal.NegotiateDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                 </div>
 
                                 <div ng-show="canViewCropFields">
@@ -174,12 +169,12 @@
 
                                 <div class="header-label">Withdrawl Date</div>
                                 <div class="header-value">
-                                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="lease_modal.WithdrawlDate" is-open="opened7" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                    <md-datepicker class="form-control" ng-model="lease_modal.WithdrawlDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                 </div>
 
                                 <div class="header-label">Approved Date</div>
                                 <div class="header-value">
-                                    <input class="form-control" type="text" datepicker-popup="longDate" ng-model="lease_modal.ApprovedDate" is-open="opened8" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                    <md-datepicker class="form-control" ng-model="lease_modal.ApprovedDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                 </div>
 
                                 <div class="header-label">Under Internal Review?</div>
@@ -190,7 +185,7 @@
                                 <div ng-show="lease_modal.UnderInternalReview">
                                     <div class="header-label">Internal Review Start Date</div>
                                     <div class="header-value">
-                                        <input class="form-control" type="text" datepicker-popup="longDate" ng-model="lease_modal.InternalReviewStartDate" is-open="opened9" min="'2000-01-01'" max="'2050-06-22'" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                        <md-datepicker class="form-control" ng-model="lease_modal.InternalReviewStartDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
                                     </div>
                                 </div>
 
@@ -215,7 +210,7 @@
                                 <div style="margin-top: 30px;"></div>
 
                                 <div style="margin-left: 30px; ">
-                                    <div id="cropshare-grid-modal" style="height: 200px;width:95%;" class="ag-theme-blue"></div>
+                                    <div id="cropshare-grid-modal" style="height: 200px;" class="ag-theme-blue"></div>
                                     <button class="btn btn-sm" ng-click="addRow()" style="margin: 10px;">Add row</button>
                                     <button class="btn btn-sm" ng-click="removeRow()" style="margin: 10px;">Remove row</button>
                                 </div>
@@ -247,7 +242,7 @@
                                     <input class="form-control" type="text" ng-model="lease_modal.DollarPerAnnum" ui-money-mask="0" />
                                 </div>
 
-                                <div class="header-label">Payment Due Date</div>
+                                <div class="header-label">Payment Due Description</div>
                                 <div class="header-value">
                                     <input class="form-control" type="text" ng-model="lease_modal.DueDate" />
                                 </div>
@@ -283,7 +278,6 @@
                     <div style="margin-top: 10px;"></div>
                     <div ng-show="pagemode='edit'" ng-include="'app/private/leasing/components/manage/templates/modal-changedby.html'"></div>
 
-                </form>
 
             <div class="modal-footer">
 
@@ -291,5 +285,3 @@
                 <button class="btn btn-primary" ng-click="save()">Save</button>
             </div>
         </div>
-    </div>
-</div>

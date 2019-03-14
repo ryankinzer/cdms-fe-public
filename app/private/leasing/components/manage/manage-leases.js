@@ -62,7 +62,7 @@
 
 
         $scope.viewLease = function (id) {
-            window.location = "index.html#view-lease/" + id;
+            window.location = "index.html#!view-lease/" + id;
         };
 
 
