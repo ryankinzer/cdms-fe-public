@@ -1646,7 +1646,6 @@ function valueFormatterDate(in_date, in_format) {
     return retval;
 }
 
-<<<<<<< HEAD
 //Takes a string or number, however formatted, and turns it into a javascript number.
 function parseToFloat(value, decimal) {
 

@@ -95,21 +95,21 @@
                     </div>
                 </li>
 
-                <li ng-show="inModule == 'leasing'" class="dropdown" ng-cloak>
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Leasing <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#/leasing">Search</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#/available-land">Available Land for Lease</a></li>
-                        <li><a href="#/pending-leases">Pending Leases</a></li>
-                        <li><a href="#/active-leases">Active Leases</a></li>
-                        <li><a href="#/violations">Inspection Violations</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#/manage-operators">Manage Operators</a></li>
-                        <li><a href="#/manage-lookups">Manage Lookups</a></li>
-                        <li><a href="/assets/pdf/LeaseProcessingWorkflow.pdf" target="_blank">Workflow Diagram (pdf)</a></li>
+                <li  class="nav-item dropdown" ng-show="inModule=='leasing'" ng-cloak>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Leasing</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#!/leasing">Search</a>
+                        <a href class="dropdown-item divider"></a>
+                        <a class="dropdown-item" href="#!/available-land">Available Land for Lease</a>
+                        <a class="dropdown-item" href="#!/pending-leases">Pending Leases</a>
+                        <a class="dropdown-item" href="#!/active-leases">Active Leases</a>
+                        <a class="dropdown-item" href="#!/violations">Inspection Violations</a>
+                        <a href class="dropdown-item divider"></a>
+                        <a class="dropdown-item" href="#!/manage-operators">Manage Operators</a>
+                        <a class="dropdown-item" href="#!/manage-lookups">Manage Lookups</a>
+                        <a class="dropdown-item" href="/assets/pdf/LeaseProcessingWorkflow.pdf" target="_blank">Workflow Diagram (pdf)</a>
 
-                    </ul>
+                    </div>
                 </li>
 
                 <li ng-cloak ng-show="Profile.isAdmin()" class="nav-item dropdown">

@@ -1,4 +1,4 @@
-﻿var inspection_violations = ['$scope', '$route', '$routeParams', '$modal', '$location', '$window', '$rootScope', 'LeasingService',
+﻿var inspection_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'LeasingService',
     function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope,LeasingService) {
 
         $rootScope.inModule = "leasing";
@@ -102,14 +102,16 @@
         $scope.violationsGrid = {
             columnDefs: violationsColumnDefs,
             rowData: $scope.violations,
-            enableSorting: true,
-            enableFilter: true,
             rowSelection: 'single',
             components: {
                 booleanEditor: BooleanEditor,
                 booleanCellRenderer: BooleanCellRenderer,
             },
-            enableColResize: true,
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
         }
 
         $scope.openInspectionViolationModal = function (params) {

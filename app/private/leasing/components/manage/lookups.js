@@ -1,4 +1,4 @@
-﻿var lookup_lists = ['$scope', '$route', '$routeParams', '$modal', '$location', '$window', '$rootScope', 'LeasingService',
+﻿var lookup_lists = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'LeasingService',
 
     function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope, LeasingService) {
 

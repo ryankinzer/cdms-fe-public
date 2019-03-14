@@ -1,4 +1,4 @@
-﻿var modal_add_fall_inspection = ['$scope', '$modalInstance', 'LeasingService',
+﻿var modal_add_fall_inspection = ['$scope', '$uibModalInstance', 'LeasingService',
     function ($scope, $modalInstance, LeasingService) {
 
         $scope.header_message = "Edit Fall Inspection";

@@ -1,4 +1,4 @@
-﻿var active_leases = ['$scope', '$route', '$routeParams', '$modal', '$location', '$window', '$rootScope', 'LeasingService',
+﻿var active_leases = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'LeasingService',
     function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope,LeasingService) {
 
         $rootScope.inModule = "leasing";
@@ -214,11 +214,14 @@
         $scope.leaseGrid = {
             columnDefs: leaseColumnDefs,
             rowData: $scope.leases,
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
             rowSelection: 'single',
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
         }
+
 
         $scope.viewLease = function (params) {
             window.location="index.html#view-lease/"+params.Id;

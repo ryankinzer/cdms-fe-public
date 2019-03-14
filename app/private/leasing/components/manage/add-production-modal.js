@@ -1,4 +1,4 @@
-﻿var modal_add_production = ['$scope', '$modalInstance', 'LeasingService',
+﻿var modal_add_production = ['$scope', '$uibModalInstance', 'LeasingService',
     function ($scope, $modalInstance, LeasingService) {
 
         $scope.header_message = "Production";

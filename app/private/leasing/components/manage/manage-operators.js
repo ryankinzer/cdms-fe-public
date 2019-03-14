@@ -1,4 +1,4 @@
-﻿var manage_operators = ['$scope', '$route', '$routeParams', '$modal', '$location', '$window', '$rootScope', 'LeasingService',
+﻿var manage_operators = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'LeasingService',
     function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope,LeasingService) {
 
         $rootScope.inModule = "leasing";
@@ -93,15 +93,17 @@
         $scope.operatorsGrid = {
             columnDefs: operatorColumnDefs,
             rowData: $scope.operators,
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
                 $scope.operatorsGrid.selectedItems = $scope.operatorsGrid.api.getSelectedRows();
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
-            selectedItems: []
+            selectedItems: [],
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
         }
 
         $scope.saveOperatorCallback = function () {

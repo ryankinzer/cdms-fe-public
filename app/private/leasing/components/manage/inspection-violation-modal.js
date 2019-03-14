@@ -1,4 +1,4 @@
-﻿var inspection_violation_modal = ['$scope', '$modalInstance', 'LeasingService',
+﻿var inspection_violation_modal = ['$scope', '$uibModalInstance', 'LeasingService',
     function ($scope, $modalInstance, LeasingService) {
 
         $scope.header_message = "Update Inspection Violation Action";

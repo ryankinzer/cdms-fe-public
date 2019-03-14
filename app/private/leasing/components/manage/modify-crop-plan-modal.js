@@ -1,5 +1,5 @@
 ﻿
-var modal_modify_crop_plan = ['$scope', '$modalInstance','LeasingService',
+var modal_modify_crop_plan = ['$scope', '$uibModalInstance','LeasingService',
     function ($scope, $modalInstance, LeasingService) {
 
         $scope.header_message = "Modify lease contract: " + $scope.lease.LeaseNumber;
@@ -25,16 +25,16 @@ var modal_modify_crop_plan = ['$scope', '$modalInstance','LeasingService',
         $scope.cropsGrid = {
             columnDefs: cropsColumnDefs,
             rowData: cropsRowData,
-            enableSorting: true,
-            enableFilter: true,
             rowSelection: 'multiple',
-            defaultColDef: {
-                editable: true,
-            },
             components: {
                 booleanEditor: BooleanEditor,
                 booleanCellRenderer: BooleanCellRenderer,
-            }
+            },
+            defaultColDef: {
+                editable: true,
+                sortable: true,
+                resizable: true,
+            },
         }
 
         $modalInstance.opened.then(function () {

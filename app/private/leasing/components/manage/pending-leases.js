@@ -1,4 +1,4 @@
-﻿var pending_leases = ['$scope', '$route', '$filter', '$modal', '$location', '$window', '$rootScope', 'LeasingService',
+﻿var pending_leases = ['$scope', '$route', '$filter', '$uibModal', '$location', '$window', '$rootScope', 'LeasingService',
     function ($scope, $route, $filter, $modal, $location, $window, $rootScope, LeasingService) {
         console.log("Inside pending leasing controller...");
 
@@ -209,10 +209,12 @@
         $scope.leaseGrid = {
             columnDefs: leaseColumnDefs,
             rowData: $scope.leases,
-            enableSorting: true,
-            enableFilter: true,
-            enableColResize: true,
             rowSelection: 'single',
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
         }
 
         $scope.viewLease = function (params) {

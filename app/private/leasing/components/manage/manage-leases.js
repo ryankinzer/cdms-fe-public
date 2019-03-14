@@ -1,4 +1,4 @@
-﻿var leasing_home = ['$scope', '$route', '$routeParams', '$modal', '$location', '$window', '$rootScope','LeasingService',
+﻿var leasing_home = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope','LeasingService',
     function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope, LeasingService) {
         console.log("Inside leasing controller...");
 

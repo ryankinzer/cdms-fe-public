@@ -1,4 +1,4 @@
-﻿var available_land = ['$scope', '$route', '$filter', '$modal', '$location', '$window', '$rootScope', 'LeasingService',
+﻿var available_land = ['$scope', '$route', '$filter', '$uibModal', '$location', '$window', '$rootScope', 'LeasingService',
     function ($scope, $route, $filter, $modal, $location, $window, $rootScope, LeasingService) {
 
         $rootScope.inModule = "leasing";
@@ -80,15 +80,17 @@
         $scope.leaseGrid = {
             columnDefs: leaseColumnDefs,
             rowData: $scope.fields,
-            enableSorting: true,
-            enableFilter: true,
             rowSelection: 'multiple',
             selectedItems: [],
-            enableColResize: true,
             onSelectionChanged: function () {
                 $scope.leaseGrid.selectedItems = $scope.leaseGrid.api.getSelectedRows();
                 $scope.$apply(); //we're changing something that angular isn't aware of
-            }
+            },
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
         }
 
         $scope.openNewLeaseModal = function (params) {

@@ -1,4 +1,4 @@
-﻿var view_lease = ['$scope', '$route', '$routeParams', '$modal', '$location', '$window', '$rootScope', 'LeasingService',
+﻿var view_lease = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'LeasingService',
     function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope, LeasingService) {
 
         $rootScope.inModule = "leasing"; //signal to show the leasing menu, etc.

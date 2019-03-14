@@ -1,4 +1,4 @@
-﻿var modal_add_operator = ['$scope', '$modalInstance', 'LeasingService',
+﻿var modal_add_operator = ['$scope', '$uibModalInstance', 'LeasingService',
     function ($scope, $modalInstance, LeasingService) {
 
         $scope.header_message = "Edit Operator";

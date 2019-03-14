@@ -1,5 +1,5 @@
 ﻿
-var modal_lease = ['$scope', '$rootScope', '$modal','$modalInstance', 'LeasingService',
+var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'LeasingService',
     function ($scope, $rootScope, $modal, $modalInstance, LeasingService) {
 
         $scope.lease_modal = angular.copy($scope.lease);
@@ -77,12 +77,13 @@ var modal_lease = ['$scope', '$rootScope', '$modal','$modalInstance', 'LeasingSe
         $scope.leaseCropShareGrid = {
             columnDefs: leaseCropShareColumnDefs,
             rowData: $scope.lease_modal.LeaseCropShares,
-            enableSorting: true,
-            enableFilter: true,
+            
             defaultColDef: {
                 editable: true,
+                sortable: true,
+                resizable: true,
             },
-            enableColResize: true,
+
             rowSelection: 'single',
         }
 
