@@ -52,6 +52,8 @@ var modal_manage_user = ['$scope', '$uibModalInstance', 'CommonService',
 
         };
 
+        scope.hidePassword();
+
         scope.cancel = function () {
             delete scope.user.Password;
             

@@ -54,17 +54,17 @@
         var leaseColumnDefs = [
             { colId: 'EditLinks', width: 60, cellRenderer: EditLinksTemplate, menuTabs: [] },
             { headerName: "Allotment", field: "AllotmentName", width: 100, menuTabs: ['filterMenuTab'], filter: "text" },
-            { headerName: "Field Land Use", field: "FieldLandUse", width: 160, menuTabs: ['filterMenuTab'] },
+            { headerName: "Field Land Use", field: "FieldLandUse", width: 160, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Field #", field: "FieldId", width: 100, menuTabs: ['filterMenuTab'], filter: "number" },
             { headerName: "Field Acres", field: "FieldAcres", width: 140, menuTabs: ['filterMenuTab'], filter: "number" },
-            { headerName: "Expires", field: "Expiration", width: 140, menuTabs: ['filterMenuTab'] },
+            { headerName: "Expires", field: "Expiration", width: 140, menuTabs: ['filterMenuTab'], filter: true },
             {
                 headerName: "Date Available", field: "DateAvailable", width: 160,
                 valueGetter: function (params) { return moment(params.node.data.DateAvailable) },
                 valueFormatter: function (params) {
                     return valueFormatterDate(params.node.data.DateAvailable);
                 },
-                menuTabs: ['filterMenuTab'], filter: "date"
+                menuTabs: ['filterMenuTab'], filter: "agDateColumnFilter"
             },
             //{ headerName: "AY Income", field: "AvgAnnualIncome", width: 140, menuTabs: ['filterMenuTab'], filter: "number" },
             //{ headerName: "AYI Per Acre", field: "AvgAnnualIncomePerAcre", width: 140, menuTabs: ['filterMenuTab'], filter: "number" },

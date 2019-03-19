@@ -77,12 +77,13 @@
                 valueGetter: function (params) {
                     return (params.node.data.LeaseOperator.Organization) ? params.node.data.LeaseOperator.Organization : params.node.data.LeaseOperator.FirstName + " " + params.node.data.LeaseOperator.LastName;
                 },
-                menuTabs: ['filterMenuTab']
+                menuTabs: ['filterMenuTab'],
+                filter: true
             },
             //{ headerName: "Farm Number", field: "FarmNumber", width: 160 },
             //{ headerName: "Level", field: "Level", width: 160 },
             
-            { headerName: "Status By", field: "StatusBy", width: 160, menuTabs: ['filterMenuTab'] },
+            { headerName: "Status By", field: "StatusBy", width: 160, menuTabs: ['filterMenuTab'], filter:'text' },
 {
                 headerName: "Transaction Date",
                 field: "TransactionDate", width: 160,
@@ -91,7 +92,7 @@
                     return valueFormatterDate(params.node.data.TransactionDate);
                 },
                 menuTabs: ['filterMenuTab'],
-                filter: "date"
+                filter: "agDateColumnFilter"
             },
             {
                 headerName: "Status Date",
@@ -101,11 +102,11 @@
                     return valueFormatterDate(params.node.data.StatusDate);
                 },
                 menuTabs: ['filterMenuTab'],
-                filter: "date"
+                filter: "agDateColumnFilter"
             },
             { headerName: "FSA Tract", field: "FSATractNumber", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
             //{ headerName: "HEL", field: "HEL", width: 160 },
-            { headerName: "Lease Type", field: "LeaseType", width: 160, menuTabs: ['filterMenuTab'] },
+            { headerName: "Lease Type", field: "LeaseType", width: 160, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Lease Acres", field: "LeaseAcres", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
             //{ headerName: "Lease Duration", field: "LeaseDuration", width: 160 },
             { headerName: "Productive Acres", field: "ProductiveAcres", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
@@ -117,7 +118,7 @@
                     return valueFormatterDate(params.node.data.NegotiateDate);
                 },
                 menuTabs: ['filterMenuTab'],
-                filter: "date"
+                filter: "agDateColumnFilter"
             },
             {
                 headerName: "Lease Start",
@@ -127,7 +128,7 @@
                     return valueFormatterDate(params.node.data.LeaseStart);
                 },
                 menuTabs: ['filterMenuTab'],
-                filter: "date"
+                filter: "agDateColumnFilter"
             },
             {
                 headerName: "Lease End",
@@ -137,7 +138,7 @@
                     return valueFormatterDate(params.node.data.LeaseEnd);
                 },
                 menuTabs: ['filterMenuTab'],
-                filter: "date"
+                filter: "agDateColumnFilter"
             },
             {
                 headerName: "Due Date",
@@ -153,7 +154,7 @@
                     return valueFormatterDate(params.node.data.ApprovedDate);
                 },
                 menuTabs: ['filterMenuTab'],
-                filter: "date"
+                filter: "agDateColumnFilter"
             }, {
                 headerName: "Withdrawl Date",
                 field: "WithdrawlDate", width: 160,
@@ -162,7 +163,7 @@
                     return valueFormatterDate(params.node.data.WithdrawlDate);
                 },
                 menuTabs: ['filterMenuTab'],
-                filter: "date"
+                filter: "agDateColumnFilter"
             },
             {
                 headerName: "Graze Start",
@@ -172,7 +173,7 @@
                     return valueFormatterDate(params.node.data.GrazeStart);
                 },
                 menuTabs: ['filterMenuTab'],
-                filter: "date"
+                filter: "agDateColumnFilter"
             },
             {
                 headerName: "Graze End",
@@ -182,7 +183,7 @@
                     return valueFormatterDate(params.node.data.GrazeEnd);
                 },
                 menuTabs: ['filterMenuTab'],
-                filter: "date"
+                filter: "agDateColumnFilter"
 
             },
             { headerName: "Residue Required Pct", field: "ResidueRequiredPct", width: 160, menuTabs: ['filterMenuTab'], filter: "number", hide: !$scope.canViewCropFields },
@@ -194,14 +195,14 @@
                 valueGetter: function (params) {
                     return valueFormatterBoolean(params.node.data.OptionalAlternativeCrop);
                 },
-                menuTabs: ['filterMenuTab']
+                menuTabs: ['filterMenuTab'], filter: true
             },
-            { headerName: "AUMs", field: "AUMs", width: 160, menuTabs: ['filterMenuTab'], hide: !$scope.canViewCropFields },
+            { headerName: "AUMs", field: "AUMs", width: 160, menuTabs: ['filterMenuTab'], hide: !$scope.canViewCropFields, filter: true },
             { headerName: "Dollar Per Annum", field: "DollarPerAnnum", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
             { headerName: "Dollar Advance", field: "DollarAdvance", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
             { headerName: "Dollar Bond", field: "DollarBond", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
             { headerName: "Lease Fee", field: "LeaseFee", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
-            { headerName: "Graze Animal", field: "GrazeAnimal", width: 160, menuTabs: ['filterMenuTab'],
+            { headerName: "Graze Animal", field: "GrazeAnimal", width: 160, menuTabs: ['filterMenuTab'], filter: true,
                 valueFormatter: function (params) {
                     return valueFormatterArrayToList(params.node.data.GrazeAnimal);
                 }
