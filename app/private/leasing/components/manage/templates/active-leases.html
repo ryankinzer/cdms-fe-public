@@ -2,7 +2,7 @@
 
 <h2>Active leases</h2>
 
-<div class="right">Show all statuses: <input type="checkbox" ng-model="showAll" ng-click="toggleShowAll()" /></div>
+<div class="right">Show all statuses: <input type="checkbox" ng-true-value="Yes" ng-false-value="No" ng-checked="showAll == 'Yes'" ng-model="showAll" ng-click="toggleShowAll()" /></div>
 <div ng-show="leases.length > 0">
     Total number of active leases: <b>{{leases.length}}</b><br /><br />
 </div>

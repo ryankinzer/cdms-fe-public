@@ -21,10 +21,10 @@
             return $filter('filter')($scope.fields, { FieldLandUse: landuse }).length;
         };
 
-        $scope.showAll = false;
+        $scope.showAll = "No";
         $scope.toggleShowAll = function () {
-            $scope.showAll = !$scope.showAll;
-            if ($scope.showAll) {
+            $scope.showAll = ($scope.showAll == 'Yes') ? 'No' : 'Yes';
+            if ($scope.showAll == 'Yes') {
                 $scope.fields = LeasingService.getAvailableAllotments();
                 $scope.fields.$promise.then(function () {
                     $scope.leaseGrid.api.setRowData($scope.fields);

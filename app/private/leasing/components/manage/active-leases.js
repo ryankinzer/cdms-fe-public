@@ -12,10 +12,11 @@
 
         $scope.canViewCropFields = $rootScope.Profile.hasRole("LeaseCropAdmin");
 
-        $scope.showAll = false;
+        $scope.showAll = 'No';
+
         $scope.toggleShowAll = function () { 
-            $scope.showAll = !$scope.showAll;
-            if ($scope.showAll) {
+            $scope.showAll = ($scope.showAll == 'Yes') ? 'No' : 'Yes';
+            if ($scope.showAll == 'Yes') {
                 $scope.leases = LeasingService.getAllLeases();
                 $scope.leases.$promise.then(function () {
                     $scope.leaseGrid.api.setRowData($scope.leases);
