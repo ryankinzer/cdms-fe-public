@@ -274,7 +274,7 @@
                 },
             },
             { headerName: "FSA Tract", field: "FSATractNumber", width: 160 },
-            //{ headerName: "HEL", field: "HEL", width: 160 },
+            { headerName: "HEL", field: "HEL", width: 160 },
             { headerName: "Lease Type", field: "LeaseType", width: 160 },
             { headerName: "Lease Acres", field: "LeaseAcres", width: 160 },
             //{ headerName: "Lease Duration", field: "LeaseDuration", width: 160 },
