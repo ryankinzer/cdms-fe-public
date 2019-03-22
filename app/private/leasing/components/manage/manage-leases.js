@@ -41,8 +41,8 @@
 
                 if (lease.AllotmentName && lease.AllotmentName.indexOf(in_string) !== -1 ||
                     lease.LeaseNumber && lease.LeaseNumber.indexOf(in_string) !== -1) {
-                    console.log("found one : "+lease.LeaseNumber);
-                        $scope.searchResults.push(lease);
+                    //console.log("found one : "+lease.LeaseNumber);
+                    $scope.searchResults.push(lease);
                 }
                 
             });
