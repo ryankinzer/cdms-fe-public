@@ -70,7 +70,7 @@ define([
         };
 
         // declare our map
-        require(["esri/urlUtils"], function (urlUtils) {
+        /*require(["esri/urlUtils"], function (urlUtils) {
 
             urlUtils.addProxyRule({
               urlPrefix: "restdata.ctuir.org",
@@ -81,6 +81,7 @@ define([
             //esriConfig.defaults.io.alwaysUseProxy = false;
 
         });
+		*/
 
         var map = new Map($attrs.id, mapOptions);
 
