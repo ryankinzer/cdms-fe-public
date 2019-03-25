@@ -70,6 +70,7 @@ define([
         };
 
         // declare our map
+		// Comment this section out for public, uncomment for private with secure maps.
         /*require(["esri/urlUtils"], function (urlUtils) {
 
             urlUtils.addProxyRule({
