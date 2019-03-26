@@ -47,23 +47,21 @@
         };
 
         var searchColumnDefs = [
-            { colId: 'ViewLink', width: 80, cellRenderer: SearchLinksTemplate, menuTabs: [] },
-            { headerName: "Lease Id", field: "LeaseNumber", width: 150, filter: 'text' },            
-            { headerName: "Allotment", field: "AllotmentName", width: 150, filter: 'text' },
-            { headerName: "Type", field: "LeaseType", width: 150, filter: true },
-            { headerName: "FSA Tract #", field: "FSATractNumber", width: 150, filter: 'text' },
-            { headerName: "FSA Farm #", field: "FarmNumber", width: 150, filter: 'text' },
-/*
-            { headerName: "Field Layer Id", field: "LeaseFields", width: 150,
-                valueGetter: function (params) {
-                    console.dir(params.node.data);
-                    return 8442;
-                }
-            },
-*/
-            
+            { colId: 'ViewLink', width: 60, cellRenderer: SearchLinksTemplate, menuTabs: [] },
+            { headerName: "Lease Id", field: "LeaseNumber", width: 130, filter: 'text' },            
             {
-                headerName: "Expires", field: "LeaseEnd", width: 150,
+                headerName: "Status", field: "Status", width: 120,
+                valueFormatter: function (params) {
+                    return leasing_module.LeaseStatus[params.node.data.Status];
+                }
+            },           
+            { headerName: "Allotment", field: "AllotmentName", width: 100, filter: 'text' },
+            { headerName: "Type", field: "LeaseType", width: 120, filter: true },
+            { headerName: "FSA Tract #", field: "FSATractNumber", width: 120, filter: 'text' },
+            { headerName: "FSA Farm #", field: "FarmNumber", width: 120, filter: 'text' },
+           
+            {
+                headerName: "Expires", field: "LeaseEnd", width: 130,
                 valueGetter: function (params) { return moment(params.node.data.LeaseEnd) },
                 valueFormatter: function (params) {
                     return valueFormatterDate(params.node.data.LeaseEnd);
