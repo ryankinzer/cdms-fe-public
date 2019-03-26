@@ -128,21 +128,14 @@
     </form>
     <div ng-show="searchResults.length > 0" class="lease-search-results">
 
-        <table class="lease-table table table-striped table-hover table-bordered">
-            <tr><th>Lease Id</th><th>Allotment</th><th>Type</th><th>Expires</th></tr>
-            <tr ng-repeat="lease in searchResults | orderBy:'-LeaseEnd'">
-                <td><a ng-click="viewLease(lease.Id)" class="pointer">{{lease.LeaseNumber}}</a></td>
-                <td><a ng-click="findOnMap(lease.AllotmentName)" class="pointer">{{lease.AllotmentName}}</td>
-                <td>{{lease.LeaseType}}</td>
-                <td>{{lease.LeaseEnd | date : 'MM/dd/yyyy'}}</td>
-            </tr>
-        </table>
-
+        <div id="search-leases-grid" style="height: 400px;width:100%;" class="ag-theme-blue"></div>
 
     </div>
 
     <div class="search-results-text" ng-if="leases.length == 0">Loading...</div>
     <div class="search-results-text" ng-if="searchResults.length == 0 && searchComplete">No results.</div>
+
+
 </div>
 
 

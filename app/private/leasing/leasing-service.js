@@ -39,9 +39,9 @@ leasing_module.factory('GetLease', ['$resource', function ($resource) {
     });
 }]);
 
-leasing_module.factory('GetLeaseByField', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/lease/GetLeaseByField', {}, {
-        query: { method: 'GET', params: { id: 'id'}, isArray: false }
+leasing_module.factory('GetLeasesByField', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/lease/GetLeasesByField', {}, {
+        query: { method: 'GET', params: { id: 'id'}, isArray: true }
     });
 }]);
 
@@ -147,7 +147,7 @@ leasing_module.service('LeasingService', ['$q',
     'GetCropPlanRevisions',
     'ExpireLeases',
     'AvailableAllotments',
-    'GetLeaseByField',
+    'GetLeasesByField',
     'DeleteOperator',
     function ($q,
         ActiveLeases,
@@ -170,7 +170,7 @@ leasing_module.service('LeasingService', ['$q',
         GetCropPlanRevisions,
         ExpireLeases,
         AvailableAllotments,
-        GetLeaseByField,
+        GetLeasesByField,
         DeleteOperator
     ) {
         var service = {
@@ -187,8 +187,8 @@ leasing_module.service('LeasingService', ['$q',
                 return GetLease.query({ id: id });
             },
 
-            getLeaseByField: function (id) {    
-                return GetLeaseByField.query({ id: id });
+            getLeasesByField: function (id) {    
+                return GetLeasesByField.query({ id: id });
             },
 
             getPendingLeases: function () {

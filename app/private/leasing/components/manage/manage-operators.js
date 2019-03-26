@@ -32,35 +32,35 @@
 
         var operatorColumnDefs = [
             { colId: 'EditLinks', width: 90, cellRenderer: EditLinksTemplate, menuTabs: []},
-            { headerName: "Organization", field: "Organization", width: 180, menuTabs: ['filterMenuTab'] },
-            { headerName: "FirstName", field: "FirstName", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "LastName", field: "LastName", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "Prefix", field: "Prefix", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "Suffix", field: "Suffix", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "MailingAddress1", field: "MailingAddress1", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "MailingAddress2", field: "MailingAddress2", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "MailingCity", field: "MailingCity", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "MailingState", field: "MailingState", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "MailingZip", field: "MailingZip", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "PhysicalAddress1", field: "PhysicalAddress1", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "PhysicalAddress2", field: "PhysicalAddress2", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "PhysicalCity", field: "PhysicalCity", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "PhysicalState", field: "PhysicalState", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "PhysicalZip", field: "PhysicalZip", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "IsMailingDifferent", field: "IsMailingDifferent", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "Phone", field: "Phone", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "Cell", field: "Cell", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "Fax", field: "Fax", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "Email", field: "Email", width: 160, menuTabs: ['filterMenuTab'] },
+            { headerName: "Organization", field: "Organization", width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "FirstName", field: "FirstName", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "LastName", field: "LastName", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "Prefix", field: "Prefix", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Suffix", field: "Suffix", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "MailingAddress1", field: "MailingAddress1", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "MailingAddress2", field: "MailingAddress2", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "MailingCity", field: "MailingCity", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "MailingState", field: "MailingState", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "MailingZip", field: "MailingZip", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "PhysicalAddress1", field: "PhysicalAddress1", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "PhysicalAddress2", field: "PhysicalAddress2", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "PhysicalCity", field: "PhysicalCity", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "PhysicalState", field: "PhysicalState", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "PhysicalZip", field: "PhysicalZip", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "IsMailingDifferent", field: "IsMailingDifferent", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Phone", field: "Phone", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "Cell", field: "Cell", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "Fax", field: "Fax", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "Email", field: "Email", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
             {
                 headerName: "LastUpdated", field: "LastUpdated", width: 160,
                 valueGetter: function (params) { return moment(params.node.data.LastUpdated) },
                 valueFormatter: function (params) {
                     return valueFormatterDate(params.node.data.LastUpdated);
-                }, menuTabs: ['filterMenuTab']
+                }, menuTabs: ['filterMenuTab'], filter: 'date'
             },
-            { headerName: "UpdatedBy", field: "UpdatedBy", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "Inactive", field: "Inactive", width: 160, menuTabs: ['filterMenuTab'] },
+            { headerName: "UpdatedBy", field: "UpdatedBy", width: 160, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "Inactive", field: "Inactive", width: 160, menuTabs: ['filterMenuTab'], filter: true },
 
         ];
 
