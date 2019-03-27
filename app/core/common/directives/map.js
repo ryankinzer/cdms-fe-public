@@ -78,20 +78,21 @@ define([
             }
         };
 
-        // declare our map
-		// Comment this section out for public, uncomment for private with secure maps.
-        /*require(["esri/urlUtils"], function (urlUtils) {
+        if (PUBLIC_OR_PRIVATE === "private")
+        {
+            // declare our map
+            require(["esri/urlUtils"], function (urlUtils) {
 
-            urlUtils.addProxyRule({
-              urlPrefix: "restdata.ctuir.org",
-              proxyUrl: proxyUrl
+                urlUtils.addProxyRule({
+                  urlPrefix: "restdata.ctuir.org",
+                  proxyUrl: proxyUrl
+                });
+
+                //esriConfig.defaults.io.proxyUrl = proxyUrl; // From the config.js file.
+                //esriConfig.defaults.io.alwaysUseProxy = false;
+
             });
-
-            //esriConfig.defaults.io.proxyUrl = proxyUrl; // From the config.js file.
-            //esriConfig.defaults.io.alwaysUseProxy = false;
-
-        });
-		*/
+        }
 
         var map = new Map($attrs.id, mapOptions);
 
