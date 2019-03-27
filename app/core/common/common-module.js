@@ -42,6 +42,7 @@ require([
     'core/common/directives/field-definitions',
     'core/common/directives/roles',
     'core/common/directives/validation',
+    'core/common/directives/currency', // ui-currency attribute for the magic
 
 
 

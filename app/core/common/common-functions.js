@@ -461,6 +461,10 @@ function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function isPercent(n) { 
+    return (isNumber(n) && n >= 0 && n <= 100); 
+}
+
 
 function isInteger (value) {
     return typeof value === 'number' &&
@@ -1740,7 +1744,10 @@ function getParsedMetadataValues(raw_values) {
 }
 
 
-// from leasing - 
+function valueFormatterBoolean(in_bool) {
+    return (in_bool) ? "Yes" : "No";
+}
+
 //takes a json string of an array '["a","b","c"]' and returns a,b,c
 // if it isn't an array, it returns what we got.
 function valueFormatterArrayToList(the_array) {
@@ -1884,3 +1891,56 @@ function validateOriginFinClip(row, row_errors) {
     }
 
 }
+
+/* Boolean Cell Renderer - gives you a checkbox for a boolean cell in ag-grid */
+function BooleanEditor() { };
+function BooleanCellRenderer() { };
+
+BooleanCellRenderer.prototype.init = function (params) {
+    this.eGui = document.createElement('span');
+    if (params.value !== "" || params.value !== undefined || params.value !== null) {
+        var checkedStatus = params.value ? "checked" : "";
+        var input = document.createElement('input');
+        input.type = "checkbox";
+        input.checked = params.value;
+        input.addEventListener('click', function (event) {
+            params.value = !params.value;
+            params.data[params.colDef.field] = params.value;
+            //console.log(params.colDef.field + " changed to : " + params.value);
+            if( params.api.gridOptionsWrapper.gridOptions.hasOwnProperty('onCellValueChanged')){
+                params.api.gridOptionsWrapper.gridOptions.onCellValueChanged(params); //call our cell changed
+                console.log("changed a boolean!");
+            }
+            //console.dir(params);
+        });
+        this.eGui.innerHTML = '';
+        this.eGui.appendChild(input);
+    }
+};
+
+BooleanCellRenderer.prototype.getGui = function () {
+    return this.eGui;
+};
+
+BooleanEditor.prototype.init = function (params) {
+    this.container = document.createElement('div');
+    this.value = params.value;
+    params.stopEditing();
+};
+BooleanEditor.prototype.getGui = function () {
+    return this.container;
+};
+
+BooleanEditor.prototype.afterGuiAttached = function () {
+};
+
+BooleanEditor.prototype.getValue = function () {
+    return this.value;
+};
+
+BooleanEditor.prototype.destroy = function () {
+};
+
+BooleanEditor.prototype.isPopup = function () {
+    return true;
+};

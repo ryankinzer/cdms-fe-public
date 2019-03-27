@@ -27,7 +27,8 @@
     "ag-grid-enterprise": "^20.0.0",
     "Stickyfill": "^2.0.3",
     "nvd3": "^1.8.6",
-    "angular-nvd3": "^1.0.9"
+    "angular-nvd3": "^1.0.9",
+    "angular-input-masks": "^2.6.0"
   },
   "resolutions": {
     "angular": "1.7.5",

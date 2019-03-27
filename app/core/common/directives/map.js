@@ -7,11 +7,20 @@ define([
   'esri/geometry/Point',
   'esri/dijit/InfoWindow',
   'esri/InfoTemplate',
+    'esri/layers/ArcGISTiledMapServiceLayer',
+    'esri/layers/ArcGISDynamicMapServiceLayer',
+    'esri/layers/GraphicsLayer',
+    'esri/symbols/SimpleFillSymbol',
+    'esri/symbols/SimpleLineSymbol',
+    'esri/tasks/query',
+    'esri/tasks/QueryTask',
+    'esri/graphic',
+  'esri/virtualearth/VETiledLayer',
   'esri/dijit/BasemapLayer',
   'esri/dijit/BasemapGallery',
-  'esri/dijit/Basemap',
-  'esri/virtualearth/VETiledLayer'
-], function (app, Map, Point, InfoWindow, InfoTemplate, VETiledLayer) {
+  'esri/dijit/Basemap'
+], function (app, Map, Point, InfoWindow, InfoTemplate, ArcGISTiledMapServiceLayer, ArcGISDynamicMapServiceLayer,
+            GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol, Query, QueryTask, Graphic, VETiledLayer) {
 
 
   
@@ -50,9 +59,9 @@ define([
       controller: function($scope, $element, $attrs){
         //possible bing maps
         var bing_layers_map = {
-          BingMapsRoad: esri.virtualearth.VETiledLayer.MAP_STYLE_ROAD,
-          BingMapsAerial: esri.virtualearth.VETiledLayer.MAP_STYLE_AERIAL ,
-          BingMapsHybrid: esri.virtualearth.VETiledLayer.MAP_STYLE_AERIAL_WITH_LABELS
+          BingMapsRoad: VETiledLayer.MAP_STYLE_ROAD,
+          BingMapsAerial: VETiledLayer.MAP_STYLE_AERIAL ,
+          BingMapsHybrid: VETiledLayer.MAP_STYLE_AERIAL_WITH_LABELS
         };
 
 		console.dir(bing_layers_map);
@@ -109,17 +118,17 @@ define([
 
 				//add the selected basemap
 				if(datasetActivitiesBasemapConfig[map.selectedBasemap].library == 'CTUIR')
-					new_layer = new esri.layers.ArcGISTiledMapServiceLayer(datasetActivitiesBasemapConfig[map.selectedBasemap].ServiceURL);
+					new_layer = new ArcGISTiledMapServiceLayer(datasetActivitiesBasemapConfig[map.selectedBasemap].ServiceURL);
 				else if(datasetActivitiesBasemapConfig[map.selectedBasemap].library == 'Esri')
 				{
 					//new_layer = new esri.layers.ArcGISTiledMapServiceLayer(datasetActivitiesBasemapConfig[map.selectedBasemap].ServiceURL);
 					//new_layer = new esri.layers.ArcGISTiledMapServiceLayer("http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer");
-					new_layer = new esri.layers.ArcGISTiledMapServiceLayer(datasetActivitiesBasemapConfig[map.selectedBasemap].type);
+					new_layer = new ArcGISTiledMapServiceLayer(datasetActivitiesBasemapConfig[map.selectedBasemap].type);
 					console.log("Created new_layer using ESRI...");					
 				}
 				else if(datasetActivitiesBasemapConfig[map.selectedBasemap].library == 'Bing')
 				{
-					new_layer = new esri.virtualearth.VETiledLayer({
+					new_layer = new VETiledLayer({
 						bingMapsKey: BING_KEY,
 						mapStyle: bing_layers_map[datasetActivitiesBasemapConfig[map.selectedBasemap].type]
 					});
@@ -134,7 +143,7 @@ define([
               if(map.locationLayer)
                 map.addLayer(map.locationLayer);
 
-              map.parcelLayer = new esri.layers.GraphicsLayer();
+              map.parcelLayer = new GraphicsLayer();
               map.addLayer(map.parcelLayer);
 
               console.log("done!");

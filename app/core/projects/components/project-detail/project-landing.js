@@ -75,7 +75,7 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
             //Check our config to see if there is a role restriction for this project.
             if (scope.project.Config) {
                 scope.project.Config = angular.fromJson(scope.project.Config);
-                if (scope.project.Config.hasOwnProperty('RestrictRoles')) {
+                if (scope.project.Config.hasOwnProperty('RestrictRoles') && scope.project.Config.RestrictRoles != "") {
                     if (!$rootScope.Profile.hasRole(scope.project.Config.RestrictRoles)) {
                         scope.AuthorizedToViewProject = false;
                         console.log("User not authorized for this role: " + scope.project.Config.RestrictRoles);

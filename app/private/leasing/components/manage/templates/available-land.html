@@ -1,0 +1,19 @@
+﻿<div ng-include="'app/private/leasing/components/manage/templates/leasing-header.html'"></div>
+
+<h2>Available Land for Lease</h2>
+Total number of available fields: <b>{{fields.length}}</b><br />
+Available fields for Farming: <b>{{countLandUse('Farmland')}}</b><br />
+Available fields for Grazing: <b>{{countLandUse('Pasture')}}</b><br />
+Available fields for Conservation: <b>{{countLandUse('CRP')}}</b><br />
+<br /><br />
+
+<div class="right">Show all allotments: <input type="checkbox" ng-true-value="Yes" ng-false-value="No" ng-checked="showAll == 'Yes'" ng-model="showAll" ng-click="toggleShowAll()" /></div>
+<div ng-show="leaseGrid.selectedItems.length == 0">
+    <h5>To start a new lease an an available field, click the field below (hold control to select multiple).</h5>
+</div>
+<div ng-show="leaseGrid.selectedItems.length > 0">
+    <button type="button" class="btn btn-sm" style="margin-left: 10px;" ng-click="openNewLeaseModal()">Create new lease</button>
+</div>
+<br />
+<div id="available-land-grid" style="height: 600px;width:100%;" class="ag-theme-blue"></div>
+

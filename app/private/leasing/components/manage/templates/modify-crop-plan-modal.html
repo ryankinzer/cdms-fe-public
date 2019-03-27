@@ -1,0 +1,24 @@
+﻿        <div class="modal-content">
+            <div class="modal-header">
+                <h4>{{header_message}}</h4>
+            </div>
+            <div class="modal-body modal-form" style="width: 600px;">
+
+                <div style="margin-top: 30px;"></div>
+
+                <div >
+                    <h3>Current Crop Plan</h3>
+                    <div id="crops-grid-modal" style="height: 190px;" class="ag-theme-blue"></div>
+                    <button class="btn btn-sm" ng-click="addRow()" style="margin: 10px;">Add row</button>
+                    <button class="btn btn-sm" ng-click="removeRow()" style="margin: 10px;">Remove row</button>
+                </div>
+
+                <div ng-show="pagemode='edit'" ng-include="'app/private/leasing/components/manage/templates/modal-changedby.html'"></div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+
+            </div>
+        </div>

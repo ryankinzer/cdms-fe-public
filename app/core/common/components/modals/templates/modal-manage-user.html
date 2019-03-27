@@ -30,8 +30,8 @@
 
                     <div class="header-label">Password:</div>
                     <div class="header-value">
-                        <input id="user-password" class="form-control" ng-blur="hidePassword()" placeholder="Edit to Change Password" ng-model="user.Password" />
-                        <input id="user-password-hidden" class="form-control" ng-click="showPassword()" style="display: none;" type="password" ng-model="user.Password" />
+                        <input id="user-password" class="form-control" name="newpassword" ng-blur="hidePassword()" placeholder="Edit to Change Password" ng-model="user.Password" />
+                        <input id="user-password-hidden" class="form-control" name="newpassword" ng-click="showPassword()" style="display: none;" type="password" ng-model="user.Password" />
                     </div>
 
                     <div class="header-label">Roles:</div>
