@@ -87,7 +87,7 @@ define([
 
         var map = new Map($attrs.id, mapOptions);
 
-        map.selectedBasemap = defaultLayer;
+        map.selectedBasemap= defaultLayer;
         
         map.basemaps = [];
         for (var property in datasetActivitiesBasemapConfig) {
