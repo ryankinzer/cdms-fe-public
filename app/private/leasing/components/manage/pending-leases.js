@@ -209,7 +209,7 @@
         $scope.leaseGrid = {
             columnDefs: leaseColumnDefs,
             rowData: $scope.leases,
-            rowSelection: 'single',
+            rowSelection: 'multiple',
             defaultColDef: {
                 editable: false,
                 sortable: true,

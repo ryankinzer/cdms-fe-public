@@ -68,7 +68,7 @@
                         return leasing_module.LeaseStatus[params.node.data.Status];
                     else
                         return leasing_module.LeaseStatus[params.value];
-                } 
+                }, filter: true, menuTabs: ['filterMenuTab'] 
             },
             { headerName: "Allotment", field: "AllotmentName", width: 180, menuTabs: ['filterMenuTab'], filter:"text" },
             { headerName: "TAAMSNumber", field: "TAAMSNumber", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
@@ -216,7 +216,7 @@
         $scope.leaseGrid = {
             columnDefs: leaseColumnDefs,
             rowData: $scope.leases,
-            rowSelection: 'single',
+            rowSelection: 'multiple',
             defaultColDef: {
                 editable: false,
                 sortable: true,

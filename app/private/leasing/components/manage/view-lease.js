@@ -48,6 +48,11 @@
         $scope.selectCompliance = function () { 
             $scope.clearTabSelection();
             $scope.isComplianceSelected = true;
+            if (!$scope.complianceGridDiv) {
+                $scope.complianceGridDiv = document.querySelector('#compliance-grid');
+                new agGrid.Grid($scope.complianceGridDiv, $scope.complianceGrid);
+            }
+            $scope.complianceGrid.api.setRowData($scope.lease.LeaseInspections); //filter to just compliance ones... TODO 
         };
 
         $scope.selectInspections = function () {
@@ -557,6 +562,49 @@
                 scope: $scope,
             });
         }
+
+
+        //compliance
+        var complianceColumnDefs = [
+            { colId: 'InspectionEditLinks', width: 80, cellRenderer: InspectionEditLinksTemplate, menuTabs: [] },
+            { headerName: "Inspection", field: "InspectionType", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+
+            {
+                headerName: "Inspected", field: "InspectionDateTime", width: 140, sort: 'asc',
+                valueGetter: function (params) { return moment(params.node.data.InspectionDateTime) },
+                valueFormatter: function (params) {
+                    return valueFormatterDate(params.node.data.InspectionDateTime);
+                },
+                menuTabs: ['filterMenuTab'], filter: true
+            },
+            { headerName: "Lease Year", field: "LeaseYear", width: 140, filter: true, menuTabs: ['filterMenuTab'], },
+            { headerName: "Inspection Type", field: "InspectionType", width: 160, menuTabs: ['filterMenuTab'], filter: true},
+            {
+                headerName: "Failed?", field: "OutOfCompliance", width: 160,
+                valueFormatter: function (params) {
+                    return valueFormatterBoolean(params.node.data.OutOfCompliance);
+                },
+                menuTabs: ['filterMenuTab'],
+                filter: true
+            },
+            { headerName: "Violation Type", field: "ViolationType", width: 160, menuTabs: ['filterMenuTab'], },
+            { headerName: "Notes", field: "Notes", width: 200, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "Inspector", field: "InspectedBy", width: 180, menuTabs: ['filterMenuTab'], filter: true },
+        ]; 
+
+        
+
+        $scope.complianceGrid = {
+            columnDefs: complianceColumnDefs,
+            rowData: [],
+            enableSorting: true,
+            enableFilter: true,
+            rowSelection: 'single'
+        }
+
+
+///
+
 
         $scope.saveLeaseCallback = function(saved_lease){
             $scope.lease = LeasingService.getLease(saved_lease.Id);

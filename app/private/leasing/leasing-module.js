@@ -141,6 +141,8 @@ require([
         $scope.productionTypes = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_PRODUCTIONTYPES);
         $scope.operatorStates = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_OPSTATES);
         $scope.operatorCities = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_OPCITIES);
+        $scope.complianceInspectionTypes = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_COMPLIANCE_INSP_TYPES);
+        $scope.operatorViolationTypes = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_VIOLATION_TYPES);
 
     };
     

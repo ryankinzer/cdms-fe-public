@@ -102,7 +102,7 @@
         $scope.violationsGrid = {
             columnDefs: violationsColumnDefs,
             rowData: $scope.violations,
-            rowSelection: 'single',
+            rowSelection: 'multiple',
             components: {
                 booleanEditor: BooleanEditor,
                 booleanCellRenderer: BooleanCellRenderer,

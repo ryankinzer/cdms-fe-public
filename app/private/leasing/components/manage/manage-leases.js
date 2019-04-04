@@ -51,11 +51,12 @@
             { headerName: "Lease Id", field: "LeaseNumber", width: 130, filter: 'text' },            
             {
                 headerName: "Status", field: "Status", width: 120,
-                valueFormatter: function (params) {
+                valueGetter: function (params) {
                     return leasing_module.LeaseStatus[params.node.data.Status];
-                }
+                },
+                filter: true
             },           
-            { headerName: "Allotment", field: "AllotmentName", width: 100, filter: 'text' },
+            { headerName: "Allotment", field: "AllotmentName", width: 100, filter: true },
             { headerName: "Type", field: "LeaseType", width: 120, filter: true },
             { headerName: "FSA Tract #", field: "FSATractNumber", width: 120, filter: 'text' },
             { headerName: "FSA Farm #", field: "FarmNumber", width: 120, filter: 'text' },
@@ -66,7 +67,8 @@
                 valueFormatter: function (params) {
                     return valueFormatterDate(params.node.data.LeaseEnd);
                 },
-                filter: 'date'
+                filter: 'date',
+                sort: 'desc'
             },
             
         ];
@@ -74,9 +76,12 @@
         $scope.searchGrid = {
             columnDefs: searchColumnDefs,
             rowData: [],
-            enableSorting: true,
-            enableFilter: true,
-            rowSelection: 'single'
+            rowSelection: 'single',
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+                menuTabs: ['filterMenuTab']
+            },
         }
 
         $scope.searchButton = function () {

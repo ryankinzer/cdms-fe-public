@@ -146,8 +146,10 @@
     </div>
 
     <div class="tab-lease" ng-show="isComplianceSelected">
-        
-        <h3>Waiting for requirements...</h3>
+        <div style="margin: 10px">
+            <button class="btn btn-sm" ng-click="openComplianceInspectionModal()">Add Compliance Inspection</button>
+        </div>
+        <div id="compliance-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
 
     </div>
 
