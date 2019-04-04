@@ -198,7 +198,7 @@ define([
 
                 function setupHoverQuery () { 
                     console.log("Staring up the hover");
-                    var queryTask = new QueryTask("https://restdata.ctuir.org/arcgis/rest/services/FarmTracts_RAF/MapServer/0");
+                    var queryTask = new QueryTask("https://arcserv2.ctuir.org/arcgis/rest/services/FarmTracts_RAF/MapServer/0");
                     //build query filter
                     var query = new Query();
                     query.returnGeometry = true;
@@ -355,7 +355,7 @@ define([
                 //use this to select a particular parcel either by objectid (like after a search) or x,y mapPoint
                 map.querySelectField = function (mapPoint, objectId, callback) {
 
-                    var queryurl = "https://restdata.ctuir.org/arcgis/rest/services/FarmTracts_RAF/MapServer/0";
+                    var queryurl = "https://arcserv2.ctuir.org/arcgis/rest/services/FarmTracts_RAF/MapServer/0";
 
                     console.log("Running query on: " + queryurl);
 
