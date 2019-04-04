@@ -52,7 +52,7 @@
                 $scope.complianceGridDiv = document.querySelector('#compliance-grid');
                 new agGrid.Grid($scope.complianceGridDiv, $scope.complianceGrid);
             }
-            $scope.complianceGrid.api.setRowData($scope.lease.LeaseInspections); //filter to just compliance ones... TODO 
+            $scope.complianceGrid.api.setRowData($scope.getComplianceInspections()); //filter to just compliance ones... TODO 
         };
 
         $scope.selectInspections = function () {
@@ -62,7 +62,7 @@
                 $scope.inspectionGridDiv = document.querySelector('#inspections-grid');
                 new agGrid.Grid($scope.inspectionGridDiv, $scope.inspectionsGrid);
             }
-            $scope.inspectionsGrid.api.setRowData($scope.lease.LeaseInspections);
+            $scope.inspectionsGrid.api.setRowData($scope.getCropInspections());
         };
 
         $scope.selectIncome = function () {
@@ -126,6 +126,22 @@
 
             return div;
         };
+
+        var ComplianceEditLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                $scope.openComplianceInspectionModal(param.data);
+            });
+            div.appendChild(editBtn);
+
+            return div;
+        };
+
+
 
         var ProductionEditLinksTemplate = function (param) {
 
@@ -422,18 +438,42 @@
             { headerName: "DeliveryPoint", field: "DeliveryPoint", width: 150 },
             { headerName: "DeliveryLocation", field: "DeliveryLocation", width: 150 },
             { headerName: "DeliveryUnit", field: "DeliveryUnit", width: 150 },
-            { headerName: "Gross", field: "Gross", width: 150 },
-            { headerName: "Net", field: "Net", width: 150 },
+            { headerName: "Gross", field: "Gross", width: 150,
+                valueFormatter: function (params) {
+                    return valueFormatterNumericCommas(params.node.data.Gross);
+                },
+            },
+            { headerName: "Net", field: "Net", width: 150,
+                valueFormatter: function (params) {
+                    return valueFormatterNumericCommas(params.node.data.Net);
+                },
+            },
             { headerName: "YieldAcre", field: "YieldAcre", width: 150 },
             { headerName: "OwnerShare", field: "OwnerShare", width: 150 },
-            { headerName: "MarketPrice", field: "MarketPrice", width: 150 },
-            { headerName: "MarketUnit", field: "MarketUnit", width: 150 },
-            { headerName: "CropShareDollar", field: "CropShareDollar", width: 150 },
+            { headerName: "MarketPrice", field: "MarketPrice", width: 150, 
+                valueFormatter: function (params) {
+                    return valueFormatterCurrency(params.node.data.MarketPrice);
+                },
+            },
+            { headerName: "MarketUnit", field: "MarketUnit", width: 150, },
+            { headerName: "CropShareDollar", field: "CropShareDollar", width: 150,
+                valueFormatter: function (params) {
+                    return valueFormatterCurrency(params.node.data.CropShareDollar);
+                },
+            },
             { headerName: "Deduct", field: "Deduction", width: 150 },
             { headerName: "DeductType", field: "DeductionType", width: 150 },
-            { headerName: "Payment", field: "PaymentAmount", width: 150 },
+            { headerName: "Payment", field: "PaymentAmount", width: 150,
+                valueFormatter: function (params) {
+                    return valueFormatterCurrency(params.node.data.PaymentAmount);
+                },
+            },
             { headerName: "PaymentType", field: "PaymentType", width: 150 },
-            { headerName: "TotalPayment", field: "TotalPaymentAmount", width: 150 },
+            { headerName: "TotalPayment", field: "TotalPaymentAmount", width: 150,
+                valueFormatter: function (params) {
+                    return valueFormatterCurrency(params.node.data.TotalPaymentAmount);
+                },
+            },
 
 
             { headerName: "Comments", field: "Comments", width: 450 },
@@ -564,9 +604,28 @@
         }
 
 
+        $scope.openComplianceInspectionModal = function (params) {
+
+            delete $scope.inspection_modal;
+
+            //if editing, we'll have incoming params
+            if (params) {
+                $scope.inspection_modal = params;
+            }
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/leasing/components/manage/templates/add-compliance-inspection-modal.html',
+                controller: 'ComplianceInspectionModalController',
+                scope: $scope,
+            });
+        }
+
+
+
+
         //compliance
         var complianceColumnDefs = [
-            { colId: 'InspectionEditLinks', width: 80, cellRenderer: InspectionEditLinksTemplate, menuTabs: [] },
+            { colId: 'InspectionEditLinks', width: 80, cellRenderer: ComplianceEditLinksTemplate, menuTabs: [] },
             { headerName: "Inspection", field: "InspectionType", width: 160, menuTabs: ['filterMenuTab'], filter: true },
 
             {
@@ -587,8 +646,8 @@
                 menuTabs: ['filterMenuTab'],
                 filter: true
             },
-            { headerName: "Violation Type", field: "ViolationType", width: 160, menuTabs: ['filterMenuTab'], },
-            { headerName: "Notes", field: "Notes", width: 200, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "Violation Type", field: "ViolationType", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Notes", field: "Notes", width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Inspector", field: "InspectedBy", width: 180, menuTabs: ['filterMenuTab'], filter: true },
         ]; 
 
@@ -618,7 +677,7 @@
                     $scope.cropsGrid.api.setRowData($scope.lease.LeaseCropPlans);
 
                 if ($scope.inspectionsGrid.api)
-                    $scope.inspectionsGrid.api.setRowData($scope.lease.LeaseInspections);
+                    $scope.inspectionsGrid.api.setRowData($scope.getCropInspections());
 
                 if ($scope.incomeGrid.api)
                     $scope.incomeGrid.api.setRowData($scope.lease.LeaseProductions);
@@ -626,12 +685,36 @@
                 if ($scope.historyGrid.api)
                     $scope.historyGrid.api.setRowData($scope.revisions);
 
+                if ($scope.complianceGrid.api)
+                    $scope.complianceGrid.api.setRowData($scope.getComplianceInspections());
+
+
                 $scope.cropplanrevisions_all.$promise.then(function () {
                     $scope.refreshCropRevisionsDropdown();
                 });
             });
 
         }
+
+        $scope.getComplianceInspections = function () { 
+            var results = [];
+            $scope.lease.LeaseInspections.forEach(function (inspection) { 
+                if (inspection.InspectionType != "Spring" && inspection.InspectionType != "Fall" && inspection.InspectionType != "Grazing") {
+                    results.push(inspection);
+                }
+            });
+            return results;
+        };
+
+        $scope.getCropInspections = function () { 
+            var results = [];
+            $scope.lease.LeaseInspections.forEach(function (inspection) { 
+                if (inspection.InspectionType == "Spring" || inspection.InspectionType == "Fall" || inspection.InspectionType == "Grazing") {
+                    results.push(inspection);
+                }
+            });
+            return results;
+        };
 
         $scope.operators.$promise.then(function () { 
             $scope.operators.forEach(function (oper) { 

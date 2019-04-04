@@ -1646,6 +1646,19 @@ function valueFormatterDate(in_date, in_format) {
     return retval;
 }
 
+//format a value to currency
+function valueFormatterCurrency(in_value) {
+    return filterToCurrency(in_value);
+}
+
+//format a numeric value to include commas
+function valueFormatterNumericCommas(x) {
+    if (!x)
+        return x;
+
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 //Takes a string or number, however formatted, and turns it into a javascript number.
 function parseToFloat(value, decimal) {
 
@@ -1751,7 +1764,8 @@ function valueFormatterBoolean(in_bool) {
 //takes a json string of an array '["a","b","c"]' and returns a,b,c
 // if it isn't an array, it returns what we got.
 function valueFormatterArrayToList(the_array) {
-    if (is_empty(the_array))
+
+    if (!Array.isArray(the_array) || is_empty(the_array))
         return "";
 
     var list = the_array;

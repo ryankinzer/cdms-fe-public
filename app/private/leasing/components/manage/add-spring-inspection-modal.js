@@ -11,6 +11,7 @@
                 InspectedBy: $scope.currentUser,
                 LeaseYear: "" + moment().year(),
                 InspectionType: "Spring",
+                ViolationType: "Crop",
             };
         }
 

@@ -127,9 +127,8 @@
         <input class="form-control search-text-control" type="text" ng-model="searchTerm" name="lease-search" />
     </form>
     <div ng-show="searchResults.length > 0" class="lease-search-results">
-
         <div id="search-leases-grid" style="height: 400px;width:100%;" class="ag-theme-blue"></div>
-
+        <i>Hint: Double click a row to navigate to that allotment.</i>
     </div>
 
     <div class="search-results-text" ng-if="leases.length == 0">Loading...</div>

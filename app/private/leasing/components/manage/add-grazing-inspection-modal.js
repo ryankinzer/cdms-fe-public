@@ -12,6 +12,7 @@
                 InspectedBy: $scope.currentUser,
                 LeaseYear: "" + moment().year(),
                 InspectionType: "Grazing",
+                ViolationType: "Crop",
                 Animals: []
             };
         }

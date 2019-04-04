@@ -58,14 +58,14 @@
                 menuTabs: ['filterMenuTab'],
             },
 
-            { headerName: "Allotment", field: "AllotmentName", width: 120, menuTabs: ['filterMenuTab'], },
-            
-            { headerName: "Inspection Type", field: "InspectionType", width: 160, menuTabs: ['filterMenuTab'], },
-            { headerName: "Crop Present", field: "CropPresent", width: 160, menuTabs: ['filterMenuTab'] },
-            { headerName: "Insp. Notes", field: "InspectionNotes", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
+            { headerName: "Allotment", field: "AllotmentName", width: 120, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Crop Present", field: "CropPresent", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Inspection Type", field: "InspectionType", width: 160, menuTabs: ['filterMenuTab'], filter: true},
+            { headerName: "Violation Type", field: "ViolationType", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Inspection Notes", field: "InspectionNotes", width: 300, menuTabs: ['filterMenuTab'], filter: "text" },
 
             {
-                headerName: "Resolution", field: "ViolationResolution", width: 160, menuTabs: ['filterMenuTab'],
+                headerName: "Resolution", field: "ViolationResolution", width: 160, menuTabs: ['filterMenuTab'], filter: true
             },
             { headerName: "Fee Collected", field: "ViolationFeeCollected", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
             {
@@ -81,7 +81,7 @@
 
             //more lease fields
             { headerName: "Lease Number", field: "LeaseNumber", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
-            { headerName: "Lease Type", field: "LeaseType", width: 160, menuTabs: ['filterMenuTab'] },
+            { headerName: "Lease Type", field: "LeaseType", width: 160, menuTabs: ['filterMenuTab'] , filter: true},
             { headerName: "Lease Acres", field: "LeaseAcres", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
             {
                 headerName: "Optional Alt Crop", field: "OptionalAlternativeCrop", width: 160,
@@ -90,10 +90,14 @@
                 },
                 menuTabs: ['filterMenuTab']
             },
-            { headerName: "Graze Animal", field: "GrazeAnimal", width: 160, menuTabs: ['filterMenuTab'] },
+            { headerName: "Graze Animal", field: "GrazeAnimal", width: 160, menuTabs: ['filterMenuTab'],
+                valueFormatter: function (params) {
+                    return valueFormatterArrayToList(params.node.data.GrazeAnimal);
+                }
+            },
             { headerName: "TAAMSNumber", field: "TAAMSNumber", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
             { headerName: "Lease Year", field: "LeaseYear", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
-            { headerName: "Inspected By", field: "InspectedBy", width: 160, menuTabs: ['filterMenuTab'] },
+            { headerName: "Inspected By", field: "InspectedBy", width: 160, menuTabs: ['filterMenuTab'], filter: true },
 
         ];
 

@@ -2,8 +2,9 @@
             <div class="modal-header" style="display: block;">
                 <h4>{{header_message}}</h4>
                 <ul style="list-style: none;">
-                     <li><b>Violation Type:</b> {{violation_modal.InspectionType}}</li>
-                     <li><b>Crop Present:</b> {{violation_modal.CropPresent}}</li>
+                     <li><b>Inspection Type:</b> {{violation_modal.InspectionType}}</li>
+                     <li ng-show="violation_modal.ViolationType != ''"><b>Violation Type:</b> {{violation_modal.ViolationType}}</li>
+                     <li ng-show="violation_modal.CropPresent != ''"><b>Crop Present:</b> {{violation_modal.CropPresent}}</li>
                      <li><b>Notes:</b> {{violation_modal.InspectionNotes}}</li>
                 </ul>
             </div>

@@ -16,20 +16,20 @@
         $scope.leases.$promise.then(function () {
             //show all the leased properties on the map.
 
+            console.log("leases loaded " + $scope.leases.length);
+
+            if (!$scope.searchGridDiv) {
+                $scope.searchGridDiv = document.querySelector("#search-leases-grid");
+                new agGrid.Grid($scope.searchGridDiv, $scope.searchGrid);
+            }
+
             if ($routeParams.allotment != null) {
                 $scope.searchTerm = $routeParams.allotment;
                 $scope.searchButton();
                 //$scope.findOnMap($routeParams.allotment);
             }
 
-            console.dir("leases loaded " + $scope.leases.length);
 
-
-            if (!$scope.searchGridDiv) {
-                $scope.searchGridDiv = document.querySelector("#search-leases-grid");
-                new agGrid.Grid($scope.searchGridDiv, $scope.searchGrid);
-            }
-            
         });
 
         var SearchLinksTemplate = function (param) {
@@ -82,6 +82,10 @@
                 resizable: true,
                 menuTabs: ['filterMenuTab']
             },
+            onRowDoubleClicked: function (params) {
+                //console.dir(params);
+                $scope.findOnMap(params.data.AllotmentName);
+            }
         }
 
         $scope.searchButton = function () {

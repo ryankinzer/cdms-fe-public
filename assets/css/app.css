@@ -847,3 +847,7 @@ margin-left: -8px !important;
 .list-group {
     display: block !important;
 }
+
+.btn:active, .btn.active {
+    background-color: #da9c34 !important;
+}

@@ -19,6 +19,7 @@ require([
     'private/leasing/components/manage/add-fall-inspection-modal',
     'private/leasing/components/manage/add-spring-inspection-modal',
     'private/leasing/components/manage/add-grazing-inspection-modal',
+    'private/leasing/components/manage/add-compliance-inspection-modal',
     'private/leasing/components/manage/add-production-modal',
     'private/leasing/components/manage/modify-crop-plan-modal',
     'private/leasing/components/manage/inspection-violation-modal',
@@ -38,6 +39,7 @@ require([
     leasing_module.controller('SpringInspectionModalController', modal_add_spring_inspection);
     leasing_module.controller('ProductionModalController', modal_add_production);
     leasing_module.controller('FallInspectionModalController', modal_add_fall_inspection);
+    leasing_module.controller('ComplianceInspectionModalController', modal_add_compliance_inspection);
     leasing_module.controller('GrazingInspectionModalController', modal_add_grazing_inspection);
     leasing_module.controller('ModifyCropPlanController', modal_modify_crop_plan);
     leasing_module.controller('ViolationsController', inspection_violations);
@@ -45,6 +47,7 @@ require([
     leasing_module.controller('ManageOperatorsController', manage_operators);
     leasing_module.controller('AddOperatorModalController', modal_add_operator);
     leasing_module.controller('LookupListsController', lookup_lists);
+    
 
     //Lease Statuses: these must correspond to Lease.cs in BE
     leasing_module.LeaseStatus = [];
@@ -142,7 +145,7 @@ require([
         $scope.operatorStates = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_OPSTATES);
         $scope.operatorCities = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_OPCITIES);
         $scope.complianceInspectionTypes = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_COMPLIANCE_INSP_TYPES);
-        $scope.operatorViolationTypes = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_VIOLATION_TYPES);
+        $scope.violationTypes = LeasingService.getLookupValues(METADATA_PROPERTY_LEASING_VIOLATION_TYPES);
 
     };
     
