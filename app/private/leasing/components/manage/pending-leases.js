@@ -4,7 +4,7 @@
 
         $rootScope.inModule = "leasing";
 
-        if (!$scope.Profile.hasRole("LEASING"))
+        if (!$scope.Profile.hasRole("Leasing"))
             angular.rootScope.go("/unauthorized");
 
         $scope.currentPage = "Pending";
@@ -21,6 +21,12 @@
             $scope.countLevel = function (level) {
                 return $filter('filter')($scope.leases, { Level: level }).length;
             };
+
+            if ($rootScope.Profile.hasRole("LeasingEditor")) {
+                $scope.leaseGrid.columnApi.setColumnVisible("EditLinks", true);
+                $scope.leaseGrid.api.refreshHeader();
+            }
+
         });
 
         var EditLinksTemplate = function (param) {
@@ -55,7 +61,7 @@
 
 
         var leaseColumnDefs = [
-            { colId: 'EditLinks', width: 130, cellRenderer: EditLinksTemplate, menuTabs: []},
+            { colId: 'EditLinks', width: 130, cellRenderer: EditLinksTemplate, menuTabs: [], hide: true},
             { headerName: "Allotment", field: "AllotmentName", width: 180, menuTabs: ['filterMenuTab'], filter: "text" },
             { headerName: "TAAMS Number", field: "TAAMSNumber", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
             { headerName: "Lease Number", field: "LeaseNumber", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },

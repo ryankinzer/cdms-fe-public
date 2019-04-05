@@ -52,7 +52,13 @@
                 $scope.complianceGridDiv = document.querySelector('#compliance-grid');
                 new agGrid.Grid($scope.complianceGridDiv, $scope.complianceGrid);
             }
-            $scope.complianceGrid.api.setRowData($scope.getComplianceInspections()); //filter to just compliance ones... TODO 
+            $scope.complianceGrid.api.setRowData($scope.getComplianceInspections()); 
+
+            if ($rootScope.Profile.hasRole("LeasingEditor")) {
+                $scope.complianceGrid.columnApi.setColumnVisible("InspectionEditLinks", true);
+                $scope.complianceGrid.api.refreshHeader();
+            }
+
         };
 
         $scope.selectInspections = function () {
@@ -63,6 +69,11 @@
                 new agGrid.Grid($scope.inspectionGridDiv, $scope.inspectionsGrid);
             }
             $scope.inspectionsGrid.api.setRowData($scope.getCropInspections());
+
+            if ($rootScope.Profile.hasRole("LeasingEditor")) {
+                $scope.inspectionsGrid.columnApi.setColumnVisible("InspectionEditLinks", true);
+                $scope.inspectionsGrid.api.refreshHeader();
+            }
         };
 
         $scope.selectIncome = function () {
@@ -72,6 +83,12 @@
                 new agGrid.Grid($scope.incomeGridDiv, $scope.incomeGrid);
             }
             $scope.incomeGrid.api.setRowData($scope.lease.LeaseProductions);
+
+            if ($rootScope.Profile.hasRole("LeasingEditor")) {
+                $scope.incomeGrid.columnApi.setColumnVisible("ProductionEditLink", true);
+                $scope.incomeGrid.api.refreshHeader();
+            }
+
         };
 
         //$scope.selectDocuments = function () { $scope.clearTabSelection(); $scope.isDocumentsSelected = true; };
@@ -202,7 +219,7 @@
 
         //inspections
         var inspectionsColumnDefs = [
-            { colId: 'InspectionEditLinks', width: 80, cellRenderer: InspectionEditLinksTemplate, menuTabs: [] },
+            { colId: 'InspectionEditLinks', width: 80, cellRenderer: InspectionEditLinksTemplate, menuTabs: [], hide: true },
             { headerName: "Inspection", field: "InspectionType", width: 160 },
 
             {
@@ -412,7 +429,7 @@
 
         //income/production ---
         var incomeColumnDefs = [
-            { colId: 'ProductionLink', width: 80, cellRenderer: ProductionEditLinksTemplate , menuTabs: [] },
+            { colId: 'ProductionEditLink', width: 80, cellRenderer: ProductionEditLinksTemplate , menuTabs: [], hide: true },
             { headerName: "LeaseYear", field: "LeaseYear", width: 150 },
             {
                 headerName: "Posted Date", field: "IncomeDate", width: 150,
@@ -625,7 +642,7 @@
 
         //compliance
         var complianceColumnDefs = [
-            { colId: 'InspectionEditLinks', width: 80, cellRenderer: ComplianceEditLinksTemplate, menuTabs: [] },
+            { colId: 'InspectionEditLinks', width: 80, cellRenderer: ComplianceEditLinksTemplate, menuTabs: [], hide: true },
             { headerName: "Inspection", field: "InspectionType", width: 160, menuTabs: ['filterMenuTab'], filter: true },
 
             {
@@ -660,7 +677,6 @@
             enableFilter: true,
             rowSelection: 'single'
         }
-
 
 ///
 
@@ -743,10 +759,11 @@
                     $scope.cropplanrevisions.push(rev);
                     $scope.maxseq = rev.SequenceId;
                 }
-            }
+            
+}
+            $scope.selectedCropRevision = $scope.maxseq;
 
         };
-
 
         $scope.currentUser = $rootScope.Profile.Fullname;
         $scope.currentDay = moment().format();

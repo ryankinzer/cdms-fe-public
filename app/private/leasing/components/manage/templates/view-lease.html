@@ -98,7 +98,7 @@
     </ul>
 
     <div class="tab-lease" ng-show="isLeaseSelected">
-        <div style="margin: 10px">
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
             <button class="btn btn-sm" ng-click="openEditLeaseModal()">Modify Lease</button>
         </div>
         <div ng-include="'app/private/leasing/components/manage/templates/view-lease-fields.html'"></div>
@@ -108,47 +108,52 @@
     <div class="tab-lease" ng-show="isCropsSelected">
         <div style="float: right;">
             <div>
-                Revisions:
-                <select ng-model="selectedCropRevision" ng-change="selectCropRevision()">
-                    <option ng-repeat="rev in cropplanrevisions" value="{{rev.SequenceId}}" ng-selected="rev.SequenceId == maxseq">{{rev.SequenceId}} - {{rev.ChangedDate | date : shortDate}}</option>
+                Revisions ({{maxseq}}): 
+                <select ng-model="selectedCropRevision" ng-change="selectCropRevision()" convert-to-number>
+                    <option ng-repeat="rev in cropplanrevisions as rev" value="{{rev.SequenceId}}" ng-selected="rev.SequenceId == maxseq" >{{rev.SequenceId}} - {{rev.ChangedDate | date : shortDate}}</option>
                 </select>
             </div>
         </div>
-        <div style="margin: 10px">
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
             <button class="btn btn-sm" ng-click="openChangeCropPlanModal()">Modify Crop Plan</button>
         </div>
-
+        <div style="margin: 10px;">&nbsp;</div>
         <div id="crops-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
     </div>
 
     <div class="tab-lease" ng-show="isInspectionsSelected">
-        <div style="margin: 10px">
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
             <button class="btn btn-sm" ng-click="openSpringInspectionModal()">Add Spring Inspection</button>
             <button class="btn btn-sm" ng-click="openFallInspectionModal()">Add Fall Inspection</button>
             <button class="btn btn-sm" ng-click="openGrazingInspectionModal()">Add Grazing Inspection</button>
         </div>
+        <div style="margin: 10px;">&nbsp;</div>
         <div id="inspections-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
     </div>
 
     <div class="tab-lease" ng-show="isIncomeSelected">
-        <div style="margin: 10px">
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
             <button class="btn btn-sm" ng-click="openProductionModal()">Add Production</button>
         </div>
+        <div style="margin: 10px;">&nbsp;</div>
         <div id="income-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
     </div>
 
     <div class="tab-lease" ng-show="isDocumentsSelected">
+        <div style="margin: 10px;">&nbsp;</div>
         <div id="documents-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
     </div>
 
     <div class="tab-lease" ng-show="isHistorySelected">
+        <div style="margin: 10px;">&nbsp;</div>
         <div id="history-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
     </div>
 
     <div class="tab-lease" ng-show="isComplianceSelected">
-        <div style="margin: 10px">
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
             <button class="btn btn-sm" ng-click="openComplianceInspectionModal()">Add Compliance Inspection</button>
         </div>
+        <div style="margin: 10px;">&nbsp;</div>
         <div id="compliance-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
 
     </div>

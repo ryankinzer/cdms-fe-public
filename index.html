@@ -105,8 +105,8 @@
                         <a class="dropdown-item" href="#!/active-leases">Active Leases</a>
                         <a class="dropdown-item" href="#!/violations">Inspection Violations</a>
                         <a href class="dropdown-item divider"></a>
-                        <a class="dropdown-item" href="#!/manage-operators">Manage Operators</a>
-                        <a class="dropdown-item" href="#!/manage-lookups">Manage Lookups</a>
+                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item" href="#!/manage-operators">Manage Operators</a>
+                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item" href="#!/manage-lookups">Manage Lookups</a>
                         <a class="dropdown-item" href="/assets/pdf/LeaseProcessingWorkflow.pdf" target="_blank">Workflow Diagram (pdf)</a>
 
                     </div>

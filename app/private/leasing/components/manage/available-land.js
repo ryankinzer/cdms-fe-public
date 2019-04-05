@@ -72,8 +72,6 @@
             { headerName: "FSA Tract #", field: "FSATractNumber", width: 140, menuTabs: ['filterMenuTab'], filter: "text" },
             //{ headerName: "HEL", field: "HEL", width: 100 },
             { headerName: "TAAMS Number", field: "TAAMSNumber", width: 140, menuTabs: ['filterMenuTab'], filter: "text" },
-            { headerName: "Last Operator", field: "Operator", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
-
         ];
 
 

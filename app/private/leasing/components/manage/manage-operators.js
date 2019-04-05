@@ -13,6 +13,11 @@
         $scope.operators.$promise.then(function () {
             $scope.operatorsGridDiv = document.querySelector('#operators-grid');
             new agGrid.Grid($scope.operatorsGridDiv, $scope.operatorsGrid);
+
+            if ($rootScope.Profile.hasRole("LeasingEditor")) {
+                $scope.operatorsGrid.columnApi.setColumnVisible("EditLinks", true);
+                $scope.operatorsGrid.api.refreshHeader();
+            }
         });
 
         var EditLinksTemplate = function (param) {

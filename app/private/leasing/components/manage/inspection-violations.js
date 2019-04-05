@@ -16,6 +16,12 @@
         $scope.violations.$promise.then(function () {
             $scope.violationsGridDiv = document.querySelector('#inspection-violations-grid');
             new agGrid.Grid($scope.violationsGridDiv, $scope.violationsGrid);
+
+            if ($rootScope.Profile.hasRole("LeasingEditor")) {
+                $scope.violationsGrid.columnApi.setColumnVisible("EditLinks", true);
+                $scope.violationsGrid.api.refreshHeader();
+            }
+
         });
 
         var EditLinksTemplate = function (param) {
@@ -33,7 +39,7 @@
         };
 
         var violationsColumnDefs = [
-            { colId: 'EditLinks', width: 90, cellRenderer: EditLinksTemplate, menuTabs: [] },
+            { colId: 'EditLinks', width: 90, cellRenderer: EditLinksTemplate, menuTabs: [], hide: true },
 
             {
                 headerName: "Inspection Date", field: "InspectionDateTime", width: 160,

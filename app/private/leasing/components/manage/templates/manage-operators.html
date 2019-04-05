@@ -2,14 +2,16 @@
 
 Total number of operators listed: <b>{{operators.length}}</b><br /><br />
 
-<button class="btn btn-sm" style="margin-bottom: 20px;" ng-click="openAddOperator()">New Operator</button>
-<div class="right">
-    <div ng-show="saveResults" style="float: left;">
-        <div ng-click="saveResults=null" ng-show="saveResults.success" class="delete-error alert alert-success">Deleted</div>
-        <div ng-click="saveResults=null" ng-show="saveResults.failure" class="delete-error alert alert-danger">Error</div>
-    </div>
-    <button project-role="editor" class="btn right btn-danger" ng-show="operatorsGrid.selectedItems.length > 0" ng-click="deleteOperator()">Delete</button>
+<div ng-show="Profile.hasRole('LeasingEditor')">
+    <button class="btn btn-sm" style="margin-bottom: 20px;" ng-click="openAddOperator()">New Operator</button>
+    <div class="right">
+        <div ng-show="saveResults" style="float: left;">
+            <div ng-click="saveResults=null" ng-show="saveResults.success" class="delete-error alert alert-success">Deleted</div>
+            <div ng-click="saveResults=null" ng-show="saveResults.failure" class="delete-error alert alert-danger">Error</div>
+        </div>
+        <button project-role="editor" class="btn right btn-danger" ng-show="operatorsGrid.selectedItems.length > 0" ng-click="deleteOperator()">Delete</button>
 
+    </div>
 </div>
 
 <div id="operators-grid" style="height: 600px;width:100%;" class="ag-theme-blue"></div>
