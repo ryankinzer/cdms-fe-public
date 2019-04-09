@@ -16,7 +16,6 @@ require([
     //loads the common controllers
     'core/common/components/modals/modal-quick-add-accuracycheck',
     'core/common/components/modals/modal-quick-add-characteristic',
-    'core/common/components/modals/modal-add-location',
     'core/common/components/modals/modal-create-instrument',
     'core/common/components/modals/modal-bulk-rowqa-change',
     'core/common/components/modals/modal-save-success',
