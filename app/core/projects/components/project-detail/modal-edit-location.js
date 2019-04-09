@@ -28,9 +28,9 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                     'Location': $scope.row,
                 };
 
-                //OK -- if we are saving a NEW location then start off by adding the point to the featurelayer
-                if (!$scope.row.Id) {
-                    console.log("Adding a NEW location -- $scope.row.Id = " + $scope.row.Id);
+            //OK -- if we are saving a NEW location then start off by adding the point to the featurelayer
+            if (!$scope.row.Id) {
+                console.log("Adding a NEW location...");
 
                     $scope.map.reposition(); //this is important or else we end up with our map points off somehow.
 
