@@ -116,7 +116,7 @@
             $scope.searchComplete = true;
         }
 
-        $scope.searchByFieldId = function (field_id) {  //TODO: not working
+        $scope.searchByFieldId = function (field_id) {  
             console.log("search for field: " + field_id);
             $scope.searchResults.length = 0;
             $scope.searchTerm = "";
@@ -124,8 +124,11 @@
             var matching_leases = LeasingService.getLeasesByField(field_id);
             matching_leases.$promise.then(function () { 
                 matching_leases.forEach(function (lease) { 
+                    console.log("found a match: " + lease.Id);
                     $scope.searchResults.push(lease);       
                 });
+
+                $scope.searchGrid.api.setRowData($scope.searchResults);
                 
             });
         };
@@ -157,9 +160,6 @@
 
         // expose a method for handling clicks ON THE MAP - this is linked to from the Map.js directive
         $scope.click = function (e) {
-
-            //alert("map is currently disabled");
-            //return;
 
             console.log("Click!");
 
