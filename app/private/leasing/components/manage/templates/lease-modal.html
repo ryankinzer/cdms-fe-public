@@ -1,0 +1,292 @@
+﻿            <div class="modal-header" style="display:block;">
+                <h4>{{headerMessage}}</h4>
+            </div>
+            <div class="modal-body modal-form" style="width: 600px;">
+
+
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" data-target="#basicinfo">Basic Information</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" data-target="#cropshare">Crop Sharing</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" data-target="#payment">Payment & Bonding</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="basicinfo">
+                            <div class="list-group media-list media-list-stream">
+                                <div style="margin-top: 30px;"></div>
+
+
+                                <div class="header-label">Allotment *</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-model="lease_modal.AllotmentName" disabled />
+                                </div>
+
+                                <div class="header-label">Lease Number *</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-change="manuallyUpdatedLeaseNumber()" ng-model="lease_modal.LeaseNumber" />
+                                </div>
+
+                                <div class="header-label">TAAMS Number</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-model="lease_modal.TAAMSNumber" />
+                                </div>
+
+                                <div class="header-label">Operator *</div>
+                                <div class="header-value">
+                                    <button type="button" style="float:right; margin-right:20px;" ng-click="addOperatorPopup()" class="btn btn-sm" tabindex="-1">Add</button>
+                                    <select class="form-control" ng-model="lease_modal.LeaseOperatorId" convert-to-number>
+                                        <option ng-repeat="operator in operators | orderBy:'SortName'" ng-selected="operator.Id == lease_modal.LeaseOperatorId" value="{{operator.Id}}">{{operator | operOrgName}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="header-label">Status *</div>
+                                <div class="header-value">
+                                    <select class="form-control" ng-model="lease_modal.Status" convert-to-number>
+                                        <option ng-repeat="status in leaseStatuses" ng-selected="$index == lease_modal.Status" value="{{$index}}">{{status}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="header-label">Lease Level *</div>
+                                <div class="header-value">
+                                    <select class="form-control" ng-model="lease_modal.Level" convert-to-number>
+                                        <option ng-repeat="level in leaseLevels" ng-selected="$index == lease_modal.Level" value="{{$index}}">{{level}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="header-label">Lease Type *</div>
+                                <div class="header-value">
+                                    <select class="form-control" ng-change="updateLeaseNumber()" ng-model="lease_modal.LeaseType">
+                                        <option ng-repeat="leasetype in leaseTypes.ListValues" ng-selected="leasetype == lease_modal.LeaseType" value="{{leasetype}}">{{leasetype}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="header-label">FSA Field #</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ui-number-mask="0" ui-hide-group-sep ng-model="lease_modal.FieldNumber" />
+                                </div>
+
+                                <div class="header-label">FSA Tract #</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ui-number-mask="0" ui-hide-group-sep ng-model="lease_modal.FSATractNumber" />
+                                </div>
+
+                                <div class="header-label">Transaction Date</div>
+                                <div class="header-value">
+                                    <md-datepicker class="form-control" ng-model="lease_modal.TransactionDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                                </div>
+
+                                <div class="header-label">Length</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-model="lease_modal.LeaseDuration" />
+                                </div>
+
+                                <div class="header-label">Lease Start Date *</div>
+                                <div class="header-value">
+                                    <md-datepicker class="form-control" ng-change="updateLeaseNumber()" ng-model="lease_modal.LeaseStart" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                                </div>
+
+                                <div class="header-label">Lease End Date</div>
+                                <div class="header-value">
+                                    <md-datepicker class="form-control" ng-change="updateLeaseNumber()" ng-model="lease_modal.LeaseEnd" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                                </div>
+
+
+                                <div class="header-label">Leased Acres</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ui-number-mask="3" ng-model="lease_modal.LeaseAcres" />
+                                </div>
+
+                                <div class="header-label">Productive Acres</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ui-number-mask="3" ng-model="lease_modal.ProductiveAcres" />
+                                </div>
+
+
+                                <div ng-show="lease_modal.LeaseType == 'Grazing'">
+
+                                    <div class="header-label">Graze Start Date</div>
+                                    <div class="header-value">
+                                        <md-datepicker class="form-control" ng-model="lease_modal.GrazeStart" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                                    </div>
+
+                                    <div class="header-label">Graze End Date</div>
+                                    <div class="header-value">
+                                        <md-datepicker class="form-control" ng-model="lease_modal.GrazeEnd" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                                    </div>
+
+                                    <div class="header-label">Graze Animal</div>
+                                    <div class="header-value">
+                                        <div class="checkbox-itemlist">
+                                            <div ng-repeat="animal in animalTypes.ListValues">
+                                                <input type="checkbox" checklist-model="lease_modal.GrazeAnimal" checklist-value="animal" /> {{animal}}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="header-label">Negotiate Date</div>
+                                <div class="header-value">
+                                    <md-datepicker class="form-control" ng-model="lease_modal.NegotiateDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                                </div>
+
+                                <div ng-show="canViewCropFields">
+
+                                    <div class="header-label">Residue Requirement</div>
+                                    <div class="header-value">
+                                        <input class="form-control" type="text" ng-model="lease_modal.ResidueRequiredPct" ui-mask="99?9" ui-mask-placeholder-char="space" />
+                                    </div>
+
+                                    <div class="header-label">Green Cover Requirement</div>
+                                    <div class="header-value">
+                                        <input class="form-control" type="text" ng-model="lease_modal.GreenCoverRequiredPct" ui-mask="99?9" ui-mask-placeholder-char="space" />
+                                    </div>
+
+                                    <div class="header-label">Clod Requirement</div>
+                                    <div class="header-value">
+                                        <input class="form-control" type="text" ng-model="lease_modal.ClodRequiredPct" ui-mask="99?9" ui-mask-placeholder-char="space" />
+                                    </div>
+
+                                    <div class="header-label">AUMs</div>
+                                    <div class="header-value">
+                                        <input class="form-control" type="text" ng-model="lease_modal.AUMs" />
+                                    </div>
+
+                                    <div class="header-label">Optional Alternative Crop?</div>
+                                    <div class="header-value">
+                                        <input class="form-control" type="checkbox" ng-model="lease_modal.OptionalAlternativeCrop" />
+                                    </div>
+                                </div>
+
+
+
+                                <div class="header-label">Withdrawl Date</div>
+                                <div class="header-value">
+                                    <md-datepicker class="form-control" ng-model="lease_modal.WithdrawlDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                                </div>
+
+                                <div class="header-label">Approved Date</div>
+                                <div class="header-value">
+                                    <md-datepicker class="form-control" ng-model="lease_modal.ApprovedDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                                </div>
+
+                                <div class="header-label">Under Internal Review?</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="checkbox" ng-model="lease_modal.UnderInternalReview" />
+                                </div>
+
+                                <div class="header-label">Highly Erodable Land?</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="checkbox" ng-model="lease_modal.HEL" />
+                                </div>
+
+                                <div ng-show="lease_modal.UnderInternalReview">
+                                    <div class="header-label">Internal Review Start Date</div>
+                                    <div class="header-value">
+                                        <md-datepicker class="form-control" ng-model="lease_modal.InternalReviewStartDate" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="header-label">Notes</div>
+                                    <div class="header-value">
+                                        <input class="form-control" type="text" ng-model="lease_modal.Notes" />
+                                    </div>
+                                </div>
+
+                                <div ng-show="lease_modal.LeaseFields">
+                                    <div class="header-label">Field Code</div>
+                                    <div class="header-value">
+                                        <div><span ng-repeat="field in lease_modal.LeaseFields">{{field.FieldId}} </span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade in" id="cropshare">
+                            <div class="list-group media-list media-list-stream">
+                                <div style="margin-top: 30px;"></div>
+
+                                <div style="margin-left: 30px; ">
+                                    <div id="cropshare-grid-modal" style="height: 200px;" class="ag-theme-blue"></div>
+                                    <button class="btn btn-sm" ng-click="addRow()" style="margin: 10px;">Add row</button>
+                                    <button class="btn btn-sm" ng-click="removeRow()" style="margin: 10px;">Remove row</button>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade in" id="payment">
+                            <div class="list-group media-list media-list-stream">
+
+                                <div style="margin-top: 30px;"></div>
+
+                                <div class="header-label">Lease Fee $</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-model="lease_modal.LeaseFee" ui-money-mask="0" />
+                                </div>
+
+                                <div class="header-label">Advance Guarantee $</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-model="lease_modal.DollarAdvance" ui-money-mask="0" />
+                                </div>
+
+                                <div class="header-label">Annual Bond $</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-model="lease_modal.DollarBond" ui-money-mask="0" />
+                                </div>
+
+                                <div class="header-label">Annual Payment $</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-model="lease_modal.DollarPerAnnum" ui-money-mask="0" />
+                                </div>
+
+                                <div class="header-label">Payment Due Description</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-model="lease_modal.DueDate" />
+                                </div>
+
+
+                                <div class="header-label">Payment Due Type</div>
+                                <div class="header-value">
+                                    <select class="form-control" ng-model="lease_modal.PaymentDueType">
+                                        <option ng-selected="'Annual' == lease_modal.PaymentDueType" value="Annual">Annual</option>
+                                        <option ng-selected="'Semi-Annual' == lease_modal.PaymentDueType" value="Semi-Annual">Semi-Annual</option>
+                                    </select>
+                                </div>
+
+                                <div class="header-label">Payment Due Description</div>
+                                <div class="header-value">
+                                    <input class="form-control" type="text" ng-model="lease_modal.PaymentDueDescription" />
+                                </div>
+
+                                <div class="header-label">Payment Unit</div>
+                                <div class="header-value">
+                                    <select class="form-control" ng-model="lease_modal.PaymentUnit">
+                                        <option ng-selected="'AUM' == lease_modal.PaymentUnit" value="AUM">AUM</option>
+                                        <option ng-selected="'Acre' == lease_modal.PaymentUnit" value="Acre">Acre</option>
+                                        <option ng-selected="'Annual' == lease_modal.PaymentUnit" value="Annual">Annual</option>
+                                        <option ng-selected="'Per Head' == lease_modal.PaymentUnit" value="Per Head">Per Head</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px;"></div>
+                    <div ng-show="pagemode='edit'" ng-include="'app/private/leasing/components/manage/templates/modal-changedby.html'"></div>
+
+
+            <div class="modal-footer">
+
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+            </div>
+        </div>

@@ -16,7 +16,6 @@ require([
     //loads the common controllers
     'core/common/components/modals/modal-quick-add-accuracycheck',
     'core/common/components/modals/modal-quick-add-characteristic',
-    'core/common/components/modals/modal-add-location',
     'core/common/components/modals/modal-create-instrument',
     'core/common/components/modals/modal-bulk-rowqa-change',
     'core/common/components/modals/modal-save-success',
@@ -42,6 +41,7 @@ require([
     'core/common/directives/field-definitions',
     'core/common/directives/roles',
     'core/common/directives/validation',
+    'core/common/directives/currency', // ui-currency attribute for the magic
 
 
 
@@ -51,7 +51,6 @@ require([
     //controllers 
     common_module.controller('ModalQuickAddAccuracyCheckCtrl', modal_quick_add_accuracycheck);
     //common_module.controller('ModalQuickAddCharacteristicCtrl', modal_quick_add_characteristic); //kb 11/1 - this is not used anywhere...
-    common_module.controller('ModalAddLocationCtrl', modal_add_location);
     common_module.controller('ModalCreateInstrumentCtrl', modal_create_instrument);
     common_module.controller('ModalBulkRowQAChangeCtrl', modal_bulk_rowqa_change);
     common_module.controller('ModalSaveSuccess', modal_save_success);
@@ -142,44 +141,5 @@ define([
         return map;
     };
 
-    //adds a new location point and returns the running promise
-    common_module.addGISPoint = function (map, location) { 
-            
-        var inSR = new esri.SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
-        var outSR = new esri.SpatialReference({ wkid: 102100 })
-        var geometryService = new esri.tasks.GeometryService(GEOMETRY_SERVICE_URL);
-
-        var newPoint = new esri.geometry.Point(location.GPSEasting, location.GPSNorthing, inSR);
-
-        //convert spatial reference
-        var PrjParams = new esri.tasks.ProjectParameters();
-
-        PrjParams.geometries = [newPoint];
-        PrjParams.outSR = outSR;
-
-        //do the projection (conversion)
-        var geo_promise = geometryService.project(PrjParams, function (outputpoint) {
-
-            newPoint = new esri.geometry.Point(outputpoint[0], outSR);
-            var newGraphic = new esri.Graphic(newPoint, new esri.symbol.SimpleMarkerSymbol());
-
-            //add the graphic to the map and get SDE_ObjectId
-            var map_promise = map.locationLayer.applyEdits([newGraphic], null, null);
-            console.log("sending apply edits");
-            map_promise.$promise.then(function (results) {
-                if (results[0].success) {
-                    var SdeObjectId = results[0].objectId;
-                    console.log("Created a new point! " + SdeObjectId);
-                }
-                else {
-                    console.log( "There was a problem saving that location.");
-                }
-            });
-        });
-
-        console.dir(geo_promise);
-
-    };
-
-
+    
 });

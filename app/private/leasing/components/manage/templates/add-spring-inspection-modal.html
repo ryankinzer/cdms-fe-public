@@ -1,0 +1,121 @@
+﻿        <div class="modal-content">
+            <div class="modal-header">
+                <h4>{{header_message}}: {{lease.LeaseNumber}}</h4>
+            </div>
+
+            <div id="inspection-header" style="margin: 20px;">
+                <div style="float: right; width: 315px;">
+                    <div id="modal-crops-grid" style="height: 150px;width:310px;" class="ag-theme-blue"></div>
+                </div>
+
+
+                <div style="width: 300px;">
+                    <table class="table inspection-data-table">
+                        <tr>
+                            <td>Allotment</td>
+                            <td>{{lease.AllotmentName}}</td>
+                        </tr>
+                        <tr>
+                            <td>Operator</td>
+                            <td>{{lease.LeaseOperator | operOrgName}}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Acres</td>
+                            <td>{{lease.LeaseAcres}}</td>
+                        </tr>
+                        <tr>
+                            <td>Lease Expires</td>
+                            <td>{{lease.LeaseEnd | date : shortDate}}</td>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>
+
+            <div class="modal-body modal-form">
+
+                <div style="margin-top: 30px;"></div>
+
+                <div class="header-label">Lease Year:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="inspection_modal.LeaseYear">
+                        <option ng-repeat="plan in lease.LeaseCropPlans | orderBy:'LeaseYear'" ng-selected="inspection_modal.LeaseYear == plan.LeaseYear" value="{{plan.LeaseYear}}">{{plan.LeaseYear}}</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 10px;"></div>
+
+                <div class="header-label">Date of Inspection</div>
+                <div class="header-value">
+                    <md-datepicker class="form-control" ng-change="updateLeaseNumber()" ng-model="inspection_modal.InspectionDateTime" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
+                </div>
+
+                <div class="header-label">Inspector</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="inspection_modal.InspectedBy" />
+                </div>
+
+                <div class="header-label">Crop Present:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="inspection_modal.CropPresent">
+                        <option ng-repeat="option in cropOptions.ListValues | orderBy:'+'" ng-selected="inspection_modal.CropPresent == option" value="{{option}}">{{option}}</option>
+                    </select>
+                </div>
+
+
+                <div class="header-label">Weeds 1</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="inspection_modal.Weeds1">
+                        <option ng-repeat="weed in weeds.ListValues | orderBy:'+'" ng-selected="inspection_modal.Weeds1 == weed" value="{{weed}}">{{weed}}</option>
+                    </select>
+                </div>
+
+                <div class="header-label">Weeds 2</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="inspection_modal.Weeds2">
+                        <option ng-repeat="weed in weeds.ListValues | orderBy:'+'" ng-selected="inspection_modal.Weeds2 == weed" value="{{weed}}">{{weed}}</option>
+                    </select>
+                </div>
+
+                <div class="header-label">Weeds 3</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="inspection_modal.Weeds3">
+                        <option ng-repeat="weed in weeds.ListValues | orderBy:'+'" ng-selected="inspection_modal.Weeds3 == weed" value="{{weed}}">{{weed}}</option>
+                    </select>
+                </div>
+
+                <div class="header-label">Field Records Received</div>
+                <div class="header-value">
+                    <input class="form-control" type="checkbox" ng-model="inspection_modal.FieldRecordsReceived" />
+                </div>
+
+                <div class="header-label">Failed Inspection</div>
+                <div class="header-value">
+                    <input class="form-control" type="checkbox" ng-model="inspection_modal.OutOfCompliance" />
+                </div>
+
+
+                <div>
+                    <div class="header-label">Improvement Trespass</div>
+                    <div class="header-value">
+                        <textarea class="form-control" rows="4" cols="50" ng-model="inspection_modal.ImprovementTresspass"></textarea>
+                    </div>
+                </div>
+
+                <div style="margin-top: 5px;">
+                    <div class="header-label">Notes</div>
+                    <div class="header-value">
+                        <textarea class="form-control" rows="4" cols="50" ng-model="inspection_modal.Notes"></textarea>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+            </div>
+
+
+        </div>
