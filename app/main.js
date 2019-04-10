@@ -105,8 +105,8 @@ define([
 
 	        //custom routes for datasets that require custom controller+pages
             //$routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
-            //$routeProvider.when('/crppcorrespondence/:Id', { templateUrl: 'app/private/crpp/components/correspondence/templates/correspondence.html', controller: 'CRPPCorrespondenceCtrl'});
-            //$routeProvider.when('/habitatsites/:Id', { templateUrl: 'app/private/habitat/components/habitat-sites/templates/sites.html', controller: 'HabitatSitesCtrl'});
+            $routeProvider.when('/crppcorrespondence/:Id', { templateUrl: 'app/private/crpp/components/correspondence/templates/correspondence.html', controller: 'CRPPCorrespondenceCtrl'});
+            $routeProvider.when('/habitatsites/:Id', { templateUrl: 'app/private/habitat/components/habitat-sites/templates/sites.html', controller: 'HabitatSitesCtrl'});
 
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
 
