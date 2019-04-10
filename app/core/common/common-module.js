@@ -51,7 +51,6 @@ require([
     //controllers 
     common_module.controller('ModalQuickAddAccuracyCheckCtrl', modal_quick_add_accuracycheck);
     //common_module.controller('ModalQuickAddCharacteristicCtrl', modal_quick_add_characteristic); //kb 11/1 - this is not used anywhere...
-    common_module.controller('ModalAddLocationCtrl', modal_add_location);
     common_module.controller('ModalCreateInstrumentCtrl', modal_create_instrument);
     common_module.controller('ModalBulkRowQAChangeCtrl', modal_bulk_rowqa_change);
     common_module.controller('ModalSaveSuccess', modal_save_success);

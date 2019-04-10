@@ -88,6 +88,7 @@ define([
                 map.selectedBasemap = defaultLayer; //"imageryLayer" 
                 map.selectedServiceLayers = [
                     "parcels", 
+                    "parcels_outline",
                     "farms"
                 ];
 
