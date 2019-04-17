@@ -488,10 +488,18 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                         in_data.Description = "Uploaded file " + file.Name;
                         in_data.Title = file.Name;
 
+                        // Make a copy of in_data, to send to the backend, in the upload (next section).
+                        // If we use use the reference to in_data, JavaScript will run this section so fast
+                        // that the last value ends up getting sent.
+                        // For one file, this is not a problem.  However, when the user uploads multiple files,
+                        // the Title and Description all get set to the same value (the last value in the list).
+                        var tmpData = angular.copy(in_data);
+
                         $scope.upload = $upload.upload({
                             url: serviceUrl + in_target,
                             method: "POST",
-                            data: in_data,
+                            //data: in_data,
+                            data: tmpData,
                             file: file,
 
                         }).progress(function (evt) {
