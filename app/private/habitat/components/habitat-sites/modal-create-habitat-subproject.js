@@ -860,7 +860,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 				    $scope.newPoint = new Point(newLocation.GPSEasting, newLocation.GPSNorthing, inSR);
 
 				    //convert spatial reference
-				    var PrjParams = new tasks.ProjectParameters();
+				    //var PrjParams = new tasks.ProjectParameters();
+                    var PrjParams = new ProjectParameters();
 
 				    PrjParams.geometries = [$scope.newPoint];
 				    // PrjParams.outSR is not set yet, so we must set it also.
@@ -870,7 +871,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 				    geometryService.project(PrjParams, function (outputpoint) {
 
 				        $scope.newPoint = new Point(outputpoint[0], outSR);
-				        $scope.newGraphic = new Graphic($scope.newPoint, new symbol.SimpleMarkerSymbol());
+                        //$scope.newGraphic = new Graphic($scope.newPoint, new symbol.SimpleMarkerSymbol());
+                        $scope.newGraphic = new Graphic($scope.newPoint, new SimpleMarkerSymbol());
 				        $scope.map.graphics.add($scope.newGraphic);
 
 				        //add the graphic to the map and get SDE_ObjectId
@@ -892,8 +894,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 				                        //console.dir(item);
 				                        if (key === "Id") {
 				                            //$scope.locationId = promise.LocationId;
-				                            $scope.subproject_row.LocationId = item;
-				                            console.log("$scope.subproject_row.LocationId = " + $scope.subproject_row.LocationId);
+                                            //$scope.subproject_row.LocationId = item;
+                                            $scope.row.LocationId = item;
+                                            //console.log("$scope.subproject_row.LocationId = " + $scope.subproject_row.LocationId);
+                                            console.log("$scope.row.LocationId = " + $scope.row.LocationId);
 
 				                            //ok - new location is saved and we are prepped to save the subproject so handoff to next step:
 				                            $scope.saveFilesAndParent();
