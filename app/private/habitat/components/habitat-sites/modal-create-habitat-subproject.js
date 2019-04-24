@@ -860,7 +860,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 				    $scope.newPoint = new Point(newLocation.GPSEasting, newLocation.GPSNorthing, inSR);
 
 				    //convert spatial reference
-				    var PrjParams = new tasks.ProjectParameters();
+				    //var PrjParams = new tasks.ProjectParameters();
+                    var PrjParams = new ProjectParameters();
 
 				    PrjParams.geometries = [$scope.newPoint];
 				    // PrjParams.outSR is not set yet, so we must set it also.
