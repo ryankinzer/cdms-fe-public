@@ -24,19 +24,13 @@
       'dijit/Menu',
       'dijit/MenuItem',
       'dijit/form/DropDownButton',
-//      'app/app',                                                    //main.js
       'core/all-modules',
       'core/common/common-module',
       'core/projects/projects-module',
       'core/datasets/datasets-module',
       'core/admin/admin-module',
-      'core/user/user-module',
-      'private/all-modules',
-      'private/crpp/crpp-module',
-      'private/habitat/habitat-module',
-        'private/appraisals/appraisals-module',
-        'private/leasing/leasing-module',
-
+      'core/user/user-module'
+      
     ], function (angular, parser) {
    
         angular.element(document).ready(function () {           //punch it, Chewy!

@@ -94,23 +94,6 @@
                     </div>
                 </li>
 
-                <li  class="nav-item dropdown" ng-show="Profile.hasRole('Leasing')" ng-cloak>
-                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Leasing</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#!/leasing">Search</a>
-                        <a href class="dropdown-item divider"></a>
-                        <a class="dropdown-item" href="#!/available-land">Available Land for Lease</a>
-                        <a class="dropdown-item" href="#!/pending-leases">Pending Leases</a>
-                        <a class="dropdown-item" href="#!/active-leases">Active Leases</a>
-                        <a class="dropdown-item" href="#!/violations">Inspection Violations</a>
-                        <a href class="dropdown-item divider"></a>
-                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item" href="#!/manage-operators">Manage Operators</a>
-                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item" href="#!/manage-lookups">Manage Lookups</a>
-                        <a class="dropdown-item" href="/assets/pdf/LeaseProcessingWorkflow.pdf" target="_blank">Workflow Diagram (pdf)</a>
-
-                    </div>
-                </li>
-
                 <li ng-cloak ng-show="Profile.isAdmin()" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">

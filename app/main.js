@@ -30,29 +30,19 @@ define([
       'ngFileUpload',				
       'nvd3',					
 
-      //these are ctuir specific
-      'CrppModule',
-      'AppraisalsModule',
-         'HabitatModule',
-        'LeasingModule',
-
       'ngMaterial', 'ngMessages',
 
 	  ])
 	    .config(['$routeProvider', function($routeProvider) {
 
-            /* 
+            
             if (typeof TRIBALCDMS_TEMPLATES !== 'undefined') {
-                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/' + TRIBALCDMS_TEMPLATES +'/projects.html', controller: 'project-list-ctrl' });
-                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/' + TRIBALCDMS_TEMPLATES +'/project-datasets.html', controller: 'project-detail-ctrl' });
-                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/' + TRIBALCDMS_TEMPLATES +'/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
+                $routeProvider.when('/projectLocations/:Id', { templateUrl: 'app/core/projects/components/project-detail/' + TRIBALCDMS_TEMPLATES +'/project-locations.html', controller: 'ProjectLocationsCtrl'});
             }
             else {
-                $routeProvider.when('/projects', { templateUrl: 'app/core/projects/components/project-list/templates/projects.html', controller: 'project-list-ctrl' });
-                $routeProvider.when('/projects/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-datasets.html', controller: 'project-detail-ctrl' });
-                $routeProvider.when('/activities/:Id', { templateUrl: 'app/core/datasets/components/dataset-activities-list/templates/dataset-activities.html', controller: 'DatasetActivitiesCtrl', permission: 'Edit' });
+                $routeProvider.when('/projectLocations/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-locations.html', controller: 'ProjectLocationsCtrl'});
             }
-            */
+            
 
             $routeProvider.when('/dashboard', { templateUrl: 'app/core/user/components/landing-page/templates/landing-page.html', controller: 'LandingPage'});
 
@@ -63,7 +53,6 @@ define([
             $routeProvider.when('/projectData/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-data.html', controller: 'ProjectDataCtrl'});
             $routeProvider.when('/projectEditors/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-editors.html', controller: 'ProjectEditorsCtrl'});
             $routeProvider.when('/projectLookups/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-lookups.html', controller: 'ProjectLookupsCtrl'});
-            $routeProvider.when('/projectLocations/:Id', { templateUrl: 'app/core/projects/components/project-detail/templates/project-locations.html', controller: 'ProjectLocationsCtrl'});
 
             $routeProvider.when('/analytics', { templateUrl: 'app/core/user/components/analytics/templates/user-analytics.html', controller: 'UserAnalyticsCtrl'});
 
@@ -91,22 +80,6 @@ define([
 
             $routeProvider.when('/admin-master/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-master.html', controller: 'AdminEditMasterCtrl' });
             $routeProvider.when('/admin-new-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-new-dataset.html', controller: 'AdminNewDatasetCtrl' });
-
-            $routeProvider.when('/leasing', { templateUrl: 'app/private/leasing/components/manage/templates/manage-leases.html', controller: 'LeasingHomeController' });
-            $routeProvider.when('/active-leases', { templateUrl: 'app/private/leasing/components/manage/templates/active-leases.html', controller: 'ActiveLeasesController' });
-            $routeProvider.when('/pending-leases', { templateUrl: 'app/private/leasing/components/manage/templates/pending-leases.html', controller: 'PendingLeasesController' });
-            $routeProvider.when('/view-lease/:Id', { templateUrl: 'app/private/leasing/components/manage/templates/view-lease.html', controller: 'ViewLeaseController' });
-            $routeProvider.when('/available-land', { templateUrl: 'app/private/leasing/components/manage/templates/available-land.html', controller: 'AvailableLandController' });
-            $routeProvider.when('/violations', { templateUrl: 'app/private/leasing/components/manage/templates/inspection-violations.html', controller: 'ViolationsController' });
-            $routeProvider.when('/manage-operators', { templateUrl: 'app/private/leasing/components/manage/templates/manage-operators.html', controller: 'ManageOperatorsController' });
-            $routeProvider.when('/manage-lookups', { templateUrl: 'app/private/leasing/components/manage/templates/lookups.html', controller: 'LookupListsController' });
-            
-            
-
-	        //custom routes for datasets that require custom controller+pages
-            //$routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
-            $routeProvider.when('/crppcorrespondence/:Id', { templateUrl: 'app/private/crpp/components/correspondence/templates/correspondence.html', controller: 'CRPPCorrespondenceCtrl'});
-            $routeProvider.when('/habitatsites/:Id', { templateUrl: 'app/private/habitat/components/habitat-sites/templates/sites.html', controller: 'HabitatSitesCtrl'});
 
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
 
