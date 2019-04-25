@@ -1468,6 +1468,10 @@ function isDuplicateUploadFile(incoming_file, files_to_check) {
 //helper function that unJSON's the vals if a string or else returns the vals if already an object
 function getJsonObjects(vals) { 
 
+    // If a null was passed in, don't try to process it.
+    if (vals === null)
+        return vals;
+
     objvals = vals;
 
     try {
