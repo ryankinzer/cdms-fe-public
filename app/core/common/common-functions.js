@@ -1471,7 +1471,7 @@ function getJsonObjects(vals) {
     objvals = vals;
 
     try {
-        if (typeof vals === 'string' && vals != "") {
+        if (typeof vals === 'string' && vals !== null && vals !== "") {
             objvals = angular.fromJson(vals);
             if (Array.isArray(objvals) && objvals.length > 0) {
                 //console.dir(objvals);
