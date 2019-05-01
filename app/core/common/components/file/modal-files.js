@@ -441,15 +441,23 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                         current_files.forEach(function (file_to_check) {
                             //then find the file in the uploads... did it fail?
                             var uploading_this_one = false;
+
                             $scope.filesToUpload[in_file_field].forEach(function (upload_file) {
                                 if (upload_file.Name === file_to_check.Name) {
                                     uploading_this_one = true;
-                                    if (upload_file.success === "Success")
+                                    //console.log("upload_file.Name = " + upload_file.Name + ", upload_file.success = " + upload_file.success);
+                                    //if (upload_file.success === "Success")
+
+                                    // With IE, sometimes the files would be uploaded, but would not have .success set to "success".
+                                    // Instead, it would be set to "working: 100%".
+                                    // Updated the if statement, to handle this issue.
+                                    if ((upload_file.success === "Success") || (upload_file.success === "working: 100%"))
                                         remaining_files.push(file_to_check);
                                 }
                             });
                             if (!uploading_this_one) //means this was an existing file so leave it.
                                 remaining_files.push(file_to_check);
+
                         });
                     }
 
@@ -488,10 +496,18 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                         in_data.Description = "Uploaded file " + file.Name;
                         in_data.Title = file.Name;
 
+                        // Make a copy of in_data, to send to the backend, in the upload (next section).
+                        // If we use use the reference to in_data, JavaScript will run this section so fast
+                        // that the last value ends up getting sent.
+                        // For one file, this is not a problem.  However, when the user uploads multiple files,
+                        // the Title and Description all get set to the same value (the last value in the list).
+                        var tmpData = angular.copy(in_data);
+
                         $scope.upload = $upload.upload({
                             url: serviceUrl + in_target,
                             method: "POST",
-                            data: in_data,
+                            //data: in_data,
+                            data: tmpData,
                             file: file,
 
                         }).progress(function (evt) {

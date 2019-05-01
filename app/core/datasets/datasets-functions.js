@@ -775,6 +775,8 @@ function nextActivity(activities, routeId, $location) {
 
 
 function fireRules(type, row, field, value, headers, errors, scope) {
+    //console.log("firerules: " + type);
+    //console.dir(field);
     var row_errors = errors; //older rules use "row_errors"
     try {
         //fire Field rule if it exists -- OnChange

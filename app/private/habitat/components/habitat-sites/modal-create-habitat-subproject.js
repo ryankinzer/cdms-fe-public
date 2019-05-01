@@ -842,70 +842,83 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 			//newLocation.SubprojectId = $scope.subprojectId; // When we are creating a new subproject, we do not have the subprojectId yet; this is from the old one.
 			console.log("newLocation is next...");
 			console.dir(newLocation);
-				
-			//nad83 zone 11...  might have to have this as a list somehwere...
-			var inSR = new esri.SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
-			var outSR = new esri.SpatialReference({wkid: 102100});
-			var geometryService = new esri.tasks.GeometryService(GEOMETRY_SERVICE_URL);
-			$scope.newPoint = new esri.geometry.Point(newLocation.GPSEasting, newLocation.GPSNorthing, inSR);			
 
-			//convert spatial reference
-			var PrjParams = new esri.tasks.ProjectParameters();
+				require([
+                    'esri/symbols/SimpleMarkerSymbol',
+                    'esri/graphic',
+                    'esri/SpatialReference',
+                    'esri/tasks/GeometryService',
+                    'esri/geometry/Point',
+                    'esri/tasks/ProjectParameters',
 
-			PrjParams.geometries = [ $scope.newPoint ];
-			// PrjParams.outSR is not set yet, so we must set it also.
-			PrjParams.outSR = outSR;
+				], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
 
-			//do the projection (conversion)
-			geometryService.project(PrjParams, function(outputpoint) {
+				    //nad83 zone 11...  might have to have this as a list somehwere...
+				    var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
+				    var outSR = new SpatialReference({ wkid: 102100 });
+				    var geometryService = new GeometryService(GEOMETRY_SERVICE_URL);
+				    $scope.newPoint = new Point(newLocation.GPSEasting, newLocation.GPSNorthing, inSR);
 
-				$scope.newPoint = new esri.geometry.Point(outputpoint[0], outSR);
-				$scope.newGraphic = new esri.Graphic($scope.newPoint, new esri.symbol.SimpleMarkerSymbol());
-				$scope.map.graphics.add($scope.newGraphic);
+				    //convert spatial reference
+				    //var PrjParams = new tasks.ProjectParameters();
+                    var PrjParams = new ProjectParameters();
 
-				//add the graphic to the map and get SDE_ObjectId
-				$scope.map.locationLayer.applyEdits([$scope.newGraphic],null,null).then(function(results){
+				    PrjParams.geometries = [$scope.newPoint];
+				    // PrjParams.outSR is not set yet, so we must set it also.
+				    PrjParams.outSR = outSR;
 
-					if(results[0].success)
-					{
-						newLocation.SdeObjectId = $scope.SdeObjectId = results[0].objectId;
-						$scope.setSdeObjectId($scope.SdeObjectId);
-						console.log("Created a new point! "+ newLocation.SdeObjectId);
-						$scope.NewPoint = true;
+				    //do the projection (conversion)
+				    geometryService.project(PrjParams, function (outputpoint) {
 
-						var promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
-						promise.$promise.then(function(result){
-							console.log("done and success!");
-							console.log("result is next...");
-							console.dir(result);
-							angular.forEach(result, function(item, key){
-								//console.log("key = " + key + ", item is next...");
-								//console.dir(item);
-								if (key === "Id")
-								{
-									//$scope.locationId = promise.LocationId;
-									$scope.row.LocationId = item;
-									console.log("$scope.row.LocationId = " + $scope.row.LocationId);
+				        $scope.newPoint = new Point(outputpoint[0], outSR);
+                        //$scope.newGraphic = new Graphic($scope.newPoint, new symbol.SimpleMarkerSymbol());
+                        $scope.newGraphic = new Graphic($scope.newPoint, new SimpleMarkerSymbol());
+				        $scope.map.graphics.add($scope.newGraphic);
 
-                                    //ok - new location is saved and we are prepped to save the subproject so handoff to next step:
-                                    $scope.saveFilesAndParent();
-								}
-							});
-						
-							//reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
-							//$scope.refreshProjectLocations();
-							//$modalInstance.dismiss();  // This is from the ActivitiesConroller, ModalAddLocationCtrl.  We have this down below, so we do not need it here; it causes an error.
-						});
+				        //add the graphic to the map and get SDE_ObjectId
+				        $scope.map.locationLayer.applyEdits([$scope.newGraphic], null, null).then(function (results) {
 
-					}
-					else
-					{
-						$scope.subprojectSave.errorMessage = "There was a problem saving that location.";
-					}
+				            if (results[0].success) {
+				                newLocation.SdeObjectId = $scope.SdeObjectId = results[0].objectId;
+				                $scope.setSdeObjectId($scope.SdeObjectId);
+				                console.log("Created a new point! " + newLocation.SdeObjectId);
+				                $scope.NewPoint = true;
 
-				});
-			});
-		}
+				                var promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
+				                promise.$promise.then(function (result) {
+				                    console.log("done and success!");
+				                    console.log("result is next...");
+				                    console.dir(result);
+				                    angular.forEach(result, function (item, key) {
+				                        //console.log("key = " + key + ", item is next...");
+				                        //console.dir(item);
+				                        if (key === "Id") {
+				                            //$scope.locationId = promise.LocationId;
+                                            //$scope.subproject_row.LocationId = item;
+                                            $scope.row.LocationId = item;
+                                            //console.log("$scope.subproject_row.LocationId = " + $scope.subproject_row.LocationId);
+                                            console.log("$scope.row.LocationId = " + $scope.row.LocationId);
+
+				                            //ok - new location is saved and we are prepped to save the subproject so handoff to next step:
+				                            $scope.saveFilesAndParent();
+				                        }
+				                    });
+
+				                    //reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
+				                    //$scope.refreshProjectLocations();
+				                    //$modalInstance.dismiss();  // This is from the ActivitiesConroller, ModalAddLocationCtrl.  We have this down below, so we do not need it here; it causes an error.
+				                });
+
+				            }
+				            else {
+				                $scope.subprojectSave.errorMessage = "There was a problem saving that location.";
+				            }
+
+				        }); //applyedits
+				    }); //geometryservice.project
+				}); //require
+			}
+
 			
 		// If we had a problem saving the location, stop here and do not save the subproject.
 		if ($scope.subprojectSave.errorMessage.length > 0)

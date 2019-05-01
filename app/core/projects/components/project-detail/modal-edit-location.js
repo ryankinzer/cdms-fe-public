@@ -13,71 +13,82 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
 
         $scope.save = function () {
 
-            var payload = {
-                'ProjectId' : $scope.project.Id,
-                'Location' : $scope.row,
-            };
+            require([
+                'esri/symbols/SimpleMarkerSymbol',
+                'esri/graphic',
+                'esri/SpatialReference',
+                'esri/tasks/GeometryService',
+                'esri/geometry/Point',
+                'esri/tasks/ProjectParameters',
+
+            ], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
+
+                var payload = {
+                    'ProjectId': $scope.project.Id,
+                    'Location': $scope.row,
+                };
 
             //OK -- if we are saving a NEW location then start off by adding the point to the featurelayer
             if (!$scope.row.Id) {
-                console.log("Adding a NEW location -- $scope.row.Id = " + $scope.row.Id);
+                console.log("Adding a NEW location...");
 
-                $scope.map.reposition(); //this is important or else we end up with our map points off somehow.
+                    $scope.map.reposition(); //this is important or else we end up with our map points off somehow.
 
-                //nad83 zone 11...  might have to have this as alist somehwere...
-                var inSR = new esri.SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
-                var outSR = new esri.SpatialReference({ wkid: 102100 })
-                var geometryService = new esri.tasks.GeometryService(GEOMETRY_SERVICE_URL);
-                $scope.newPoint = new esri.geometry.Point($scope.row.GPSEasting, $scope.row.GPSNorthing, inSR);
+                    //nad83 zone 11...  might have to have this as alist somehwere...
+                    var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
+                    var outSR = new SpatialReference({ wkid: 102100 })
+                    var geometryService = new GeometryService(GEOMETRY_SERVICE_URL);
+                    $scope.newPoint = new Point($scope.row.GPSEasting, $scope.row.GPSNorthing, inSR);
 
-                //convert spatial reference
-                var PrjParams = new esri.tasks.ProjectParameters();
+                    //convert spatial reference
+                    var PrjParams = new ProjectParameters();
 
-                PrjParams.geometries = [$scope.newPoint];
-                // PrjParams.outSR is not set yet, so we must set it also.
-                PrjParams.outSR = outSR;
+                    PrjParams.geometries = [$scope.newPoint];
+                    // PrjParams.outSR is not set yet, so we must set it also.
+                    PrjParams.outSR = outSR;
 
-                //do the projection (conversion)
-                geometryService.project(PrjParams, function (outputpoint) {
+                    //do the projection (conversion)
+                    geometryService.project(PrjParams, function (outputpoint) {
 
-                    $scope.newPoint = new esri.geometry.Point(outputpoint[0], outSR);
-                    $scope.newGraphic = new esri.Graphic($scope.newPoint, new esri.symbol.SimpleMarkerSymbol());
-                    $scope.map.graphics.add($scope.newGraphic);
+                        $scope.newPoint = new Point(outputpoint[0], outSR);
+                        $scope.newGraphic = new Graphic($scope.newPoint, new SimpleMarkerSymbol());
+                        $scope.map.graphics.add($scope.newGraphic);
 
-                    //add the graphic to the map and get SDE_ObjectId
-                    $scope.map.locationLayer.applyEdits([$scope.newGraphic], null, null).then(function (results) {
-                        if (results[0].success) {
-                            $scope.row.SdeObjectId = results[0].objectId;
-                            console.log("Created a new point! " + $scope.row.SdeObjectId);
+                        //add the graphic to the map and get SDE_ObjectId
+                        $scope.map.locationLayer.applyEdits([$scope.newGraphic], null, null).then(function (results) {
+                            if (results[0].success) {
+                                $scope.row.SdeObjectId = results[0].objectId;
+                                console.log("Created a new point! " + $scope.row.SdeObjectId);
 
-                            var data = {
-                                ProjectId: $scope.project.Id,
-                            };
+                                var data = {
+                                    ProjectId: $scope.project.Id,
+                                };
 
-                            var target = '/api/v1/file/UploadProjectFile';
+                                var target = '/api/v1/file/UploadProjectFile';
 
-                            $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
-        
-                        }
-                        else {
-                            $scope.SaveMessage = "There was a problem saving that location.";
-                            console.dir(results);
-                        }
+                                $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
 
+                            }
+                            else {
+                                $scope.SaveMessage = "There was a problem saving that location.";
+                                console.dir(results);
+                            }
+
+                        });
                     });
-                });
-            }
-            else //updating an existing...
-            {
-                var data = {
-                    ProjectId: $scope.project.Id,
-                };
+                }
+                else //updating an existing...
+                {
+                    var data = {
+                        ProjectId: $scope.project.Id,
+                    };
 
-                var target = '/api/v1/file/UploadProjectFile';
+                    var target = '/api/v1/file/UploadProjectFile';
 
-                $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
-                
-            }
+                    $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+
+                }
+            }); //require
           
         };
 

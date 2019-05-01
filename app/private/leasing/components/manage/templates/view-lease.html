@@ -1,0 +1,165 @@
+﻿<style>
+
+    .tab-lease ul {
+        width: 750px;
+        list-style-type: none;
+        list-style-position: outside;
+        margin: 20px;
+        padding: 0px;
+    }
+
+    .tab-lease li {
+        padding: 3px;
+        border-bottom: 1px solid #eee;
+        position: relative;
+    }
+
+    .tab-lease label {
+        width: 150px;
+        margin-top: 3px;
+        display: inline-block;
+        float: left;
+        padding: 3px;
+    }
+
+    .lease-table {
+        margin-bottom: 30px;
+    }
+
+    .search-button {
+        float: right;
+        margin-left: 10px;
+        margin-right: 55px;
+    }
+
+    .search-text-control {
+        margin-left: 10px;
+        width: 250px;
+    }
+
+    .view-lease-container {
+    }
+
+    .lease-field-table {
+        width: 300px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    .active-image {
+        float: right;
+    }
+</style>
+
+<div ng-include="'app/private/leasing/components/manage/templates/leasing-header.html'"></div>
+
+<div class="view-lease-container">
+
+    <span class="active-image" ng-show="lease.Status==1"><img src="assets/images/active.png" /></span>
+    <span class="active-image" ng-show="lease.Status==2"><img src="assets/images/inactive.png" /></span>
+    <span class="active-image" ng-show="lease.Status==3"><img src="assets/images/pending.png" /></span>
+    <span class="active-image" ng-show="lease.Status==4"><img src="assets/images/withdrawn.png" /></span>
+    <span class="active-image" ng-show="lease.Status==5"><img src="assets/images/expired.png" /></span>
+    <span class="active-image" ng-show="lease.Status==6"><img src="assets/images/canceled.png" /></span>
+
+
+    <h3>View Lease: {{lease.LeaseNumber}}</h3>
+
+    <table class="table lease-field-table">
+        <tr>
+            <td>Allotment</td>
+            <td>{{lease.AllotmentName}}</td>
+        </tr>
+        <tr>
+            <td>Operator</td>
+            <td>{{lease.LeaseOperator | operOrgName}}</td>
+        </tr>
+        <tr>
+            <td>Lease Expires</td>
+            <td>{{lease.LeaseEnd | date : shortDate}}</td>
+        </tr>
+    </table>
+
+    <div ng-hide="true" class="right">
+        <a href="\\gis-data01\CDMS-Share\Prod\P\2246\D\1193\Imagery_{{lease.AllotmentName}}.pdf" target="_blank">Imagery</a> |
+        <a href="\\gis-data01\CDMS-Share\Prod\P\2246\D\1193\Plat_{{lease.AllotmentName}}.pdf" target="_blank">Plat</a> |
+        <a href="\\gis-data01\CDMS-Share\Prod\P\2246\D\1193\Soils_{{lease.AllotmentName}}.pdf" target="_blank">Soils</a> |
+        <a href="\\gis-data01\CDMS-Share\Prod\P\2246\D\1193\Topo_{{lease.AllotmentName}}.pdf" target="_blank">Topo</a> |
+        <a href="\\gis-data01\CDMS-Share\Prod\P\2246\D\1193\Zoning_{{lease.AllotmentName}}.pdf" target="_blank">Zoning</a>
+    </div>
+
+    <ul class="nav nav-tabs" ng-show="lease">
+        <li ng-class="{active: isLeaseSelected}"><a ng-click="selectLease()">Lease</a></li>
+        <li ng-class="{active: isCropsSelected}"><a ng-click="selectCrops()">Crops</a></li>
+        <li ng-class="{active: isInspectionsSelected}"><a ng-click="selectInspections()">Inspections</a></li>
+        <li ng-class="{active: isIncomeSelected}"><a ng-click="selectIncome()">Production</a></li>
+        <li ng-class="{active: isComplianceSelected}"><a ng-click="selectCompliance()">Compliance</a></li>
+        <li ng-class="{active: isHistorySelected}"><a ng-click="selectHistory()">Revision History</a></li>
+    </ul>
+
+    <div class="tab-lease" ng-show="isLeaseSelected">
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
+            <button class="btn btn-sm" ng-click="openEditLeaseModal()">Modify Lease</button>
+        </div>
+        <div ng-include="'app/private/leasing/components/manage/templates/view-lease-fields.html'"></div>
+
+    </div>
+
+    <div class="tab-lease" ng-show="isCropsSelected">
+        <div style="float: right;">
+            <div>
+                Revisions ({{maxseq}}): 
+                <select ng-model="selectedCropRevision" ng-change="selectCropRevision()" convert-to-number>
+                    <option ng-repeat="rev in cropplanrevisions as rev" value="{{rev.SequenceId}}" ng-selected="rev.SequenceId == maxseq" >{{rev.SequenceId}} - {{rev.ChangedDate | date : shortDate}}</option>
+                </select>
+            </div>
+        </div>
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
+            <button class="btn btn-sm" ng-click="openChangeCropPlanModal()">Modify Crop Plan</button>
+        </div>
+        <div style="margin: 10px;">&nbsp;</div>
+        <div id="crops-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
+    </div>
+
+    <div class="tab-lease" ng-show="isInspectionsSelected">
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
+            <button class="btn btn-sm" ng-click="openSpringInspectionModal()">Add Spring Inspection</button>
+            <button class="btn btn-sm" ng-click="openFallInspectionModal()">Add Fall Inspection</button>
+            <button class="btn btn-sm" ng-click="openGrazingInspectionModal()">Add Grazing Inspection</button>
+        </div>
+        <div style="margin: 10px;">&nbsp;</div>
+        <div id="inspections-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
+    </div>
+
+    <div class="tab-lease" ng-show="isIncomeSelected">
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
+            <button class="btn btn-sm" ng-click="openProductionModal()">Add Production</button>
+        </div>
+        <div style="margin: 10px;">&nbsp;</div>
+        <div id="income-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
+    </div>
+
+    <div class="tab-lease" ng-show="isDocumentsSelected">
+        <div style="margin: 10px;">&nbsp;</div>
+        <div id="documents-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
+    </div>
+
+    <div class="tab-lease" ng-show="isHistorySelected">
+        <div style="margin: 10px;">&nbsp;</div>
+        <div id="history-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
+    </div>
+
+    <div class="tab-lease" ng-show="isComplianceSelected">
+        <div ng-show="Profile.hasRole('LeasingEditor')" style="margin: 10px">
+            <button class="btn btn-sm" ng-click="openComplianceInspectionModal()">Add Compliance Inspection</button>
+        </div>
+        <div style="margin: 10px;">&nbsp;</div>
+        <div id="compliance-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
+
+    </div>
+
+
+
+</div>
+
+

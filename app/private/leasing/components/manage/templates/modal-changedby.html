@@ -1,0 +1,17 @@
+﻿<div>
+    <hr />
+    <div class="header-label">Changed by:</div>
+    <div class="header-value">
+        <input class="form-control" type="text" value="{{currentUser}}" ng-disabled="true"/>
+    </div>
+
+    <div class="header-label">Changed date:</div>
+    <div class="header-value">
+        <input class="form-control" type="text" value="{{currentDay | date : shortDate}}" ng-disabled="true"/>
+    </div>
+
+    <div class="header-label">Reason for modification</div>
+    <div class="header-value">
+        <textarea class="form-control" ng-model="lease_modal.ChangedReason"></textarea>
+    </div>
+</div>

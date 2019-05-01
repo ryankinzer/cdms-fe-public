@@ -17,7 +17,8 @@ define([
   var app = angular.module("app",
 	 [
 	  'ngRoute',						// assets/js/angular/angular-route.js (referred to in js/controllers/login-controller.js)
-      //'ngGrid',							// assets/js/ng-grid-2.0.7.ken.js (referred to in js/main.js)
+      'ui.mask',
+      'ui.utils.masks',
       
       //these are the cdms modules
       'CommonModule',
@@ -32,7 +33,8 @@ define([
       //these are ctuir specific
       'CrppModule',
       'AppraisalsModule',
-      'HabitatModule',
+         'HabitatModule',
+        'LeasingModule',
 
       'ngMaterial', 'ngMessages',
 
@@ -90,8 +92,19 @@ define([
             $routeProvider.when('/admin-master/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-master.html', controller: 'AdminEditMasterCtrl' });
             $routeProvider.when('/admin-new-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-new-dataset.html', controller: 'AdminNewDatasetCtrl' });
 
-	        //custom routes for datasets that have custom controller+pages
-            $routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
+            $routeProvider.when('/leasing', { templateUrl: 'app/private/leasing/components/manage/templates/manage-leases.html', controller: 'LeasingHomeController' });
+            $routeProvider.when('/active-leases', { templateUrl: 'app/private/leasing/components/manage/templates/active-leases.html', controller: 'ActiveLeasesController' });
+            $routeProvider.when('/pending-leases', { templateUrl: 'app/private/leasing/components/manage/templates/pending-leases.html', controller: 'PendingLeasesController' });
+            $routeProvider.when('/view-lease/:Id', { templateUrl: 'app/private/leasing/components/manage/templates/view-lease.html', controller: 'ViewLeaseController' });
+            $routeProvider.when('/available-land', { templateUrl: 'app/private/leasing/components/manage/templates/available-land.html', controller: 'AvailableLandController' });
+            $routeProvider.when('/violations', { templateUrl: 'app/private/leasing/components/manage/templates/inspection-violations.html', controller: 'ViolationsController' });
+            $routeProvider.when('/manage-operators', { templateUrl: 'app/private/leasing/components/manage/templates/manage-operators.html', controller: 'ManageOperatorsController' });
+            $routeProvider.when('/manage-lookups', { templateUrl: 'app/private/leasing/components/manage/templates/lookups.html', controller: 'LookupListsController' });
+            
+            
+
+	        //custom routes for datasets that require custom controller+pages
+            //$routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
             $routeProvider.when('/crppcorrespondence/:Id', { templateUrl: 'app/private/crpp/components/correspondence/templates/correspondence.html', controller: 'CRPPCorrespondenceCtrl'});
             $routeProvider.when('/habitatsites/:Id', { templateUrl: 'app/private/habitat/components/habitat-sites/templates/sites.html', controller: 'HabitatSitesCtrl'});
 
@@ -125,7 +138,16 @@ define([
 	  angular.rootScope = $rootScope; //just so we can get to it later. :)
 
 	  $rootScope.SystemTimezones = SystemTimezones; //defined in init.js
-	  $rootScope.DataGradeMethods = DataGradeMethods; //ditto
+      $rootScope.DataGradeMethods = DataGradeMethods; //ditto
+
+        if ('serviceWorker' in navigator) {
+            console.log("We are good to go with service workers.");
+            $rootScope.ServiceWorkers = true;
+        }
+        else {
+            console.log("browser does not support service workers");
+            $rootScope.ServiceWorkers = false;
+        }
 
     //Fire analytics call on location change in URL for SPA.
       $rootScope.$on('$locationChangeSuccess', function () {

@@ -180,19 +180,39 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
 
         scope.deleteLocations = function () { 
-            scope.dataGridOptions.selectedItems.forEach(function (location) { 
+
+            var selected_locationids = [];
+            var selected_locations = [];
+
+            //make a list of ids we have selected           
+            scope.dataGridOptions.selectedItems.forEach(function (location) {        
+                selected_locationids.push(location.Id);
+                selected_locations.push(location);
+            });
+
+            var index = scope.project.Locations.length;
+
+            while (index--) {
+                if (selected_locationids.containsInt(scope.project.Locations[index].Id)) {
+                    scope.project.Locations.splice(index, 1);
+                }
+            }
+
+            //set locations grid to remaining locations
+            scope.dataGridOptions.api.setRowData(scope.project.Locations);
+            scope.showProjectLocations();
+
+            //delete selected locations
+            selected_locations.forEach(function (location) { 
                 var delete_loc = CommonService.deleteLocation(location.Id);
                 delete_loc.$promise.then(function () { 
-                    scope.project.Locations.forEach(function (existing_location, index) {
-                        if (existing_location.Id == location.Id) {
-                            console.dir("found field to remove : " + existing_location.Id);
-                            scope.project.Locations.splice(index);
-                            scope.dataGridOptions.api.setRowData(scope.project.Locations);
-                            scope.showProjectLocations();
-                        }
-                    });
+                    console.log("deleted location: " + location.Id);
                 }, function () { 
                     alert("Could not delete " + location.Label + " because activities exist. Remove them and then you can delete this location.");
+                    scope.project.Locations.push(location);
+                    scope.dataGridOptions.api.setRowData(scope.project.Locations);
+                    scope.showProjectLocations();
+
                 });
             });
 
