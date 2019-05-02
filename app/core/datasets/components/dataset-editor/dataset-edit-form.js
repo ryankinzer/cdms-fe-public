@@ -78,7 +78,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                         try {
                             console.log("found the index: " + index);
                             console.dir(act_list);
-                            if (index == 0) {
+                            if ((index == 0) && ($rootScope.activities.length === 1)) // One and only one record so far.
+                            {
+                                $scope.NextActivity = $rootScope.activities[index].Id;
+                                $scope.PreviousActivity = $rootScope.activities[index].Id;
+                            }
+                            else if (index == 0) {
                                 $scope.NextActivity = $rootScope.activities[index + 1].Id;
                                 $scope.PreviousActivity = $rootScope.activities[index].Id;
 
