@@ -87,6 +87,19 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 
         }
 
+        scope.getMetaField = function (id) { 
+
+            var result = "";
+
+            scope.project.MetaFields.forEach(function (field) { 
+                if (field.MetadataPropertyId == id)
+                    result = field;
+            });
+
+            return result;
+
+        };
+            
 
 		scope.uploadFileType = "";
 		scope.projectName = "";
