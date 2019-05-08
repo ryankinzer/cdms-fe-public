@@ -92,7 +92,7 @@
             {
                 headerName: "Optional Alt Crop", field: "OptionalAlternativeCrop", width: 160,
                 valueGetter: function (params) {
-                    return valueFormatterBoolean(params.node.data.OutOfCompliance);
+                    return valueFormatterBoolean(params.node.data.OptionalAlternativeCrop);
                 },
                 menuTabs: ['filterMenuTab']
             },
