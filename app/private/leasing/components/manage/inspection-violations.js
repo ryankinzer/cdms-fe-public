@@ -76,9 +76,9 @@
             { headerName: "Fee Collected", field: "ViolationFeeCollected", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
             {
                 headerName: "Date Fee Collected", field: "ViolationDateFeeCollected", width: 160,
-                valueGetter: function (params) { return moment(params.node.data.StatusDate) },
+                valueGetter: function (params) { return moment(params.node.data.ViolationDateFeeCollected) },
                 valueFormatter: function (params) {
-                    return valueFormatterDate(params.node.data.StatusDate);
+                    return valueFormatterDate(params.node.data.ViolationDateFeeCollected);
                 }, menuTabs: ['filterMenuTab'], filter: "number"
             },
             { headerName: "Fee Collected By", field: "ViolationFeeCollectedBy", width: 160, menuTabs: ['filterMenuTab']},

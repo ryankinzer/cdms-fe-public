@@ -35,6 +35,7 @@ define([
       'AppraisalsModule',
          'HabitatModule',
         'LeasingModule',
+        'PermitModule',
 
       'ngMaterial', 'ngMessages',
 
@@ -101,7 +102,7 @@ define([
             $routeProvider.when('/manage-operators', { templateUrl: 'app/private/leasing/components/manage/templates/manage-operators.html', controller: 'ManageOperatorsController' });
             $routeProvider.when('/manage-lookups', { templateUrl: 'app/private/leasing/components/manage/templates/lookups.html', controller: 'LookupListsController' });
             
-            
+            $routeProvider.when('/permits', { templateUrl: 'app/private/permits/components/list/templates/list-permits.html', controller: 'PermitListController'});
 
 	        //custom routes for datasets that require custom controller+pages
             //$routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
