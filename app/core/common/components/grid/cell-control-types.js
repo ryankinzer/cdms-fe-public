@@ -267,7 +267,7 @@ var FileListCellTemplate = function (params) {
     //console.dir(params);
     //console.dir(this);
     var file_links = getProjectFilesArrayAsLinks(params.colDef.ProjectId, params.colDef.DatasetId, params.node.data[params.colDef.DbColumnName]);
-    console.dir(file_links);
+    //console.dir(file_links);
     file_links.forEach(function (link) {
         list += '<li>' + link + '</li>';
     });

@@ -36,6 +36,7 @@
       'private/habitat/habitat-module',
         'private/appraisals/appraisals-module',
         'private/leasing/leasing-module',
+        'private/permits/permit-module',
 
     ], function (angular, parser) {
    
