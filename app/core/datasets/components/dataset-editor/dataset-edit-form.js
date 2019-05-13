@@ -234,7 +234,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log("cell editing stopped >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 //console.dir(event);
 
-                if (GridService.validateCell(event)) {
+                if (GridService.validateCell(event, $scope)) {
                     GridService.fireRule("OnChange", event); //only fires when valid change is made
                 }
 
