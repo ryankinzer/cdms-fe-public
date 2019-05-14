@@ -53,7 +53,7 @@
 
         var leaseColumnDefs = [
             { colId: 'EditLinks', width: 60, cellRenderer: EditLinksTemplate, menuTabs: [] },
-            { headerName: "Allotment", field: "AllotmentName", width: 100, menuTabs: ['filterMenuTab'], filter: "text" },
+            { headerName: "Allotment", field: "AllotmentName", width: 120, menuTabs: ['filterMenuTab'], filter: "text", sort: 'asc' },
             { headerName: "Field Land Use", field: "FieldLandUse", width: 160, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Field #", field: "FieldId", width: 100, menuTabs: ['filterMenuTab'], filter: "number" },
             { headerName: "Field Acres", field: "FieldAcres", width: 140, menuTabs: ['filterMenuTab'], filter: "number" },
