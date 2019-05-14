@@ -121,10 +121,28 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
             scope.project.$promise.then(function () { 
                 scope.dataGridOptions.api.setRowData(scope.project.Locations);
-                if ($rootScope.Profile.canEdit(scope.project)) {
+				
+				//**********************************************************************
+				//TRIBAL CDMS EDIT JN 5/10/2019
+				//RESTRICT LOCATION EDITING TO ADMIN USERS
+				//**********************************************************************
+				console.log("Loading location grid . . . ");
+				console.dir($rootScope.Profile.Roles[0]);
+				console.log($rootScope.Profile.isAdmin());
+			
+				if($rootScope.Profile.isAdmin()) {
+					console.log("Location grid edit button enabled for admin user!");
                     scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
                     scope.dataGridOptions.api.refreshHeader();
                 }
+				//ORIGINAL CODE COMMENTED OUT
+                //if ($rootScope.Profile.canEdit(scope.project)) {
+                //    scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
+                //    scope.dataGridOptions.api.refreshHeader();
+                //}
+				//**********************************************************************
+				//END EDIT
+				//**********************************************************************
 
                 scope.displayLocationsOnMap();
                 GridService.autosizeColumns(scope.dataGridOptions);
