@@ -422,6 +422,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                     }
                 });
                 $scope.event_row.strBoundaries = undefined;
+                $scope.event_row.Boundaries = undefined;
             }
 
             if ((typeof $scope.event_row.strMiscContexts !== 'undefined') && ($scope.event_row.strMiscContexts !== null) && ($scope.event_row.strMiscContexts.length > 0)) {
