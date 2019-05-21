@@ -36,6 +36,7 @@
       'private/habitat/habitat-module',
         'private/appraisals/appraisals-module',
         'private/leasing/leasing-module',
+        'private/olc/olc-module',
 
     ], function (angular, parser) {
    

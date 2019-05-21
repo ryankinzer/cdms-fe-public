@@ -28,7 +28,12 @@ var modal_verify_action = ['$scope', '$rootScope', '$uibModalInstance', 'Subproj
 		console.log("HabSubproject is calling...");
 		$scope.header_title = $scope.verifyAction + " this Habitat project: " + $scope.viewSubproject.ProjectName;
 		$scope.header_message = $scope.verifyAction.toLowerCase() + " this Habitat project: " + $scope.viewSubproject.ProjectName;
-	}
+    }
+    else if ($scope.verifyingCaller === "OlcSubproject") {
+        console.log("OlcSubproject is calling...");
+        $scope.header_title = $scope.verifyAction + " this OLC project: " + $scope.viewSubproject.CatalogNumber;
+        $scope.header_message = $scope.verifyAction.toLowerCase() + " this OLC project: " + $scope.viewSubproject.CatalogNumber;
+    }
 
     //$scope.header_message = $scope.verifyAction.toLowerCase() + " this CRPP project";
 
@@ -149,9 +154,16 @@ var modal_verify_action = ['$scope', '$rootScope', '$uibModalInstance', 'Subproj
                 $scope.postRemoveHabitatSubprojectUpdateGrid();
                 $modalInstance.dismiss();
             });
-		}
+        }
+        else if (($scope.verifyAction === "Delete") && ($scope.verifyingCaller === "OlcSubproject")) {
+            console.log("$scope.project.Id = " + $scope.project.Id + ", $scope.viewSubproject.Id = " + $scope.viewSubproject.Id);
+            promise = SubprojectService.removeOlcSubproject($scope.project.Id, $scope.viewSubproject.Id);
+            promise.$promise.then(function () {
+                $scope.postRemoveSubprojectUpdateGrid();
+                $modalInstance.dismiss();
+            });
+        }
 		
-    		
 	}
     }];
 
