@@ -496,40 +496,50 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
         // we update the item in the main subproject array and then refresh the grid.
         scope.postSaveSubprojectUpdateGrid = function (the_promise) {
             //console.log("ok - we saved so update the grid...");
+            //var total = scope.subprojectList.length;
             var total = scope.subprojectList.length;
             var count = 0;
             var updated = false;
-            scope.subprojectList.forEach(function (item, index) {
-                if (item.Id === the_promise.Id) {
-                    updated = true;
-                    //console.log("ok we found a match! -- updating! before:");
-                    //console.dir(scope.subprojectList[index]);
 
-                    if (the_promise.OlcEvents !== undefined)
-                        delete the_promise.OlcEvents; //remove this before the copy.
+            if (total === 0) {
+                the_promise.OlcEvents = [];
+                the_promise.Files = [];
+                scope.subprojectList.push(the_promise); //add that item
+                scope.olcAgGridOptions.api.setRowData([]);
+                scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
+            }
+            else {
+                scope.subprojectList.forEach(function (item, index) {
+                    if (item.Id === the_promise.Id) {
+                        updated = true;
+                        //console.log("ok we found a match! -- updating! before:");
+                        //console.dir(scope.subprojectList[index]);
 
-                    angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
-                    //console.log("ok we found a match! -- updating! after:");
-                    //console.dir(scope.subprojectList[index]);
-                    scope.olcAgGridOptions.api.redrawRows();
-                    //console.log("done reloading grid.");
-                }
-                count++;
-                if (count === total && updated === false) //if we get all done and we never found it, lets add it to the end.
-                {
-                    //console.log("ok we found never a match! -- adding!");
-                    the_promise.OlcEvents = [];
-                    the_promise.Files = [];
-                    scope.subprojectList.push(the_promise); //add that item
-                    scope.olcAgGridOptions.api.setRowData([]);
-                    scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
+                        if (the_promise.OlcEvents !== undefined)
+                            delete the_promise.OlcEvents; //remove this before the copy.
 
-                    //console.log("done reloading grid.");
-                }
-            });
-			
+                        angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
+                        //console.log("ok we found a match! -- updating! after:");
+                        //console.dir(scope.subprojectList[index]);
+                        scope.olcAgGridOptions.api.redrawRows();
+                        //console.log("done reloading grid.");
+                    }
+                    count++;
+                    if (count === total && updated === false) //if we get all done and we never found it, lets add it to the end.
+                    {
+                        //console.log("ok we found never a match! -- adding!");
+                        the_promise.OlcEvents = [];
+                        the_promise.Files = [];
+                        scope.subprojectList.push(the_promise); //add that item
+                        scope.olcAgGridOptions.api.setRowData([]);
+                        scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
+
+                        //console.log("done reloading grid.");
+                    }
+                });
+            }
             console.log("updated the list and the grid... now refreshing the OLC lists");
-            scope.refreshSubprojectLists(); //counties, etc.
+            //scope.refreshSubprojectLists(); //counties, etc.
         };
 
         //opens create olc subproject modal
@@ -545,13 +555,24 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 scope: scope, //very important to pass the scope along...
             });
         };
-		
+
+        /****** Working on this area ******/
         //refresh all of the project match lists
         scope.refreshSubprojectLists = function () {
-			console.log("Inside events.js, scope.refreshSubprojectList...");
+            console.log("Inside events.js, scope.refreshSubprojectList...");
+
+            //scope.subprojectList.forEach(function (subp) {
+            //    console.log("subp is next...");
+            //    console.dir(subp);
+            //    subp.OlcEvents.forEach(function (olcE) {
+            //    });
+            //});
+
+
             scope.project.SubprojectFileList = SubprojectService.getOlcSubprojectFiles(scope.project.Id); //TODO: we already have this as scope.project.SubprojectFiles once the files load in project-detail.js
 
         };
+        /**********************************/
 
         scope.editOlcSubproject = function (subproject) {
             //console.log("editOlcSubproject...");

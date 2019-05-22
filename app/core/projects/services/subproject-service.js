@@ -108,24 +108,6 @@ projects_module.factory('GetOlcSubprojects', ['$resource', function ($resource) 
     return $resource(serviceUrl + '/api/v1/olcsubproject/getolcsubprojects');
 }]);
 
-projects_module.factory('GetBoundaries', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/olcsubproject/getboundaries', {}, {
-        query: { method: 'GET', params: { id: 'eventId' }, isArray: true }
-    });
-}]);
-
-projects_module.factory('GetMiscContexts', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/olcsubproject/getmisccontexts', {}, {
-        query: { method: 'GET', params: { id: 'eventId' }, isArray: true }
-    });
-}]);
-
-projects_module.factory('GetSignificantAreas', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/olcsubproject/getsignificantareas', {}, {
-        query: { method: 'GET', params: { id: 'eventId' }, isArray: true }
-    });
-}]);
-
 /*
 * subprojects service (includes Project factory which is defined in projects-service.js)
 */
@@ -152,9 +134,6 @@ projects_module.service('SubprojectService', ['$q',
     'RemoveOlcSubproject',
     'RemoveCorrespondenceEvent',
     'RemoveHabitatItem',
-    'GetBoundaries',
-    'GetMiscContexts',
-    'GetSignificantAreas',
 
     function ($q,
         ProjectSubprojects,
@@ -178,10 +157,7 @@ projects_module.service('SubprojectService', ['$q',
         RemoveHabSubproject,
         RemoveOlcSubproject,
         RemoveCorrespondenceEvent,
-        RemoveHabitatItem,
-        GetBoundaries,
-        GetMiscContexts,
-        GetSignificantAreas) {
+        RemoveHabitatItem) {
 
         var service = {
 
@@ -342,22 +318,8 @@ projects_module.service('SubprojectService', ['$q',
                 console.log("Inside getProjectSubprojects, projectId = " + projectId);
                 //this.getProject(projectId); //set our local project to the one selected
                 return ProjectSubprojects.save({ ProjectId: projectId });
-            },
-            getBoundaries: function (subprojectEventId) {
-                console.log("Inside getBoundaries, subprojectEventId = " + subprojectEventId);
-
-                return GetBoundaries.query({ SubprojectEventId: subprojectEventId });
-            },
-            getMiscContexts: function (subprojectEventId) {
-                console.log("Inside getMiscContexts, subprojectEventId = " + subprojectEventId);
-
-                return GetMiscContexts.query({ SubprojectEventId: subprojectEventId });
-            },
-            getSignificantAreas: function (subprojectEventId) {
-                console.log("Inside getSignificantAreas, subprojectEventId = " + subprojectEventId);
-
-                return GetSignificantAreas.query({ SubprojectEventId: subprojectEventId });
             }
+
         };
 
         return service;
