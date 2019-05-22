@@ -6,6 +6,9 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
         console.log("Inside ModalAddOlcEventCtrl...");
 
+        $scope.event_row.strBoundaries = "";
+        $scope.event_row.Boundaries = [];
+
         $scope.setupOlcMetaFields = function () {
 
             // row.column (from database) and metadata name
@@ -505,7 +508,8 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             //prepare to save the correspondence event
             // Now let's handle the other fields on the form.
             console.log("typeof saveRow.DocumentDate = " + typeof saveRow.DocumentDate);
-            if ((typeof saveRow.DocumentDate !== 'undefined') && (typeof saveRow.DocumentDate !== "string")) {
+            if ((typeof saveRow.DocumentDate !== 'undefined') && (saveRow.DocumentDate !== null) && (typeof saveRow.DocumentDate !== "string")) {
+                console.log("saveRow.DocumentDate = " + saveRow.DocumentDate);
                 var strDocumentDate = ServiceUtilities.toExactISOString(saveRow.DocumentDate);
                 console.log("strDocumentDate = " + strDocumentDate);
                 saveRow.DocumentDate = ServiceUtilities.extractDateFromString(strDocumentDate);
