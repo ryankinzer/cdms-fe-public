@@ -106,7 +106,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
         var FileListCellTemplate = function (params) {
             var list = '<div class="event-file-list"><ul>';
 
-            var file_links = getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.EventFiles);
+            var file_links = getSubprojectFilesArrayAsLinks(scope.project.Id, params.node.data.SubprojectId, params.node.data.FileAttach);
 
             file_links.forEach(function (link) {
                 list += '<li>' + link + '</li>';
@@ -210,7 +210,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             {
                 headerName: 'Document Date',
                 field: 'DocumentDate',
-                width: 150,
+                width: 160,
                 cellClass: 'event-record-cell',
                 valueGetter: function (params) { return moment(params.node.data.DocumentDate) }, //date filter needs js date object			
                 valueFormatter: function (params) {
@@ -253,7 +253,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             },
 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
-            { headerName: 'File Attach', field: 'FileAttach', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
+            { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
         ];
 
         //detail grid options correspondence events

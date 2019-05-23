@@ -39,32 +39,39 @@
 
                 <div class="header-label">Boundary</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.Boundary" />
+                    <select multiple class="form-control" style="margin-top: 4px;" ng-model="event_row.Boundary" ng-change="selectBoundary()">
+                        <option ng-repeat="boundary in getMetafield('Boundary')" value="{{boundary}}">{{boundary}}</option>
+                    </select>
                 </div>
 
                 <div class="header-label">Significant Area</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.SignificantArea" />
+                    <select multiple class="form-control" style="margin-top: 4px;" ng-model="event_row.SignificantArea" ng-change="selectSignificantArea()">
+                        <option ng-repeat="area in getMetafield('SignificantArea')" value="{{area}}">{{area}}</option>
+                    </select>
                 </div>
 
-                <div class="header-label">Miscelleneous Contex</div>
+                <div class="header-label">Miscelleneous Context</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.MiscelleneousContext" />
+                    <select multiple class="form-control" style="margin-top: 4px;" ng-model="event_row.MiscelleneousContext" ng-change="selectMiscelleneousContext()">
+                        <option ng-repeat="context in getMetafield('MiscelleneousContext')" value="{{context}}">{{context}}</option>
+                    </select>
+
                 </div>
 
                 <div class="header-label">Description</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.Description"></input>
+                    <textarea type="text" rows="4" class="form-control" ng-model="event_row.Description"></textarea>
                 </div>
 
                 <div class="header-label">TwnRngSec</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.TwnRngSec"></input>
+                    <input type="text" class="form-control" ng-model="event_row.TwnRngSec"/>
                 </div>
 
                 <div class="header-label">Number Items</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.NumberItems"></input>
+                    <input type="text" class="form-control" ng-model="event_row.NumberItems"/>
                 </div>
 
                 <div class="header-label">Date Discovered</div>
@@ -74,12 +81,12 @@
 
                 <div class="header-label">Person Discovered</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.PersonDiscovered"></input>
+                    <input type="text" class="form-control" ng-model="event_row.PersonDiscovered"/>
                 </div>
 
                 <div class="header-label">Reference</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.Reference"></input>
+                    <textarea type="text" rows="4" class="form-control" ng-model="event_row.Reference"></textarea>
                 </div>
 
                 <div class="header-label">Comments</div>

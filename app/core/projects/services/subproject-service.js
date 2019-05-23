@@ -133,6 +133,7 @@ projects_module.service('SubprojectService', ['$q',
     'RemoveHabSubproject',
     'RemoveOlcSubproject',
     'RemoveCorrespondenceEvent',
+    'RemoveOlcEvent',
     'RemoveHabitatItem',
 
     function ($q,
@@ -157,6 +158,7 @@ projects_module.service('SubprojectService', ['$q',
         RemoveHabSubproject,
         RemoveOlcSubproject,
         RemoveCorrespondenceEvent,
+        RemoveOlcEvent,
         RemoveHabitatItem) {
 
         var service = {
@@ -252,7 +254,7 @@ projects_module.service('SubprojectService', ['$q',
             removeOlcEvent: function (projectId, subprojectId, olcEventId, datastoreTablePrefix) {
                 console.log("Inside removeOlcEvent...");
                 console.log("projectId = " + projectId + ", subprojectId = " + subprojectId + ", olcEventId = " + olcEventId + ", datastoreTablePrefix = " + datastoreTablePrefix);
-                return RemoveOlcEvent.save({ ProjectId: projectId, SubprojectId: subprojectId, olcEventId: olcEventId, DatastoreTablePrefix: datastoreTablePrefix });
+                return RemoveOlcEvent.save({ ProjectId: projectId, SubprojectId: subprojectId, OlcEventId: olcEventId });
             },
             removeHabitatItem: function (projectId, subprojectId, habitatItemId, datastoreTablePrefix) {
                 console.log("Inside removeHabitatItem...");

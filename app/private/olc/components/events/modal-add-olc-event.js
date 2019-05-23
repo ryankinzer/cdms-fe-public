@@ -159,6 +159,15 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 console.log("saveRow.DateDiscovered = " + saveRow.DateDiscovered);
             }
 
+            saveRow.Boundaries = JSON.stringify(saveRow.Boundaries);
+            console.log("saveRow.Boundaries = " + saveRow.Boundaries);
+
+            saveRow.SignificantArea = JSON.stringify(saveRow.SignificantArea);
+            console.log("saveRow.SignificantArea = " + saveRow.SignificantArea);
+
+            saveRow.MiscelleneousContext = JSON.stringify(saveRow.MiscelleneousContext);
+            console.log("saveRow.MiscelleneousContext = " + saveRow.MiscelleneousContext);
+
             console.log("saveRow is next, after processing dates...");
             console.dir(saveRow);
 
