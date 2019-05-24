@@ -75,6 +75,27 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 $scope.header_message = "Add Event to Project " + $scope.CatalogNumber;
         }
 
+        if ((typeof $scope.event_row.Boundary !== 'undefined') && ($scope.event_row.Boundary !== null)) {
+
+            $scope.event_row.Boundary = JSON.parse($scope.event_row.Boundary);
+            //$scope.event_row.strBoundaries = "";
+
+            //$scope.event_row.Boundary.forEach(function (boundary) {
+            //    $scope.event_row.strBoundaries += boundary + ";\n";
+            //});
+            
+        }
+
+        if ((typeof $scope.event_row.SignificantArea !== 'undefined') && ($scope.event_row.SignificantArea !== null)) {
+
+            $scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+        }
+
+        if ((typeof $scope.event_row.MiscelleneousContext !== 'undefined') && ($scope.event_row.MiscelleneousContext !== null)) {
+
+            $scope.event_row.MiscelleneousContext = JSON.parse($scope.event_row.MiscelleneousContext);
+        }
+
         //console.log("$scope.event_row is next...");
         //console.dir($scope.event_row);
 
@@ -85,6 +106,94 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         //callback that is called from modalFile to do the actual file removal (varies by module)
         $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
             return SubprojectService.deleteOlcEventFile($scope.projectId, $scope.subprojectId, saveRow.Id, file_to_remove);
+        };
+
+        $scope.addBoundary = function () {
+            console.log("+B clicked...");
+            console.log("$scope.event_row.strBoundaries (at top of addBoundary) = " + $scope.event_row.strBoundaries);
+
+            if (typeof $scope.event_row.Boundary === 'undefined')
+                return;
+
+            if (typeof $scope.event_row.strBoundaries === 'undefined')
+                $scope.event_row.strBoundaries = "";
+
+            // We will add a new line at the end, so that the string presents well on the page.
+            //if ($scope.row.Collaborators === "Other") {
+            //    $scope.row.strCollaborators += $scope.row.OtherCollaborators + ";\n";
+            //}
+            //else {
+            $scope.event_row.strBoundaries += $scope.event_row.Boundary + ";\n";
+            //}
+
+            console.log("$scope.event_row.strBoundaries (at bottom of addBoundary) = " + $scope.event_row.strBoundaries);
+        };
+
+        $scope.removeBoundary = function () {
+            console.log("-B clicked...");
+            console.log("$scope.event_row.strBoundaries before stripping = " + $scope.event_row.strBoundaries);
+
+            // First, strip out the new line characters.
+            $scope.event_row.strBoundaries = $scope.event_row.strBoundaries.replace(/(\r\n|\r|\n)/gm, "");
+            console.log("$scope.event_row.strBoundaries after stripping = " + $scope.event_row.strBoundaries);
+
+            // Note, we still have the trailing semicolon.
+            // Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
+            var aryBoundaries = $scope.event_row.strBoundaries.split(";");
+
+            // Next, get rid of that trailing semicolon.
+            aryBoundaries.splice(-1, 1);
+            console.dir(aryBoundaries);
+
+            // Now we can continue with the delete action.
+            var aryBoundariesLength = aryBoundaries.length;
+
+            // First check if the user entered an "other" funder.
+            //if (($scope.row.Collaborators === "Other") && ($scope.row.OtherCollaborators)) {
+            //    for (var i = 0; i < aryCollaboratorsLength; i++) {
+            //        console.log("aryCollaborators[i] = " + aryCollaborators[i]);
+            //        if (aryCollaborators[i].indexOf($scope.row.OtherCollaborators) > -1) {
+            //            console.log("Found the item...");
+            //            aryCollaborators.splice(i, 1);
+            //            console.log("Removed the item.");
+
+            //            $scope.row.strCollaborators = "";
+            //            console.log("Wiped $scope.row.strCollaborators...");
+
+            // Rebuild the string now, adding the semicolon and newline after every line.
+            //            angular.forEach(aryCollaborators, function (item) {
+            //                $scope.row.strCollaborators += item + ";\n";
+            //                console.log("Added item...");
+            //            });
+
+            // Since we found the item, skip to then end to exit.
+            //            i = aryCollaboratorsLength;
+            //        }
+            //    }
+            //}
+            //else {
+            for (var i = 0; i < aryBoundariesLength; i++) {
+                console.log("aryBoundaries[i] = " + aryBoundaries[i]);
+                if (aryBoundaries[i].indexOf($scope.event_row.Boundary) > -1) {
+                    console.log("Found the item...");
+                    aryBoundaries.splice(i, 1);
+                    console.log("Removed the item.");
+
+                    $scope.event_row.strBoundaries = "";
+                    console.log("Wiped $scope.event_row.strBoundaries...");
+
+                    // Rebuild the string now, adding the semicolon and newline after every line.
+                    angular.forEach(aryBoundaries, function (item) {
+                        $scope.event_row.strBoundaries += item + ";\n";
+                        console.log("Added item...");
+                    });
+
+                    // Since we found the item, skip to then end to exit.
+                    i = aryBoundariesLength;
+                }
+            }
+            //}
+            console.log("Finished.");
         };
 
         //called when the user clicks "save"
@@ -140,7 +249,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
         //call back from save above once the files are done processing and we're ready to save the item
         $scope.modalFile_saveParentItem = function (saveRow) {
-            //prepare to save the correspondence event
+            //prepare to save the OLC event
             // Now let's handle the other fields on the form.
             console.log("typeof saveRow.DocumentDate = " + typeof saveRow.DocumentDate);
             if ((typeof saveRow.DocumentDate !== 'undefined') && (saveRow.DocumentDate !== null) && (typeof saveRow.DocumentDate !== "string")) {
@@ -159,14 +268,58 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 console.log("saveRow.DateDiscovered = " + saveRow.DateDiscovered);
             }
 
-            saveRow.Boundaries = JSON.stringify(saveRow.Boundaries);
-            console.log("saveRow.Boundaries = " + saveRow.Boundaries);
+            //saveRow.Boundaries = JSON.stringify(saveRow.Boundaries);
+            //console.log("saveRow.Boundaries = " + saveRow.Boundaries);
 
-            saveRow.SignificantArea = JSON.stringify(saveRow.SignificantArea);
-            console.log("saveRow.SignificantArea = " + saveRow.SignificantArea);
+            // Wipe the field, before rebuilding it with what we want to save.
+            //saveRow.Boundary = [];
 
-            saveRow.MiscelleneousContext = JSON.stringify(saveRow.MiscelleneousContext);
-            console.log("saveRow.MiscelleneousContext = " + saveRow.MiscelleneousContext);
+            /*
+            if ((typeof saveRow.strBoundaries !== 'undefined') && (saveRow.strBoundaries !== null) && (saveRow.strBoundaries.length > 0)) {
+                $rootScope.boundaryPresent = $scope.boundaryPresent = true;
+                var strBoundaries = saveRow.strBoundaries.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
+                console.log("strBoundaries = " + strBoundaries);
+                var aryBoundaries = saveRow.strBoundaries.split(";");  // 
+                //aryCollaborators.splice(-1, 1);
+
+                angular.forEach(aryBoundaries, function (item) {
+                    //After the split on ";", one of the lines is a newline.  We need to watch for and omit that line.
+                    //console.log("item = X" + item + "X");
+                    //item = item.replace(/(\r\n|\r|\n)/gm, "");
+                    item = item.replace(/\n/g, "");
+                    //console.log("item = X" + item + "X");
+
+                    if (item.length > 0) {
+                        var boundaryOption = new Object();
+                        boundaryOption.Id = 0;
+                        boundaryOption.Name = "";
+
+                        boundaryOption.Name = item.trim();
+                        //console.log("collaboratorOption.Name = " + collaboratorOption.Name);
+
+                        //saveRow.Boundary.push(boundaryOption);
+                        saveRow.Boundary.push(item.trim());
+                    }
+                });
+                saveRow.Boundary = JSON.stringify(saveRow.Boundary);
+                saveRow.strBoundaries = undefined;
+            }
+            */
+
+            if ((typeof saveRow.Boundary !== 'undefined') && (saveRow.Boundary !== null)) {
+                saveRow.Boundary = JSON.stringify(saveRow.Boundary);
+                console.log("saveRow.Boundary = " + saveRow.Boundary);
+            }
+
+            if ((typeof saveRow.SignificantArea !== 'undefined') && (saveRow.SignificantArea !== null)) {
+                saveRow.SignificantArea = JSON.stringify(saveRow.SignificantArea);
+                console.log("saveRow.SignificantArea = " + saveRow.SignificantArea);
+            }
+
+            if ((typeof saveRow.MiscelleneousContext !== 'undefined') && (saveRow.MiscelleneousContext !== null)) {
+                saveRow.MiscelleneousContext = JSON.stringify(saveRow.MiscelleneousContext);
+                console.log("saveRow.MiscelleneousContext = " + saveRow.MiscelleneousContext);
+            }
 
             console.log("saveRow is next, after processing dates...");
             console.dir(saveRow);

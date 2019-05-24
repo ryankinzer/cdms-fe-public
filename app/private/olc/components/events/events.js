@@ -225,6 +225,17 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             { headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Author Agency', field: 'AuthorAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Boundary', field: 'Boundary', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            //{
+            //    headerName: 'Boundary',
+            //    field: 'Boundary',
+            //    cellClass: 'event-record-cell',
+            //    width: 180,
+            //    valueGetter: function (params) { return params.node.data.Boundary },			
+            //    valueFormatter: function (params) {
+            //        return valueFormatterArrayToList(params.node.data.Boundary);
+            //    },
+            //    menuTabs: ['filterMenuTab']
+            //},
             { headerName: 'Significant Area', field: 'SignificantArea', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Miscelleneous Context', field: 'MiscelleneousContext', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
@@ -234,7 +245,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             {
                 field: 'DateDiscovered',
                 headerName: 'Date Discovered',
-                valueGetter: function (params) { return moment(params.node.data.DateDiscovered); }, //date filter needs js date object			
+                valueGetter: function (params) { return moment(params.node.data.DateDiscovered) }, //date filter needs js date object			
                 width: 150,
                 valueFormatter: function (params) {
                     return valueFormatterDate(params.node.data.DateDiscovered);
