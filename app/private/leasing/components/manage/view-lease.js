@@ -746,7 +746,8 @@
                     viewCropRevision.push($scope.cropplanrevisions_all[i]);
             }
 
-            $scope.cropsGrid.api.setRowData(viewCropRevision); //$scope.lease.LeaseCropPlans);         
+            if($scope.cropsGrid.api)
+                $scope.cropsGrid.api.setRowData(viewCropRevision); //$scope.lease.LeaseCropPlans);         
 
         }
 

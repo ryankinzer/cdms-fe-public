@@ -207,8 +207,10 @@ leasing_module.service('LeasingService', ['$q',
                 return GetOperators.query();
             },
 
-            saveLease: function (lease) {
-                return SaveLease.save({ Lease: lease });
+            saveLease: function (lease, cropshareremove) {
+                var cropshares = lease.LeaseCropShares;
+                delete lease.LeaseCropShares;
+                return SaveLease.save({ Lease: lease, LeaseCropShares: cropshares, CropShareRemove: cropshareremove });
             },
 
             saveCropPlan: function (lease, plan) {

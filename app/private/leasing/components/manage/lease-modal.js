@@ -66,10 +66,16 @@ var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'Lea
                 cellEditorParams: { values: $scope.cropOptions.ListValues } 
             },
             { headerName: "Crop Share %", field: "CropSharePercent", width: 180, menuTabs: ['filterMenuTab'], filter: "text",
-                valueParser: function (params) { if (params.newValue && !isPercent(params.newValue)) { alert("Value must be a percent (0-100)."); return;  } return Number(params.newValue)  },
+                valueParser: function (params) { 
+                    if (params.newValue && !isPercent(params.newValue)) { alert("Value must be a percent (0-100)."); return;  } 
+                    return (params.newValue) ? Number(params.newValue) : "";
+                },
             }, 
             { headerName: "Cost Share %", field: "CostSharePercent", width: 160, menuTabs: ['filterMenuTab'], filter: "text",
-                valueParser: function (params) { if (params.newValue && !isPercent(params.newValue)) { alert("Value must be a percent (0-100)."); return; } return Number(params.newValue)  },
+                valueParser: function (params) { 
+                    if (params.newValue && !isPercent(params.newValue)) { alert("Value must be a percent (0-100)."); return; } 
+                    return (params.newValue) ? Number(params.newValue) : "";
+                },
             },
             { headerName: "Comments", field: "Comment", width: 180, menuTabs: ['filterMenuTab'], filter: "text" },
         ];
@@ -77,7 +83,7 @@ var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'Lea
         $scope.leaseCropShareGrid = {
             columnDefs: leaseCropShareColumnDefs,
             rowData: $scope.lease_modal.LeaseCropShares,
-            
+            removedCropShares: [], 
             defaultColDef: {
                 editable: true,
                 sortable: true,
@@ -109,6 +115,26 @@ var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'Lea
         $scope.removeRow = function () {
             var selected = $scope.leaseCropShareGrid.api.getSelectedRows();
             $scope.leaseCropShareGrid.api.updateRowData({ remove: selected });
+
+            //console.dir($scope.lease_modal);
+
+            //fix: find it and delete it from our lease object's cropshare list
+            selected.forEach(function (remove_cropshare) { 
+
+                if(remove_cropshare.Id !== 0)
+                    $scope.leaseCropShareGrid.removedCropShares.push(remove_cropshare.Id);
+/*
+                if (remove_cropshare.Id && Array.isArray($scope.lease_modal.LeaseCropShares)) {
+                    $scope.lease_modal.LeaseCropShares.forEach(function (existing_cropshare, index) { 
+                        if (existing_cropshare.Id === remove_cropshare.Id) {
+                            $scope.lease_modal.LeaseCropShares.splice(index, 1);
+                            $scope.leaseCropShareGrid.removedCropShares.push(remove_cropshare.Id);
+                        }
+                    });
+                }
+*/
+            });
+
         };
 
 //        console.dir($scope.lease_modal);
@@ -183,7 +209,9 @@ var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'Lea
                 lease_save.LeaseCropShares.push(node.data);
             });
 
-            //console.dir(lease_save.LeaseCropShares);
+            console.log(" leasecropshares -- ");
+            console.dir(lease_save.LeaseCropShares);
+            console.dir($scope.leaseCropShareGrid.removedCropShares);
 
             //check if they changed the Operator - if so, we need to close this lease with today as the expiration and open a new one.
             if ($scope.lease.Status == LEASE_STATUS_ACTIVE && $scope.lease.LeaseOperatorId != $scope.lease_modal.LeaseOperatorId) {
@@ -193,7 +221,7 @@ var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'Lea
                 }
             }
 
-            var saveResult = LeasingService.saveLease(lease_save);
+            var saveResult = LeasingService.saveLease(lease_save, $scope.leaseCropShareGrid.removedCropShares );
 
             saveResult.$promise.then(function (result) {
 

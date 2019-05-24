@@ -27,10 +27,17 @@
 
                                 <div class="header-label">Lease Year</div>
                                 <div class="header-value">
-                                    <select class="form-control" ng-model="production_modal.LeaseYear">
-                                        <option ng-repeat="plan in lease.LeaseCropPlans | orderBy:'LeaseYear'" ng-selected="production_modal.LeaseYear == plan.LeaseYear" value="{{plan.LeaseYear}}">{{plan.LeaseYear}}</option>
-                                    </select>
+                                    <input class="form-control" type="text" ng-model="production_modal.LeaseYear" />
                                 </div>
+
+                                <!--
+                                    <div class="header-label">Lease Year</div>
+                                    <div class="header-value">
+                                        <select class="form-control" ng-model="production_modal.LeaseYear">
+                                            <option ng-repeat="plan in lease.LeaseCropPlans | orderBy:'LeaseYear'" ng-selected="production_modal.LeaseYear == plan.LeaseYear" value="{{plan.LeaseYear}}">{{plan.LeaseYear}}</option>
+                                        </select>
+                                    </div>
+                                -->
 
                                 <div style="margin-top: 10px;"></div>
 
