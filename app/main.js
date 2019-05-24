@@ -33,9 +33,10 @@ define([
       //these are ctuir specific
       'CrppModule',
       'AppraisalsModule',
-         'HabitatModule',
-        'LeasingModule',
-        'PermitModule',
+      'HabitatModule',
+      'LeasingModule',
+      'PermitModule',
+      'OlcModule',
 
       'ngMaterial', 'ngMessages',
 
@@ -108,6 +109,7 @@ define([
             //$routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
             $routeProvider.when('/crppcorrespondence/:Id', { templateUrl: 'app/private/crpp/components/correspondence/templates/correspondence.html', controller: 'CRPPCorrespondenceCtrl'});
             $routeProvider.when('/habitatsites/:Id', { templateUrl: 'app/private/habitat/components/habitat-sites/templates/sites.html', controller: 'HabitatSitesCtrl'});
+            $routeProvider.when('/olcevents/:Id', { templateUrl: 'app/private/olc/components/events/templates/events.html', controller: 'OlcEventsCtrl' });
 
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
 
