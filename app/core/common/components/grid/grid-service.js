@@ -132,6 +132,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                         width: SystemDefaultColumnWidth,
                         Label: field.Label,
                         DbColumnName: field.DbColumnName,
+                        ColumnIndex: field.ColumnIndex,
                         ControlType: field.ControlType,
                         PossibleValues: getJsonObjects(field.Field.PossibleValues),
                         cdmsField: field, //our own we can use later

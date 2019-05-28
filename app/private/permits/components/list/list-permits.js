@@ -8,12 +8,6 @@
 
         $scope.currentPage = "Issued";
         $scope.row = null;
-        $scope.showArchived = 'No';
-
-        $scope.toggleShowArchived = function () { 
-            $scope.showArchived = ($scope.showArchived == 'Yes') ? 'No' : 'Yes';
-            $scope.applyArchiveFilter();
-        }
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
 
@@ -22,6 +16,8 @@
             $scope.AllColumnDefs = GridService.getAgColumnDefs($scope.dataset);
             $scope.permitsGrid.columnDefs = $scope.AllColumnDefs.HeaderFields;
             
+            console.dir($scope.AllColumnDefs);
+
             //activate the grid with the permits data
             $scope.permitsGridDiv = document.querySelector('#active-permits-grid');
             new agGrid.Grid($scope.permitsGridDiv, $scope.permitsGrid);
@@ -31,24 +27,9 @@
             $scope.permits.$promise.then(function () {
             
                 $scope.permitsGrid.api.setRowData($scope.permits);
-                $scope.applyArchiveFilter();
 
             });
         });
-
-
-        $scope.applyArchiveFilter = function () {
-            
-            var filterComponent = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
-            filterComponent.selectNothing();
-            for (var i = 0; i<filterComponent.getUniqueValueCount(); i++) {
-                var value = filterComponent.getUniqueValue(i);
-                if ($scope.showArchived == 'Yes' || value != "Archived" ) {
-                    filterComponent.selectValue(value);
-                }
-            }
-            $scope.permitsGrid.api.onFilterChanged();
-        }
 
         $scope.permitsGrid = {
             columnDefs: null,
