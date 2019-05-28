@@ -4,3 +4,4 @@ var crpp_module = angular.module('CrppModule', ['ui.bootstrap', 'ngResource']);
 var appraisals_module = angular.module('AppraisalsModule', ['ui.bootstrap', 'ngResource']);
 var leasing_module = angular.module('LeasingModule', ['ui.bootstrap', 'ngResource']);
 var permit_module = angular.module('PermitModule', ['ui.bootstrap', 'ngResource']);
+var olc_module = angular.module('OlcModule', ['ui.bootstrap', 'ngResource']);
