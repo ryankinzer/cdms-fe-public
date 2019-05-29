@@ -6,7 +6,7 @@
     Permits displayed: <b>{{permitsGrid.api.getDisplayedRowCount()}}</b><br /><br />
 </div>
 <div class="alert alert-primary" role="alert" ng-hide="permits">
-    All good things come to those who wait...
+    Good things come to those who wait...
 </div>
 
 <div id="active-permits-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
@@ -97,9 +97,7 @@
                                     <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                                     <ctuir-text-field ng-switch-default></ctuir-text-field>
                                 </div>
-                            </div>
 
-                            <div class="col-sm-4">
                                 <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:3}" ng-switch on="field.ControlType">
                                     <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
                                     <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
@@ -127,9 +125,14 @@
                                     <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                                     <ctuir-text-field ng-switch-default></ctuir-text-field>
                                 </div>
+
                             </div>
 
+                            <div class="col-sm-4">
+                                <div id="permit-contacts-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>                                
+                            </div>
 
+                            
                         </div>
                     </div>
                 </div>
