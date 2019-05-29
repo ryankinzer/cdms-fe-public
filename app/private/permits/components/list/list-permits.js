@@ -6,7 +6,7 @@
         if (!$scope.Profile.hasRole("Permits"))
             angular.rootScope.go("/unauthorized");
 
-        $scope.currentPage = "Issued";
+        $scope.currentPage = "All";
         $scope.row = null;
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
@@ -31,6 +31,44 @@
             });
         });
 
+        $scope.showIssued = function () { 
+            var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
+            filter_component.selectNothing();
+            filter_component.selectValue('Approved');
+            filter_component.selectValue('Conditionally Approved');
+            $scope.permitsGrid.api.onFilterChanged();
+            $scope.permitsGrid.api.deselectAll();
+            $scope.currentPage = "Issued";
+        };
+
+        $scope.showApplications = function () { 
+            var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
+            filter_component.selectNothing();
+            filter_component.selectValue('');
+            filter_component.selectValue('Under Review');
+            $scope.permitsGrid.api.onFilterChanged();
+            $scope.permitsGrid.api.deselectAll();
+            $scope.currentPage = "Applications";
+        };
+
+        $scope.showArchived = function () { 
+            var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
+            filter_component.selectNothing();
+            filter_component.selectValue('Archived');
+            $scope.permitsGrid.api.onFilterChanged();
+            $scope.permitsGrid.api.deselectAll();
+            $scope.currentPage = "Archived";
+        };
+        
+        $scope.showAll = function () { 
+            var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
+            filter_component.selectNothing();
+            $scope.permitsGrid.api.onFilterChanged();
+            $scope.permitsGrid.api.deselectAll();
+            $scope.currentPage = "All";
+        };
+
+
         $scope.permitsGrid = {
             columnDefs: null,
             rowData: null,
@@ -39,7 +77,8 @@
                 $scope.permitsGrid.selectedItem = $scope.row = $scope.permitsGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                 console.dir($scope.row);
-                $scope.selectPermit($scope.row.Id);
+                if($scope.row)
+                    $scope.selectPermit($scope.row.Id);
             },
             selectedItem: null ,
             defaultColDef: {
@@ -57,6 +96,17 @@
                 booleanEditor: BooleanEditor,
                 booleanCellRenderer: BooleanCellRenderer,
             },
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+        }
+
+        $scope.permitParcelsGrid = {
+            columnDefs: null,
+            rowData: null,
+            rowSelection: 'single',
             defaultColDef: {
                 editable: false,
                 sortable: true,
@@ -102,11 +152,18 @@
             },
 
         ];
+
+            $scope.permitParcelsGrid.columnDefs = [
+                { headerName: "Parcel", field: "ParcelNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+                { headerName: "Allotment", field: "AllotmentNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            ];
+
     
 
         $scope.selectPermit = function (Id) { 
 
             $scope.PermitContacts = PermitService.getPermitContacts(Id);
+            $scope.PermitParcels = PermitService.getPermitParcels(Id);
 
             $scope.PermitContacts.$promise.then(function () { 
                 //activate the permit contacts grid
@@ -114,8 +171,20 @@
                     $scope.permitContactsGridDiv = document.querySelector('#permit-contacts-grid');
                     new agGrid.Grid($scope.permitContactsGridDiv, $scope.permitContactsGrid);
                 }
+
                 $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
             });
+
+            $scope.PermitParcels.$promise.then(function () {
+                //activate the permit parcels grid
+                if (!$scope.permitParcelsGridDiv) {
+                    $scope.permitParcelsGridDiv = document.querySelector('#permit-parcels-grid');
+                    new agGrid.Grid($scope.permitParcelsGridDiv, $scope.permitParcelsGrid);
+                }
+
+                $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+            });
+
         };
 
 
