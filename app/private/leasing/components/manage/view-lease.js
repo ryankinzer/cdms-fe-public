@@ -430,7 +430,7 @@
         //income/production ---
         var incomeColumnDefs = [
             { colId: 'ProductionEditLink', width: 80, cellRenderer: ProductionEditLinksTemplate , menuTabs: [], hide: true },
-            { headerName: "LeaseYear", field: "LeaseYear", width: 150 },
+            { headerName: "Lease Year", field: "LeaseYear", width: 150 },
             {
                 headerName: "Posted Date", field: "IncomeDate", width: 150,
                 valueGetter: function (params) { return moment(params.node.data.IncomeDate) },
@@ -440,21 +440,21 @@
             },
             { headerName: "Posted By", field: "IncomePostedBy", width: 180 },
             
-            { headerName: "CropAcres", field: "CropAcres", width: 150 },
-            { headerName: "HarvestedCrop", field: "HarvestedCrop", width: 150 },
-            { headerName: "CropType", field: "CropType", width: 150 },
-            { headerName: "CropVariety", field: "CropVariety", width: 150 },
-            { headerName: "CropGrade", field: "CropGrade", width: 150 },
+            { headerName: "Crop Acres", field: "CropAcres", width: 150 },
+            { headerName: "Harvested Crop", field: "HarvestedCrop", width: 150 },
+            { headerName: "Crop Type", field: "CropType", width: 150 },
+            { headerName: "Crop Variety", field: "CropVariety", width: 150 },
+            { headerName: "Crop Grade", field: "CropGrade", width: 150 },
             {
-                headerName: "HarvestDate", field: "HarvestDate", width: 150,
+                headerName: "Harvest Date", field: "HarvestDate", width: 150,
                 valueGetter: function (params) { return moment(params.node.data.HarvestDate) },
                 valueFormatter: function (params) {
                     return valueFormatterDate(params.node.data.HarvestDate);
                 },
             },
-            { headerName: "DeliveryPoint", field: "DeliveryPoint", width: 150 },
-            { headerName: "DeliveryLocation", field: "DeliveryLocation", width: 150 },
-            { headerName: "DeliveryUnit", field: "DeliveryUnit", width: 150 },
+            { headerName: "Delivery Point", field: "DeliveryPoint", width: 150 },
+            { headerName: "Delivery Location", field: "DeliveryLocation", width: 150 },
+            { headerName: "Delivery Unit", field: "DeliveryUnit", width: 150 },
             { headerName: "Gross", field: "Gross", width: 150,
                 valueFormatter: function (params) {
                     return valueFormatterNumericCommas(params.node.data.Gross);
@@ -465,28 +465,33 @@
                     return valueFormatterNumericCommas(params.node.data.Net);
                 },
             },
-            { headerName: "YieldAcre", field: "YieldAcre", width: 150 },
-            { headerName: "OwnerShare", field: "OwnerShare", width: 150 },
-            { headerName: "MarketPrice", field: "MarketPrice", width: 150, 
+            { headerName: "Yield Acre", field: "YieldAcre", width: 150 },
+            { headerName: "Owner Share %", field: "OwnerSharePercent", width: 150 },
+            { headerName: "Owner Share $", field: "OwnerShareDollar", width: 150, 
+                valueFormatter: function (params) {
+                    return valueFormatterCurrency(params.node.data.OwnerShareDollar);
+                },
+            },
+            { headerName: "Market Price", field: "MarketPrice", width: 150, 
                 valueFormatter: function (params) {
                     return valueFormatterCurrency(params.node.data.MarketPrice);
                 },
             },
-            { headerName: "MarketUnit", field: "MarketUnit", width: 150, },
-            { headerName: "CropShareDollar", field: "CropShareDollar", width: 150,
+            { headerName: "Market Unit", field: "MarketUnit", width: 150, },
+            { headerName: "Crop Share $", field: "CropShareDollar", width: 150,
                 valueFormatter: function (params) {
                     return valueFormatterCurrency(params.node.data.CropShareDollar);
                 },
             },
             { headerName: "Deduct", field: "Deduction", width: 150 },
-            { headerName: "DeductType", field: "DeductionType", width: 150 },
+            { headerName: "Deduct Type", field: "DeductionType", width: 150 },
             { headerName: "Payment", field: "PaymentAmount", width: 150,
                 valueFormatter: function (params) {
                     return valueFormatterCurrency(params.node.data.PaymentAmount);
                 },
             },
-            { headerName: "PaymentType", field: "PaymentType", width: 150 },
-            { headerName: "TotalPayment", field: "TotalPaymentAmount", width: 150,
+            { headerName: "Payment Type", field: "PaymentType", width: 150 },
+            { headerName: "Total Payment", field: "TotalPaymentAmount", width: 150,
                 valueFormatter: function (params) {
                     return valueFormatterCurrency(params.node.data.TotalPaymentAmount);
                 },
@@ -746,7 +751,8 @@
                     viewCropRevision.push($scope.cropplanrevisions_all[i]);
             }
 
-            $scope.cropsGrid.api.setRowData(viewCropRevision); //$scope.lease.LeaseCropPlans);         
+            if($scope.cropsGrid.api)
+                $scope.cropsGrid.api.setRowData(viewCropRevision); //$scope.lease.LeaseCropPlans);         
 
         }
 
