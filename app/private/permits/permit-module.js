@@ -8,7 +8,7 @@ require([
     //'private/permits/permit-map-directive',
 
     //modals
-    //'private/permits/components/manage/permit-modal',
+    'private/permits/components/list/add-activity-modal',
 
     //service
     'private/permits/permit-service',
@@ -16,6 +16,7 @@ require([
 
 ], function () {
     permit_module.controller('PermitListController', list_permits);
+    permit_module.controller('ActivityModalController', modal_edit_permitevent);
 
     
 

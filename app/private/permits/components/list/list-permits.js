@@ -17,8 +17,6 @@
             $scope.AllColumnDefs = GridService.getAgColumnDefs($scope.dataset);
             $scope.permitsGrid.columnDefs = $scope.AllColumnDefs.HeaderFields;
             
-//            console.dir($scope.AllColumnDefs);
-
             //activate the grid with the permits data
             $scope.permitsGridDiv = document.querySelector('#active-permits-grid');
             new agGrid.Grid($scope.permitsGridDiv, $scope.permitsGrid);
@@ -125,7 +123,7 @@
             rowData: null,
             rowSelection: 'single',
             defaultColDef: {
-                editable: true,
+                editable: false,
                 sortable: true,
                 resizable: true,
             },
@@ -170,12 +168,28 @@
 
         ];
 
-            $scope.permitParcelsGrid.columnDefs = [
-                { headerName: "Parcel", field: "ParcelNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
-                { headerName: "Allotment", field: "AllotmentNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
-            ];
+        $scope.permitParcelsGrid.columnDefs = [
+            { headerName: "Parcel", field: "ParcelNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Allotment", field: "AllotmentNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+        ];
 
-    
+        $scope.openActivityModal = function (params) {
+
+            delete $scope.activity_modal;
+
+            //if editing, we'll have incoming params
+            if (params) {
+                $scope.activity_modal = params;
+            } else {
+                $scope.activity_modal = {};
+            }
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/add-activity-modal.html',
+                controller: 'ActivityModalController',
+                scope: $scope,
+            });
+        }
 
         $scope.selectPermit = function (Id) { 
 
