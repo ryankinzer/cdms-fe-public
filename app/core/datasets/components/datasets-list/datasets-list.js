@@ -8,7 +8,7 @@ var datasets_list = ['$scope', 'DatasetService', 'ProjectService','CommonService
 
             angular.forEach(scope.datasets, function (dataset, key) {
                 //need to bump this to get the route
-                DatasetService.configureDataset(dataset);
+                DatasetService.configureDataset(dataset, scope);
             });
 
             var agCellRendererName = function (params) {

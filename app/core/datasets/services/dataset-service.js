@@ -360,28 +360,29 @@ datasets_module.service('DatasetService', ['$q',
                     if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)
                         dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
 
-                    if (typeof scope == 'undefined') {
-                        //console.log("SKIPPING dataset config - no scope is set!");
-                    }
-                    else {
-                        //part of configuration is authorization.  If the user isn't authorized
-                        //  for this dataset, bump them to error
-                        if (dataset.Config.RestrictRoles) {
-                            var authorized = false;
-                            for (var i = dataset.Config.RestrictRoles.length - 1; i >= 0; i--) {
-                                if (angular.rootScope.Profile.hasRole(dataset.Config.RestrictRoles[i]))
-                                    authorized = true;
-                            };
+                    //part of configuration is authorization.  If the user isn't authorized
+                    //  for this dataset, bump them to error
+                    if (typeof dataset.Config.RestrictRoles !== 'undefined') {
+                        var authorized = false;
+                        for (var i = dataset.Config.RestrictRoles.length - 1; i >= 0; i--) {
+                            if (angular.rootScope.Profile.hasRole(dataset.Config.RestrictRoles[i]))
+                                authorized = true;
+                        };
 
-                            if (!authorized) {
-                                //angular.rootScope.go('/unauthorized');
+                        if (!authorized) {
+                                
+                            if (typeof scope !== 'undefined') {
                                 scope.AuthorizedToViewProject = false;
                             }
-
-                            //console.dir(angular.rootScope.Profile);
-                            //console.dir(dataset.Config.RestrictRoles);
+                            else {
+                                angular.rootScope.go('/unauthorized');
+                            }
                         }
+
+                        //console.dir(angular.rootScope.Profile);
+                        //console.dir(dataset.Config.RestrictRoles);
                     }
+                    
                 }
             },
 			
