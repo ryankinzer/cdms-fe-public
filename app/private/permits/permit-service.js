@@ -18,17 +18,26 @@ permit_module.factory('GetPermitParcels', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('GetPermitEvents', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetPermitEvents', {}, {
+        query: { method: 'GET', params: { Id: 'Id'}, isArray: true }
+    });
+}]);
+
+
 permit_module.service('PermitService', ['$q',
 
     'AllPermits',
     'GetPermitContacts',
-'GetPermitParcels',
+    'GetPermitParcels',
+    'GetPermitEvents',
   
     function ($q,
        
         AllPermits,
         GetPermitContacts,
-        GetPermitParcels
+        GetPermitParcels,
+        GetPermitEvents
       
     ) {
         var service = {
@@ -45,6 +54,9 @@ permit_module.service('PermitService', ['$q',
                 return GetPermitParcels.query({ Id: Id });
             },
             
+            getPermitEvents:  function (Id) {
+                return GetPermitEvents.query({ Id: Id });
+            },
         };
 
         return service;

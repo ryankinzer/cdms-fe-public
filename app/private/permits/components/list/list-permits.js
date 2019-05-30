@@ -10,13 +10,14 @@
         $scope.row = null;
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
+        $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
 
         $scope.dataset.$promise.then(function () { 
         
             $scope.AllColumnDefs = GridService.getAgColumnDefs($scope.dataset);
             $scope.permitsGrid.columnDefs = $scope.AllColumnDefs.HeaderFields;
             
-            console.dir($scope.AllColumnDefs);
+//            console.dir($scope.AllColumnDefs);
 
             //activate the grid with the permits data
             $scope.permitsGridDiv = document.querySelector('#active-permits-grid');
@@ -29,6 +30,11 @@
                 $scope.permitsGrid.api.setRowData($scope.permits);
 
             });
+        });
+
+        $scope.eventsdataset.$promise.then(function () {
+            var EventColumnDefs = GridService.getAgColumnDefs($scope.eventsdataset);
+            $scope.permitEventsGrid.columnDefs = EventColumnDefs.HeaderFields;
         });
 
         $scope.showIssued = function () { 
@@ -62,7 +68,7 @@
         
         $scope.showAll = function () { 
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
-            filter_component.selectNothing();
+            filter_component.selectEverything();
             $scope.permitsGrid.api.onFilterChanged();
             $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "All";
@@ -76,7 +82,7 @@
             onSelectionChanged: function (params) {
                 $scope.permitsGrid.selectedItem = $scope.row = $scope.permitsGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-                console.dir($scope.row);
+                //console.dir($scope.row);
                 if($scope.row)
                     $scope.selectPermit($scope.row.Id);
             },
@@ -109,6 +115,17 @@
             rowSelection: 'single',
             defaultColDef: {
                 editable: false,
+                sortable: true,
+                resizable: true,
+            },
+        }
+
+        $scope.permitEventsGrid = {
+            columnDefs: null,
+            rowData: null,
+            rowSelection: 'single',
+            defaultColDef: {
+                editable: true,
                 sortable: true,
                 resizable: true,
             },
@@ -164,6 +181,7 @@
 
             $scope.PermitContacts = PermitService.getPermitContacts(Id);
             $scope.PermitParcels = PermitService.getPermitParcels(Id);
+            $scope.PermitEvents = PermitService.getPermitEvents(Id);
 
             $scope.PermitContacts.$promise.then(function () { 
                 //activate the permit contacts grid
@@ -184,6 +202,17 @@
 
                 $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
             });
+
+            $scope.PermitEvents.$promise.then(function () {
+                //activate the permit events grid
+                if (!$scope.permitEventsGridDiv) {
+                    $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
+                    new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
+                }
+
+                $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+            });
+
 
         };
 
