@@ -105,7 +105,7 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 		scope.projectName = "";
 		scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = "";
 		scope.filesToUpload = {};
-		scope.AuthorizedToViewProject = true;
+		//scope.AuthorizedToViewProject = true; //We have this up at line 15 already...
 		
 		// Get the project ID from the url.
 		var theUrl = window.location.href;
