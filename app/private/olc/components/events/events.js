@@ -224,20 +224,54 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Author Agency', field: 'AuthorAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Boundary', field: 'Boundary', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            //{
-            //    headerName: 'Boundary',
-            //    field: 'Boundary',
-            //    cellClass: 'event-record-cell',
-            //    width: 180,
-            //    valueGetter: function (params) { return params.node.data.Boundary },			
-            //    valueFormatter: function (params) {
-            //        return valueFormatterArrayToList(params.node.data.Boundary);
-            //    },
-            //    menuTabs: ['filterMenuTab']
-            //},
-            { headerName: 'Significant Area', field: 'SignificantArea', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Miscelleneous Context', field: 'MiscelleneousContext', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            //{ headerName: 'Boundary', field: 'Boundary', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            {
+                headerName: 'Boundary',
+                field: 'Boundary',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.Boundary },			
+                valueFormatter: function (params) {
+                    params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
+                    var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        the_str = the_str.replace(/"/g, '');
+                    return the_str;
+                },
+                menuTabs: ['filterMenuTab']
+            },
+            //{ headerName: 'Significant Area', field: 'SignificantArea', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            {
+                headerName: 'Significant Area',
+                field: 'SignificantArea',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.SignificantArea },
+                valueFormatter: function (params) {
+                    params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
+                    var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
+                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        the_str = the_str.replace(/"/g, '');
+                    return the_str;
+                },
+                menuTabs: ['filterMenuTab']
+            },
+            //{ headerName: 'Miscellaneous Context', field: 'MiscelleneousContext', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            {
+                headerName: 'Miscellaneous Context',
+                field: 'MiscelleneousContext',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.MiscelleneousContext },
+                valueFormatter: function (params) {
+                    params.node.data.MiscelleneousContext = JSON.parse(params.node.data.MiscelleneousContext);
+                    var the_str = valueFormatterArrayToList(params.node.data.MiscelleneousContext);
+                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        the_str = the_str.replace(/"/g, '');
+                    return the_str;
+                },
+                menuTabs: ['filterMenuTab']
+            },
             { headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'NumberItems', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
