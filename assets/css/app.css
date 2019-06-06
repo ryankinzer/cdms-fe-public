@@ -851,3 +851,8 @@ margin-left: -8px !important;
 .btn:active, .btn.active {
     background-color: #da9c34 !important;
 }
+
+legend.bump-over {
+    margin-left: 35px;
+    
+}

@@ -42,7 +42,7 @@
 
                                 <div class="col-lg-4" style="min-width: 450px;">
                                     <fieldset>
-                                        <legend>General Information</legend>
+                                        <legend class="bump-over">General Information</legend>
                                         <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:1}" ng-switch on="field.ControlType">
                                             <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
                                             <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
@@ -75,7 +75,7 @@
 
                                 <div class="col-lg-4" style="min-width: 450px;">
                                     <fieldset>
-                                        <legend>Location Information</legend>
+                                        <legend class="bump-over">Location Information</legend>
                                         <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:2}" ng-switch on="field.ControlType">
                                             <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
                                             <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
@@ -104,8 +104,8 @@
                                             <ctuir-text-field ng-switch-default></ctuir-text-field>
                                         </div>
                                     </fieldset>
-                                    <fieldset>
-                                        <legend>Other Information</legend>
+                                    <fieldset style="margin-top: 30px;">
+                                        <legend class="bump-over">Other Information</legend>
                                         <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:3}" ng-switch on="field.ControlType">
                                             <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
                                             <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
@@ -142,8 +142,12 @@
                                         <div id="permit-contacts-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
                                     </fieldset>
                                     <fieldset style=" margin-top: 30px;">
-                                        <legend>Related Parcels</legend>
+                                        <legend>Parcels</legend>
                                         <div id="permit-parcels-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
+                                    </fieldset>
+                                    <fieldset style=" margin-top: 30px;">
+                                        <legend>Files</legend>
+                                        <div id="permit-files-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
                                     </fieldset>
                                 </div>
 

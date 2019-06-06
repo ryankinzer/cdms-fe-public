@@ -129,6 +129,18 @@
             },
         }
 
+        $scope.permitFilesGrid = {
+            columnDefs: null,
+            rowData: null,
+            rowSelection: 'single',
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+        }
+
+
         $scope.permitContactsGrid.columnDefs = [
             {
                 headerName: "Primary", field: "IsPrimary", width: 100,
@@ -173,6 +185,62 @@
             { headerName: "Allotment", field: "AllotmentNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
         ];
 
+        var UploadedByTemplate = function (param) {
+            return moment(param.node.data.UploadDate).format('L') + " by " + param.node.data.User.Fullname;
+        };
+
+        var EditLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.openEditFileModal(param.data, scope.afterEditDocsFile);
+            });
+            div.appendChild(editBtn);
+            div.appendChild(document.createTextNode(" | "));
+
+            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
+            delBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.deleteDocFile(param.data);
+            });
+            div.appendChild(delBtn);
+
+            return div;
+        };
+    
+        var LinkTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var linkBtn = document.createElement('a');
+            linkBtn.href = param.data.Link;
+            linkBtn.innerHTML = param.data.Title;
+            linkBtn.target = "_blank";
+            div.appendChild(linkBtn);
+            return div;
+        };
+
+        $scope.permitFilesGrid.columnDefs = [
+            { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 120, menuTabs: [], hide: true },
+            { headerName: 'File', cellRenderer: LinkTemplate, width: 190, menuTabs: [] },
+            //{ field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
+            {
+                headerName: 'Sharing Level', field: 'SharingLevel', width: 150,
+                cellRenderer: function (params) {
+                    if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
+                        return SharingLevel['SHARINGLEVEL_PRIVATE'];
+                    else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
+                        return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
+                    else return 'Unknown';
+                }, menuTabs: [],
+            },
+            { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+        ];
+
         $scope.openActivityModal = function (params) {
 
             delete $scope.activity_modal;
@@ -196,6 +264,7 @@
             $scope.PermitContacts = PermitService.getPermitContacts(Id);
             $scope.PermitParcels = PermitService.getPermitParcels(Id);
             $scope.PermitEvents = PermitService.getPermitEvents(Id);
+            $scope.PermitFiles = PermitService.getPermitFiles(Id);
 
             $scope.PermitContacts.$promise.then(function () { 
                 //activate the permit contacts grid
@@ -227,9 +296,19 @@
                 $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
             });
 
+            $scope.PermitFiles.$promise.then(function () {
+                //activate the permit files grid
+                if (!$scope.permitFilesGridDiv) {
+                    $scope.permitFilesGridDiv = document.querySelector('#permit-files-grid');
+                    new agGrid.Grid($scope.permitFilesGridDiv, $scope.permitFilesGrid);
+                }
+
+                $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+            });
 
         };
 
+        
 
 
 }];
