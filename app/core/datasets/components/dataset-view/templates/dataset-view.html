@@ -60,7 +60,7 @@
                         <div class="header-value">{{row.Activity.Timezone.Name}}&nbsp;</div>
                     </div>
 
-                    <div ng-switch-when="multiselect,select" ng-switch-when-separator="," class="header-column">
+                    <div ng-switch-when="multiselect,select,select-number" ng-switch-when-separator="," class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
                         <div class="header-value">{{row[field.DbColumnName] | arrayDisplayValue:field}}&nbsp;</div>
                     </div>
