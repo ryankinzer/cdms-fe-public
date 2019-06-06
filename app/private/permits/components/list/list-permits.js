@@ -265,7 +265,7 @@
                 return;
             }
 
-            $scope.row = $scope.permitsGrid.selectedItem = { PermitStatus: "New Application" };
+            $scope.row = $scope.permitsGrid.selectedItem = GridService.getNewRow($scope.permitsGrid.columnDefs); //{ PermitStatus: "New Application" };
             $scope.resetGrids();
             
         };
@@ -343,7 +343,8 @@
                 colDef: field,
                 node: { data: $scope.row },
                 value: $scope.row[field.DbColumnName],
-                type: 'onHeaderEditingStopped'
+                type: 'onHeaderEditingStopped',
+                scope: $scope
             };
 
             if (GridService.validateCell(event)) {
@@ -368,8 +369,40 @@
             $scope.row.dataChanged = true;
 
             //console.dir($scope.row);
+            if (field.DbColumnName == "PermitStatus") {
 
+            }
         };
 
+        $scope.calculatePermitNumber = function () { 
+            
+        };
+
+        $scope.save = function () {
+            console.dir($scope.row);
+            var saved_permit = PermitService.savePermit($scope.row);
+            saved_permit.$promise.then(function () { 
+                console.log("permit saved: ");
+                console.dir(saved_permit);
+    
+                if (!$scope.row.Id) {
+                    $scope.permits.push(saved_permit);
+                    $scope.permitsGrid.api.setRowData($scope.permits);
+                    $scope.showAll();
+                }
+                else {
+                    $scope.permits.forEach(function (existing_permit) { 
+                        if (existing_permit.Id == $scope.row.Id) {
+                            console.log(" found it -- ");
+                            angular.extend(existing_permit, $scope.saved_permit);
+                        }
+                    });
+
+                    $scope.permitsGrid.api.setRowData($scope.permits);
+                    $scope.showAll();
+                }
+
+            });
+        };
 
 }];

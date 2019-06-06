@@ -30,6 +30,9 @@ permit_module.factory('GetPermitFiles', ['$resource', function ($resource) {
     });
 }]);
 
+leasing_module.factory('SavePermit', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/savepermit');
+}]);
 
 
 
@@ -40,6 +43,7 @@ permit_module.service('PermitService', ['$q',
     'GetPermitParcels',
     'GetPermitEvents',
     'GetPermitFiles',
+    'SavePermit',
   
     function ($q,
        
@@ -47,7 +51,8 @@ permit_module.service('PermitService', ['$q',
         GetPermitContacts,
         GetPermitParcels,
         GetPermitEvents,
-        GetPermitFiles
+        GetPermitFiles,
+        SavePermit
       
     ) {
         var service = {
@@ -72,6 +77,9 @@ permit_module.service('PermitService', ['$q',
                 return GetPermitFiles.query({ ProjectId: PERMIT_PROJECTID, PermitId: PermitId });
             },
 
+            savePermit: function (permit, contacts, parcels, files) {
+                return SavePermit.save({ Permit: permit });
+            },
         };
 
         return service;
