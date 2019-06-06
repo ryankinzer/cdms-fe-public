@@ -15,6 +15,8 @@
     <div class="alert alert-secondary" role="alert" ng-hide="permitsGrid.selectedItem || !permits">Click a permit to display details.</div>
 
     <div ng-show="permitsGrid.selectedItem">
+
+        
         <div class="modal-body modal-form" style="width: 100% !important;">
 
             <ul class="nav nav-tabs">
@@ -29,6 +31,12 @@
                     <a class="nav-link" data-toggle="tab" data-target="#payment">Fee</a>
                 </li>
             </ul>
+
+            <div ng-show="Profile.hasRole('Permits') && row.dataChanged" style="margin: 10px; float: right;">
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+            </div>
+
 
             <form novalidate class="row-form modal-form" style="width: 100%;" name="headerForm">
 
@@ -198,5 +206,13 @@
                     </div>
                 </div>
             </form>
+            <div class="modal-footer">
+                <div ng-show="Profile.hasRole('Permits') && row.dataChanged" style="margin: 10px; float: right;">
+                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                    <button class="btn btn-primary" ng-click="save()">Save</button>
+                </div>
+            </div>
+
         </div>
+
     </div>

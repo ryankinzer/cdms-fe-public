@@ -1,4 +1,8 @@
-﻿<ul class="nav nav-pills">
+﻿<div ng-show="Profile.hasRole('Permits')" style="margin: 10px; float: right;">
+    <button class="btn btn-sm" ng-click="createNewPermit()">New Permit</button>
+</div>
+
+<ul class="nav nav-pills">
     <li class="nav-item">
         <a class="nav-link" href="#!/permits-search">Search</a>
     </li>

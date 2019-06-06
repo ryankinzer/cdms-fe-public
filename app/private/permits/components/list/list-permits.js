@@ -259,6 +259,54 @@
             });
         }
 
+        $scope.createNewPermit = function () {
+
+            if ($scope.row && $scope.row.dataChanged && !confirm("It looks like you've made edits on this page. Are you sure you want to clear everything and start a new permit?")) {
+                return;
+            }
+
+            $scope.row = $scope.permitsGrid.selectedItem = { PermitStatus: "New Application" };
+            $scope.resetGrids();
+            
+        };
+
+        $scope.resetGrids = function () {
+            
+            $scope.PermitContacts = [];
+            $scope.PermitParcels = [];
+            $scope.PermitEvents = [];
+            $scope.PermitFiles = [];
+
+            //activate the permit contacts grid
+            if (!$scope.permitContactsGridDiv) {
+                $scope.permitContactsGridDiv = document.querySelector('#permit-contacts-grid');
+                new agGrid.Grid($scope.permitContactsGridDiv, $scope.permitContactsGrid);
+            }
+
+            //activate the permit parcels grid
+            if (!$scope.permitParcelsGridDiv) {
+                $scope.permitParcelsGridDiv = document.querySelector('#permit-parcels-grid');
+                new agGrid.Grid($scope.permitParcelsGridDiv, $scope.permitParcelsGrid);
+            }
+
+            //activate the permit events grid
+            if (!$scope.permitEventsGridDiv) {
+                $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
+                new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
+            }
+
+            //activate the permit files grid
+            if (!$scope.permitFilesGridDiv) {
+                $scope.permitFilesGridDiv = document.querySelector('#permit-files-grid');
+                new agGrid.Grid($scope.permitFilesGridDiv, $scope.permitFilesGrid);
+            }
+
+            $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
+            $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+            $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+            $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+        };
+
         $scope.selectPermit = function (Id) { 
 
             $scope.PermitContacts = PermitService.getPermitContacts(Id);
@@ -267,48 +315,61 @@
             $scope.PermitFiles = PermitService.getPermitFiles(Id);
 
             $scope.PermitContacts.$promise.then(function () { 
-                //activate the permit contacts grid
-                if (!$scope.permitContactsGridDiv) {
-                    $scope.permitContactsGridDiv = document.querySelector('#permit-contacts-grid');
-                    new agGrid.Grid($scope.permitContactsGridDiv, $scope.permitContactsGrid);
-                }
-
                 $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
             });
 
             $scope.PermitParcels.$promise.then(function () {
-                //activate the permit parcels grid
-                if (!$scope.permitParcelsGridDiv) {
-                    $scope.permitParcelsGridDiv = document.querySelector('#permit-parcels-grid');
-                    new agGrid.Grid($scope.permitParcelsGridDiv, $scope.permitParcelsGrid);
-                }
-
                 $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
             });
 
             $scope.PermitEvents.$promise.then(function () {
-                //activate the permit events grid
-                if (!$scope.permitEventsGridDiv) {
-                    $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
-                    new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
-                }
-
                 $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
             });
 
             $scope.PermitFiles.$promise.then(function () {
-                //activate the permit files grid
-                if (!$scope.permitFilesGridDiv) {
-                    $scope.permitFilesGridDiv = document.querySelector('#permit-files-grid');
-                    new agGrid.Grid($scope.permitFilesGridDiv, $scope.permitFilesGrid);
-                }
-
                 $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
             });
 
         };
-
         
+        $scope.resetGrids();
+
+        $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
+            //build event to send for validation
+            console.log("onHeaderEditingStopped: " + field.DbColumnName);
+            $scope.row.dataChanged = true;
+
+            var event = {
+                colDef: field,
+                node: { data: $scope.row },
+                value: $scope.row[field.DbColumnName],
+                type: 'onHeaderEditingStopped'
+            };
+
+            if (GridService.validateCell(event)) {
+                    GridService.fireRule("OnChange", event); //only fires when valid change is made
+            }
+
+            //update our collection of header errors if any were returned
+            $scope.headerFieldErrors = [];
+            if ($scope.row.rowHasError) {
+                $scope.row.validationErrors.forEach(function (error) { 
+                    if (Array.isArray($scope.headerFieldErrors[error.field.DbColumnName])) {
+                        $scope.headerFieldErrors[error.field.DbColumnName].push(error.message);
+                    } else {
+                        $scope.headerFieldErrors[error.field.DbColumnName] = [error.message];
+                    }
+                });
+            }
+
+            //update the error count -- determine if this bogs down on big datasets                 TODO
+            //$scope.PageErrorCount = $scope.getPageErrorCount();
+
+            $scope.row.dataChanged = true;
+
+            //console.dir($scope.row);
+
+        };
 
 
 }];
