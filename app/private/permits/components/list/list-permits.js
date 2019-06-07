@@ -9,8 +9,20 @@
         $scope.currentPage = "All";
         $scope.row = null;
 
+        $scope.PermitContacts = [];
+        $scope.PermitParcels = [];
+        $scope.PermitEvents = [];
+        $scope.PermitFiles = [];
+
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
+        $scope.PermitPersons = PermitService.getAllPersons();
+
+        $scope.PermitPersons.$promise.then(function () { 
+            $scope.PermitPersons.forEach(function (person) { 
+                person.SortName = (person.Organization) ? person.Organization : person.FirstName + " " + person.LastName;
+            });   
+        });
 
         $scope.dataset.$promise.then(function () { 
         
@@ -33,6 +45,15 @@
         $scope.eventsdataset.$promise.then(function () {
             var EventColumnDefs = GridService.getAgColumnDefs($scope.eventsdataset);
             $scope.permitEventsGrid.columnDefs = EventColumnDefs.HeaderFields;
+
+            //activate the permit events grid
+            if (!$scope.permitEventsGridDiv) {
+                $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
+                new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
+            }
+
+            $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+
         });
 
         $scope.showIssued = function () { 
@@ -96,6 +117,7 @@
             columnDefs: null,
             rowData: null,
             rowSelection: 'single',
+            selectedItem: null ,
             components: {
                 booleanEditor: BooleanEditor,
                 booleanCellRenderer: BooleanCellRenderer,
@@ -105,27 +127,41 @@
                 sortable: true,
                 resizable: true,
             },
+            onSelectionChanged: function (params) {
+                $scope.permitContactsGrid.selectedItem = $scope.permitContactsGrid.api.getSelectedRows()[0];
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
         }
 
         $scope.permitParcelsGrid = {
             columnDefs: null,
             rowData: null,
             rowSelection: 'single',
+            selectedItem: null ,
             defaultColDef: {
                 editable: false,
                 sortable: true,
                 resizable: true,
+            },
+            onSelectionChanged: function (params) {
+                $scope.permitParcelsGrid.selectedItem = $scope.permitParcelsGrid.api.getSelectedRows()[0];
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
         }
 
         $scope.permitEventsGrid = {
             columnDefs: null,
             rowData: null,
+            selectedItem: null ,
             rowSelection: 'single',
             defaultColDef: {
                 editable: false,
                 sortable: true,
                 resizable: true,
+            },
+            onSelectionChanged: function (params) {
+                $scope.permitParcelsGrid.selectedItem = $scope.permitParcelsGrid.api.getSelectedRows()[0];
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
         }
 
@@ -133,15 +169,82 @@
             columnDefs: null,
             rowData: null,
             rowSelection: 'single',
+           selectedItem: null ,
             defaultColDef: {
                 editable: false,
                 sortable: true,
                 resizable: true,
             },
+            onSelectionChanged: function (params) {
+                $scope.permitFilesGrid.selectedItem = $scope.permitFilesGrid.api.getSelectedRows()[0];
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
         }
 
 
+var UploadedByTemplate = function (param) {
+            return moment(param.node.data.UploadDate).format('L') + " by " + param.node.data.User.Fullname;
+        };
+
+        var EditFileLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                $scope.openFileModal(param.data);
+            });
+            div.appendChild(editBtn);
+            
+            return div;
+        };
+    
+        var EditContactLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                $scope.openContactModal(param.data);
+            });
+            div.appendChild(editBtn);
+            
+            return div;
+        };
+    
+
+        var EditParcelLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                $scope.openParcelModal(param.data);
+            });
+            div.appendChild(editBtn);
+            
+            return div;
+        };
+    
+
+        var LinkTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var linkBtn = document.createElement('a');
+            linkBtn.href = param.data.Link;
+            linkBtn.innerHTML = param.data.Title;
+            linkBtn.target = "_blank";
+            div.appendChild(linkBtn);
+            return div;
+        };
+
+
         $scope.permitContactsGrid.columnDefs = [
+            { colId: 'EditLinks', cellRenderer: EditContactLinksTemplate, width: 60, menuTabs: [], hide: true },
             {
                 headerName: "Primary", field: "IsPrimary", width: 100,
                 cellEditor: 'booleanEditor',
@@ -181,50 +284,13 @@
         ];
 
         $scope.permitParcelsGrid.columnDefs = [
+            { colId: 'EditLinks', cellRenderer: EditParcelLinksTemplate, width: 60, menuTabs: [], hide: true },
             { headerName: "Parcel", field: "ParcelNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Allotment", field: "AllotmentNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
         ];
 
-        var UploadedByTemplate = function (param) {
-            return moment(param.node.data.UploadDate).format('L') + " by " + param.node.data.User.Fullname;
-        };
-
-        var EditLinksTemplate = function (param) {
-
-            var div = document.createElement('div');
-
-            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
-            editBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                scope.openEditFileModal(param.data, scope.afterEditDocsFile);
-            });
-            div.appendChild(editBtn);
-            div.appendChild(document.createTextNode(" | "));
-
-            var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
-            delBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                scope.deleteDocFile(param.data);
-            });
-            div.appendChild(delBtn);
-
-            return div;
-        };
-    
-        var LinkTemplate = function (param) {
-
-            var div = document.createElement('div');
-
-            var linkBtn = document.createElement('a');
-            linkBtn.href = param.data.Link;
-            linkBtn.innerHTML = param.data.Title;
-            linkBtn.target = "_blank";
-            div.appendChild(linkBtn);
-            return div;
-        };
-
         $scope.permitFilesGrid.columnDefs = [
-            { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 120, menuTabs: [], hide: true },
+            { colId: 'EditLinks', cellRenderer: EditFileLinksTemplate, width: 60, menuTabs: [], hide: true },
             { headerName: 'File', cellRenderer: LinkTemplate, width: 190, menuTabs: [] },
             //{ field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -259,6 +325,60 @@
             });
         }
 
+        $scope.openContactModal = function (params) {
+
+            //if editing, we'll have incoming params
+            if (params) {
+                $scope.contact_modal = params;
+            } else {
+                $scope.contact_modal = { PermitId: $scope.row.Id };
+            }
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/add-contact-modal.html',
+                controller: 'ContactModalController',
+                scope: $scope,
+            }).result.then(function (saved_contact) {
+                    $scope.PermitContacts = PermitService.getPermitContacts(saved_contact.PermitId);
+                    $scope.PermitContacts.$promise.then(function () { 
+                        $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
+                    });
+            });
+        }
+
+        $scope.openParcelModal = function (params) {
+
+            //if editing, we'll have incoming params
+            if (params) {
+                $scope.parcel_modal = params;
+            } else {
+                $scope.parcel_modal = {};
+            }
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/add-parcel-modal.html',
+                controller: 'ParcelModalController',
+                scope: $scope,
+            });
+        }
+
+        $scope.openFileModal = function (params) {
+
+            //if editing, we'll have incoming params
+            if (params) {
+                $scope.file_modal = params;
+            } else {
+                $scope.file_modal = {};
+            }
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/add-file-modal.html',
+                controller: 'FileModalController',
+                scope: $scope,
+            });
+        }
+
+
         $scope.createNewPermit = function () {
 
             if ($scope.row && $scope.row.dataChanged && !confirm("It looks like you've made edits on this page. Are you sure you want to clear everything and start a new permit?")) {
@@ -272,11 +392,7 @@
 
         $scope.resetGrids = function () {
             
-            $scope.PermitContacts = [];
-            $scope.PermitParcels = [];
-            $scope.PermitEvents = [];
-            $scope.PermitFiles = [];
-
+            
             //activate the permit contacts grid
             if (!$scope.permitContactsGridDiv) {
                 $scope.permitContactsGridDiv = document.querySelector('#permit-contacts-grid');
@@ -289,12 +405,6 @@
                 new agGrid.Grid($scope.permitParcelsGridDiv, $scope.permitParcelsGrid);
             }
 
-            //activate the permit events grid
-            if (!$scope.permitEventsGridDiv) {
-                $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
-                new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
-            }
-
             //activate the permit files grid
             if (!$scope.permitFilesGridDiv) {
                 $scope.permitFilesGridDiv = document.querySelector('#permit-files-grid');
@@ -303,8 +413,14 @@
 
             $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
             $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
-            $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
             $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+
+            if ($scope.Profile.hasRole("Permits")) { //TODO: EditPermits?
+                $scope.permitContactsGrid.columnApi.setColumnVisible("EditLinks", true);
+                $scope.permitParcelsGrid.columnApi.setColumnVisible("EditLinks", true);
+                $scope.permitFilesGrid.columnApi.setColumnVisible("EditLinks", true);
+            }
+
         };
 
         $scope.selectPermit = function (Id) { 

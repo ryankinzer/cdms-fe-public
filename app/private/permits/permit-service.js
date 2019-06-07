@@ -30,9 +30,27 @@ permit_module.factory('GetPermitFiles', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('GetAllPermitPersons', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetAllPermitPersons', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
+
+
 leasing_module.factory('SavePermit', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermit');
 }]);
+
+
+leasing_module.factory('SavePermitPerson', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/savepermitperson');
+}]);
+
+
+leasing_module.factory('SavePermitContact', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/savepermitcontact');
+}]);
+
 
 
 
@@ -44,6 +62,9 @@ permit_module.service('PermitService', ['$q',
     'GetPermitEvents',
     'GetPermitFiles',
     'SavePermit',
+    'GetAllPermitPersons',
+    'SavePermitContact',
+    'SavePermitPerson',
   
     function ($q,
        
@@ -52,7 +73,10 @@ permit_module.service('PermitService', ['$q',
         GetPermitParcels,
         GetPermitEvents,
         GetPermitFiles,
-        SavePermit
+        SavePermit,
+        GetAllPermitPersons,
+        SavePermitContact,
+        SavePermitPerson
       
     ) {
         var service = {
@@ -77,8 +101,20 @@ permit_module.service('PermitService', ['$q',
                 return GetPermitFiles.query({ ProjectId: PERMIT_PROJECTID, PermitId: PermitId });
             },
 
-            savePermit: function (permit, contacts, parcels, files) {
+            savePermit: function (permit) {
                 return SavePermit.save({ Permit: permit });
+            },
+
+            savePermitPerson: function (permitperson) {
+                return SavePermitPerson.save({ PermitPerson: permitperson });
+            },
+
+            savePermitContact: function (permitcontact) {
+                return SavePermitContact.save({ PermitContact: permitcontact });
+            },
+
+            getAllPersons:  function (Id) {
+                return GetAllPermitPersons.query();
             },
         };
 
