@@ -46,6 +46,13 @@
                                 <select class="form-control" ng-model="row.WaterBodyId" ng-options="p.Id as p.Name for p in waterbodies"></select>
                             </div>
 
+                            <div class="header-label">Project Lead:</div>
+                            <div class="header-value">
+                                <select ui-select2="select2Options" data-placeholder="Choose a Project Lead" style="width: 300px; margin-top: 4px;" ng-model="row.ProjectLead" ng-change="selectProjectLead()">
+                                    <option ng-repeat="projectLead in getMetafield('ProjectLead')" value="{{projectLead}}">{{projectLead}}</option>
+                                </select>
+                            </div>
+
                             <div class="header-label">Project Summary</div>
                             <div class="header-value">
                                 <textarea class="form-control" type="text" rows="4" maxlength="255" ng-model="row.ProjectSummary"></textarea>
