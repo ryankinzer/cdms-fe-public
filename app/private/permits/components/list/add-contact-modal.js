@@ -1,7 +1,7 @@
 ﻿//modal to add/edit permit contact 
-var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','GridService','CommonService','Upload','PermitService',
+var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','PermitService',
 
-    function ($scope, $modal, $modalInstance, GridService, CommonService, $upload, PermitService) {
+    function ($scope, $modal, $modalInstance, PermitService) {
 
         $scope.mode = "edit";
 

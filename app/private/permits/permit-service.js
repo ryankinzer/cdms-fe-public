@@ -51,6 +51,11 @@ leasing_module.factory('SavePermitContact', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermitcontact');
 }]);
 
+leasing_module.factory('RemovePermitContact', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/RemovePermitContact');
+}]);
+
+
 
 
 
@@ -65,6 +70,7 @@ permit_module.service('PermitService', ['$q',
     'GetAllPermitPersons',
     'SavePermitContact',
     'SavePermitPerson',
+    'RemovePermitContact',
   
     function ($q,
        
@@ -76,7 +82,8 @@ permit_module.service('PermitService', ['$q',
         SavePermit,
         GetAllPermitPersons,
         SavePermitContact,
-        SavePermitPerson
+        SavePermitPerson,
+        RemovePermitContact
       
     ) {
         var service = {
@@ -116,6 +123,11 @@ permit_module.service('PermitService', ['$q',
             getAllPersons:  function (Id) {
                 return GetAllPermitPersons.query();
             },
+
+            removeContact: function (permitcontact) {
+                return RemovePermitContact.save({ PermitContact: permitcontact });
+            }
+
         };
 
         return service;

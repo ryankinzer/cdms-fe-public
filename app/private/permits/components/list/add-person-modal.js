@@ -9,6 +9,8 @@
             $scope.person_modal = { Id: 0 };
         }
 
+        console.dir($scope.person_modal);
+
         $scope.person_modal.LastUpdated = moment().format('L');
         $scope.person_modal.UpdatedBy = $scope.Profile.Fullname;
 

@@ -113,6 +113,20 @@
             },
         }
 
+
+        $scope.openPermitPersonModal = function(person_id){
+
+            $scope.person_modal = getById($scope.PermitPersons, person_id);
+            console.dir($scope.person_modal.Id);
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/add-person-modal.html',
+                controller: 'AddPermitPersonModalController',
+                scope: $scope,
+            }).result.then(function (saved_person) { 
+                $scope.PermitPersons = PermitService.getAllPersons();
+            });
+        }
+
         $scope.permitContactsGrid = {
             columnDefs: null,
             rowData: null,
@@ -126,6 +140,9 @@
                 editable: false,
                 sortable: true,
                 resizable: true,
+            },
+            onRowDoubleClicked: function (params) { 
+                $scope.openPermitPersonModal($scope.permitContactsGrid.selectedItem.PermitPersonId);
             },
             onSelectionChanged: function (params) {
                 $scope.permitContactsGrid.selectedItem = $scope.permitContactsGrid.api.getSelectedRows()[0];
@@ -182,7 +199,7 @@
         }
 
 
-var UploadedByTemplate = function (param) {
+        var UploadedByTemplate = function (param) {
             return moment(param.node.data.UploadDate).format('L') + " by " + param.node.data.User.Fullname;
         };
 
@@ -246,9 +263,9 @@ var UploadedByTemplate = function (param) {
         $scope.permitContactsGrid.columnDefs = [
             { colId: 'EditLinks', cellRenderer: EditContactLinksTemplate, width: 60, menuTabs: [], hide: true },
             {
-                headerName: "Primary", field: "IsPrimary", width: 100,
-                cellEditor: 'booleanEditor',
+                headerName: "Primary", field: "IsPrimary", width: 110,
                 cellRenderer: 'booleanCellRenderer',
+                sort: 'desc'
             },
             {
                 headerName: "Contact", width: 200,
@@ -266,13 +283,13 @@ var UploadedByTemplate = function (param) {
                 headerName: "Info", width: 120,
                 cellRenderer: function (params) {
                     if (params.node.data.PermitPerson.CellPhone)
-                        return params.node.data.PermitPerson.CellPhone;
+                        return formatUsPhone(params.node.data.PermitPerson.CellPhone);
 
                     if (params.node.data.PermitPerson.WorkPhone)
-                        return params.node.data.PermitPerson.WorkPhone;
+                        return formatUsPhone(params.node.data.PermitPerson.WorkPhone);
 
                     if (params.node.data.PermitPerson.HomePhone)
-                        return params.node.data.PermitPerson.HomePhone;
+                        return formatUsPhone(params.node.data.PermitPerson.HomePhone);
 
                     return (params.node.data.PermitPerson.Email) ? params.node.data.PermitPerson.Email : "None provided";
 
@@ -388,6 +405,20 @@ var UploadedByTemplate = function (param) {
             $scope.row = $scope.permitsGrid.selectedItem = GridService.getNewRow($scope.permitsGrid.columnDefs); //{ PermitStatus: "New Application" };
             $scope.resetGrids();
             
+        };
+
+        $scope.removeSelectedContact = function () { 
+            if ($scope.permitContactsGrid.selectedItem && confirm("Are you sure you want to remove this Contact?")) {
+                var removed = PermitService.removeContact($scope.permitContactsGrid.selectedItem);
+                removed.$promise.then(function () { 
+                    $scope.PermitContacts.forEach(function (contact, index) { 
+                        if (contact.PermitPersonId == $scope.permitContactsGrid.selectedItem.PermitPersonId) {
+                            $scope.PermitContacts.splice(index);
+                            $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
+                        }
+                    });
+                });
+            }
         };
 
         $scope.resetGrids = function () {

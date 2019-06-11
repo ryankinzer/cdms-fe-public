@@ -6,19 +6,13 @@
     <div class="row">
         <form novalidate class="row-form modal-form" name="headerForm">
 
+
             <div class="header-label">Contact:</div>
             <div class="header-value">
                 <button type="button" style="float:right; margin-right:20px;" ng-click="addPermitPersonModal()" class="btn btn-sm" tabindex="-1">Add</button>
                 <select id="persons-select" ui-select2="select2Options" data-placeholder="Choose a contact" ng-model="contact_modal.PermitPersonId" convert-to-number>
                     <option ng-repeat="person in PermitPersons" ng-selected="person.Id == contact_modal.PermitPersonId" value="{{person.Id}}">{{person | personOrgName}}</option>
                 </select>
-            </div>
-
-
-
-            <div class="header-label">Primary Contact:</div>
-            <div class="header-value">
-                <input class="form-control" type="checkbox" ng-model="contact_modal.IsPrimary" />
             </div>
 
             <div class="header-label">Contact Type:</div>
@@ -29,6 +23,12 @@
                     <option>Other</option>
                 </select>
             </div>
+
+            <div class="header-label">Primary Contact:</div>
+            <div class="header-value">
+                <input class="form-control" type="checkbox" ng-model="contact_modal.IsPrimary" />
+            </div>
+
 
         </form>
     </div>

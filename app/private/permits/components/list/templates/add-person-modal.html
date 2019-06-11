@@ -27,7 +27,7 @@
 
                 <div class="header-label">Last Name:</div>
                 <div class="header-value">
-                    <input class="form-control" type="text" ng-model="person_modal.LastName" ng-change="updateFullname()"/>
+                    <input class="form-control" type="text" ng-model="person_modal.LastName" ng-change="updateFullname()" />
                 </div>
 
                 <div class="header-label">Full Name:</div>
@@ -70,52 +70,50 @@
                     <input class="form-control" type="text" ui-mask="99999" ng-model="person_modal.PhysicalZip" />
                 </div>
 
-                <div class="header-label">IsMailingDifferent:</div>
+                <div class="header-label">Mailing Address 1:</div>
                 <div class="header-value">
-                    <input class="form-control" type="checkbox" ng-model="person_modal.IsMailingDifferent" />
+                    <input class="form-control" type="text" ng-model="person_modal.MailingAddress1" />
                 </div>
 
-                <div id="mailing-div" ng-show="person_modal.IsMailingDifferent">
-
-                    <div class="header-label">Mailing Address 1:</div>
-                    <div class="header-value">
-                        <input class="form-control" type="text" ng-model="person_modal.MailingAddress1" />
-                    </div>
-
-                    <div class="header-label">Mailing Address 2:</div>
-                    <div class="header-value">
-                        <input class="form-control" type="text" ng-model="person_modal.MailingAddress2" />
-                    </div>
-
-                    <div class="header-label">Mailing City:</div>
-                    <div class="header-value">
-                        <select class="form-control" ng-model="person_modal.MailingCity">
-                            <option ng-repeat="opcity in contactCities.ListValues" ng-selected="person_modal.MailingCity==opcity" value="{{opcity}}">{{opcity}}</option>
-                        </select>
-                    </div>
-
-                    <div class="header-label">Mailing State:</div>
-                    <div class="header-value">
-                        <select class="form-control" ng-model="person_modal.MailingState">
-                            <option ng-repeat="opstate in contactStates.ListValues" ng-selected="person_modal.MailingState==opstate" value="{{opstate}}">{{opstate}}</option>
-                        </select>
-                    </div>
-
-                    <div class="header-label">Mailing Zip:</div>
-                    <div class="header-value">
-                        <input class="form-control" type="text" ui-mask="99999" ng-model="person_modal.MailingZip" />
-                    </div>
+                <div class="header-label">Mailing Address 2:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ng-model="person_modal.MailingAddress2" />
                 </div>
 
-                <div class="header-label">Phone:</div>
+                <div class="header-label">Mailing City:</div>
                 <div class="header-value">
-                    <input class="form-control" type="text" ui-mask="(999) 999-9999" ng-model="person_modal.Phone" />
+                    <select class="form-control" ng-model="person_modal.MailingCity">
+                        <option ng-repeat="opcity in contactCities.ListValues" ng-selected="person_modal.MailingCity==opcity" value="{{opcity}}">{{opcity}}</option>
+                    </select>
+                </div>
+
+                <div class="header-label">Mailing State:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-model="person_modal.MailingState">
+                        <option ng-repeat="opstate in contactStates.ListValues" ng-selected="person_modal.MailingState==opstate" value="{{opstate}}">{{opstate}}</option>
+                    </select>
+                </div>
+
+                <div class="header-label">Mailing Zip:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ui-mask="99999" ng-model="person_modal.MailingZip" />
+                </div>
+
+                <div class="header-label">Home Phone:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ui-mask="(999) 999-9999" ng-model="person_modal.HomePhone" />
+
+                </div>
+
+                <div class="header-label">Work Phone:</div>
+                <div class="header-value">
+                    <input class="form-control" type="text" ui-mask="(999) 999-9999" ng-model="person_modal.WorkPhone" />
 
                 </div>
 
                 <div class="header-label">Cell:</div>
                 <div class="header-value">
-                    <input class="form-control" type="text" ng-model="person_modal.Cell" ui-mask="(999) 999-9999" />
+                    <input class="form-control" type="text" ng-model="person_modal.CellPhone" ui-mask="(999) 999-9999" />
                 </div>
 
                 <div class="header-label">Fax:</div>
