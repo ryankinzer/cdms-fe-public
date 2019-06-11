@@ -17,6 +17,7 @@
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
         $scope.PermitPersons = PermitService.getAllPersons();
+        $scope.CadasterParcels = PermitService.getAllParcels();
 
         $scope.PermitPersons.$promise.then(function () { 
             $scope.PermitPersons.forEach(function (person) { 
@@ -230,22 +231,7 @@
             
             return div;
         };
-    
-
-        var EditParcelLinksTemplate = function (param) {
-
-            var div = document.createElement('div');
-
-            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
-            editBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                $scope.openParcelModal(param.data);
-            });
-            div.appendChild(editBtn);
-            
-            return div;
-        };
-    
+        
 
         var LinkTemplate = function (param) {
 
@@ -301,9 +287,9 @@
         ];
 
         $scope.permitParcelsGrid.columnDefs = [
-            { colId: 'EditLinks', cellRenderer: EditParcelLinksTemplate, width: 60, menuTabs: [], hide: true },
-            { headerName: "Parcel", field: "ParcelNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: "Allotment", field: "AllotmentNumber", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Parcel Id", field: "ParcelId", width: 250, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "PLSS", field: "Object.PLSS_Label", width: 250, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
         ];
 
         $scope.permitFilesGrid.columnDefs = [
@@ -376,6 +362,11 @@
                 templateUrl: 'app/private/permits/components/list/templates/add-parcel-modal.html',
                 controller: 'ParcelModalController',
                 scope: $scope,
+            }).result.then(function (saved_parcel) {
+                    $scope.PermitParcels = PermitService.getPermitParcels(saved_parcel.PermitId);
+                    $scope.PermitParcels.$promise.then(function () { 
+                        $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+                    });
             });
         }
 
@@ -416,6 +407,18 @@
                             $scope.PermitContacts.splice(index);
                             $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
                         }
+                    });
+                });
+            }
+        };
+
+        $scope.removeSelectedParcel = function () { 
+            if ($scope.permitParcelsGrid.selectedItem && confirm("Are you sure you want to remove this Parcel?")) {
+                var removed = PermitService.removePermitParcel($scope.permitParcelsGrid.selectedItem);
+                removed.$promise.then(function () { 
+                    $scope.PermitParcels = PermitService.getPermitParcels($scope.row.Id);
+                    $scope.PermitParcels.$promise.then(function () { 
+                        $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
                     });
                 });
             }

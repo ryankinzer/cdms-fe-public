@@ -6,6 +6,12 @@ permit_module.factory('AllPermits', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('AllParcels', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/allparcels', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
 permit_module.factory('GetPermitContacts', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/GetPermitContacts', {}, {
         query: { method: 'GET', params: { Id: 'Id'}, isArray: true }
@@ -55,7 +61,13 @@ leasing_module.factory('RemovePermitContact', ['$resource', function ($resource)
     return $resource(serviceUrl + '/api/v1/permit/RemovePermitContact');
 }]);
 
+leasing_module.factory('SavePermitParcel', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/savepermitparcel');
+}]);
 
+leasing_module.factory('RemovePermitParcel', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/RemovePermitParcel');
+}]);
 
 
 
@@ -71,6 +83,10 @@ permit_module.service('PermitService', ['$q',
     'SavePermitContact',
     'SavePermitPerson',
     'RemovePermitContact',
+    'AllParcels',
+    'SavePermitParcel',
+    'RemovePermitParcel',
+
   
     function ($q,
        
@@ -83,13 +99,20 @@ permit_module.service('PermitService', ['$q',
         GetAllPermitPersons,
         SavePermitContact,
         SavePermitPerson,
-        RemovePermitContact
+        RemovePermitContact,
+        AllParcels,
+        SavePermitParcel,
+        RemovePermitParcel
       
     ) {
         var service = {
 
             getAllPermits: function () {
                 return AllPermits.query();
+            },
+
+            getAllParcels: function () {
+                return AllParcels.query();
             },
 
             getPermitContacts: function (Id) {
@@ -126,7 +149,16 @@ permit_module.service('PermitService', ['$q',
 
             removeContact: function (permitcontact) {
                 return RemovePermitContact.save({ PermitContact: permitcontact });
-            }
+            },
+
+            savePermitParcel: function (permitparcel) {
+                return SavePermitParcel.save({ PermitParcel: permitparcel });
+            },
+
+            removePermitParcel: function (permitparcel) {
+                return RemovePermitParcel.save({ PermitParcel: permitparcel });
+            },
+
 
         };
 

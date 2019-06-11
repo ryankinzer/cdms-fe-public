@@ -6,7 +6,13 @@
     <div class="row">
         <form novalidate class="row-form modal-form" name="headerForm">
 
-                
+            <div class="header-label">Parcel:</div>
+            <div class="header-value">
+                <select id="persons-select" ui-select2="select2Options" data-placeholder="Choose a parcel" ng-model="parcel_modal.ParcelId">
+                    <option ng-repeat="parcel in CadasterParcels" value="{{parcel.ParcelId}}">{{parcel.ParcelId}}</option>
+                </select>
+            </div>
+            
         </form>
     </div>
 </div>
