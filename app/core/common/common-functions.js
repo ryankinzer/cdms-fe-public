@@ -1788,6 +1788,22 @@ function valueFormatterArrayToList(the_array) {
 
 }
 
+function getNameFromUserId(theId, userList) {
+    var strUser = "";
+    var blnKeepGoing = true;
+
+    userList.forEach(function (user) {
+        if (blnKeepGoing) {
+            if (user.Id === theId) {
+                strUser = user.Fullname;
+                blnKeepGoing = false;
+            }
+        }
+    });
+
+    return strUser;
+}
+
 
 function getAgGridFilterByType(type) { 
 
