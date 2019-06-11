@@ -81,7 +81,10 @@
 
                 <div class="header-label">Person Discovered</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.PersonDiscovered" />
+                    <select class="form-control" ng-model="event_row.PersonDiscovered" ng-change="selectPersonDiscovered()">
+                        <option ng-repeat="context in getMetafield('PersonDiscovered')" value="{{context}}">{{context}}</option>
+                    </select>
+
                 </div>
 
                 <div class="header-label">Reference</div>
