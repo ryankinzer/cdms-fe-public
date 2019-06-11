@@ -196,7 +196,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             { field: 'SignatoryTitle', headerName: 'Signatory Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SignatoryAgency', headerName: 'Signatory Agency', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SignatoryName', headerName: 'Signatory Name', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'Box', headerName: 'Box', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'ByUserId', headerName: 'By USer', width: 100, menuTabs: ['filterMenuTab'], filter: true },
 
             //{
             //    //note: white-space here causes word-wrap
@@ -300,6 +300,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
             { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
         ];
 
         //detail grid options correspondence events
