@@ -33,6 +33,10 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
 
             scope.project.$promise.then(function () {
 
+                if (scope.project.Name === "Office of Legal Counsel") {
+                    scope.Users = ProjectService.getOlcStaff();
+                }
+
                 var ag_grid_div = document.querySelector('#olc-events-grid');    //get the container id...
                 //console.dir(ag_grid_div);
                 scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.olcAgGridOptions); //bind the grid to it.
@@ -50,6 +54,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
                     scope.refreshSubprojectLists();
                 });
+
             });
         });
 
@@ -196,7 +201,21 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             { field: 'SignatoryTitle', headerName: 'Signatory Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SignatoryAgency', headerName: 'Signatory Agency', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SignatoryName', headerName: 'Signatory Name', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'Box', headerName: 'Box', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'ByUserId', headerName: 'By User', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            {
+                headerName: 'By User',
+                field: 'ByUser',
+                cellClass: 'event-record-cell',
+                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueFormatter: function (params) {
+                    params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
+                    var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
+                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        the_str = the_str.replace(/"/g, '');
+                    return the_str;
+                },
+                width: 180, menuTabs: ['filterMenuTab'],
+            },
 
             //{
             //    //note: white-space here causes word-wrap
@@ -300,6 +319,21 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
             { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            {
+                headerName: 'By User',
+                field: 'ByUser',
+                cellClass: 'event-record-cell',
+                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueFormatter: function (params) {
+                    params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
+                    var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
+                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        the_str = the_str.replace(/"/g, '');
+                    return the_str;
+                },
+                width: 180, menuTabs: ['filterMenuTab'],
+            },
         ];
 
         //detail grid options correspondence events

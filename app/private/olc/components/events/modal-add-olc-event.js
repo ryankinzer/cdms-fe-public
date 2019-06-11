@@ -77,7 +77,11 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
         if ((typeof $scope.event_row.Boundary !== 'undefined') && ($scope.event_row.Boundary !== null)) {
 
-            $scope.event_row.Boundary = JSON.parse($scope.event_row.Boundary);
+            try {
+                $scope.event_row.Boundary = JSON.parse($scope.event_row.Boundary);
+            } catch (e) {
+                console.log("$scope.event_row.Boundary is already parsed into JSON...");
+            }
             //$scope.event_row.strBoundaries = "";
 
             //$scope.event_row.Boundary.forEach(function (boundary) {
@@ -88,12 +92,22 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
         if ((typeof $scope.event_row.SignificantArea !== 'undefined') && ($scope.event_row.SignificantArea !== null)) {
 
-            $scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+            //$scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+            try {
+                $scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+            } catch (e) {
+                console.log("$scope.event_row.SignificantArea is already parsed into JSON...");
+            }
         }
 
         if ((typeof $scope.event_row.MiscelleneousContext !== 'undefined') && ($scope.event_row.MiscelleneousContext !== null)) {
 
-            $scope.event_row.MiscelleneousContext = JSON.parse($scope.event_row.MiscelleneousContext);
+            //$scope.event_row.MiscelleneousContext = JSON.parse($scope.event_row.MiscelleneousContext);
+            try {
+                $scope.event_row.MiscelleneousContext = JSON.parse($scope.event_row.MiscelleneousContext);
+            } catch (e) {
+                console.log("$scope.event_row.MiscelleneousContext is already parsed into JSON...");
+            }
         }
 
         //console.log("$scope.event_row is next...");
@@ -380,7 +394,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         $scope.cancel = function () {
 
             if ($scope.originalExistingFiles && $scope.originalExistingFiles.hasOwnProperty($scope.file_field)) {
-                $scope.ce_row.EventFiles = $scope.originalExistingFiles[$scope.file_field];
+                $scope.event_row.EventFiles = $scope.originalExistingFiles[$scope.file_field];
                 //console.log("setting EventFiles to " + $scope.originalExistingFiles[$scope.file_field]);
             }
 

@@ -54,7 +54,7 @@
                 <div class="header-label">Miscelleneous Context</div>
                 <div class="header-value">
                     <select multiple class="form-control" style="margin-top: 4px;" ng-model="event_row.MiscelleneousContext" ng-change="selectMiscelleneousContext()">
-                        <option ng-repeat="context in getMetafield('MiscelleneousContext')" value="{{context}}">{{context}}</option>
+                        <option ng-repeat="context in getMetafield('MiscellaneousContext')" value="{{context}}">{{context}}</option>
                     </select>
 
                 </div>
@@ -81,7 +81,10 @@
 
                 <div class="header-label">Person Discovered</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.PersonDiscovered" />
+                    <select class="form-control" ng-model="event_row.PersonDiscovered" ng-change="selectPersonDiscovered()">
+                        <option ng-repeat="context in getMetafield('PersonDiscovered')" value="{{context}}">{{context}}</option>
+                    </select>
+
                 </div>
 
                 <div class="header-label">Reference</div>
