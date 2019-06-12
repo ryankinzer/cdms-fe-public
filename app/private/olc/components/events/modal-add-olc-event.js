@@ -12,7 +12,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             $scope.olcMetaFieldColumns = {
                 "Boundary": "Boundary",
                 "SignificantArea": "Significant Area",
-                "MiscelleneousContext": "Miscelleneous Context"
+                "MiscellaneousContext": "Miscellaneous Context"
             };
 
             if ($scope.project.MetaFields)
@@ -100,13 +100,13 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             }
         }
 
-        if ((typeof $scope.event_row.MiscelleneousContext !== 'undefined') && ($scope.event_row.MiscelleneousContext !== null)) {
+        if ((typeof $scope.event_row.MiscellaneousContext !== 'undefined') && ($scope.event_row.MiscellaneousContext !== null)) {
 
-            //$scope.event_row.MiscelleneousContext = JSON.parse($scope.event_row.MiscelleneousContext);
+            //$scope.event_row.MiscellaneousContext = JSON.parse($scope.event_row.MiscellaneousContext);
             try {
-                $scope.event_row.MiscelleneousContext = JSON.parse($scope.event_row.MiscelleneousContext);
+                $scope.event_row.MiscellaneousContext = JSON.parse($scope.event_row.MiscellaneousContext);
             } catch (e) {
-                console.log("$scope.event_row.MiscelleneousContext is already parsed into JSON...");
+                console.log("$scope.event_row.MiscellaneousContext is already parsed into JSON...");
             }
         }
 
@@ -330,9 +330,9 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 console.log("saveRow.SignificantArea = " + saveRow.SignificantArea);
             }
 
-            if ((typeof saveRow.MiscelleneousContext !== 'undefined') && (saveRow.MiscelleneousContext !== null)) {
-                saveRow.MiscelleneousContext = JSON.stringify(saveRow.MiscelleneousContext);
-                console.log("saveRow.MiscelleneousContext = " + saveRow.MiscelleneousContext);
+            if ((typeof saveRow.MiscellaneousContext !== 'undefined') && (saveRow.MiscellaneousContext !== null)) {
+                saveRow.MiscellaneousContext = JSON.stringify(saveRow.MiscellaneousContext);
+                console.log("saveRow.MiscellaneousContext = " + saveRow.MiscellaneousContext);
             }
 
             console.log("saveRow is next, after processing dates...");
