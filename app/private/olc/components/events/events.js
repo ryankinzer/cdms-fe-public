@@ -275,16 +275,16 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 },
                 menuTabs: ['filterMenuTab']
             },
-            //{ headerName: 'Miscellaneous Context', field: 'MiscelleneousContext', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            //{ headerName: 'Miscellaneous Context', field: 'MiscellaneousContext', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
                 headerName: 'Miscellaneous Context',
-                field: 'MiscelleneousContext',
+                field: 'MiscellaneousContext',
                 cellClass: 'event-record-cell',
                 width: 180,
-                valueGetter: function (params) { return params.node.data.MiscelleneousContext },
+                valueGetter: function (params) { return params.node.data.MiscellaneousContext },
                 valueFormatter: function (params) {
-                    params.node.data.MiscelleneousContext = JSON.parse(params.node.data.MiscelleneousContext);
-                    var the_str = valueFormatterArrayToList(params.node.data.MiscelleneousContext);
+                    params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
+                    var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
                     if (typeof the_str === 'string') //backwards compatible - remove the quotes
                         the_str = the_str.replace(/"/g, '');
                     return the_str;
