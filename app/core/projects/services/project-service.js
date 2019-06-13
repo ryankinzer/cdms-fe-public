@@ -125,6 +125,9 @@ projects_module.factory('GetCrppStaff', ['$resource', function($resource){
     return $resource(serviceUrl+'/api/v1/user/GetCrppStaff'); // This line will need adjusting.
 }]);
 
+projects_module.factory('GetOlcStaff', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/GetOlcStaff'); // This line will need adjusting.
+}]);
 
 /*
 * define the service that can be used by any module in our application to work with projects.
@@ -155,7 +158,8 @@ projects_module.service('ProjectService', ['$q',
     'GetProjectFishermen',
     'RemoveProjectFisherman',
     'RemoveInstrumentAccuracyCheck',
-	'GetCrppStaff',
+    'GetCrppStaff',
+    'GetOlcStaff',
     'SaveProjectConfig',
     function ($q,
         ProjectFunders,
@@ -183,7 +187,8 @@ projects_module.service('ProjectService', ['$q',
         GetProjectFishermen,
         RemoveProjectFisherman,
         RemoveInstrumentAccuracyCheck,
-		GetCrppStaff,
+        GetCrppStaff,
+        GetOlcStaff,
         SaveProjectConfig
 		) {
 
@@ -386,6 +391,11 @@ projects_module.service('ProjectService', ['$q',
             {
 				console.log("Inside getCrppStaff...");
                 return GetCrppStaff.query();
+            },
+
+            getOlcStaff: function () {
+                console.log("Inside getOlcStaff...");
+                return GetOlcStaff.query();
             },
         };
 

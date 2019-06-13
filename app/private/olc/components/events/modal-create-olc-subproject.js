@@ -7,7 +7,7 @@ var modal_create_olc_subproject = ['$scope', '$rootScope', '$uibModalInstance', 
 
         initEdit();
 
-        $scope.header_message = "Create new OLC project";
+        $scope.header_message = "Create new project";
         $rootScope.olcCatalogNumber = $scope.olcCatalogNumber = "";
         $rootScope.projectId = $scope.project.Id;
 

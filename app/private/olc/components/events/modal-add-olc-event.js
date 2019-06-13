@@ -12,7 +12,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             $scope.olcMetaFieldColumns = {
                 "Boundary": "Boundary",
                 "SignificantArea": "Significant Area",
-                "MiscelleneousContext": "Miscelleneous Context"
+                "MiscellaneousContext": "Miscellaneous Context"
             };
 
             if ($scope.project.MetaFields)
@@ -77,7 +77,11 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
         if ((typeof $scope.event_row.Boundary !== 'undefined') && ($scope.event_row.Boundary !== null)) {
 
-            $scope.event_row.Boundary = JSON.parse($scope.event_row.Boundary);
+            try {
+                $scope.event_row.Boundary = JSON.parse($scope.event_row.Boundary);
+            } catch (e) {
+                console.log("$scope.event_row.Boundary is already parsed into JSON...");
+            }
             //$scope.event_row.strBoundaries = "";
 
             //$scope.event_row.Boundary.forEach(function (boundary) {
@@ -88,12 +92,22 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
         if ((typeof $scope.event_row.SignificantArea !== 'undefined') && ($scope.event_row.SignificantArea !== null)) {
 
-            $scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+            //$scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+            try {
+                $scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+            } catch (e) {
+                console.log("$scope.event_row.SignificantArea is already parsed into JSON...");
+            }
         }
 
-        if ((typeof $scope.event_row.MiscelleneousContext !== 'undefined') && ($scope.event_row.MiscelleneousContext !== null)) {
+        if ((typeof $scope.event_row.MiscellaneousContext !== 'undefined') && ($scope.event_row.MiscellaneousContext !== null)) {
 
-            $scope.event_row.MiscelleneousContext = JSON.parse($scope.event_row.MiscelleneousContext);
+            //$scope.event_row.MiscellaneousContext = JSON.parse($scope.event_row.MiscellaneousContext);
+            try {
+                $scope.event_row.MiscellaneousContext = JSON.parse($scope.event_row.MiscellaneousContext);
+            } catch (e) {
+                console.log("$scope.event_row.MiscellaneousContext is already parsed into JSON...");
+            }
         }
 
         //console.log("$scope.event_row is next...");
@@ -316,9 +330,9 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 console.log("saveRow.SignificantArea = " + saveRow.SignificantArea);
             }
 
-            if ((typeof saveRow.MiscelleneousContext !== 'undefined') && (saveRow.MiscelleneousContext !== null)) {
-                saveRow.MiscelleneousContext = JSON.stringify(saveRow.MiscelleneousContext);
-                console.log("saveRow.MiscelleneousContext = " + saveRow.MiscelleneousContext);
+            if ((typeof saveRow.MiscellaneousContext !== 'undefined') && (saveRow.MiscellaneousContext !== null)) {
+                saveRow.MiscellaneousContext = JSON.stringify(saveRow.MiscellaneousContext);
+                console.log("saveRow.MiscellaneousContext = " + saveRow.MiscellaneousContext);
             }
 
             console.log("saveRow is next, after processing dates...");
@@ -380,7 +394,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         $scope.cancel = function () {
 
             if ($scope.originalExistingFiles && $scope.originalExistingFiles.hasOwnProperty($scope.file_field)) {
-                $scope.ce_row.EventFiles = $scope.originalExistingFiles[$scope.file_field];
+                $scope.event_row.EventFiles = $scope.originalExistingFiles[$scope.file_field];
                 //console.log("setting EventFiles to " + $scope.originalExistingFiles[$scope.file_field]);
             }
 
