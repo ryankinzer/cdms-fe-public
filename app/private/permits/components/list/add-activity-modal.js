@@ -9,6 +9,10 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
             $scope.mode = "new";
         }
 
+        $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
+        
+        console.log($scope.activity_modal);
+
         modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.activity_modal.Files); 
 
         $scope.save = function () {
@@ -45,6 +49,9 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
         $scope.onHeaderEditingStopped = function (field) { 
             //build event to send for validation
             console.log("onHeaderEditingStopped: " + field.DbColumnName);
+
+
+/*
             var event = {
                 colDef: field,
                 node: { data: $scope.row },
@@ -67,7 +74,7 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
                     }
                 });
             }
-
+*/
         };
 
         //fire validation for all columns when we load (if we are editing)

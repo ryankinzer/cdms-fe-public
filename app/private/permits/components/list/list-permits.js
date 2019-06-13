@@ -45,12 +45,17 @@
 
         $scope.eventsdataset.$promise.then(function () {
             var EventColumnDefs = GridService.getAgColumnDefs($scope.eventsdataset);
-            $scope.permitEventsGrid.columnDefs = EventColumnDefs.HeaderFields;
+            $scope.permitEventsGrid.columnDefs = angular.merge(
+                [{ colId: 'EditLinks', cellRenderer: EditEventLinksTemplate, width: 60, menuTabs: [], hide: true }], 
+                EventColumnDefs.HeaderFields
+            );
 
             //activate the permit events grid
             if (!$scope.permitEventsGridDiv) {
                 $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
                 new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
+//TODO: if permission to edit:
+                $scope.permitEventsGrid.columnApi.setColumnVisible("EditLinks", true);
             }
 
             $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
@@ -177,8 +182,11 @@
                 sortable: true,
                 resizable: true,
             },
+            onRowDoubleClicked: function (params) { 
+                $scope.openActivityModal($scope.permitEventsGrid.selectedItem);
+            },
             onSelectionChanged: function (params) {
-                $scope.permitParcelsGrid.selectedItem = $scope.permitParcelsGrid.api.getSelectedRows()[0];
+                $scope.permitEventsGrid.selectedItem = $scope.permitEventsGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
         }
@@ -232,6 +240,20 @@
             return div;
         };
         
+        var EditEventLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                $scope.openActivityModal(param.data);
+            });
+            div.appendChild(editBtn);
+            
+            return div;
+        };
+
 
         var LinkTemplate = function (param) {
 
