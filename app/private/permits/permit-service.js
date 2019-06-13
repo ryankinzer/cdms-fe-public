@@ -69,6 +69,11 @@ leasing_module.factory('RemovePermitParcel', ['$resource', function ($resource) 
     return $resource(serviceUrl + '/api/v1/permit/RemovePermitParcel');
 }]);
 
+leasing_module.factory('SavePermitEvent', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/SavePermitEvent');
+}]);
+
+
 
 
 permit_module.service('PermitService', ['$q',
@@ -86,6 +91,7 @@ permit_module.service('PermitService', ['$q',
     'AllParcels',
     'SavePermitParcel',
     'RemovePermitParcel',
+    'SavePermitEvent',
 
   
     function ($q,
@@ -102,7 +108,8 @@ permit_module.service('PermitService', ['$q',
         RemovePermitContact,
         AllParcels,
         SavePermitParcel,
-        RemovePermitParcel
+        RemovePermitParcel,
+        SavePermitEvent
       
     ) {
         var service = {
@@ -159,6 +166,9 @@ permit_module.service('PermitService', ['$q',
                 return RemovePermitParcel.save({ PermitParcel: permitparcel });
             },
 
+            savePermitEvent: function (permitevent) {
+                return SavePermitEvent.save({ PermitEvent: permitevent });
+            }
 
         };
 

@@ -1,38 +1,45 @@
 ﻿//modal to add/edit permit event 
-var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridService','CommonService','Upload','ProjectService',
+var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridService','Upload','PermitService',
 
-    function ($scope, $modal, $modalInstance, GridService, CommonService, $upload, ProjectService) {
+    function ($scope, $modal, $modalInstance, GridService, $upload, PermitService) {
+
+        $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
 
         $scope.mode = "edit";
 
         if (!$scope.activity_modal.Id) {
             $scope.mode = "new";
+            $scope.row.EventDate = moment().format('L');
+            $scope.row.RequestDate = moment().format('L');    
         }
+        else {
+            if(!$scope.row.ResponseDate)
+                $scope.row.ResponseDate = moment().format('L');    
 
-        $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
+            if(!$scope.row.Reviewer)
+                $scope.row.Reviewer = $scope.Profile.Fullname;
+        }
         
-        console.log($scope.activity_modal);
+        
+        //console.log($scope.activity_modal);
 
         modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.activity_modal.Files); 
 
         $scope.save = function () {
             //$scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+            $scope.modalFile_saveParentItem($scope.row);
         };
 
         //call back from save above once the files are done processing and we're ready to save the item
         $scope.modalFile_saveParentItem = function (saveRow) {
-            /*
-            saveRow.LocationType = undefined;
-            saveRow.WaterBody = undefined;
+            
+            var new_event = PermitService.savePermitEvent(saveRow);
 
-            var new_location = CommonService.saveNewProjectLocation($scope.project.Id, saveRow);
-            new_location.$promise.then(function () {
+            new_event.$promise.then(function () {
                 console.log("done and success!");
-                $modalInstance.close(new_location);
+                $modalInstance.close(new_event);
             });
-            */
 
-            $modalInstance.close();
         };
 
         //callback that is called from modalFile to do the actual file removal (varies by module)
@@ -50,31 +57,6 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
             //build event to send for validation
             console.log("onHeaderEditingStopped: " + field.DbColumnName);
 
-
-/*
-            var event = {
-                colDef: field,
-                node: { data: $scope.row },
-                value: $scope.row[field.DbColumnName],
-                type: 'onHeaderEditingStopped'
-            };
-
-            if (GridService.validateCell(event)) {
-                    GridService.fireRule("OnChange", event); //only fires when valid change is made
-            }
-
-            //update our collection of header errors if any were returned
-            $scope.headerFieldErrors = [];
-            if ($scope.row.rowHasError) {
-                $scope.row.validationErrors.forEach(function (error) { 
-                    if (Array.isArray($scope.headerFieldErrors[error.field.DbColumnName])) {
-                        $scope.headerFieldErrors[error.field.DbColumnName].push(error.message);
-                    } else {
-                        $scope.headerFieldErrors[error.field.DbColumnName] = [error.message];
-                    }
-                });
-            }
-*/
         };
 
         //fire validation for all columns when we load (if we are editing)

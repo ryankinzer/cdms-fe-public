@@ -340,13 +340,18 @@
             if (params) {
                 $scope.activity_modal = params;
             } else {
-                $scope.activity_modal = {};
+                $scope.activity_modal = { PermitId: $scope.row.Id };
             }
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/permits/components/list/templates/add-activity-modal.html',
                 controller: 'ActivityModalController',
                 scope: $scope,
+            }).result.then(function (saved_activity) { 
+                $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
+                $scope.PermitEvents.$promise.then(function () {
+                    $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                });
             });
         }
 
