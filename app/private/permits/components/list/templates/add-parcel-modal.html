@@ -1,0 +1,26 @@
+﻿<div class="modal-header">
+    <h3 ng-show="mode=='edit'">Edit Parcel</h3>
+    <h3 ng-show="mode=='new'">Add Parcel</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <form novalidate class="row-form modal-form" name="headerForm">
+
+            <div class="header-label">Parcel:</div>
+            <div class="header-value">
+                <select id="persons-select" ui-select2="select2Options" data-placeholder="Choose a parcel" ng-model="parcel_modal.ParcelId">
+                    <option ng-repeat="parcel in CadasterParcels" value="{{parcel.ParcelId}}">{{parcel.ParcelId}}</option>
+                </select>
+            </div>
+            
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button ng-disabled="row.validationErrors.length>0" style="margin-top: 30px;" class="right btn" ng-click="save()">Save Changes</button>
+
+    <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
+
+</div>
+

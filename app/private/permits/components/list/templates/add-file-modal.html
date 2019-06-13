@@ -1,0 +1,17 @@
+﻿<div class="modal-header">
+    <h3 ng-show="mode=='edit'">Edit File</h3>
+    <h3 ng-show="mode=='new'">Add File</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <form novalidate class="row-form modal-form" name="headerForm"></form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button ng-disabled="row.validationErrors.length>0" style="margin-top: 30px;" class="right btn" ng-click="save()">Save Changes</button>
+
+    <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
+
+</div>
+

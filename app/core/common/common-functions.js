@@ -1934,6 +1934,13 @@ BooleanCellRenderer.prototype.init = function (params) {
         input.type = "checkbox";
         input.checked = params.value;
         input.addEventListener('click', function (event) {
+
+            if (!params.colDef.editable) {
+                console.log("ignoring click - colDef.editable = false");
+                event.preventDefault();
+                return;
+            }
+
             params.value = !params.value;
             params.data[params.colDef.field] = params.value;
             //console.log(params.colDef.field + " changed to : " + params.value);
@@ -1974,3 +1981,20 @@ BooleanEditor.prototype.destroy = function () {
 BooleanEditor.prototype.isPopup = function () {
     return true;
 };
+
+
+function formatUsPhone(phone) {
+
+    var phoneTest = new RegExp(/^((\+1)|1)? ?\(?(\d{3})\)?[ .-]?(\d{3})[ .-]?(\d{4})( ?(ext\.? ?|x)(\d*))?$/);
+
+    phone = phone.trim();
+    var results = phoneTest.exec(phone);
+    if (results !== null && results.length > 8) {
+
+        return "(" + results[3] + ") " + results[4] + "-" + results[5] + (typeof results[8] !== "undefined" ? " x" + results[8] : "");
+
+    }
+    else {
+         return phone;
+    }
+}
