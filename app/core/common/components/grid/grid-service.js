@@ -141,7 +141,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                         DatastoreId: field.Field.DatastoreId,
                         DatasetId: dataset.Id,
                         ProjectId: dataset.ProjectId,
-                        menuTabs: ['filterMenuTab'],
+                        menuTabs: ['filterMenuTab']
                     };
 
                     //setup column def for HEADER and add it to our list
@@ -225,7 +225,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
             //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
-            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope });
+            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope: scope });
             //console.dir(fieldRuleValidationErrors);
             fieldRuleValidationErrors.forEach(function (error) { fieldValidationErrors.push({ "field": event.colDef, "message": error }) });
 
