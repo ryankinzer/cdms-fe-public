@@ -1795,7 +1795,14 @@ function getNameFromUserId(theId, userList) {
     userList.forEach(function (user) {
         if (blnKeepGoing) {
             if (user.Id === theId) {
-                strUser = user.Fullname;
+                // Table Users has a column Fullname
+                // Table Fishermen has a column FullName
+                // This function will work for both cases, with the following if block...
+                if (user.Fullname)
+                    strUser = user.Fullname;
+                else if (user.FullName)
+                    strUser = user.FullName;
+
                 blnKeepGoing = false;
             }
         }
