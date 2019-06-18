@@ -105,7 +105,7 @@
             rowData: null,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
-                $scope.permitsGrid.selectedItem = $scope.row = $scope.permitsGrid.api.getSelectedRows()[0];
+                $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                 //console.dir($scope.row);
                 if($scope.row)
@@ -507,6 +507,8 @@
                 $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
             });
 
+            $scope.row.ReviewsRequired = angular.fromJson($scope.row.ReviewsRequired);
+
         };
         
         $scope.resetGrids();
@@ -555,9 +557,21 @@
             
         };
 
-        $scope.save = function () {
+        $scope.cancel = function () { 
+            $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
+            $scope.selectPermit($scope.row.Id);
+            console.log("cancelled...");
             console.dir($scope.row);
-            var saved_permit = PermitService.savePermit($scope.row);
+        };
+
+        $scope.save = function () {
+            
+            var to_save = angular.copy($scope.row);
+            to_save.ReviewsRequired = angular.toJson(to_save.ReviewsRequired);
+            console.dir(to_save);
+
+            var saved_permit = PermitService.savePermit(to_save);
+
             saved_permit.$promise.then(function () { 
                 console.log("permit saved: ");
                 console.dir(saved_permit);
@@ -565,7 +579,8 @@
                 if (!$scope.row.Id) {
                     $scope.permits.push(saved_permit);
                     $scope.permitsGrid.api.setRowData($scope.permits);
-                    $scope.showAll();
+                    $scope.row.dataChanged = false;
+//                    $scope.showAll();
                 }
                 else {
                     $scope.permits.forEach(function (existing_permit) { 
@@ -576,7 +591,8 @@
                     });
 
                     $scope.permitsGrid.api.setRowData($scope.permits);
-                    $scope.showAll();
+  //                  $scope.showAll();
+                    $scope.row.dataChanged = false;
                 }
 
             });

@@ -861,3 +861,15 @@ legend.bump-over {
     margin: 5px;
 }
 
+.checkbox-fix .header-value {
+
+    margin-left: -60px !important;
+
+}
+
+.checkbox-fix .checkbox-itemlist {
+    
+    margin-top: -20px;
+    border: none;
+
+}
