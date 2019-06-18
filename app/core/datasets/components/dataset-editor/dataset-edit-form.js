@@ -716,14 +716,25 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             
             var HeaderLocation = getAllMatchingFromArray($scope.dataAgColumnDefs.HeaderFields, 'LocationId', 'DbColumnName');
-            if (Array.isArray(HeaderLocation) && HeaderLocation.length == 1 && !$scope.row.Activity.hasOwnProperty("LocationId")) { 
-                alert("Location is required. Please choose a location and try again.");
-                console.dir(HeaderLocation);
-                console.dir($scope.row);
-                return;
+            if (HeaderLocation.length === 0) {
+                console.log("Location is blank...setting the location to the primary project location...");
+                $scope.row.Activity.LocationId = getProjectPrimaryLocation($scope.project.Locations, $scope.project.Id);
             }
+            else if (Array.isArray(HeaderLocation) && HeaderLocation.length == 1) {
+                if (HeaderLocation[0].ControlType === "hidden") {
+                    console.log("Location is hidden...setting the location to the primary project location...");
 
-
+                    $scope.row.Activity.LocationId = getProjectPrimaryLocation($scope.project.Locations, $scope.project.Id);
+                    console.dir(HeaderLocation);
+                    console.dir($scope.row);
+                }
+                else if (!$scope.row.Activity.hasOwnProperty("LocationId")){
+                    alert("Location is required. Please choose a location and try again.");
+                    console.dir(HeaderLocation);
+                    console.dir($scope.row);
+                    return;
+                }
+            }
 
             console.log(" -- save -- ");
 
