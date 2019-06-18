@@ -1922,6 +1922,23 @@ function validateOriginFinClip(row, row_errors) {
 
 }
 
+function getProjectPrimaryLocation(projectLocations, projectId) {
+    var intLocationId = 0;
+    var keepGoing = true;
+
+    projectLocations.forEach(function (loc) {
+        if (keepGoing) {
+            if (loc.ProjectId === projectId && loc.LocationTypeId === PRIMARY_PROJECT_LOCATION_TYPEID) // Primary project location
+            {
+                intLocationId = loc.Id;
+                keepGoing = false; // Stop checking the LocationTypeId now.
+            }
+        }
+    });
+
+    return intLocationId;
+}
+
 /* Boolean Cell Renderer - gives you a checkbox for a boolean cell in ag-grid */
 function BooleanEditor() { };
 function BooleanCellRenderer() { };
