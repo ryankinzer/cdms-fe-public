@@ -64,14 +64,14 @@
             { headerName: "TPO", field: "Route_TPO", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Plan", field: "Route_Plan", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "WRP", field: "Route_WRP", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
-            { headerName: "Env", field: "Route_ENV", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
+            { headerName: "Env", field: "Route_Env", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "PubWrks", field: "Route_PubWrks", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "TERO", field: "Route_TERO", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "CRPP", field: "Route_CRPP", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Roads", field: "Route_Roads", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Fee Paid", field: "FeePaymentAmount", menuTabs: ['filterMenuTab'], width: 100 },
             { headerName: "Issued By", field: "IssuedBy", menuTabs: ['filterMenuTab'], width: 160, filter: true },
-            { headerName: "Comments", field: "Comments", menuTabs: ['filterMenuTab'], width: 360 }
+            { headerName: "Comments", field: "Comments", menuTabs: ['filterMenuTab'], width: 460 }
         ];
 
 
@@ -190,24 +190,12 @@
 
                     $scope.permits.forEach(function (permit) {
                         if (permit.Id == save_permit.Id) {
-                            permit = angular.extend(permit, save_permit);
-                            console.log(" found permit after save -- updated ");
-                            //console.dir(permit);
-                            //console.dir(save_permit);
-
+                            angular.extend(permit, save_permit);
+                            //console.log(" found permit after save -- updated ");
                         }
                     });
 
                     $scope.permitRoutesGrid.api.setRowData($scope.permits);
-
-                    /*
-                    $scope.permits = PermitService.getRoutingPermits();
-                    
-                    $scope.permits.$promise.then(function () { 
-                        $scope.refreshPermits();
-                        $scope.permitRoutesGrid.api.setRowData($scope.permits);
-                    });
-                    */
 
                 });
 

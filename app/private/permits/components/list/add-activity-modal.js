@@ -3,6 +3,27 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
 
     function ($scope, $modal, $modalInstance, GridService, $upload, PermitService) {
 
+        $scope.permit = $scope.row;
+        $scope.contact = { number: "Contact not set" };
+
+        if ($scope.PermitContacts) {
+            console.dir($scope.PermitContacts);
+            $scope.PermitContacts.forEach(function (contact) {
+                if (contact.IsPrimary) {
+                    if (contact.PermitPerson.CellPhone)
+                        $scope.contact.number = formatUsPhone(contact.PermitPerson.CellPhone);
+                    else if (contact.PermitPerson.WorkPhone)
+                        $scope.contact.number = formatUsPhone(contact.PermitPerson.WorkPhone);
+                    else if (contact.PermitPerson.HomePhone)
+                        $scope.contact.number = formatUsPhone(contact.PermitPerson.HomePhone);
+                    else
+                        $scope.contact.number = (contact.PermitPerson.Email) ? contact.PermitPerson.Email : "None provided";
+                }
+            });
+
+        }
+        
+
         $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
 
         //intent can be set from the caller... otherwise the mode is based on the incoming activity_modal id
@@ -52,19 +73,26 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
             //return ProjectService.deleteFile($scope.project.Id, file_to_remove);
         };
 
-        var NEW_ROUTE_FIELDS = ["EventDate", "EventType", "ItemType", "Comments"];
-        var EDIT_ROUTE_FIELDS = ["EventDate", "EventType", "ItemType", "ResponseDate","Result","Reference","Files","Comments"];
+        var NEW_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "Comments"];
+        var EDIT_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "ResponseDate","Result","Reference","Files","Comments"];
+        var NEW_INSPECTION_FIELDS = ["ItemType", "RequestDate","Comments"];
 
         //a filter to determine which fields to show
         $scope.doShowField = function (field) {
             
-            if ($scope.mode == "new_route" && NEW_ROUTE_FIELDS.contains(field.DbColumnName))
+            if ($scope.mode == "new_route" && NEW_REVIEW_FIELDS.contains(field.DbColumnName))
                 return true;
 
-            if ($scope.mode == "edit_route" && EDIT_ROUTE_FIELDS.contains(field.DbColumnName))
+            if ($scope.mode == "edit_route" && EDIT_REVIEW_FIELDS.contains(field.DbColumnName))
                 return true
 
             if ($scope.mode == "edit_route" || $scope.mode == "new_route")
+                return false;
+
+            if ($scope.mode == "new_inspection" && NEW_INSPECTION_FIELDS.contains(field.DbColumnName))
+                return true;
+
+            if ($scope.mode == "new_inspection")
                 return false;
 
             return field.hasOwnProperty('DbColumnName');

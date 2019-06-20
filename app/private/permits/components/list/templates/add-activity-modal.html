@@ -1,13 +1,29 @@
 ﻿<div class="modal-header">
     <h3 ng-show="mode=='edit'">Edit Activity</h3>
     <h3 ng-show="mode=='new'">Create Activity</h3>
-    <h3 ng-show="mode=='new_route'">Start New Route</h3>
-    <h3 ng-show="mode=='edit_route'">Complete Route</h3>
+    <h3 ng-show="mode=='new_route'">Request Review</h3>
+    <h3 ng-show="mode=='edit_route'">Update Review Results</h3>
+    <h3 ng-show="mode=='new_inspection'">Request Inspection</h3>
+    <h3 ng-show="mode=='edit_inspection'">Update Inspection Results</h3>
 </div>
 <div class="modal-body" id="modal-body">
     <div class="row">
         <form novalidate class="row-form modal-form" name="headerForm">
-            <div>
+
+            <div ng-show="mode=='new_inspection' || mode=='edit_inspection'">
+
+                <div class="header-label">Permit Number</div>
+                <div class="header-value">{{permit.PermitNumber}}</div>
+
+                <div class="header-label">Site Address</div>
+                <div class="header-value">{{permit.SiteAddress}} {{permit.SiteCity}}</div>
+
+                <div class="header-label">Contact</div>
+                <div class="header-value">{{contact.number}}</div>
+
+            </div>
+
+            <div style="margin-top: 10px;">
                 <div ng-repeat="field in permitEventsGrid.columnDefs | filter:doShowField" ng-switch on="field.ControlType">
                     <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
                     <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
