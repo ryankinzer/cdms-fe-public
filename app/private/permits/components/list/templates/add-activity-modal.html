@@ -1,12 +1,14 @@
 ﻿<div class="modal-header">
     <h3 ng-show="mode=='edit'">Edit Activity</h3>
     <h3 ng-show="mode=='new'">Create Activity</h3>
+    <h3 ng-show="mode=='new_route'">Start New Route</h3>
+    <h3 ng-show="mode=='edit_route'">Complete Route</h3>
 </div>
 <div class="modal-body" id="modal-body">
     <div class="row">
         <form novalidate class="row-form modal-form" name="headerForm">
             <div>
-                <div ng-repeat="field in permitEventsGrid.columnDefs | filter:hasDbColumnName" ng-switch on="field.ControlType">
+                <div ng-repeat="field in permitEventsGrid.columnDefs | filter:doShowField" ng-switch on="field.ControlType">
                     <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
                     <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
                     <ctuir-instrument-select-field ng-switch-when="instrument-select"></ctuir-instrument-select-field>

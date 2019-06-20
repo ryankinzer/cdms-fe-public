@@ -5,10 +5,14 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
 
         $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
 
-        $scope.mode = "edit";
+        //intent can be set from the caller... otherwise the mode is based on the incoming activity_modal id
+        if ($scope.intent) {
+            $scope.mode = $scope.intent;
+        } else {
+            $scope.mode = ($scope.row.Id) ? "edit" : "new";
+        }
 
-        if (!$scope.activity_modal.Id) {
-            $scope.mode = "new";
+        if (!$scope.row.Id) {
             $scope.row.EventDate = moment().format('L');
             $scope.row.RequestDate = moment().format('L');    
         }
@@ -48,8 +52,21 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
             //return ProjectService.deleteFile($scope.project.Id, file_to_remove);
         };
 
-        //used as a filter to exclude the edit link - only show bonafide fields
-        $scope.hasDbColumnName = function (field) {
+        var NEW_ROUTE_FIELDS = ["EventDate", "EventType", "ItemType", "Comments"];
+        var EDIT_ROUTE_FIELDS = ["EventDate", "EventType", "ItemType", "ResponseDate","Result","Reference","Files","Comments"];
+
+        //a filter to determine which fields to show
+        $scope.doShowField = function (field) {
+            
+            if ($scope.mode == "new_route" && NEW_ROUTE_FIELDS.contains(field.DbColumnName))
+                return true;
+
+            if ($scope.mode == "edit_route" && EDIT_ROUTE_FIELDS.contains(field.DbColumnName))
+                return true
+
+            if ($scope.mode == "edit_route" || $scope.mode == "new_route")
+                return false;
+
             return field.hasOwnProperty('DbColumnName');
         }
 
