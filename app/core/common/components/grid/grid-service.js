@@ -132,6 +132,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                         width: SystemDefaultColumnWidth,
                         Label: field.Label,
                         DbColumnName: field.DbColumnName,
+                        ColumnIndex: field.ColumnIndex,
                         ControlType: field.ControlType,
                         PossibleValues: getJsonObjects(field.Field.PossibleValues),
                         cdmsField: field, //our own we can use later
@@ -140,7 +141,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                         DatastoreId: field.Field.DatastoreId,
                         DatasetId: dataset.Id,
                         ProjectId: dataset.ProjectId,
-                        menuTabs: ['filterMenuTab'],
+                        menuTabs: ['filterMenuTab']
                     };
 
                     //setup column def for HEADER and add it to our list
@@ -224,7 +225,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
             //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
-            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope });
+            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope: scope });
             //console.dir(fieldRuleValidationErrors);
             fieldRuleValidationErrors.forEach(function (error) { fieldValidationErrors.push({ "field": event.colDef, "message": error }) });
 
@@ -341,6 +342,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 var field = event.colDef;
                 var value = (event.value) ? event.value : "";
                 var row = (event.data) ? event.data : {};
+                var header = (event.node && event.node.data) ? event.node.data : {};
 
                 //fire MasterFieldRule rule if it exists
                 if (MasterFieldRule && MasterFieldRule.hasOwnProperty(type)) {
@@ -348,7 +350,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                     console.log("Firing a master rule: " + type + " on " + field.DbColumnName);
 
                     if (type == "DefaultValue") {
-                        if (typeof DatasetFieldRule[type] == 'string')
+                        if (typeof MasterFieldRule[type] == 'string')
                             event.colDef.DefaultValue = MasterFieldRule[type].replace(/"/g, '');
                         else
                             console.log(MasterFieldRule[type] + " was not a string, skipping.");
@@ -361,7 +363,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                     }
                 }
 
-                //fire DatasetFieldRule rule if it exists. this will override any results of the MasterFieldRule
+                //fire DatasetFieldRule rule if it exists. this can override any results of the MasterFieldRule
                 if (DatasetFieldRule && DatasetFieldRule.hasOwnProperty(type)) {
         
                     console.log("Firing a rule: " + type + " on " + field.DbColumnName);

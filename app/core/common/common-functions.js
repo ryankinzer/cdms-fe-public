@@ -170,6 +170,8 @@ function makeObjects(optionList, keyProperty, valueProperty) {
         //console.log("item[keyProperty] = " + item[keyProperty] + ", item[valueProperty] = " + item[valueProperty]);
 
         objects[item[keyProperty]] = item[valueProperty];
+        //console.log("(objects[item[keyProperty]] is next...");
+        //console.dir(objects[item[keyProperty]]);
         //console.log("string = " + item[keyProperty].toString());
     });
 
@@ -1795,7 +1797,14 @@ function getNameFromUserId(theId, userList) {
     userList.forEach(function (user) {
         if (blnKeepGoing) {
             if (user.Id === theId) {
-                strUser = user.Fullname;
+                // Table Users has a column Fullname
+                // Table Fishermen has a column FullName
+                // This function will work for both cases, with the following if block...
+                if (user.Fullname)
+                    strUser = user.Fullname;
+                else if (user.FullName)
+                    strUser = user.FullName;
+
                 blnKeepGoing = false;
             }
         }
@@ -1922,6 +1931,23 @@ function validateOriginFinClip(row, row_errors) {
 
 }
 
+function getProjectPrimaryLocation(projectLocations, projectId) {
+    var intLocationId = 0;
+    var keepGoing = true;
+
+    projectLocations.forEach(function (loc) {
+        if (keepGoing) {
+            if (loc.ProjectId === projectId && loc.LocationTypeId === PRIMARY_PROJECT_LOCATION_TYPEID) // Primary project location
+            {
+                intLocationId = loc.Id;
+                keepGoing = false; // Stop checking the LocationTypeId now.
+            }
+        }
+    });
+
+    return intLocationId;
+}
+
 /* Boolean Cell Renderer - gives you a checkbox for a boolean cell in ag-grid */
 function BooleanEditor() { };
 function BooleanCellRenderer() { };
@@ -1934,6 +1960,13 @@ BooleanCellRenderer.prototype.init = function (params) {
         input.type = "checkbox";
         input.checked = params.value;
         input.addEventListener('click', function (event) {
+
+            if (!params.colDef.editable) {
+                console.log("ignoring click - colDef.editable = false");
+                event.preventDefault();
+                return;
+            }
+
             params.value = !params.value;
             params.data[params.colDef.field] = params.value;
             //console.log(params.colDef.field + " changed to : " + params.value);
@@ -1974,3 +2007,20 @@ BooleanEditor.prototype.destroy = function () {
 BooleanEditor.prototype.isPopup = function () {
     return true;
 };
+
+
+function formatUsPhone(phone) {
+
+    var phoneTest = new RegExp(/^((\+1)|1)? ?\(?(\d{3})\)?[ .-]?(\d{3})[ .-]?(\d{4})( ?(ext\.? ?|x)(\d*))?$/);
+
+    phone = phone.trim();
+    var results = phoneTest.exec(phone);
+    if (results !== null && results.length > 8) {
+
+        return "(" + results[3] + ") " + results[4] + "-" + results[5] + (typeof results[8] !== "undefined" ? " x" + results[8] : "");
+
+    }
+    else {
+         return phone;
+    }
+}

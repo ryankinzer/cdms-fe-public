@@ -467,10 +467,10 @@
             },
             { headerName: "Yield Acre", field: "YieldAcre", width: 150 },
             { headerName: "Owner Share %", field: "OwnerSharePercent", width: 150 },
-            { headerName: "Owner Share $", field: "OwnerShareDollar", width: 150, 
-                valueFormatter: function (params) {
-                    return valueFormatterCurrency(params.node.data.OwnerShareDollar);
-                },
+            { headerName: "Owner Share", field: "OwnerShareDollar", width: 150
+                //valueFormatter: function (params) {
+                //    return valueFormatterCurrency(params.node.data.OwnerShareDollar);
+                //},
             },
             { headerName: "Market Price", field: "MarketPrice", width: 150, 
                 valueFormatter: function (params) {
