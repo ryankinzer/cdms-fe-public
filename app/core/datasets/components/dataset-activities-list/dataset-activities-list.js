@@ -68,6 +68,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                     var newColDef = null;
                     //initial values for header column definition
                     //var newColDef = {
+                    /*
                     if (field.DbColumnName === "FishermanId") {
                         newColDef = {
                             headerName: field.Label,
@@ -91,6 +92,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                         };
                     }
                     else {
+                    */
                         newColDef = {
                             headerName: field.Label,
                             field: field.DbColumnName,
@@ -106,7 +108,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
                             filterParams: getAgGridFilterParamsByType(field.ControlType),
                             menuTabs: ['filterMenuTab'],
                         };
-                    }
+                    //}
 
                     gridColDefs.push(newColDef); 
                 }
@@ -186,7 +188,17 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 }
                 return $scope.InstrumentCache[params.node.data[params.colDef.DbColumnName]];
             },
-              
+            
+            'fisherman-select': function (params) {
+
+                if ($scope.fishermen && params.node.data[params.colDef.DbColumnName]) {
+                    var fisherman = getByField($scope.fishermen, params.node.data[params.colDef.DbColumnName], "Id");
+                    if (fisherman)
+                        params.node.data[params.colDef.DbColumnName] = fisherman.FullName;
+                }
+                return params.node.data[params.colDef.DbColumnName];
+            },
+            
             'multiselect': function (params) { 
                 var the_str = valueFormatterArrayToList(params.node.data[params.colDef.DbColumnName]);
                 if (typeof the_str === 'string') //backwards compatible - remove the quotes
