@@ -1,0 +1,14 @@
+<div class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;">
+
+    <div class="header-label">{{field.Label}}: </div>
+    <div style="margin-top: 5px; margin-left: 7px; float:right;"><button class="btn btn-xs" ng-click="createFisherman()">Add</button></div>
+    <div class="header-value">
+        <select style="width: 256px;" id="fisherman-select" ui-select2="select2Options" data-placeholder="Choose a Fisherman" ng-change="selectFisherman(field)" ng-model="row.FishermanId" convert-to-number>
+            <option></option>
+            <option ng-repeat="fisherman in fishermen | orderBy:'fisherman.FullName'" value="{{fisherman.Id}}">{{fisherman.FullName}}</option>
+        </select>
+        <p class="field-error-block" ng-show="headerFieldErrors[field.DbColumnName]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>
+
+    </div>
+
+</div>

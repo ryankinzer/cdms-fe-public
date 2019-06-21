@@ -358,6 +358,7 @@ var ControlTypeDefinitions = {
     'number': NumberControlType,
     'select': SelectControlType,
     'instrument-select': SelectControlType,
+    'fisherman-select': SelectControlType,
     'select-number': SelectControlType,
     'string': TextControlType, //just use the Text renderer
     'temp-waypoint-file': TempWaypointFileControlType,

@@ -45,6 +45,11 @@
                         <div class="header-value">{{row.Activity.Instrument.Name}} (SN:{{row.Activity.Instrument.SerialNumber}})</div>
                     </div>
 
+                    <div ng-switch-when="fisherman-select" class="header-column">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div class="header-value">{{row.FishermanId}}</div>
+                    </div>
+
                     <div ng-switch-when="accuracy-check-select" class="header-column">
                         <div ng-show="row.Activity.AccuracyCheck" class="header-label">Deploy Accuracy: </div>
                         <div ng-show="row.Activity.AccuracyCheck" class="header-value">{{row.Activity.AccuracyCheck | dataGrade}} on {{row.Activity.AccuracyCheck.CheckDate | date}}</div>
@@ -121,15 +126,15 @@
 
 
                     <!--
-                        <div>
-                            <div ng-show="showProjectLeads">
-                                <div class="header-label">Selected Project Leads:</div>
-                                <div class="header-value">
-                                    <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strProjectLead"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    -->
+        <div>
+            <div ng-show="showProjectLeads">
+                <div class="header-label">Selected Project Leads:</div>
+                <div class="header-value">
+                    <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strProjectLead"></textarea>
+                </div>
+            </div>
+        </div>
+    -->
 
                 </div>
             </div>
