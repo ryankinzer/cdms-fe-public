@@ -11,19 +11,23 @@
         <form novalidate class="row-form modal-form" name="headerForm">
 
             <div ng-show="mode=='new_inspection' || mode=='edit_inspection'">
+                <div class="header-label">Date Sent:</div>
+                <div class="header-value">{{row.EventDate}}</div>
 
-                <div class="header-label">Permit Number</div>
+                <div class="header-label">Sent By:</div>
+                <div class="header-value">{{Profile.Fullname}}</div>
+
+                <div class="header-label">Permit Number:</div>
                 <div class="header-value">{{permit.PermitNumber}}</div>
+                
+                <div class="header-label">Project Name:</div>
+                <div class="header-value">{{permit.ProjectName}}</div>
 
-                <div class="header-label">Site Address</div>
+                <div class="header-label">Site Address:</div>
                 <div class="header-value">{{permit.SiteAddress}} {{permit.SiteCity}}</div>
-
-                <div class="header-label">Contact</div>
-                <div class="header-value">{{contact.number}}</div>
-
             </div>
 
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 35px;">
                 <div ng-repeat="field in permitEventsGrid.columnDefs | filter:doShowField" ng-switch on="field.ControlType">
                     <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
                     <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
@@ -50,6 +54,37 @@
                     <ctuir-qa-status-select-field ng-switch-when="qa-status-select"></ctuir-qa-status-select-field>
                     <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                     <ctuir-text-field ng-switch-default></ctuir-text-field>
+                </div>
+                <div ng-show="mode=='new_inspection'">
+
+                    <div class="header-label">Contact #:</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" ng-model="row.ContactNumber" />
+                    </div>
+
+                    <div class="header-label">Preferred Time:</div>
+                    <div class="header-value">
+                        <label style="margin-left: 8px !important;" class="checkbox-inline">
+                            <input type="checkbox" ng-model="row.PreferredTime['AM']" value="AM">AM
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" ng-model="row.PreferredTime['PM']" value="PM">PM
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" ng-model="row.PreferredTime['Any']" value="Any">Any
+                        </label>
+                    </div>
+
+                    <div class="checkbox-fix">
+                        <div class="header-label">Inspectors to Contact:</div>
+                        <div class="header-value">
+                            <div class="checkbox-itemlist">
+                                <input type="checkbox" ng-model="row.InspectorsContact['Struct']" value="Struct"> Structural/Mechanical<br />
+                                <input type="checkbox" ng-model="row.PreferredTime['PM']" value="PM"> Plumbing<br />
+                                <input type="checkbox" ng-model="row.PreferredTime['Any']" value="Any"> Electrical
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>

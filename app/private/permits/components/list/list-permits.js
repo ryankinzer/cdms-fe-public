@@ -46,7 +46,7 @@
         $scope.eventsdataset.$promise.then(function () {
             var EventColumnDefs = GridService.getAgColumnDefs($scope.eventsdataset);
             $scope.permitEventsGrid.columnDefs = angular.merge(
-                [{ colId: 'EditLinks', cellRenderer: EditEventLinksTemplate, width: 60, menuTabs: [], hide: true }], 
+                //[{ colId: 'EditLinks', cellRenderer: EditEventLinksTemplate, width: 60, menuTabs: [], hide: true }], 
                 EventColumnDefs.HeaderFields
             );
 
@@ -55,7 +55,7 @@
                 $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
                 new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
 //TODO: if permission to edit:
-                $scope.permitEventsGrid.columnApi.setColumnVisible("EditLinks", true);
+                //$scope.permitEventsGrid.columnApi.setColumnVisible("EditLinks", true);
             }
 
             $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
@@ -351,7 +351,7 @@
             } else {
                 $scope.activity_modal = { PermitId: $scope.row.Id };
                 if (intent == 'new_route')
-                    $scope.activity_modal.EventType = 'Approval';
+                    $scope.activity_modal.EventType = 'Review';
                 if (intent == 'new_inspection')
                     $scope.activity_modal.EventType = 'Inspection';
             }
@@ -588,6 +588,28 @@
             saved_permit.$promise.then(function () { 
                 console.log("permit saved: ");
                 console.dir(saved_permit);
+
+                //requirement: if we saved a new status, add a record to the permitsevents
+                if ($scope.row.PermitStatus !== $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus) {
+                    var new_event = {
+                        PermitId: $scope.row.Id,
+                        ByUser: $scope.Profile.Id,
+                        EventDate: moment().format('L'),
+                        EventType: "Record",
+                        ItemType: "TPO",
+                        Reviewer: $scope.Profile.Fullname,
+                        Comments: "Update Status from " + $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus + " to " + $scope.row.PermitStatus
+                    };
+                    console.log("saving a permitevent since we updated the status"); console.dir(new_event);
+                    var save_event = PermitService.savePermitEvent(new_event);
+                    save_event.$promise.then(function () { 
+                        //refresh the activities now that we've saved a new one.
+                        $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
+                        $scope.PermitEvents.$promise.then(function () {
+                            $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                        });
+                    });
+                }
     
                 if (!$scope.row.Id) {
                     $scope.permits.push(saved_permit);

@@ -4,26 +4,7 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
     function ($scope, $modal, $modalInstance, GridService, $upload, PermitService) {
 
         $scope.permit = $scope.row;
-        $scope.contact = { number: "Contact not set" };
-
-        if ($scope.PermitContacts) {
-            console.dir($scope.PermitContacts);
-            $scope.PermitContacts.forEach(function (contact) {
-                if (contact.IsPrimary) {
-                    if (contact.PermitPerson.CellPhone)
-                        $scope.contact.number = formatUsPhone(contact.PermitPerson.CellPhone);
-                    else if (contact.PermitPerson.WorkPhone)
-                        $scope.contact.number = formatUsPhone(contact.PermitPerson.WorkPhone);
-                    else if (contact.PermitPerson.HomePhone)
-                        $scope.contact.number = formatUsPhone(contact.PermitPerson.HomePhone);
-                    else
-                        $scope.contact.number = (contact.PermitPerson.Email) ? contact.PermitPerson.Email : "None provided";
-                }
-            });
-
-        }
-        
-
+       
         $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
 
         //intent can be set from the caller... otherwise the mode is based on the incoming activity_modal id
@@ -44,7 +25,21 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
             if(!$scope.row.Reviewer)
                 $scope.row.Reviewer = $scope.Profile.Fullname;
         }
+       
+        //this is ugly but required - change labels for the inspection request form
+        if ($scope.mode = 'new_inspection') {
+            $scope.permitEventsGrid.columnDefs.forEach(function (coldef) { 
+                console.dir(coldef);                
+                if (coldef.DbColumnName == 'Reference')
+                    coldef.Label = "Inspection Type";
+
+                if (coldef.DbColumnName == 'RequestDate')
+                    coldef.Label = "Date Inspection Desired";
+
+            });
+        }
         
+
         
         //console.log($scope.activity_modal);
 
@@ -58,6 +53,8 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
         //call back from save above once the files are done processing and we're ready to save the item
         $scope.modalFile_saveParentItem = function (saveRow) {
             
+            saveRow.ByUser = $scope.Profile.Id;
+
             var new_event = PermitService.savePermitEvent(saveRow);
 
             new_event.$promise.then(function () {
@@ -75,7 +72,7 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
 
         var NEW_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "Comments"];
         var EDIT_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "ResponseDate","Result","Reference","Files","Comments"];
-        var NEW_INSPECTION_FIELDS = ["ItemType", "RequestDate","Comments"];
+        var NEW_INSPECTION_FIELDS = ["Reference","RequestDate","Comments"];
 
         //a filter to determine which fields to show
         $scope.doShowField = function (field) {

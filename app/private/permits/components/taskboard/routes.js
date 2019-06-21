@@ -58,7 +58,7 @@
         $scope.permitRoutesColDefs = [
             { headerName: "Main Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Permit #", field: "PermitNumber", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
-            { headerName: "Status", field: "PermitStatus", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
+            //{ headerName: "Status", field: "PermitStatus", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
             //{ headerName: "Routes", field: "ReviewsRequired", menuTabs: ['filterMenuTab'], width: 150 , filter: 'text'}, 
             { headerName: "Project Name", field: "ProjectName", menuTabs: ['filterMenuTab'], width: 280, filter: 'text' },
             { headerName: "TPO", field: "Route_TPO", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
@@ -70,7 +70,7 @@
             { headerName: "CRPP", field: "Route_CRPP", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Roads", field: "Route_Roads", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Fee Paid", field: "FeePaymentAmount", menuTabs: ['filterMenuTab'], width: 100 },
-            { headerName: "Issued By", field: "IssuedBy", menuTabs: ['filterMenuTab'], width: 160, filter: true },
+            //{ headerName: "Issued By", field: "IssuedBy", menuTabs: ['filterMenuTab'], width: 160, filter: true },
             { headerName: "Comments", field: "Comments", menuTabs: ['filterMenuTab'], width: 460 }
         ];
 
@@ -131,7 +131,7 @@
 
                 var new_activity = {
                     PermitId: $scope.permitRoutesGrid.selectedItem.Id,
-                    EventType: 'Approval',
+                    EventType: 'Review',
                     ItemType: col, //Plan, WRP, Env, PubWrks, TERO, CRPP, etc.
                 };
 
@@ -145,7 +145,7 @@
                     //first find our activity
                     var existing_activity = null;
                     $scope.PermitEvents.forEach(function (activity) {
-                        if (activity.EventType == 'Approval' && activity.ItemType == col)
+                        if (activity.EventType == 'Review' && activity.ItemType == col)
                             existing_activity = activity;
                     });
 
