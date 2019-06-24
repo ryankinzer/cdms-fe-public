@@ -104,6 +104,45 @@
             $scope.currentPage = "All";
         };
 
+        //requirement: can navigate permits by up and down arrow keys
+        $scope.keyboardNavigation = function (params) { 
+            console.log("my navigation");
+               var previousCell = params.previousCellDef;
+               var suggestedNextCell = params.nextCellDef;
+
+               var KEY_UP = 38;
+               var KEY_DOWN = 40;
+               var KEY_LEFT = 37;
+               var KEY_RIGHT = 39;
+
+               switch (params.key) {
+                   case KEY_DOWN:
+                       console.log("down");
+                       previousCell = params.previousCellDef;
+                       // set selected cell on current cell + 1
+                       $scope.permitsGrid.api.forEachNode( (node) => {
+                           if (previousCell.rowIndex + 1 === node.rowIndex) {
+                               node.setSelected(true);
+                           }
+                       });
+                       return suggestedNextCell;
+                   case KEY_UP:
+                       previousCell = params.previousCellDef;
+                       // set selected cell on current cell - 1
+                       $scope.permitsGrid.api.forEachNode( (node) => {
+                           if (previousCell.rowIndex - 1 === node.rowIndex) {
+                               node.setSelected(true);
+                           }
+                       });
+                       return suggestedNextCell;
+                   case KEY_LEFT:
+                   case KEY_RIGHT:
+                       return suggestedNextCell;
+                   default:
+                       throw "this will never happen, navigation is always one of the 4 keys above";
+               }
+        };
+
 
         $scope.permitsGrid = {
             columnDefs: null,
@@ -115,6 +154,7 @@
                     return false;
                 }
                 $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
+                $('#tab-basicinfo').tab('show'); //default to the "Permit Details" tab when select a different permit
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                 //console.dir($scope.row);
                 if($scope.row)
@@ -126,6 +166,7 @@
                 sortable: true,
                 resizable: true,
             },
+            navigateToNextCell: $scope.keyboardNavigation
         }
 
 
@@ -668,5 +709,6 @@
 
             });
         };
+
 
 }];
