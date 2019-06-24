@@ -55,6 +55,20 @@
                     <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                     <ctuir-text-field ng-switch-default></ctuir-text-field>
                 </div>
+
+                <div ng-show="mode=='edit_route'">
+
+                    <div ng-show="permit.PermitConditions != ''">
+                        <div class="header-label">Existing Conditions:</div>
+                        <div class="header-value">{{permit.PermitConditions}}&nbsp;</div>
+                    </div>
+                    <div style="margin-top: 10px;" >
+                        <div class="header-label">Add'l Conditions:</div>
+                        <div class="header-value">
+                            <textarea class="form-control" ng-model="permit.AdditionalConditions" />
+                        </div>
+                    </div>
+                </div>
                 <div ng-show="mode=='new_inspection'">
 
                     <div class="header-label">Contact #:</div>
@@ -97,4 +111,3 @@
     <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
 
 </div>
-

@@ -96,7 +96,7 @@
                 //$scope.openPermitPersonModal($scope.permitRoutesGrid.selectedItem.PermitPersonId);
             },
             onSelectionChanged: function (params) {
-                $scope.permitRoutesGrid.selectedItem = $scope.permitRoutesGrid.api.getSelectedRows()[0];
+                $scope.permitRoutesGrid.selectedItem = $scope.row = $scope.permitRoutesGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
             components: {
@@ -175,10 +175,15 @@
             }).result.then(function (saved_activity) {
 
                 //save the permit with the route updated
-                var save_permit = angular.copy($scope.permitRoutesGrid.selectedItem);
-                console.log("updating permit route for: " + saved_activity.ItemType);
+                var save_permit = angular.copy($scope.row);
+                //console.log("updating permit route for: " + saved_activity.ItemType);
                 save_permit["Route_" + saved_activity.ItemType] = ($scope.intent == 'new_route') ? "+" : "*";
                 save_permit.ReviewsRequired.remove("TPO");
+
+                if (save_permit.AdditionalConditions) {
+                    save_permit.PermitConditions = (save_permit.PermitConditions) ? save_permit.PermitConditions + "; " + save_permit.AdditionalConditions : save_permit.AdditionalConditions;
+                    delete save_permit.AdditionalConditions;
+                }
 
                 save_permit.ReviewsRequired = angular.toJson(save_permit.ReviewsRequired);
 
