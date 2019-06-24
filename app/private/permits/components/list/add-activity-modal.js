@@ -26,19 +26,26 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
                 $scope.row.Reviewer = $scope.Profile.Fullname;
         }
        
-        //this is ugly but required - change labels for the inspection request form
-        if ($scope.mode = 'new_inspection') {
-            $scope.permitEventsGrid.columnDefs.forEach(function (coldef) { 
-                console.dir(coldef);                
+        //this is ugly but required - change labels for the forms
+        if ($scope.mode == 'new_inspection') {
+            $scope.permitEventsGrid.columnDefs.forEach(function (coldef) {
                 if (coldef.DbColumnName == 'Reference')
                     coldef.Label = "Inspection Type";
 
                 if (coldef.DbColumnName == 'RequestDate')
                     coldef.Label = "Date Inspection Desired";
-
             });
+        } else {
+            $scope.permitEventsGrid.columnDefs.forEach(function (coldef) { 
+                if (coldef.DbColumnName == 'Reference')
+                    coldef.Label = "Reference";
+
+                if (coldef.DbColumnName == 'RequestDate')
+                    coldef.Label = "Date Requested";
+            });
+
         }
-        
+
 
         
         //console.log($scope.activity_modal);
