@@ -11,6 +11,7 @@ require([
     'private/permits/components/list/add-parcel-modal',
     'private/permits/components/list/add-file-modal',
     'private/permits/components/list/add-person-modal',
+    'private/permits/components/taskboard/add-fee-modal',
 
     //service
     'private/permits/permit-service',
@@ -24,6 +25,7 @@ require([
     permit_module.controller('FileModalController', modal_edit_permitfile);
     permit_module.controller('AddPermitPersonModalController', modal_add_permitperson);
     permit_module.controller('PermitRoutesController', permit_routes);
+    permit_module.controller('AddFeeModalController', modal_add_fee);
 
     permit_module.filter('personOrgName', function () {
         return function (person) {

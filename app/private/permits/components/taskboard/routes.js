@@ -9,6 +9,12 @@
         $scope.permits = PermitService.getRoutingPermits();
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
 
+        $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID); //needed for the fee modal fields
+        $scope.dataset.$promise.then(function () { 
+            var AllColumnDefs = GridService.getAgColumnDefs($scope.dataset);
+            $scope.permitColumnDefs = AllColumnDefs.HeaderFields;
+        });
+
         $scope.permits.$promise.then(function () {
             $scope.refreshPermits();
         });
@@ -69,7 +75,11 @@
             { headerName: "TERO", field: "Route_TERO", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "CRPP", field: "Route_CRPP", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Roads", field: "Route_Roads", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
-            { headerName: "Fee Paid", field: "FeePaymentAmount", menuTabs: ['filterMenuTab'], width: 100 },
+            { headerName: "Fee Paid", field: "FeePaymentAmount", menuTabs: ['filterMenuTab'], width: 100, 
+                valueFormatter: function (params) {
+                    return valueFormatterCurrency(params.node.data.FeePaymentAmount);
+                },
+            },
             //{ headerName: "Issued By", field: "IssuedBy", menuTabs: ['filterMenuTab'], width: 160, filter: true },
             { headerName: "Comments", field: "Comments", menuTabs: ['filterMenuTab'], width: 460 }
         ];
@@ -97,7 +107,7 @@
             },
             onSelectionChanged: function (params) {
                 $scope.permitRoutesGrid.selectedItem = $scope.row = $scope.permitRoutesGrid.api.getSelectedRows()[0];
-                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+                //$scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
             components: {
                 'routeCellRenderer': RouteCellRenderer
@@ -116,10 +126,20 @@
         $scope.handleDoubleClick = function (params) {
             var col = params.colDef.field.substring(6); //"Route_Plan" --> "Plan"
 
-            //we only deal with the cells that are for required routes
-            if (!params.node.data.ReviewsRequired.contains(col))
-                return;
+            //if they doubleclicked on a cell for required routes
+            if (params.node.data.ReviewsRequired.contains(col)) {
+                $scope.handleRouteOpen(params, col);
+            }
+            //if they clicked on the fee cell
+            else if (params.colDef.field == 'FeePaymentAmount') {
+                $scope.handleFeeOpen(params);
+            }
 
+            //otherwise just ignore it...
+            
+        };
+
+        $scope.handleRouteOpen = function (params, col) { 
             var value = params.node.data[params.colDef.field];
 
             console.log(" Route = " + col + " for " + value);
@@ -157,9 +177,21 @@
                 }
 
             });
+        };
 
+        $scope.handleFeeOpen = function (params) {
+            $scope.openFeeModal(params);
+        };
 
+        $scope.openFeeModal = function (params) {
 
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/taskboard/templates/add-fee-modal.html',
+                controller: 'AddFeeModalController',
+                scope: $scope,
+            }).result.then(function (saved_permit) {
+                $scope.permitRoutesGrid.api.setRowData($scope.permits);
+            });
         };
 
 
