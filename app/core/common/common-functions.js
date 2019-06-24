@@ -170,6 +170,8 @@ function makeObjects(optionList, keyProperty, valueProperty) {
         //console.log("item[keyProperty] = " + item[keyProperty] + ", item[valueProperty] = " + item[valueProperty]);
 
         objects[item[keyProperty]] = item[valueProperty];
+        //console.log("(objects[item[keyProperty]] is next...");
+        //console.dir(objects[item[keyProperty]]);
         //console.log("string = " + item[keyProperty].toString());
     });
 
@@ -1796,7 +1798,14 @@ function getNameFromUserId(theId, userList) {
     userList.forEach(function (user) {
         if (blnKeepGoing) {
             if (user.Id === theId) {
-                strUser = user.Fullname;
+                // Table Users has a column Fullname
+                // Table Fishermen has a column FullName
+                // This function will work for both cases, with the following if block...
+                if (user.Fullname)
+                    strUser = user.Fullname;
+                else if (user.FullName)
+                    strUser = user.FullName;
+
                 blnKeepGoing = false;
             }
         }
@@ -1921,6 +1930,23 @@ function validateOriginFinClip(row, row_errors) {
 
     }
 
+}
+
+function getProjectPrimaryLocation(projectLocations, projectId) {
+    var intLocationId = 0;
+    var keepGoing = true;
+
+    projectLocations.forEach(function (loc) {
+        if (keepGoing) {
+            if (loc.ProjectId === projectId && loc.LocationTypeId === PRIMARY_PROJECT_LOCATION_TYPEID) // Primary project location
+            {
+                intLocationId = loc.Id;
+                keepGoing = false; // Stop checking the LocationTypeId now.
+            }
+        }
+    });
+
+    return intLocationId;
 }
 
 /* Boolean Cell Renderer - gives you a checkbox for a boolean cell in ag-grid */
