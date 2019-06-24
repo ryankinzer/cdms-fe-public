@@ -142,6 +142,14 @@
                                             <ctuir-text-field ng-switch-default></ctuir-text-field>
                                         </div>
                                     </fieldset>
+
+                                    <fieldset style="margin-top: 30px;">
+                                        <legend class="bump-over">Routing</legend>
+                                        <div class="checkbox-fix" ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:6}" ng-switch on="field.ControlType">
+                                            <ctuir-multiselect-checkbox-field ng-switch-when="multiselect-checkbox"></ctuir-multiselect-checkbox-field>
+                                        </div>
+                                    </fieldset>
+
                                 </div>
 
                                 <div class="col-lg-4" style="min-width: 480px;">
@@ -173,6 +181,8 @@
                         <div class="list-group media-list media-list-stream">
                             <div style="margin-top: 30px;"></div>
                             <button class="btn btn-sm" ng-click="openActivityModal()">Add Activity</button>
+                            <button class="btn btn-sm" ng-click="openActivityModal(null,'new_inspection')">Request Inspection</button>
+                            <button class="btn btn-sm" ng-click="openActivityModal(null,'new_route')">Request Review</button>
                             <div style="margin-top: 10px;"></div>
                             <div id="permit-events-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
                         </div>

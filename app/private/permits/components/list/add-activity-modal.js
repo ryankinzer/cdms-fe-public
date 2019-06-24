@@ -3,12 +3,18 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
 
     function ($scope, $modal, $modalInstance, GridService, $upload, PermitService) {
 
+        $scope.permit = $scope.row;
+       
         $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
 
-        $scope.mode = "edit";
+        //intent can be set from the caller... otherwise the mode is based on the incoming activity_modal id
+        if ($scope.intent) {
+            $scope.mode = $scope.intent;
+        } else {
+            $scope.mode = ($scope.row.Id) ? "edit" : "new";
+        }
 
-        if (!$scope.activity_modal.Id) {
-            $scope.mode = "new";
+        if (!$scope.row.Id) {
             $scope.row.EventDate = moment().format('L');
             $scope.row.RequestDate = moment().format('L');    
         }
@@ -19,7 +25,28 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
             if(!$scope.row.Reviewer)
                 $scope.row.Reviewer = $scope.Profile.Fullname;
         }
-        
+       
+        //this is ugly but required - change labels for the forms
+        if ($scope.mode == 'new_inspection') {
+            $scope.permitEventsGrid.columnDefs.forEach(function (coldef) {
+                if (coldef.DbColumnName == 'Reference')
+                    coldef.Label = "Inspection Type";
+
+                if (coldef.DbColumnName == 'RequestDate')
+                    coldef.Label = "Date Inspection Desired";
+            });
+        } else {
+            $scope.permitEventsGrid.columnDefs.forEach(function (coldef) { 
+                if (coldef.DbColumnName == 'Reference')
+                    coldef.Label = "Reference";
+
+                if (coldef.DbColumnName == 'RequestDate')
+                    coldef.Label = "Date Requested";
+            });
+
+        }
+
+
         
         //console.log($scope.activity_modal);
 
@@ -33,6 +60,8 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
         //call back from save above once the files are done processing and we're ready to save the item
         $scope.modalFile_saveParentItem = function (saveRow) {
             
+            saveRow.ByUser = $scope.Profile.Id;
+
             var new_event = PermitService.savePermitEvent(saveRow);
 
             new_event.$promise.then(function () {
@@ -48,8 +77,28 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
             //return ProjectService.deleteFile($scope.project.Id, file_to_remove);
         };
 
-        //used as a filter to exclude the edit link - only show bonafide fields
-        $scope.hasDbColumnName = function (field) {
+        var NEW_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "Comments"];
+        var EDIT_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "ResponseDate","Result","Reference","Files","Comments"];
+        var NEW_INSPECTION_FIELDS = ["Reference","RequestDate","Comments"];
+
+        //a filter to determine which fields to show
+        $scope.doShowField = function (field) {
+            
+            if ($scope.mode == "new_route" && NEW_REVIEW_FIELDS.contains(field.DbColumnName))
+                return true;
+
+            if ($scope.mode == "edit_route" && EDIT_REVIEW_FIELDS.contains(field.DbColumnName))
+                return true
+
+            if ($scope.mode == "edit_route" || $scope.mode == "new_route")
+                return false;
+
+            if ($scope.mode == "new_inspection" && NEW_INSPECTION_FIELDS.contains(field.DbColumnName))
+                return true;
+
+            if ($scope.mode == "new_inspection")
+                return false;
+
             return field.hasOwnProperty('DbColumnName');
         }
 

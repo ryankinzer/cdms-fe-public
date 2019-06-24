@@ -6,6 +6,18 @@ permit_module.factory('AllPermits', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('RoutingPermits', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/routingpermits', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
+permit_module.factory('InspectionPermits', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/inspectionpermits', {}, {
+        query: { method: 'GET', params: {}, isArray: true }
+    });
+}]);
+
 permit_module.factory('AllParcels', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/allparcels', {}, {
         query: { method: 'GET', params: {}, isArray: true }
@@ -92,7 +104,8 @@ permit_module.service('PermitService', ['$q',
     'SavePermitParcel',
     'RemovePermitParcel',
     'SavePermitEvent',
-
+    'RoutingPermits',
+    'InspectionPermits',
   
     function ($q,
        
@@ -109,13 +122,23 @@ permit_module.service('PermitService', ['$q',
         AllParcels,
         SavePermitParcel,
         RemovePermitParcel,
-        SavePermitEvent
+        SavePermitEvent,
+        RoutingPermits,
+        InspectionPermits
       
     ) {
         var service = {
 
             getAllPermits: function () {
                 return AllPermits.query();
+            },
+
+            getInspectionPermits: function () {
+                return InspectionPermits.query();
+            },
+
+            getRoutingPermits: function () {
+                return RoutingPermits.query();
             },
 
             getAllParcels: function () {

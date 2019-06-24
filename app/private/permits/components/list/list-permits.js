@@ -46,7 +46,7 @@
         $scope.eventsdataset.$promise.then(function () {
             var EventColumnDefs = GridService.getAgColumnDefs($scope.eventsdataset);
             $scope.permitEventsGrid.columnDefs = angular.merge(
-                [{ colId: 'EditLinks', cellRenderer: EditEventLinksTemplate, width: 60, menuTabs: [], hide: true }], 
+                //[{ colId: 'EditLinks', cellRenderer: EditEventLinksTemplate, width: 60, menuTabs: [], hide: true }], 
                 EventColumnDefs.HeaderFields
             );
 
@@ -55,7 +55,7 @@
                 $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
                 new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
 //TODO: if permission to edit:
-                $scope.permitEventsGrid.columnApi.setColumnVisible("EditLinks", true);
+                //$scope.permitEventsGrid.columnApi.setColumnVisible("EditLinks", true);
             }
 
             $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
@@ -68,7 +68,8 @@
             filter_component.selectValue('Approved');
             filter_component.selectValue('Conditionally Approved');
             $scope.permitsGrid.api.onFilterChanged();
-            $scope.permitsGrid.api.deselectAll();
+            if($scope.currentPage !== "Issued")
+                $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Issued";
         };
 
@@ -78,7 +79,8 @@
             filter_component.selectValue('');
             filter_component.selectValue('Under Review');
             $scope.permitsGrid.api.onFilterChanged();
-            $scope.permitsGrid.api.deselectAll();
+            if($scope.currentPage !== "Applications")
+                $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Applications";
         };
 
@@ -87,7 +89,8 @@
             filter_component.selectNothing();
             filter_component.selectValue('Archived');
             $scope.permitsGrid.api.onFilterChanged();
-            $scope.permitsGrid.api.deselectAll();
+            if($scope.currentPage !== "Archived")
+                $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Archived";
         };
         
@@ -95,7 +98,8 @@
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectEverything();
             $scope.permitsGrid.api.onFilterChanged();
-            $scope.permitsGrid.api.deselectAll();
+            if($scope.currentPage !== "All")
+                $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "All";
         };
 
@@ -105,7 +109,11 @@
             rowData: null,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
-                $scope.permitsGrid.selectedItem = $scope.row = $scope.permitsGrid.api.getSelectedRows()[0];
+                if ($scope.row && $scope.row.dataChanged) {
+                    alert("It looks like you've changed this permit. Please click 'Save' or 'Cancel' before navigating to another permit.");
+                    return false;
+                }
+                $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                 //console.dir($scope.row);
                 if($scope.row)
@@ -332,15 +340,20 @@
             { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
         ];
 
-        $scope.openActivityModal = function (params) {
+        $scope.openActivityModal = function (params, intent) {
 
             delete $scope.activity_modal;
+            $scope.intent = intent;
 
             //if editing, we'll have incoming params
             if (params) {
                 $scope.activity_modal = params;
             } else {
                 $scope.activity_modal = { PermitId: $scope.row.Id };
+                if (intent == 'new_route')
+                    $scope.activity_modal.EventType = 'Review';
+                if (intent == 'new_inspection')
+                    $scope.activity_modal.EventType = 'Inspection';
             }
 
             var modalInstance = $modal.open({
@@ -507,6 +520,8 @@
                 $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
             });
 
+            $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
+
         };
         
         $scope.resetGrids();
@@ -555,28 +570,73 @@
             
         };
 
-        $scope.save = function () {
+        $scope.cancel = function () { 
+            $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
+            $scope.selectPermit($scope.row.Id);
+            console.log("cancelled...");
             console.dir($scope.row);
-            var saved_permit = PermitService.savePermit($scope.row);
+        };
+
+        $scope.save = function () {
+            
+            var to_save = angular.copy($scope.row);
+            to_save.ReviewsRequired = angular.toJson(to_save.ReviewsRequired);
+            console.dir(to_save);
+
+            var saved_permit = PermitService.savePermit(to_save);
+
             saved_permit.$promise.then(function () { 
                 console.log("permit saved: ");
                 console.dir(saved_permit);
+
+                //requirement: if we saved a new status, add a record to the permitsevents
+                if ($scope.row.PermitStatus !== $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus) {
+                    var new_event = {
+                        PermitId: $scope.row.Id,
+                        ByUser: $scope.Profile.Id,
+                        EventDate: moment().format('L'),
+                        EventType: "Record",
+                        ItemType: "TPO",
+                        Reviewer: $scope.Profile.Fullname,
+                        Comments: "Update Status from " + $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus + " to " + $scope.row.PermitStatus
+                    };
+                    console.log("saving a permitevent since we updated the status"); console.dir(new_event);
+                    var save_event = PermitService.savePermitEvent(new_event);
+                    save_event.$promise.then(function () { 
+                        //refresh the activities now that we've saved a new one.
+                        $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
+                        $scope.PermitEvents.$promise.then(function () {
+                            $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                        });
+                    });
+                }
     
                 if (!$scope.row.Id) {
                     $scope.permits.push(saved_permit);
                     $scope.permitsGrid.api.setRowData($scope.permits);
+                    $scope.row.dataChanged = false;
                     $scope.showAll();
                 }
                 else {
                     $scope.permits.forEach(function (existing_permit) { 
                         if (existing_permit.Id == $scope.row.Id) {
                             console.log(" found it -- ");
-                            angular.extend(existing_permit, $scope.saved_permit);
+                            angular.extend(existing_permit, saved_permit);
                         }
                     });
 
+                    //var selectedNode = $scope.permitsGrid.api.getSelectedRows()[0];
+
                     $scope.permitsGrid.api.setRowData($scope.permits);
-                    $scope.showAll();
+                    
+                    if ($scope.currentPage == "Applications") $scope.showApplications();
+                    if ($scope.currentPage == "Issued") $scope.showIssued();
+                    if ($scope.currentPage == "Archived") $scope.showArchived();
+                    if ($scope.currentPage == "All") $scope.showAll();
+                    //console.dir(selectedNode);
+                    //selectedNode.node.setSelected(true);
+                    
+                    $scope.row.dataChanged = false;
                 }
 
             });

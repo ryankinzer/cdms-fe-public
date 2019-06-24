@@ -362,16 +362,6 @@ function array_count(the_array) {
 }
 
 
-function arrayRemoveElement(theArray, theElement){
-	const index = theArray.indexOf(element);
-	
-	if (index !== -1)
-	{
-		theArray.splice(index, 1);
-	}
-}
-
-
 function stringIsNumber(s) {
     return !isNaN(parseFloat(s)) && isFinite(s);
 }
@@ -1292,6 +1282,17 @@ if (!Array.prototype.containsInt) {
         return false;
     }
 }
+
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
 
 //might be a list of metadata values from project.Metadata or a list of actual properties.
 function addMetadataProperties(metadata_list, ignored, scope, CommonService) {

@@ -3,6 +3,7 @@
 require([
     //controllers
     'private/permits/components/list/list-permits',
+    'private/permits/components/taskboard/routes',
 
     //modals
     'private/permits/components/list/add-activity-modal',
@@ -22,6 +23,7 @@ require([
     permit_module.controller('ParcelModalController', modal_edit_permitparcel);
     permit_module.controller('FileModalController', modal_edit_permitfile);
     permit_module.controller('AddPermitPersonModalController', modal_add_permitperson);
+    permit_module.controller('PermitRoutesController', permit_routes);
 
     permit_module.filter('personOrgName', function () {
         return function (person) {
