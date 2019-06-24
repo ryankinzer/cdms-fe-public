@@ -13,6 +13,7 @@
         $scope.PermitParcels = [];
         $scope.PermitEvents = [];
         $scope.PermitFiles = [];
+        $scope.ParcelHistory = [];
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
@@ -180,6 +181,19 @@
             },
         }
 
+
+        $scope.parcelHistoryGrid = {
+            columnDefs: null,
+            rowData: null,
+            rowSelection: 'single',
+            selectedItem: null ,
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+        }
+
         $scope.permitEventsGrid = {
             columnDefs: null,
             rowData: null,
@@ -320,6 +334,12 @@
             { headerName: "Parcel Id", field: "ParcelId", width: 250, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "PLSS", field: "Object.PLSS_Label", width: 250, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
+        ];
+
+        $scope.parcelHistoryGrid.columnDefs = [
+            { headerName: "Permit Number", field: "PermitNumber", width: 250, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Project Name", field: "ProjectName", width: 250, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Permit Status", field: "PermitStatus", width: 150, menuTabs: ['filterMenuTab'], filter: true  },
         ];
 
         $scope.permitFilesGrid.columnDefs = [
@@ -479,6 +499,12 @@
                 new agGrid.Grid($scope.permitParcelsGridDiv, $scope.permitParcelsGrid);
             }
 
+            //activate the parcel history grid
+            if (!$scope.parcelHistoryGridDiv) {
+                $scope.parcelHistoryGridDiv = document.querySelector('#parcel-history-grid');
+                new agGrid.Grid($scope.parcelHistoryGridDiv, $scope.parcelHistoryGrid);
+            }
+
             //activate the permit files grid
             if (!$scope.permitFilesGridDiv) {
                 $scope.permitFilesGridDiv = document.querySelector('#permit-files-grid');
@@ -488,6 +514,7 @@
             $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
             $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
             $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+            $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
 
             if ($scope.Profile.hasRole("Permits")) { //TODO: EditPermits?
                 $scope.permitContactsGrid.columnApi.setColumnVisible("EditLinks", true);
