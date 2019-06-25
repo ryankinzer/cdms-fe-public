@@ -345,7 +345,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 //setTimeout(function () { params.api.sizeColumnsToFit(); }, 0);
             },
             getRowHeight: function (params) {
-                var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
+                //var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
+                var comment_length = (params.data.EventComments === null) ? 1 : params.data.Tasks.length;
                 var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
                 var file_height = 25 * (getFilesArrayAsList(params.data.EventFiles).length); //count up the number of file lines we will have.
                 return (comment_height > file_height) ? comment_height : file_height;
