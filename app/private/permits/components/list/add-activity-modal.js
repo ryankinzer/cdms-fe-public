@@ -46,36 +46,58 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
 
         }
 
-
-        
-        //console.log($scope.activity_modal);
-
-        modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.activity_modal.Files); 
+        //set up for attaching files
+        modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.row.Files); 
 
         $scope.save = function () {
-            //$scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
-            $scope.modalFile_saveParentItem($scope.row);
-        };
 
-        //call back from save above once the files are done processing and we're ready to save the item
-        $scope.modalFile_saveParentItem = function (saveRow) {
-            
-            saveRow.ByUser = $scope.Profile.Id;
+            $scope.row.ByUser = $scope.Profile.Id;
 
-            var new_event = PermitService.savePermitEvent(saveRow);
+            var target = '/api/v1/permit/uploadfile';
 
-            new_event.$promise.then(function () {
-                console.log("done and success!");
-                $modalInstance.close(new_event);
-            });
+            var data = {
+                ProjectId: PERMIT_PROJECTID,
+                SubprojectId: $scope.permit.Id,
+                ItemId: $scope.row.Id
+            };
+
+            //if this is a new event, save it first to get the ID
+            if (!$scope.row.Id) {
+                var new_event = PermitService.savePermitEvent($scope.row);
+
+                new_event.$promise.then(function () {
+                    console.log("done and success saving event!");
+                    $scope.row.Id = data.ItemId = new_event.Id;
+
+                    $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+                });
+
+            } else {
+                $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+            }
 
         };
 
         //callback that is called from modalFile to do the actual file removal (varies by module)
         $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
             //console.dir(file_to_remove);
-            //return ProjectService.deleteFile($scope.project.Id, file_to_remove);
+            return PermitService.deleteFile(PERMIT_PROJECTID, $scope.permit.Id, file_to_remove);
         };
+
+        //call back from save above once the files are done processing and we're ready to save the item
+        $scope.modalFile_saveParentItem = function (saveRow) {
+
+            //save again to update with the files we uploaded
+            var new_event = PermitService.savePermitEvent(saveRow);
+
+            new_event.$promise.then(function () {
+                console.log("done and success updating the files");
+                $modalInstance.close(new_event);
+            });
+
+        };
+
+
 
         var NEW_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "Comments"];
         var EDIT_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "ResponseDate","Result","Reference","Files","Comments"];

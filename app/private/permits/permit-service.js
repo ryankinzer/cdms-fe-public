@@ -55,34 +55,38 @@ permit_module.factory('GetAllPermitPersons', ['$resource', function ($resource) 
 }]);
 
 
-leasing_module.factory('SavePermit', ['$resource', function ($resource) {
+permit_module.factory('SavePermit', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermit');
 }]);
 
 
-leasing_module.factory('SavePermitPerson', ['$resource', function ($resource) {
+permit_module.factory('SavePermitPerson', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermitperson');
 }]);
 
 
-leasing_module.factory('SavePermitContact', ['$resource', function ($resource) {
+permit_module.factory('SavePermitContact', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermitcontact');
 }]);
 
-leasing_module.factory('RemovePermitContact', ['$resource', function ($resource) {
+permit_module.factory('RemovePermitContact', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/RemovePermitContact');
 }]);
 
-leasing_module.factory('SavePermitParcel', ['$resource', function ($resource) {
+permit_module.factory('SavePermitParcel', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermitparcel');
 }]);
 
-leasing_module.factory('RemovePermitParcel', ['$resource', function ($resource) {
+permit_module.factory('RemovePermitParcel', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/RemovePermitParcel');
 }]);
 
-leasing_module.factory('SavePermitEvent', ['$resource', function ($resource) {
+permit_module.factory('SavePermitEvent', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/SavePermitEvent');
+}]);
+
+permit_module.factory('DeleteFile', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/DeleteFile');
 }]);
 
 
@@ -106,6 +110,7 @@ permit_module.service('PermitService', ['$q',
     'SavePermitEvent',
     'RoutingPermits',
     'InspectionPermits',
+    'DeleteFile',
   
     function ($q,
        
@@ -124,7 +129,8 @@ permit_module.service('PermitService', ['$q',
         RemovePermitParcel,
         SavePermitEvent,
         RoutingPermits,
-        InspectionPermits
+        InspectionPermits,
+        DeleteFile
       
     ) {
         var service = {
@@ -191,6 +197,9 @@ permit_module.service('PermitService', ['$q',
 
             savePermitEvent: function (permitevent) {
                 return SavePermitEvent.save({ PermitEvent: permitevent });
+            },
+            deleteFile: function (projectId, subprojectId, itemId, file) {
+                return DeleteFile.save({ ProjectId: projectId, SubprojectId: subprojectId, ItemId: itemId, File: file });
             }
 
         };

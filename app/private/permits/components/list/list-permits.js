@@ -252,6 +252,12 @@
                 $scope.permitEventsGrid.selectedItem = $scope.permitEventsGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
+            getRowHeight: function (params) {
+                var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
+                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+                var file_height = 25 * (getFilesArrayAsList(params.data.Files).length); //count up the number of file lines we will have.
+                return (comment_height > file_height) ? comment_height : file_height;
+            },
         }
 
         $scope.permitFilesGrid = {
@@ -473,20 +479,15 @@
 
         $scope.openFileModal = function (params) {
 
-            //if editing, we'll have incoming params
-            if (params) {
-                $scope.file_modal = params;
-            } else {
-                $scope.file_modal = {};
-            }
-
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/add-file-modal.html',
-                controller: 'FileModalController',
+                templateUrl: 'app/private/permits/components/list/templates/modal-new-file.html',
+                controller: 'PermitFileModalController',
+                windowClass: 'modal-large',
+                backdrop  : 'static',
+                keyboard  : false,
                 scope: $scope,
             });
         }
-
 
         $scope.createNewPermit = function () {
 

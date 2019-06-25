@@ -9,7 +9,7 @@ require([
     'private/permits/components/list/add-activity-modal',
     'private/permits/components/list/add-contact-modal',
     'private/permits/components/list/add-parcel-modal',
-    'private/permits/components/list/add-file-modal',
+    'private/permits/components/list/modal-new-file',
     'private/permits/components/list/add-person-modal',
     'private/permits/components/taskboard/add-fee-modal',
 
@@ -22,7 +22,7 @@ require([
     permit_module.controller('ActivityModalController', modal_edit_permitevent);
     permit_module.controller('ContactModalController', modal_edit_permitcontact);
     permit_module.controller('ParcelModalController', modal_edit_permitparcel);
-    permit_module.controller('FileModalController', modal_edit_permitfile);
+    permit_module.controller('PermitFileModalController', modal_new_file);
     permit_module.controller('AddPermitPersonModalController', modal_add_permitperson);
     permit_module.controller('PermitRoutesController', permit_routes);
     permit_module.controller('AddFeeModalController', modal_add_fee);
