@@ -32,9 +32,37 @@
                 <div class="header-value">
                     <input type="text" class="form-control" ng-model="event_row.Author" />
                 </div>
-                <div class="header-label">Author Agency</div>
+                <!--<div class="header-label">Author Agency</div>
+    <div class="header-value">
+        <input type="text" class="form-control" ng-model="event_row.AuthorAgency" />
+    </div>-->
+                <div class="header-label">Agency Division</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.AuthorAgency" />
+                    <input type="text" class="form-control" ng-model="event_row.AgencyDivision" />
+                </div>
+                <div class="header-label">Signatory Name</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SignatoryName" />
+                </div>
+                <div class="header-label">Signatory Title</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SignatoryTitle" />
+                </div>
+                <div class="header-label">Recipient Name</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.RecipientName" />
+                </div>
+                <div class="header-label">Recipient Title</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.RecipientTitle" />
+                </div>
+                <div class="header-label">Recipient Agency</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.RecipientAgency" />
+                </div>
+                <div class="header-label">Recipient Location</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.RecipientLocation" />
                 </div>
 
                 <div class="header-label">Boundary</div>
@@ -57,6 +85,27 @@
                         <option ng-repeat="context in getMetafield('MiscellaneousContext')" value="{{context}}">{{context}}</option>
                     </select>
 
+                </div>
+
+                <div class="header-label">Survey Number</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SurveyNumber" />
+                </div>
+                <div class="header-label">Survey Contract Number</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SurveyContractNumber" />
+                </div>
+                <div class="header-label">Surveyor Name</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SurveyorName" />
+                </div>
+                <div class="header-label">Survey Authorizing Agency</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SurveyAuthorizingAgency" />
+                </div>
+                <div class="header-label">Survey Dates</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SurveyDates" />
                 </div>
 
                 <div class="header-label">Description</div>
@@ -92,9 +141,11 @@
                     <textarea type="text" rows="4" class="form-control" ng-model="event_row.Reference"></textarea>
                 </div>
 
-                <div class="header-label">Comments</div>
+                <!--<div class="header-label">Comments</div>-->
+                <div class="header-label">Tasks</div>
                 <div class="header-value">
-                    <textarea type="text" rows="4" class="form-control" ng-model="event_row.EventComments"></textarea>
+                    <!--<textarea type="text" rows="4" class="form-control" ng-model="event_row.EventComments"></textarea>-->
+                    <textarea type="text" rows="4" class="form-control" ng-model="event_row.Tasks"></textarea>
                 </div>
             </form>
         </div>
