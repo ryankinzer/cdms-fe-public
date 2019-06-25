@@ -96,7 +96,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             div.appendChild(delBtn);
             div.appendChild(document.createTextNode(" | "));
 
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Event';
+            //var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Event';
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Item';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 scope.openOlcEventForm(param.data, {});
@@ -145,7 +146,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             div.appendChild(delBtn);
             div.appendChild(document.createTextNode(" | "));
 
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+            //var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Item';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 scope.openOlcEventForm(subproject, {});
