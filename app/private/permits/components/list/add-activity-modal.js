@@ -65,20 +65,17 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
                 ItemId: $scope.row.Id
             };
 
+            if (Array.isArray($scope.row.Files)) {
+                if ($scope.row.Files.length == 0)
+                    delete $scope.row.Files;
+                else
+                    $scope.row.Files = angular.toJson($scope.row.Files);
+            }
+
             //if this is a new event, save it first to get the ID
             if (!$scope.row.Id) {
 
-                if (Array.isArray($scope.row.Files)) {
-                    if ($scope.row.Files.length == 0)
-                        delete $scope.row.Files;
-                    else
-                        $scope.row.Files = angular.toJson($scope.row.Files);
-                }
-
                 var new_event = PermitService.savePermitEvent($scope.row);
-
-                if ($scope.row.Files)
-                    $scope.row.Files = angular.fromJson($scope.row.Files);
 
                 new_event.$promise.then(function () {
                     console.log("done and success saving event!");

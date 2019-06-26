@@ -6,7 +6,19 @@
         if (!$scope.Profile.hasRole("Permits"))
             angular.rootScope.go("/unauthorized");
 
-        $scope.permits = PermitService.getRoutingPermits();
+        $scope.refresh = function () {
+            $scope.permits = PermitService.getRoutingPermits();
+            
+            $scope.permits.$promise.then(function () {
+                $scope.refreshPermits();
+                if($scope.permitRoutesGrid && $scope.permitRoutesGrid.api)
+                    $scope.permitRoutesGrid.api.setRowData($scope.permits);
+            });
+
+        };
+
+        $scope.refresh();
+
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID); //needed for the fee modal fields
@@ -15,9 +27,6 @@
             $scope.permitColumnDefs = AllColumnDefs.HeaderFields;
         });
 
-        $scope.permits.$promise.then(function () {
-            $scope.refreshPermits();
-        });
 
         //setup our columns for the events modal
         $scope.eventsdataset.$promise.then(function () {
@@ -42,7 +51,7 @@
         //our cell value getter used by the cell renderer
         $scope.getRouteDisplay = function (params) {
 
-            var col = params.colDef.field.substring(6); //"Route_Plan" --> "Plan"
+            var col = params.colDef.field.substring(6); //"Route_BldgCode" --> "BldgCode"
 
             var retval = "";
 
@@ -64,11 +73,11 @@
         $scope.permitRoutesColDefs = [
             { headerName: "Main Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Permit #", field: "PermitNumber", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
-            //{ headerName: "Status", field: "PermitStatus", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
+            { headerName: "Status", field: "PermitStatus", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
             //{ headerName: "Routes", field: "ReviewsRequired", menuTabs: ['filterMenuTab'], width: 150 , filter: 'text'}, 
             { headerName: "Project Name", field: "ProjectName", menuTabs: ['filterMenuTab'], width: 280, filter: 'text' },
             { headerName: "TPO", field: "Route_TPO", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
-            { headerName: "Plan", field: "Route_Plan", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
+            { headerName: "BldgCode", field: "Route_BldgCode", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "WRP", field: "Route_WRP", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Env", field: "Route_Env", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "PubWrks", field: "Route_PubWrks", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
@@ -124,7 +133,10 @@
         });
 
         $scope.handleDoubleClick = function (params) {
-            var col = params.colDef.field.substring(6); //"Route_Plan" --> "Plan"
+            var col = params.colDef.field.substring(6); //"Route_BldgCode" --> "BldgCode"
+
+            if (col == 'TPO')
+                return;
 
             //if they doubleclicked on a cell for required routes
             if (params.node.data.ReviewsRequired.contains(col)) {
@@ -152,7 +164,7 @@
                 var new_activity = {
                     PermitId: $scope.permitRoutesGrid.selectedItem.Id,
                     EventType: 'Review',
-                    ItemType: col, //Plan, WRP, Env, PubWrks, TERO, CRPP, etc.
+                    ItemType: col, //BldgCode, WRP, Env, PubWrks, TERO, CRPP, etc.
                 };
 
                 // required but not yet routed, open a new event of this type
@@ -248,7 +260,8 @@
         $scope.setupPermit = function (permit) { 
             if (permit.ReviewsRequired)
                 permit.ReviewsRequired = angular.fromJson(permit.ReviewsRequired);
-            else
+
+            if(!Array.isArray(permit.ReviewsRequired))
                 permit.ReviewsRequired = [];
 
             permit.ReviewsRequired.push("TPO"); //this route is always required. :)
