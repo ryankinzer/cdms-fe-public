@@ -347,8 +347,6 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
 
         $scope.file_row = saveRow; //important! otherwise our filerow is set to the last thing (which is only a problem when we have files in the grid)
        
-        $scope.files_uploaded = [];
-
         $scope.filesWithErrors = 0;
         var save_item_promise = null; //will get setup later
 

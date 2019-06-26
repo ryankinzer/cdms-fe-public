@@ -42,6 +42,12 @@ permit_module.factory('GetPermitEvents', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('GetRelatedParcels', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetRelatedParcels', {}, {
+        query: { method: 'GET', params: { ParcelId: 'ParcelId'}, isArray: true }
+    });
+}]);
+
 permit_module.factory('GetPermitFiles', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/GetPermitFiles', {}, {
         query: { method: 'GET', params: { ProjectId: 'ProjectId', PermitId: 'PermitId'}, isArray: true }
@@ -111,6 +117,7 @@ permit_module.service('PermitService', ['$q',
     'RoutingPermits',
     'InspectionPermits',
     'DeleteFile',
+    'GetRelatedParcels',
   
     function ($q,
        
@@ -130,7 +137,8 @@ permit_module.service('PermitService', ['$q',
         SavePermitEvent,
         RoutingPermits,
         InspectionPermits,
-        DeleteFile
+        DeleteFile,
+        GetRelatedParcels
       
     ) {
         var service = {
@@ -166,6 +174,11 @@ permit_module.service('PermitService', ['$q',
             getPermitFiles: function (PermitId) {
                 return GetPermitFiles.query({ ProjectId: PERMIT_PROJECTID, PermitId: PermitId });
             },
+
+            getPermitsByRelatedParcels: function (ParcelId) {
+                return GetRelatedParcels.query({ ParcelId: ParcelId });
+            },
+
 
             savePermit: function (permit) {
                 return SavePermit.save({ Permit: permit });

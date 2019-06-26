@@ -13,7 +13,7 @@
         $scope.PermitParcels = [];
         $scope.PermitEvents = [];
         $scope.PermitFiles = [];
-        $scope.ParcelHistory = [];
+        $scope.ParcelHistory = []; 
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
@@ -384,8 +384,9 @@
         ];
 
         $scope.parcelHistoryGrid.columnDefs = [
-            { headerName: "Permit Number", field: "PermitNumber", width: 250, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: "Project Name", field: "ProjectName", width: 250, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Permit Number", field: "PermitNumber", width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Project Name", field: "ProjectName", width: 220, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Parcel Id", field: "MatchingParcelId", width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Permit Status", field: "PermitStatus", width: 150, menuTabs: ['filterMenuTab'], filter: true  },
         ];
 
@@ -473,6 +474,7 @@
                     $scope.PermitParcels = PermitService.getPermitParcels(saved_parcel.PermitId);
                     $scope.PermitParcels.$promise.then(function () { 
                         $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+                        $scope.refreshParcelHistory();
                     });
             });
         }
@@ -553,6 +555,7 @@
                     $scope.PermitParcels.$promise.then(function () { 
                         $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
                     });
+                    $scope.refreshParcelHistory();
                 });
             }
         };
@@ -603,13 +606,14 @@
             $scope.PermitParcels = PermitService.getPermitParcels(Id);
             $scope.PermitEvents = PermitService.getPermitEvents(Id);
             $scope.PermitFiles = PermitService.getPermitFiles(Id);
-
+            
             $scope.PermitContacts.$promise.then(function () { 
                 $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
             });
 
             $scope.PermitParcels.$promise.then(function () {
                 $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+                $scope.refreshParcelHistory();
             });
 
             $scope.PermitEvents.$promise.then(function () {
@@ -627,6 +631,25 @@
         };
         
         $scope.resetGrids();
+
+        $scope.refreshParcelHistory = function () { 
+            $scope.ParcelHistory = [];
+            $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
+
+            //iterate parcels to find any related permits
+            $scope.PermitParcels.forEach(function (parcel) { 
+                var related_permits = PermitService.getPermitsByRelatedParcels(parcel.ParcelId);
+                related_permits.$promise.then(function () { 
+                    related_permits.forEach(function (permit) { 
+                        if (permit.Id !== $scope.row.Id) {
+                            permit.MatchingParcelId = parcel.ParcelId;
+                            $scope.ParcelHistory.push(permit);
+                        }
+                    });
+                    $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
+                });
+            });
+        };
 
         $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
             //build event to send for validation
