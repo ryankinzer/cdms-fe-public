@@ -528,8 +528,17 @@
                 return;
             }
 
-            $scope.row = $scope.permitsGrid.selectedItem = GridService.getNewRow($scope.permitsGrid.columnDefs); //{ PermitStatus: "New Application" };
+            $scope.row = $scope.permitsGrid.selectedItem = GridService.getNewRow($scope.permitsGrid.columnDefs); ;
+
+            $scope.PermitContacts = [];
+            $scope.PermitParcels = [];
+            $scope.PermitEvents = [];
+            $scope.PermitFiles = [];
+            $scope.ParcelHistory = []; 
+
             $scope.resetGrids();
+
+            $('#tab-basicinfo').tab('show'); //default to the "Permit Details" tab when select a different permit
             
         };
 
@@ -562,7 +571,6 @@
 
         $scope.resetGrids = function () {
             
-            
             //activate the permit contacts grid
             if (!$scope.permitContactsGridDiv) {
                 $scope.permitContactsGridDiv = document.querySelector('#permit-contacts-grid');
@@ -591,6 +599,9 @@
             $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
             $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
             $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
+
+            if ($scope.permitEventsGrid && $scope.permitEventsGrid.api)
+                $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
 
             if ($scope.Profile.hasRole("Permits")) { //TODO: EditPermits?
                 $scope.permitContactsGrid.columnApi.setColumnVisible("EditLinks", true);
@@ -697,9 +708,12 @@
 
         $scope.cancel = function () { 
             $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
-            $scope.selectPermit($scope.row.Id);
-            console.log("cancelled...");
-            console.dir($scope.row);
+
+            if($scope.row)
+                $scope.selectPermit($scope.row.Id);
+
+            //console.log("cancelled...");
+            //console.dir($scope.row);
         };
 
         $scope.save = function () {
@@ -715,7 +729,7 @@
                 console.dir(saved_permit);
 
                 //requirement: if we saved a new status, add a record to the permitsevents
-                if ($scope.row.PermitStatus !== $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus) {
+                if ($scope.row.Id && $scope.row.PermitStatus !== $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus) {
                     var new_event = {
                         PermitId: $scope.row.Id,
                         ByUser: $scope.Profile.Id,
@@ -739,6 +753,8 @@
                 if (!$scope.row.Id) {
                     $scope.permits.push(saved_permit);
                     $scope.permitsGrid.api.setRowData($scope.permits);
+                    $scope.row = saved_permit;
+                    //$scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                     $scope.row.dataChanged = false;
                     $scope.showAll();
                 }
