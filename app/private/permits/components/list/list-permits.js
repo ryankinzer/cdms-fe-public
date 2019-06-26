@@ -330,7 +330,7 @@
 
             var linkBtn = document.createElement('a');
             linkBtn.href = param.data.Link;
-            linkBtn.innerHTML = param.data.Title;
+            linkBtn.innerHTML = param.data.Name;
             linkBtn.target = "_blank";
             div.appendChild(linkBtn);
             return div;
@@ -390,21 +390,21 @@
         ];
 
         $scope.permitFilesGrid.columnDefs = [
-            { colId: 'EditLinks', cellRenderer: EditFileLinksTemplate, width: 60, menuTabs: [], hide: true },
-            { headerName: 'File', cellRenderer: LinkTemplate, width: 190, menuTabs: [] },
+            //{ colId: 'EditLinks', cellRenderer: EditFileLinksTemplate, width: 60, menuTabs: [], hide: true },
+            { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: [] },
             //{ field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
-            { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
-            {
-                headerName: 'Sharing Level', field: 'SharingLevel', width: 150,
-                cellRenderer: function (params) {
-                    if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
-                        return SharingLevel['SHARINGLEVEL_PRIVATE'];
-                    else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
-                        return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
-                    else return 'Unknown';
-                }, menuTabs: [],
-            },
-            { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{
+            //    headerName: 'Sharing Level', field: 'SharingLevel', width: 150,
+            //    cellRenderer: function (params) {
+            //        if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
+            //            return SharingLevel['SHARINGLEVEL_PRIVATE'];
+            //        else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
+            //            return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
+            //        else return 'Unknown';
+             //   }, menuTabs: [],
+            //},
+            { field: 'Uploaded', headerName: "Uploaded", width: 240, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
         ];
 
         $scope.openActivityModal = function (params, intent) {
@@ -482,11 +482,42 @@
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/permits/components/list/templates/modal-new-file.html',
                 controller: 'PermitFileModalController',
-                windowClass: 'modal-large',
-                backdrop  : 'static',
-                keyboard  : false,
+                backdrop: 'static',
+                keyboard: false,
                 scope: $scope,
+            }).result.then(function (saved_files) {
+                if (Array.isArray(saved_files)) {
+
+                    saved_files.forEach(function (new_file) {
+                        $scope.PermitFiles.push(new_file);
+                    });
+
+                    $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+                }
+                else
+                    console.warn("looks like no files were saved?");
             });
+        }
+
+        $scope.removeSelectedFile = function () {
+
+            if (!confirm("Are you sure you want to delete this file?")) {
+                return;
+            }
+
+            var file_to_remove = $scope.permitFilesGrid.selectedItem;
+            var deleted = PermitService.deleteFile(PERMIT_PROJECTID, $scope.row.Id, 0, file_to_remove);
+
+            deleted.$promise.then(function () { 
+                $scope.PermitFiles.forEach(function (file, index) { 
+                    if (file.Id == file_to_remove.Id) {
+                        $scope.PermitFiles.splice(index, 1);
+                        $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+                    }
+
+                });
+            });
+            
         }
 
         $scope.createNewPermit = function () {
@@ -590,6 +621,8 @@
             });
 
             $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
+
+            //$scope.viewSubproject = $scope.subprojectId = Id;
 
         };
         

@@ -46,8 +46,12 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
 
         }
 
+        if (!$scope.row.Files)
+            $scope.row.Files = [];
+
         //set up for attaching files
-        modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.row.Files); 
+        modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.PermitFiles); 
+        
 
         $scope.save = function () {
 
@@ -63,7 +67,18 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
 
             //if this is a new event, save it first to get the ID
             if (!$scope.row.Id) {
+
+                if (Array.isArray($scope.row.Files)) {
+                    if ($scope.row.Files.length == 0)
+                        delete $scope.row.Files;
+                    else
+                        $scope.row.Files = angular.toJson($scope.row.Files);
+                }
+
                 var new_event = PermitService.savePermitEvent($scope.row);
+
+                if ($scope.row.Files)
+                    $scope.row.Files = angular.fromJson($scope.row.Files);
 
                 new_event.$promise.then(function () {
                     console.log("done and success saving event!");
@@ -81,7 +96,7 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
         //callback that is called from modalFile to do the actual file removal (varies by module)
         $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
             //console.dir(file_to_remove);
-            return PermitService.deleteFile(PERMIT_PROJECTID, $scope.permit.Id, file_to_remove);
+            return PermitService.deleteFile(PERMIT_PROJECTID, $scope.permit.Id, saveRow.Id, file_to_remove);
         };
 
         //call back from save above once the files are done processing and we're ready to save the item

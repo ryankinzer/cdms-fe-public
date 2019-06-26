@@ -10,17 +10,9 @@
 <input ng-disabled="doneUploading" type="file" ngf-select="onFileSelect($files)" multiple>
 
 <table ng-show="uploadFiles" class="table table-striped">
-    <tr><th>Filename</th><th>Title</th><th>Description</th><th>Sharing Level</th><th>Results</th></tr>
-    <tr ng-repeat="file in uploadFiles" ng-init="file['Info']={SharingLevel:SHARINGLEVEL_PRIVATE}">
+    <tr><th>Filename</th><th>Results</th></tr>
+    <tr ng-repeat="file in uploadFiles">
     <td>{{file.name}}</td>
-    <td><input ng-disabled="file.success=='DUPLICATE'" class="form-control" style="width: 95%;" ng-model="file.Info.Title"/></td>
-    <td><input ng-disabled="file.success=='DUPLICATE'" class="form-control" style="width: 95%;" ng-model="file.Info.Description"/></td>
-    <td>
-            <select ng-disabled="file.success=='DUPLICATE'" class="form-control" ng-model="file.Info.SharingLevel" convert-to-number>
-                <option value="{{SHARINGLEVEL_PRIVATE}}" ng-selected="file.Info.SharingLevel == SHARINGLEVEL_PRIVATE">{{SharingLevel['SHARINGLEVEL_PRIVATE']}}</option>
-                <option value="{{SHARINGLEVEL_PUBLICREAD}}" ng-selected="file.Info.SharingLevel == SHARINGLEVEL_PUBLICREAD">{{SharingLevel['SHARINGLEVEL_PUBLICREAD']}}</option>
-            </select>
-    </td>
     <td>{{file.success}}</td>
     </tr>
 </table>

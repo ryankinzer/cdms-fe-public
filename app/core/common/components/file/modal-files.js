@@ -125,6 +125,7 @@ var modal_files = ['$scope', '$uibModalInstance', 'DatasetService','SubprojectSe
                         $scope.foundDuplicate = true;
                         errors.push("Ignoring: " + incoming_file.Name + " - file already exists." + "\n");
                     } else {
+
                         filesReadyToUpload.push(incoming_file);
 
                         //add to the currentfiles ONLY if the file is one coming from this field in the row...
@@ -346,6 +347,8 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
 
         $scope.file_row = saveRow; //important! otherwise our filerow is set to the last thing (which is only a problem when we have files in the grid)
        
+        $scope.files_uploaded = [];
+
         $scope.filesWithErrors = 0;
         var save_item_promise = null; //will get setup later
 
@@ -451,8 +454,11 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                                     // With IE, sometimes the files would be uploaded, but would not have .success set to "success".
                                     // Instead, it would be set to "working: 100%".
                                     // Updated the if statement, to handle this issue.
-                                    if ((upload_file.success === "Success") || (upload_file.success === "working: 100%"))
+                                    if ((upload_file.success === "Success") || (upload_file.success === "working: 100%")) {
+                                        file_to_check.Link = upload_file.Link; 
+                                        delete file_to_check.UploadMessage;
                                         remaining_files.push(file_to_check);
+                                    }
                                 }
                             });
                             if (!uploading_this_one) //means this was an existing file so leave it.
@@ -462,6 +468,7 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                     }
 
                     saveRow[in_file_field] = angular.toJson(remaining_files);
+
                 } else {
                     console.log(" -- ignoring this step because the field was undefined -- assuming this is a grid file and we don't have the right saverow...");
                 }
@@ -527,7 +534,12 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
                                 if ((typeof $scope.modalFiles_filesToCheckForDuplicates === 'undefined') || ($scope.modalFiles_filesToCheckForDuplicates === null))
                                     $scope.modalFiles_filesToCheckForDuplicates = [];
 
-                                $scope.modalFiles_filesToCheckForDuplicates.push(data[0]); //add this file to the duplicate file list
+                                console.warn("setting file link to " + data[0].Link);
+                                file.Link = data[0].Link;
+                                console.dir(file);
+
+                                if(Array.isArray($scope.modalFiles_filesToCheckForDuplicates))
+                                    $scope.modalFiles_filesToCheckForDuplicates.push(data[0]); //add this file to the duplicate file list
                             }
 
                             $scope.fileProgress++;

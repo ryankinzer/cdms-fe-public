@@ -11,6 +11,8 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
         $scope.SHARINGLEVEL_PUBLICREAD = SHARINGLEVEL_PUBLICREAD;
         $scope.SharingLevel = SharingLevel;
 
+        $scope.all_saved_files = [];
+
 		$scope.onFileSelect = function(files)
 		{
             console.log("Inside modal_new_file, onFileSelect!  Files is next...");
@@ -72,26 +74,15 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
                     continue;
                 }
 
-                // The Title (file.Info.Title) is a required item.
-                if (!file.Info || !file.Info.Title) {
-                    console.log("Title missing -- ignoring: ", file.Name);
-                    file.success = "Need Title";
-                    continue;
-                }
-
-                if (!file.Info.Description) {
-                    file.Info.Description = "";
-                }
-
 				if(!file.success)
 				{
 					console.log("file.success does not exist yet...");
 					$scope.upload = $upload.upload({
-						url: serviceUrl + '/api/v1/file/UploadProjectFile',
+						url: serviceUrl + '/api/v1/permit/UploadFile',
 						method: "POST",
 						// headers: {'headerKey': 'headerValue'},
 						// withCredential: true,
-						data: {ProjectId: $scope.project.Id, Description: file.Info.Description, Title: file.Info.Title, SharingLevel: file.Info.SharingLevel, ItemId: $scope.row.Id},
+						data: {ProjectId: PERMIT_PROJECTID, SubprojectId: $scope.row.Id},
 						file: file,
 
                         }).progress(function (evt) {
@@ -101,7 +92,8 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
                             if (typeof config !== 'undefined')
                             {
                                 config.file.success = "Success";
-                                $scope.callback(data);
+                                //console.dir(data);
+                                $scope.all_saved_files.push(data[0]);
                             }
 						}).error(function(data, status, headers, config) {
 							$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
@@ -115,10 +107,14 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
 		};
 
 		$scope.cancel = function(){
-			//if($scope.uploadFiles)
-			//	$scope.reloadProject();
 
 			$scope.foundDuplicate = undefined;
+
+            if ($scope.all_saved_files.length > 0) {
+                console.warn("---- returning the files ----");
+                console.dir($scope.all_saved_files);
+                $modalInstance.close($scope.all_saved_files);
+            }
 
 			$modalInstance.dismiss();
 		};
