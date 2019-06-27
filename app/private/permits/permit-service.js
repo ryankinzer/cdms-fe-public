@@ -42,6 +42,12 @@ permit_module.factory('GetPermitEvents', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('GetRelatedParcels', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetRelatedParcels', {}, {
+        query: { method: 'GET', params: { ParcelId: 'ParcelId'}, isArray: true }
+    });
+}]);
+
 permit_module.factory('GetPermitFiles', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/GetPermitFiles', {}, {
         query: { method: 'GET', params: { ProjectId: 'ProjectId', PermitId: 'PermitId'}, isArray: true }
@@ -54,39 +60,55 @@ permit_module.factory('GetAllPermitPersons', ['$resource', function ($resource) 
     });
 }]);
 
-
-leasing_module.factory('SavePermit', ['$resource', function ($resource) {
+permit_module.factory('SavePermit', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermit');
 }]);
 
-
-leasing_module.factory('SavePermitPerson', ['$resource', function ($resource) {
+permit_module.factory('SavePermitPerson', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermitperson');
 }]);
 
-
-leasing_module.factory('SavePermitContact', ['$resource', function ($resource) {
+permit_module.factory('SavePermitContact', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermitcontact');
 }]);
 
-leasing_module.factory('RemovePermitContact', ['$resource', function ($resource) {
+permit_module.factory('RemovePermitContact', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/RemovePermitContact');
 }]);
 
-leasing_module.factory('SavePermitParcel', ['$resource', function ($resource) {
+permit_module.factory('SavePermitParcel', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/savepermitparcel');
 }]);
 
-leasing_module.factory('RemovePermitParcel', ['$resource', function ($resource) {
+permit_module.factory('RemovePermitParcel', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/RemovePermitParcel');
 }]);
 
-leasing_module.factory('SavePermitEvent', ['$resource', function ($resource) {
+permit_module.factory('SavePermitEvent', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/SavePermitEvent');
 }]);
 
+permit_module.factory('DeleteFile', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/DeleteFile');
+}]);
 
+permit_module.factory('GetOutstandingRequests', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetOutstandingRequests', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
 
+permit_module.factory('GetExpiringPermits', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetExpiringPermits', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
+
+permit_module.factory('GetPermitStatistics', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetPermitStatistics', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
 
 permit_module.service('PermitService', ['$q',
 
@@ -106,6 +128,11 @@ permit_module.service('PermitService', ['$q',
     'SavePermitEvent',
     'RoutingPermits',
     'InspectionPermits',
+    'DeleteFile',
+    'GetRelatedParcels',
+    'GetExpiringPermits',
+    'GetOutstandingRequests',
+    'GetPermitStatistics',
   
     function ($q,
        
@@ -124,7 +151,12 @@ permit_module.service('PermitService', ['$q',
         RemovePermitParcel,
         SavePermitEvent,
         RoutingPermits,
-        InspectionPermits
+        InspectionPermits,
+        DeleteFile,
+        GetRelatedParcels,
+        GetExpiringPermits,
+        GetOutstandingRequests,
+        GetPermitStatistics
       
     ) {
         var service = {
@@ -161,6 +193,10 @@ permit_module.service('PermitService', ['$q',
                 return GetPermitFiles.query({ ProjectId: PERMIT_PROJECTID, PermitId: PermitId });
             },
 
+            getPermitsByRelatedParcels: function (ParcelId) {
+                return GetRelatedParcels.query({ ParcelId: ParcelId });
+            },
+
             savePermit: function (permit) {
                 return SavePermit.save({ Permit: permit });
             },
@@ -191,6 +227,22 @@ permit_module.service('PermitService', ['$q',
 
             savePermitEvent: function (permitevent) {
                 return SavePermitEvent.save({ PermitEvent: permitevent });
+            },
+
+            deleteFile: function (projectId, subprojectId, itemId, file) {
+                return DeleteFile.save({ ProjectId: projectId, SubprojectId: subprojectId, ItemId: itemId, File: file });
+            },
+
+            getOutstandingRequests: function () { 
+                return GetOutstandingRequests.query();
+            },
+
+            getExpiringPermits: function () { 
+                return GetExpiringPermits.query();
+            },
+
+            getPermitStatistics: function () { 
+                return GetPermitStatistics.query();
             }
 
         };

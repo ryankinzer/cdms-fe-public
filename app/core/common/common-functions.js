@@ -1731,7 +1731,11 @@ function getProjectFilesArrayAsLinks (a_projectId, a_datasetId, a_files)
     var retval = [];
 
     files.forEach(function (file) {
-        retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/D/" + a_datasetId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+        //console.dir(file);
+        if(file.Link)
+            retval.push("<a href='" + file.Link + "' target=\"_blank\">" + file.Name + "</a>");
+        else
+            retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/D/" + a_datasetId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
     });
 
     return retval;

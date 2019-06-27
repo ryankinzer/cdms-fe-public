@@ -21,10 +21,10 @@
                 <div class="header-value">{{permit.PermitNumber}}</div>
                 
                 <div class="header-label">Project Name:</div>
-                <div class="header-value">{{permit.ProjectName}}</div>
+                <div class="header-value" style="padding-left: 240px;">{{permit.ProjectName}}</div>
 
                 <div class="header-label">Site Address:</div>
-                <div class="header-value">{{permit.SiteAddress}} {{permit.SiteCity}}</div>
+                <div class="header-value" style="padding-left: 240px;">{{permit.SiteAddress}} {{permit.SiteCity}}</div>
             </div>
 
             <div style="margin-top: 35px;">
@@ -55,6 +55,20 @@
                     <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                     <ctuir-text-field ng-switch-default></ctuir-text-field>
                 </div>
+
+                <div ng-show="mode=='edit_route'">
+
+                    <div ng-show="permit.PermitConditions != ''">
+                        <div class="header-label">Existing Conditions:</div>
+                        <div class="header-value" style="padding-left: 240px;">{{permit.PermitConditions}}&nbsp;</div>
+                    </div>
+                    <div style="margin-top: 10px;" >
+                        <div class="header-label">Add'l Conditions:</div>
+                        <div class="header-value">
+                            <textarea class="form-control" ng-model="permit.AdditionalConditions" />
+                        </div>
+                    </div>
+                </div>
                 <div ng-show="mode=='new_inspection'">
 
                     <div class="header-label">Contact #:</div>
@@ -79,9 +93,9 @@
                         <div class="header-label">Inspectors to Contact:</div>
                         <div class="header-value">
                             <div class="checkbox-itemlist">
-                                <input type="checkbox" ng-model="row.InspectorsContact['Struct']" value="Struct"> Structural/Mechanical<br />
-                                <input type="checkbox" ng-model="row.PreferredTime['PM']" value="PM"> Plumbing<br />
-                                <input type="checkbox" ng-model="row.PreferredTime['Any']" value="Any"> Electrical
+                                <input type="checkbox" ng-model="row.InspectorsContact['Structural']" value="Struct"> Structural/Mechanical<br />
+                                <input type="checkbox" ng-model="row.InspectorsContact['Plumbing']" value="PM"> Plumbing<br />
+                                <input type="checkbox" ng-model="row.InspectorsContact['Electrical']" value="Any"> Electrical
                             </div>
                         </div>
                     </div>
@@ -97,4 +111,3 @@
     <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
 
 </div>
-

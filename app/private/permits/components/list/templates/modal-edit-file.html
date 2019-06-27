@@ -1,0 +1,45 @@
+	<div class="modal-header">
+  		<h4>{{header_message}}</h4>
+  	</div>
+    <div class="modal-body modal-form">
+
+        <div ng-show="row.FileType.Name=='Image'" class="header-label">&nbsp;</div>
+        <div ng-show="row.FileType.Name=='Image'" class="header-value">
+            <img ng-src="{{row.Link}}" width="250px" />
+        </div>
+
+        <div ng-show="row.FileType.Name!='Image'" class="header-label">&nbsp;</div>
+        <div ng-show="row.FileType.Name!='Image'" class="header-value">
+            <img ng-src="assets/images/file_image.png" width="100px" />
+        </div>
+
+        <div class="header-label">Name</div>
+        <div class="header-value">
+            <input ng-disabled="true" class="form-control" type="text" ng-model="row.Name" />
+        </div>
+
+        <div class="header-label">Title</div>
+        <div class="header-value">
+            <input class="form-control" type="text" ng-model="row.Title" style="width:250px" />
+        </div>
+
+        <div class="header-label">Description</div>
+        <div class="header-value">
+            <textarea class="form-control" ng-model="row.Description"></textarea>
+        </div>
+
+        <div class="header-label">Sharing Level</div>
+        <div class="header-value">
+            <select class="form-control" ng-model="row.SharingLevel" convert-to-number>
+                <option value="{{SHARINGLEVEL_PRIVATE}}" ng-selected="row.SharingLevel == SHARINGLEVEL_PRIVATE">{{SharingLevel['SHARINGLEVEL_PRIVATE']}}</option>
+                <option value="{{SHARINGLEVEL_PUBLICREAD}}" ng-selected="row.SharingLevel == SHARINGLEVEL_PUBLICREAD">{{SharingLevel['SHARINGLEVEL_PUBLICREAD']}}</option>
+            </select>
+        </div>
+
+
+    </div>
+	<div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="save()">Save</button>
+    </div>
+
