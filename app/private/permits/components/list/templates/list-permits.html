@@ -16,7 +16,6 @@
 
     <div ng-show="permitsGrid.selectedItem">
 
-        
         <div class="modal-body modal-form" style="width: 100% !important;">
 
             <ul class="nav nav-tabs">
@@ -32,6 +31,8 @@
                 </li>
             </ul>
 
+            <div ng-show="row.PermitType==15 && (row.PermitStatus=='Approved' || row.PermitStatus=='Conditionally Approved')" style="margin-top: -40px; margin-right:9px;" class="right"><a href="https://paluutreports.ctuir.org/Reports/report/TPO/DevelopmentPermit?PermitNumber={{row.PermitNumber}}" target="_blank" role="button" class="btn btn-primary">Generate Permit</a></div>
+
             <div ng-show="Profile.hasRole('Permits') && row.dataChanged" style="margin: 10px; float: right;">
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
                 <button class="btn btn-primary" ng-click="save()">Save</button>
@@ -45,7 +46,7 @@
                         <div class="list-group media-list media-list-stream">
 
                             <h2>{{row.ProjectName}} ({{row.PermitStatus}})</h2>
-
+                            
                             <div class="row">
 
                                 <div class="col-lg-4" style="min-width: 450px;">
