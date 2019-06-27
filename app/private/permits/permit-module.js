@@ -4,6 +4,7 @@ require([
     //controllers
     'private/permits/components/list/list-permits',
     'private/permits/components/taskboard/routes',
+    'private/permits/components/dashboard/dashboard',
 
     //modals
     'private/permits/components/list/add-activity-modal',
@@ -26,6 +27,7 @@ require([
     permit_module.controller('AddPermitPersonModalController', modal_add_permitperson);
     permit_module.controller('PermitRoutesController', permit_routes);
     permit_module.controller('AddFeeModalController', modal_add_fee);
+    permit_module.controller('PermitDashboardController', permit_dashboard);
 
     permit_module.filter('personOrgName', function () {
         return function (person) {

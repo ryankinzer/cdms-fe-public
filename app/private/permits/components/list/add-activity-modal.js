@@ -113,7 +113,7 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
 
         var NEW_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "Comments"];
         var EDIT_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "ResponseDate","Result","Reference","Files","Comments"];
-        var NEW_INSPECTION_FIELDS = ["Reference","RequestDate","Comments"];
+        var NEW_INSPECTION_FIELDS = ["Reference","ItemType","RequestDate","Comments"];
 
         //a filter to determine which fields to show
         $scope.doShowField = function (field) {

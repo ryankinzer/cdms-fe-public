@@ -696,10 +696,6 @@
 
             $scope.row.dataChanged = true;
 
-            //console.dir($scope.row);
-            if (field.DbColumnName == "PermitStatus") {
-
-            }
         };
 
         $scope.calculatePermitNumber = function () { 
@@ -734,6 +730,8 @@
                         PermitId: $scope.row.Id,
                         ByUser: $scope.Profile.Id,
                         EventDate: moment().format('L'),
+                        RequestDate: moment().format('L'),
+                        ResponseDate: moment().format('L'),
                         EventType: "Record",
                         ItemType: "TPO",
                         Reviewer: $scope.Profile.Fullname,

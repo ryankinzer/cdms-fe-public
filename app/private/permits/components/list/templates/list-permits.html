@@ -194,32 +194,42 @@
                     <div role="tabpanel" class="tab-pane fade in" id="payment">
                         <div class="list-group media-list media-list-stream">
                             <div style="margin-top: 30px;"></div>
-                            <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:5}" ng-switch on="field.ControlType">
-                                <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
-                                <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
-                                <ctuir-instrument-select-field ng-switch-when="instrument-select"></ctuir-instrument-select-field>
-                                <ctuir-accuracy-check-select-field ng-switch-when="accuracy-check-select"></ctuir-accuracy-check-select-field>
-                                <ctuir-post-accuracy-check-select-field ng-switch-when="post-accuracy-check-select"></ctuir-post-accuracy-check-select-field>
-                                <ctuir-timezone-select-field ng-switch-when="timezone-select"></ctuir-timezone-select-field>
-                                <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                                <ctuir-activity-text-field ng-switch-when="activity-text"></ctuir-activity-text-field>
-                                <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
-                                <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
-                                <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
-                                <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                                <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
-                                <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
-                                <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
-                                <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
-                                <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
-                                <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
-                                <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
-                                <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
-                                <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                                <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
-                                <ctuir-qa-status-select-field ng-switch-when="qa-status-select"></ctuir-qa-status-select-field>
-                                <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
-                                <ctuir-text-field ng-switch-default></ctuir-text-field>
+
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg">
+                                        <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:5}" ng-switch on="field.ControlType">
+                                            <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
+                                            <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
+                                            <ctuir-instrument-select-field ng-switch-when="instrument-select"></ctuir-instrument-select-field>
+                                            <ctuir-accuracy-check-select-field ng-switch-when="accuracy-check-select"></ctuir-accuracy-check-select-field>
+                                            <ctuir-post-accuracy-check-select-field ng-switch-when="post-accuracy-check-select"></ctuir-post-accuracy-check-select-field>
+                                            <ctuir-timezone-select-field ng-switch-when="timezone-select"></ctuir-timezone-select-field>
+                                            <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                                            <ctuir-activity-text-field ng-switch-when="activity-text"></ctuir-activity-text-field>
+                                            <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                                            <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                                            <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                                            <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                                            <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
+                                            <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
+                                            <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
+                                            <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                                            <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                                            <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
+                                            <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
+                                            <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
+                                            <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                                            <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
+                                            <ctuir-qa-status-select-field ng-switch-when="qa-status-select"></ctuir-qa-status-select-field>
+                                            <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
+                                            <ctuir-text-field ng-switch-default></ctuir-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg">
+                                            Fee calculation...
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
