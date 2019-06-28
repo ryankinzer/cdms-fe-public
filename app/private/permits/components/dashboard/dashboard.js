@@ -37,7 +37,11 @@
                 editable: false,
                 sortable: true,
                 resizable: true,
-            }
+            },
+            onRowDoubleClicked: function (params) { 
+                console.dir(params);
+                //$window.open('/index.html#!/permits/list?Id='+params., '_blank');
+            },
         };
 
         $scope.requestsGrid.columnDefs = [
