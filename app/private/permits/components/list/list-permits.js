@@ -120,7 +120,7 @@
                        console.log("down");
                        previousCell = params.previousCellDef;
                        // set selected cell on current cell + 1
-                       $scope.permitsGrid.api.forEachNode( (node) => {
+                       $scope.permitsGrid.api.forEachNode( function(node) {
                            if (previousCell.rowIndex + 1 === node.rowIndex) {
                                node.setSelected(true);
                            }
@@ -129,7 +129,7 @@
                    case KEY_UP:
                        previousCell = params.previousCellDef;
                        // set selected cell on current cell - 1
-                       $scope.permitsGrid.api.forEachNode( (node) => {
+                       $scope.permitsGrid.api.forEachNode( function(node) {
                            if (previousCell.rowIndex - 1 === node.rowIndex) {
                                node.setSelected(true);
                            }
