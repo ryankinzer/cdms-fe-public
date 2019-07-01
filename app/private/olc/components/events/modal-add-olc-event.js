@@ -110,6 +110,23 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             }
         }
 
+        if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null)) {
+
+            var arySurveyDates = $scope.event_row.SurveyDates.split(';')
+
+            $scope.event_row.SurveyDates = "";
+
+            var intCount = 0;
+            arySurveyDates.forEach(function (item) {
+                if (intCount === 0)
+                    $scope.event_row.SurveyDates += item;
+                else
+                    $scope.event_row.SurveyDates += ";\n" + item;
+
+                intCount++;
+            });
+        }
+
         //console.log("$scope.event_row is next...");
         //console.dir($scope.event_row);
 
