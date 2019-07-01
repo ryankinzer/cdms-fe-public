@@ -282,6 +282,17 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 console.log("saveRow.DateDiscovered = " + saveRow.DateDiscovered);
             }
 
+            if ((typeof saveRow.SurveyDates !== 'undefined') && (saveRow.SurveyDates !== null)) {
+                console.log("saveRow.SurveyDates = " + saveRow.SurveyDates);
+
+                // First, strip out the new line characters.
+                saveRow.SurveyDates = saveRow.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+                console.log("saveRow.SurveyDates after stripping = " + saveRow.SurveyDates);
+
+                // We don't want to send this, so delete it.
+                saveRow.SurveyDate = undefined;
+            }
+
             //saveRow.Boundaries = JSON.stringify(saveRow.Boundaries);
             //console.log("saveRow.Boundaries = " + saveRow.Boundaries);
 
@@ -337,6 +348,8 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
             console.log("saveRow is next, after processing dates...");
             console.dir(saveRow);
+
+            //throw ("Stopping right here...");
 
             // Response Type:  If the user selected Other, we must use the name they supplied in OtherResponseType.
             //if ((saveRow.OtherResponseType) && (typeof saveRow.OtherResponseType !== 'undefined'))
@@ -399,6 +412,81 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             }
 
             $modalInstance.dismiss();
+        };
+
+        $scope.addSurveyDate = function () {
+            console.log("+SD clicked...");
+            console.log("$scope.row.SurveyDate = " + $scope.event_row.SurveyDate);
+
+            if ((typeof $scope.event_row.SurveyDate === 'undefined') || ($scope.event_row.SurveyDate === null))
+                return;
+
+            if ((typeof $scope.event_row.SurveyDates === 'undefined') || ($scope.event_row.SurveyDates === null))
+                $scope.event_row.SurveyDates = "";
+
+            // We will add a new line at the end, so that the string presents well on the page.
+            $scope.event_row.SurveyDates += getDateFromDate($scope.event_row.SurveyDate) + ";\n";
+
+            console.log("$scope.event_row.SurveyDates = " + $scope.event_row.SurveyDates);
+        };
+
+        $scope.removeSurveyDate = function () {
+            console.log("-SD clicked...");
+            console.log("$scope.row.SurveyDates before stripping = " + $scope.event_row.SurveyDates);
+
+            // First, strip out the new line characters.
+            $scope.event_row.SurveyDates = $scope.event_row.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+            console.log("$scope.event_row.SurveyDates after stripping = " + $scope.event_row.SurveyDates);
+
+            // Note, we still have the trailing semicolon.
+            // Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
+            var arySurveyDates = $scope.event_row.SurveyDates.split(";");
+
+            // Next, get rid of that trailing semicolon.
+            arySurveyDates.splice(-1, 1);
+            console.dir(arySurveyDates);
+
+            // Now we can continue with the delete action.
+            var arySurveyDatesLength = arySurveyDates.length;
+
+            for (var i = 0; i < arySurveyDatesLength; i++) {
+                console.log("arySurveyDates[i] = " + arySurveyDates[i]);
+                var utcOffset = moment().utcOffset();
+                var searchDate = null;
+
+                if (utcOffset === -420) {
+
+                    searchDate = moment($scope.event_row.SurveyDate).add(1,'days').format('YYYY-MM-DD');
+                }
+                else if (utcOffset === -480)
+                    searchDate = moment($scope.event_row.SurveyDate).add(1080, 'minutes').format('YYYY-MM-DD');
+
+                searchDate = getDateFromDate(searchDate);
+
+                console.log("searchDate = " + searchDate);
+                //var searchDate = getDateFromDate($scope.event_row.SurveyDate);
+                var listDate = arySurveyDates[i];
+
+                //if (arySurveyDates[i].indexOf(moment($scope.event_row.SurveyDate, "YYYY-MM-DD")) > -1) {
+                if (listDate.indexOf(searchDate) > -1) {
+                    console.log("Found the item...");
+                    arySurveyDates.splice(i, 1);
+                    console.log("Removed the item.");
+
+                    $scope.event_row.SurveyDates = "";
+                    console.log("Wiped $scope.event_row.SurveyDates...");
+
+                    // Rebuild the string now, adding the semicolon and newline after every line.
+                    angular.forEach(arySurveyDates, function (item) {
+                        $scope.event_row.SurveyDates += item + ";\n";
+                        console.log("Added item...");
+                    });
+
+                    // Since we found the item, skip to then end to exit.
+                    i = arySurveyDatesLength;
+                }
+            }
+            console.log("Finished.");
         };
 
     }

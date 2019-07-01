@@ -103,9 +103,20 @@
                 <div class="header-value">
                     <input type="text" class="form-control" ng-model="event_row.SurveyAuthorizingAgency" />
                 </div>
-                <div class="header-label">Survey Dates</div>
+
+                <div class="form-group" style="margin-bottom: 0px;">
+                    <div class="header-label">Survey Date</div>
+                    <div class="header-value">
+                        <!--<input type="text" class="form-control" ng-model="event_row.SurveyDates" />-->
+                        <button class="right btn btn-xs" ng-click="addSurveyDate()" style="margin: 2px;  margin-right:20px;">+</button>
+                        <button class="right btn btn-xs" ng-click="removeSurveyDate()" style="margin: 2px; ">-</button>
+                        <md-datepicker class="form-control" ng-model="event_row.SurveyDate" md-hide-icons="triangle" md-placeholder="Enter date" ng-blur="calculateDateOfResponse()"></md-datepicker>
+                    </div>
+                </div>
+                <div class="header-label">Selected Survey Dates</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.SurveyDates" />
+                    <!--<textarea class="form-control" type="text" rows="4"  readonly ng-model="row.txtCollaborators"  ng-focus="enteredSelectedCollaborators()" ng-keydown="checkKeyPress($event)"></textarea>-->
+                    <textarea class="form-control" type="text" rows="4" readonly ng-model="event_row.SurveyDates"></textarea>
                 </div>
 
                 <div class="header-label">Description</div>
