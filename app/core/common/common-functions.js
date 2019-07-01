@@ -1429,6 +1429,36 @@ function convertStringToArray(aString){
 	return aryItems;
 }
 
+// This function expects a string looking like this:  "a;\nb;\nc;\nd;"
+// and converts the string into a string looking like this:  "a;b;c;d;"
+// Handles strings like Collaborators; this function for saving.
+function convertStringWithSeparatorsAndReturnsToNormalString(aString) {
+    var strA = aString.replace(/(\r\n|\r|\n)/gm, "");
+
+    return strA;
+}
+
+// This function expects a string looking like this: "a;b;c;d;"
+// and converts the string into a string looking like this: "a;\nb;\nc;\nd;"
+// Handles strings like Collaborators; this function for displaying.
+function convertStringWithSeparatorsToStringWithSeparatorsAndReturns(aString) {
+    var aryA = aString.split(';');
+
+    var strA = "";
+
+    var intCount = 0;
+    aryA.forEach(function (item) {
+        if (intCount === 0)
+            strA += item;
+        else
+            strA += ";\n" + item;
+
+        intCount++;
+    });
+
+    return strA;
+}
+
 //looks at the metadata setting to see if it is a habitat project
 function isHabitatProject (a_project) {
     return (a_project.MetadataValue[METADATA_PROPERTY_SUBPROGRAM]) === "Habitat";

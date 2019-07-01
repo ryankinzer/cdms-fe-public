@@ -111,8 +111,8 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         }
 
         if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null)) {
-
-            var arySurveyDates = $scope.event_row.SurveyDates.split(';')
+            $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
+            /*var arySurveyDates = $scope.event_row.SurveyDates.split(';')
 
             $scope.event_row.SurveyDates = "";
 
@@ -125,6 +125,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
                 intCount++;
             });
+            */
         }
 
         //console.log("$scope.event_row is next...");
@@ -303,7 +304,8 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 console.log("saveRow.SurveyDates = " + saveRow.SurveyDates);
 
                 // First, strip out the new line characters.
-                saveRow.SurveyDates = saveRow.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+                //saveRow.SurveyDates = saveRow.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+                saveRow.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString(saveRow.SurveyDates);
                 console.log("saveRow.SurveyDates after stripping = " + saveRow.SurveyDates);
 
                 // We don't want to send this, so delete it.
