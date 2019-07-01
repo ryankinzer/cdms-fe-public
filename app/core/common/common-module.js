@@ -23,6 +23,7 @@ require([
     'core/common/components/modals/modal-link-field',
     'core/common/components/modals/modal-verify-action',
     'core/common/components/modals/modal-invalid-operation',
+    'core/common/components/feedback/feedback',
 
     //'core/common/components/file/modal-file-add',
     //'core/common/components/file/modal-file-delete',
@@ -59,6 +60,7 @@ require([
     common_module.controller('LinkModalCtrl', modal_link_field);
     common_module.controller('ModalVerifyActionCtrl', modal_verify_action);
     common_module.controller('ModalInvalidOperation', modal_invalid_operation);
+    common_module.controller('FeedbackController', modal_feedback);
 
     //common_module.controller('FileAddModalCtrl', modal_file_add);
     //common_module.controller('FileDeleteModalCtrl', modal_file_delete);

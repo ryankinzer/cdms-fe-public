@@ -45,6 +45,7 @@
         };
 
         $scope.requestsGrid.columnDefs = [
+            { headerName: "Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Permit #", field: "PermitNumber", width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Project Name", field: "ProjectName", width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Event Type", field: "EventType", width: 150, menuTabs: ['filterMenuTab'], filter: true },
@@ -64,6 +65,7 @@
             rowData: null,
             rowSelection: 'single',
             selectedItem: null,
+            selectedItem: null,
             defaultColDef: {
                 editable: false,
                 sortable: true,
@@ -72,6 +74,7 @@
         };
 
         $scope.expiringGrid.columnDefs = [
+            { headerName: "Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Permit #", field: "PermitNumber", width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Project Name", field: "ProjectName", width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
             {
