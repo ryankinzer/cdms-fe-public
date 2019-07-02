@@ -6,12 +6,27 @@
         if (!$scope.Profile.hasRole("Permits"))
             angular.rootScope.go("/unauthorized");
 
-        $scope.permits = PermitService.getRoutingPermits();
+        $scope.refresh = function () {
+            $scope.permits = PermitService.getRoutingPermits();
+            
+            $scope.permits.$promise.then(function () {
+                $scope.refreshPermits();
+                if($scope.permitRoutesGrid && $scope.permitRoutesGrid.api)
+                    $scope.permitRoutesGrid.api.setRowData($scope.permits);
+            });
+
+        };
+
+        $scope.refresh();
+
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
 
-        $scope.permits.$promise.then(function () {
-            $scope.refreshPermits();
+        $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID); //needed for the fee modal fields
+        $scope.dataset.$promise.then(function () { 
+            var AllColumnDefs = GridService.getAgColumnDefs($scope.dataset);
+            $scope.permitColumnDefs = AllColumnDefs.HeaderFields;
         });
+
 
         //setup our columns for the events modal
         $scope.eventsdataset.$promise.then(function () {
@@ -36,7 +51,7 @@
         //our cell value getter used by the cell renderer
         $scope.getRouteDisplay = function (params) {
 
-            var col = params.colDef.field.substring(6); //"Route_Plan" --> "Plan"
+            var col = params.colDef.field.substring(6); //"Route_BldgCode" --> "BldgCode"
 
             var retval = "";
 
@@ -58,18 +73,22 @@
         $scope.permitRoutesColDefs = [
             { headerName: "Main Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Permit #", field: "PermitNumber", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
-            //{ headerName: "Status", field: "PermitStatus", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
+            { headerName: "Status", field: "PermitStatus", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
             //{ headerName: "Routes", field: "ReviewsRequired", menuTabs: ['filterMenuTab'], width: 150 , filter: 'text'}, 
             { headerName: "Project Name", field: "ProjectName", menuTabs: ['filterMenuTab'], width: 280, filter: 'text' },
             { headerName: "TPO", field: "Route_TPO", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
-            { headerName: "Plan", field: "Route_Plan", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
+            { headerName: "BldgCode", field: "Route_BldgCode", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "WRP", field: "Route_WRP", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Env", field: "Route_Env", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "PubWrks", field: "Route_PubWrks", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "TERO", field: "Route_TERO", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "CRPP", field: "Route_CRPP", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Roads", field: "Route_Roads", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
-            { headerName: "Fee Paid", field: "FeePaymentAmount", menuTabs: ['filterMenuTab'], width: 100 },
+            { headerName: "Fee Paid", field: "FeePaymentAmount", menuTabs: ['filterMenuTab'], width: 100, 
+                valueFormatter: function (params) {
+                    return valueFormatterCurrency(params.node.data.FeePaymentAmount);
+                },
+            },
             //{ headerName: "Issued By", field: "IssuedBy", menuTabs: ['filterMenuTab'], width: 160, filter: true },
             { headerName: "Comments", field: "Comments", menuTabs: ['filterMenuTab'], width: 460 }
         ];
@@ -96,8 +115,8 @@
                 //$scope.openPermitPersonModal($scope.permitRoutesGrid.selectedItem.PermitPersonId);
             },
             onSelectionChanged: function (params) {
-                $scope.permitRoutesGrid.selectedItem = $scope.permitRoutesGrid.api.getSelectedRows()[0];
-                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+                $scope.permitRoutesGrid.selectedItem = $scope.row = $scope.permitRoutesGrid.api.getSelectedRows()[0];
+                //$scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
             components: {
                 'routeCellRenderer': RouteCellRenderer
@@ -114,12 +133,25 @@
         });
 
         $scope.handleDoubleClick = function (params) {
-            var col = params.colDef.field.substring(6); //"Route_Plan" --> "Plan"
+            var col = params.colDef.field.substring(6); //"Route_BldgCode" --> "BldgCode"
 
-            //we only deal with the cells that are for required routes
-            if (!params.node.data.ReviewsRequired.contains(col))
+            if (col == 'TPO')
                 return;
 
+            //if they doubleclicked on a cell for required routes
+            if (params.node.data.ReviewsRequired.contains(col)) {
+                $scope.handleRouteOpen(params, col);
+            }
+            //if they clicked on the fee cell
+            else if (params.colDef.field == 'FeePaymentAmount') {
+                $scope.handleFeeOpen(params);
+            }
+
+            //otherwise just ignore it...
+            
+        };
+
+        $scope.handleRouteOpen = function (params, col) { 
             var value = params.node.data[params.colDef.field];
 
             console.log(" Route = " + col + " for " + value);
@@ -132,7 +164,7 @@
                 var new_activity = {
                     PermitId: $scope.permitRoutesGrid.selectedItem.Id,
                     EventType: 'Review',
-                    ItemType: col, //Plan, WRP, Env, PubWrks, TERO, CRPP, etc.
+                    ItemType: col, //BldgCode, WRP, Env, PubWrks, TERO, CRPP, etc.
                 };
 
                 // required but not yet routed, open a new event of this type
@@ -157,9 +189,21 @@
                 }
 
             });
+        };
 
+        $scope.handleFeeOpen = function (params) {
+            $scope.openFeeModal(params);
+        };
 
+        $scope.openFeeModal = function (params) {
 
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/taskboard/templates/add-fee-modal.html',
+                controller: 'AddFeeModalController',
+                scope: $scope,
+            }).result.then(function (saved_permit) {
+                $scope.permitRoutesGrid.api.setRowData($scope.permits);
+            });
         };
 
 
@@ -175,10 +219,15 @@
             }).result.then(function (saved_activity) {
 
                 //save the permit with the route updated
-                var save_permit = angular.copy($scope.permitRoutesGrid.selectedItem);
-                console.log("updating permit route for: " + saved_activity.ItemType);
+                var save_permit = angular.copy($scope.row);
+                //console.log("updating permit route for: " + saved_activity.ItemType);
                 save_permit["Route_" + saved_activity.ItemType] = ($scope.intent == 'new_route') ? "+" : "*";
                 save_permit.ReviewsRequired.remove("TPO");
+
+                if (save_permit.AdditionalConditions) {
+                    save_permit.PermitConditions = (save_permit.PermitConditions) ? save_permit.PermitConditions + "; " + save_permit.AdditionalConditions : save_permit.AdditionalConditions;
+                    delete save_permit.AdditionalConditions;
+                }
 
                 save_permit.ReviewsRequired = angular.toJson(save_permit.ReviewsRequired);
 
@@ -211,7 +260,8 @@
         $scope.setupPermit = function (permit) { 
             if (permit.ReviewsRequired)
                 permit.ReviewsRequired = angular.fromJson(permit.ReviewsRequired);
-            else
+
+            if(!Array.isArray(permit.ReviewsRequired))
                 permit.ReviewsRequired = [];
 
             permit.ReviewsRequired.push("TPO"); //this route is always required. :)

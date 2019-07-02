@@ -169,22 +169,14 @@
             {
                 headerName: "Graze Start",
                 field: "GrazeStart", width: 160,
-                valueGetter: function (params) { return moment(params.node.data.GrazeStart) },
-                valueFormatter: function (params) {
-                    return valueFormatterDate(params.node.data.GrazeStart);
-                },
                 menuTabs: ['filterMenuTab'],
-                filter: "agDateColumnFilter"
+                filter: false
             },
             {
                 headerName: "Graze End",
                 field: "GrazeEnd", width: 160,
-                valueGetter: function (params) { return moment(params.node.data.GrazeEnd) },
-                valueFormatter: function (params) {
-                    return valueFormatterDate(params.node.data.GrazeEnd);
-                },
                 menuTabs: ['filterMenuTab'],
-                filter: "agDateColumnFilter"
+                filter: false
 
             },
             { headerName: "Residue Required Pct", field: "ResidueRequiredPct", width: 160, menuTabs: ['filterMenuTab'], filter: "number", hide: !$scope.canViewCropFields },
@@ -226,11 +218,17 @@
 
 
         $scope.viewLease = function (params) {
-            window.location="index.html#!view-lease/"+params.Id;
+            if (window.event.ctrlKey)
+                window.open("index.html#!view-lease/" + params.Id, "_blank");
+            else                
+                window.location="index.html#!view-lease/"+params.Id;
         };
 
         $scope.viewOnMap = function (params) {
-            window.location = "index.html#!leasing?allotment=" + params.AllotmentName;
+            if (window.event.ctrlKey)
+                window.open("index.html#!leasing?allotment=" + params.AllotmentName, "_blank");
+            else
+                window.location = "index.html#!leasing?allotment=" + params.AllotmentName;
         }
 
 }];
