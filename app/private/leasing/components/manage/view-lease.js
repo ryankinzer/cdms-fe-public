@@ -376,21 +376,11 @@
             },
             {
                 headerName: "Graze Start",
-                field: "GrazeStart", width: 160,
-                valueGetter: function (params) { return moment(params.node.data.GrazeStart) },
-                valueFormatter: function (params) {
-                    return valueFormatterDate(params.node.data.GrazeStart);
-                },
-
+                field: "GrazeStart", width: 160
             },
             {
                 headerName: "Graze End",
-                field: "GrazeEnd", width: 160,
-                valueGetter: function (params) { return moment(params.node.data.GrazeEnd) },
-                valueFormatter: function (params) {
-                    return valueFormatterDate(params.node.data.GrazeEnd);
-                },
-
+                field: "GrazeEnd", width: 160
             },
             { headerName: "Residue Required Pct", field: "ResidueRequiredPct", width: 160, hide: !$scope.canViewCropFields },
             { headerName: "Green Cover Required Pct", field: "GreenCoverRequiredPct", width: 160, hide: !$scope.canViewCropFields },
@@ -467,10 +457,11 @@
             },
             { headerName: "Yield Acre", field: "YieldAcre", width: 150 },
             { headerName: "Owner Share %", field: "OwnerSharePercent", width: 150 },
-            { headerName: "Owner Share", field: "OwnerShareDollar", width: 150
-                //valueFormatter: function (params) {
-                //    return valueFormatterCurrency(params.node.data.OwnerShareDollar);
-                //},
+            { headerName: "Owner Share", field: "OwnerShareDollar", width: 150 },
+            { headerName: "Grazing Rental Rate", field: "GrazingRentalRate", width: 150,
+                valueFormatter: function (params) {
+                    return valueFormatterCurrency(params.node.data.GrazingRentalRate);
+                },
             },
             { headerName: "Market Price", field: "MarketPrice", width: 150, 
                 valueFormatter: function (params) {
