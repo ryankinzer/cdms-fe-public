@@ -64,7 +64,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         }
         var foundIt = false;
 
-        // If even_row.Id is greater than 0, we're editing...
+        // If event_row.Id is greater than 0, we're editing...
         if ($scope.event_row.Id > 0) {
             $scope.header_message = "Edit Event for Catalog Number " + $scope.viewSubproject.CatalogNumber;
         }
@@ -415,6 +415,24 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             $scope.event_row.Description = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.Description);
 
             $modalInstance.dismiss();
+        };
+
+        $scope.migrateEvent = function () {
+            console.log("Inside migrateEvent...")
+            console.log("$scope is next...");
+            console.dir($scope.event_row);
+
+            $rootScope.SubprojectId = $scope.SubprojectId = $scope.event_row.SubprojectId;
+            //console.log("ok subproject set: ");
+            //console.dir($scope.viewSubproject);
+
+            //$scope.event_row = event_row;
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/olc/components/events/templates/modal-migrate-olc-event.html',
+                controller: 'OlcMigrateEventCtrl',
+                scope: $scope //very important to pass the scope along...
+            });
         };
 
         $scope.addDescription = function () {
