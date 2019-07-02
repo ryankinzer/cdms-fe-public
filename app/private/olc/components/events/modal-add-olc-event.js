@@ -449,6 +449,8 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 //console.log("setting EventFiles to " + $scope.originalExistingFiles[$scope.file_field]);
             }
 
+            $scope.event_row.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.SurveyDates);
+
             $modalInstance.dismiss();
         };
 
