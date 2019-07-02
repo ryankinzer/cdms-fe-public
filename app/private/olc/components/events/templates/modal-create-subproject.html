@@ -38,9 +38,17 @@
 
             <div class="header-label">Facility Housed</div>
             <div class="header-value">
-                <select ui-select2="select2Options" data-placeholder="Choose an Agency" style="width: 300px; margin-top: 4px;" ng-model="subproject_row.FacilityHoused" ng-change="selectAgency()">
+                <select ui-select2="select2Options" data-placeholder="Choose an Facility" style="width: 300px; margin-top: 4px;" ng-model="subproject_row.FacilityHoused" ng-change="selectFacilityHoused()">
                     <option ng-repeat="facility in getMetafield('FacilityHoused')" value="{{facility}}">{{facility}}</option>
                 </select>
+            </div>
+            <div>
+                <div ng-show="showOtherFacilityHoused">
+                    <div class="header-label">Other Facility Housed</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" ng-model="subproject_row.OtherFacilityHoused" />
+                    </div>
+                </div>
             </div>
 
             <div class="header-label">Box</div>
