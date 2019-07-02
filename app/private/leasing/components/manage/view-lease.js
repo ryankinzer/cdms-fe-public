@@ -585,6 +585,19 @@
 
         $scope.openEditLeaseModal = function (params) {
 
+            $scope.pagemode = "edit";
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/leasing/components/manage/templates/lease-modal.html',
+                controller: 'LeaseModalController',
+                scope: $scope, 
+            });
+        }
+
+        $scope.openNewLeaseModal = function (params) {
+
+            $scope.pagemode = "new_lease_on_this_parcel";
+
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/leasing/components/manage/templates/lease-modal.html',
                 controller: 'LeaseModalController',
