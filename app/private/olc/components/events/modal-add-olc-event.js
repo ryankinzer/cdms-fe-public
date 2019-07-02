@@ -60,7 +60,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
             $rootScope.subprojectId = $scope.viewSubproject.Id;
         {
-            $scope.setupOlcMetaFields()
+            $scope.setupOlcMetaFields();
         }
         var foundIt = false;
 
@@ -88,6 +88,14 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             //    $scope.event_row.strBoundaries += boundary + ";\n";
             //});
             
+        }
+
+        if ((typeof $scope.event_row.OtherBoundary !== 'undefined') && ($scope.event_row.OtherBoundary !== null)) {
+
+            $scope.showOtherBoundary = true;
+        }
+        else {
+            $scope.showOtherBoundary = false;
         }
 
         if ((typeof $scope.event_row.SignificantArea !== 'undefined') && ($scope.event_row.SignificantArea !== null)) {
@@ -138,6 +146,17 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         //callback that is called from modalFile to do the actual file removal (varies by module)
         $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
             return SubprojectService.deleteOlcEventFile($scope.projectId, $scope.subprojectId, saveRow.Id, file_to_remove);
+        };
+
+        $scope.selectBoundary = function () {
+            $scope.showOtherBoundary = false;
+
+            // Walk the list of options the user has selected, and see if one of them is Other.
+            $scope.event_row.Boundary.forEach(function (item) {
+                if (item === "Other")
+                    $scope.showOtherBoundary = true;
+            });
+
         };
 
         $scope.addBoundary = function () {

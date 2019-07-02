@@ -71,6 +71,14 @@
                         <option ng-repeat="boundary in getMetafield('Boundary')" value="{{boundary}}">{{boundary}}</option>
                     </select>
                 </div>
+                <div>
+                    <div ng-show="showOtherBoundary">
+                        <div class="header-label">Other Boundary</div>
+                        <div class="header-value">
+                            <input class="form-control" type="text" ng-model="event_row.OtherBoundary" />
+                        </div>
+                    </div>
+                </div>
 
                 <div class="header-label">Significant Area</div>
                 <div class="header-value">
