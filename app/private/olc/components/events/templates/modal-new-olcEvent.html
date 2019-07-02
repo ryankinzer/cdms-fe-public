@@ -127,9 +127,17 @@
                     <textarea class="form-control" type="text" rows="4" readonly ng-model="event_row.SurveyDates"></textarea>
                 </div>
 
+                <div class="form-group" style="margin-bottom: 0px;">
+                    <div class="header-label">Description Item</div>
+                    <div class="header-value">
+                        <button class="right btn btn-xs" ng-click="addDescription()" style="margin: 2px;  margin-right:20px;">+</button>
+                        <button class="right btn btn-xs" ng-click="removeDescription()" style="margin: 2px; ">-</button>
+                        <input type="text" class="form-control" ng-model="event_row.DescriptionItem" />
+                    </div>
+                </div>
                 <div class="header-label">Description</div>
                 <div class="header-value">
-                    <textarea type="text" rows="4" class="form-control" ng-model="event_row.Description"></textarea>
+                    <textarea type="text" rows="4" class="form-control" readonly ng-model="event_row.Description"></textarea>
                 </div>
 
                 <div class="header-label">TwnRngSec</div>
