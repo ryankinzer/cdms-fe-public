@@ -1459,6 +1459,52 @@ function convertStringWithSeparatorsToStringWithSeparatorsAndReturns(aString) {
     return strA;
 }
 
+// This function expects a string looking like this:
+// str1;
+// str2;
+// str3;
+// Assuming str2 is passed in, the function removes str2 from the string:  str1;str3;
+function removeStringItemFromList(strItem, in_list) {
+    /*in_list.forEach(function (list_item, index) {
+        if (list_item === strText) {
+            in_list.splice(index, 1);
+            console.log(" -- removing " + list_item);
+        } else {
+            console.log(" -- keeping " + list_item);
+        }
+    });
+    */
+
+    var strNew = "";
+    var aryA = in_list.split(";");
+
+    // Next, get rid of that trailing blank record.
+    aryA.splice(-1, 1);
+    console.dir(aryA);
+
+    var aryLength = aryA.length;
+
+    for (var i = 0; i < aryLength; i++) {
+        console.log("aryA[i] = " + aryA[i]);
+        if (aryA[i].indexOf(strItem) > -1) {
+            console.log("Found the item...");
+            aryA.splice(i, 1);
+            console.log("Removed the item.");
+
+            // Rebuild the string now, adding the semicolon and newline after every line.
+            angular.forEach(aryA, function (item) {
+                strNew += item + ";\n";
+                console.log("Added item...");
+            });
+
+            // Since we found the item, skip to then end to exit.
+            i = aryLength;
+        }
+    }
+
+    return strNew;
+}
+
 //looks at the metadata setting to see if it is a habitat project
 function isHabitatProject (a_project) {
     return (a_project.MetadataValue[METADATA_PROPERTY_SUBPROGRAM]) === "Habitat";
