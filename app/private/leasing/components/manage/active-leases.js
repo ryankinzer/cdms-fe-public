@@ -218,11 +218,17 @@
 
 
         $scope.viewLease = function (params) {
-            window.location="index.html#!view-lease/"+params.Id;
+            if (window.event.ctrlKey)
+                window.open("index.html#!view-lease/" + params.Id, "_blank");
+            else                
+                window.location="index.html#!view-lease/"+params.Id;
         };
 
         $scope.viewOnMap = function (params) {
-            window.location = "index.html#!leasing?allotment=" + params.AllotmentName;
+            if (window.event.ctrlKey)
+                window.open("index.html#!leasing?allotment=" + params.AllotmentName, "_blank");
+            else
+                window.location = "index.html#!leasing?allotment=" + params.AllotmentName;
         }
 
 }];
