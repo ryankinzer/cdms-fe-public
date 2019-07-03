@@ -391,7 +391,11 @@
                 },
             },
             { headerName: "AUMs", field: "AUMs", width: 160, hide: !$scope.canViewCropFields },
-
+            { headerName: "Grazing Rental Rate", field: "GrazingRentalRate", width: 150,
+                valueFormatter: function (params) {
+                    return valueFormatterCurrency(params.node.data.GrazingRentalRate);
+                },
+            },
             { headerName: "Dollar Per Annum", field: "DollarPerAnnum", width: 160 },
             { headerName: "Dollar Advance", field: "DollarAdvance", width: 160 },
             { headerName: "Dollar Bond", field: "DollarBond", width: 160 },
@@ -458,11 +462,6 @@
             { headerName: "Yield Acre", field: "YieldAcre", width: 150 },
             { headerName: "Owner Share %", field: "OwnerSharePercent", width: 150 },
             { headerName: "Owner Share", field: "OwnerShareDollar", width: 150 },
-            { headerName: "Grazing Rental Rate", field: "GrazingRentalRate", width: 150,
-                valueFormatter: function (params) {
-                    return valueFormatterCurrency(params.node.data.GrazingRentalRate);
-                },
-            },
             { headerName: "Market Price", field: "MarketPrice", width: 150, 
                 valueFormatter: function (params) {
                     return valueFormatterCurrency(params.node.data.MarketPrice);
