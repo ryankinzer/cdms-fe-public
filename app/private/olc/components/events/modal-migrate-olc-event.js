@@ -5,6 +5,8 @@ var modal_migrate_olc_event = ['$scope', '$rootScope', '$uibModalInstance', 'Dat
         $timeout, $location, $anchorScroll, $document) {
         console.log("Inside modal_migrate_olc_event...");
 
+        $showCloseButton = false;
+
         initEdit();
 
         $scope.header_message = "Migrate Event";
@@ -40,7 +42,7 @@ var modal_migrate_olc_event = ['$scope', '$rootScope', '$uibModalInstance', 'Dat
         }
 
         console.log("$scope inside modal_migrate_olc_event, after initializing, is next...");
-        console.dir($scope);
+        //console.dir($scope);
 
         $scope.save = function () {
             console.log("Inside modal_migrate_olc_event, save...");
@@ -57,7 +59,7 @@ var modal_migrate_olc_event = ['$scope', '$rootScope', '$uibModalInstance', 'Dat
             if (!$scope.subprojectSave.error) {
                 console.log("$scope.subproject_row, full is next...");
                 console.dir($scope.subproject_row);
-                console.dir($scope.event_row);
+                //console.dir($scope.event_row);
 
 				//throw "Stopping right here...";
 				
@@ -93,10 +95,21 @@ var modal_migrate_olc_event = ['$scope', '$rootScope', '$uibModalInstance', 'Dat
 						//$scope.subprojectId = $rootScope.subprojectId = promise.Id;
 						//console.log("$scope.subprojectId = " + $scope.subprojectId);
 
-						//$scope.reloadSubprojects();
-						$scope.postSaveSubprojectUpdateGrid(promise);
+                        //if ($scope.event_row.Id === 0) //we saved a new one!
+                        //    $scope.postAddOlcEventUpdateGrid(promise.OlcEvent);
+                        //else //we edited one!
+                        //    $scope.postEditOlcEventUpdateGrid(promise.OlcEvent);
+
+                        $scope.subprojectList = SubprojectService.getOlcSubprojects();
+                        $scope.subprojectList.$promise.then(function () {
+                            $scope.olcAgGridOptions.api.setRowData($scope.subprojectList);
+                            $scope.refreshSubprojectLists();
+                        });
+
+                        $scope.postEditOlcEventUpdateGrid(promise.OlcEvent);
                         
-                        $modalInstance.dismiss();
+                        $scope.showCloseButton = true;
+
 					});
 				}
 			}
@@ -107,6 +120,13 @@ var modal_migrate_olc_event = ['$scope', '$rootScope', '$uibModalInstance', 'Dat
             $scope.subproject_row = 'undefined';
 
             $modalInstance.dismiss();
+        };
+
+        $scope.close = function () {
+            console.log("Inside $scope.close...");
+            $modalInstance.dismiss();
+
+            $scope.modalFile_closeParentItem();
         };
         
     }
