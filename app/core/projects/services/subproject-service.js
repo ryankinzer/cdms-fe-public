@@ -331,8 +331,8 @@ projects_module.service('SubprojectService', ['$q',
                 console.log("Inside migrateOlcEvent...");
                 console.log("projectId = " + projectId);
                 console.log("subprojectId = " + subprojectId);
-                console.log("eventRow is next...");
-                console.dir(eventRow);
+                //console.log("eventRow is next...");
+                //console.dir(eventRow);
 
                 //this.getProject(projectId); //set our local project to the one selected
                 return MigrateOlcEvent.save({ ProjectId: projectId, SubprojectId: subprojectId, OlcEvent: eventRow, FileNames: fileNames});
