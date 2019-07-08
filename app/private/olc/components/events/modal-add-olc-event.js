@@ -6,6 +6,8 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
         console.log("Inside ModalAddOlcEventCtrl...");
 
+        $scope.filesWithErrors = 0;
+
         $scope.setupOlcMetaFields = function () {
 
             // row.column (from database) and metadata name
@@ -397,6 +399,24 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                     $scope.UploadUserMessage = "There was a problem uploading a file.  Please try again or contact the Helpdesk if this issue continues.";
 
             }
+        };
+
+        $scope.modalFile_closeParentItem = function () {
+            console.log("Inside $scope.modalFile_closeParentItem...");
+
+            if ($scope.fileCount === 0) {
+                $scope.loading = false; // Stop the fish spinner.
+                $scope.showCloseButton = true;
+                $scope.showCancelButton = false;
+                $scope.showFormItems = false;
+            }
+
+            if ($scope.filesWithErrors === 0)
+                $scope.UploadUserMessage = "All actions successful.";
+            else
+                $scope.UploadUserMessage = "There was a problem moving a file.  Please try again or contact the Helpdesk if this issue continues.";
+
+            $scope.close();
         };
 
         $scope.close = function () {
