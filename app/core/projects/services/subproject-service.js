@@ -108,6 +108,10 @@ projects_module.factory('GetOlcSubprojects', ['$resource', function ($resource) 
     return $resource(serviceUrl + '/api/v1/olcsubproject/getolcsubprojects');
 }]);
 
+projects_module.factory('MigrateOlcEvent', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/olcsubproject/migrateolcevent');
+}]);
+
 /*
 * subprojects service (includes Project factory which is defined in projects-service.js)
 */
@@ -135,6 +139,7 @@ projects_module.service('SubprojectService', ['$q',
     'RemoveCorrespondenceEvent',
     'RemoveOlcEvent',
     'RemoveHabitatItem',
+    'MigrateOlcEvent',
 
     function ($q,
         ProjectSubprojects,
@@ -159,7 +164,8 @@ projects_module.service('SubprojectService', ['$q',
         RemoveOlcSubproject,
         RemoveCorrespondenceEvent,
         RemoveOlcEvent,
-        RemoveHabitatItem) {
+        RemoveHabitatItem,
+        MigrateOlcEvent) {
 
         var service = {
 
@@ -320,7 +326,27 @@ projects_module.service('SubprojectService', ['$q',
                 console.log("Inside getProjectSubprojects, projectId = " + projectId);
                 //this.getProject(projectId); //set our local project to the one selected
                 return ProjectSubprojects.save({ ProjectId: projectId });
+            },
+            migrateOlcEvent: function (projectId, subprojectId, eventRow, fileNames) {
+                console.log("Inside migrateOlcEvent...");
+                console.log("projectId = " + projectId);
+                console.log("subprojectId = " + subprojectId);
+                console.log("eventRow is next...");
+                console.dir(eventRow);
+
+                //this.getProject(projectId); //set our local project to the one selected
+                return MigrateOlcEvent.save({ ProjectId: projectId, SubprojectId: subprojectId, OlcEvent: eventRow, FileNames: fileNames});
             }
+            /*
+            saveOlcEvent: function (projectId, subprojectId, olcEvent) {
+                console.log("Inside saveOlcEvent...")
+                console.log("projectId = " + projectId);
+                console.log("subprojectId = " + subprojectId);
+                console.log("olcEvent is next...");
+                console.dir(olcEvent);
+                return SaveOlcEvent.save({ ProjectId: projectId, SubprojectId: subprojectId, OlcEvent: olcEvent });
+            },
+            */
 
         };
 
