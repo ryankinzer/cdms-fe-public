@@ -64,7 +64,26 @@ var modal_migrate_olc_event = ['$scope', '$rootScope', '$uibModalInstance', 'Dat
                 $scope.saveResults = {};
                 //console.log("$scope is next...");
                 //console.dir($scope);
-                var promise = SubprojectService.migrateOlcEvent($scope.project.Id, $scope.subproject_row.Id, $scope.event_row, $scope.saveResults);
+
+                //console.dir(JSON.parse($scope.event_row.FileAttach));
+                var jParsedFiles = JSON.parse($scope.event_row.FileAttach);
+
+                var strFileLinks = "";
+                var intCount = 0;
+                jParsedFiles.forEach(function (aFile) {
+
+                    if (intCount === 0)
+                        strFileLinks += aFile.Name;
+                    else
+                        strFileLinks += "," + aFile.Name;
+
+                    intCount++;
+                });
+                console.log("aFile.Name string:  " + strFileLinks);
+
+                //throw "Stopping right here...";
+
+                var promise = SubprojectService.migrateOlcEvent($scope.project.Id, $scope.subproject_row.Id, $scope.event_row, strFileLinks ,$scope.saveResults);
 
 				if (typeof promise !== 'undefined') {
 					promise.$promise.then(function () {
