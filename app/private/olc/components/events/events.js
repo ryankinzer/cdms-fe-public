@@ -162,6 +162,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
         //grid columns for OLC events tab (master/subprojects)
         scope.olcAgColumnDefs = [  //in order the columns will display, by the way...
             { colId: 'EditLinksMaster', width: 180, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
+            //{ colId: 'EditLinksMaster', width: 225, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             {
                 headerName: 'ID',
                 field: 'Id',
@@ -527,7 +528,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
 
             var subproject = getById(scope.subprojectList, new_event.SubprojectId);
 
-            if (subproject === undefined || subproject === null) { //TODO: the case where they create items before the proejct is saved?
+            if (subproject === undefined || subproject === null) { //TODO: the case where they create items before the project is saved?
                 console.log("no subproject...");
             } else {
                 scope.subprojectList.forEach(function (item, index) {
