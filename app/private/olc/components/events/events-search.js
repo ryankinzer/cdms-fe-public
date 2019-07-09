@@ -44,12 +44,13 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
 
                 $scope.subprojectList = SubprojectService.getOlcSubprojects();
 
+                /*
                 //if user can edit, unhide the edit links
                 if ($rootScope.Profile.canEdit($scope.project)) {
                     $scope.olcAgGridOptions.columnApi.setColumnVisible("EditLinksMaster", true);
                     $scope.olcDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 140, menuTabs: [] }); //add this column to the front of the detail grid cols
                 }
-
+                */
                 $scope.subprojectList.$promise.then( function () {
                     $scope.olcAgGridOptions.api.setRowData($scope.subprojectList);
                     $scope.refreshSubprojectLists();
@@ -68,7 +69,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
         //    }
         //};
         
-
+        /*
         var EditMasterLinksTemplate = function (param) {
 
             var div = document.createElement('div');
@@ -100,7 +101,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             return div;
             
         };
-
+        */
 
         var FileListCellTemplate = function (params) {
             var list = '<div class="event-file-list"><ul>';
@@ -116,7 +117,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             return list;
         };
 
-
+        /*
         //this template gives the Edit|Delete|Add for the detail.
         var EditDetailLinksTemplate = function (detailparam) {
             var subproject = getById($scope.subprojectList, detailparam.data.SubprojectId);
@@ -150,11 +151,11 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             return div;
             
         };
-
+        */
 
         //grid columns for OLC events tab (master/subprojects)
         $scope.olcAgColumnDefs = [  //in order the columns will display, by the way...
-            { colId: 'EditLinksMaster', width: 180, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
+            //{ colId: 'EditLinksMaster', width: 180, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             //{ colId: 'EditLinksMaster', width: 225, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             {
                 headerName: 'ID',
