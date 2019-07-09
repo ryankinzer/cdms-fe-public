@@ -112,6 +112,7 @@ define([
             $routeProvider.when('/crppcorrespondence/:Id', { templateUrl: 'app/private/crpp/components/correspondence/templates/correspondence.html', controller: 'CRPPCorrespondenceCtrl'});
             $routeProvider.when('/habitatsites/:Id', { templateUrl: 'app/private/habitat/components/habitat-sites/templates/sites.html', controller: 'HabitatSitesCtrl'});
             $routeProvider.when('/olcevents/:Id', { templateUrl: 'app/private/olc/components/events/templates/events.html', controller: 'OlcEventsCtrl' });
+            $routeProvider.when('/olceventssearch/:Id', { templateUrl: 'app/private/olc/components/events/templates/events-search.html', controller: 'OlcEventsSearchCtrl' });
 
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
             $routeProvider.when('/feedback', { templateUrl: 'app/core/common/components/feedback/templates/feedback.html',controller: 'FeedbackController'});
