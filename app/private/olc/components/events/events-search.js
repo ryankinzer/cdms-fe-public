@@ -8,10 +8,6 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
-        $scope.subprojectList = null;
-        $scope.subprojectList = SubprojectService.getOlcSubprojectsForSearch($routeParams.Id);
-
-
         $scope.metafields = CommonService.getMetadataProperties(METADATA_ENTITY_OLCEVENTS);
         $scope.metafields.$promise.then(function () { 
             //console.dir($scope.metafields);
@@ -59,6 +55,10 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 //    $scope.olcAgGridOptions.api.setRowData($scope.subprojectList);
                 //    $scope.refreshSubprojectLists();
                 //});
+
+                $scope.subprojectList = null;
+                $scope.subprojectList = SubprojectService.getOlcSubprojectsForSearch($routeParams.Id);
+
                 $scope.subprojectList.$promise.then(function () {
                     $scope.olcAgGridOptions.api.setRowData($scope.subprojectList);
                     $scope.refreshSubprojectLists();
@@ -165,11 +165,124 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //{ colId: 'EditLinksMaster', width: 180, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             //{ colId: 'EditLinksMaster', width: 225, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             //***Start copied-in Details here
+            { headerName: 'Document Type', field: 'DocumentType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Agency Division', field: 'AgencyDivision', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Signatory Name', field: 'SignatoryName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Signatory Title', field: 'SignatoryTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Name', field: 'RecipientName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'RecipientTitle', field: 'RecipientTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Name', field: 'RecipientName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Title', field: 'RecipientTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Agency', field: 'RecipientAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Location', field: 'RecipientLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            {
+                headerName: 'Boundary',
+                field: 'Boundary',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.Boundary },
+                valueFormatter: function (params) {
+                    params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
+                    var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        the_str = the_str.replace(/"/g, '');
+                    return the_str;
+                },
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
+            },
+            //{ headerName: 'Significant Area', field: 'SignificantArea', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            {
+                headerName: 'Significant Area',
+                field: 'SignificantArea',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.SignificantArea },
+                valueFormatter: function (params) {
+                    params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
+                    var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
+                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        the_str = the_str.replace(/"/g, '');
+                    return the_str;
+                },
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
+            },
+            //{ headerName: 'Miscellaneous Context', field: 'MiscellaneousContext', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            {
+                headerName: 'Miscellaneous Context',
+                field: 'MiscellaneousContext',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.MiscellaneousContext },
+                valueFormatter: function (params) {
+                    params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
+                    var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
+                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        the_str = the_str.replace(/"/g, '');
+                    return the_str;
+                },
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
+            },
+            { headerName: 'Survey Number', field: 'SurveyNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Contract Number', field: 'SurveyContractNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Surveyor Name', field: 'SurveyorName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'NumberItems', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
 
+            {
+                field: 'DateDiscovered',
+                headerName: 'Date Discovered',
+                valueGetter: function (params) { return moment(params.node.data.DateDiscovered) }, //date filter needs js date object			
+                width: 150,
+                valueFormatter: function (params) {
+                    return valueFormatterDate(params.node.data.DateDiscovered);
+                },
+                filter: 'date',
+                menuTabs: ['filterMenuTab']
+            },
+            { headerName: 'Person Discovered', field: 'PersonDiscovered', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+
+            {
+                //headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 380, cellStyle: {
+                headerName: 'Tasks', field: 'Tasks', cellClass: 'event-record-cell', width: 380, cellStyle: {
+                    'white-space': 'normal'
+                },
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
+            },
+
+            //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
+            { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            {
+                headerName: 'Item Updated By User',
+                field: 'EventByUserId',
+                cellClass: 'event-record-cell',
+                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueFormatter: function (params) {
+                    params.node.data.EventByUserId = JSON.parse(params.node.data.EventByUserId);
+                    var the_str = getNameFromUserId(params.node.data.EventByUserId, $scope.Users);
+                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        the_str = the_str.replace(/"/g, '');
+                    return the_str;
+                },
+                width: 180,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
+            },
             //***End copied-in Details here
             {
-                headerName: 'ID',
-                field: 'Id',
+                headerName: 'Source ID',
+                field: 'SubprojectId',
                 width: 80,
                 cellRenderer: 'agGroupCellRenderer',
                 cellRendererParams: { suppressCount: true },
@@ -177,16 +290,16 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 filter: 'number'
             },
             {
-                field: 'EffDt',
                 headerName: 'Updated',
+                field: 'EffDt',
                 width: 120,
                 valueGetter: function (params) { return moment(params.node.data.EffDt) }, //date filter needs js date object			
                 valueFormatter: function (params) {
                     return valueFormatterDate(params.node.data.EffDt);
                 },
                 sort: 'desc',
-                filter: 'date',
                 menuTabs: ['filterMenuTab'],
+                filter: 'date',
             },
             //{
             //    headerName: '# Events', width: 110,
@@ -200,8 +313,8 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //{ field: 'CatalogNumber', headerName: 'Catalog Number', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'RecordGroup', headerName: 'Record Group', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SeriesTitle', headerName: 'Series Title', width: 150, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'FacilityHoused', headerName: 'Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
-            { field: 'OtherFacilityHoused', headerName: 'Other Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'FacilityHoused', headerName: 'Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'OtherFacilityHoused', headerName: 'Other Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'Box', headerName: 'Box', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'BoxLocation', headerName: 'Box Location', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
@@ -213,17 +326,19 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //{ field: 'ByUserId', headerName: 'By User', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             {
                 headerName: 'By User',
-                field: 'ByUser',
+                field: 'SubprojectByUserId',
                 cellClass: 'event-record-cell',
-                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueGetter: function (params) { return params.node.data.SubprojectByUserId },
                 valueFormatter: function (params) {
-                    params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
-                    var the_str = getNameFromUserId(params.node.data.ByUserId, $scope.Users);
+                    params.node.data.SubprojectByUserId = JSON.parse(params.node.data.SubprojectByUserId);
+                    var the_str = getNameFromUserId(params.node.data.SubprojectByUserId, $scope.Users);
                     if (typeof the_str === 'string') //backwards compatible - remove the quotes
                         the_str = the_str.replace(/"/g, '');
                     return the_str;
                 },
-                width: 180, menuTabs: ['filterMenuTab'],
+                width: 180,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
             },
 
             //{
@@ -232,7 +347,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //},
         ];
 
-        
+        /*
         //details for the event
         var detailColumnDefs = [
             //{ colId: 'EditLinksDetail', headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [], },
@@ -360,7 +475,8 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 width: 180, menuTabs: ['filterMenuTab'],
             },
         ];
-
+        */
+        /*
         //detail grid options correspondence events
         $scope.olcDetailGridOptions = {
             columnDefs: detailColumnDefs,
@@ -380,18 +496,18 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 resizable: true,
             },
         };
-        
+        */
 
 
         $scope.olcAgGridOptions = {
 
             masterDetail: false, //true,
-            detailCellRendererParams: {
-                detailGridOptions: $scope.olcDetailGridOptions,
-                getDetailRowData: function (params) {
-                    params.successCallback(params.data.OlcEvents);
-                },
-            },
+            //detailCellRendererParams: {
+            //    detailGridOptions: $scope.olcDetailGridOptions,
+            //    getDetailRowData: function (params) {
+            //        params.successCallback(params.data.OlcEvents);
+            //   },
+            //},
 
             animateRows: true,
             //enableSorting: true,
