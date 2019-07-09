@@ -686,6 +686,18 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     scope: scope, //very important to pass the scope along...
             });
         };
+
+        scope.search = function (p) {
+            console.log("Inside scope.search...");
+            //location.path = "#!/olceventssearch/" + scope.project.Id;
+            window.location.replace("#!/olceventssearch/" + scope.dataset.Id);
+
+            //var modalInstance = $modal.open({
+            //    templateUrl: 'app/private/olc/components/events/templates/events-search.html',
+            //    controller: 'OlcEventsSearchCtrl',
+            //    scope: scope, //very important to pass the scope along...
+            //});
+        };
 		
         scope.redrawRows = function () {
             scope.olcAgGridOptions.api.setRowData([]);
