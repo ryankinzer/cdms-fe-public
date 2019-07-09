@@ -162,7 +162,16 @@ var dataset_activities_list = ['$scope', '$routeParams',
             },
 
             'time': function (params) {
-                return moment(params.node.data[params.colDef.DbColumnName]).format('HH:mm');
+			   //console.dir(params);
+			   //console.log(params.node.data[params.colDef.DbColumnName]);
+			   //JN Tribal CDMS Edit: if SQL Server value is NULL then return empty string to grid 
+			  if (params.node.data[params.colDef.DbColumnName]) {
+				   return moment(params.node.data[params.colDef.DbColumnName]).format('HH:mm');
+			   }
+			   else {
+				 	return '';
+				}
+
             },
 
             'datetime': function (params) {

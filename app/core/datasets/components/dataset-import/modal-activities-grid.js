@@ -286,14 +286,18 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 if (!node.data.Activity.ActivityDate || !node.data.Activity.LocationId) {
                     missing_fields = true;
                     console.log("uhoh - missing stuff from activity:");
-                    console.dir(node.data.Activity);
+                  
                 }
                 var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
                 var the_key = the_date + "_" + node.data.Activity.LocationId;
+				console.log("the_key_____________________________________________");
+				console.dir(the_key);
+			    console.dir($scope.ActivitiesToSave);
                 
                 if (!unique_dates.contains(the_key)) {
                     unique_dates.push(the_key);
                     $scope.ActivitiesToSave.push({ 'ActivityDate': the_date, 'Key': the_key, 'LocationId': node.data.Activity.LocationId });
+					
                 }
             });
 
@@ -303,7 +307,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 return;
             }
 
-            //console.dir($scope.ActivitiesToSave);
+            console.dir($scope.ActivitiesToSave);
 
             if (!confirm("A total of " + $scope.ActivitiesToSave.length + " activities will be saved.")) {
                 $scope.system.loading = false;
