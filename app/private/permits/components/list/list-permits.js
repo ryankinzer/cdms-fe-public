@@ -22,8 +22,12 @@
 
         $scope.PermitPersons.$promise.then(function () { 
             $scope.PermitPersons.forEach(function (person) { 
-                person.SortName = (person.Organization) ? person.Organization : person.FirstName + " " + person.LastName;
+                person.Label = (person.Organization) ? person.Organization : person.FullName; 
+                if(person.Label == "")
+                    person.FirstName + " " + person.LastName;
             });   
+
+            $scope.PermitPersons = $scope.PermitPersons.sort(orderByAlpha);
         });
 
         $scope.dataset.$promise.then(function () { 

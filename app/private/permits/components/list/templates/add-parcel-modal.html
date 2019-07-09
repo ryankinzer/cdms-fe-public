@@ -8,11 +8,17 @@
 
             <div class="header-label">Parcel:</div>
             <div class="header-value">
-                <select id="persons-select" ui-select2="select2Options" data-placeholder="Choose a parcel" ng-model="parcel_modal.ParcelId">
-                    <option ng-repeat="parcel in CadasterParcels" value="{{parcel.ParcelId}}">{{parcel.ParcelId}}</option>
-                </select>
+                <input type="text" ng-change="parcelEntryUpdate()" ng-model="parcelEntry" />
             </div>
-            
+
+            <div class="header-label">Result:</div>
+            <div class="header-value">{{parcelDisplay}}</div>
+
+            <div style="margin-top: 10px" ng-show="parcelMatches != ''">
+                <div class="header-label">Similar:</div>
+                <div class="header-value"><textarea disabled cols="20" rows="6">{{parcelMatches}}</textarea></div>
+            </div>
+
         </form>
     </div>
 </div>

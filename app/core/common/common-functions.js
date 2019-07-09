@@ -248,7 +248,12 @@ function makeObjectsFromValues(key, valuesList) {
         //make array elements have same key/value
         if (angular.isArray(selectOptions)) {
             selectOptions.forEach(function (item) {
-                objects[item] = item;
+                if (typeof item == 'object' && item.hasOwnProperty('Id')) {
+                    objects[item.Id] = item;
+                }
+                else {
+                    objects[item] = item;
+                }
             });
         }
         else {

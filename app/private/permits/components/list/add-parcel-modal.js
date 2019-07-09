@@ -9,6 +9,37 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
             $scope.mode = "new";
         }
 
+        $scope.parcelEntry = "";
+        $scope.parcelDisplay = "Enter a parcel number above to search.";
+        $scope.parcelMatches = "";
+
+        $scope.parcelEntryUpdate = function () { 
+            $scope.parcelEntry = $scope.parcelEntry.toUpperCase();
+            $scope.parcelDisplay = "No match.";
+            $scope.parcelMatches = "";
+
+            var entryLength = $scope.parcelEntry.length;
+            console.log("length = " + entryLength);
+
+            $scope.CadasterParcels.forEach(function (parcel) { 
+
+                if (parcel.ParcelId == null || parcel.ParcelId == "")
+                    return;
+
+                if (parcel.ParcelId == $scope.parcelEntry) {
+                    $scope.parcelDisplay = parcel.PLSS_Label;
+                    $scope.parcel_modal = parcel;
+                }
+                else 
+                { 
+                    if (entryLength > 2 && parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry) {
+                        console.log("adding -- " + parcel.ParcelId);
+                        $scope.parcelMatches += parcel.ParcelId + "\n";
+                    }
+                }
+            });
+        };
+
         $scope.save = function () {
 
             var new_parcel = PermitService.savePermitParcel($scope.parcel_modal);
