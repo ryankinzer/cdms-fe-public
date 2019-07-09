@@ -108,6 +108,22 @@ projects_module.factory('GetOlcSubprojects', ['$resource', function ($resource) 
     return $resource(serviceUrl + '/api/v1/olcsubproject/getolcsubprojects');
 }]);
 
+//projects_module.factory('GetOlcSubprojectsForSearch', ['$resource', function ($resource) {
+//    return $resource(serviceUrl + '/api/v1/olcsubproject/getolcsubprojectsforsearch');
+//}]);
+
+projects_module.factory('QueryOlcSubprojectsForSearch', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/olcsubproject/queryolcsubprojectsforsearch', {}, {
+        save: { method: 'POST', isArray: true }
+    });
+}]);
+
+//datasets_module.factory('QueryActivitiesAction', ['$resource', function ($resource) {
+//    return $resource(serviceUrl + '/api/v1/query/querydatasetactivities', {}, {
+//        save: { method: 'POST', isArray: true }
+//    });
+//}]);
+
 projects_module.factory('MigrateOlcEvent', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/olcsubproject/migrateolcevent');
 }]);
@@ -133,6 +149,7 @@ projects_module.service('SubprojectService', ['$q',
     'GetHabSubproject',
     'GetHabSubprojects',
     'GetOlcSubprojects',
+    'QueryOlcSubprojectsForSearch',
     'RemoveSubproject',
     'RemoveHabSubproject',
     'RemoveOlcSubproject',
@@ -159,6 +176,7 @@ projects_module.service('SubprojectService', ['$q',
         GetHabSubproject,
         GetHabSubprojects,
         GetOlcSubprojects,
+        QueryOlcSubprojectsForSearch,
         RemoveSubproject,
         RemoveHabSubproject,
         RemoveOlcSubproject,
@@ -210,6 +228,14 @@ projects_module.service('SubprojectService', ['$q',
                 console.log("Inside subproject-service, getOlcSubprojects");
                 //console.log("id = " + id);
                 return GetOlcSubprojects.query();
+            },
+            getOlcSubprojectsForSearch: function (datasetId) {
+                console.log("Inside subproject-service, getOlcSubprojectsForSearch");
+                //console.log("id = " + id);
+                var searchCriteria = {
+                    DatasetId:  datasetId
+                }
+                return QueryOlcSubprojectsForSearch.save(searchCriteria);
             },
             saveSubproject: function (projectId, subproject, saveResults) {
                 console.log("Inside subproject-service, saveSubproject...");

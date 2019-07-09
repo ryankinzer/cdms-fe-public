@@ -8,6 +8,10 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
+        $scope.subprojectList = null;
+        $scope.subprojectList = SubprojectService.getOlcSubprojectsForSearch($routeParams.Id);
+
+
         $scope.metafields = CommonService.getMetadataProperties(METADATA_ENTITY_OLCEVENTS);
         $scope.metafields.$promise.then(function () { 
             //console.dir($scope.metafields);
@@ -42,7 +46,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.olcAgGridOptions); //bind the grid to it.
                 $scope.olcAgGridOptions.api.showLoadingOverlay(); //show loading...
 
-                $scope.subprojectList = SubprojectService.getOlcSubprojects();
+                //$scope.subprojectList = SubprojectService.getOlcSubprojects();
 
                 /*
                 //if user can edit, unhide the edit links
@@ -51,11 +55,14 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                     $scope.olcDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 140, menuTabs: [] }); //add this column to the front of the detail grid cols
                 }
                 */
-                $scope.subprojectList.$promise.then( function () {
+                //$scope.subprojectList.$promise.then( function () {
+                //    $scope.olcAgGridOptions.api.setRowData($scope.subprojectList);
+                //    $scope.refreshSubprojectLists();
+                //});
+                $scope.subprojectList.$promise.then(function () {
                     $scope.olcAgGridOptions.api.setRowData($scope.subprojectList);
                     $scope.refreshSubprojectLists();
                 });
-
             });
         });
 
@@ -157,6 +164,9 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
         $scope.olcAgColumnDefs = [  //in order the columns will display, by the way...
             //{ colId: 'EditLinksMaster', width: 180, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             //{ colId: 'EditLinksMaster', width: 225, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
+            //***Start copied-in Details here
+
+            //***End copied-in Details here
             {
                 headerName: 'ID',
                 field: 'Id',
@@ -222,6 +232,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //},
         ];
 
+        
         //details for the event
         var detailColumnDefs = [
             //{ colId: 'EditLinksDetail', headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [], },
@@ -369,12 +380,12 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 resizable: true,
             },
         };
-
+        
 
 
         $scope.olcAgGridOptions = {
 
-            masterDetail: true,
+            masterDetail: false, //true,
             detailCellRendererParams: {
                 detailGridOptions: $scope.olcDetailGridOptions,
                 getDetailRowData: function (params) {
