@@ -261,6 +261,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
             { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: 'Document Archive Id', field: 'EventArchiveId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -319,7 +320,8 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //{ field: 'BoxLocation', headerName: 'Box Location', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'CategoryIndex', headerName: 'Category Index', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'CategorySubtitle', headerName: 'CategorySubtitle', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'CategorySubtitle', headerName: 'Category Subtitle', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'SourceArchiveId', headerName: 'Source Archive Id', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryTitle', headerName: 'Signatory Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryAgency', headerName: 'Signatory Agency', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryName', headerName: 'Signatory Name', width: 100, menuTabs: ['filterMenuTab'], filter: true },
@@ -556,10 +558,6 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
 
         };
 
-
-
-
-
         //returns the (last) node or null if none found.
         $scope.expandSubProjectById = function (id_in) {
             var the_node = null;
@@ -572,12 +570,6 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             });
             return the_node;
         };
-
-
-
-
-
-
 
         /****** Working on this area ******/
         //refresh all of the project match lists
@@ -607,6 +599,17 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                     controller: 'ModalCreateOlcSubprojectCtrl',
                     $scope: $scope, //very important to pass the $scope along...
             });
+        };
+
+        $scope.backToEventsPage = function (p) {
+            console.log("Inside scope.backToEventsPage...");
+            window.location.replace("#!/olcevents/" + $scope.dataset.Id);
+
+            //var modalInstance = $modal.open({
+            //    templateUrl: 'app/private/olc/components/events/templates/events-search.html',
+            //    controller: 'OlcEventsSearchCtrl',
+            //    scope: scope, //very important to pass the scope along...
+            //});
         };
 		
         $scope.redrawRows = function () {
