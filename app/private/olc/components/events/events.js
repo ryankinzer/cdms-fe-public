@@ -194,6 +194,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             },
 
             //{ field: 'CatalogNumber', headerName: 'Catalog Number', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'Agency', headerName: 'Agency', width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'AgencyLocation', headerName: 'AgencyLocation', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'RecordGroup', headerName: 'Record Group', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SeriesTitle', headerName: 'Series Title', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'FacilityHoused', headerName: 'Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -232,6 +234,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
         //details for the event
         var detailColumnDefs = [
             //{ colId: 'EditLinksDetail', headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [], },
+
             {
                 headerName: 'Document Date',
                 field: 'DocumentDate',
