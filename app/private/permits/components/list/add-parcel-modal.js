@@ -10,16 +10,14 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
         }
 
         $scope.parcelEntry = "";
-        $scope.parcelDisplay = "Enter a parcel number above to search.";
         $scope.parcelMatches = "";
 
         $scope.parcelEntryUpdate = function () { 
             $scope.parcelEntry = $scope.parcelEntry.toUpperCase();
-            $scope.parcelDisplay = "No match.";
             $scope.parcelMatches = "";
+            $scope.parcel_modal = {};
 
             var entryLength = $scope.parcelEntry.length;
-            console.log("length = " + entryLength);
 
             $scope.CadasterParcels.forEach(function (parcel) { 
 
@@ -27,13 +25,11 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
                     return;
 
                 if (parcel.ParcelId == $scope.parcelEntry) {
-                    $scope.parcelDisplay = parcel.PLSS_Label;
                     $scope.parcel_modal = parcel;
                 }
                 else 
                 { 
                     if (entryLength > 2 && parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry) {
-                        console.log("adding -- " + parcel.ParcelId);
                         $scope.parcelMatches += parcel.ParcelId + "\n";
                     }
                 }
@@ -46,11 +42,9 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
 
             $scope.parcel_modal.PermitId = $scope.row.Id;
             var the_new_parcel = getByField($scope.CadasterParcels, $scope.parcel_modal.ParcelId, 'ParcelId');
-            console.dir(the_new_parcel);
             $scope.parcel_modal.ObjectId = the_new_parcel.ObjectId;
 
             new_parcel.$promise.then(function () {
-                console.log("done and success!");
                 $modalInstance.close(new_parcel);
             });
 

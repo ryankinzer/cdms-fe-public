@@ -1,10 +1,9 @@
 ﻿//modal to add/edit permit event 
-var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridService','Upload','PermitService',
+var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInstance','GridService','Upload','PermitService',
 
-    function ($scope, $modal, $modalInstance, GridService, $upload, PermitService) {
+    function ($rootScope, $scope, $modal, $modalInstance, GridService, $upload, PermitService) {
 
         $scope.permit = $scope.row;
-       
         $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
 
         //intent can be set from the caller... otherwise the mode is based on the incoming activity_modal id
@@ -46,12 +45,12 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
 
         }
 
+
         if (!$scope.row.Files)
             $scope.row.Files = [];
 
         //set up for attaching files
         modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.PermitFiles); 
-        
 
         $scope.save = function () {
 
@@ -136,12 +135,6 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
             return field.hasOwnProperty('DbColumnName');
         }
 
-        $scope.onHeaderEditingStopped = function (field) { 
-            //build event to send for validation
-            console.log("onHeaderEditingStopped: " + field.DbColumnName);
-
-        };
-
         //fire validation for all columns when we load (if we are editing)
         if ($scope.mode === 'edit') {
             $scope.permitEventsGrid.columnDefs.forEach(function (field) {
@@ -153,6 +146,34 @@ var modal_edit_permitevent = ['$scope', '$uibModal','$uibModalInstance','GridSer
             $modalInstance.dismiss();
         };
 
+        $scope.loadRecipientsFromRoute = function () { 
+            
+            if ($scope.activity_modal.EventType == 'Review' && ($scope.mode == 'new' || $scope.mode == 'new_route')) {
+                $scope.row.ReviewersContact = {};
+
+                //console.log("getting routes for: " + $scope.activity_modal.ItemType);
+
+                $scope.PermitRoutes = PermitService.getPermitRoutes($scope.activity_modal.ItemType);
+                $scope.PermitRoutes.$promise.then(function () {
+
+                    //select the first one
+                    $scope.PermitRoutes.forEach(function (route) {
+                        if (route.Rank == 0)
+                            $scope.row.ReviewersContact[route.Email] = true;
+                    });
+                });
+            }
+        }
         
-    }
-];
+        if (typeof $scope.row.ItemType === 'string') {
+            $scope.loadRecipientsFromRoute();
+        }
+
+        //setup an event listener that fires from list-permits.js every time a header field is changed. we listen for ItemType changing.
+        $rootScope.$on('headerEditingStopped', function (event, field) {
+            if (field.DbColumnName == 'ItemType') {
+                $scope.loadRecipientsFromRoute();
+            }
+        });
+        
+}];

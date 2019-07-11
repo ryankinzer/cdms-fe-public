@@ -70,6 +70,17 @@
             return retval;
         };
 
+        function FeeCellRenderer() { }
+        FeeCellRenderer.prototype.init = function (params) {
+            this.eGui = document.createElement('span');
+            var code = (params.node.data.FeePaymentAmount != null) ? "&#9899" : "&#9898";
+            this.eGui.innerHTML = code;
+        };
+
+        FeeCellRenderer.prototype.getGui = function () {
+            return this.eGui;
+        };
+
         $scope.permitRoutesColDefs = [
             { headerName: "Main Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Permit #", field: "PermitNumber", menuTabs: ['filterMenuTab'], width: 150, filter: 'text' },
@@ -84,11 +95,7 @@
             { headerName: "TERO", field: "Route_TERO", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "CRPP", field: "Route_CRPP", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Roads", field: "Route_Roads", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
-            { headerName: "Fee Paid", field: "FeePaymentAmount", menuTabs: ['filterMenuTab'], width: 100, 
-                valueFormatter: function (params) {
-                    return valueFormatterCurrency(params.node.data.FeePaymentAmount);
-                },
-            },
+            { headerName: "Fee Paid", field: "FeePaymentAmount", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'feeCellRenderer' },
             //{ headerName: "Issued By", field: "IssuedBy", menuTabs: ['filterMenuTab'], width: 160, filter: true },
             { headerName: "Comments", field: "Comments", menuTabs: ['filterMenuTab'], width: 460 }
         ];
@@ -119,7 +126,8 @@
                 //$scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
             components: {
-                'routeCellRenderer': RouteCellRenderer
+                'routeCellRenderer': RouteCellRenderer,
+                'feeCellRenderer': FeeCellRenderer
             }
         }
 
@@ -249,6 +257,7 @@
                 });
 
             });
+
         };
 
         $scope.refreshPermits = function () {
@@ -268,8 +277,5 @@
 
             permit.Route_TPO = (permit.PermitStatus == 'New Application') ? '+' : '*'; // our internal "TPO" status isn't stored in the db, just a grid field.
         };
-
-
-
         
 }];

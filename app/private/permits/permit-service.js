@@ -104,6 +104,12 @@ permit_module.factory('GetExpiringPermits', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('GetPermitRoutes', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetPermitRoutes', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
+
 permit_module.factory('GetPermitStatistics', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/GetPermitStatistics', {}, {
         query: { method: 'GET', params: { }, isArray: true }
@@ -133,6 +139,7 @@ permit_module.service('PermitService', ['$q',
     'GetExpiringPermits',
     'GetOutstandingRequests',
     'GetPermitStatistics',
+    'GetPermitRoutes',
   
     function ($q,
        
@@ -156,7 +163,8 @@ permit_module.service('PermitService', ['$q',
         GetRelatedParcels,
         GetExpiringPermits,
         GetOutstandingRequests,
-        GetPermitStatistics
+        GetPermitStatistics,
+        GetPermitRoutes
       
     ) {
         var service = {
@@ -243,6 +251,10 @@ permit_module.service('PermitService', ['$q',
 
             getPermitStatistics: function () { 
                 return GetPermitStatistics.query();
+            },
+
+            getPermitRoutes: function (itemType) { 
+                return GetPermitRoutes.query({ ItemType: itemType });
             }
 
         };

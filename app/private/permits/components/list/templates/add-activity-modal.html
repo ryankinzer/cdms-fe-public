@@ -58,6 +58,19 @@
                     <ctuir-text-field ng-switch-default></ctuir-text-field>
                 </div>
 
+                <div ng-show="PermitRoutes.length > 0">
+                    <div class="checkbox-fix">
+                        <div class="header-label">Reviewers to Contact:</div>
+                        <div class="header-value">
+                            <div class="checkbox-itemlist" style="margin-top: -25px; width: 300px;">
+                                <span ng-repeat="route in PermitRoutes | orderBy: 'Rank'">
+                                    <input type="checkbox" ng-model="row.ReviewersContact[route.Email]" value="{{route.Email}}"/> {{route.Email}} <br />
+                                </span>
+                            </div>
+                        </div>
+                    </div>           
+                </div>
+
                 <div ng-show="mode=='edit_route'">
 
                     <div ng-show="permit.PermitConditions != ''">

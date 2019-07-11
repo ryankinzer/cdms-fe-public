@@ -6,16 +6,19 @@
     <div class="row">
         <form novalidate class="row-form modal-form" name="headerForm">
 
-            <div class="header-label">Parcel:</div>
+            <div class="header-label">Search:</div>
             <div class="header-value">
-                <input type="text" ng-change="parcelEntryUpdate()" ng-model="parcelEntry" />
+                <input type="text" ng-change="parcelEntryUpdate()" placeholder="Enter parcel id" ng-model="parcelEntry" />
             </div>
 
-            <div class="header-label">Result:</div>
-            <div class="header-value">{{parcelDisplay}}</div>
+            <div class="header-label">Parcel Id:</div>
+            <div class="header-value">{{parcel_modal.ParcelId}}&nbsp;</div>
+
+            <div class="header-label">PLSS:</div>
+            <div class="header-value">{{parcel_modal.PLSS_Label}}&nbsp;</div>
 
             <div style="margin-top: 10px" ng-show="parcelMatches != ''">
-                <div class="header-label">Similar:</div>
+                <div class="header-label">Similar Results:</div>
                 <div class="header-value"><textarea disabled cols="20" rows="6">{{parcelMatches}}</textarea></div>
             </div>
 

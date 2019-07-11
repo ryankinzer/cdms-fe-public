@@ -1796,6 +1796,8 @@ function valueFormatterArrayToList(the_array) {
         console.log("problem parsing: " + the_array );
     }
 
+    console.dir(list);
+
     return list;
 
 }

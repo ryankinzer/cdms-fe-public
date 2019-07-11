@@ -17,21 +17,9 @@
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
-        $scope.PermitPersons = PermitService.getAllPersons();
-        $scope.CadasterParcels = PermitService.getAllParcels();
-
-        $scope.PermitPersons.$promise.then(function () { 
-            $scope.PermitPersons.forEach(function (person) { 
-                person.Label = (person.Organization) ? person.Organization : person.FullName; 
-                if(person.Label == "")
-                    person.FirstName + " " + person.LastName;
-            });   
-
-            $scope.PermitPersons = $scope.PermitPersons.sort(orderByAlpha);
-        });
-
-        $scope.dataset.$promise.then(function () { 
         
+        $scope.dataset.$promise.then(function () { 
+            console.log(" -- dataset back -- ");
             $scope.AllColumnDefs = GridService.getAgColumnDefs($scope.dataset);
             $scope.permitsGrid.columnDefs = $scope.AllColumnDefs.HeaderFields;
             
@@ -42,13 +30,29 @@
             $scope.permits = PermitService.getAllPermits();
 
             $scope.permits.$promise.then(function () {
-            
+                console.log(" -- permits back -- ");
                 $scope.permitsGrid.api.setRowData($scope.permits);
-
             });
+
+            //now do some caching...
+            $scope.PermitPersons = PermitService.getAllPersons();
+            $scope.CadasterParcels = PermitService.getAllParcels();
+
+            $scope.PermitPersons.$promise.then(function () { 
+                $scope.PermitPersons.forEach(function (person) { 
+                    person.Label = (person.Organization) ? person.Organization : person.FullName; 
+                    if(person.Label == "")
+                        person.FirstName + " " + person.LastName;
+                });   
+
+                $scope.PermitPersons = $scope.PermitPersons.sort(orderByAlpha);
+            });
+
+
         });
 
         $scope.eventsdataset.$promise.then(function () {
+            console.log(" -- events dataset back -- ");
             var EventColumnDefs = GridService.getAgColumnDefs($scope.eventsdataset);
             $scope.permitEventsGrid.columnDefs = angular.merge(
                 //[{ colId: 'EditLinks', cellRenderer: EditEventLinksTemplate, width: 60, menuTabs: [], hide: true }], 
@@ -153,18 +157,28 @@
             rowData: null,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
+
                 if ($scope.row && $scope.row.dataChanged) {
-                    alert("It looks like you've changed this permit. Please click 'Save' or 'Cancel' before navigating to another permit.");
+                    //warn if they're trying to change the selection when data is changed
+                    if ($scope.row.Id != $scope.permitsGrid.api.getSelectedRows()[0].Id) {
+                        alert("It looks like you've changed this permit. Please click 'Save' or 'Cancel' before navigating to another permit.");
+                        $scope.permitsGrid.selectedNode.setSelected(true);
+                    }
+
+                    //in any case, don't change.
                     return false;
                 }
+
                 $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
+                $scope.permitsGrid.selectedNode = $scope.permitsGrid.api.getSelectedNodes()[0];
                 $('#tab-basicinfo').tab('show'); //default to the "Permit Details" tab when select a different permit
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                 //console.dir($scope.row);
                 if($scope.row)
                     $scope.selectPermit($scope.row.Id);
             },
-            selectedItem: null ,
+            selectedItem: null,
+            selectedNode: null,
             defaultColDef: {
                 editable: false,
                 sortable: true,
@@ -532,7 +546,7 @@
                 return;
             }
 
-            $scope.row = $scope.permitsGrid.selectedItem = GridService.getNewRow($scope.permitsGrid.columnDefs); ;
+            $scope.row = GridService.getNewRow($scope.permitsGrid.columnDefs); ;
 
             $scope.PermitContacts = [];
             $scope.PermitParcels = [];
@@ -667,10 +681,10 @@
         };
 
         $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
-            //build event to send for validation
+            
             console.log("onHeaderEditingStopped: " + field.DbColumnName);
-            $scope.row.dataChanged = true;
 
+            //build event to send for validation
             var event = {
                 colDef: field,
                 node: { data: $scope.row },
@@ -680,7 +694,7 @@
             };
 
             if (GridService.validateCell(event)) {
-                    GridService.fireRule("OnChange", event); //only fires when valid change is made
+                GridService.fireRule("OnChange", event); //only fires when valid change is made
             }
 
             //update our collection of header errors if any were returned
@@ -695,19 +709,34 @@
                 });
             }
 
-            //update the error count -- determine if this bogs down on big datasets                 TODO
-            //$scope.PageErrorCount = $scope.getPageErrorCount();
+            if ($scope.row.hasOwnProperty(field.DbColumnName)) { //make sure it is a header field from the permit
 
-            $scope.row.dataChanged = true;
+                //did the data actually change?
+
+                //the selected original permit
+                var selected = $scope.permitsGrid.api.getSelectedRows()[0];
+
+                //if we've lost our original selection, find it in the permits
+                if (!selected || selected.Id != $scope.row.Id) {
+                    $scope.permits.forEach(function (itr_permit) { 
+                        if (itr_permit.Id == $scope.row.Id)
+                            selected = itr_permit;
+                    });
+                }
+
+                if (selected[field.DbColumnName] != $scope.row[field.DbColumnName]) {
+                    $scope.row.dataChanged = true;
+                }
+
+            }
+
+            $rootScope.$emit('headerEditingStopped', field); //offer child scopes a chance to do something, i.e. add activity modal...
 
         };
 
-        $scope.calculatePermitNumber = function () { 
-            
-        };
 
         $scope.cancel = function () { 
-            $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
+            $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
 
             if($scope.row)
                 $scope.selectPermit($scope.row.Id);
@@ -776,10 +805,9 @@
                     if ($scope.currentPage == "Issued") $scope.showIssued();
                     if ($scope.currentPage == "Archived") $scope.showArchived();
                     if ($scope.currentPage == "All") $scope.showAll();
-                    //console.dir(selectedNode);
-                    //selectedNode.node.setSelected(true);
                     
                     $scope.row.dataChanged = false;
+
                 }
 
             });
