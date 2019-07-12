@@ -28,9 +28,9 @@
                     <div ng-bind-html="event_row['FileAttach'] | fileNamesFromString:this">&nbsp;</div>
                 </div>
 
-                <div class="header-label">Author</div>
+                <div class="header-label">Agency</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.Author" />
+                    <input type="text" class="form-control" ng-model="event_row.Agency" />
                 </div>
                 <!--<div class="header-label">Author Agency</div>
     <div class="header-value">
@@ -39,6 +39,10 @@
                 <div class="header-label">Agency Division</div>
                 <div class="header-value">
                     <input type="text" class="form-control" ng-model="event_row.AgencyDivision" />
+                </div>
+                <div class="header-label">Agency Location</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.EventAgencyLocation" />
                 </div>
                 <div class="header-label">Signatory Name</div>
                 <div class="header-value">
@@ -148,6 +152,11 @@
                 <div class="header-label">Number Items</div>
                 <div class="header-value">
                     <input type="text" class="form-control" ng-model="event_row.NumberItems" />
+                </div>
+
+                <div class="header-label">Page Number</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.PageNumber" />
                 </div>
 
                 <div class="header-label">Date Discovered</div>
