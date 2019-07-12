@@ -1,0 +1,17 @@
+﻿
+<h2>Permit Review Routing Taskboard</h2>
+
+<div style="margin: 10px; float: right;">
+    <button class="btn btn-sm" ng-click="refresh()">Refresh</button>
+</div>
+
+<div style="margin-top: 40px;" ng-show="permits.length > 0">
+    Permits displayed: <b>{{permitRoutesGrid.api.getDisplayedRowCount()}}</b><br /><br />
+</div>
+<div class="alert alert-primary" role="alert" ng-hide="permits">
+    Good things come to those who wait... (loading...)
+</div>
+
+<div id="permit-routes-grid" style="height: 500px; width:100%;" class="ag-theme-blue vertical-text"></div>
+
+    

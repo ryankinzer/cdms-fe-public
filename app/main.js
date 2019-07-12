@@ -103,7 +103,9 @@ define([
             $routeProvider.when('/manage-operators', { templateUrl: 'app/private/leasing/components/manage/templates/manage-operators.html', controller: 'ManageOperatorsController' });
             $routeProvider.when('/manage-lookups', { templateUrl: 'app/private/leasing/components/manage/templates/lookups.html', controller: 'LookupListsController' });
             
-            $routeProvider.when('/permits/issued', { templateUrl: 'app/private/permits/components/list/templates/list-permits.html', controller: 'PermitListController'});
+            $routeProvider.when('/permits/list', { templateUrl: 'app/private/permits/components/list/templates/list-permits.html', controller: 'PermitListController'});
+            $routeProvider.when('/permits/routes', { templateUrl: 'app/private/permits/components/taskboard/templates/routes.html', controller: 'PermitRoutesController'});
+            $routeProvider.when('/permits/dashboard', { templateUrl: 'app/private/permits/components/dashboard/templates/dashboard.html', controller: 'PermitDashboardController'});
 
 	        //custom routes for datasets that require custom controller+pages
             //$routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
@@ -112,6 +114,7 @@ define([
             $routeProvider.when('/olcevents/:Id', { templateUrl: 'app/private/olc/components/events/templates/events.html', controller: 'OlcEventsCtrl' });
 
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
+            $routeProvider.when('/feedback', { templateUrl: 'app/core/common/components/feedback/templates/feedback.html',controller: 'FeedbackController'});
 
 	        //when all else fails...
 	        $routeProvider.otherwise({redirectTo: '/dashboard'});

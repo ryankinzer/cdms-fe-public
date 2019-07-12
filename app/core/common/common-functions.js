@@ -362,16 +362,6 @@ function array_count(the_array) {
 }
 
 
-function arrayRemoveElement(theArray, theElement){
-	const index = theArray.indexOf(element);
-	
-	if (index !== -1)
-	{
-		theArray.splice(index, 1);
-	}
-}
-
-
 function stringIsNumber(s) {
     return !isNaN(parseFloat(s)) && isFinite(s);
 }
@@ -1293,6 +1283,17 @@ if (!Array.prototype.containsInt) {
     }
 }
 
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
+
 //might be a list of metadata values from project.Metadata or a list of actual properties.
 function addMetadataProperties(metadata_list, ignored, scope, CommonService) {
 
@@ -1730,7 +1731,11 @@ function getProjectFilesArrayAsLinks (a_projectId, a_datasetId, a_files)
     var retval = [];
 
     files.forEach(function (file) {
-        retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/D/" + a_datasetId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+        //console.dir(file);
+        if(file.Link)
+            retval.push("<a href='" + file.Link + "' target=\"_blank\">" + file.Name + "</a>");
+        else
+            retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/D/" + a_datasetId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
     });
 
     return retval;
