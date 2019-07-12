@@ -1,6 +1,6 @@
-﻿//page for OLC Events.
+﻿//page for searching OLC Events.
 
-var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
+var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 'DatasetService', 'CommonService', 'UserService',
     '$uibModal', 'ServiceUtilities', 'ConvertStatus', '$rootScope', '$routeParams',
     function (scope, $timeout, SubprojectService, ProjectService, DatasetService, CommonService, UserService, $modal,
         ServiceUtilities, ConvertStatus, $rootScope, $routeParams) {
@@ -37,7 +37,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     scope.Users = ProjectService.getOlcStaff();
                 }
 
-                var ag_grid_div = document.querySelector('#olc-events-grid');    //get the container id...
+                var ag_grid_div = document.querySelector('#olc-search-grid');    //get the container id...
                 //console.dir(ag_grid_div);
                 scope.ag_grid = new agGrid.Grid(ag_grid_div, scope.olcAgGridOptions); //bind the grid to it.
                 scope.olcAgGridOptions.api.showLoadingOverlay(); //show loading...
@@ -68,13 +68,6 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
         //    }
         //};
         
-
-        var EventCount = function (params) {
-            if (params.node.data.OlcEvents === undefined || params.node.data.OlcEvents === null)
-                return '0';
-
-            return '' + params.node.data.OlcEvents.length;
-        };
 
         var EditMasterLinksTemplate = function (param) {
 
@@ -184,18 +177,16 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],
             },
-            {
-                headerName: '# Events', width: 110,
-                cellRenderer: EventCount,
-                valueGetter: function (params) {
-                    return (params.data.OlcEvents !== undefined && params.data.OlcEvents.length > 0) ? params.data.OlcEvents.length : 0;
-                },
-                menuTabs: [],
-            },
+            //{
+            //    headerName: '# Events', width: 110,
+            //    cellRenderer: EventCount,
+            //    valueGetter: function (params) {
+            //        return (params.data.OlcEvents !== undefined && params.data.OlcEvents.length > 0) ? params.data.OlcEvents.length : 0;
+            //    },
+            //    menuTabs: [],
+            //},
 
             //{ field: 'CatalogNumber', headerName: 'Catalog Number', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
-            { field: 'Agency', headerName: 'Agency', width: 150, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'AgencyLocation', headerName: 'AgencyLocation', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'RecordGroup', headerName: 'Record Group', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SeriesTitle', headerName: 'Series Title', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'FacilityHoused', headerName: 'Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -205,7 +196,6 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             { field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'CategoryIndex', headerName: 'Category Index', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'CategorySubtitle', headerName: 'CategorySubtitle', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'SourceArchiveId', headerName: 'Archive Id', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryTitle', headerName: 'Signatory Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryAgency', headerName: 'Signatory Agency', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryName', headerName: 'Signatory Name', width: 100, menuTabs: ['filterMenuTab'], filter: true },
@@ -234,7 +224,6 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
         //details for the event
         var detailColumnDefs = [
             //{ colId: 'EditLinksDetail', headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [], },
-
             {
                 headerName: 'Document Date',
                 field: 'DocumentDate',
@@ -250,16 +239,15 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             },
             { headerName: 'Document Type', field: 'DocumentType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
             { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            //{ headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Agency', field: 'EventAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             //{ headerName: 'Author Agency', field: 'AuthorAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Agency Division', field: 'AgencyDivision', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Agency Location', field: 'EventAgencyLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Signatory Name', field: 'SignatoryName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Signatory Title', field: 'SignatoryTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Recipient Name', field: 'RecipientName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'RecipientTitle', field: 'RecipientTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Recipient Name', field: 'RecipientName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Recipient Title', field: 'RecipientTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Recipient Agency', field: 'RecipientAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Recipient Location', field: 'RecipientLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             //{ headerName: 'Boundary', field: 'Boundary', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
@@ -315,10 +303,10 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             { headerName: 'Surveyor Name', field: 'SurveyorName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             { headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Number Items', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Page Number', field: 'PageNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'NumberItems', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+
             {
                 field: 'DateDiscovered',
                 headerName: 'Date Discovered',
@@ -342,8 +330,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             },
 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
-            { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Archive Id', field: 'EventArchiveId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -369,12 +356,11 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 //setTimeout(function () { params.api.sizeColumnsToFit(); }, 0);
             },
             getRowHeight: function (params) {
-                // Original way
                 //var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
-                var Tasks_length = (params.data.Tasks === null) ? 1 : params.data.Tasks.length;
-                var Tasks_height = 25 * (Math.floor(Tasks_length / 45) + 1); //base our detail height on the Tasks (comments) field.
-                var file_height = 25 * (getFilesArrayAsList(params.data.FileAttach).length); //count up the number of file lines we will have.
-                return (Tasks_height > file_height) ? Tasks_height : file_height;
+                var comment_length = (params.data.Tasks === null) ? 1 : params.data.Tasks.length;
+                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+                var file_height = 25 * (getFilesArrayAsList(params.data.EventFiles).length); //count up the number of file lines we will have.
+                return (comment_height > file_height) ? comment_height : file_height;
             },
 
             defaultColDef: {
@@ -444,117 +430,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
 
 
 
-        //if you are creating a new one for the project, the ce_row should be empty {}
-        // if you are editing an existing one, send in the project and the ce_row.
-        scope.openOlcEventForm = function (subproject, event_row) {
-            //console.log("Inside openOlcEventForm...")
 
-            $rootScope.viewSubproject = scope.viewSubproject = subproject;
-            //console.log("ok subproject set: ");
-            //console.dir(scope.viewSubproject);
-
-            scope.event_row = event_row;
-
-            var modalInstance = $modal.open({
-                templateUrl: 'app/private/olc/components/events/templates/modal-new-olcEvent.html',
-                controller: 'ModalAddOlcEventCtrl',
-                scope: scope, //very important to pass the scope along...
-            });
-        };
-
-        scope.removeOlcSubproject = function (subproject) {
-            //console.log("Inside removeOlcSubproject, scope is next...");
-
-            if (!subproject)
-                return;
-
-            scope.viewSubproject = subproject;
-
-            if (scope.viewSubproject.OlcEvents.length > 0) {
-                alert("This project has associated OLC events.  Those must be deleted first.");
-            } else {
-                scope.verifyAction = "Delete";
-                scope.verifyingCaller = "OlcSubproject";
-                //console.log("scope.verifyAction = " + scope.verifyAction + ", scope.verifyingCaller = " + scope.verifyingCaller + ", scope.viewSubproject.Id = " + scope.viewSubproject.Id);
-                var modalInstance = $modal.open({
-                    templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
-                    controller: 'ModalVerifyActionCtrl',
-                    scope: scope, //very important to pass the scope along...
-                });
-            }
-        };
-
-        scope.postRemoveSubprojectUpdateGrid = function () {
-            //the scope.subproject is the one we removed.
-            console.log("ok - we removed one so update the grid...");
-
-            scope.subprojectList.forEach(function (item, index) {
-                if (item.Id === scope.viewSubproject.Id) {
-                    scope.subprojectList.splice(index, 1);
-                    //console.log("ok we removed :" + index);
-                    //console.dir(scope.subprojectList[index]);
-                    scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
-                    //scope.corrAgGridOptions.api.redrawRows();
-                    //console.log("done reloading grid.");
-                }
-            });
-        };
-
-        //called by the modal once the correspondence event is successfully saved.
-        scope.postEditOlcEventUpdateGrid = function (edited_event) {
-            console.log("editOlcEvent..." + edited_event.Id + " for subproject " + edited_event.SubprojectId);
-
-            //edit our event item and then reload the grid.
-            scope.subprojectList.forEach(function (item, index) {
-                if (item.Id === edited_event.SubprojectId) {
-                    item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort. - this was already updated in the be
-                    item.OlcEvents.forEach(function (event_item, event_item_index) {
-                        if (event_item.Id === edited_event.Id) {
-                            angular.extend(event_item, edited_event); //replace the data for that item
-                            //console.log("OK!! we edited that correspondence event");
-                        }
-                    });
-                }
-            });
-
-            scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
-
-            //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
-            var the_node = scope.expandSubProjectById(edited_event.SubprojectId);
-            if (the_node !== null)
-                scope.olcAgGridOptions.api.ensureNodeVisible(the_node);
-
-            console.log("done reloading grid after removing item.");
-
-        };
-
-        //called by the modal once a olc event (edit) is saved
-        scope.postAddOlcEventUpdateGrid = function (new_event) {
-            //console.dir(new_event);
-            console.log("saving OLC event for " + new_event.SubprojectId);
-
-            var subproject = getById(scope.subprojectList, new_event.SubprojectId);
-
-            if (subproject === undefined || subproject === null) { //TODO: the case where they create items before the project is saved?
-                console.log("no subproject...");
-            } else {
-                scope.subprojectList.forEach(function (item, index) {
-                    if (item.Id === subproject.Id) {
-                        item.EffDt = moment(new Date()).format() + ""; //touch the effdt to bump the sort - this was already updated in the be
-                        item.OlcEvents.push(new_event);
-                        //console.log("Added event " + new_event.Id + " to " + subproject.Id);
-                    }
-                });
-                scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
-
-                //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
-                var the_node = scope.expandSubProjectById(subproject.Id);
-                if (the_node !== null)
-                    scope.olcAgGridOptions.api.ensureNodeVisible(the_node);
-
-                console.log("done reloading grid after removing item.");
-            }
-        };
 
         //returns the (last) node or null if none found.
         scope.expandSubProjectById = function (id_in) {
@@ -569,100 +445,11 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             return the_node;
         };
 
-        //removes the correspondence event and then updates the grid
-        scope.removeOlcEvent = function (subproject, event) {
-            console.log("removeOlcEvent..." + event.Id + " for subproject " + subproject.Id);
 
-            if (confirm('Are you sure that you want to delete this OLC Event?')) {
-                var promise = SubprojectService.removeOlcEvent(scope.project.Id, subproject.Id, event.Id, scope.DatastoreTablePrefix);
 
-                promise.$promise.then(function () {
-                    //remove from our subprojectList and then reload the grid.
-                    scope.subprojectList.forEach(function (item, index) {
-                        if (item.Id === subproject.Id) {
-                            item.OlcEvents.forEach(function (event_item, event_item_index) {
-                                if (event_item.Id === event.Id) {
-                                    item.OlcEvents.splice(event_item_index, 1);
-                                    //console.log("OK!! we removed that OLC event");
-                                }
-                            });
-                        }
-                    });
-                    scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
 
-                    //after we setRowData, the grid collapses our expanded item. we want it to re-expand that item and make sure it is visible.
-                    var the_node = scope.expandSubProjectById(subproject.Id);
-                    if (the_node !== null)
-                        scope.olcAgGridOptions.api.ensureNodeVisible(the_node);
 
-                    console.log("done reloading grid after removing item.");
-                });
-            }
-        };
 
-        //fired after a user saves a new or edited project.
-        // we update the item in the main subproject array and then refresh the grid.
-        scope.postSaveSubprojectUpdateGrid = function (the_promise) {
-            //console.log("ok - we saved so update the grid...");
-            //var total = scope.subprojectList.length;
-            var total = scope.subprojectList.length;
-            var count = 0;
-            var updated = false;
-
-            if (total === 0) {
-                the_promise.OlcEvents = [];
-                the_promise.Files = [];
-                scope.subprojectList.push(the_promise); //add that item
-                scope.olcAgGridOptions.api.setRowData([]);
-                scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
-            }
-            else {
-                scope.subprojectList.forEach(function (item, index) {
-                    if (item.Id === the_promise.Id) {
-                        updated = true;
-                        //console.log("ok we found a match! -- updating! before:");
-                        //console.dir(scope.subprojectList[index]);
-
-                        if (the_promise.OlcEvents !== undefined)
-                            delete the_promise.OlcEvents; //remove this before the copy.
-
-                        angular.extend(scope.subprojectList[index], the_promise); //replace the data for that item
-                        //console.log("ok we found a match! -- updating! after:");
-                        //console.dir(scope.subprojectList[index]);
-                        scope.olcAgGridOptions.api.redrawRows();
-                        //console.log("done reloading grid.");
-                    }
-                    count++;
-                    if (count === total && updated === false) //if we get all done and we never found it, lets add it to the end.
-                    {
-                        //console.log("ok we found never a match! -- adding!");
-                        the_promise.OlcEvents = [];
-                        the_promise.Files = [];
-                        scope.subprojectList.push(the_promise); //add that item
-                        scope.olcAgGridOptions.api.setRowData([]);
-                        scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
-
-                        //console.log("done reloading grid.");
-                    }
-                });
-            }
-            console.log("updated the list and the grid... now refreshing the OLC lists");
-            //scope.refreshSubprojectLists(); //counties, etc.
-        };
-
-        //opens create olc subproject modal
-        scope.createOlcSubproject = function () {
-            scope.viewSubproject = null;
-            scope.createNewSubproject = true;
-            //scope.subprojectList = null;
-            scope.subprojectOptions = null;
-            //console.log("scope.createNewSubproject = " + scope.createNewSubproject);
-            var modalInstance = $modal.open({
-                templateUrl: 'app/private/olc/components/events/templates/modal-create-subproject.html',
-                controller: 'ModalCreateOlcSubprojectCtrl',
-                scope: scope, //very important to pass the scope along...
-            });
-        };
 
         /****** Working on this area ******/
         //refresh all of the project match lists
@@ -692,18 +479,6 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     controller: 'ModalCreateOlcSubprojectCtrl',
                     scope: scope, //very important to pass the scope along...
             });
-        };
-
-        scope.search = function (p) {
-            console.log("Inside scope.search...");
-            //location.path = "#!/olceventssearch/" + scope.project.Id;
-            window.location.replace("#!/olceventssearch/" + scope.dataset.Id);
-
-            //var modalInstance = $modal.open({
-            //    templateUrl: 'app/private/olc/components/events/templates/events-search.html',
-            //    controller: 'OlcEventsSearchCtrl',
-            //    scope: scope, //very important to pass the scope along...
-            //});
         };
 		
         scope.redrawRows = function () {

@@ -1,0 +1,33 @@
+    <div class="modal-header">
+        <h4>{{header_message}}</h4>
+    </div>
+    <div class="modal-body">
+
+        <div ng-show="showFormItems">
+            <form name="form" class="css-form modal-form" novalidate>
+                <p>* = Required Items</p>
+                <div class="header-label">From Source Id</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SubprojectId" />
+                </div>
+
+                <div class="header-label">To Source Id</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.ToSourceId" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div ng-show="showCancelButton" class="modal-footer" style="margin-top: 30px;">
+        <button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Cancel</button>
+        <button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="save()">Save</button>
+        <div><img ng-show="loading" src="assets/images/FishLoading.gif" />{{ReadyToClose}}</div>
+
+    </div>
+    <div ng-show="showCloseButton" class="modal-footer-center" style="margin-top: 30px;">
+        <label>{{UploadUserMessage}}</label>
+        <br>
+        <button class="btn btn-primary" style="margin: 10px;" ng-click="close()">Close</button>
+    </div>
+
