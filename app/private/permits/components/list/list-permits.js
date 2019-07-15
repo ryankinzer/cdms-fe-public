@@ -582,8 +582,10 @@
                     $scope.PermitParcels = PermitService.getPermitParcels($scope.row.Id);
                     $scope.PermitParcels.$promise.then(function () { 
                         $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+                        $scope.refreshZones();
+                        $scope.refreshParcelHistory();
                     });
-                    $scope.refreshParcelHistory();
+                    
                 });
             }
         };
@@ -643,7 +645,7 @@
 
             $scope.PermitParcels.$promise.then(function () {
                 $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
-                $scope.refreshParcelHistory();
+                $scope.refreshParcelHistory();                
             });
 
             $scope.PermitEvents.$promise.then(function () {
@@ -655,8 +657,6 @@
             });
 
             $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
-
-            //$scope.viewSubproject = $scope.subprojectId = Id;
 
         };
         
