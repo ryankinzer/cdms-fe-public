@@ -270,11 +270,18 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 width: 180,
                 valueGetter: function (params) { return params.node.data.Boundary },			
                 valueFormatter: function (params) {
-                    params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
-                    var the_str = valueFormatterArrayToList(params.node.data.Boundary);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    // Note1:  Sometimes the value can be null
+                    // Note2:  The first time through, the JSON object is a string and must be converted to an array.
+                    // Note3:  The second time through, the value is already an array, so doing JSON.parse will cause JavaScript to die.
+                    if (params.node.data.Boundary !== null) {
+                        if (!isArray(params.node.data.Boundary))
+                            params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
+
+                        var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                            the_str = the_str.replace(/"/g, '');
+                        return the_str;
+                    }
                 },
                 menuTabs: ['filterMenuTab']
             },
@@ -286,11 +293,15 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 width: 180,
                 valueGetter: function (params) { return params.node.data.SignificantArea },
                 valueFormatter: function (params) {
-                    params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
-                    var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    if (params.node.data.SignificantArea !== null) {
+                        if (!isArray(params.node.data.SignificantArea))
+                            params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
+
+                        var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
+                        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                            the_str = the_str.replace(/"/g, '');
+                        return the_str;
+                    }
                 },
                 menuTabs: ['filterMenuTab']
             },
@@ -302,11 +313,15 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 width: 180,
                 valueGetter: function (params) { return params.node.data.MiscellaneousContext },
                 valueFormatter: function (params) {
-                    params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
-                    var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    if (params.node.data.MiscellaneousContext !== null) {
+                        if (!isArray(params.node.data.MiscellaneousContext))
+                            params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
+                        
+                        var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
+                        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                            the_str = the_str.replace(/"/g, '');
+                        return the_str;
+                    }
                 },
                 menuTabs: ['filterMenuTab']
             },
