@@ -492,6 +492,7 @@
                     $scope.PermitParcels = PermitService.getPermitParcels(saved_parcel.PermitId);
                     $scope.PermitParcels.$promise.then(function () { 
                         $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+                        $scope.refreshZones();
                         $scope.refreshParcelHistory();
                     });
             });
@@ -679,6 +680,86 @@
                 });
             });
         };
+
+        $scope.refreshZones = function () {
+            console.log("refresh zones");
+            require([
+                'esri/config',
+                'esri/tasks/query',
+                'esri/tasks/QueryTask'], function (esriConfig, Query, QueryTask) {
+                    console.log("zones inner");
+                    esriConfig.defaults.io.proxyUrl = proxyUrl; // From the config.js file.
+                    esriConfig.defaults.io.alwaysUseProxy = true;
+
+                    var zones = [];
+
+                    //get the geometries of our related parcels
+                    var parcelids = [];
+                    $scope.PermitParcels.forEach(function (parcel) { 
+                        parcelids.push(parcel.ParcelId);
+                    });
+                    //2N30900000105
+                    parcelids = parcelids.join("','");
+
+                    var queryTask = new QueryTask(PARCEL_LAYER);
+                    var query = new Query();
+
+                    query.where = "PARCELID in ('" + parcelids + "')";
+
+                    console.log("looking for parcels: " + query.where);
+
+                    query.outSpatialReference = { wkid: 102100 };
+                    query.returnGeometry = true;
+                    query.outFields = ["*"];
+
+                    queryTask.execute(query, function (result) {
+                        console.dir(result);
+
+                        result.features.forEach(function (feature) {
+                            console.log("Ok - trying to find the zones for: ");
+                            console.dir(feature);
+
+                            var zoneQueryTask = new QueryTask(ZONING_LAYER);
+                            var zoneQuery = new Query();
+
+                            zoneQuery.outSpatialReference = { wkid: 102100 };
+                            zoneQuery.returnGeometry = true;
+                            zoneQuery.outFields = ["*"];
+                            zoneQuery.geometry = feature.geometry;
+                            zoneQuery.spatialRelationship = Query.SPATIAL_REL_INTERSECTS; //Query.SPATIAL_REL_INTERSECTS; //SPATIAL_REL_OVERLAPS?
+                            zoneQuery.where = "1=1";
+                            zoneQuery.maxAllowableOffset = 0;
+                            zoneQuery.distance = 0;
+
+                            zoneQueryTask.execute(zoneQuery, function (zqresult) {
+                                console.log("back from zone query with a result: ");
+                                console.dir(zqresult);
+                                zqresult.features.forEach(function (zfeature) {
+                                    zones.push(zfeature.attributes.ZONECODE);
+                                });
+                                //console.log("OK! the zones are: ");
+                                //console.dir($scope.Zones.join(","));
+                                $scope.row.Zoning = zones.join(",");
+                                //$scope.$apply();
+                            }, function (err) {
+                                console.log("Failure executing query!");
+                                console.dir(err);
+                                console.dir(zoneQuery);
+                            });
+
+                        });
+
+                    }, function (err) {
+                            console.log("Failure executing query!");
+                            console.dir(err);
+                            console.dir(zoneQuery);
+                    });
+
+            });
+
+            
+        };
+
 
         $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
             
