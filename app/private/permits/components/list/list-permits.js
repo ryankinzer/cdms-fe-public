@@ -85,7 +85,7 @@
         $scope.showApplications = function () { 
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
-            filter_component.selectValue('');
+            filter_component.selectValue('New Application');
             filter_component.selectValue('Under Review');
             $scope.permitsGrid.api.onFilterChanged();
             if($scope.currentPage !== "Applications")
