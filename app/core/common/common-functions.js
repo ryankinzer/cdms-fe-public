@@ -457,11 +457,14 @@ function isPercent(n) {
     return (isNumber(n) && n >= 0 && n <= 100); 
 }
 
-
 function isInteger (value) {
     return typeof value === 'number' &&
         isFinite(value) &&
         Math.floor(value) === value;
+};
+
+function isArray(value) {
+    return Object.prototype.toString.call(value) === '[object Array]';
 };
 
 //TODO note: this is moved into a filter in datasets_module. delete me when convenient.
