@@ -278,6 +278,23 @@ var FileListCellTemplate = function (params) {
     return list;
 };
 
+var ItemListCellTemplate = function (params) {
+    var list = '<div class="event-item-list"><ul>';
+    //console.dir(params);
+    //console.dir(this);
+    //var itemList = getProjectFilesArrayAsLinks(params.colDef.ProjectId, params.colDef.DatasetId, params.node.data[params.colDef.DbColumnName]);
+    var itemList = getTextArrayAsList(params.node.data[params.colDef.field]);
+    //console.dir(file_links);
+    itemList.forEach(function (item) {
+        list += '<li>' + item + '</li>';
+    });
+
+    list += '</ul></div>';
+    //list += '</ul><button class="right btn btn-xs" style="margin: 0" ng-click="editCellFiles()">[*]</button></div>';
+    //console.dir(list);
+    return list;
+};
+
 var FileControlType = function (cdms_field, col_def) {
 /*
     col_def.valueFormatter = function (params) {
