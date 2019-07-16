@@ -222,7 +222,9 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         the_str = the_str.replace(/"/g, '');
                     return the_str;
                 },
-                width: 180, menuTabs: ['filterMenuTab'],
+                width: 180,
+                menuTabs: ['filterMenuTab'],
+                filter: true 
             },
 
             //{
@@ -248,21 +250,21 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],
             },
-            { headerName: 'Document Type', field: 'DocumentType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
-            { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Document Type', field: 'DocumentType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Description', field: 'Description', cellRenderer: ItemListCellTemplate, width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Description', field: 'Description', cellRenderer: ItemListCellTemplate, width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Agency', field: 'EventAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Agency', field: 'EventAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Author Agency', field: 'AuthorAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Agency Division', field: 'AgencyDivision', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Agency Location', field: 'EventAgencyLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Signatory Name', field: 'SignatoryName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Signatory Title', field: 'SignatoryTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Recipient Name', field: 'RecipientName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'RecipientTitle', field: 'RecipientTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Recipient Agency', field: 'RecipientAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Recipient Location', field: 'RecipientLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Agency Division', field: 'AgencyDivision', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Agency Location', field: 'EventAgencyLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Signatory Name', field: 'SignatoryName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Signatory Title', field: 'SignatoryTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Name', field: 'RecipientName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'RecipientTitle', field: 'RecipientTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Agency', field: 'RecipientAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Location', field: 'RecipientLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Boundary', field: 'Boundary', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
                 headerName: 'Boundary',
@@ -284,7 +286,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         return the_str;
                     }
                 },
-                menuTabs: ['filterMenuTab']
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
             //{ headerName: 'Significant Area', field: 'SignificantArea', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -304,7 +307,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         return the_str;
                     }
                 },
-                menuTabs: ['filterMenuTab']
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
             //{ headerName: 'Miscellaneous Context', field: 'MiscellaneousContext', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -324,17 +328,18 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         return the_str;
                     }
                 },
-                menuTabs: ['filterMenuTab']
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
-            { headerName: 'Survey Number', field: 'SurveyNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Survey Contract Number', field: 'SurveyContractNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Surveyor Name', field: 'SurveyorName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Survey Number', field: 'SurveyNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Contract Number', field: 'SurveyContractNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Surveyor Name', field: 'SurveyorName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Number Items', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Page Number', field: 'PageNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: 'Number Items', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Page Number', field: 'PageNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             {
                 field: 'DateDiscovered',
                 headerName: 'Date Discovered',
@@ -346,20 +351,21 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],
             },
-            { headerName: 'Person Discovered', field: 'PersonDiscovered', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Person Discovered', field: 'PersonDiscovered', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
 
             {
                 //headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 380, cellStyle: {
                 headerName: 'Tasks', field: 'Tasks', cellClass: 'event-record-cell', width: 380, cellStyle: {
                     'white-space': 'normal'
                 },
-                menuTabs: ['filterMenuTab'], filter: 'text'
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
             },
 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
-            { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Archive Id', field: 'EventArchiveId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: 'Archive Id', field: 'EventArchiveId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -375,6 +381,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     return the_str;
                 },
                 width: 180, menuTabs: ['filterMenuTab'],
+                filter: true 
             },
         ];
 
