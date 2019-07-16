@@ -462,11 +462,14 @@ function isPercent(n) {
     return (isNumber(n) && n >= 0 && n <= 100); 
 }
 
-
 function isInteger (value) {
     return typeof value === 'number' &&
         isFinite(value) &&
         Math.floor(value) === value;
+};
+
+function isArray(value) {
+    return Object.prototype.toString.call(value) === '[object Array]';
 };
 
 //TODO note: this is moved into a filter in datasets_module. delete me when convenient.
@@ -1434,6 +1437,82 @@ function convertStringToArray(aString){
 	return aryItems;
 }
 
+// This function expects a string looking like this:  "a;\nb;\nc;\nd;"
+// and converts the string into a string looking like this:  "a;b;c;d;"
+// Handles strings like Collaborators; this function for saving.
+function convertStringWithSeparatorsAndReturnsToNormalString(aString) {
+    var strA = aString.replace(/(\r\n|\r|\n)/gm, "");
+
+    return strA;
+}
+
+// This function expects a string looking like this: "a;b;c;d;"
+// and converts the string into a string looking like this: "a;\nb;\nc;\nd;"
+// Handles strings like Collaborators; this function for displaying.
+function convertStringWithSeparatorsToStringWithSeparatorsAndReturns(aString) {
+    var aryA = aString.split(';');
+
+    var strA = "";
+
+    var intCount = 0;
+    aryA.forEach(function (item) {
+        if (intCount === 0)
+            strA += item;
+        else
+            strA += ";\n" + item;
+
+        intCount++;
+    });
+
+    return strA;
+}
+
+// This function expects a string looking like this:
+// str1;
+// str2;
+// str3;
+// Assuming str2 is passed in, the function removes str2 from the string:  str1;str3;
+function removeStringItemFromList(strItem, in_list) {
+    /*in_list.forEach(function (list_item, index) {
+        if (list_item === strText) {
+            in_list.splice(index, 1);
+            console.log(" -- removing " + list_item);
+        } else {
+            console.log(" -- keeping " + list_item);
+        }
+    });
+    */
+
+    var strNew = "";
+    var aryA = in_list.split(";");
+
+    // Next, get rid of that trailing blank record.
+    aryA.splice(-1, 1);
+    console.dir(aryA);
+
+    var aryLength = aryA.length;
+
+    for (var i = 0; i < aryLength; i++) {
+        console.log("aryA[i] = " + aryA[i]);
+        if (aryA[i].indexOf(strItem) > -1) {
+            console.log("Found the item...");
+            aryA.splice(i, 1);
+            console.log("Removed the item.");
+
+            // Rebuild the string now, adding the semicolon and newline after every line.
+            angular.forEach(aryA, function (item) {
+                strNew += item + ";\n";
+                console.log("Added item...");
+            });
+
+            // Since we found the item, skip to then end to exit.
+            i = aryLength;
+        }
+    }
+
+    return strNew;
+}
+
 //looks at the metadata setting to see if it is a habitat project
 function isHabitatProject (a_project) {
     return (a_project.MetadataValue[METADATA_PROPERTY_SUBPROGRAM]) === "Habitat";
@@ -1716,6 +1795,31 @@ function getFilesArrayAsList (theFiles) {
 
 };
 
+//return an array from the items.
+function getTextArrayAsList(theItems) {
+
+    if (theItems === undefined || theItems === null)
+        return [];
+
+    var items = null;
+    var newItemList = [];
+    try {
+        //items = angular.fromJson(theItems);
+        items = theItems.split(";");
+        items.forEach(function (item) {
+            newItemList.push(item);
+        });
+
+        newItemList.splice(-1, 1);
+    }
+    catch (e) {
+        console.error("could not parse items: " + theItems);
+    }
+
+    return newItemList; //if it isn't an array, make an empty array
+
+};
+
 //return an array of file links to cdmsShareUrl (defined in config) for subproject
 function getSubprojectFilesArrayAsLinks (a_projectId, a_subprojectId, a_files)
 {
@@ -1741,6 +1845,19 @@ function getProjectFilesArrayAsLinks (a_projectId, a_datasetId, a_files)
             retval.push("<a href='" + file.Link + "' target=\"_blank\">" + file.Name + "</a>");
         else
             retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/D/" + a_datasetId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+    });
+
+    return retval;
+}
+
+//return an array of items to cdmsShareUrl (defined in config) for project
+function getProjectItemsArrayAsTextList(a_itemList) {
+    var itemList = getTextArrayAsList(a_itemList);
+    var retval = [];
+
+    itemList.forEach(function (item) {
+        //console.dir(file);
+        retval.push(item + "\n");
     });
 
     return retval;
