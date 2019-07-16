@@ -1791,6 +1791,8 @@ function getFilesArrayAsList (theFiles) {
 };
 
 //return an array from the items.
+// Receives:  a;b;c;
+// Returns:  [a,b,c]
 function getTextArrayAsList(theItems) {
 
     if (theItems === undefined || theItems === null)
@@ -1845,7 +1847,7 @@ function getProjectFilesArrayAsLinks (a_projectId, a_datasetId, a_files)
     return retval;
 }
 
-//return an array of items to cdmsShareUrl (defined in config) for project
+//Receive a text array, and convert it into a list with \n after each item.
 function getProjectItemsArrayAsTextList(a_itemList) {
     var itemList = getTextArrayAsList(a_itemList);
     var retval = [];
@@ -1856,6 +1858,25 @@ function getProjectItemsArrayAsTextList(a_itemList) {
     });
 
     return retval;
+}
+
+//Receive an array like this: [a,b,c]
+//Return:
+//-a
+//-b
+//-c
+function buildBulletedItemList(a_itemList) {
+    var list = '<div class="event-item-list"><ul>';
+    //var itemList = getTextArrayAsList(a_itemList);
+
+    a_itemList.forEach(function (item) {
+        list += '<li>' + item + '</li>';
+    });
+
+    list += '</ul></div>';
+
+    //console.dir(list);
+    return list;
 }
 
 
