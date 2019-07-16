@@ -13,6 +13,7 @@ require([
     'private/permits/components/list/modal-new-file',
     'private/permits/components/list/add-person-modal',
     'private/permits/components/taskboard/add-fee-modal',
+    'private/permits/components/list/request-inspection',
 
     //service
     'private/permits/permit-service',
@@ -28,6 +29,8 @@ require([
     permit_module.controller('PermitRoutesController', permit_routes);
     permit_module.controller('AddFeeModalController', modal_add_fee);
     permit_module.controller('PermitDashboardController', permit_dashboard);
+    permit_module.controller('RequestInspectionController', request_inspection);
+    
 
     permit_module.filter('personOrgName', function () {
         return function (person) {
