@@ -74,6 +74,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.dataset = $scope.dataset_activities.Dataset;
                 //$scope.row is the Header fields data row
                 $scope.row = $scope.dataset_activities.Header;
+                $scope.row.FishermanFullName = "";
+
+                angular.forEach($scope.fishermen, function (afisherman) {
+                    if (afisherman.Id === $scope.row.FishermanId)
+                        $scope.row.FishermanFullName = afisherman.FullName;
+                });
+
+                if ($scope.row.FishermanFullName === 2019)
+                    console.log("$scope.row.FishermanFullName = " + $scope.row.FishermanFullName);
 
                 $scope.afterDatasetLoadedEvent();
             });
