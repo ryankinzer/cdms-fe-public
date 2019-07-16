@@ -6,6 +6,12 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         $scope.permit = $scope.row;
         $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
 
+        $scope.Results = {
+            SuccessMessage: null,
+            FailureMessage: null,
+            DoneSaving: false,
+        };
+
         //intent can be set from the caller... otherwise the mode is based on the incoming activity_modal id
         if ($scope.intent) {
             $scope.mode = $scope.intent;
@@ -99,15 +105,24 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         $scope.modalFile_saveParentItem = function (saveRow) {
 
             //save again to update with the files we uploaded
-            var new_event = PermitService.savePermitEvent(saveRow);
+            $scope.saved_event = PermitService.savePermitEvent(saveRow);
 
-            new_event.$promise.then(function () {
+            $scope.saved_event.$promise.then(function () {
                 console.log("done and success updating the files");
-                $modalInstance.close(new_event);
+                $scope.Results.SuccessMessage = "Saved and notifications sent.";
+                $scope.Results.DoneSaving = true;
+            }, function (data) {
+                console.error("failure!");
+                console.dir(data);
+                $scope.Results.FailureMessage = "There was a problem saving or sending notifications.";
+                //$scope.Results.DoneSaving = true;
             });
 
         };
 
+        $scope.close = function () { 
+            $modalInstance.close($scope.saved_event);
+        };
 
 
         var NEW_REVIEW_FIELDS = ["EventDate", "EventType", "ItemType", "Comments"];

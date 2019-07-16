@@ -120,9 +120,16 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    <button ng-disabled="row.validationErrors.length>0" style="margin-top: 30px;" class="right btn" ng-click="save()">Save Changes</button>
+    <div ng-show="Results.SuccessMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{Results.SuccessMessage}}</div>
+    <div ng-show="Results.FailureMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-danger">{{Results.FailureMessage}}</div>
 
-    <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
+    <div ng-show="!Results.DoneSaving">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="right btn" ng-click="save()">Save Changes</button>
+    </div>
+    <div ng-show="Results.DoneSaving">
+        <button style="margin-top: 30px;" class="right btn" ng-click="close()">Close</button>
+    </div>
+
 
 </div>
