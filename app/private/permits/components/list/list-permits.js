@@ -247,7 +247,6 @@
             columnDefs: null,
             rowData: null,
             rowSelection: 'single',
-            selectedItem: null ,
             defaultColDef: {
                 editable: false,
                 sortable: true,
@@ -643,20 +642,24 @@
             
             $scope.PermitContacts.$promise.then(function () { 
                 $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
+                $scope.permitContactsGrid.selectedItem = null;
             });
 
             $scope.PermitParcels.$promise.then(function () {
                 $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+                $scope.permitParcelsGrid.selectedItem = null;
                 $scope.refreshParcelHistory(); 
                 $scope.refreshZones();
             });
 
             $scope.PermitEvents.$promise.then(function () {
                 $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                $scope.permitEventsGrid.selectedItem = null;
             });
 
             $scope.PermitFiles.$promise.then(function () {
                 $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+                $scope.permitFilesGrid.selectedItem = null;
             });
 
             $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
