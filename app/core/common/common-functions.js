@@ -1790,6 +1790,31 @@ function getFilesArrayAsList (theFiles) {
 
 };
 
+//return an array from the items.
+function getTextArrayAsList(theItems) {
+
+    if (theItems === undefined || theItems === null)
+        return [];
+
+    var items = null;
+    var newItemList = [];
+    try {
+        //items = angular.fromJson(theItems);
+        items = theItems.split(";");
+        items.forEach(function (item) {
+            newItemList.push(item);
+        });
+
+        newItemList.splice(-1, 1);
+    }
+    catch (e) {
+        console.error("could not parse items: " + theItems);
+    }
+
+    return newItemList; //if it isn't an array, make an empty array
+
+};
+
 //return an array of file links to cdmsShareUrl (defined in config) for subproject
 function getSubprojectFilesArrayAsLinks (a_projectId, a_subprojectId, a_files)
 {
@@ -1815,6 +1840,19 @@ function getProjectFilesArrayAsLinks (a_projectId, a_datasetId, a_files)
             retval.push("<a href='" + file.Link + "' target=\"_blank\">" + file.Name + "</a>");
         else
             retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/D/" + a_datasetId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+    });
+
+    return retval;
+}
+
+//return an array of items to cdmsShareUrl (defined in config) for project
+function getProjectItemsArrayAsTextList(a_itemList) {
+    var itemList = getTextArrayAsList(a_itemList);
+    var retval = [];
+
+    itemList.forEach(function (item) {
+        //console.dir(file);
+        retval.push(item + "\n");
     });
 
     return retval;
