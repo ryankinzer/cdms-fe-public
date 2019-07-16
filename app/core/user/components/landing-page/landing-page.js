@@ -22,8 +22,8 @@ var landing_page = ['$scope', '$rootScope', '$location', 'DatasetService','UserS
         });
 
         $scope.checkIfEmpty = function () {
-            console.dir($scope.myprojects);
-            console.dir($scope.mydatasets);
+            //console.dir($scope.myprojects);
+            //console.dir($scope.mydatasets);
             if ($scope.myprojects.$resolved && $scope.mydatasets.$resolved) {
                 if($scope.myprojects.length == 0 && $scope.mydatasets.length == 0)
                     angular.rootScope.go("/projects");

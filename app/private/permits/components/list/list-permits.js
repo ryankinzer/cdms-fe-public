@@ -17,6 +17,8 @@
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
+
+        $scope.refreshingZones = false;
         
         $scope.dataset.$promise.then(function () { 
             console.log(" -- dataset back -- ");
@@ -682,12 +684,11 @@
         };
 
         $scope.refreshZones = function () {
-            console.log("refresh zones");
+            $scope.refreshingZones = true;
             require([
                 'esri/config',
                 'esri/tasks/query',
                 'esri/tasks/QueryTask'], function (esriConfig, Query, QueryTask) {
-                    console.log("zones inner");
                     esriConfig.defaults.io.proxyUrl = proxyUrl; // From the config.js file.
                     esriConfig.defaults.io.alwaysUseProxy = true;
 
@@ -713,11 +714,11 @@
                     query.outFields = ["*"];
 
                     queryTask.execute(query, function (result) {
-                        console.dir(result);
+                        //console.dir(result);
 
                         result.features.forEach(function (feature) {
-                            console.log("Ok - trying to find the zones for: ");
-                            console.dir(feature);
+                            //console.log("Ok - trying to find the zones for: ");
+                            //console.dir(feature);
 
                             var zoneQueryTask = new QueryTask(ZONING_LAYER);
                             var zoneQuery = new Query();
@@ -732,27 +733,37 @@
                             zoneQuery.distance = 0;
 
                             zoneQueryTask.execute(zoneQuery, function (zqresult) {
-                                console.log("back from zone query with a result: ");
-                                console.dir(zqresult);
+                                //console.log("back from zone query with a result: ");
+                                //console.dir(zqresult);
                                 zqresult.features.forEach(function (zfeature) {
                                     zones.push(zfeature.attributes.ZONECODE);
                                 });
-                                //console.log("OK! the zones are: ");
-                                //console.dir($scope.Zones.join(","));
-                                $scope.row.Zoning = zones.join(",");
-                                //$scope.$apply();
+                                
+                                //refresh our view
+                                setTimeout(function () { 
+                                    $scope.$apply(function () {
+                                        $scope.row.Zoning = zones.join(",");
+                                        $scope.refreshingZones = false;
+                                    });
+                                }, 500);
+                                
                             }, function (err) {
                                 console.log("Failure executing query!");
                                 console.dir(err);
                                 console.dir(zoneQuery);
+                                $scope.refreshingZones = false;
                             });
 
                         });
+
+                        if(result.features.length == 0)
+                            $scope.refreshingZones = false;
 
                     }, function (err) {
                             console.log("Failure executing query!");
                             console.dir(err);
                             console.dir(zoneQuery);
+                            $scope.refreshingZones = false;
                     });
 
             });
