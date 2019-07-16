@@ -15,10 +15,10 @@
         $scope.PermitFiles = [];
         $scope.ParcelHistory = []; 
 
+        $scope.refreshingZones = false;
+
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
-
-        $scope.refreshingZones = false;
         
         $scope.dataset.$promise.then(function () { 
             console.log(" -- dataset back -- ");
@@ -647,7 +647,8 @@
 
             $scope.PermitParcels.$promise.then(function () {
                 $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
-                $scope.refreshParcelHistory();                
+                $scope.refreshParcelHistory(); 
+                $scope.refreshZones();
             });
 
             $scope.PermitEvents.$promise.then(function () {
@@ -659,6 +660,17 @@
             });
 
             $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
+        
+            $scope.row.Zones = [];
+
+            if ($scope.row.Zoning) {
+                $scope.row.Zoning = getJsonObjects($scope.row.Zoning);
+                console.warn(" -- Zoning -- ");
+                console.dir($scope.row.Zoning);
+
+            } else {
+                $scope.row.Zoning = [];
+            }
 
         };
         
@@ -685,6 +697,7 @@
 
         $scope.refreshZones = function () {
             $scope.refreshingZones = true;
+            $scope.row.Zones.length = 0;
             require([
                 'esri/config',
                 'esri/tasks/query',
@@ -692,14 +705,19 @@
                     esriConfig.defaults.io.proxyUrl = proxyUrl; // From the config.js file.
                     esriConfig.defaults.io.alwaysUseProxy = true;
 
-                    var zones = [];
-
                     //get the geometries of our related parcels
                     var parcelids = [];
                     $scope.PermitParcels.forEach(function (parcel) { 
                         parcelids.push(parcel.ParcelId);
                     });
                     //2N30900000105
+
+                    if (parcelids.length == 0) {
+                        console.warn("no parcelids to search for");
+                        $scope.refreshingZones = false;
+                        return;
+                    }
+
                     parcelids = parcelids.join("','");
 
                     var queryTask = new QueryTask(PARCEL_LAYER);
@@ -714,11 +732,11 @@
                     query.outFields = ["*"];
 
                     queryTask.execute(query, function (result) {
-                        //console.dir(result);
+                        console.dir(result);
 
                         result.features.forEach(function (feature) {
-                            //console.log("Ok - trying to find the zones for: ");
-                            //console.dir(feature);
+                            console.log("Ok - trying to find the zones for: ");
+                            console.dir(feature);
 
                             var zoneQueryTask = new QueryTask(ZONING_LAYER);
                             var zoneQuery = new Query();
@@ -733,16 +751,18 @@
                             zoneQuery.distance = 0;
 
                             zoneQueryTask.execute(zoneQuery, function (zqresult) {
-                                //console.log("back from zone query with a result: ");
-                                //console.dir(zqresult);
+                                console.log("back from zone query with a result: ");
+                                console.dir(zqresult);
                                 zqresult.features.forEach(function (zfeature) {
-                                    zones.push(zfeature.attributes.ZONECODE);
+                                    if(!$scope.row.Zones.contains(zfeature.attributes.ZONECODE))
+                                        $scope.row.Zones.push(zfeature.attributes.ZONECODE);
+                                    console.dir($scope.row.Zones);
                                 });
                                 
                                 //refresh our view
                                 setTimeout(function () { 
                                     $scope.$apply(function () {
-                                        $scope.row.Zoning = zones.join(",");
+                                        //$scope.row.Zoning = zones; //zones.join(",");
                                         $scope.refreshingZones = false;
                                     });
                                 }, 500);
@@ -841,6 +861,7 @@
             
             var to_save = angular.copy($scope.row);
             to_save.ReviewsRequired = angular.toJson(to_save.ReviewsRequired);
+            to_save.Zoning = angular.toJson(to_save.Zoning);
             console.dir(to_save);
 
             var saved_permit = PermitService.savePermit(to_save);
