@@ -34,6 +34,16 @@
             $scope.permits.$promise.then(function () {
                 console.log(" -- permits back -- ");
                 $scope.permitsGrid.api.setRowData($scope.permits);
+    
+                //if there is an incoming Id, select it.
+                if ($routeParams.Id) {
+                    $scope.permitsGrid.api.forEachNode( function(node) {
+                        if (node.data.Id == $routeParams.Id) {
+                            node.setSelected(true);
+                            $scope.permitsGrid.api.ensureIndexVisible(node.rowIndex, 'top');
+                        }
+                    });
+                }
             });
 
             //now do some caching...

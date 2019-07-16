@@ -142,6 +142,11 @@
 
         $scope.handleDoubleClick = function (params) {
             var col = params.colDef.field.substring(6); //"Route_BldgCode" --> "BldgCode"
+            
+            if (params.colDef.field == 'PermitNumber') {
+                window.open("index.html#!/permits/list?Id=" + params.data.Id, "_blank");
+                return;
+            }
 
             if (col == 'TPO')
                 return;

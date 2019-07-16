@@ -39,8 +39,7 @@
                 resizable: true,
             },
             onRowDoubleClicked: function (params) { 
-                console.dir(params);
-                //$window.open('/index.html#!/permits/list?Id='+params., '_blank');
+                window.open("index.html#!/permits/list?Id=" + params.data.Id, "_blank");
             },
         };
 
@@ -65,7 +64,9 @@
             rowData: null,
             rowSelection: 'single',
             selectedItem: null,
-            selectedItem: null,
+            onRowDoubleClicked: function (params) { 
+                window.open("index.html#!/permits/list?Id=" + params.data.Id, "_blank");
+            },
             defaultColDef: {
                 editable: false,
                 sortable: true,
