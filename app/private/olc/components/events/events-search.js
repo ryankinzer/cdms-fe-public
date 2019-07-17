@@ -254,7 +254,42 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             { headerName: 'Survey Contract Number', field: 'SurveyContractNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'Surveyor Name', field: 'SurveyorName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            {
+                headerName: 'Survey Dates',
+                field: 'SurveyDates',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.SurveyDates },
+                valueFormatter: function (params) {
+                    console.log("typeof params.node.data.SurveyDates = " + typeof params.node.data.SurveyDates);
+                    //if ((params.node.data.SurveyDates !== null) && (typeof params.node.data.SurveyDates !== 'string')) {
+                    if (params.node.data.SurveyDates !== null) {
+                        try {
+                            params.node.data.SurveyDates = JSON.parse(params.node.data.SurveyDates);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.SurveyDates.indexOf(";") > -1) {
+                                params.node.data.SurveyDates = params.node.data.SurveyDates.split(";");
+                                params.node.data.SurveyDates.splice(-1, 1);
+
+                            }
+                        }
+
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: true
+            },
             //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             {

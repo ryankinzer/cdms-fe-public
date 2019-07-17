@@ -121,7 +121,9 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         }
 
         if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null)) {
-            $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
+            if (!isArray($scope.event_row.SurveyDates))
+                $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
+
             /*var arySurveyDates = $scope.event_row.SurveyDates.split(';')
 
             $scope.event_row.SurveyDates = "";
