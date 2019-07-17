@@ -363,8 +363,6 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                                 params.node.data.TwnRngSec.splice(-1, 1);
 
                             }
-                            //else
-                            //    return params.node.data.TwnRngSec;
                         }
 
                         //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
@@ -394,13 +392,62 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 menuTabs: ['filterMenuTab'],
             },
             { headerName: 'Person Discovered', field: 'PersonDiscovered', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            {
+                headerName: 'Reference',
+                field: 'Reference',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.Reference },
+                valueFormatter: function (params) {
+                    console.log("typeof params.node.data.Reference = " + typeof params.node.data.Reference);
+                    if (params.node.data.Reference !== null) {
+                        try {
+                            params.node.data.Reference = JSON.parse(params.node.data.Reference);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.Reference.indexOf(";") > -1) {
+                                params.node.data.Reference = params.node.data.Reference.split(";");
+                                params.node.data.Reference.splice(-1, 1);
 
+                            }
+                        }
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: true
+            },
             {
                 //headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 380, cellStyle: {
-                headerName: 'Tasks', field: 'Tasks', cellClass: 'event-record-cell', width: 380, cellStyle: {
+                headerName: 'Tasks',
+                field: 'Tasks',
+                cellClass: 'event-record-cell',
+                width: 380,
+                cellStyle: {
                     'white-space': 'normal'
                 },
+                valueGetter: function (params) { return params.node.data.Tasks },
+                valueFormatter: function (params) {
+                    console.log("typeof params.node.data.Tasks = " + typeof params.node.data.Tasks);
+                    if (params.node.data.Tasks !== null) {
+                        try {
+                            params.node.data.Tasks = JSON.parse(params.node.data.Tasks);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.Tasks.indexOf(";") > -1) {
+                                params.node.data.Tasks = params.node.data.Tasks.split(";");
+                                params.node.data.Tasks.splice(-1, 1);
+
+                            }
+                        }
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
                 filter: 'text'
             },
@@ -439,7 +486,40 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 var Tasks_length = (params.data.Tasks === null) ? 1 : params.data.Tasks.length;
                 var Tasks_height = 25 * (Math.floor(Tasks_length / 45) + 1); //base our detail height on the Tasks (comments) field.
                 var file_height = 25 * (getFilesArrayAsList(params.data.FileAttach).length); //count up the number of file lines we will have.
-                return (Tasks_height > file_height) ? Tasks_height : file_height;
+                var description_height = 25 * (getProjectItemsArrayAsTextList(params.data.Description).length);
+                var boundary_height = 25 * (getProjectItemsArrayAsTextList(params.data.Boundary).length);
+                var significantArea_height = 25 * (getProjectItemsArrayAsTextList(params.data.SignificantArea).length);
+                var miscellaneoudContext_height = 25 * (getProjectItemsArrayAsTextList(params.data.MiscellaneousContext).length);
+                var twnRngSec_height = 25 * (getProjectItemsArrayAsTextList(params.data.TwnRngSec).length);
+                var reference_height = 25 * (getProjectItemsArrayAsTextList(params.data.Reference).length);
+
+                var maxHeight = 1;
+                if (Tasks_height > maxHeight)
+                    maxHeight = Tasks_height;
+
+                if (file_height > maxHeight)
+                    maxHeight = file_height;
+
+                if (description_height > maxHeight)
+                    maxHeight = description_height;
+
+                if (boundary_height > maxHeight)
+                    maxHeight = boundary_height;
+
+                if (significantArea_height > maxHeight)
+                    maxHeight = significantArea_height;
+
+                if (miscellaneoudContext_height > maxHeight)
+                    maxHeight = miscellaneoudContext_height;
+
+                if (twnRngSec_height > maxHeight)
+                    maxHeight = twnRngSec_height;
+
+                if (reference_height > maxHeight)
+                    maxHeight = reference_height;
+
+                //return (Tasks_height > file_height) ? Tasks_height : file_height;
+                return maxHeight;
             },
 
             defaultColDef: {
