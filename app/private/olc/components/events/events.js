@@ -204,7 +204,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             //{ field: 'BoxLocation', headerName: 'Box Location', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'CategoryIndex', headerName: 'Category Index', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'CategorySubtitle', headerName: 'CategorySubtitle', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'CategorySubtitle', headerName: 'CategorySubtitle', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'FileUnit', headerName: 'File Unit', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SourceArchiveId', headerName: 'Archive Id', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryTitle', headerName: 'Signatory Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryAgency', headerName: 'Signatory Agency', width: 100, menuTabs: ['filterMenuTab'], filter: true },
@@ -222,7 +223,9 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         the_str = the_str.replace(/"/g, '');
                     return the_str;
                 },
-                width: 180, menuTabs: ['filterMenuTab'],
+                width: 180,
+                menuTabs: ['filterMenuTab'],
+                filter: true 
             },
 
             //{
@@ -248,21 +251,21 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],
             },
-            { headerName: 'Document Type', field: 'DocumentType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
-            { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Document Type', field: 'DocumentType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Description', field: 'Description', cellRenderer: ItemListCellTemplate, width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Description', field: 'Description', cellRenderer: ItemListCellTemplate, width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Agency', field: 'EventAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Agency', field: 'EventAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Author Agency', field: 'AuthorAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Agency Division', field: 'AgencyDivision', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Agency Location', field: 'EventAgencyLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Signatory Name', field: 'SignatoryName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Signatory Title', field: 'SignatoryTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Recipient Name', field: 'RecipientName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'RecipientTitle', field: 'RecipientTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Recipient Agency', field: 'RecipientAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Recipient Location', field: 'RecipientLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Agency Division', field: 'AgencyDivision', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Agency Location', field: 'EventAgencyLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Signatory Name', field: 'SignatoryName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Signatory Title', field: 'SignatoryTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Name', field: 'RecipientName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'RecipientTitle', field: 'RecipientTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Agency', field: 'RecipientAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Location', field: 'RecipientLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Boundary', field: 'Boundary', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
                 headerName: 'Boundary',
@@ -278,13 +281,17 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         if (!isArray(params.node.data.Boundary))
                             params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
 
-                        var the_str = valueFormatterArrayToList(params.node.data.Boundary);
-                        if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                            the_str = the_str.replace(/"/g, '');
-                        return the_str;
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
                     }
                 },
-                menuTabs: ['filterMenuTab']
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
             //{ headerName: 'Significant Area', field: 'SignificantArea', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -298,13 +305,15 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         if (!isArray(params.node.data.SignificantArea))
                             params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
 
-                        var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
-                        if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                            the_str = the_str.replace(/"/g, '');
-                        return the_str;
+                //        var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
+                //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                //            the_str = the_str.replace(/"/g, '');
+                //        return the_str;
                     }
                 },
-                menuTabs: ['filterMenuTab']
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
             //{ headerName: 'Miscellaneous Context', field: 'MiscellaneousContext', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -318,23 +327,60 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         if (!isArray(params.node.data.MiscellaneousContext))
                             params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
 
-                        var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
-                        if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                            the_str = the_str.replace(/"/g, '');
-                        return the_str;
+                //        var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
+                //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                //            the_str = the_str.replace(/"/g, '');
+                //        return the_str;
                     }
                 },
-                menuTabs: ['filterMenuTab']
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
-            { headerName: 'Survey Number', field: 'SurveyNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Survey Contract Number', field: 'SurveyContractNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Surveyor Name', field: 'SurveyorName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Survey Number', field: 'SurveyNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Contract Number', field: 'SurveyContractNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Surveyor Name', field: 'SurveyorName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Number Items', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Page Number', field: 'PageNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            //{ headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            {
+                headerName: 'TwnRngSec',
+                field: 'TwnRngSec',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.TwnRngSec },
+                valueFormatter: function (params) {
+                    console.log("typeof params.node.data.TwnRngSec = " + typeof params.node.data.TwnRngSec);
+                    //if ((params.node.data.TwnRngSec !== null) && (typeof params.node.data.TwnRngSec !== 'string')) {
+                    if (params.node.data.TwnRngSec !== null) {
+                        try {
+                            params.node.data.TwnRngSec = JSON.parse(params.node.data.TwnRngSec);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.TwnRngSec.indexOf(";") > -1) {
+                                params.node.data.TwnRngSec = params.node.data.TwnRngSec.split(";");
+                                params.node.data.TwnRngSec.splice(-1, 1);
+
+                            }
+                        }
+
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
+            },
+            { headerName: 'Number Items', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Page Number', field: 'PageNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             {
                 field: 'DateDiscovered',
                 headerName: 'Date Discovered',
@@ -346,20 +392,70 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],
             },
-            { headerName: 'Person Discovered', field: 'PersonDiscovered', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Person Discovered', field: 'PersonDiscovered', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            {
+                headerName: 'Reference',
+                field: 'Reference',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.Reference },
+                valueFormatter: function (params) {
+                    console.log("typeof params.node.data.Reference = " + typeof params.node.data.Reference);
+                    if (params.node.data.Reference !== null) {
+                        try {
+                            params.node.data.Reference = JSON.parse(params.node.data.Reference);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.Reference.indexOf(";") > -1) {
+                                params.node.data.Reference = params.node.data.Reference.split(";");
+                                params.node.data.Reference.splice(-1, 1);
 
+                            }
+                        }
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: true
+            },
             {
                 //headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 380, cellStyle: {
-                headerName: 'Tasks', field: 'Tasks', cellClass: 'event-record-cell', width: 380, cellStyle: {
+                headerName: 'Tasks',
+                field: 'Tasks',
+                cellClass: 'event-record-cell',
+                width: 380,
+                cellStyle: {
                     'white-space': 'normal'
                 },
-                menuTabs: ['filterMenuTab'], filter: 'text'
+                valueGetter: function (params) { return params.node.data.Tasks },
+                valueFormatter: function (params) {
+                    console.log("typeof params.node.data.Tasks = " + typeof params.node.data.Tasks);
+                    if (params.node.data.Tasks !== null) {
+                        try {
+                            params.node.data.Tasks = JSON.parse(params.node.data.Tasks);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.Tasks.indexOf(";") > -1) {
+                                params.node.data.Tasks = params.node.data.Tasks.split(";");
+                                params.node.data.Tasks.splice(-1, 1);
+
+                            }
+                        }
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
             },
 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
-            { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Archive Id', field: 'EventArchiveId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: 'Archive Id', field: 'EventArchiveId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -375,6 +471,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     return the_str;
                 },
                 width: 180, menuTabs: ['filterMenuTab'],
+                filter: true 
             },
         ];
 
@@ -390,7 +487,40 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 var Tasks_length = (params.data.Tasks === null) ? 1 : params.data.Tasks.length;
                 var Tasks_height = 25 * (Math.floor(Tasks_length / 45) + 1); //base our detail height on the Tasks (comments) field.
                 var file_height = 25 * (getFilesArrayAsList(params.data.FileAttach).length); //count up the number of file lines we will have.
-                return (Tasks_height > file_height) ? Tasks_height : file_height;
+                var description_height = 25 * (getProjectItemsArrayAsTextList(params.data.Description).length);
+                var boundary_height = 25 * (getProjectItemsArrayAsTextList(params.data.Boundary).length);
+                var significantArea_height = 25 * (getProjectItemsArrayAsTextList(params.data.SignificantArea).length);
+                var miscellaneoudContext_height = 25 * (getProjectItemsArrayAsTextList(params.data.MiscellaneousContext).length);
+                var twnRngSec_height = 25 * (getProjectItemsArrayAsTextList(params.data.TwnRngSec).length);
+                var reference_height = 25 * (getProjectItemsArrayAsTextList(params.data.Reference).length);
+
+                var maxHeight = 1;
+                if (Tasks_height > maxHeight)
+                    maxHeight = Tasks_height;
+
+                if (file_height > maxHeight)
+                    maxHeight = file_height;
+
+                if (description_height > maxHeight)
+                    maxHeight = description_height;
+
+                if (boundary_height > maxHeight)
+                    maxHeight = boundary_height;
+
+                if (significantArea_height > maxHeight)
+                    maxHeight = significantArea_height;
+
+                if (miscellaneoudContext_height > maxHeight)
+                    maxHeight = miscellaneoudContext_height;
+
+                if (twnRngSec_height > maxHeight)
+                    maxHeight = twnRngSec_height;
+
+                if (reference_height > maxHeight)
+                    maxHeight = reference_height;
+
+                //return (Tasks_height > file_height) ? Tasks_height : file_height;
+                return maxHeight;
             },
 
             defaultColDef: {
