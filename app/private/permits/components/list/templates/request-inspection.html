@@ -1,20 +1,21 @@
 ﻿<h3>Create Inspection Request</h3>
 
 
-<div class="modal-body modal-form" style="width: 100% !important;">
+<div class="modal-body modal-form" style="width: 800px !important;">
 
-    <div class="header-label">Permit Number:</div>
-    <div class="header-value">
-        <input class="form-control" type="text" ng-model="permit.PermitNumber" />
-    </div>
+    <form>
 
-    <div>
-        {{ResultMessage}}
-    </div>
+        <div class="header-label">for Permit Number:</div>
+        <div class="header-value" style="width: 580px !important;">
+            <button class="btn right" ng-click="permitLookup()">Lookup</button>
+            <input class="form-control" type="text" ng-model="SearchPermitNumber" />
+        </div>
+        <div style="margin-left: 243px;">{{ResultMessage}}</div>
 
-    <button class="btn" ng-click="permitLookup()">Lookup</button>
+    </form>
 
     <div ng-show="permit.Id">
         <div ng-include="'app/private/permits/components/list/templates/add-activity-modal.html'"></div>
     </div>
 </div>
+

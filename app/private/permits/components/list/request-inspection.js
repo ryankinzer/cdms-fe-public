@@ -8,10 +8,17 @@
 
         $scope.mode = 'new_inspection';
         $scope.permit = {};
+        $scope.showHeader = false;
 
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
 
         $scope.permitEventsGrid = {};
+
+        $scope.Results = {
+            SuccessMessage: null,
+            FailureMessage: null,
+            DoneSaving: false,
+        };
 
         $scope.eventsdataset.$promise.then(function () {
             console.log(" -- events dataset back -- ");
@@ -33,7 +40,7 @@
 
         $scope.permitLookup = function () { 
             $scope.ResultMessage = "Searching...";
-            var search_permit = PermitService.getPermitByPermitNumber($scope.permit.PermitNumber);
+            var search_permit = PermitService.getPermitByPermitNumber($scope.SearchPermitNumber);
             search_permit.$promise.then(function () { 
                 console.dir(search_permit);
                 if (search_permit.hasOwnProperty('Id')) {
@@ -44,13 +51,15 @@
                         PermitId: $scope.permit.Id,
                         EventType: 'Inspection',
                         EventDate: moment().format('L'),
-                        RequestDate: moment().format('L')
+                        RequestDate: moment().format('L'),
+                        ByUser: $scope.Profile.Id
                     };
 
                     $scope.ResultMessage = "Permit found.";
                 }
                 else {
-                    $scope.ResultMessage = $scope.permit.PermitNumber + " not found.";
+                    $scope.ResultMessage = $scope.SearchPermitNumber + " not found.";
+                    $scope.permit = null;
                 }
             });
         };
@@ -70,7 +79,30 @@
             return field.hasOwnProperty('DbColumnName');
         };
 
-        
+        $scope.save = function () { 
+            $scope.Results.DoneSaving = true;
+            var new_event = PermitService.savePermitEvent($scope.row);
+            new_event.$promise.then(function () {
+                console.log("done and success updating the files");
+                $scope.Results.SuccessMessage = "Saved and notifications sent.";
+            }, function (data) {
+                console.error("failure!");
+                console.dir(data);
+                $scope.Results.FailureMessage = "There was a problem saving or sending notifications.";
+                $scope.Results.DoneSaving = false;
+            });
+
+        };
+
+        $scope.cancel = function () { 
+            $scope.SearchPermitNumber = "";
+            $scope.permit = null;
+            $scope.ResultMessage = "";
+        };
+
+        $scope.close = function () { 
+            $scope.cancel();
+        };
 
     }
 ];

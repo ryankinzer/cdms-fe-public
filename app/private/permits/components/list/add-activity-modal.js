@@ -104,18 +104,20 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         //call back from save above once the files are done processing and we're ready to save the item
         $scope.modalFile_saveParentItem = function (saveRow) {
 
+            $scope.Results.DoneSaving = true;
+
             //save again to update with the files we uploaded
             $scope.saved_event = PermitService.savePermitEvent(saveRow);
 
             $scope.saved_event.$promise.then(function () {
                 console.log("done and success updating the files");
                 $scope.Results.SuccessMessage = "Saved and notifications sent.";
-                $scope.Results.DoneSaving = true;
+                
             }, function (data) {
                 console.error("failure!");
                 console.dir(data);
                 $scope.Results.FailureMessage = "There was a problem saving or sending notifications.";
-                //$scope.Results.DoneSaving = true;
+                $scope.Results.DoneSaving = false;
             });
 
         };
