@@ -434,7 +434,10 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             }
 
             if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null))
-                $scope.event_row.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.SurveyDates);
+                if (isArray($scope.event_row.SurveyDates)) 
+                    $scope.event_row.SurveyDates = convertStringArrayToNoralString($scope.event_row.SurveyDates);
+                else
+                    $scope.event_row.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.SurveyDates);
 
             if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null))
                 $scope.event_row.Description = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.Description);
