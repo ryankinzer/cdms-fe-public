@@ -40,6 +40,14 @@
 
         $scope.permitLookup = function () { 
             $scope.ResultMessage = "Searching...";
+            $scope.permit = null;
+
+            $scope.Results = {
+                SuccessMessage: null,
+                FailureMessage: null,
+                DoneSaving: false,
+            };
+
             var search_permit = PermitService.getPermitByPermitNumber($scope.SearchPermitNumber);
             search_permit.$promise.then(function () { 
                 console.dir(search_permit);
@@ -85,6 +93,7 @@
             new_event.$promise.then(function () {
                 console.log("done and success updating the files");
                 $scope.Results.SuccessMessage = "Saved and notifications sent.";
+                $scope.Results.FailureMessage = "";
             }, function (data) {
                 console.error("failure!");
                 console.dir(data);

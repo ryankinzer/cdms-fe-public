@@ -122,6 +122,14 @@ permit_module.factory('GetPermitByPermitNumber', ['$resource', function ($resour
     });
 }]);
 
+permit_module.factory('GetPublicHearingPermits', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetPublicHearingPermits', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
+
+
+
 
 permit_module.service('PermitService', ['$q',
 
@@ -148,6 +156,7 @@ permit_module.service('PermitService', ['$q',
     'GetPermitStatistics',
     'GetPermitRoutes',
     'GetPermitByPermitNumber',
+    'GetPublicHearingPermits',
   
     function ($q,
        
@@ -173,7 +182,8 @@ permit_module.service('PermitService', ['$q',
         GetOutstandingRequests,
         GetPermitStatistics,
         GetPermitRoutes,
-        GetPermitByPermitNumber
+        GetPermitByPermitNumber,
+        GetPublicHearingPermits
       
     ) {
         var service = {
@@ -268,7 +278,11 @@ permit_module.service('PermitService', ['$q',
 
             getPermitByPermitNumber: function (permitnumber) {
                 return GetPermitByPermitNumber.query({ PermitNumber: permitnumber });
-            }
+            },
+
+            getPublicHearingPermits: function () { 
+                return GetPublicHearingPermits.query();
+            },
 
         };
 
