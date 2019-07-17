@@ -1432,6 +1432,14 @@ function convertStringToArray(aString){
 	return aryItems;
 }
 
+function convertStringArrayToNoralString(aArray) {
+    var strA = "";
+
+    aArray.forEach(function (item) {
+        strA += item + ";";
+    });
+}
+
 // This function expects a string looking like this:  "a;\nb;\nc;\nd;"
 // and converts the string into a string looking like this:  "a;b;c;d;"
 // Handles strings like Collaborators; this function for saving.
