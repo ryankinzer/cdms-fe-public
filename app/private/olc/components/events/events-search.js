@@ -262,9 +262,9 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 width: 180,
                 valueGetter: function (params) { return params.node.data.SurveyDates },
                 valueFormatter: function (params) {
-                    console.log("typeof params.node.data.SurveyDates = " + typeof params.node.data.SurveyDates);
+                    //console.log("typeof params.node.data.SurveyDates = " + typeof params.node.data.SurveyDates);
                     //if ((params.node.data.SurveyDates !== null) && (typeof params.node.data.SurveyDates !== 'string')) {
-                    if (params.node.data.SurveyDates !== null) {
+                    if ((params.node !== null) && (params.node.data !==null) && (params.node.data.SurveyDates !== null)) {
                         try {
                             params.node.data.SurveyDates = JSON.parse(params.node.data.SurveyDates);
                         }
@@ -288,7 +288,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 },
                 cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
-                filter: true
+                filter: 'text'
             },
             //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },

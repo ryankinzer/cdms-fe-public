@@ -375,7 +375,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 },
                 cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
-                filter: true
+                filter: 'text'
             },
             //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             //{ headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
