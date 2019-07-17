@@ -299,7 +299,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 width: 180,
                 valueGetter: function (params) { return params.node.data.TwnRngSec },
                 valueFormatter: function (params) {
-                    console.log("typeof params.node.data.TwnRngSec = " + typeof params.node.data.TwnRngSec);
+                    //console.log("typeof params.node.data.TwnRngSec = " + typeof params.node.data.TwnRngSec);
                     //if ((params.node.data.TwnRngSec !== null) && (typeof params.node.data.TwnRngSec !== 'string')) {
                     if (params.node.data.TwnRngSec !== null) {
                         try {
@@ -349,8 +349,8 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 width: 180,
                 valueGetter: function (params) { return params.node.data.Reference },
                 valueFormatter: function (params) {
-                    console.log("typeof params.node.data.Reference = " + typeof params.node.data.Reference);
-                    if (params.node.data.Reference !== null) {
+                    //console.log("typeof params.node.data.Reference = " + typeof params.node.data.Reference);
+                    if ((params.node !== null) && (params.node.data !== null) && (params.node.data.Reference !== null)) {
                         try {
                             params.node.data.Reference = JSON.parse(params.node.data.Reference);
                         }
@@ -387,7 +387,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 },
                 valueGetter: function (params) { return params.node.data.Tasks },
                 valueFormatter: function (params) {
-                    console.log("typeof params.node.data.Tasks = " + typeof params.node.data.Tasks);
+                    //console.log("typeof params.node.data.Tasks = " + typeof params.node.data.Tasks);
                     if (params.node.data.Tasks !== null) {
                         try {
                             params.node.data.Tasks = JSON.parse(params.node.data.Tasks);
