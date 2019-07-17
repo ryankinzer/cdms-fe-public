@@ -1,5 +1,14 @@
 ﻿<h3>Permits Dashboard</h3>
 
+<div class="right btn-group btn-group-toggle" style="margin-top: -45px;">
+    <label class="btn btn-sm btn-secondary" ng-class="{ active : clickselect == 'allstaff' }">
+        <input ng-change="changeClickSelect()" type="radio" ng-model="clickselect" value="allstaff" class="hide"> All staff
+    </label>
+    <label class="btn btn-sm btn-secondary" ng-class="{ active : clickselect == 'mine' }">
+        <input ng-change="changeClickSelect()" type="radio" ng-model="clickselect" value="mine" class="hide"> Assigned to me
+    </label>
+</div>
+
 <div class="container" style="margin-top: 30px;">
 
     <div class="row">

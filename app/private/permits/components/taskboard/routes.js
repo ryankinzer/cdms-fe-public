@@ -180,6 +180,8 @@
                     ItemType: col, //BldgCode, WRP, Env, PubWrks, TERO, CRPP, etc.
                 };
 
+                $scope.row.AdditionalConditions = "";
+
                 // required but not yet routed, open a new event of this type
                 if (!value) {
                     $scope.openActivityModal(new_activity, "new_route");

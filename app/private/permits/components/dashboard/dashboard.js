@@ -6,6 +6,8 @@
         $scope.ExpiringPermits = PermitService.getExpiringPermits();
         $scope.PublicHearingPermits = PermitService.getPublicHearingPermits();
 
+        $scope.clickselect = "allstaff";
+
         $scope.DisplayStats = [];
 
         $scope.OutstandingRequests.$promise.then(function () { 
@@ -52,7 +54,7 @@
         };
 
         $scope.requestsGrid.columnDefs = [
-            //{ headerName: "Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: true, hide: true },
             { headerName: "Permit #", field: "PermitNumber", width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: "Project Name", field: "ProjectName", width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: "Event Type", field: "EventType", width: 150, menuTabs: ['filterMenuTab'], filter: true },
@@ -83,6 +85,7 @@
         };
 
         $scope.publichearingGrid.columnDefs = [
+            { headerName: "Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: true, hide: true },
             { headerName: "Permit #", field: "PermitNumber", width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Project Name", field: "ProjectName", width: 235, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Hearing Date", field: "RequestDate", width: 140, menuTabs: ['filterMenuTab'], 
@@ -110,13 +113,11 @@
         };
 
         $scope.expiringGrid.columnDefs = [
-            //{ headerName: "Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: "Reviewer", field: "ReviewedBy", width: 150, menuTabs: ['filterMenuTab'], filter: true, hide: true},
             { headerName: "Permit #", field: "PermitNumber", width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Project Name", field: "ProjectName", width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
             { headerName: "Last Event", field: "RequestDate", width: 120, menuTabs: ['filterMenuTab'], filter: 'agDateColumnFilter', sort: 'asc',
                 valueFormatter: function (params) {
-                    console.dir(params.node.data.RequestDate);
-                    console.dir(params.node.data.ResponseDate);
                     if(params.node.data.RequestDate > params.node.data.ResponseDate || params.node.data.ResponseDate == null)
                         return valueFormatterDate(params.node.data.RequestDate);
                     else
@@ -129,13 +130,35 @@
                     return valueFormatterDate(params.node.data.ExpireDate);
                 }
             }
-            //{ headerName: "Last Response", field: "ResponseDate", width: 150, menuTabs: ['filterMenuTab'], filter: 'agDateColumnFilter',
-            //    valueFormatter: function (params) {
-            //        return valueFormatterDate(params.node.data.ResponseDate);
-            //    }
-            //} 
+
         ];
 
-        
+        $scope.changeClickSelect = function () { 
+            if ($scope.clickselect == 'allstaff') {
+                $scope.expiringGrid.api.setFilterModel(null);
+                $scope.expiringGrid.api.onFilterChanged();
+                $scope.publichearingGrid.api.setFilterModel(null);
+                $scope.publichearingGrid.api.onFilterChanged();
+                $scope.requestsGrid.api.setFilterModel(null);
+                $scope.requestsGrid.api.onFilterChanged();
+            }
+            else {
+                var fc = $scope.publichearingGrid.api.getFilterInstance('ReviewedBy');
+                fc.selectNothing();
+                fc.selectValue($scope.Profile.Fullname);
+                $scope.publichearingGrid.api.onFilterChanged();
+
+                var filter_component = $scope.expiringGrid.api.getFilterInstance('ReviewedBy');
+                filter_component.selectNothing();
+                filter_component.selectValue($scope.Profile.Fullname);
+                $scope.expiringGrid.api.onFilterChanged();
+
+                var fcc = $scope.requestsGrid.api.getFilterInstance('ReviewedBy');
+                fcc.selectNothing();
+                fcc.selectValue($scope.Profile.Fullname);
+                $scope.requestsGrid.api.onFilterChanged();
+
+            }
+        };
     }
 ];
