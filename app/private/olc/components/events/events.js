@@ -280,12 +280,15 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         if (!isArray(params.node.data.Boundary))
                             params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
 
-                        var the_str = valueFormatterArrayToList(params.node.data.Boundary);
-                        if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                            the_str = the_str.replace(/"/g, '');
-                        return the_str;
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
                     }
                 },
+                cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
                 filter: 'text' 
             },
@@ -301,12 +304,13 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         if (!isArray(params.node.data.SignificantArea))
                             params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
 
-                        var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
-                        if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                            the_str = the_str.replace(/"/g, '');
-                        return the_str;
+                //        var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
+                //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                //            the_str = the_str.replace(/"/g, '');
+                //        return the_str;
                     }
                 },
+                cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
                 filter: 'text' 
             },
@@ -322,12 +326,13 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         if (!isArray(params.node.data.MiscellaneousContext))
                             params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
 
-                        var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
-                        if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                            the_str = the_str.replace(/"/g, '');
-                        return the_str;
+                //        var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
+                //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                //            the_str = the_str.replace(/"/g, '');
+                //        return the_str;
                     }
                 },
+                cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
                 filter: 'text' 
             },
@@ -337,7 +342,44 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            {
+                headerName: 'TwnRngSec',
+                field: 'TwnRngSec',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.TwnRngSec },
+                valueFormatter: function (params) {
+                    console.log("typeof params.node.data.TwnRngSec = " + typeof params.node.data.TwnRngSec);
+                    //if ((params.node.data.TwnRngSec !== null) && (typeof params.node.data.TwnRngSec !== 'string')) {
+                    if (params.node.data.TwnRngSec !== null) {
+                        try {
+                            params.node.data.TwnRngSec = JSON.parse(params.node.data.TwnRngSec);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.TwnRngSec.indexOf(";") > -1) {
+                                params.node.data.TwnRngSec = params.node.data.TwnRngSec.split(";");
+                                params.node.data.TwnRngSec.splice(-1, 1);
+
+                            }
+                            //else
+                            //    return params.node.data.TwnRngSec;
+                        }
+
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
+            },
             { headerName: 'Number Items', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'Page Number', field: 'PageNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             {
