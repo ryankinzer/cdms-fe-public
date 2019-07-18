@@ -123,21 +123,26 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null)) {
             if (!isArray($scope.event_row.SurveyDates))
                 $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
+            else {
+                var tmpArySurveyDates = convertStringArrayToNoralString($scope.event_row.SurveyDates);
 
-            /*var arySurveyDates = $scope.event_row.SurveyDates.split(';')
+                //var arySurveyDates = $scope.event_row.SurveyDates.split(';');
+                var arySurveyDates = tmpArySurveyDates.split(';');
 
-            $scope.event_row.SurveyDates = "";
+                $scope.event_row.SurveyDates = "";
 
-            var intCount = 0;
-            arySurveyDates.forEach(function (item) {
-                if (intCount === 0)
-                    $scope.event_row.SurveyDates += item;
-                else
-                    $scope.event_row.SurveyDates += ";\n" + item;
+                var intCount = 0;
+                arySurveyDates.forEach(function (item) {
+                    if (intCount === 0)
+                        $scope.event_row.SurveyDates += item;
+                    else
+                        $scope.event_row.SurveyDates += ";\n" + item;
 
-                intCount++;
-            });
-            */
+                    intCount++;
+                });
+            }
+
+
         }
 
         if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null)) {
