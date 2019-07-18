@@ -50,7 +50,21 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     scope.olcDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 140, menuTabs: [] }); //add this column to the front of the detail grid cols
                 }
 
-                scope.subprojectList.$promise.then( function () {
+                scope.subprojectList.$promise.then(function () {
+                    scope.subprojectList.forEach(function (spItem) {
+                        var strSpFullName = getNameFromUserId(spItem.ByUserId, scope.Users);
+                        if (typeof strSpFullName === 'string') //backwards compatible - remove the quotes
+                            the_str = strSpFullName.replace(/"/g, '');
+                        spItem.SpByUserFullName = strSpFullName;
+
+                        spItem.OlcEvents.forEach(function (eItem) {
+                            var strEvFullName = getNameFromUserId(eItem.ByUserId, scope.Users);
+                            if (typeof strEvFullName === 'string') //backwards compatible - remove the quotes
+                                the_str = strEvFullName.replace(/"/g, '');
+                            eItem.EventByUserFullName = strEvFullName;
+                        });
+                    });
+
                     scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
                     scope.refreshSubprojectLists();
                 });
@@ -213,19 +227,20 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             //{ field: 'ByUserId', headerName: 'By User', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             {
                 headerName: 'By User',
-                field: 'ByUser',
+                field: 'SpByUserFullName',
                 cellClass: 'event-record-cell',
-                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueGetter: function (params) { return params.node.data.SpByUserFullName },
                 valueFormatter: function (params) {
-                    params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
-                    var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    //params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
+                    //var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
+                    //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                    //    the_str = the_str.replace(/"/g, '');
+                    //return the_str;
+                    return params.node.data.SpByUserFullName;
                 },
                 width: 180,
                 menuTabs: ['filterMenuTab'],
-                filter: true 
+                filter: 'text' 
             },
 
             //{
@@ -495,15 +510,16 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
                 headerName: 'By User',
-                field: 'ByUser',
+                field: 'EventByUserFullName',
                 cellClass: 'event-record-cell',
-                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueGetter: function (params) { return params.node.data.EventByUserFullName },
                 valueFormatter: function (params) {
-                    params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
-                    var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    //params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
+                    //var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
+                    //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                    //    the_str = the_str.replace(/"/g, '');
+                    //return the_str;
+                    return params.node.data.EventByUserFullName;
                 },
                 width: 180, menuTabs: ['filterMenuTab'],
                 filter: 'text' 
