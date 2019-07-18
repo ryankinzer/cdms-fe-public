@@ -108,6 +108,7 @@ define([
             $routeProvider.when('/permits/dashboard', { templateUrl: 'app/private/permits/components/dashboard/templates/dashboard.html', controller: 'PermitDashboardController'});
             $routeProvider.when('/permits/inspection', { templateUrl: 'app/private/permits/components/list/templates/request-inspection.html', controller: 'RequestInspectionController'});
             $routeProvider.when('/permits/notifications', { templateUrl: 'app/private/permits/components/notifications/templates/notifications.html', controller: 'PermitNotificationsController'});
+            $routeProvider.when('/permits/map', { templateUrl: 'app/private/permits/components/map/templates/permit-map.html', controller: 'PermitMapController'});
 
 
 	        //custom routes for datasets that require custom controller+pages

@@ -1,0 +1,140 @@
+﻿<style>
+    .well {
+        margin: 0px !important;
+        height: 100%;
+        padding: 0px;
+    }
+
+    #wrap {
+        height: 91%;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .navbar {
+        margin-bottom: 0px;
+    }
+
+    #map {
+        height: 90%;
+        width: 99.5%;
+        position: absolute;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .permits-sidebar {
+        height: 92%;
+        width: 50%;
+        padding: 7px;
+        border-radius: 3px;
+        margin-top: 5px;
+        overflow-y: auto;
+        background: white;
+        z-index: 9;
+        position: absolute;
+    }
+
+    .permit-search {
+        height: 88%;
+        width: 500px;
+        padding: 7px;
+        border-radius: 3px;
+        margin-top: 5px;
+        overflow-y: auto;
+        background: white;
+        z-index: 9;
+        position: absolute;
+    }
+
+    .esriSimpleSlider {
+        display: none;
+    }
+
+    .tab-permit ul {
+        width: 750px;
+        list-style-type: none;
+        list-style-position: outside;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .tab-permit li {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        position: relative;
+    }
+
+    .tab-permit label {
+        width: 150px;
+        margin-top: 3px;
+        display: inline-block;
+        float: left;
+        padding: 3px;
+    }
+
+    .permit-table {
+        margin-bottom: 30px;
+    }
+
+    .search-button {
+        float: right;
+        margin-left: 10px;
+        margin-right: 55px;
+    }
+
+    .search-text-control {
+        margin-left: 10px;
+        width: 250px;
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
+
+    .permit-search-results {
+        margin-top: 20px;
+    }
+
+    .search-results-text {
+        margin-top: 30px;
+        width: 160px;
+        border: .5px solid #d1d1d1;
+        padding: 3px;
+        text-align: center;
+        background: #fff1f3;
+        margin-left: 30px;
+    }
+</style>
+
+<div id="map">
+    <permit-map class="claro" id="map" center="-118.6836,45.6704" zoom="2" onclick="click"></permit-map>
+</div>
+
+<div class="permit-search">
+    <h3>Search for permit or parcel:</h3>
+    <form>
+        <button class="btn btn-sm search-button" ng-disabled="permits.length==0" ng-click="searchButton()" type="submit">Search</button>
+        <input class="form-control search-text-control" type="text" ng-model="searchTerm" name="permit-search" />
+    </form>
+    {{searchDescription}}
+    <div ng-show="searchResults.length > 0" class="permit-search-results">
+        <div id="search-permits-grid" style="height: 400px;width:100%;" class="ag-theme-blue"></div>
+        <i>Hint: Double click a row to navigate to that parcel.</i>
+    </div>
+
+    <div class="search-results-text" ng-if="permits.length == 0">Loading...</div>
+    <div class="search-results-text" ng-if="searchResults.length == 0 && searchComplete">No results.</div>
+
+<div ng-show="PermitParcels.length > 0">
+<p>Parcels related to </p>
+    <ul>
+        <li ng-repeat="parcel in PermitParcels">{{parcel.Object.ParcelId}} ( {{parcel.Object.PLSS_Label}} )</li>
+    </ul>
+</div>
+
+
+</div>
+
+
+

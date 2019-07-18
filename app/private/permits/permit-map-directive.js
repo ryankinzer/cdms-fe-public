@@ -24,7 +24,7 @@ define([
             GraphicsLayer, SimpleFillSymbol, SimpleLineSymbol, Query, QueryTask, Graphic, Color) {
 
     // register a new directive called esriMap with our app
-    app.directive('leasingMap', function ($rootScope) {
+    app.directive('permitMap', function ($rootScope) {
         // this object will tell angular how our directive behaves
         return {
             // only allow esriMap to be used as an element (<esri-map>)
@@ -88,8 +88,7 @@ define([
                 map.selectedBasemap = defaultLayer; //"imageryLayer" 
                 map.selectedServiceLayers = [
                     "parcels", 
-                    "parcels_outline",
-                    "farms"
+                    "parcels_outline"
                 ];
 
                 map.basemaps = [];
@@ -127,6 +126,8 @@ define([
                         //now add any selected service layers
                         for (var i = map.selectedServiceLayers.length - 1; i >= 0; i--) {
                             var service_layer;
+                            console.log(i);
+                            console.log(map.selectedServiceLayers[i]);
                             if ( servicesLayerConfig[map.selectedServiceLayers[i]].ServiceURL.includes("FeatureServer") )
                             {
                                 service_layer = new FeatureLayer(servicesLayerConfig[map.selectedServiceLayers[i]].ServiceURL);
@@ -158,130 +159,10 @@ define([
                 // lets expose the "addLayer" method so child directives can add themselves to the map
                 this.addLayer = function (layer, filter) {
                     map.locationLayer = map.addLayer(layer);
-
-                    //          console.log("Added layer to map");
-                    //          console.log("layer_"+layer.id);
-
-                    //setup our layer locationid function so we can all it again sometime
-                    layer.showLocationsById = function (locationObjectIds) {
-                        try {
-                            this.clearSelection();
-                            var definitionExpression = "OBJECTID IN (" + locationObjectIds + ")";
-                            console.log("Definition expression: " + definitionExpression);
-                            this.setDefinitionExpression(definitionExpression);
-                            this.refresh();
-                        } catch (e) {
-                            console.dir(e);
-                        }
-                    };
-
-                    if (filter && filter == "location") {
-                        if (typeof $scope.locationObjectIds == "undefined") {
-                            $scope.$watch('locationObjectIds', function () {
-
-                                //skip the first run
-                                if (typeof $scope.locationObjectIds == "undefined")
-                                    return;
-
-                                layer.showLocationsById($scope.locationObjectIds); // now call it
-
-                                layer.show();
-
-                            });
-                        }
-                    }
-
                     return map.locationLayer;
                 };
 
-                //the hover isn't working yet... WIP
-                //map.on("load", setupHoverQuery);
-
-                function setupHoverQuery () { 
-                    console.log("Staring up the hover");
-                    var queryTask = new QueryTask("https://arcserv2.ctuir.org/arcgis/rest/services/FarmTracts_RAF/MapServer/0");
-                    //build query filter
-                    var query = new Query();
-                    query.returnGeometry = true;
-                    query.outFields = ["*"]; //"Acres", "Allotment", "Land_Use"];
-                    query.outSpatialReference = { "wkid": 102100 };
- 
-                    //query.where = "1=1";
-
-                    var infoTemplate = new InfoTemplate();
-                    var content = "<b>Allotment: </b>${Allotment}<br/>" +
-                                    "<b>Land Use: </b>${Land_Use}<br/>" +
-                                    "<b>Acres: </b>${Acres}<br/>";
-                    infoTemplate.setTitle("${Allotment}");
-                    infoTemplate.setContent(content);
-
-                    map.infoWindow.resize(245, 125);
-
-                    console.log("2");
-
-                    //Can listen for complete event to process results
-                    //or can use the callback option in the queryTask.execute method.
-                    queryTask.on("complete", function (event) {
-                    console.log("query back");
-
-                      map.graphics.clear();
-                      var highlightSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-                        new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-                          new Color([255, 0, 0]), 3), new Color([125, 125, 125, 0.35]));
-
-                      var symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-                        new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-                          new Color([255, 255, 255, 0.35]), 1), new Color([125, 125, 125, 0.35]));
-
-                      var features = event.featureSet.features;
-
-                      console.dir(event);
-
-                      var countiesGraphicsLayer = new GraphicsLayer();
-                      //QueryTask returns a featureSet.
-                      //Loop through features in the featureSet and add them to the map.
-                      var featureCount = (features)?features.length:0;
-                      for (var i = 0; i < featureCount; i++) {
-                        //Get the current feature from the featureSet.
-                        var graphic = features[i]; //Feature is a graphic
-                        graphic.setSymbol(symbol);
-                        graphic.setInfoTemplate(infoTemplate);
-
-                        countiesGraphicsLayer.add(graphic);
-                      }
-                      map.addLayer(countiesGraphicsLayer);
-                      map.graphics.enableMouseEvents();
-                      //listen for when the mouse-over event fires on the countiesGraphicsLayer
-                      //when fired, create a new graphic with the geometry from event.graphic
-                      //and add it to the maps graphics layer
-                      countiesGraphicsLayer.on("mouse-over",function (event) {
-                          console.log("over");
-                        map.graphics.clear();  //use the maps graphics layer as the highlight layer
-                        var graphic = event.graphic;
-                        map.infoWindow.setContent(graphic.getContent());
-                        map.infoWindow.setTitle(graphic.getTitle());
-                        var highlightGraphic = new Graphic(graphic.geometry, highlightSymbol);
-                        map.graphics.add(highlightGraphic);
-                        map.infoWindow.show(event.screenPoint,
-                          map.getInfoWindowAnchor(event.screenPoint));
-                      });
-
-                      //listen for when map.graphics mouse-out event is fired
-                      //and then clear the highlight graphic
-                      //and hide the info window
-                      map.graphics.on("mouse-out", function () {
-                        console.log("out");
-                        map.graphics.clear();
-                        map.infoWindow.hide();
-                      });
-                    });
-                    console.log("3");
-                    queryTask.execute(query);
-
-
-
-
-                };
+                
 
                 //use this for doing a search by parcelid or address
                 map.querySearchParcel = function (searchParam, callback) {
@@ -328,39 +209,6 @@ define([
                     console.log("Running query on: " + parcelLayerConfig[map.selectedBasemap].QueryURL);
 
                     var queryTask = new QueryTask(parcelLayerConfig[map.selectedBasemap].QueryURL);
-                    var query = new Query();
-
-                    query.outSpatialReference = this.spatialReference;
-                    query.returnGeometry = true;
-                    query.outFields = ["*"];
-                    if (mapPoint) {
-                        query.geometry = mapPoint;
-                    }
-                    else {
-                        query.objectIds = [objectId];
-                    }
-
-                    query.spatialRelationship = Query.SPATIAL_REL_INTERSECTS;
-                    queryTask.execute(query, function (result) {
-                        console.dir(result);
-                        callback(result.features); //give back the parcel features we found...
-                    }, function (err) {
-                        console.log("Failure executing query!");
-                        console.dir(err);
-                        console.dir(query);
-                    });
-
-
-                };
-
-                //use this to select a particular parcel either by objectid (like after a search) or x,y mapPoint
-                map.querySelectField = function (mapPoint, objectId, callback) {
-
-                    var queryurl = "https://arcserv2.ctuir.org/arcgis/rest/services/FarmTracts_RAF/MapServer/0";
-
-                    console.log("Running query on: " + queryurl);
-
-                    var queryTask = new QueryTask(queryurl);
                     var query = new Query();
 
                     query.outSpatialReference = this.spatialReference;

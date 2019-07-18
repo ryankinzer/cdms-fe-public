@@ -6,6 +6,7 @@ require([
     'private/permits/components/taskboard/routes',
     'private/permits/components/dashboard/dashboard',
     'private/permits/components/notifications/notifications',
+    'private/permits/components/map/permit-map',
 
     //modals
     'private/permits/components/list/add-activity-modal',
@@ -18,6 +19,9 @@ require([
 
     //service
     'private/permits/permit-service',
+
+    //map directive
+    'private/permits/permit-map-directive',
 
 
 ], function () {
@@ -32,6 +36,7 @@ require([
     permit_module.controller('PermitDashboardController', permit_dashboard);
     permit_module.controller('RequestInspectionController', request_inspection);
     permit_module.controller('PermitNotificationsController', permit_notifications);
+    permit_module.controller('PermitMapController', permit_map);
     
 
     permit_module.filter('personOrgName', function () {
