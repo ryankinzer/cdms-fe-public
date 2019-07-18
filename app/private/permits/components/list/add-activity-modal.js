@@ -170,7 +170,7 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
 
                 //console.log("getting routes for: " + $scope.activity_modal.ItemType);
 
-                $scope.PermitRoutes = PermitService.getPermitRoutes($scope.activity_modal.ItemType);
+                $scope.PermitRoutes = PermitService.getPermitRoutesByItemType($scope.activity_modal.ItemType);
                 $scope.PermitRoutes.$promise.then(function () {
 
                     //select the first one
