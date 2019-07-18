@@ -117,19 +117,20 @@
         <button class="btn btn-sm search-button" ng-disabled="permits.length==0" ng-click="searchButton()" type="submit">Search</button>
         <input class="form-control search-text-control" type="text" ng-model="searchTerm" name="permit-search" />
     </form>
-    {{searchDescription}}
-    <div ng-show="searchResults.length > 0" class="permit-search-results">
-        <div id="search-permits-grid" style="height: 400px;width:100%;" class="ag-theme-blue"></div>
-        <i>Hint: Double click a row to navigate to that parcel.</i>
+    <div style="margin-top: 30px;">
+        <h4>{{searchDescription}}</h4>
+        <div ng-show="searchResults.length > 0" class="permit-search-results">
+            <div id="search-permits-grid" style="height: 400px;width:100%;" class="ag-theme-blue"></div>
+            <i>Hint: Click a row to view related parcels.</i>
+        </div>
+
+        <div class="search-results-text" ng-if="permits.length == 0">Loading...</div>
+        <div class="search-results-text" ng-if="searchResults.length == 0 && searchComplete">No results.</div>
     </div>
-
-    <div class="search-results-text" ng-if="permits.length == 0">Loading...</div>
-    <div class="search-results-text" ng-if="searchResults.length == 0 && searchComplete">No results.</div>
-
-<div ng-show="PermitParcels.length > 0">
-<p>Parcels related to </p>
+<div ng-show="PermitParcels.length > 0" style="margin-top: 20px;">
+<h4>Parcels related to {{selectedPermit.PermitNumber}}</h4>
     <ul>
-        <li ng-repeat="parcel in PermitParcels">{{parcel.Object.ParcelId}} ( {{parcel.Object.PLSS_Label}} )</li>
+        <li ng-click="findOnMap(parcel.Object.ParcelId)" ng-repeat="parcel in PermitParcels"><a href>{{parcel.Object.ParcelId}}</a> ( {{parcel.Object.PLSS_Label}} )</li>
     </ul>
 </div>
 

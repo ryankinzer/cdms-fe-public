@@ -43,9 +43,9 @@
 
         var searchColumnDefs = [
             { colId: 'ViewLink', width: 60, cellRenderer: SearchLinksTemplate, menuTabs: [] },
-            { headerName: "Permit", field: "PermitNumber", width: 130, filter: 'text' },            
+            { headerName: "Permit", field: "PermitNumber", width: 130, filter: 'text', sort: 'asc' },            
             {
-                headerName: "Status", field: "PermitStatus", width: 160, filter: true
+                headerName: "Status", field: "PermitStatus", width: 200, filter: true
             },           
             
         ];
@@ -59,8 +59,8 @@
                 resizable: true,
                 menuTabs: ['filterMenuTab']
             },
-            onRowDoubleClicked: function (params) {
-                //console.dir(params);
+            onRowClicked: function (params) {
+                $scope.selectedPermit = params.data;
                 $scope.showRelatedParcels(params.data.Id);
             }
         }
@@ -108,10 +108,11 @@
                     console.log("parcel not found: " + in_allotment);
                 }
                 else {
-                    //that doesn't include geometry so we need to get it
+                    //found the parcel but it doesn't include geometry so we need to get it
                     $scope.map.querySelectParcel(null, features[0].attributes.OBJECTID, function (geo_features) {
                         $scope.map.addParcelToMap(geo_features[0]);
                         $scope.map.centerAndZoomToGraphic($scope.map.selectedGraphic, 2);
+                        $scope.findRelatedPermits(features[0].attributes.PARCELID);
                     });
                     
                 }
@@ -148,12 +149,23 @@
                 var objectid = $scope.map.selectedFeature.attributes.OBJECTID; 
                 var allotment = $scope.map.selectedFeature.attributes.PARCELID; 
 
-                $scope.searchTerm = allotment;
-                $scope.searchDescription = "Related Permits to "+allotment;
+                $scope.findRelatedPermits(allotment);
+                
+                $scope.map.loading = false;
+                $scope.$apply(); //bump angular
 
-                //find related permits
-                var related_permits = PermitService.getPermitsByRelatedParcels(allotment);
-                console.log("searching for permits related to " + allotment);
+            });
+        };
+
+
+        $scope.findRelatedPermits = function (parcel) {
+
+                $scope.searchTerm = parcel;
+                $scope.searchDescription = "Related Permits to "+parcel;
+                $scope.PermitParcels = [];
+
+                var related_permits = PermitService.getPermitsByRelatedParcels(parcel);
+                console.log("searching for permits related to " + parcel);
                 related_permits.$promise.then(function () { 
                     console.log("found some! " + related_permits.length);
                     $scope.searchResults.length = 0;
@@ -163,12 +175,6 @@
 
                     $scope.searchGrid.api.setRowData($scope.searchResults);
                 });
-                
-                $scope.map.loading = false;
-                $scope.$apply(); //bump angular
-
-            });
-        };
-
+        }
 
     }];
