@@ -506,7 +506,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     return the_str;
                 },
                 width: 180, menuTabs: ['filterMenuTab'],
-                filter: true 
+                filter: 'text' 
             },
         ];
 
