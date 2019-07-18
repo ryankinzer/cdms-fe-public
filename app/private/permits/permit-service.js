@@ -128,8 +128,17 @@ permit_module.factory('GetPublicHearingPermits', ['$resource', function ($resour
     });
 }]);
 
+permit_module.factory('GetNotifications', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/syslog/GetNotificationsByModule', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
 
-
+permit_module.factory('GetPermitRoutes', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetPermitRoutes', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
 
 permit_module.service('PermitService', ['$q',
 
@@ -157,6 +166,8 @@ permit_module.service('PermitService', ['$q',
     'GetPermitRoutes',
     'GetPermitByPermitNumber',
     'GetPublicHearingPermits',
+    'GetNotifications',
+    'GetPermitRoutes',
   
     function ($q,
        
@@ -183,7 +194,9 @@ permit_module.service('PermitService', ['$q',
         GetPermitStatistics,
         GetPermitRoutes,
         GetPermitByPermitNumber,
-        GetPublicHearingPermits
+        GetPublicHearingPermits,
+        GetNotifications,
+        GetPermitRoutes
       
     ) {
         var service = {
@@ -283,6 +296,14 @@ permit_module.service('PermitService', ['$q',
             getPublicHearingPermits: function () { 
                 return GetPublicHearingPermits.query();
             },
+
+            getPermitRoutes: function () { 
+                return GetPermitRoutes.query();
+            },
+
+            getNotifications: function () { 
+                return GetNotifications.query({ Module: 'Permits' });
+            }
 
         };
 

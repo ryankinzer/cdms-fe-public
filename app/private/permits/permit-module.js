@@ -5,6 +5,7 @@ require([
     'private/permits/components/list/list-permits',
     'private/permits/components/taskboard/routes',
     'private/permits/components/dashboard/dashboard',
+    'private/permits/components/notifications/notifications',
 
     //modals
     'private/permits/components/list/add-activity-modal',
@@ -30,6 +31,7 @@ require([
     permit_module.controller('AddFeeModalController', modal_add_fee);
     permit_module.controller('PermitDashboardController', permit_dashboard);
     permit_module.controller('RequestInspectionController', request_inspection);
+    permit_module.controller('PermitNotificationsController', permit_notifications);
     
 
     permit_module.filter('personOrgName', function () {
@@ -40,6 +42,12 @@ require([
             return (person.Organization) ? person.Organization : person.FullName; 
         }
     });
+
+    permit_module.filter('sce', ['$sce', function ($sce) {
+        return function (html) {
+            return $sce.trustAsHtml(html);
+        };
+    }]);
 
 });
 
