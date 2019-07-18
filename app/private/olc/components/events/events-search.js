@@ -415,15 +415,16 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
                 headerName: 'Item Updated By User',
-                field: 'EventByUserId',
+                field: 'EventByUserFullName',
                 cellClass: 'event-record-cell',
-                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueGetter: function (params) { return params.node.data.EventByUserFullName },
                 valueFormatter: function (params) {
-                    params.node.data.EventByUserId = JSON.parse(params.node.data.EventByUserId);
-                    var the_str = getNameFromUserId(params.node.data.EventByUserId, $scope.Users);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    //params.node.data.EventByUserFullName = JSON.parse(params.node.data.EventByUserFullName);
+                    //var the_str = getNameFromUserId(params.node.data.EventByUserId, $scope.Users);
+                    //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                    //    the_str = the_str.replace(/"/g, '');
+                    //return the_str;
+                    return params.node.data.EventByUserFullName;
                 },
                 width: 180,
                 menuTabs: ['filterMenuTab'],
@@ -478,15 +479,16 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //{ field: 'ByUserId', headerName: 'By User', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             {
                 headerName: 'By User',
-                field: 'SubprojectByUserId',
+                field: 'SpByUserFullName',
                 cellClass: 'event-record-cell',
-                valueGetter: function (params) { return params.node.data.SubprojectByUserId },
+                valueGetter: function (params) { return params.node.data.SpByUserFullName },
                 valueFormatter: function (params) {
-                    params.node.data.SubprojectByUserId = JSON.parse(params.node.data.SubprojectByUserId);
-                    var the_str = getNameFromUserId(params.node.data.SubprojectByUserId, $scope.Users);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    //params.node.data.SubprojectByUserId = JSON.parse(params.node.data.SubprojectByUserId);
+                    //var the_str = getNameFromUserId(params.node.data.SubprojectByUserId, $scope.Users);
+                    //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                    //    the_str = the_str.replace(/"/g, '');
+                    //return the_str;
+                    return params.node.data.SpByUserFullName;
                 },
                 width: 180,
                 menuTabs: ['filterMenuTab'],
