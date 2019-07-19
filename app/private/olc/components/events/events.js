@@ -544,7 +544,9 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 var miscellaneoudContext_height = 25 * (getProjectItemsArrayAsTextList(params.data.MiscellaneousContext).length);
                 var twnRngSec_height = 25 * (getProjectItemsArrayAsTextList(params.data.TwnRngSec).length);
                 var reference_height = 25 * (getProjectItemsArrayAsTextList(params.data.Reference).length);
+                var surveyDates_height = 25 * (getProjectItemsArrayAsTextList(params.data.SurveyDates).length);
 
+                // Check the height required for the fields, to find the one that requires the most space.
                 var maxHeight = 1;
                 if (Tasks_height > maxHeight)
                     maxHeight = Tasks_height;
@@ -569,6 +571,9 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
 
                 if (reference_height > maxHeight)
                     maxHeight = reference_height;
+
+                if (surveyDates_height > maxHeight)
+                    maxHeight = surveyDates_height;
 
                 //return (Tasks_height > file_height) ? Tasks_height : file_height;
                 return maxHeight;
@@ -730,6 +735,10 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             //console.dir(new_event);
             console.log("saving OLC event for " + new_event.SubprojectId);
 
+            // EventByUserFullName is not stored; we set it so that we display the ByUser name, rather than the ByUserId.
+            // Therefore, we must add it to new_event, before we add new_event to the Subproject list.
+            new_event.EventByUserFullName = getNameFromUserId(new_event.ByUserId, scope.Users);
+
             var subproject = getById(scope.subprojectList, new_event.SubprojectId);
 
             if (subproject === undefined || subproject === null) { //TODO: the case where they create items before the project is saved?
@@ -749,7 +758,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 if (the_node !== null)
                     scope.olcAgGridOptions.api.ensureNodeVisible(the_node);
 
-                console.log("done reloading grid after removing item.");
+                console.log("done reloading grid after adding or removing item.");
             }
         };
 
