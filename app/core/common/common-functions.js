@@ -1433,6 +1433,11 @@ function convertStringToArray(aString){
 }
 
 function convertStringArrayToNormalString(aArray) {
+    // The join make the list a comma-separated string; we need a semi-colon-separated string.
+    //var strA = aArray.join();
+    //Add the trailing ;
+    //strA += ";";
+
     var strA = "";
 
     aArray.forEach(function (item) {
