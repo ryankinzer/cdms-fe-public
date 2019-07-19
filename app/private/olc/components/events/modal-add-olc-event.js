@@ -155,7 +155,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         }
 
         if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null)) {
-            $scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Description);
+            //$scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Description);
 
             if (!isArray($scope.event_row.Description))
                 $scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Description);
@@ -164,6 +164,17 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 var strDescription = convertStringArrayToNormalString($scope.event_row.Description);
 
                 $scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strDescription);
+            }
+        }
+
+        if ((typeof $scope.event_row.TwnRngSec !== 'undefined') && ($scope.event_row.TwnRngSec !== null)) {
+            if (!isArray($scope.event_row.TwnRngSec))
+                $scope.event_row.TwnRngSec = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.TwnRngSec);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strTwnRngSec = convertStringArrayToNormalString($scope.event_row.TwnRngSec);
+
+                $scope.event_row.TwnRngSec = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strTwnRngSec);
             }
         }
 
