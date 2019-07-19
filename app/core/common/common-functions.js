@@ -1432,12 +1432,14 @@ function convertStringToArray(aString){
 	return aryItems;
 }
 
-function convertStringArrayToNoralString(aArray) {
+function convertStringArrayToNormalString(aArray) {
     var strA = "";
 
     aArray.forEach(function (item) {
         strA += item + ";";
     });
+
+    return strA;
 }
 
 // This function expects a string looking like this:  "a;\nb;\nc;\nd;"
