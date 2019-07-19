@@ -124,7 +124,8 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             if (!isArray($scope.event_row.SurveyDates))
                 $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
             else {
-                var tmpArySurveyDates = convertStringArrayToNoralString($scope.event_row.SurveyDates);
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var tmpArySurveyDates = convertStringArrayToNormalString($scope.event_row.SurveyDates);
 
                 //var arySurveyDates = $scope.event_row.SurveyDates.split(';');
                 var arySurveyDates = tmpArySurveyDates.split(';');
@@ -440,7 +441,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
             if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null))
                 if (isArray($scope.event_row.SurveyDates)) 
-                    $scope.event_row.SurveyDates = convertStringArrayToNoralString($scope.event_row.SurveyDates);
+                    $scope.event_row.SurveyDates = convertStringArrayToNormalString($scope.event_row.SurveyDates);
                 else
                     $scope.event_row.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.SurveyDates);
 
