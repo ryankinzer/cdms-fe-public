@@ -81,13 +81,18 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
             scope.dataGridOptions.api.showLoadingOverlay(); //show loading...
             scope.dataGridOptions.api.setRowData(scope.selectedEntity.Properties);           
 
-            scope.project.$promise.then(function () { 
-                //unhide the edit link column if they are the owner or editor.
-                if ($rootScope.Profile.isProjectOwner(scope.project)) {
+            if (scope.project) {
+                scope.project.$promise.then(function () {
+                    //unhide the edit link column if they are the owner or editor.
+                    if ($rootScope.Profile.isProjectOwner(scope.project)) {
+                        scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
+                        scope.dataGridOptions.api.refreshHeader();
+                    }
+                });
+            } else if ($rootScope.Profile.isAdmin()) {
                     scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
                     scope.dataGridOptions.api.refreshHeader();
-                }
-            });
+            }
 
             
 
