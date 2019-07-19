@@ -121,21 +121,28 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         }
 
         if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null)) {
-            $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
-            /*var arySurveyDates = $scope.event_row.SurveyDates.split(';')
+            if (!isArray($scope.event_row.SurveyDates))
+                $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
+            else {
+                var tmpArySurveyDates = convertStringArrayToNoralString($scope.event_row.SurveyDates);
 
-            $scope.event_row.SurveyDates = "";
+                //var arySurveyDates = $scope.event_row.SurveyDates.split(';');
+                var arySurveyDates = tmpArySurveyDates.split(';');
 
-            var intCount = 0;
-            arySurveyDates.forEach(function (item) {
-                if (intCount === 0)
-                    $scope.event_row.SurveyDates += item;
-                else
-                    $scope.event_row.SurveyDates += ";\n" + item;
+                $scope.event_row.SurveyDates = "";
 
-                intCount++;
-            });
-            */
+                var intCount = 0;
+                arySurveyDates.forEach(function (item) {
+                    if (intCount === 0)
+                        $scope.event_row.SurveyDates += item;
+                    else
+                        $scope.event_row.SurveyDates += ";\n" + item;
+
+                    intCount++;
+                });
+            }
+
+
         }
 
         if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null)) {
@@ -432,7 +439,10 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             }
 
             if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null))
-                $scope.event_row.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.SurveyDates);
+                if (isArray($scope.event_row.SurveyDates)) 
+                    $scope.event_row.SurveyDates = convertStringArrayToNoralString($scope.event_row.SurveyDates);
+                else
+                    $scope.event_row.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.SurveyDates);
 
             if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null))
                 $scope.event_row.Description = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.Description);

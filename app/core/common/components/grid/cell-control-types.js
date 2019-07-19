@@ -295,6 +295,25 @@ var ItemListCellTemplate = function (params) {
     return list;
 };
 
+var BulletedItemListCellTemplate = function (params) {
+    if (params.node.data[params.colDef.field] !== null) {
+        var list = '<div class="event-item-list"><ul>';
+
+        var itemList = params.node.data[params.colDef.field];
+        //itemList = JSON.parse(params.node.data.Boundary);
+        if (isArray(params.node.data[params.colDef.field])) {
+            itemList.forEach(function (item) {
+                list += '<li>' + item + '</li>';
+            });
+        }
+        else
+            list += '<li>' + itemList + '</li>';
+        list += '</ul></div>';
+        //console.dir(list);
+        return list;
+    }
+};
+
 var FileControlType = function (cdms_field, col_def) {
 /*
     col_def.valueFormatter = function (params) {
