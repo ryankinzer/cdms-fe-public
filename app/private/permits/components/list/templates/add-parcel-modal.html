@@ -17,6 +17,9 @@
             <div class="header-label">PLSS:</div>
             <div class="header-value">{{parcel_modal.PLSS_Label}}&nbsp;</div>
 
+            <div class="header-label">Zones:</div>
+            <div class="header-value">{{parcel_modal.ZoneCode.replace(':',', ')}}&nbsp;</div>
+
             <div style="margin-top: 10px" ng-show="parcelMatches != ''">
                 <div class="header-label">Similar Results:</div>
                 <div class="header-value"><textarea disabled cols="20" rows="6">{{parcelMatches}}</textarea></div>

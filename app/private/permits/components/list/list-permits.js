@@ -678,8 +678,8 @@
 
             if ($scope.row.Zoning) {
                 $scope.row.Zoning = getJsonObjects($scope.row.Zoning);
-                console.warn(" -- Zoning -- ");
-                console.dir($scope.row.Zoning);
+                //console.warn(" -- Zoning -- ");
+                //console.dir($scope.row.Zoning);
 
             } else {
                 $scope.row.Zoning = [];
@@ -708,7 +708,25 @@
             });
         };
 
-        $scope.refreshZones = function () {
+        $scope.refreshZones = function () { 
+            $scope.row.Zones.length = 0;
+            $scope.PermitParcels.forEach(function (parcel) {
+
+                var the_zones = parcel.Object.ZoneCode.split(":");
+
+                if (Array.isArray(the_zones)) {
+                    the_zones.forEach(function (zone) {
+                        if (!$scope.row.Zones.contains(zone))
+                            $scope.row.Zones.push(zone);
+                    });
+                };                
+            });
+        };
+
+
+        //this function populates the zones using the live ArcGIS server layers but it is too slow, 
+        //  so we'll use the above strategy instead and keep this around in case we change our mind.
+        $scope.refreshZonesLive = function () {
             $scope.refreshingZones = true;
             $scope.row.Zones.length = 0;
             require([
