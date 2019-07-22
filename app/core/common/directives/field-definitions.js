@@ -234,6 +234,22 @@ common_module.directive('ctuirSelectField',
 
     });
 
+common_module.directive('ctuirSelectGroupField',
+    function () {
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-select-group.html',
+            restrict: 'E',
+            controller: function ($scope, $element, $attrs) {
+                $scope.selectOptions = makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
+            }
+        };
+
+        return result;
+
+    });
+
+
 
 common_module.directive('ctuirSelectNumberField',
     function () {

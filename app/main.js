@@ -106,6 +106,10 @@ define([
             $routeProvider.when('/permits/list', { templateUrl: 'app/private/permits/components/list/templates/list-permits.html', controller: 'PermitListController'});
             $routeProvider.when('/permits/routes', { templateUrl: 'app/private/permits/components/taskboard/templates/routes.html', controller: 'PermitRoutesController'});
             $routeProvider.when('/permits/dashboard', { templateUrl: 'app/private/permits/components/dashboard/templates/dashboard.html', controller: 'PermitDashboardController'});
+            $routeProvider.when('/permits/inspection', { templateUrl: 'app/private/permits/components/list/templates/request-inspection.html', controller: 'RequestInspectionController'});
+            $routeProvider.when('/permits/notifications', { templateUrl: 'app/private/permits/components/notifications/templates/notifications.html', controller: 'PermitNotificationsController'});
+            $routeProvider.when('/permits/map', { templateUrl: 'app/private/permits/components/map/templates/permit-map.html', controller: 'PermitMapController'});
+
 
 	        //custom routes for datasets that require custom controller+pages
             //$routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
