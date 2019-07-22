@@ -1473,16 +1473,18 @@ function convertStringWithSeparatorsToStringWithSeparatorsAndReturns(aString) {
 
     strA = "";
 
-    var intCount = 0;
+    //var intCount = 0;
     aryA.forEach(function (item) {
-        if (intCount === 0) {
+        //if (intCount === 0) {
             //strA += item;
-            strA += item + ";";
-        }
-        else
-            strA += "\n" + item + ";";
-
-        intCount++;
+            //strA += item + ";";
+            strA += item + ";\n";
+        //}
+        //else {
+            //strA += "\n" + item + ";";
+        //    strA += item + ";\n";
+        //}
+        //intCount++;
     });
 
     return strA;
