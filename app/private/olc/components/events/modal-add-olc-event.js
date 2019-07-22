@@ -508,7 +508,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             // We will add a new line at the end, so that the string presents well on the page.
             if ((typeof $scope.event_row.Description === 'undefined') || ($scope.event_row.Description === null))
                 $scope.event_row.Description = "";
-
+            
             $scope.event_row.Description += $scope.event_row.DescriptionItem + ";\n";
 
             console.log("$scope.event_row.Description = " + $scope.event_row.Description);
