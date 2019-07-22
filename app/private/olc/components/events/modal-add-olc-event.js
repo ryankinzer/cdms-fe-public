@@ -331,6 +331,23 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 saveRow.DescriptionItem = undefined;
             }
 
+            if ((typeof saveRow.TwnRngSec !== 'undefined') && (saveRow.TwnRngSec !== null)) {
+                console.log("saveRow.TwnRngSec = " + saveRow.TwnRngSec);
+
+                // If the TwnRngSec does not end with a ";", add it to the text.
+                saveRow.TwnRngSec = saveRow.TwnRngSec.trim();
+                if (saveRow.TwnRngSec.substring(saveRow.TwnRngSec.length) !== ";")
+                    saveRow.TwnRngSec += ";";
+
+                // First, strip out the new line characters.
+                //saveRow.SurveyDates = saveRow.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+                saveRow.Description = convertStringWithSeparatorsAndReturnsToNormalString(saveRow.Description);
+                console.log("saveRow.Description after stripping = " + saveRow.Description);
+
+                // We don't want to send this, so delete it.
+                saveRow.DescriptionItem = undefined;
+            }
+
             //saveRow.Boundaries = JSON.stringify(saveRow.Boundaries);
             //console.log("saveRow.Boundaries = " + saveRow.Boundaries);
 
