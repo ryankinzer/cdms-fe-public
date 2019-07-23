@@ -552,7 +552,11 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 var surveyDates_height = 25 * (getProjectItemsArrayAsTextList(params.data.SurveyDates).length);
 
                 // Check the height required for the fields, to find the one that requires the most space.
-                var maxHeight = 1;
+                // Note:
+                // If the user does not enter any of the items that we use to calculate the row height (below), the result will be zero.
+                // Therefore, we must default the row height to the height for one row; if we set it to one or zero, the row will be there,
+                // but the user/developer will not be able to see it.
+                var maxHeight = 25; // Default the row height to one row to start with.
                 if (Tasks_height > maxHeight)
                     maxHeight = Tasks_height;
 
