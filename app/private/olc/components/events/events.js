@@ -325,6 +325,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
                 //            the_str = the_str.replace(/"/g, '');
                 //        return the_str;
+
                     }
                 },
                 cellRenderer: BulletedItemListCellTemplate,
@@ -387,7 +388,6 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         //var the_str = buildBulletedItemList(params.node.data.Boundary);
                         //return the_str;
                     }
-
                 },
                 cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],

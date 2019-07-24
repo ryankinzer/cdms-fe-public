@@ -1,0 +1,3 @@
+<select multiple size="10" ng-multiple="true" class="form-control" ng-model="Criteria.Value">
+    <option ng-repeat="item in Criteria.ParamFieldSelect[0].PossibleValuesList" value="{{item.Id}}">{{item.Label}}</option>
+</select>
