@@ -110,6 +110,30 @@ permit_module.factory('GetPermitStatistics', ['$resource', function ($resource) 
     });
 }]);
 
+permit_module.factory('GetPermitByPermitNumber', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetPermitByPermitNumber', {}, {
+        query: { method: 'GET', params: { }, isArray: false }
+    });
+}]);
+
+permit_module.factory('GetPublicHearingPermits', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetPublicHearingPermits', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
+
+permit_module.factory('GetNotifications', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/syslog/GetNotificationsByModule', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
+
+permit_module.factory('GetPermitRoutes', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetPermitRoutes', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
+
 permit_module.service('PermitService', ['$q',
 
     'AllPermits',
@@ -133,6 +157,10 @@ permit_module.service('PermitService', ['$q',
     'GetExpiringPermits',
     'GetOutstandingRequests',
     'GetPermitStatistics',
+    'GetPermitByPermitNumber',
+    'GetPublicHearingPermits',
+    'GetNotifications',
+    'GetPermitRoutes',
   
     function ($q,
        
@@ -156,7 +184,11 @@ permit_module.service('PermitService', ['$q',
         GetRelatedParcels,
         GetExpiringPermits,
         GetOutstandingRequests,
-        GetPermitStatistics
+        GetPermitStatistics,
+        GetPermitByPermitNumber,
+        GetPublicHearingPermits,
+        GetNotifications,
+        GetPermitRoutes
       
     ) {
         var service = {
@@ -243,6 +275,26 @@ permit_module.service('PermitService', ['$q',
 
             getPermitStatistics: function () { 
                 return GetPermitStatistics.query();
+            },
+
+            getPermitByPermitNumber: function (permitnumber) {
+                return GetPermitByPermitNumber.query({ PermitNumber: permitnumber });
+            },
+
+            getPublicHearingPermits: function () { 
+                return GetPublicHearingPermits.query();
+            },
+
+            getPermitRoutes: function () { 
+                return GetPermitRoutes.query();
+            },
+    
+            getPermitRoutesByItemType: function (itemType) { 
+                return GetPermitRoutes.query({ ItemType: itemType });
+            },
+
+            getNotifications: function () { 
+                return GetNotifications.query({ Module: 'Permits' });
             }
 
         };

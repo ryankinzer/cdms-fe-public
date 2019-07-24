@@ -83,6 +83,7 @@
                                 </div>
 
                                 <div class="col-lg-4" style="min-width: 450px;">
+                                    <div class="right"><img ng-show="!refreshingZones" alt="Refresh zoning list." style="cursor: pointer; width: 25px;" src="/assets/images/refresh.png" ng-click="refreshZones()" /></div>
                                     <fieldset>
                                         <legend class="bump-over">Location Information</legend>
                                         <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:2}" ng-switch on="field.ControlType">
@@ -112,6 +113,17 @@
                                             <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                                             <ctuir-text-field ng-switch-default></ctuir-text-field>
                                         </div>
+
+                                        <div class="form-group">
+                                            <div class="header-label">Zoning:</div>
+                                            <div class="header-value">
+                                                <select class="form-control" ng-blur="onHeaderEditingStopped({'DbColumnName':'Zoning'})" multiple ng-model="row.Zoning" >
+                                                    <option ng-repeat="zone in row.Zones | orderBy:'+'" value="{{zone}}">{{zone}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
                                     </fieldset>
                                     <fieldset style="margin-top: 30px;">
                                         <legend class="bump-over">Other Information</legend>

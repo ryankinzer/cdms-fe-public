@@ -59,6 +59,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         //mixin the properties and functions to enable the modal file chooser for this controller...
         modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files); //"EventFiles"
 
+        var intCount = 0;
         if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
             $rootScope.subprojectId = $scope.viewSubproject.Id;
         {
@@ -121,25 +122,60 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         }
 
         if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null)) {
-            $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
-            /*var arySurveyDates = $scope.event_row.SurveyDates.split(';')
+            if (!isArray($scope.event_row.SurveyDates))
+                $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strSurveyDates = convertStringArrayToNormalString($scope.event_row.SurveyDates);
 
-            $scope.event_row.SurveyDates = "";
+                $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strSurveyDates);
+            }
+        }
 
-            var intCount = 0;
-            arySurveyDates.forEach(function (item) {
-                if (intCount === 0)
-                    $scope.event_row.SurveyDates += item;
-                else
-                    $scope.event_row.SurveyDates += ";\n" + item;
+        if ((typeof $scope.event_row.Reference !== 'undefined') && ($scope.event_row.Reference !== null)) {
+            if (!isArray($scope.event_row.Reference))
+                $scope.event_row.Reference = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Reference);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strReference = convertStringArrayToNormalString($scope.event_row.Reference);
 
-                intCount++;
-            });
-            */
+                $scope.event_row.Reference = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strReference);
+            }
+        }
+
+        if ((typeof $scope.event_row.Tasks !== 'undefined') && ($scope.event_row.Tasks !== null)) {
+            if (!isArray($scope.event_row.Tasks))
+                $scope.event_row.Tasks = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Tasks);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strTasks = convertStringArrayToNormalString($scope.event_row.Tasks);
+
+                $scope.event_row.Tasks = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strTasks);
+            }
         }
 
         if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null)) {
-            $scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Description);
+            //$scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Description);
+
+            if (!isArray($scope.event_row.Description))
+                $scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Description);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strDescription = convertStringArrayToNormalString($scope.event_row.Description);
+
+                $scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strDescription);
+            }
+        }
+
+        if ((typeof $scope.event_row.TwnRngSec !== 'undefined') && ($scope.event_row.TwnRngSec !== null)) {
+            if (!isArray($scope.event_row.TwnRngSec))
+                $scope.event_row.TwnRngSec = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.TwnRngSec);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strTwnRngSec = convertStringArrayToNormalString($scope.event_row.TwnRngSec);
+
+                $scope.event_row.TwnRngSec = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strTwnRngSec);
+            }
         }
 
         //console.log("$scope.event_row is next...");
@@ -295,6 +331,23 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 saveRow.DescriptionItem = undefined;
             }
 
+            if ((typeof saveRow.TwnRngSec !== 'undefined') && (saveRow.TwnRngSec !== null)) {
+                console.log("saveRow.TwnRngSec = " + saveRow.TwnRngSec);
+
+                // If the TwnRngSec does not end with a ";", add it to the text.
+                saveRow.TwnRngSec = saveRow.TwnRngSec.trim();
+                if (saveRow.TwnRngSec.substring(saveRow.TwnRngSec.length) !== ";")
+                    saveRow.TwnRngSec += ";";
+
+                // First, strip out the new line characters.
+                //saveRow.SurveyDates = saveRow.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+                saveRow.Description = convertStringWithSeparatorsAndReturnsToNormalString(saveRow.Description);
+                console.log("saveRow.Description after stripping = " + saveRow.Description);
+
+                // We don't want to send this, so delete it.
+                saveRow.DescriptionItem = undefined;
+            }
+
             //saveRow.Boundaries = JSON.stringify(saveRow.Boundaries);
             //console.log("saveRow.Boundaries = " + saveRow.Boundaries);
 
@@ -432,7 +485,10 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             }
 
             if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null))
-                $scope.event_row.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.SurveyDates);
+                if (isArray($scope.event_row.SurveyDates)) 
+                    $scope.event_row.SurveyDates = convertStringArrayToNormalString($scope.event_row.SurveyDates);
+                else
+                    $scope.event_row.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.SurveyDates);
 
             if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null))
                 $scope.event_row.Description = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.Description);
@@ -469,7 +525,7 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             // We will add a new line at the end, so that the string presents well on the page.
             if ((typeof $scope.event_row.Description === 'undefined') || ($scope.event_row.Description === null))
                 $scope.event_row.Description = "";
-
+            
             $scope.event_row.Description += $scope.event_row.DescriptionItem + ";\n";
 
             console.log("$scope.event_row.Description = " + $scope.event_row.Description);

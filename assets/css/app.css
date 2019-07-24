@@ -660,7 +660,7 @@ table.metadata td
     white-space: normal;
 }
 
-.event-file-list ul, .event-link-list ul {
+.event-file-list ul, .event-link-list ul, .event-item-list ul{
     padding-left: 15px;
     list-style-type: circle;
 }

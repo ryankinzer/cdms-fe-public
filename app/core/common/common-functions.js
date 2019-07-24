@@ -248,7 +248,12 @@ function makeObjectsFromValues(key, valuesList) {
         //make array elements have same key/value
         if (angular.isArray(selectOptions)) {
             selectOptions.forEach(function (item) {
-                objects[item] = item;
+                if (typeof item == 'object' && item.hasOwnProperty('Id')) {
+                    objects[item.Id] = item;
+                }
+                else {
+                    objects[item] = item;
+                }
             });
         }
         else {
@@ -456,7 +461,6 @@ function isNumber(n) {
 function isPercent(n) { 
     return (isNumber(n) && n >= 0 && n <= 100); 
 }
-
 
 function isInteger (value) {
     return typeof value === 'number' &&
@@ -1433,6 +1437,21 @@ function convertStringToArray(aString){
 	return aryItems;
 }
 
+function convertStringArrayToNormalString(aArray) {
+    // The join make the list a comma-separated string; we need a semi-colon-separated string.
+    //var strA = aArray.join();
+    //Add the trailing ;
+    //strA += ";";
+
+    var strA = "";
+
+    aArray.forEach(function (item) {
+        strA += item + ";";
+    });
+
+    return strA;
+}
+
 // This function expects a string looking like this:  "a;\nb;\nc;\nd;"
 // and converts the string into a string looking like this:  "a;b;c;d;"
 // Handles strings like Collaborators; this function for saving.
@@ -1446,18 +1465,26 @@ function convertStringWithSeparatorsAndReturnsToNormalString(aString) {
 // and converts the string into a string looking like this: "a;\nb;\nc;\nd;"
 // Handles strings like Collaborators; this function for displaying.
 function convertStringWithSeparatorsToStringWithSeparatorsAndReturns(aString) {
-    var aryA = aString.split(';');
+    var strA = aString.replace(/(\r\n|\r|\n)/gm, "");
+    var aryA = strA.split(';');
 
-    var strA = "";
+    // Next, get rid of that trailing semicolon record.
+    aryA.splice(-1, 1);
 
-    var intCount = 0;
+    strA = "";
+
+    //var intCount = 0;
     aryA.forEach(function (item) {
-        if (intCount === 0)
-            strA += item;
-        else
-            strA += ";\n" + item;
-
-        intCount++;
+        //if (intCount === 0) {
+            //strA += item;
+            //strA += item + ";";
+            strA += item + ";\n";
+        //}
+        //else {
+            //strA += "\n" + item + ";";
+        //    strA += item + ";\n";
+        //}
+        //intCount++;
     });
 
     return strA;
@@ -1791,6 +1818,33 @@ function getFilesArrayAsList (theFiles) {
 
 };
 
+//return an array from the items.
+// Receives:  a;b;c;
+// Returns:  [a,b,c]
+function getTextArrayAsList(theItems) {
+
+    if (theItems === undefined || theItems === null)
+        return [];
+
+    var items = null;
+    var newItemList = [];
+    try {
+        //items = angular.fromJson(theItems);
+        items = theItems.split(";");
+        items.forEach(function (item) {
+            newItemList.push(item);
+        });
+
+        newItemList.splice(-1, 1);
+    }
+    catch (e) {
+        console.error("could not parse items: " + theItems);
+    }
+
+    return newItemList; //if it isn't an array, make an empty array
+
+};
+
 //return an array of file links to cdmsShareUrl (defined in config) for subproject
 function getSubprojectFilesArrayAsLinks (a_projectId, a_subprojectId, a_files)
 {
@@ -1819,6 +1873,38 @@ function getProjectFilesArrayAsLinks (a_projectId, a_datasetId, a_files)
     });
 
     return retval;
+}
+
+//Receive a text array, and convert it into a list with \n after each item.
+function getProjectItemsArrayAsTextList(a_itemList) {
+    var itemList = getTextArrayAsList(a_itemList);
+    var retval = [];
+
+    itemList.forEach(function (item) {
+        //console.dir(file);
+        retval.push(item + "\n");
+    });
+
+    return retval;
+}
+
+//Receive an array like this: [a,b,c]
+//Return:
+//-a
+//-b
+//-c
+function buildBulletedItemList(a_itemList) {
+    var list = '<div class="event-item-list"><ul>';
+    //var itemList = getTextArrayAsList(a_itemList);
+
+    a_itemList.forEach(function (item) {
+        list += '<li>' + item + '</li>';
+    });
+
+    list += '</ul></div>';
+
+    //console.dir(list);
+    return list;
 }
 
 
@@ -1870,6 +1956,8 @@ function valueFormatterArrayToList(the_array) {
     } catch (e) {
         console.log("problem parsing: " + the_array );
     }
+
+    console.dir(list);
 
     return list;
 

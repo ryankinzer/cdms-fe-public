@@ -167,6 +167,7 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //***Start copied-in Details here
             { headerName: 'Document Type', field: 'DocumentType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Description', field: 'Description', cellRenderer: ItemListCellTemplate, width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'Agency', field: 'Agency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'Agency Division', field: 'AgencyDivision', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
@@ -186,12 +187,22 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 width: 180,
                 valueGetter: function (params) { return params.node.data.Boundary },
                 valueFormatter: function (params) {
-                    params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
-                    var the_str = valueFormatterArrayToList(params.node.data.Boundary);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    // Note1:  Sometimes the value can be null
+                    // Note2:  The first time through, the JSON object is a string and must be converted to an array.
+                    // Note3:  The second time through, the value is already an array, so doing JSON.parse will cause JavaScript to die.
+                    if (params.node.data.Boundary !== null) {
+                        if (!isArray(params.node.data.Boundary))
+                            params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
+
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
+                    }
                 },
+                cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
                 filter: 'text' 
             },
@@ -203,12 +214,17 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 width: 180,
                 valueGetter: function (params) { return params.node.data.SignificantArea },
                 valueFormatter: function (params) {
-                    params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
-                    var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    if (params.node.data.SignificantArea !== null) {
+                        if (!isArray(params.node.data.SignificantArea))
+                            params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
+
+                        //        var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
+                        //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //            the_str = the_str.replace(/"/g, '');
+                        //        return the_str;
+                    }
                 },
+                cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
                 filter: 'text' 
             },
@@ -220,12 +236,17 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 width: 180,
                 valueGetter: function (params) { return params.node.data.MiscellaneousContext },
                 valueFormatter: function (params) {
-                    params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
-                    var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    if (params.node.data.MiscellaneousContext !== null) {
+                        if (!isArray(params.node.data.MiscellaneousContext))
+                            params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
+
+                        //        var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
+                        //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //            the_str = the_str.replace(/"/g, '');
+                        //        return the_str;
+                    }
                 },
+                cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
                 filter: 'text' 
             },
@@ -233,9 +254,79 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             { headerName: 'Survey Contract Number', field: 'SurveyContractNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'Surveyor Name', field: 'SurveyorName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
-            { headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            {
+                headerName: 'Survey Dates',
+                field: 'SurveyDates',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.SurveyDates },
+                valueFormatter: function (params) {
+                    //console.log("typeof params.node.data.SurveyDates = " + typeof params.node.data.SurveyDates);
+                    //if ((params.node.data.SurveyDates !== null) && (typeof params.node.data.SurveyDates !== 'string')) {
+                    if ((params.node !== null) && (params.node.data !==null) && (params.node.data.SurveyDates !== null)) {
+                        try {
+                            params.node.data.SurveyDates = JSON.parse(params.node.data.SurveyDates);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.SurveyDates.indexOf(";") > -1) {
+                                params.node.data.SurveyDates = params.node.data.SurveyDates.split(";");
+                                params.node.data.SurveyDates.splice(-1, 1);
+
+                            }
+                        }
+
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
+            },
+            //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            {
+                headerName: 'TwnRngSec',
+                field: 'TwnRngSec',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.TwnRngSec },
+                valueFormatter: function (params) {
+                    //console.log("typeof params.node.data.TwnRngSec = " + typeof params.node.data.TwnRngSec);
+                    //if ((params.node.data.TwnRngSec !== null) && (typeof params.node.data.TwnRngSec !== 'string')) {
+                    if (params.node.data.TwnRngSec !== null) {
+                        try {
+                            params.node.data.TwnRngSec = JSON.parse(params.node.data.TwnRngSec);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.TwnRngSec.indexOf(";") > -1) {
+                                params.node.data.TwnRngSec = params.node.data.TwnRngSec.split(";");
+                                params.node.data.TwnRngSec.splice(-1, 1);
+
+                            }
+                        }
+
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
+            },
             { headerName: 'Number Items', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: 'Page Number', field: 'PageNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             {
@@ -250,13 +341,69 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 menuTabs: ['filterMenuTab']
             },
             { headerName: 'Person Discovered', field: 'PersonDiscovered', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
-
+            //{ headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             {
+                headerName: 'Reference',
+                field: 'Reference',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.Reference },
+                valueFormatter: function (params) {
+                    //console.log("typeof params.node.data.Reference = " + typeof params.node.data.Reference);
+                    if ((params.node !== null) && (params.node.data !== null) && (params.node.data.Reference !== null)) {
+                        try {
+                            params.node.data.Reference = JSON.parse(params.node.data.Reference);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.Reference.indexOf(";") > -1) {
+                                params.node.data.Reference = params.node.data.Reference.split(";");
+                                params.node.data.Reference.splice(-1, 1);
+
+                            }
+                        }
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: true
+            },
+            //{
                 //headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 380, cellStyle: {
-                headerName: 'Tasks', field: 'Tasks', cellClass: 'event-record-cell', width: 380, cellStyle: {
+            //    headerName: 'Tasks', field: 'Tasks', cellClass: 'event-record-cell', width: 380, cellStyle: {
+            //        'white-space': 'normal'
+            //    },
+            //    menuTabs: ['filterMenuTab'],
+            //    filter: 'text'
+            //},
+            {
+                headerName: 'Tasks',
+                field: 'Tasks',
+                cellClass: 'event-record-cell',
+                width: 380,
+                cellStyle: {
                     'white-space': 'normal'
                 },
+                valueGetter: function (params) { return params.node.data.Tasks },
+                valueFormatter: function (params) {
+                    //console.log("typeof params.node.data.Tasks = " + typeof params.node.data.Tasks);
+                    if (params.node.data.Tasks !== null) {
+                        try {
+                            params.node.data.Tasks = JSON.parse(params.node.data.Tasks);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.Tasks.indexOf(";") > -1) {
+                                params.node.data.Tasks = params.node.data.Tasks.split(";");
+                                params.node.data.Tasks.splice(-1, 1);
+
+                            }
+                        }
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
                 filter: 'text'
             },
@@ -268,15 +415,16 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
                 headerName: 'Item Updated By User',
-                field: 'EventByUserId',
+                field: 'EventByUserFullName',
                 cellClass: 'event-record-cell',
-                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueGetter: function (params) { return params.node.data.EventByUserFullName },
                 valueFormatter: function (params) {
-                    params.node.data.EventByUserId = JSON.parse(params.node.data.EventByUserId);
-                    var the_str = getNameFromUserId(params.node.data.EventByUserId, $scope.Users);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    //params.node.data.EventByUserFullName = JSON.parse(params.node.data.EventByUserFullName);
+                    //var the_str = getNameFromUserId(params.node.data.EventByUserId, $scope.Users);
+                    //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                    //    the_str = the_str.replace(/"/g, '');
+                    //return the_str;
+                    return params.node.data.EventByUserFullName;
                 },
                 width: 180,
                 menuTabs: ['filterMenuTab'],
@@ -320,9 +468,11 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             { field: 'OtherFacilityHoused', headerName: 'Other Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'Box', headerName: 'Box', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'BoxLocation', headerName: 'Box Location', width: 150, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'LitigationCategory', headerName: 'Litigation Category', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'CategoryIndex', headerName: 'Category Index', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'CategorySubtitle', headerName: 'Category Subtitle', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'CategorySubtitle', headerName: 'Category Subtitle', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'FileUnit', headerName: 'File Unit', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SourceArchiveId', headerName: 'Source Archive Id', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryTitle', headerName: 'Signatory Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'SignatoryAgency', headerName: 'Signatory Agency', width: 100, menuTabs: ['filterMenuTab'], filter: true },
@@ -330,15 +480,16 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
             //{ field: 'ByUserId', headerName: 'By User', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             {
                 headerName: 'By User',
-                field: 'SubprojectByUserId',
+                field: 'SpByUserFullName',
                 cellClass: 'event-record-cell',
-                valueGetter: function (params) { return params.node.data.SubprojectByUserId },
+                valueGetter: function (params) { return params.node.data.SpByUserFullName },
                 valueFormatter: function (params) {
-                    params.node.data.SubprojectByUserId = JSON.parse(params.node.data.SubprojectByUserId);
-                    var the_str = getNameFromUserId(params.node.data.SubprojectByUserId, $scope.Users);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    //params.node.data.SubprojectByUserId = JSON.parse(params.node.data.SubprojectByUserId);
+                    //var the_str = getNameFromUserId(params.node.data.SubprojectByUserId, $scope.Users);
+                    //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                    //    the_str = the_str.replace(/"/g, '');
+                    //return the_str;
+                    return params.node.data.SpByUserFullName;
                 },
                 width: 180,
                 menuTabs: ['filterMenuTab'],
@@ -545,6 +696,48 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                 //return rowIsDetailRow ? 200 : 25;
             },
             */
+            getRowHeight: function (params) {
+                // Original way
+                //var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
+                var Tasks_length = (params.data.Tasks === null) ? 1 : params.data.Tasks.length;
+                var Tasks_height = 25 * (Math.floor(Tasks_length / 45) + 1); //base our detail height on the Tasks (comments) field.
+                var file_height = 25 * (getFilesArrayAsList(params.data.FileAttach).length); //count up the number of file lines we will have.
+                var description_height = 25 * (getProjectItemsArrayAsTextList(params.data.Description).length);
+                var boundary_height = 25 * (getProjectItemsArrayAsTextList(params.data.Boundary).length);
+                var significantArea_height = 25 * (getProjectItemsArrayAsTextList(params.data.SignificantArea).length);
+                var miscellaneoudContext_height = 25 * (getProjectItemsArrayAsTextList(params.data.MiscellaneousContext).length);
+                var twnRngSec_height = 25 * (getProjectItemsArrayAsTextList(params.data.TwnRngSec).length);
+                var reference_height = 25 * (getProjectItemsArrayAsTextList(params.data.Reference).length);
+
+                var maxHeight = 1;
+                if (Tasks_height > maxHeight)
+                    maxHeight = Tasks_height;
+
+                if (file_height > maxHeight)
+                    maxHeight = file_height;
+
+                if (description_height > maxHeight)
+                    maxHeight = description_height;
+
+                if (boundary_height > maxHeight)
+                    maxHeight = boundary_height;
+
+                if (significantArea_height > maxHeight)
+                    maxHeight = significantArea_height;
+
+                if (miscellaneoudContext_height > maxHeight)
+                    maxHeight = miscellaneoudContext_height;
+
+                if (twnRngSec_height > maxHeight)
+                    maxHeight = twnRngSec_height;
+
+                if (reference_height > maxHeight)
+                    maxHeight = reference_height;
+
+                //return (Tasks_height > file_height) ? Tasks_height : file_height;
+                return maxHeight;
+            },
+
             onRowDoubleClicked: function (row) {
                 $scope.olcAgGridOptions.api.collapseAll();
                 row.node.setSelected(true);

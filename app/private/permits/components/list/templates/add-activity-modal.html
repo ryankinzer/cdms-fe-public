@@ -3,7 +3,7 @@
     <h3 ng-show="mode=='new'">Create Activity</h3>
     <h3 ng-show="mode=='new_route'">Request Review</h3>
     <h3 ng-show="mode=='edit_route'">Update Review Results</h3>
-    <h3 ng-show="mode=='new_inspection'">Request Inspection</h3>
+    <h3 ng-show="mode=='new_inspection' && showHeader">Request Inspection</h3>
     <h3 ng-show="mode=='edit_inspection'">Update Inspection Results</h3>
 </div>
 <div class="modal-body" id="modal-body">
@@ -47,6 +47,7 @@
                     <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
                     <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
                     <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                    <ctuir-select-group-field ng-switch-when="select-group"></ctuir-select-group-field>
                     <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
                     <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
                     <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
@@ -55,6 +56,19 @@
                     <ctuir-qa-status-select-field ng-switch-when="qa-status-select"></ctuir-qa-status-select-field>
                     <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                     <ctuir-text-field ng-switch-default></ctuir-text-field>
+                </div>
+
+                <div ng-show="PermitRoutes.length > 0">
+                    <div class="checkbox-fix">
+                        <div class="header-label">Reviewers to Contact:</div>
+                        <div class="header-value">
+                            <div class="checkbox-itemlist" style="margin-top: -25px; width: 300px;">
+                                <span ng-repeat="route in PermitRoutes | orderBy: 'Rank'">
+                                    <input type="checkbox" ng-model="row.ReviewersContact[route.Email]" value="{{route.Email}}"/> {{route.Email}} <br />
+                                </span>
+                            </div>
+                        </div>
+                    </div>           
                 </div>
 
                 <div ng-show="mode=='edit_route'">
@@ -106,9 +120,16 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    <button ng-disabled="row.validationErrors.length>0" style="margin-top: 30px;" class="right btn" ng-click="save()">Save Changes</button>
+    <div ng-show="Results.SuccessMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{Results.SuccessMessage}}</div>
+    <div ng-show="Results.FailureMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-danger">{{Results.FailureMessage}}</div>
 
-    <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
+    <div ng-show="!Results.DoneSaving">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="right btn" ng-click="save()">Save</button>
+    </div>
+    <div ng-show="Results.DoneSaving">
+        <button style="margin-top: 30px;" class="right btn" ng-click="close()">Close</button>
+    </div>
+
 
 </div>
