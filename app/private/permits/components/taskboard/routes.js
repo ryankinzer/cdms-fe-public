@@ -143,7 +143,7 @@
         $scope.handleDoubleClick = function (params) {
             var col = params.colDef.field.substring(6); //"Route_BldgCode" --> "BldgCode"
             
-            if (params.colDef.field == 'PermitNumber') {
+            if (params.colDef.field == 'PermitNumber' || params.colDef.field == 'ProjectName' || params.colDef.field == 'PermitStatus') {
                 window.open("index.html#!/permits/list?Id=" + params.data.Id, "_blank");
                 return;
             }

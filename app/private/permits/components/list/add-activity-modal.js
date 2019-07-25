@@ -60,6 +60,8 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
 
         $scope.save = function () {
 
+            $scope.Results.DoneSaving = false;
+
             $scope.row.ByUser = $scope.Profile.Id;
 
             var target = '/api/v1/permit/uploadfile';
@@ -76,6 +78,12 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
                 else
                     $scope.row.Files = angular.toJson($scope.row.Files);
             }
+
+            //drop any recipients that are 'false' since they were unchecked
+            Object.keys($scope.row.ReviewersContact).forEach(function (key) { 
+                if ($scope.row.ReviewersContact[key] === false)
+                    delete $scope.row.ReviewersContact[key];
+            });
 
             //if this is a new event, save it first to get the ID
             if (!$scope.row.Id) {
