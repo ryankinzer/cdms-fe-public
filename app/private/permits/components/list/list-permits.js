@@ -84,6 +84,7 @@
         });
 
         $scope.showIssued = function () { 
+            $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('Approved');
@@ -95,6 +96,7 @@
         };
 
         $scope.showApplications = function () { 
+            $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('New Application');
@@ -106,6 +108,7 @@
         };
 
         $scope.showArchived = function () { 
+            $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('Archived');
@@ -116,12 +119,28 @@
         };
         
         $scope.showAll = function () { 
+            $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectEverything();
             $scope.permitsGrid.api.onFilterChanged();
             if($scope.currentPage !== "All")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "All";
+        };
+
+        $scope.showAssignedToMe = function () { 
+            var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
+            filter_component.selectNothing();
+            filter_component.selectValue($scope.Profile.Fullname);
+            $scope.permitsGrid.api.onFilterChanged();
+            if($scope.currentPage !== "My Permits")
+                $scope.permitsGrid.api.deselectAll();
+            $scope.currentPage = "My Permits";
+        };
+
+        $scope.clearReviewedBy = function () { 
+            var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
+            filter_component.selectEverything();
         };
 
         //requirement: can navigate permits by up and down arrow keys
