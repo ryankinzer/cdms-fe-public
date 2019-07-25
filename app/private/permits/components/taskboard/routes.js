@@ -3,6 +3,8 @@
 
         $rootScope.inModule = "permits";
 
+        $scope.clickselect = "allstaff";
+
         if (!$scope.Profile.hasRole("Permits"))
             angular.rootScope.go("/unauthorized");
 
@@ -284,5 +286,20 @@
 
             permit.Route_TPO = (permit.PermitStatus == 'New Application') ? '+' : '*'; // our internal "TPO" status isn't stored in the db, just a grid field.
         };
+
+        $scope.changeClickSelect = function () { 
+            if ($scope.clickselect == 'allstaff') {
+                $scope.permitRoutesGrid.api.setFilterModel(null);
+                $scope.permitRoutesGrid.api.onFilterChanged();
+            }
+            else {
+                var fc = $scope.permitRoutesGrid.api.getFilterInstance('ReviewedBy');
+                fc.selectNothing();
+                fc.selectValue("Dani Schulte"); //$scope.Profile.Fullname);
+                $scope.permitRoutesGrid.api.onFilterChanged();
+
+            }
+        };
+
         
 }];
