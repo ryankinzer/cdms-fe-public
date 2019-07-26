@@ -8,7 +8,14 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
         ActivityParser, GridService, Upload, ChartService, $compile) {
 
-        $scope.system = { loading: true, messages : [] };
+        $scope.system = { loading: true, messages: [] };
+
+        $scope.fishermen = ProjectService.getFishermen();
+        $scope.fishermen.$promise.then(function () {
+            console.log("Fishermen loaded...");
+            //console.log("Fishermen loaded and is next...");
+            //console.dir($scope.fishermen);
+        });
         
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
 
@@ -67,6 +74,15 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.dataset = $scope.dataset_activities.Dataset;
                 //$scope.row is the Header fields data row
                 $scope.row = $scope.dataset_activities.Header;
+                $scope.row.FishermanFullName = "";
+
+                angular.forEach($scope.fishermen, function (afisherman) {
+                    if (afisherman.Id === $scope.row.FishermanId)
+                        $scope.row.FishermanFullName = afisherman.FullName;
+                });
+
+                if ($scope.row.FishermanFullName === 2019)
+                    console.log("$scope.row.FishermanFullName = " + $scope.row.FishermanFullName);
 
                 $scope.afterDatasetLoadedEvent();
             });

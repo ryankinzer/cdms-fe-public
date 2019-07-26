@@ -110,6 +110,18 @@ common_module.directive('ctuirInstrumentSelectField',
 
     });
 
+common_module.directive('ctuirFishermanSelectField',
+    function () {
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-fisherman-select.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
 common_module.directive('ctuirAccuracyCheckSelectField',
     function(){
 
