@@ -541,7 +541,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 // When calculating on an array type of thing (a,b,c), or (a;b;c), calculated like this:  25 * (getFilesArrayAsList(params.data.FileAttach).length), putting each item on its own line.
                 //var Tasks_length = (params.data.Tasks === null) ? 1 : params.data.Tasks.length;
                 //var Tasks_height = 25 * (Math.floor(Tasks_length / 45) + 1); //base our detail height on the Tasks (comments) field.  We allow 45 chars per line.
-                var Tasks_height = 25 * (getFilesArrayAsList(params.data.FileAttach).length); //base our detail height on the Tasks (comments) field.
+                var Tasks_height = 25 * (getFilesArrayAsList(params.data.Tasks).length); //base our detail height on the Tasks (comments) field.
                 var file_height = 25 * (getFilesArrayAsList(params.data.FileAttach).length); //count up the number of file lines we will have.
                 var description_height = 25 * (getProjectItemsArrayAsTextList(params.data.Description).length);
                 var boundary_height = 25 * (getProjectItemsArrayAsTextList(params.data.Boundary).length);
