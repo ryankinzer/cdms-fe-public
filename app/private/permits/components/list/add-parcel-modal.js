@@ -26,6 +26,7 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
 
                 if (parcel.ParcelId == $scope.parcelEntry) {
                     $scope.parcel_modal = parcel;
+                    console.dir(parcel);
                 }
                 else 
                 { 
