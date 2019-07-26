@@ -295,7 +295,7 @@
             else {
                 var fc = $scope.permitRoutesGrid.api.getFilterInstance('ReviewedBy');
                 fc.selectNothing();
-                fc.selectValue("Dani Schulte"); //$scope.Profile.Fullname);
+                fc.selectValue($scope.Profile.Fullname);
                 $scope.permitRoutesGrid.api.onFilterChanged();
 
             }
