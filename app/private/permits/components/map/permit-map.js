@@ -95,7 +95,7 @@
             $scope.PermitParcels = PermitService.getPermitParcels(id);
         };
         
-        $scope.viewPermit = function (id) {
+        $scope.viewPermit = function (Id) {
             window.open("index.html#!/permits/list?Id=" + Id, "_blank");
         };
 
@@ -120,7 +120,7 @@
 
         }
 
-        // expose a method for handling clicks ON THE MAP - this is linked to from the Map.js directive
+        // expose a method for handling clicks ON THE MAP
         $scope.click = function (e) {
 
             console.log("Click!");
