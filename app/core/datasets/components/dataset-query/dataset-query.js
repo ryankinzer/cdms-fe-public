@@ -176,6 +176,11 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                         if (fieldDef.hasOwnProperty('setPossibleValues'))
                             fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+                    } else if (fieldDef.ControlType == "number-select") {
+                        fieldDef.PossibleValuesList = fieldDef.PossibleValues;
+
+                        if (fieldDef.hasOwnProperty('setPossibleValues'))
+                            fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
                     }
 
                     //hidden headers
