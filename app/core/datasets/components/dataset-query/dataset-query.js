@@ -171,14 +171,12 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                         if (fieldDef.hasOwnProperty('setPossibleValues'))
                             fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
-                    } else if (fieldDef.ControlType == "fisherman-select") {// || fieldDef.ControlType == "accuracy-check-select" || fieldDef.ControlType =="post-accuracy-check-select" || fieldDef.ControlType == "timezone-select") {
-                        //fieldDef.PossibleValuesList = makeObjects(fieldDef.PossibleValues, 'Id', 'Label');
+                    } else if (fieldDef.ControlType == "fisherman-select") {
                         fieldDef.PossibleValuesList = fieldDef.PossibleValues;
 
                         if (fieldDef.hasOwnProperty('setPossibleValues'))
                             fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
                     }
-
 
                     //hidden headers
                     if (hidden_header_controltypes.contains(fieldDef.ControlType))
@@ -330,6 +328,14 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             }
 
             if (params.column.colDef.DbColumnName == "InstrumentId") {
+                return params.column.colDef.PossibleValues[params.value];
+            }
+
+            if (params.column.colDef.DbColumnName == "FishermanId") {
+                return params.column.colDef.PossibleValues[params.value];
+            }
+
+            if (params.column.colDef.DbColumnName == "StreamName") {
                 return params.column.colDef.PossibleValues[params.value];
             }
 
