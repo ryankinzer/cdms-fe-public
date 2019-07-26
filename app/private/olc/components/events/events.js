@@ -216,7 +216,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             { field: 'OtherFacilityHoused', headerName: 'Other Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Box', headerName: 'Box', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'BoxLocation', headerName: 'Box Location', width: 150, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'LitigationCategory', headerName: 'Litigation Category', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'CategoryIndex', headerName: 'Category Index', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'CategorySubtitle', headerName: 'CategorySubtitle', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'FileUnit', headerName: 'File Unit', width: 100, menuTabs: ['filterMenuTab'], filter: true },
@@ -324,6 +325,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
                 //            the_str = the_str.replace(/"/g, '');
                 //        return the_str;
+
                     }
                 },
                 cellRenderer: BulletedItemListCellTemplate,
@@ -386,7 +388,6 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                         //var the_str = buildBulletedItemList(params.node.data.Boundary);
                         //return the_str;
                     }
-
                 },
                 cellRenderer: BulletedItemListCellTemplate,
                 menuTabs: ['filterMenuTab'],
@@ -535,8 +536,12 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             getRowHeight: function (params) {
                 // Original way
                 //var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
-                var Tasks_length = (params.data.Tasks === null) ? 1 : params.data.Tasks.length;
-                var Tasks_height = 25 * (Math.floor(Tasks_length / 45) + 1); //base our detail height on the Tasks (comments) field.
+                // Notes...
+                // When calculating on a free-text item (like comments), calculate like this:  25 * (Math.floor(Tasks_length / 45) + 1), allowing 45 chars per line.
+                // When calculating on an array type of thing (a,b,c), or (a;b;c), calculated like this:  25 * (getFilesArrayAsList(params.data.FileAttach).length), putting each item on its own line.
+                //var Tasks_length = (params.data.Tasks === null) ? 1 : params.data.Tasks.length;
+                //var Tasks_height = 25 * (Math.floor(Tasks_length / 45) + 1); //base our detail height on the Tasks (comments) field.  We allow 45 chars per line.
+                var Tasks_height = 25 * (getFilesArrayAsList(params.data.FileAttach).length); //base our detail height on the Tasks (comments) field.
                 var file_height = 25 * (getFilesArrayAsList(params.data.FileAttach).length); //count up the number of file lines we will have.
                 var description_height = 25 * (getProjectItemsArrayAsTextList(params.data.Description).length);
                 var boundary_height = 25 * (getProjectItemsArrayAsTextList(params.data.Boundary).length);
@@ -544,8 +549,14 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 var miscellaneoudContext_height = 25 * (getProjectItemsArrayAsTextList(params.data.MiscellaneousContext).length);
                 var twnRngSec_height = 25 * (getProjectItemsArrayAsTextList(params.data.TwnRngSec).length);
                 var reference_height = 25 * (getProjectItemsArrayAsTextList(params.data.Reference).length);
+                var surveyDates_height = 25 * (getProjectItemsArrayAsTextList(params.data.SurveyDates).length);
 
-                var maxHeight = 1;
+                // Check the height required for the fields, to find the one that requires the most space.
+                // Note:
+                // If the user does not enter any of the items that we use to calculate the row height (below), the result will be zero.
+                // Therefore, we must default the row height to the height for one row; if we set it to one or zero, the row will be there,
+                // but the user/developer will not be able to see it.
+                var maxHeight = 25; // Default the row height to one row to start with.
                 if (Tasks_height > maxHeight)
                     maxHeight = Tasks_height;
 
@@ -569,6 +580,9 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
 
                 if (reference_height > maxHeight)
                     maxHeight = reference_height;
+
+                if (surveyDates_height > maxHeight)
+                    maxHeight = surveyDates_height;
 
                 //return (Tasks_height > file_height) ? Tasks_height : file_height;
                 return maxHeight;
@@ -730,6 +744,10 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             //console.dir(new_event);
             console.log("saving OLC event for " + new_event.SubprojectId);
 
+            // EventByUserFullName is not stored; we set it so that we display the ByUser name, rather than the ByUserId.
+            // Therefore, we must add it to new_event, before we add new_event to the Subproject list.
+            new_event.EventByUserFullName = getNameFromUserId(new_event.ByUserId, scope.Users);
+
             var subproject = getById(scope.subprojectList, new_event.SubprojectId);
 
             if (subproject === undefined || subproject === null) { //TODO: the case where they create items before the project is saved?
@@ -749,7 +767,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 if (the_node !== null)
                     scope.olcAgGridOptions.api.ensureNodeVisible(the_node);
 
-                console.log("done reloading grid after removing item.");
+                console.log("done reloading grid after adding or removing item.");
             }
         };
 

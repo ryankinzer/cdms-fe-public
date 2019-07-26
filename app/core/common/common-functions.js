@@ -1437,12 +1437,19 @@ function convertStringToArray(aString){
 	return aryItems;
 }
 
-function convertStringArrayToNoralString(aArray) {
+function convertStringArrayToNormalString(aArray) {
+    // The join make the list a comma-separated string; we need a semi-colon-separated string.
+    //var strA = aArray.join();
+    //Add the trailing ;
+    //strA += ";";
+
     var strA = "";
 
     aArray.forEach(function (item) {
         strA += item + ";";
     });
+
+    return strA;
 }
 
 // This function expects a string looking like this:  "a;\nb;\nc;\nd;"
@@ -1458,18 +1465,26 @@ function convertStringWithSeparatorsAndReturnsToNormalString(aString) {
 // and converts the string into a string looking like this: "a;\nb;\nc;\nd;"
 // Handles strings like Collaborators; this function for displaying.
 function convertStringWithSeparatorsToStringWithSeparatorsAndReturns(aString) {
-    var aryA = aString.split(';');
+    var strA = aString.replace(/(\r\n|\r|\n)/gm, "");
+    var aryA = strA.split(';');
 
-    var strA = "";
+    // Next, get rid of that trailing semicolon record.
+    aryA.splice(-1, 1);
 
-    var intCount = 0;
+    strA = "";
+
+    //var intCount = 0;
     aryA.forEach(function (item) {
-        if (intCount === 0)
-            strA += item;
-        else
-            strA += ";\n" + item;
-
-        intCount++;
+        //if (intCount === 0) {
+            //strA += item;
+            //strA += item + ";";
+            strA += item + ";\n";
+        //}
+        //else {
+            //strA += "\n" + item + ";";
+        //    strA += item + ";\n";
+        //}
+        //intCount++;
     });
 
     return strA;
