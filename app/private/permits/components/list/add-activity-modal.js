@@ -80,6 +80,7 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
             }
 
             //drop any recipients that are 'false' since they were unchecked
+            if($scope.row.ReviewersContact)
             Object.keys($scope.row.ReviewersContact).forEach(function (key) { 
                 if ($scope.row.ReviewersContact[key] === false)
                     delete $scope.row.ReviewersContact[key];
