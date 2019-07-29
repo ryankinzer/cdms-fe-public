@@ -26,7 +26,7 @@ var modal_projectconfig_choose_lists = ['$scope', '$uibModal','$uibModalInstance
             });
     
             $scope.lists.push({ 'Label': 'Fishermen', 'DatasetId':FISHERMEN_DATASETID, 'Id': 1 }); //id here is the LookupTable.Id
-            $scope.lists.push({ 'Label': 'Seasons', 'DatasetId': SEASONS_DATASETID, 'Id': 2 }, );
+            $scope.lists.push({ 'Label': 'Seasons', 'DatasetId': SEASONS_DATASETID, 'Id': 2 } );
             $scope.lists.push({ 'Label': 'Instruments' });
             console.dir($scope.lists);
         });

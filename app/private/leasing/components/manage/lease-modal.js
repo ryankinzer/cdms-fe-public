@@ -2,33 +2,110 @@
 var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'LeasingService',
     function ($scope, $rootScope, $modal, $modalInstance, LeasingService) {
 
-        $scope.lease_modal = angular.copy($scope.lease);
+        //utility functions
+
+        /* pattern = 
+            1056889599
+
+            1-Farming (other numbers for other types of leases 4, 7)
+            0-Place holder (they are about to reach the threshold of 10,000 leases) with soon be 1
+            5688-Old lease number (TL-5688) currently at 9600 something I think
+            95-last two digits of the lease start year
+            99-Last two digits of the lease end year
+        */
+        $scope.generateLeaseNumber = function (lease) {
+            //console.log("generateleasenumber");
+            if (lease.lastleasenumber)
+                return $scope.constructLeaseNumber(lease);
+
+            var systemvals = LeasingService.getLeasingSystemValues();
+
+            systemvals.$promise.then(function () {
+                systemvals.forEach(function (val) {
+                    if (val.Id == METADATA_PROPERTY_LEASING_SYSTEM_LASTLEASENUMBER) {
+                        lease.lastleasenumberproperty = val;
+                        lease.lastleasenumberproperty.PossibleValues = parseInt(val.PossibleValues);
+                        $scope.constructLeaseNumber(lease);
+                    }
+                });
+            });
+
+        };
+
+        //needs the lease.lastleasenumber already set
+        $scope.constructLeaseNumber = function (lease) { 
+
+            var nextlease = lease.lastleasenumberproperty.PossibleValues+1;
+
+            if (leasing_module.LeaseTypeLeaseNumber.hasOwnProperty(lease.LeaseType))
+                lease.LeaseNumber = leasing_module.LeaseTypeLeaseNumber[lease.LeaseType] + "0" + nextlease;
+            else
+                lease.LeaseNumber = "0" + nextlease;
+
+            var begin = moment(lease.LeaseStart);
+            if (begin.isValid() && lease.LeaseStart)
+                lease.LeaseNumber += begin.format("YY");
+
+            var end = moment(lease.LeaseEnd);
+            if (end.isValid() && lease.LeaseEnd)
+                lease.LeaseNumber += end.format("YY");
+
+        }
+
+
+        //now with the modal
+
+
+        //set if the user clicks "new lease on this parcel" button on view lease
+        if ($scope.pagemode == "new_lease_on_this_parcel") {
+            $scope.pagemode = "new";
+            $scope.headerMessage = "Create New Lease on this Parcel";
+
+            $scope.lease_modal = {
+                AllotmentName: $scope.lease.AllotmentName,
+                Status: LEASE_STATUS_PENDING, //pending
+                Level: 1,
+                LeaseFields: $scope.lease.LeaseFields,
+                FieldsToLink: [],
+                LeaseType: $scope.lease.LeaseType,
+                LeaseAcres: $scope.lease.LeaseAcres,
+                ProductiveAcres: $scope.lease.ProductiveAcres,
+            };
+            //console.dir($scope.lease_modal);
+            if ($scope.lease_modal.LeaseFields && Array.isArray($scope.lease_modal.LeaseFields)) {
+                $scope.lease_modal.LeaseFields.forEach(function (field) { 
+                    $scope.lease_modal.FieldsToLink.push(field.FieldId);
+                });
+            }
+        }
+        else {
+            $scope.lease_modal = angular.copy($scope.lease);
+            $scope.pagemode = "new";
+            $scope.headerMessage = "Create New Lease";
+        }
 
         if (!$scope.lease_modal.LeaseCropShares)
             $scope.lease_modal.LeaseCropShares = [];
-
-        $scope.pagemode = "new";
-        $scope.headerMessage = "Create new lease";
 
         //leasenumber is automatically updated when creating for the first time - changing LeaseType, LeaseStart, LeaseEnd trigger update UNLESS user has manually changed the leasenumber
         $scope.canUpdateLeaseNumber = true;
 
         $scope.updateLeaseNumber = function () { 
-            if ($scope.canUpdateLeaseNumber && typeof $scope.generateLeaseNumber === 'function') { //only true on AvailableLandForLease -- otherwise they need to change it manually.
+            //console.log("updateLeaseNumber running - " +$scope.pagemode);
+            if ($scope.canUpdateLeaseNumber && $scope.pagemode == "new") { 
                 $scope.generateLeaseNumber($scope.lease_modal);
             }
         };
 
-        $scope.updateLeaseNumber(); //run the first time we open
-
         $scope.manuallyUpdatedLeaseNumber = function () {
+            //console.log("settingupdateleasenumber to false");
             $scope.canUpdateLeaseNumber = false;
         }
 
         $scope.canViewCropFields = $rootScope.Profile.hasRole("LeaseCropAdmin");
 
-        if ($scope.lease.Id) {
-            $scope.headerMessage = "Edit lease: " + $scope.lease.LeaseNumber;
+        if ($scope.lease_modal.Id) {
+            $scope.headerMessage = "Edit Lease: " + $scope.lease_modal.LeaseNumber;
             $scope.pagemode = "edit";
             try {
                 $scope.lease_modal.GrazeAnimal = angular.fromJson($scope.lease_modal.GrazeAnimal);
@@ -40,6 +117,8 @@ var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'Lea
         } else {
             $scope.lease_modal.TransactionDate = moment().format(); //defaults to today
         }
+
+        $scope.updateLeaseNumber(); //run the first time we open
 
         var EditLinksTemplate = function (param) {
 
@@ -214,10 +293,12 @@ var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'Lea
             console.dir($scope.leaseCropShareGrid.removedCropShares);
 
             //check if they changed the Operator - if so, we need to close this lease with today as the expiration and open a new one.
-            if ($scope.lease.Status == LEASE_STATUS_ACTIVE && $scope.lease.LeaseOperatorId != $scope.lease_modal.LeaseOperatorId) {
-                if (confirm("Notice: Changing the Operator will CANCEL the existing lease and create a new one with the new Opeator. Are you sure?")){
+            if ($scope.pagemode == 'edit' && $scope.lease.Status == LEASE_STATUS_ACTIVE && $scope.lease.LeaseOperatorId != $scope.lease_modal.LeaseOperatorId) {
+                if (confirm("Notice: Changing the Operator will CANCEL the existing lease and create a new one with the new Opeator. Are you sure?")) {
                     $scope.cancelExistingAndSaveNewLease(lease_save);
                     return;
+                } else {
+                    $scope.lease_modal.LeaseOperatorId = $scope.lease.LeaseOperatorId; //reset the operator and keep saving...
                 }
             }
 
@@ -342,6 +423,8 @@ var modal_lease = ['$scope', '$rootScope', '$uibModal','$uibModalInstance', 'Lea
             return verified;
 
         };
+
+        
 
     }
 ];

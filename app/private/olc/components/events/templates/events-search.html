@@ -1,0 +1,39 @@
+<div title="Toggle 'Favorite' status" class="fav-dataset">
+    <a href='' ng-click="toggleFavorite()">
+        <img id="favorite-active" ng-show="isFavorite" class="on" src='assets/images/favorite-on.png' />
+        <img id="favorite-inactive" ng-show="!isFavorite" class="off" src='assets/images/favorite-off.png' />
+    </a>
+</div>
+
+<ul class="breadcrumb">
+    <li><a href="#!/projects">Projects</a> <span class="divider"></span> </li>
+    <li><a href="#!/projects/{{project.Id}}">{{project.Name}}</a> <span class="divider"></span></li>
+    <li class="active">{{dataset.Name}}</li>
+</ul>
+
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span10">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <!--<h3>{{project.Name}} > Manage Events</h3>-->
+                    <!--<h3>Manage Events</h3>-->
+                    <h3>Search</h3>
+
+                    <div project-role="editor">
+                        <button style="margin-top: -10px; margin-left: 10px;" class="right btn" ng-click="backToEventsPage()">Back to Documents page</button>
+                    </div>
+
+                    <hr />
+
+                    <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+                        <div id="olc-search-grid" class="ag-theme-blue gridStyle-small"></div>
+                    </div>
+
+                    <!--<div ng-show="subprojectList.length==0">No event records are associated with this project.</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

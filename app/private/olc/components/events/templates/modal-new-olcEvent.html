@@ -28,13 +28,45 @@
                     <div ng-bind-html="event_row['FileAttach'] | fileNamesFromString:this">&nbsp;</div>
                 </div>
 
-                <div class="header-label">Author</div>
+                <div class="header-label">Agency</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.Author" />
+                    <input type="text" class="form-control" ng-model="event_row.EventAgency" />
                 </div>
-                <div class="header-label">Author Agency</div>
+                <!--<div class="header-label">Author Agency</div>
+    <div class="header-value">
+        <input type="text" class="form-control" ng-model="event_row.AuthorAgency" />
+    </div>-->
+                <div class="header-label">Agency Division</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.AuthorAgency" />
+                    <input type="text" class="form-control" ng-model="event_row.AgencyDivision" />
+                </div>
+                <div class="header-label">Agency Location</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.EventAgencyLocation" />
+                </div>
+                <div class="header-label">Signatory Name</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SignatoryName" />
+                </div>
+                <div class="header-label">Signatory Title</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SignatoryTitle" />
+                </div>
+                <div class="header-label">Recipient Name</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.RecipientName" />
+                </div>
+                <div class="header-label">Recipient Title</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.RecipientTitle" />
+                </div>
+                <div class="header-label">Recipient Agency</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.RecipientAgency" />
+                </div>
+                <div class="header-label">Recipient Location</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.RecipientLocation" />
                 </div>
 
                 <div class="header-label">Boundary</div>
@@ -42,6 +74,14 @@
                     <select multiple class="form-control" style="margin-top: 4px;" ng-model="event_row.Boundary" ng-change="selectBoundary()">
                         <option ng-repeat="boundary in getMetafield('Boundary')" value="{{boundary}}">{{boundary}}</option>
                     </select>
+                </div>
+                <div>
+                    <div ng-show="showOtherBoundary">
+                        <div class="header-label">Other Boundary</div>
+                        <div class="header-value">
+                            <input class="form-control" type="text" ng-model="event_row.OtherBoundary" />
+                        </div>
+                    </div>
                 </div>
 
                 <div class="header-label">Significant Area</div>
@@ -51,17 +91,57 @@
                     </select>
                 </div>
 
-                <div class="header-label">Miscelleneous Context</div>
+                <div class="header-label">Miscellaneous Context</div>
                 <div class="header-value">
-                    <select multiple class="form-control" style="margin-top: 4px;" ng-model="event_row.MiscelleneousContext" ng-change="selectMiscelleneousContext()">
-                        <option ng-repeat="context in getMetafield('MiscelleneousContext')" value="{{context}}">{{context}}</option>
+                    <select multiple class="form-control" style="margin-top: 4px;" ng-model="event_row.MiscellaneousContext" ng-change="selectMiscellaneousContext()">
+                        <option ng-repeat="context in getMetafield('MiscellaneousContext')" value="{{context}}">{{context}}</option>
                     </select>
 
                 </div>
 
+                <div class="header-label">Survey Number</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SurveyNumber" />
+                </div>
+                <div class="header-label">Survey Contract Number</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SurveyContractNumber" />
+                </div>
+                <div class="header-label">Surveyor Name</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SurveyorName" />
+                </div>
+                <div class="header-label">Survey Authorizing Agency</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.SurveyAuthorizingAgency" />
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0px;">
+                    <div class="header-label">Survey Date</div>
+                    <div class="header-value">
+                        <!--<input type="text" class="form-control" ng-model="event_row.SurveyDates" />-->
+                        <button class="right btn btn-xs" ng-click="addSurveyDate()" style="margin: 2px;  margin-right:20px;">+</button>
+                        <button class="right btn btn-xs" ng-click="removeSurveyDate()" style="margin: 2px; ">-</button>
+                        <md-datepicker class="form-control" ng-model="event_row.SurveyDate" md-hide-icons="triangle" md-placeholder="Enter date" ng-blur="calculateDateOfResponse()"></md-datepicker>
+                    </div>
+                </div>
+                <div class="header-label">Selected Survey Dates</div>
+                <div class="header-value">
+                    <!--<textarea class="form-control" type="text" rows="4"  readonly ng-model="row.txtCollaborators"  ng-focus="enteredSelectedCollaborators()" ng-keydown="checkKeyPress($event)"></textarea>-->
+                    <textarea class="form-control" type="text" rows="4" readonly ng-model="event_row.SurveyDates"></textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0px;">
+                    <div class="header-label">Description Item</div>
+                    <div class="header-value">
+                        <button class="right btn btn-xs" ng-click="addDescription()" style="margin: 2px;  margin-right:20px;">+</button>
+                        <button class="right btn btn-xs" ng-click="removeDescription()" style="margin: 2px; ">-</button>
+                        <input type="text" class="form-control" ng-model="event_row.DescriptionItem" />
+                    </div>
+                </div>
                 <div class="header-label">Description</div>
                 <div class="header-value">
-                    <textarea type="text" rows="4" class="form-control" ng-model="event_row.Description"></textarea>
+                    <textarea type="text" rows="4" class="form-control" readonly ng-model="event_row.Description"></textarea>
                 </div>
 
                 <div class="header-label">TwnRngSec</div>
@@ -74,6 +154,11 @@
                     <input type="text" class="form-control" ng-model="event_row.NumberItems" />
                 </div>
 
+                <div class="header-label">Page Number</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.PageNumber" />
+                </div>
+
                 <div class="header-label">Date Discovered</div>
                 <div class="header-value">
                     <md-datepicker class="form-control" ng-model="event_row.DateDiscovered" md-hide-icons="triangle" md-placeholder="Enter date"></md-datepicker>
@@ -81,7 +166,10 @@
 
                 <div class="header-label">Person Discovered</div>
                 <div class="header-value">
-                    <input type="text" class="form-control" ng-model="event_row.PersonDiscovered" />
+                    <select class="form-control" ng-model="event_row.PersonDiscovered" ng-change="selectPersonDiscovered()">
+                        <option ng-repeat="context in getMetafield('PersonDiscovered')" value="{{context}}">{{context}}</option>
+                    </select>
+
                 </div>
 
                 <div class="header-label">Reference</div>
@@ -89,9 +177,15 @@
                     <textarea type="text" rows="4" class="form-control" ng-model="event_row.Reference"></textarea>
                 </div>
 
-                <div class="header-label">Comments</div>
+                <!--<div class="header-label">Comments</div>-->
+                <div class="header-label">Tasks</div>
                 <div class="header-value">
-                    <textarea type="text" rows="4" class="form-control" ng-model="event_row.EventComments"></textarea>
+                    <!--<textarea type="text" rows="4" class="form-control" ng-model="event_row.EventComments"></textarea>-->
+                    <textarea type="text" rows="4" class="form-control" ng-model="event_row.Tasks"></textarea>
+                </div>
+                <div class="header-label">Archive Id</div>
+                <div class="header-value">
+                    <input type="text" class="form-control" ng-model="event_row.EventArchiveId" />
                 </div>
             </form>
         </div>
@@ -123,6 +217,7 @@
 
     <div ng-show="showCancelButton" class="modal-footer" style="margin-top: 30px;">
         <button class="btn btn-warning right" style="margin: 10px;" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-warning right" style="margin: 10px;" ng-click="migrateEvent()">Migrate</button>
         <button project-role="editor" class="btn btn-primary right" style="margin: 10px;" ng-click="save()">Save</button>
         <div><img ng-show="loading" src="assets/images/FishLoading.gif" />{{ReadyToClose}}</div>
 

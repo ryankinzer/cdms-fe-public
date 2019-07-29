@@ -1,0 +1,38 @@
+﻿<div class="modal-header">
+    <h3 ng-show="mode=='edit'">Edit Parcel</h3>
+    <h3 ng-show="mode=='new'">Add Parcel</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <form novalidate class="row-form modal-form" name="headerForm">
+
+            <div class="header-label">Search:</div>
+            <div class="header-value">
+                <input type="text" ng-change="parcelEntryUpdate()" placeholder="Enter parcel id" ng-model="parcelEntry" />
+            </div>
+
+            <div class="header-label">Parcel Id:</div>
+            <div class="header-value">{{parcel_modal.ParcelId}}&nbsp;</div>
+
+            <div class="header-label">PLSS:</div>
+            <div class="header-value">{{parcel_modal.PLSS_Label}}&nbsp;</div>
+
+            <div class="header-label">Zones:</div>
+            <div class="header-value">{{parcel_modal.ZoneCode.replace(':',', ')}}&nbsp;</div>
+
+            <div style="margin-top: 10px" ng-show="parcelMatches != ''">
+                <div class="header-label">Similar Results:</div>
+                <div class="header-value"><textarea disabled cols="20" rows="6">{{parcelMatches}}</textarea></div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button ng-disabled="row.validationErrors.length>0" style="margin-top: 30px;" class="right btn" ng-click="save()">Save Changes</button>
+
+    <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
+
+</div>
+

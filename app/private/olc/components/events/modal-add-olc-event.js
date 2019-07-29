@@ -6,13 +6,15 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
         console.log("Inside ModalAddOlcEventCtrl...");
 
+        $scope.filesWithErrors = 0;
+
         $scope.setupOlcMetaFields = function () {
 
             // row.column (from database) and metadata name
             $scope.olcMetaFieldColumns = {
                 "Boundary": "Boundary",
                 "SignificantArea": "Significant Area",
-                "MiscelleneousContext": "Miscelleneous Context"
+                "MiscellaneousContext": "Miscellaneous Context"
             };
 
             if ($scope.project.MetaFields)
@@ -57,14 +59,15 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         //mixin the properties and functions to enable the modal file chooser for this controller...
         modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.viewSubproject.Files); //"EventFiles"
 
+        var intCount = 0;
         if ((typeof $scope.viewSubproject !== 'undefined') && ($scope.viewSubproject !== null))
             $rootScope.subprojectId = $scope.viewSubproject.Id;
         {
-            $scope.setupOlcMetaFields()
+            $scope.setupOlcMetaFields();
         }
         var foundIt = false;
 
-        // If even_row.Id is greater than 0, we're editing...
+        // If event_row.Id is greater than 0, we're editing...
         if ($scope.event_row.Id > 0) {
             $scope.header_message = "Edit Event for Catalog Number " + $scope.viewSubproject.CatalogNumber;
         }
@@ -77,7 +80,11 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
 
         if ((typeof $scope.event_row.Boundary !== 'undefined') && ($scope.event_row.Boundary !== null)) {
 
-            $scope.event_row.Boundary = JSON.parse($scope.event_row.Boundary);
+            try {
+                $scope.event_row.Boundary = JSON.parse($scope.event_row.Boundary);
+            } catch (e) {
+                console.log("$scope.event_row.Boundary is already parsed into JSON...");
+            }
             //$scope.event_row.strBoundaries = "";
 
             //$scope.event_row.Boundary.forEach(function (boundary) {
@@ -86,14 +93,89 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             
         }
 
-        if ((typeof $scope.event_row.SignificantArea !== 'undefined') && ($scope.event_row.SignificantArea !== null)) {
+        if ((typeof $scope.event_row.OtherBoundary !== 'undefined') && ($scope.event_row.OtherBoundary !== null)) {
 
-            $scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+            $scope.showOtherBoundary = true;
+        }
+        else {
+            $scope.showOtherBoundary = false;
         }
 
-        if ((typeof $scope.event_row.MiscelleneousContext !== 'undefined') && ($scope.event_row.MiscelleneousContext !== null)) {
+        if ((typeof $scope.event_row.SignificantArea !== 'undefined') && ($scope.event_row.SignificantArea !== null)) {
 
-            $scope.event_row.MiscelleneousContext = JSON.parse($scope.event_row.MiscelleneousContext);
+            //$scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+            try {
+                $scope.event_row.SignificantArea = JSON.parse($scope.event_row.SignificantArea);
+            } catch (e) {
+                console.log("$scope.event_row.SignificantArea is already parsed into JSON...");
+            }
+        }
+
+        if ((typeof $scope.event_row.MiscellaneousContext !== 'undefined') && ($scope.event_row.MiscellaneousContext !== null)) {
+
+            //$scope.event_row.MiscellaneousContext = JSON.parse($scope.event_row.MiscellaneousContext);
+            try {
+                $scope.event_row.MiscellaneousContext = JSON.parse($scope.event_row.MiscellaneousContext);
+            } catch (e) {
+                console.log("$scope.event_row.MiscellaneousContext is already parsed into JSON...");
+            }
+        }
+
+        if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null)) {
+            if (!isArray($scope.event_row.SurveyDates))
+                $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.SurveyDates);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strSurveyDates = convertStringArrayToNormalString($scope.event_row.SurveyDates);
+
+                $scope.event_row.SurveyDates = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strSurveyDates);
+            }
+        }
+
+        if ((typeof $scope.event_row.Reference !== 'undefined') && ($scope.event_row.Reference !== null)) {
+            if (!isArray($scope.event_row.Reference))
+                $scope.event_row.Reference = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Reference);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strReference = convertStringArrayToNormalString($scope.event_row.Reference);
+
+                $scope.event_row.Reference = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strReference);
+            }
+        }
+
+        if ((typeof $scope.event_row.Tasks !== 'undefined') && ($scope.event_row.Tasks !== null)) {
+            if (!isArray($scope.event_row.Tasks))
+                $scope.event_row.Tasks = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Tasks);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strTasks = convertStringArrayToNormalString($scope.event_row.Tasks);
+
+                $scope.event_row.Tasks = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strTasks);
+            }
+        }
+
+        if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null)) {
+            //$scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Description);
+
+            if (!isArray($scope.event_row.Description))
+                $scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.Description);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strDescription = convertStringArrayToNormalString($scope.event_row.Description);
+
+                $scope.event_row.Description = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strDescription);
+            }
+        }
+
+        if ((typeof $scope.event_row.TwnRngSec !== 'undefined') && ($scope.event_row.TwnRngSec !== null)) {
+            if (!isArray($scope.event_row.TwnRngSec))
+                $scope.event_row.TwnRngSec = convertStringWithSeparatorsToStringWithSeparatorsAndReturns($scope.event_row.TwnRngSec);
+            else {
+                // If tmpArySurveyDates is an array (a,b,c), we need it to be a string like this (a;b;c;) to display properly.
+                var strTwnRngSec = convertStringArrayToNormalString($scope.event_row.TwnRngSec);
+
+                $scope.event_row.TwnRngSec = convertStringWithSeparatorsToStringWithSeparatorsAndReturns(strTwnRngSec);
+            }
         }
 
         //console.log("$scope.event_row is next...");
@@ -106,6 +188,17 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         //callback that is called from modalFile to do the actual file removal (varies by module)
         $scope.modalFile_doRemoveFile = function (file_to_remove, saveRow) {
             return SubprojectService.deleteOlcEventFile($scope.projectId, $scope.subprojectId, saveRow.Id, file_to_remove);
+        };
+
+        $scope.selectBoundary = function () {
+            $scope.showOtherBoundary = false;
+
+            // Walk the list of options the user has selected, and see if one of them is Other.
+            $scope.event_row.Boundary.forEach(function (item) {
+                if (item === "Other")
+                    $scope.showOtherBoundary = true;
+            });
+
         };
 
         $scope.addBoundary = function () {
@@ -133,66 +226,12 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             console.log("-B clicked...");
             console.log("$scope.event_row.strBoundaries before stripping = " + $scope.event_row.strBoundaries);
 
-            // First, strip out the new line characters.
-            $scope.event_row.strBoundaries = $scope.event_row.strBoundaries.replace(/(\r\n|\r|\n)/gm, "");
-            console.log("$scope.event_row.strBoundaries after stripping = " + $scope.event_row.strBoundaries);
+            $scope.event_row.strBoundaries = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.strBoundaries);
 
-            // Note, we still have the trailing semicolon.
-            // Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
             var aryBoundaries = $scope.event_row.strBoundaries.split(";");
 
-            // Next, get rid of that trailing semicolon.
-            aryBoundaries.splice(-1, 1);
-            console.dir(aryBoundaries);
+            $scope.event_row.strBoundaries = removeStringItemFromList($scope.event_row.Boundary, aryBoundaries);
 
-            // Now we can continue with the delete action.
-            var aryBoundariesLength = aryBoundaries.length;
-
-            // First check if the user entered an "other" funder.
-            //if (($scope.row.Collaborators === "Other") && ($scope.row.OtherCollaborators)) {
-            //    for (var i = 0; i < aryCollaboratorsLength; i++) {
-            //        console.log("aryCollaborators[i] = " + aryCollaborators[i]);
-            //        if (aryCollaborators[i].indexOf($scope.row.OtherCollaborators) > -1) {
-            //            console.log("Found the item...");
-            //            aryCollaborators.splice(i, 1);
-            //            console.log("Removed the item.");
-
-            //            $scope.row.strCollaborators = "";
-            //            console.log("Wiped $scope.row.strCollaborators...");
-
-            // Rebuild the string now, adding the semicolon and newline after every line.
-            //            angular.forEach(aryCollaborators, function (item) {
-            //                $scope.row.strCollaborators += item + ";\n";
-            //                console.log("Added item...");
-            //            });
-
-            // Since we found the item, skip to then end to exit.
-            //            i = aryCollaboratorsLength;
-            //        }
-            //    }
-            //}
-            //else {
-            for (var i = 0; i < aryBoundariesLength; i++) {
-                console.log("aryBoundaries[i] = " + aryBoundaries[i]);
-                if (aryBoundaries[i].indexOf($scope.event_row.Boundary) > -1) {
-                    console.log("Found the item...");
-                    aryBoundaries.splice(i, 1);
-                    console.log("Removed the item.");
-
-                    $scope.event_row.strBoundaries = "";
-                    console.log("Wiped $scope.event_row.strBoundaries...");
-
-                    // Rebuild the string now, adding the semicolon and newline after every line.
-                    angular.forEach(aryBoundaries, function (item) {
-                        $scope.event_row.strBoundaries += item + ";\n";
-                        console.log("Added item...");
-                    });
-
-                    // Since we found the item, skip to then end to exit.
-                    i = aryBoundariesLength;
-                }
-            }
-            //}
             console.log("Finished.");
         };
 
@@ -268,6 +307,47 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 console.log("saveRow.DateDiscovered = " + saveRow.DateDiscovered);
             }
 
+            if ((typeof saveRow.SurveyDates !== 'undefined') && (saveRow.SurveyDates !== null)) {
+                console.log("saveRow.SurveyDates = " + saveRow.SurveyDates);
+
+                // First, strip out the new line characters.
+                //saveRow.SurveyDates = saveRow.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+                saveRow.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString(saveRow.SurveyDates);
+                console.log("saveRow.SurveyDates after stripping = " + saveRow.SurveyDates);
+
+                // We don't want to send this, so delete it.
+                saveRow.SurveyDate = undefined;
+            }
+
+            if ((typeof saveRow.Description !== 'undefined') && (saveRow.Description !== null)) {
+                console.log("saveRow.Description = " + saveRow.Description);
+
+                // First, strip out the new line characters.
+                //saveRow.SurveyDates = saveRow.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+                saveRow.Description = convertStringWithSeparatorsAndReturnsToNormalString(saveRow.Description);
+                console.log("saveRow.Description after stripping = " + saveRow.Description);
+
+                // We don't want to send this, so delete it.
+                saveRow.DescriptionItem = undefined;
+            }
+
+            if ((typeof saveRow.TwnRngSec !== 'undefined') && (saveRow.TwnRngSec !== null)) {
+                console.log("saveRow.TwnRngSec = " + saveRow.TwnRngSec);
+
+                // If the TwnRngSec does not end with a ";", add it to the text.
+                saveRow.TwnRngSec = saveRow.TwnRngSec.trim();
+                if (saveRow.TwnRngSec.substring(saveRow.TwnRngSec.length) !== ";")
+                    saveRow.TwnRngSec += ";";
+
+                // First, strip out the new line characters.
+                //saveRow.SurveyDates = saveRow.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+                saveRow.Description = convertStringWithSeparatorsAndReturnsToNormalString(saveRow.Description);
+                console.log("saveRow.Description after stripping = " + saveRow.Description);
+
+                // We don't want to send this, so delete it.
+                saveRow.DescriptionItem = undefined;
+            }
+
             //saveRow.Boundaries = JSON.stringify(saveRow.Boundaries);
             //console.log("saveRow.Boundaries = " + saveRow.Boundaries);
 
@@ -316,13 +396,15 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
                 console.log("saveRow.SignificantArea = " + saveRow.SignificantArea);
             }
 
-            if ((typeof saveRow.MiscelleneousContext !== 'undefined') && (saveRow.MiscelleneousContext !== null)) {
-                saveRow.MiscelleneousContext = JSON.stringify(saveRow.MiscelleneousContext);
-                console.log("saveRow.MiscelleneousContext = " + saveRow.MiscelleneousContext);
+            if ((typeof saveRow.MiscellaneousContext !== 'undefined') && (saveRow.MiscellaneousContext !== null)) {
+                saveRow.MiscellaneousContext = JSON.stringify(saveRow.MiscellaneousContext);
+                console.log("saveRow.MiscellaneousContext = " + saveRow.MiscellaneousContext);
             }
 
             console.log("saveRow is next, after processing dates...");
             console.dir(saveRow);
+
+            //throw ("Stopping right here...");
 
             // Response Type:  If the user selected Other, we must use the name they supplied in OtherResponseType.
             //if ((saveRow.OtherResponseType) && (typeof saveRow.OtherResponseType !== 'undefined'))
@@ -372,6 +454,24 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             }
         };
 
+        $scope.modalFile_closeParentItem = function () {
+            console.log("Inside $scope.modalFile_closeParentItem...");
+
+            if ($scope.fileCount === 0) {
+                $scope.loading = false; // Stop the fish spinner.
+                $scope.showCloseButton = true;
+                $scope.showCancelButton = false;
+                $scope.showFormItems = false;
+            }
+
+            if ($scope.filesWithErrors === 0)
+                $scope.UploadUserMessage = "All actions successful.";
+            else
+                $scope.UploadUserMessage = "There was a problem moving a file.  Please try again or contact the Helpdesk if this issue continues.";
+
+            $scope.close();
+        };
+
         $scope.close = function () {
             console.log("Inside $scope.close...");
             $modalInstance.dismiss();
@@ -380,11 +480,142 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
         $scope.cancel = function () {
 
             if ($scope.originalExistingFiles && $scope.originalExistingFiles.hasOwnProperty($scope.file_field)) {
-                $scope.ce_row.EventFiles = $scope.originalExistingFiles[$scope.file_field];
+                $scope.event_row.EventFiles = $scope.originalExistingFiles[$scope.file_field];
                 //console.log("setting EventFiles to " + $scope.originalExistingFiles[$scope.file_field]);
             }
 
+            if ((typeof $scope.event_row.SurveyDates !== 'undefined') && ($scope.event_row.SurveyDates !== null))
+                if (isArray($scope.event_row.SurveyDates)) 
+                    $scope.event_row.SurveyDates = convertStringArrayToNormalString($scope.event_row.SurveyDates);
+                else
+                    $scope.event_row.SurveyDates = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.SurveyDates);
+
+            if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null))
+                $scope.event_row.Description = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.Description);
+
+
             $modalInstance.dismiss();
+        };
+
+        $scope.migrateEvent = function () {
+            console.log("Inside migrateEvent...")
+            console.log("$scope is next...");
+            console.dir($scope.event_row);
+
+            $rootScope.SubprojectId = $scope.SubprojectId = $scope.event_row.SubprojectId;
+            //console.log("ok subproject set: ");
+            //console.dir($scope.viewSubproject);
+
+            //$scope.event_row = event_row;
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/olc/components/events/templates/modal-migrate-olc-event.html',
+                controller: 'OlcMigrateEventCtrl',
+                scope: $scope //very important to pass the scope along...
+            });
+        };
+
+        $scope.addDescription = function () {
+            console.log("+D clicked...");
+            console.log("$scope.row.DescriptionItem = " + $scope.event_row.DescriptionItem);
+
+            if ((typeof $scope.event_row.DescriptionItem === 'undefined') || ($scope.event_row.DescriptionItem === null))
+                return;
+
+            // We will add a new line at the end, so that the string presents well on the page.
+            if ((typeof $scope.event_row.Description === 'undefined') || ($scope.event_row.Description === null))
+                $scope.event_row.Description = "";
+            
+            $scope.event_row.Description += $scope.event_row.DescriptionItem + ";\n";
+
+            console.log("$scope.event_row.Description = " + $scope.event_row.Description);
+        };
+
+        $scope.removeDescription = function () {
+            console.log("-D clicked...");
+            console.log("$scope.event_row.Description before stripping = " + $scope.event_row.Description);
+
+            $scope.event_row.Description = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.Description);
+
+            var aryDescription = $scope.event_row.Description.split(";");
+
+            $scope.event_row.Description = removeStringItemFromList($scope.event_row.DescriptionItem, $scope.event_row.Description);
+
+        };
+
+        $scope.addSurveyDate = function () {
+            console.log("+SD clicked...");
+            console.log("$scope.row.SurveyDate = " + $scope.event_row.SurveyDate);
+
+            if ((typeof $scope.event_row.SurveyDate === 'undefined') || ($scope.event_row.SurveyDate === null))
+                return;
+
+            if ((typeof $scope.event_row.SurveyDates === 'undefined') || ($scope.event_row.SurveyDates === null))
+                $scope.event_row.SurveyDates = "";
+
+            // We will add a new line at the end, so that the string presents well on the page.
+            $scope.event_row.SurveyDates += getDateFromDate($scope.event_row.SurveyDate) + ";\n";
+
+            console.log("$scope.event_row.SurveyDates = " + $scope.event_row.SurveyDates);
+        };
+
+        $scope.removeSurveyDate = function () {
+            console.log("-SD clicked...");
+            console.log("$scope.row.SurveyDates before stripping = " + $scope.event_row.SurveyDates);
+
+            // First, strip out the new line characters.
+            $scope.event_row.SurveyDates = $scope.event_row.SurveyDates.replace(/(\r\n|\r|\n)/gm, "");
+            console.log("$scope.event_row.SurveyDates after stripping = " + $scope.event_row.SurveyDates);
+
+            // Note, we still have the trailing semicolon.
+            // Convert the string to an array, so that we can easily remove the applicable funding agency from the string.
+            var arySurveyDates = $scope.event_row.SurveyDates.split(";");
+
+            // Next, get rid of that trailing semicolon.
+            arySurveyDates.splice(-1, 1);
+            console.dir(arySurveyDates);
+
+            // Now we can continue with the delete action.
+            var arySurveyDatesLength = arySurveyDates.length;
+
+            for (var i = 0; i < arySurveyDatesLength; i++) {
+                console.log("arySurveyDates[i] = " + arySurveyDates[i]);
+                var utcOffset = moment().utcOffset();
+                var searchDate = null;
+
+                if (utcOffset === -420) {
+
+                    searchDate = moment($scope.event_row.SurveyDate).add(1,'days').format('YYYY-MM-DD');
+                }
+                else if (utcOffset === -480)
+                    searchDate = moment($scope.event_row.SurveyDate).add(1080, 'minutes').format('YYYY-MM-DD');
+
+                searchDate = getDateFromDate(searchDate);
+
+                console.log("searchDate = " + searchDate);
+                //var searchDate = getDateFromDate($scope.event_row.SurveyDate);
+                var listDate = arySurveyDates[i];
+
+                //if (arySurveyDates[i].indexOf(moment($scope.event_row.SurveyDate, "YYYY-MM-DD")) > -1) {
+                if (listDate.indexOf(searchDate) > -1) {
+                    console.log("Found the item...");
+                    arySurveyDates.splice(i, 1);
+                    console.log("Removed the item.");
+
+                    $scope.event_row.SurveyDates = "";
+                    console.log("Wiped $scope.event_row.SurveyDates...");
+
+                    // Rebuild the string now, adding the semicolon and newline after every line.
+                    angular.forEach(arySurveyDates, function (item) {
+                        $scope.event_row.SurveyDates += item + ";\n";
+                        console.log("Added item...");
+                    });
+
+                    // Since we found the item, skip to then end to exit.
+                    i = arySurveyDatesLength;
+                }
+            }
+            console.log("Finished.");
         };
 
     }

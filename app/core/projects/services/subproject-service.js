@@ -108,6 +108,26 @@ projects_module.factory('GetOlcSubprojects', ['$resource', function ($resource) 
     return $resource(serviceUrl + '/api/v1/olcsubproject/getolcsubprojects');
 }]);
 
+//projects_module.factory('GetOlcSubprojectsForSearch', ['$resource', function ($resource) {
+//    return $resource(serviceUrl + '/api/v1/olcsubproject/getolcsubprojectsforsearch');
+//}]);
+
+projects_module.factory('QueryOlcSubprojectsForSearch', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/olcsubproject/queryolcsubprojectsforsearch', {}, {
+        save: { method: 'POST', isArray: true }
+    });
+}]);
+
+//datasets_module.factory('QueryActivitiesAction', ['$resource', function ($resource) {
+//    return $resource(serviceUrl + '/api/v1/query/querydatasetactivities', {}, {
+//        save: { method: 'POST', isArray: true }
+//    });
+//}]);
+
+projects_module.factory('MigrateOlcEvent', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/olcsubproject/migrateolcevent');
+}]);
+
 /*
 * subprojects service (includes Project factory which is defined in projects-service.js)
 */
@@ -129,12 +149,14 @@ projects_module.service('SubprojectService', ['$q',
     'GetHabSubproject',
     'GetHabSubprojects',
     'GetOlcSubprojects',
+    'QueryOlcSubprojectsForSearch',
     'RemoveSubproject',
     'RemoveHabSubproject',
     'RemoveOlcSubproject',
     'RemoveCorrespondenceEvent',
     'RemoveOlcEvent',
     'RemoveHabitatItem',
+    'MigrateOlcEvent',
 
     function ($q,
         ProjectSubprojects,
@@ -154,12 +176,14 @@ projects_module.service('SubprojectService', ['$q',
         GetHabSubproject,
         GetHabSubprojects,
         GetOlcSubprojects,
+        QueryOlcSubprojectsForSearch,
         RemoveSubproject,
         RemoveHabSubproject,
         RemoveOlcSubproject,
         RemoveCorrespondenceEvent,
         RemoveOlcEvent,
-        RemoveHabitatItem) {
+        RemoveHabitatItem,
+        MigrateOlcEvent) {
 
         var service = {
 
@@ -204,6 +228,14 @@ projects_module.service('SubprojectService', ['$q',
                 console.log("Inside subproject-service, getOlcSubprojects");
                 //console.log("id = " + id);
                 return GetOlcSubprojects.query();
+            },
+            getOlcSubprojectsForSearch: function (datasetId) {
+                console.log("Inside subproject-service, getOlcSubprojectsForSearch");
+                //console.log("id = " + id);
+                var searchCriteria = {
+                    DatasetId:  datasetId
+                }
+                return QueryOlcSubprojectsForSearch.save(searchCriteria);
             },
             saveSubproject: function (projectId, subproject, saveResults) {
                 console.log("Inside subproject-service, saveSubproject...");
@@ -320,7 +352,27 @@ projects_module.service('SubprojectService', ['$q',
                 console.log("Inside getProjectSubprojects, projectId = " + projectId);
                 //this.getProject(projectId); //set our local project to the one selected
                 return ProjectSubprojects.save({ ProjectId: projectId });
+            },
+            migrateOlcEvent: function (projectId, subprojectId, eventRow, fileNames) {
+                console.log("Inside migrateOlcEvent...");
+                console.log("projectId = " + projectId);
+                console.log("subprojectId = " + subprojectId);
+                //console.log("eventRow is next...");
+                //console.dir(eventRow);
+
+                //this.getProject(projectId); //set our local project to the one selected
+                return MigrateOlcEvent.save({ ProjectId: projectId, SubprojectId: subprojectId, OlcEvent: eventRow, FileNames: fileNames});
             }
+            /*
+            saveOlcEvent: function (projectId, subprojectId, olcEvent) {
+                console.log("Inside saveOlcEvent...")
+                console.log("projectId = " + projectId);
+                console.log("subprojectId = " + subprojectId);
+                console.log("olcEvent is next...");
+                console.dir(olcEvent);
+                return SaveOlcEvent.save({ ProjectId: projectId, SubprojectId: subprojectId, OlcEvent: olcEvent });
+            },
+            */
 
         };
 

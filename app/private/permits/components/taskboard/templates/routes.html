@@ -1,0 +1,26 @@
+﻿
+<h2>Permit Review Routing Taskboard</h2>
+
+<div class="right btn-group btn-group-toggle" style="margin-top: -45px;">
+    <label class="btn btn-sm btn-secondary" ng-class="{ active : clickselect == 'allstaff' }">
+        <input ng-change="changeClickSelect()" type="radio" ng-model="clickselect" value="allstaff" class="hide"> All staff
+    </label>
+    <label class="btn btn-sm btn-secondary" ng-class="{ active : clickselect == 'mine' }">
+        <input ng-change="changeClickSelect()" type="radio" ng-model="clickselect" value="mine" class="hide"> Assigned to me
+    </label>
+</div>
+
+<div style="margin: 10px; float: right;">
+    <button class="btn btn-sm" ng-click="refresh()">Refresh</button>
+</div>
+
+<div style="margin-top: 40px;" ng-show="permits.length > 0">
+    Permits displayed: <b>{{permitRoutesGrid.api.getDisplayedRowCount()}}</b><br /><br />
+</div>
+<div class="alert alert-primary" role="alert" ng-hide="permits">
+    Good things come to those who wait... (loading...)
+</div>
+
+<div id="permit-routes-grid" style="height: 500px; width:100%;" class="ag-theme-blue vertical-text"></div>
+
+    

@@ -172,8 +172,11 @@ common_module.service('ServiceUtilities', ['Logger', '$window', '$route',
                 console.log("a_date is next...");
                 console.dir(a_date);
 
-                if (a_date.getFullYear() < 1950)
-                    a_date.setFullYear(a_date.getFullYear() + 100);
+                // If an 2-digit year comes in, let's say 17 for 2017, the system will default 17 to 1917 instead.
+                // Therefore, the idea was to just add 100 years to the number, to put it into the correct century.
+                // TODO: better way to fix this?
+                //if (a_date.getFullYear() < 1950)
+                //    a_date.setFullYear(a_date.getFullYear() + 100);
 
                 var s_utc = a_date.getFullYear() +
                     '-' + this.padNumber(a_date.getMonth() + 1) +

@@ -660,7 +660,7 @@ table.metadata td
     white-space: normal;
 }
 
-.event-file-list ul, .event-link-list ul {
+.event-file-list ul, .event-link-list ul, .event-item-list ul{
     padding-left: 15px;
     list-style-type: circle;
 }
@@ -851,3 +851,27 @@ margin-left: -8px !important;
 .btn:active, .btn.active {
     background-color: #da9c34 !important;
 }
+
+legend.bump-over {
+    margin-left: 35px;
+    
+}
+
+.margin-5 {
+    margin: 5px;
+}
+
+.checkbox-fix .header-value {
+
+    margin-left: -60px !important;
+
+}
+
+.checkbox-fix .checkbox-itemlist {
+    
+    margin-top: -20px;
+    border: none;
+
+}
+
+
