@@ -81,7 +81,7 @@
                                                     <td>{{status.RequestDate | date: shortDate}}</td>
                                                     <td>
                                                         <span ng-if="status.RequestDate && !status.ResponseDate">&#9898</span>
-                                                        <span ng-if="status.ResponseDate && status.ResponseDate">&#9899</span>
+                                                        <span ng-if="status.RequestDate && status.ResponseDate">&#9899</span>
                                                     </td>
                                                     <td>{{status.Comments}}</td>
                                                 </tr>
@@ -90,11 +90,11 @@
                                                     <td>Fee Status</td>
                                                     <td>
                                                         <span ng-if="row.FeeNotificationDate && !row.FeePaymentDate">{{row.FeeNotificationDate | date :shortDate}}</span>
-                                                        <span ng-if="row.FeeNotificationDate && row.FeePaymentDate">{{row.FeePaymentDate | date :shortDate}}</span>
+                                                        <span ng-if="row.FeePaymentDate">{{row.FeePaymentDate | date :shortDate}}</span>
                                                     </td>
                                                     <td>
                                                         <span ng-if="row.FeeNotificationDate && !row.FeePaymentDate">&#9898</span>
-                                                        <span ng-if="row.FeeNotificationDate && row.FeePaymentDate">&#9899</span>
+                                                        <span ng-if="row.FeePaymentDate">&#9899</span>
                                                     </td>
                                                     <td><span ng-if="row.Fee">${{row.Fee}}</span></td>
                                                 </tr>
