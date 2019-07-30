@@ -15,6 +15,7 @@
         $scope.PermitFiles = [];
         $scope.ParcelHistory = [];
         $scope.PermitTypes = [];
+        $scope.PermitStatus = [];
 
         $scope.refreshingZones = false;
 
@@ -208,7 +209,7 @@
 
                 $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
                 $scope.permitsGrid.selectedNode = $scope.permitsGrid.api.getSelectedNodes()[0];
-                $('#tab-basicinfo').tab('show'); //default to the "Permit Details" tab when select a different permit
+                $('#tab-status').tab('show'); //default to the "Permit Status" tab when select a different permit
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                 //console.dir($scope.row);
                 if ($scope.row)
@@ -676,6 +677,8 @@
             $scope.PermitParcels = PermitService.getPermitParcels(Id);
             $scope.PermitEvents = PermitService.getPermitEvents(Id);
             $scope.PermitFiles = PermitService.getPermitFiles(Id);
+            $scope.PermitStatus = [];
+            $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
 
             $scope.PermitContacts.$promise.then(function () {
                 $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
@@ -692,14 +695,49 @@
             $scope.PermitEvents.$promise.then(function () {
                 $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
                 $scope.permitEventsGrid.selectedItem = null;
+
+                //setup our handy array for the Status tab
+                $scope.row.ReviewsRequired.forEach(function (review) { 
+
+                    var route = {
+                        ItemType: review,
+                        EventType: 'Review',
+                    };
+
+                    $scope.PermitEvents.forEach(function (event) { 
+                        if (event.ItemType == review) //should only be one, really...
+                        {
+                            route.RequestDate = event.RequestDate;
+                            route.ResponseDate = event.ResponseDate;
+                            route.Comments = event.Comments;
+                        }
+                    });
+
+                    $scope.PermitStatus.push(route);
+                    
+                });
+
+                //and now once for inspections
+                $scope.PermitEvents.forEach(function (event) { 
+                    var route = {};
+                    if (event.EventType == "Inspection") 
+                    {
+                        route.RequestDate = event.RequestDate;
+                        route.ResponseDate = event.ResponseDate;
+                        route.Comments = event.Comments;
+                        route.EventType = event.EventType;
+                        route.ItemType = event.ItemType;
+
+                        $scope.PermitStatus.push(route);
+                    }
+                });
+
             });
 
             $scope.PermitFiles.$promise.then(function () {
                 $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
                 $scope.permitFilesGrid.selectedItem = null;
             });
-
-            $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
 
             $scope.row.Zones = [];
 
