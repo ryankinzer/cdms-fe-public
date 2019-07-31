@@ -218,19 +218,76 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
 
         $scope.addCriteria = function(){
-            
-            //possible values that are associative arrays will need to dereference from the value to the key
-            if ($scope.Criteria.ParamFieldSelect[0].PossibleValues && !Array.isArray($scope.Criteria.ParamFieldSelect[0].PossibleValues)) {
-                Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValues).forEach(function (key) { 
-                    if ($scope.Criteria.ParamFieldSelect[0].PossibleValues[key] == $scope.Criteria.Value)
-                        $scope.Criteria.Value = key; //convert it to the key instead of the value...
-                });
-            }           
+            // Notes...
+            // When we have a list of possible values, such as the sex of a fish (["Male","Female","Unknown"]),
+            // and the list is an array, we pick the item, for example "Male", and store the value in the backend.
+            // However, when the list is itself an object (Fishermen, or StreamName), the possible values are
+            // a collection of key value pairs, and the list is NOT an array.  In this case the Id gets stored
+            // in the backend, NOT the name on the screen.
 
+            // When the user selects only 1 item from the list, it gets converted to a number (below).
+            // However, when the user selects 2 or more items from the list, the value becomes an array.
+            // Therefore, we must walk this list first, and check each item against the PossibleValues.
+
+            //possible values that are associative arrays will need to dereference from the value to the key
+            /*if ($scope.Criteria.ParamFieldSelect[0].PossibleValues && !Array.isArray($scope.Criteria.ParamFieldSelect[0].PossibleValues)) {
+                Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValues).forEach(function (key) { 
+                    if ($scope.Criteria.ParamFieldSelect[0].PossibleValues[key] == $scope.Criteria.Value) {
+                        //$scope.Criteria.DisplayName = $scope.Criteria.Value;
+                        $scope.Criteria.Value = key; //convert it to the key instead of the value...
+                    }
+                });
+            }
+            */
+
+
+            if ($scope.Criteria.ParamFieldSelect[0].PossibleValues && !Array.isArray($scope.Criteria.ParamFieldSelect[0].PossibleValues)) {
+                if (Array.isArray($scope.Criteria.Value)) {
+                    var arySearchList = [];
+                    var aryDisplayList = [];
+                    
+                    $scope.Criteria.Value.forEach(function (item) {
+                        // If the item is already a number, just add it to the list.
+                        // Otherwise, we must convert it to a number.
+                        if (parseInt(item)) {
+                            //Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValuesList).forEach(function (key) {
+                            $scope.Criteria.ParamFieldSelect[0].PossibleValuesList.forEach(function (key) {
+                                if (key.Id === parseInt(item)) {
+                                    arySearchList.push(item);
+                                    aryDisplayList.push(key.Label);
+                                }
+                            });
+                        }
+                        else {
+                            Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValuesList).forEach(function (key) {
+                                if ($scope.Criteria.ParamFieldSelect[0].PossibleValues[key] === item) {
+                                    arySearchList.push(key);
+                                    aryDisplayList.push(item);
+                                }
+                            });
+                        }
+                    });
+
+                    $scope.Criteria.Value = "[" + arySearchList.join() + "]";
+                    $scope.Criteria.DisplayName = "[" + aryDisplayList.join() + "]";
+                }
+                else {
+                    Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValues).forEach(function (key) {
+
+                        if ($scope.Criteria.ParamFieldSelect[0].PossibleValues[key] == $scope.Criteria.Value) {
+                            //$scope.Criteria.DisplayName = $scope.Criteria.Value;
+                            $scope.Criteria.Value = key; //convert it to the key instead of the value...
+                        }
+
+                    });
+                }
+            }
+            
             $scope.criteriaList.push({
                 DbColumnName: 		$scope.Criteria.ParamFieldSelect[0].DbColumnName,
                 Id: 				$scope.Criteria.ParamFieldSelect[0].cdmsField.Id,
-                Value: 				$scope.Criteria.Value,
+                Value:              $scope.Criteria.Value,
+                DisplayName:        $scope.Criteria.DisplayName,
             });
 
             
@@ -239,6 +296,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             console.dir($scope.criteriaList);
         
             $scope.Criteria.Value = null;
+            $scope.Criteria.DisplayName = null;
         
             if($scope.AutoExecuteQuery)
                 $scope.executeQuery();
