@@ -10,9 +10,10 @@
 <input ng-disabled="doneUploading" type="file" ngf-select="onFileSelect($files)" multiple>
 
 <table ng-show="uploadFiles" class="table table-striped">
-    <tr><th>Filename</th><th>Results</th></tr>
+    <tr><th>Filename</th><th>File Type</th><th>Results</th></tr>
     <tr ng-repeat="file in uploadFiles">
     <td>{{file.name}}</td>
+    <td><select ng-model="file.Description"><option>Site Plan</option><option>Inspection Report</option><option>Other Document</option><option>Email message</option></select></td>
     <td>{{file.success}}</td>
     </tr>
 </table>
