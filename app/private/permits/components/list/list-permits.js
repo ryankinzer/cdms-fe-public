@@ -685,7 +685,11 @@
             $scope.PermitEvents = PermitService.getPermitEvents(Id);
             $scope.PermitFiles = PermitService.getPermitFiles(Id);
             $scope.PermitStatus = [];
+
             $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
+
+            if (!Array.isArray($scope.row.ReviewsRequired))
+                $scope.row.ReviewsRequired = [];
 
             $scope.PermitContacts.$promise.then(function () {
                 $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
