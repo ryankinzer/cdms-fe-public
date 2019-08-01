@@ -12,6 +12,10 @@ common_module.factory('GetMetadataEntities',  ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/metadata/GetMetadataEntities');
 }]);
 
+common_module.factory('GetMetadataProperty', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/metadata/GetMetadataProperty');
+}]);
+
 common_module.factory('GetLookupItems', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/lookuptable/getitems', {}, {
         query: { method: 'GET', isArray: true }
@@ -29,7 +33,6 @@ common_module.factory('SaveMetadataProperty', ['$resource', function ($resource)
 common_module.factory('DeleteMetadataProperty', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/metadata/DeleteMetadataProperty');
 }]);
-
 
 common_module.factory('SaveDatasetMetadata', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/metadata/setdatasetmetadata');
@@ -115,6 +118,7 @@ common_module.service('CommonService', ['$q',
     'SaveLookupTableItem',
     'GetMetadataPropertiesForEntity',
     'SaveFeedback',
+    'GetMetadataProperty',  
     function ($q,
         SaveDatasetMetadata,
         GetMetadataFor,
@@ -135,7 +139,8 @@ common_module.service('CommonService', ['$q',
         GetLookupItems,
         SaveLookupTableItem,
         GetMetadataPropertiesForEntity,
-        SaveFeedback
+        SaveFeedback,
+        GetMetadataProperty
 ) {
 
         var service = {
@@ -220,6 +225,10 @@ common_module.service('CommonService', ['$q',
 
             getAllInstruments: function () {
                 return GetAllInstruments.query();
+            },
+
+            getMetadataProperty: function(id) {
+                return GetMetadataProperty.query({ id: id });
             },
 
             getMetadataProperties: function (propertyTypeId) {

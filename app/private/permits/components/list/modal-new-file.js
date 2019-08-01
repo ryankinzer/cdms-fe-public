@@ -5,6 +5,8 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
 
         $scope.header_message = "Add file(s) to: " + $scope.row.ProjectName;
         $scope.doneUploading = false;
+        $scope.isUploading = false;
+        $scope.readyToUpload = false;
 
         //options from config.js
         $scope.SHARINGLEVEL_PRIVATE = SHARINGLEVEL_PRIVATE;
@@ -37,8 +39,6 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
             else
                 $scope.readyToUpload = false;
 
-
-
 		};
 
 		$scope.save = function(){
@@ -55,6 +55,7 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
 
             $scope.readyToUpload = false;
             $scope.doneUploading = false;
+            $scope.isUploading = true;
             
 			$scope.foundDuplicate = false;		
 			$scope.uploadErrorMessage = undefined;
@@ -83,18 +84,21 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
 						// headers: {'headerKey': 'headerValue'},
 						// withCredential: true,
 						data: {ProjectId: PERMIT_PROJECTID, Description: file.Description, SubprojectId: $scope.row.Id},
-						file: file,
+						file: file
 
-                        }).progress(function (evt) {
+					}).progress(function (evt) {
+					        console.dir(evt);
                             if (typeof config !== 'undefined')
                                 config.file.success = "Working: " + parseInt(100.0 * evt.loaded / evt.total) + "%";
-                        }).success(function (data, status, headers, config) {
+					}).success(function (data, status, headers, config) {
                             if (typeof config !== 'undefined')
                             {
                                 config.file.success = "Success";
                                 //console.dir(data);
                                 $scope.all_saved_files.push(data[0]);
                                 $scope.doneUploading = true;
+                                $scope.isUploading = false;
+                                console.log("--- done and success");
                             }
 						}).error(function(data, status, headers, config) {
 							$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
@@ -104,6 +108,8 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
 
                             $scope.readyToUpload = true;
                             $scope.doneUploading = true;
+                            $scope.isUploading = false;
+                            console.log("done and error...");
 
 						});
 				}

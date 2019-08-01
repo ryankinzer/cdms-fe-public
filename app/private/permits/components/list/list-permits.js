@@ -1,5 +1,5 @@
-﻿var list_permits = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'PermitService', 'GridService', 'DatasetService',
-    function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope, PermitService, GridService, DatasetService) {
+﻿var list_permits = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'PermitService', 'GridService', 'DatasetService','CommonService',
+    function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope, PermitService, GridService, DatasetService, CommonService) {
 
         $rootScope.inModule = "permits";
 
@@ -16,11 +16,17 @@
         $scope.ParcelHistory = [];
         $scope.PermitTypes = [];
         $scope.PermitStatus = [];
+        $scope.PermitFileTypes = [];
 
         $scope.refreshingZones = false;
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
+        $scope.PermitFileTypes = CommonService.getMetadataProperty(METADATA_PROPERTY_PERMIT_FILETYPES);
+
+        $scope.PermitFileTypes.$promise.then(function () {
+            $scope.PermitFileTypes = angular.fromJson($scope.PermitFileTypes.PossibleValues);
+        });
 
         $scope.dataset.$promise.then(function () {
             console.log(" -- dataset back -- ");
