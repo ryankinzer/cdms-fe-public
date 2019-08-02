@@ -10,15 +10,19 @@
 <input ng-disabled="doneUploading" type="file" ngf-select="onFileSelect($files)" multiple>
 
 <table ng-show="uploadFiles" class="table table-striped">
-    <tr><th>Filename</th><th>Results</th></tr>
+    <tr><th>Filename</th><th>File Type</th><th>Results</th></tr>
     <tr ng-repeat="file in uploadFiles">
     <td>{{file.name}}</td>
+    <td>
+        <select ng-model="file.Description" ng-options="value for (key,value) in PermitFileTypes">
+        </select>
+    </td>
     <td>{{file.success}}</td>
     </tr>
 </table>
   		
 </div>
 <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancel()">Close</button>
-    <button ng-show="readyToUpload" class="btn btn-primary" ng-click="save()">Upload</button>
+    <button ng-hide="isUploading" class="btn btn-warning" ng-click="cancel()">Close</button>
+    <button ng-show="readyToUpload && !doneUploading" class="btn btn-primary" ng-click="save()">Upload</button>
 </div>

@@ -134,6 +134,14 @@ permit_module.factory('GetPermitRoutes', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('GetPermitTypes', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/GetPermitTypes', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
+
+
+
 permit_module.service('PermitService', ['$q',
 
     'AllPermits',
@@ -161,6 +169,7 @@ permit_module.service('PermitService', ['$q',
     'GetPublicHearingPermits',
     'GetNotifications',
     'GetPermitRoutes',
+'GetPermitTypes',
   
     function ($q,
        
@@ -188,7 +197,8 @@ permit_module.service('PermitService', ['$q',
         GetPermitByPermitNumber,
         GetPublicHearingPermits,
         GetNotifications,
-        GetPermitRoutes
+        GetPermitRoutes,
+GetPermitTypes
       
     ) {
         var service = {
@@ -217,6 +227,10 @@ permit_module.service('PermitService', ['$q',
                 return GetPermitParcels.query({ Id: Id });
             },
             
+            getPermitTypes: function () { 
+                return GetPermitTypes.query();
+            },
+
             getPermitEvents:  function (Id) {
                 return GetPermitEvents.query({ Id: Id });
             },
