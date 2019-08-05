@@ -670,6 +670,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 templateUrl: 'app/private/olc/components/events/templates/modal-new-olcEvent.html',
                 controller: 'ModalAddOlcEventCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -876,6 +878,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 templateUrl: 'app/private/olc/components/events/templates/modal-create-subproject.html',
                 controller: 'ModalCreateOlcSubprojectCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -906,6 +910,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     templateUrl: 'app/private/olc/components/events/templates/modal-create-subproject.html',
                     controller: 'ModalCreateOlcSubprojectCtrl',
                     scope: scope, //very important to pass the scope along...
+                    backdrop: "static",
+                    keyboard: false
             });
         };
 
