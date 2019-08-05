@@ -50,7 +50,21 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     scope.olcDetailGridOptions.columnDefs.unshift({ colId: 'EditLinksDetail', cellRenderer: EditDetailLinksTemplate, width: 140, menuTabs: [] }); //add this column to the front of the detail grid cols
                 }
 
-                scope.subprojectList.$promise.then( function () {
+                scope.subprojectList.$promise.then(function () {
+                    scope.subprojectList.forEach(function (spItem) {
+                        var strSpFullName = getNameFromUserId(spItem.ByUserId, scope.Users);
+                        if (typeof strSpFullName === 'string') //backwards compatible - remove the quotes
+                            the_str = strSpFullName.replace(/"/g, '');
+                        spItem.SpByUserFullName = strSpFullName;
+
+                        spItem.OlcEvents.forEach(function (eItem) {
+                            var strEvFullName = getNameFromUserId(eItem.ByUserId, scope.Users);
+                            if (typeof strEvFullName === 'string') //backwards compatible - remove the quotes
+                                the_str = strEvFullName.replace(/"/g, '');
+                            eItem.EventByUserFullName = strEvFullName;
+                        });
+                    });
+
                     scope.olcAgGridOptions.api.setRowData(scope.subprojectList);
                     scope.refreshSubprojectLists();
                 });
@@ -96,7 +110,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             div.appendChild(delBtn);
             div.appendChild(document.createTextNode(" | "));
 
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Event';
+            //var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Event';
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Item';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 scope.openOlcEventForm(param.data, {});
@@ -145,7 +160,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             div.appendChild(delBtn);
             div.appendChild(document.createTextNode(" | "));
 
-            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+            //var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add';
+            var addBtn = document.createElement('a'); addBtn.href = '#'; addBtn.innerHTML = 'Add Item';
             addBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 scope.openOlcEventForm(subproject, {});
@@ -160,6 +176,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
         //grid columns for OLC events tab (master/subprojects)
         scope.olcAgColumnDefs = [  //in order the columns will display, by the way...
             { colId: 'EditLinksMaster', width: 180, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
+            //{ colId: 'EditLinksMaster', width: 225, cellRenderer: EditMasterLinksTemplate, menuTabs: [], hide: true },
             {
                 headerName: 'ID',
                 field: 'Id',
@@ -190,31 +207,41 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 menuTabs: [],
             },
 
-            { field: 'CatalogNumber', headerName: 'Catalog Number', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ field: 'CatalogNumber', headerName: 'Catalog Number', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'Agency', headerName: 'Agency', width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'AgencyLocation', headerName: 'AgencyLocation', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'RecordGroup', headerName: 'Record Group', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'SeriesTitle', headerName: 'Series Title', width: 150, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'FacilityHoused', headerName: 'Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'OtherFacilityHoused', headerName: 'Other Facility Housed', width: 150, menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Box', headerName: 'Box', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'BoxLocation', headerName: 'Box Location', width: 150, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'CategoryIndex', headerName: 'Category Index', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'SignatoryTitle', headerName: 'Signatory Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'SignatoryAgency', headerName: 'Signatory Agency', width: 100, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'SignatoryName', headerName: 'Signatory Name', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'BoxLocation', headerName: 'Box Location', width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'CategoryTitle', headerName: 'Category Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'LitigationCategory', headerName: 'Litigation Category', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'CategoryIndex', headerName: 'Category Index', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'CategorySubtitle', headerName: 'CategorySubtitle', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'FileUnit', headerName: 'File Unit', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'SourceArchiveId', headerName: 'Archive Id', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'SignatoryTitle', headerName: 'Signatory Title', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'SignatoryAgency', headerName: 'Signatory Agency', width: 100, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'SignatoryName', headerName: 'Signatory Name', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'ByUserId', headerName: 'By User', width: 100, menuTabs: ['filterMenuTab'], filter: true },
             {
                 headerName: 'By User',
-                field: 'ByUser',
+                field: 'SpByUserFullName',
                 cellClass: 'event-record-cell',
-                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueGetter: function (params) { return params.node.data.SpByUserFullName },
                 valueFormatter: function (params) {
-                    params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
-                    var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    //params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
+                    //var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
+                    //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                    //    the_str = the_str.replace(/"/g, '');
+                    //return the_str;
+                    return params.node.data.SpByUserFullName;
                 },
-                width: 180, menuTabs: ['filterMenuTab'],
+                width: 180,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
 
             //{
@@ -226,6 +253,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
         //details for the event
         var detailColumnDefs = [
             //{ colId: 'EditLinksDetail', headerName: '', width: 100, cellRenderer: EditDetailLinksTemplate, menuTabs: [], },
+
             {
                 headerName: 'Document Date',
                 field: 'DocumentDate',
@@ -239,10 +267,21 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],
             },
-            { headerName: 'Document Type', field: 'DocumentType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], },
-            { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Author Agency', field: 'AuthorAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Document Type', field: 'DocumentType', cellClass: 'event-record-cell', width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'File Name', field: 'FileName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Description', field: 'Description', cellRenderer: ItemListCellTemplate, width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{ headerName: 'Author', field: 'Author', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Agency', field: 'EventAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: 'Author Agency', field: 'AuthorAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            { headerName: 'Agency Division', field: 'AgencyDivision', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Agency Location', field: 'EventAgencyLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Signatory Name', field: 'SignatoryName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Signatory Title', field: 'SignatoryTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Name', field: 'RecipientName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'RecipientTitle', field: 'RecipientTitle', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Agency', field: 'RecipientAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Recipient Location', field: 'RecipientLocation', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Boundary', field: 'Boundary', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
                 headerName: 'Boundary',
@@ -251,13 +290,24 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 width: 180,
                 valueGetter: function (params) { return params.node.data.Boundary },			
                 valueFormatter: function (params) {
-                    params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
-                    var the_str = valueFormatterArrayToList(params.node.data.Boundary);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    // Note1:  Sometimes the value can be null
+                    // Note2:  The first time through, the JSON object is a string and must be converted to an array.
+                    // Note3:  The second time through, the value is already an array, so doing JSON.parse will cause JavaScript to die.
+                    if (params.node.data.Boundary !== null) {
+                        if (!isArray(params.node.data.Boundary))
+                            params.node.data.Boundary = JSON.parse(params.node.data.Boundary);
+
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
+                    }
                 },
-                menuTabs: ['filterMenuTab']
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
             //{ headerName: 'Significant Area', field: 'SignificantArea', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -267,13 +317,20 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 width: 180,
                 valueGetter: function (params) { return params.node.data.SignificantArea },
                 valueFormatter: function (params) {
-                    params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
-                    var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    if (params.node.data.SignificantArea !== null) {
+                        if (!isArray(params.node.data.SignificantArea))
+                            params.node.data.SignificantArea = JSON.parse(params.node.data.SignificantArea);
+
+                //        var the_str = valueFormatterArrayToList(params.node.data.SignificantArea);
+                //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                //            the_str = the_str.replace(/"/g, '');
+                //        return the_str;
+
+                    }
                 },
-                menuTabs: ['filterMenuTab']
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
             //{ headerName: 'Miscellaneous Context', field: 'MiscellaneousContext', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
@@ -283,18 +340,98 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 width: 180,
                 valueGetter: function (params) { return params.node.data.MiscellaneousContext },
                 valueFormatter: function (params) {
-                    params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
-                    var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
-                },
-                menuTabs: ['filterMenuTab']
-            },
-            { headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'NumberItems', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+                    if (params.node.data.MiscellaneousContext !== null) {
+                        if (!isArray(params.node.data.MiscellaneousContext))
+                            params.node.data.MiscellaneousContext = JSON.parse(params.node.data.MiscellaneousContext);
 
+                //        var the_str = valueFormatterArrayToList(params.node.data.MiscellaneousContext);
+                //        if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                //            the_str = the_str.replace(/"/g, '');
+                //        return the_str;
+                    }
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text' 
+            },
+            { headerName: 'Survey Number', field: 'SurveyNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Contract Number', field: 'SurveyContractNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Surveyor Name', field: 'SurveyorName', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Survey Authorizing Agency', field: 'SurveyAuthorizingAgency', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: 'Survey Dates', field: 'SurveyDates', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            {
+                headerName: 'Survey Dates',
+                field: 'SurveyDates',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.SurveyDates },
+                valueFormatter: function (params) {
+                    //console.log("typeof params.node.data.SurveyDates = " + typeof params.node.data.SurveyDates);
+                    //if ((params.node.data.SurveyDates !== null) && (typeof params.node.data.SurveyDates !== 'string')) {
+                    if (params.node.data.SurveyDates !== null) {
+                        try {
+                            params.node.data.SurveyDates = JSON.parse(params.node.data.SurveyDates);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.SurveyDates.indexOf(";") > -1) {
+                                params.node.data.SurveyDates = params.node.data.SurveyDates.split(";");
+                                params.node.data.SurveyDates.splice(-1, 1);
+
+                            }
+                        }
+
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
+                    }
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
+            },
+            //{ headerName: 'Description', field: 'Description', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
+            //{ headerName: 'TwnRngSec', field: 'TwnRngSec', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: 'text' },
+            {
+                headerName: 'TwnRngSec',
+                field: 'TwnRngSec',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.TwnRngSec },
+                valueFormatter: function (params) {
+                    //console.log("typeof params.node.data.TwnRngSec = " + typeof params.node.data.TwnRngSec);
+                    //if ((params.node.data.TwnRngSec !== null) && (typeof params.node.data.TwnRngSec !== 'string')) {
+                    if (params.node.data.TwnRngSec !== null) {
+                        try {
+                            params.node.data.TwnRngSec = JSON.parse(params.node.data.TwnRngSec);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.TwnRngSec.indexOf(";") > -1) {
+                                params.node.data.TwnRngSec = params.node.data.TwnRngSec.split(";");
+                                params.node.data.TwnRngSec.splice(-1, 1);
+
+                            }
+                        }
+
+                        //var the_str = valueFormatterArrayToList(params.node.data.Boundary);
+                        //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                        //    the_str = the_str.replace(/"/g, '');
+
+                        //var the_str = buildBulletedItemList(params.node.data.Boundary);
+                        //return the_str;
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
+            },
+            { headerName: 'Number Items', field: 'NumberItems', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: 'Page Number', field: 'PageNumber', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             {
                 field: 'DateDiscovered',
                 headerName: 'Date Discovered',
@@ -306,33 +443,87 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 filter: 'date',
                 menuTabs: ['filterMenuTab'],
             },
-            { headerName: 'Person Discovered', field: 'PersonDiscovered', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-            { headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
-
+            { headerName: 'Person Discovered', field: 'PersonDiscovered', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: 'Reference', field: 'Reference', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             {
-                headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 380, cellStyle: {
+                headerName: 'Reference',
+                field: 'Reference',
+                cellClass: 'event-record-cell',
+                width: 180,
+                valueGetter: function (params) { return params.node.data.Reference },
+                valueFormatter: function (params) {
+                    //console.log("typeof params.node.data.Reference = " + typeof params.node.data.Reference);
+                    if ((params.node !== null) && (params.node.data !== null) && (params.node.data.Reference !== null)) {
+                        try {
+                            params.node.data.Reference = JSON.parse(params.node.data.Reference);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.Reference.indexOf(";") > -1) {
+                                params.node.data.Reference = params.node.data.Reference.split(";");
+                                params.node.data.Reference.splice(-1, 1);
+
+                            }
+                        }
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: true
+            },
+            {
+                //headerName: 'Comments', field: 'EventComments', cellClass: 'event-record-cell', width: 380, cellStyle: {
+                headerName: 'Tasks',
+                field: 'Tasks',
+                cellClass: 'event-record-cell',
+                width: 380,
+                cellStyle: {
                     'white-space': 'normal'
                 },
-                menuTabs: ['filterMenuTab'], filter: 'text'
+                valueGetter: function (params) { return params.node.data.Tasks },
+                valueFormatter: function (params) {
+                    //console.log("typeof params.node.data.Tasks = " + typeof params.node.data.Tasks);
+                    if (params.node.data.Tasks !== null) {
+                        try {
+                            params.node.data.Tasks = JSON.parse(params.node.data.Tasks);
+                        }
+                        catch (err) {
+                            // The value is not JSON (possibly already an array, or a non-JSON string)
+                            if (params.node.data.Tasks.indexOf(";") > -1) {
+                                params.node.data.Tasks = params.node.data.Tasks.split(";");
+                                params.node.data.Tasks.splice(-1, 1);
+
+                            }
+                        }
+                    }
+
+                },
+                cellRenderer: BulletedItemListCellTemplate,
+                menuTabs: ['filterMenuTab'],
+                filter: 'text'
             },
 
             //{ headerName: 'EventFiles', field: 'EventFiles', cellClass: 'event-record-cell', cellRenderer: FileListCellTemplate },
             { headerName: 'File Attach', field: 'FileAttach', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+            { headerName: 'Archive Id', field: 'EventArchiveId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: 'Documents', field: 'EventFiles', width: 330, cellRenderer: FileListCellTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
             //{ headerName: 'By User', field: 'ByUserId', cellClass: 'event-record-cell', width: 180, menuTabs: ['filterMenuTab'], },
             {
                 headerName: 'By User',
-                field: 'ByUser',
+                field: 'EventByUserFullName',
                 cellClass: 'event-record-cell',
-                valueGetter: function (params) { return params.node.data.ByUserId },
+                valueGetter: function (params) { return params.node.data.EventByUserFullName },
                 valueFormatter: function (params) {
-                    params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
-                    var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
-                    if (typeof the_str === 'string') //backwards compatible - remove the quotes
-                        the_str = the_str.replace(/"/g, '');
-                    return the_str;
+                    //params.node.data.ByUserId = JSON.parse(params.node.data.ByUserId);
+                    //var the_str = getNameFromUserId(params.node.data.ByUserId, scope.Users);
+                    //if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                    //    the_str = the_str.replace(/"/g, '');
+                    //return the_str;
+                    return params.node.data.EventByUserFullName;
                 },
                 width: 180, menuTabs: ['filterMenuTab'],
+                filter: 'text' 
             },
         ];
 
@@ -343,10 +534,58 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 //setTimeout(function () { params.api.sizeColumnsToFit(); }, 0);
             },
             getRowHeight: function (params) {
-                var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
-                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                var file_height = 25 * (getFilesArrayAsList(params.data.EventFiles).length); //count up the number of file lines we will have.
-                return (comment_height > file_height) ? comment_height : file_height;
+                // Original way
+                //var comment_length = (params.data.EventComments === null) ? 1 : params.data.EventComments.length;
+                // Notes...
+                // When calculating on a free-text item (like comments), calculate like this:  25 * (Math.floor(Tasks_length / 45) + 1), allowing 45 chars per line.
+                // When calculating on an array type of thing (a,b,c), or (a;b;c), calculated like this:  25 * (getFilesArrayAsList(params.data.FileAttach).length), putting each item on its own line.
+                //var Tasks_length = (params.data.Tasks === null) ? 1 : params.data.Tasks.length;
+                //var Tasks_height = 25 * (Math.floor(Tasks_length / 45) + 1); //base our detail height on the Tasks (comments) field.  We allow 45 chars per line.
+                var Tasks_height = 25 * (getFilesArrayAsList(params.data.Tasks).length); //base our detail height on the Tasks (comments) field.
+                var file_height = 25 * (getFilesArrayAsList(params.data.FileAttach).length); //count up the number of file lines we will have.
+                var description_height = 25 * (getProjectItemsArrayAsTextList(params.data.Description).length);
+                var boundary_height = 25 * (getProjectItemsArrayAsTextList(params.data.Boundary).length);
+                var significantArea_height = 25 * (getProjectItemsArrayAsTextList(params.data.SignificantArea).length);
+                var miscellaneoudContext_height = 25 * (getProjectItemsArrayAsTextList(params.data.MiscellaneousContext).length);
+                var twnRngSec_height = 25 * (getProjectItemsArrayAsTextList(params.data.TwnRngSec).length);
+                var reference_height = 25 * (getProjectItemsArrayAsTextList(params.data.Reference).length);
+                var surveyDates_height = 25 * (getProjectItemsArrayAsTextList(params.data.SurveyDates).length);
+
+                // Check the height required for the fields, to find the one that requires the most space.
+                // Note:
+                // If the user does not enter any of the items that we use to calculate the row height (below), the result will be zero.
+                // Therefore, we must default the row height to the height for one row; if we set it to one or zero, the row will be there,
+                // but the user/developer will not be able to see it.
+                var maxHeight = 25; // Default the row height to one row to start with.
+                if (Tasks_height > maxHeight)
+                    maxHeight = Tasks_height;
+
+                if (file_height > maxHeight)
+                    maxHeight = file_height;
+
+                if (description_height > maxHeight)
+                    maxHeight = description_height;
+
+                if (boundary_height > maxHeight)
+                    maxHeight = boundary_height;
+
+                if (significantArea_height > maxHeight)
+                    maxHeight = significantArea_height;
+
+                if (miscellaneoudContext_height > maxHeight)
+                    maxHeight = miscellaneoudContext_height;
+
+                if (twnRngSec_height > maxHeight)
+                    maxHeight = twnRngSec_height;
+
+                if (reference_height > maxHeight)
+                    maxHeight = reference_height;
+
+                if (surveyDates_height > maxHeight)
+                    maxHeight = surveyDates_height;
+
+                //return (Tasks_height > file_height) ? Tasks_height : file_height;
+                return maxHeight;
             },
 
             defaultColDef: {
@@ -431,6 +670,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 templateUrl: 'app/private/olc/components/events/templates/modal-new-olcEvent.html',
                 controller: 'ModalAddOlcEventCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -505,9 +746,13 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
             //console.dir(new_event);
             console.log("saving OLC event for " + new_event.SubprojectId);
 
+            // EventByUserFullName is not stored; we set it so that we display the ByUser name, rather than the ByUserId.
+            // Therefore, we must add it to new_event, before we add new_event to the Subproject list.
+            new_event.EventByUserFullName = getNameFromUserId(new_event.ByUserId, scope.Users);
+
             var subproject = getById(scope.subprojectList, new_event.SubprojectId);
 
-            if (subproject === undefined || subproject === null) { //TODO: the case where they create items before the proejct is saved?
+            if (subproject === undefined || subproject === null) { //TODO: the case where they create items before the project is saved?
                 console.log("no subproject...");
             } else {
                 scope.subprojectList.forEach(function (item, index) {
@@ -524,7 +769,7 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 if (the_node !== null)
                     scope.olcAgGridOptions.api.ensureNodeVisible(the_node);
 
-                console.log("done reloading grid after removing item.");
+                console.log("done reloading grid after adding or removing item.");
             }
         };
 
@@ -633,6 +878,8 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                 templateUrl: 'app/private/olc/components/events/templates/modal-create-subproject.html',
                 controller: 'ModalCreateOlcSubprojectCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -663,7 +910,21 @@ var page_events = ['$scope', '$timeout', 'SubprojectService', 'ProjectService', 
                     templateUrl: 'app/private/olc/components/events/templates/modal-create-subproject.html',
                     controller: 'ModalCreateOlcSubprojectCtrl',
                     scope: scope, //very important to pass the scope along...
+                    backdrop: "static",
+                    keyboard: false
             });
+        };
+
+        scope.search = function (p) {
+            console.log("Inside scope.search...");
+            //location.path = "#!/olceventssearch/" + scope.project.Id;
+            window.location.replace("#!/olceventssearch/" + scope.dataset.Id);
+
+            //var modalInstance = $modal.open({
+            //    templateUrl: 'app/private/olc/components/events/templates/events-search.html',
+            //    controller: 'OlcEventsSearchCtrl',
+            //    scope: scope, //very important to pass the scope along...
+            //});
         };
 		
         scope.redrawRows = function () {

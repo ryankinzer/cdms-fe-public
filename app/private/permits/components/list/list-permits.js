@@ -1,5 +1,5 @@
-﻿var list_permits = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'PermitService', 'GridService', 'DatasetService',
-    function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope, PermitService, GridService, DatasetService) {
+﻿var list_permits = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'PermitService', 'GridService', 'DatasetService','CommonService',
+    function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope, PermitService, GridService, DatasetService, CommonService) {
 
         $rootScope.inModule = "permits";
 
@@ -13,23 +13,30 @@
         $scope.PermitParcels = [];
         $scope.PermitEvents = [];
         $scope.PermitFiles = [];
+        $scope.ParcelHistory = [];
+        $scope.PermitTypes = [];
+        $scope.PermitStatus = [];
+        $scope.PermitFileTypes = [];
+
+        $scope.refreshingZones = false;
 
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
-        $scope.PermitPersons = PermitService.getAllPersons();
-        $scope.CadasterParcels = PermitService.getAllParcels();
+        $scope.PermitFileTypes = CommonService.getMetadataProperty(METADATA_PROPERTY_PERMIT_FILETYPES);
 
-        $scope.PermitPersons.$promise.then(function () { 
-            $scope.PermitPersons.forEach(function (person) { 
-                person.SortName = (person.Organization) ? person.Organization : person.FirstName + " " + person.LastName;
-            });   
+        $scope.PermitFileTypes.$promise.then(function () {
+            $scope.PermitFileTypes = angular.fromJson($scope.PermitFileTypes.PossibleValues);
         });
 
-        $scope.dataset.$promise.then(function () { 
-        
+        $scope.dataset.$promise.then(function () {
+            console.log(" -- dataset back -- ");
             $scope.AllColumnDefs = GridService.getAgColumnDefs($scope.dataset);
             $scope.permitsGrid.columnDefs = $scope.AllColumnDefs.HeaderFields;
-            
+            $scope.permitsGrid.columnDefs.forEach(function (coldef) {
+                if (coldef.DbColumnName == 'PermitNumber')
+                    coldef.Disabled = true;
+            });
+
             //activate the grid with the permits data
             $scope.permitsGridDiv = document.querySelector('#active-permits-grid');
             new agGrid.Grid($scope.permitsGridDiv, $scope.permitsGrid);
@@ -37,16 +44,43 @@
             $scope.permits = PermitService.getAllPermits();
 
             $scope.permits.$promise.then(function () {
-            
+                console.log(" -- permits back -- ");
                 $scope.permitsGrid.api.setRowData($scope.permits);
 
+                //if there is an incoming Id, select it.
+                if ($routeParams.Id) {
+                    $scope.permitsGrid.api.forEachNode(function (node) {
+                        if (node.data.Id == $routeParams.Id) {
+                            node.setSelected(true);
+                            $scope.permitsGrid.api.ensureIndexVisible(node.rowIndex, 'top');
+                        }
+                    });
+                }
+
             });
+
+            //now do some caching...
+            $scope.PermitPersons = PermitService.getAllPersons();
+            $scope.CadasterParcels = PermitService.getAllParcels();
+
+            $scope.PermitPersons.$promise.then(function () {
+                $scope.PermitPersons.forEach(function (person) {
+                    person.Label = (person.Organization) ? person.Organization : person.FullName;
+                    if (person.Label == "")
+                        person.FirstName + " " + person.LastName;
+                });
+
+                $scope.PermitPersons = $scope.PermitPersons.sort(orderByAlpha);
+            });
+
+
         });
 
         $scope.eventsdataset.$promise.then(function () {
+            console.log(" -- events dataset back -- ");
             var EventColumnDefs = GridService.getAgColumnDefs($scope.eventsdataset);
             $scope.permitEventsGrid.columnDefs = angular.merge(
-                [{ colId: 'EditLinks', cellRenderer: EditEventLinksTemplate, width: 60, menuTabs: [], hide: true }], 
+                //[{ colId: 'EditLinks', cellRenderer: EditEventLinksTemplate, width: 60, menuTabs: [], hide: true }], 
                 EventColumnDefs.HeaderFields
             );
 
@@ -54,49 +88,111 @@
             if (!$scope.permitEventsGridDiv) {
                 $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
                 new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
-//TODO: if permission to edit:
-                $scope.permitEventsGrid.columnApi.setColumnVisible("EditLinks", true);
+                //TODO: if permission to edit:
+                //$scope.permitEventsGrid.columnApi.setColumnVisible("EditLinks", true);
             }
 
             $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
 
         });
 
-        $scope.showIssued = function () { 
+        $scope.showIssued = function () {
+            $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('Approved');
             filter_component.selectValue('Conditionally Approved');
             $scope.permitsGrid.api.onFilterChanged();
-            $scope.permitsGrid.api.deselectAll();
+            if ($scope.currentPage !== "Issued")
+                $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Issued";
         };
 
-        $scope.showApplications = function () { 
+        $scope.showApplications = function () {
+            $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
-            filter_component.selectValue('');
+            filter_component.selectValue('New Application');
             filter_component.selectValue('Under Review');
             $scope.permitsGrid.api.onFilterChanged();
-            $scope.permitsGrid.api.deselectAll();
+            if ($scope.currentPage !== "Applications")
+                $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Applications";
         };
 
-        $scope.showArchived = function () { 
+        $scope.showArchived = function () {
+            $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('Archived');
             $scope.permitsGrid.api.onFilterChanged();
-            $scope.permitsGrid.api.deselectAll();
+            if ($scope.currentPage !== "Archived")
+                $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Archived";
         };
-        
-        $scope.showAll = function () { 
+
+        $scope.showAll = function () {
+            $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectEverything();
             $scope.permitsGrid.api.onFilterChanged();
-            $scope.permitsGrid.api.deselectAll();
+            if ($scope.currentPage !== "All")
+                $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "All";
+        };
+
+        $scope.showAssignedToMe = function () {
+            var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
+            filter_component.selectNothing();
+            filter_component.selectValue($scope.Profile.Fullname);
+            $scope.permitsGrid.api.onFilterChanged();
+            if ($scope.currentPage !== "My Permits")
+                $scope.permitsGrid.api.deselectAll();
+            $scope.currentPage = "My Permits";
+        };
+
+        $scope.clearReviewedBy = function () {
+            var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
+            filter_component.selectEverything();
+        };
+
+        //requirement: can navigate permits by up and down arrow keys
+        $scope.keyboardNavigation = function (params) {
+            console.log("my navigation");
+            var previousCell = params.previousCellDef;
+            var suggestedNextCell = params.nextCellDef;
+
+            var KEY_UP = 38;
+            var KEY_DOWN = 40;
+            var KEY_LEFT = 37;
+            var KEY_RIGHT = 39;
+
+            switch (params.key) {
+                case KEY_DOWN:
+                    console.log("down");
+                    previousCell = params.previousCellDef;
+                    // set selected cell on current cell + 1
+                    $scope.permitsGrid.api.forEachNode(function (node) {
+                        if (previousCell.rowIndex + 1 === node.rowIndex) {
+                            node.setSelected(true);
+                        }
+                    });
+                    return suggestedNextCell;
+                case KEY_UP:
+                    previousCell = params.previousCellDef;
+                    // set selected cell on current cell - 1
+                    $scope.permitsGrid.api.forEachNode(function (node) {
+                        if (previousCell.rowIndex - 1 === node.rowIndex) {
+                            node.setSelected(true);
+                        }
+                    });
+                    return suggestedNextCell;
+                case KEY_LEFT:
+                case KEY_RIGHT:
+                    return suggestedNextCell;
+                default:
+                    throw "this will never happen, navigation is always one of the 4 keys above";
+            }
         };
 
 
@@ -105,22 +201,38 @@
             rowData: null,
             rowSelection: 'single',
             onSelectionChanged: function (params) {
-                $scope.permitsGrid.selectedItem = $scope.row = $scope.permitsGrid.api.getSelectedRows()[0];
+
+                if ($scope.row && $scope.row.dataChanged) {
+                    //warn if they're trying to change the selection when data is changed
+                    if ($scope.row.Id != $scope.permitsGrid.api.getSelectedRows()[0].Id) {
+                        alert("It looks like you've changed this permit. Please click 'Save' or 'Cancel' before navigating to another permit.");
+                        $scope.permitsGrid.selectedNode.setSelected(true);
+                    }
+
+                    //in any case, don't change.
+                    return false;
+                }
+
+                $scope.permitsGrid.selectedItem = $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
+                $scope.permitsGrid.selectedNode = $scope.permitsGrid.api.getSelectedNodes()[0];
+                $('#tab-status').tab('show'); //default to the "Permit Status" tab when select a different permit
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                 //console.dir($scope.row);
-                if($scope.row)
+                if ($scope.row)
                     $scope.selectPermit($scope.row.Id);
             },
-            selectedItem: null ,
+            selectedItem: null,
+            selectedNode: null,
             defaultColDef: {
                 editable: false,
                 sortable: true,
                 resizable: true,
             },
+            navigateToNextCell: $scope.keyboardNavigation
         }
 
 
-        $scope.openPermitPersonModal = function(person_id){
+        $scope.openPermitPersonModal = function (person_id) {
 
             $scope.person_modal = getById($scope.PermitPersons, person_id);
             console.dir($scope.person_modal.Id);
@@ -128,7 +240,7 @@
                 templateUrl: 'app/private/permits/components/list/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
-            }).result.then(function (saved_person) { 
+            }).result.then(function (saved_person) {
                 $scope.PermitPersons = PermitService.getAllPersons();
             });
         }
@@ -137,7 +249,7 @@
             columnDefs: null,
             rowData: null,
             rowSelection: 'single',
-            selectedItem: null ,
+            selectedItem: null,
             components: {
                 booleanEditor: BooleanEditor,
                 booleanCellRenderer: BooleanCellRenderer,
@@ -147,7 +259,7 @@
                 sortable: true,
                 resizable: true,
             },
-            onRowDoubleClicked: function (params) { 
+            onRowDoubleClicked: function (params) {
                 $scope.openPermitPersonModal($scope.permitContactsGrid.selectedItem.PermitPersonId);
             },
             onSelectionChanged: function (params) {
@@ -160,7 +272,7 @@
             columnDefs: null,
             rowData: null,
             rowSelection: 'single',
-            selectedItem: null ,
+            selectedItem: null,
             defaultColDef: {
                 editable: false,
                 sortable: true,
@@ -172,22 +284,40 @@
             },
         }
 
-        $scope.permitEventsGrid = {
+
+        $scope.parcelHistoryGrid = {
             columnDefs: null,
             rowData: null,
-            selectedItem: null ,
             rowSelection: 'single',
             defaultColDef: {
                 editable: false,
                 sortable: true,
                 resizable: true,
             },
-            onRowDoubleClicked: function (params) { 
+        }
+
+        $scope.permitEventsGrid = {
+            columnDefs: null,
+            rowData: null,
+            selectedItem: null,
+            rowSelection: 'single',
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+            onRowDoubleClicked: function (params) {
                 $scope.openActivityModal($scope.permitEventsGrid.selectedItem);
             },
             onSelectionChanged: function (params) {
                 $scope.permitEventsGrid.selectedItem = $scope.permitEventsGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+            getRowHeight: function (params) {
+                var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
+                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+                var file_height = 25 * (getFilesArrayAsList(params.data.Files).length); //count up the number of file lines we will have.
+                return (comment_height > file_height) ? comment_height : file_height;
             },
         }
 
@@ -195,7 +325,7 @@
             columnDefs: null,
             rowData: null,
             rowSelection: 'single',
-           selectedItem: null ,
+            selectedItem: null,
             defaultColDef: {
                 editable: false,
                 sortable: true,
@@ -222,10 +352,10 @@
                 $scope.openFileModal(param.data);
             });
             div.appendChild(editBtn);
-            
+
             return div;
         };
-    
+
         var EditContactLinksTemplate = function (param) {
 
             var div = document.createElement('div');
@@ -236,10 +366,10 @@
                 $scope.openContactModal(param.data);
             });
             div.appendChild(editBtn);
-            
+
             return div;
         };
-        
+
         var EditEventLinksTemplate = function (param) {
 
             var div = document.createElement('div');
@@ -250,7 +380,7 @@
                 $scope.openActivityModal(param.data);
             });
             div.appendChild(editBtn);
-            
+
             return div;
         };
 
@@ -261,7 +391,7 @@
 
             var linkBtn = document.createElement('a');
             linkBtn.href = param.data.Link;
-            linkBtn.innerHTML = param.data.Title;
+            linkBtn.innerHTML = param.data.Name;
             linkBtn.target = "_blank";
             div.appendChild(linkBtn);
             return div;
@@ -278,7 +408,7 @@
             {
                 headerName: "Contact", width: 200,
                 cellRenderer: function (params) {
-                    if(params.node.data.PermitPerson.Organization) 
+                    if (params.node.data.PermitPerson.Organization)
                         return params.node.data.PermitPerson.Organization
 
                     return (params.node.data.PermitPerson.FullName) ? params.node.data.PermitPerson.FullName : params.node.data.PermitPerson.FirstName + " " + params.node.data.PermitPerson.LastName;
@@ -314,40 +444,53 @@
             { headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
         ];
 
-        $scope.permitFilesGrid.columnDefs = [
-            { colId: 'EditLinks', cellRenderer: EditFileLinksTemplate, width: 60, menuTabs: [], hide: true },
-            { headerName: 'File', cellRenderer: LinkTemplate, width: 190, menuTabs: [] },
-            //{ field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
-            { field: 'Description', headerName: 'Description', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
-            {
-                headerName: 'Sharing Level', field: 'SharingLevel', width: 150,
-                cellRenderer: function (params) {
-                    if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
-                        return SharingLevel['SHARINGLEVEL_PRIVATE'];
-                    else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
-                        return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
-                    else return 'Unknown';
-                }, menuTabs: [],
-            },
-            { field: 'Uploaded', headerName: "Uploaded", width: 200, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+        $scope.parcelHistoryGrid.columnDefs = [
+            { headerName: "Permit Number", field: "PermitNumber", width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Project Name", field: "ProjectName", width: 220, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Parcel Id", field: "MatchingParcelId", width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Permit Status", field: "PermitStatus", width: 150, menuTabs: ['filterMenuTab'], filter: true },
         ];
 
-        $scope.openActivityModal = function (params) {
+        $scope.permitFilesGrid.columnDefs = [
+            //{ colId: 'EditLinks', cellRenderer: EditFileLinksTemplate, width: 60, menuTabs: [], hide: true },
+            { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: [] },
+            //{ field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
+            { field: 'Description', headerName: 'File Type', width: 200, menuTabs: ['filterMenuTab'], filter: true },
+            //{ field: 'Description', headerName: 'File Type', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
+            //{
+            //    headerName: 'Sharing Level', field: 'SharingLevel', width: 150,
+            //    cellRenderer: function (params) {
+            //        if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
+            //            return SharingLevel['SHARINGLEVEL_PRIVATE'];
+            //        else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
+            //            return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
+            //        else return 'Unknown';
+            //   }, menuTabs: [],
+            //},
+            { field: 'Uploaded', headerName: "Uploaded", width: 240, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+        ];
+
+        $scope.openActivityModal = function (params, intent) {
 
             delete $scope.activity_modal;
+            $scope.intent = intent;
 
             //if editing, we'll have incoming params
             if (params) {
                 $scope.activity_modal = params;
             } else {
                 $scope.activity_modal = { PermitId: $scope.row.Id };
+                if (intent == 'new_route')
+                    $scope.activity_modal.EventType = 'Review';
+                if (intent == 'new_inspection')
+                    $scope.activity_modal.EventType = 'Inspection';
             }
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/permits/components/list/templates/add-activity-modal.html',
                 controller: 'ActivityModalController',
                 scope: $scope,
-            }).result.then(function (saved_activity) { 
+            }).result.then(function (saved_activity) {
                 $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
                 $scope.PermitEvents.$promise.then(function () {
                     $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
@@ -369,10 +512,10 @@
                 controller: 'ContactModalController',
                 scope: $scope,
             }).result.then(function (saved_contact) {
-                    $scope.PermitContacts = PermitService.getPermitContacts(saved_contact.PermitId);
-                    $scope.PermitContacts.$promise.then(function () { 
-                        $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
-                    });
+                $scope.PermitContacts = PermitService.getPermitContacts(saved_contact.PermitId);
+                $scope.PermitContacts.$promise.then(function () {
+                    $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
+                });
             });
         }
 
@@ -390,29 +533,57 @@
                 controller: 'ParcelModalController',
                 scope: $scope,
             }).result.then(function (saved_parcel) {
-                    $scope.PermitParcels = PermitService.getPermitParcels(saved_parcel.PermitId);
-                    $scope.PermitParcels.$promise.then(function () { 
-                        $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
-                    });
+                $scope.PermitParcels = PermitService.getPermitParcels(saved_parcel.PermitId);
+                $scope.PermitParcels.$promise.then(function () {
+                    $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+                    $scope.refreshZones();
+                    $scope.refreshParcelHistory();
+                });
             });
         }
 
         $scope.openFileModal = function (params) {
 
-            //if editing, we'll have incoming params
-            if (params) {
-                $scope.file_modal = params;
-            } else {
-                $scope.file_modal = {};
-            }
-
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/add-file-modal.html',
-                controller: 'FileModalController',
+                templateUrl: 'app/private/permits/components/list/templates/modal-new-file.html',
+                controller: 'PermitFileModalController',
+                backdrop: 'static',
+                keyboard: false,
                 scope: $scope,
+            }).result.then(function (saved_files) {
+                if (Array.isArray(saved_files)) {
+
+                    saved_files.forEach(function (new_file) {
+                        $scope.PermitFiles.push(new_file);
+                    });
+
+                    $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+                }
+                else
+                    console.warn("looks like no files were saved?");
             });
         }
 
+        $scope.removeSelectedFile = function () {
+
+            if (!confirm("Are you sure you want to delete this file?")) {
+                return;
+            }
+
+            var file_to_remove = $scope.permitFilesGrid.selectedItem;
+            var deleted = PermitService.deleteFile(PERMIT_PROJECTID, $scope.row.Id, 0, file_to_remove);
+
+            deleted.$promise.then(function () {
+                $scope.PermitFiles.forEach(function (file, index) {
+                    if (file.Id == file_to_remove.Id) {
+                        $scope.PermitFiles.splice(index, 1);
+                        $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+                    }
+
+                });
+            });
+
+        }
 
         $scope.createNewPermit = function () {
 
@@ -420,16 +591,27 @@
                 return;
             }
 
-            $scope.row = $scope.permitsGrid.selectedItem = GridService.getNewRow($scope.permitsGrid.columnDefs); //{ PermitStatus: "New Application" };
+            $scope.PermitTypes = PermitService.getPermitTypes(); //load the permit types fresh -- these have our permitnumber to increment...
+
+            $scope.row = GridService.getNewRow($scope.permitsGrid.columnDefs);;
+
+            $scope.PermitContacts = [];
+            $scope.PermitParcels = [];
+            $scope.PermitEvents = [];
+            $scope.PermitFiles = [];
+            $scope.ParcelHistory = [];
+
             $scope.resetGrids();
-            
+
+            $('#tab-basicinfo').tab('show'); //default to the "Permit Details" tab when select a different permit
+
         };
 
-        $scope.removeSelectedContact = function () { 
+        $scope.removeSelectedContact = function () {
             if ($scope.permitContactsGrid.selectedItem && confirm("Are you sure you want to remove this Contact?")) {
                 var removed = PermitService.removeContact($scope.permitContactsGrid.selectedItem);
-                removed.$promise.then(function () { 
-                    $scope.PermitContacts.forEach(function (contact, index) { 
+                removed.$promise.then(function () {
+                    $scope.PermitContacts.forEach(function (contact, index) {
                         if (contact.PermitPersonId == $scope.permitContactsGrid.selectedItem.PermitPersonId) {
                             $scope.PermitContacts.splice(index);
                             $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
@@ -439,21 +621,23 @@
             }
         };
 
-        $scope.removeSelectedParcel = function () { 
+        $scope.removeSelectedParcel = function () {
             if ($scope.permitParcelsGrid.selectedItem && confirm("Are you sure you want to remove this Parcel?")) {
                 var removed = PermitService.removePermitParcel($scope.permitParcelsGrid.selectedItem);
-                removed.$promise.then(function () { 
+                removed.$promise.then(function () {
                     $scope.PermitParcels = PermitService.getPermitParcels($scope.row.Id);
-                    $scope.PermitParcels.$promise.then(function () { 
+                    $scope.PermitParcels.$promise.then(function () {
                         $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+                        $scope.refreshZones();
+                        $scope.refreshParcelHistory();
                     });
+
                 });
             }
         };
 
         $scope.resetGrids = function () {
-            
-            
+
             //activate the permit contacts grid
             if (!$scope.permitContactsGridDiv) {
                 $scope.permitContactsGridDiv = document.querySelector('#permit-contacts-grid');
@@ -466,6 +650,12 @@
                 new agGrid.Grid($scope.permitParcelsGridDiv, $scope.permitParcelsGrid);
             }
 
+            //activate the parcel history grid
+            if (!$scope.parcelHistoryGridDiv) {
+                $scope.parcelHistoryGridDiv = document.querySelector('#parcel-history-grid');
+                new agGrid.Grid($scope.parcelHistoryGridDiv, $scope.parcelHistoryGrid);
+            }
+
             //activate the permit files grid
             if (!$scope.permitFilesGridDiv) {
                 $scope.permitFilesGridDiv = document.querySelector('#permit-files-grid');
@@ -475,6 +665,10 @@
             $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
             $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
             $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+            $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
+
+            if ($scope.permitEventsGrid && $scope.permitEventsGrid.api)
+                $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
 
             if ($scope.Profile.hasRole("Permits")) { //TODO: EditPermits?
                 $scope.permitContactsGrid.columnApi.setColumnVisible("EditLinks", true);
@@ -484,38 +678,232 @@
 
         };
 
-        $scope.selectPermit = function (Id) { 
+        $scope.selectPermit = function (Id) {
 
             $scope.PermitContacts = PermitService.getPermitContacts(Id);
             $scope.PermitParcels = PermitService.getPermitParcels(Id);
             $scope.PermitEvents = PermitService.getPermitEvents(Id);
             $scope.PermitFiles = PermitService.getPermitFiles(Id);
+            $scope.PermitStatus = [];
 
-            $scope.PermitContacts.$promise.then(function () { 
+            $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
+
+            if (!Array.isArray($scope.row.ReviewsRequired))
+                $scope.row.ReviewsRequired = [];
+
+            $scope.PermitContacts.$promise.then(function () {
                 $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
+                $scope.permitContactsGrid.selectedItem = null;
             });
 
             $scope.PermitParcels.$promise.then(function () {
                 $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
+                $scope.permitParcelsGrid.selectedItem = null;
+                $scope.refreshParcelHistory();
+                $scope.refreshZones();
             });
 
             $scope.PermitEvents.$promise.then(function () {
                 $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                $scope.permitEventsGrid.selectedItem = null;
+
+                //setup our handy array for the Status tab
+                $scope.row.ReviewsRequired.forEach(function (review) { 
+
+                    var route = {
+                        ItemType: review,
+                        EventType: 'Review',
+                    };
+
+                    $scope.PermitEvents.forEach(function (event) { 
+                        if (event.ItemType == review) //should only be one, really...
+                        {
+                            route.RequestDate = event.RequestDate;
+                            route.ResponseDate = event.ResponseDate;
+                            route.Comments = event.Comments;
+                        }
+                    });
+
+                    $scope.PermitStatus.push(route);
+                    
+                });
+
+                //and now once for inspections
+                $scope.PermitEvents.forEach(function (event) { 
+                    var route = {};
+                    if (event.EventType == "Inspection") 
+                    {
+                        route.RequestDate = event.RequestDate;
+                        route.ResponseDate = event.ResponseDate;
+                        route.Comments = event.Comments;
+                        route.EventType = event.EventType;
+                        route.ItemType = event.ItemType;
+
+                        $scope.PermitStatus.push(route);
+                    }
+                });
+
             });
 
             $scope.PermitFiles.$promise.then(function () {
                 $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+                $scope.permitFilesGrid.selectedItem = null;
             });
 
+            $scope.row.Zones = [];
+
+            if ($scope.row.Zoning) {
+                $scope.row.Zoning = getJsonObjects($scope.row.Zoning);
+                //console.warn(" -- Zoning -- ");
+                //console.dir($scope.row.Zoning);
+
+            } else {
+                $scope.row.Zoning = [];
+            }
+
         };
-        
+
         $scope.resetGrids();
 
-        $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
-            //build event to send for validation
-            console.log("onHeaderEditingStopped: " + field.DbColumnName);
-            $scope.row.dataChanged = true;
+        $scope.refreshParcelHistory = function () {
+            $scope.ParcelHistory = [];
+            $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
 
+            //iterate parcels to find any related permits
+            $scope.PermitParcels.forEach(function (parcel) {
+                var related_permits = PermitService.getPermitsByRelatedParcels(parcel.ParcelId);
+                related_permits.$promise.then(function () {
+                    related_permits.forEach(function (permit) {
+                        if (permit.Id !== $scope.row.Id) {
+                            permit.MatchingParcelId = parcel.ParcelId;
+                            $scope.ParcelHistory.push(permit);
+                        }
+                    });
+                    $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
+                });
+            });
+        };
+
+        $scope.refreshZones = function () {
+            $scope.row.Zones.length = 0;
+            $scope.PermitParcels.forEach(function (parcel) {
+
+                var the_zones = parcel.Object.ZoneCode.split(":");
+
+                if (Array.isArray(the_zones)) {
+                    the_zones.forEach(function (zone) {
+                        if (!$scope.row.Zones.contains(zone))
+                            $scope.row.Zones.push(zone);
+                    });
+                };
+            });
+        };
+
+
+        //this function populates the zones using the live ArcGIS server layers but it is too slow, 
+        //  so we'll use the above strategy instead and keep this around in case we change our mind.
+        $scope.refreshZonesLive = function () {
+            $scope.refreshingZones = true;
+            $scope.row.Zones.length = 0;
+            require([
+                'esri/config',
+                'esri/tasks/query',
+                'esri/tasks/QueryTask'], function (esriConfig, Query, QueryTask) {
+                    esriConfig.defaults.io.proxyUrl = proxyUrl; // From the config.js file.
+                    esriConfig.defaults.io.alwaysUseProxy = true;
+
+                    //get the geometries of our related parcels
+                    var parcelids = [];
+                    $scope.PermitParcels.forEach(function (parcel) {
+                        parcelids.push(parcel.ParcelId);
+                    });
+                    //2N30900000105
+
+                    if (parcelids.length == 0) {
+                        console.warn("no parcelids to search for");
+                        $scope.refreshingZones = false;
+                        return;
+                    }
+
+                    parcelids = parcelids.join("','");
+
+                    var queryTask = new QueryTask(PARCEL_LAYER);
+                    var query = new Query();
+
+                    query.where = "PARCELID in ('" + parcelids + "')";
+
+                    console.log("looking for parcels: " + query.where);
+
+                    query.outSpatialReference = { wkid: 102100 };
+                    query.returnGeometry = true;
+                    query.outFields = ["*"];
+
+                    queryTask.execute(query, function (result) {
+                        console.dir(result);
+
+                        result.features.forEach(function (feature) {
+                            console.log("Ok - trying to find the zones for: ");
+                            console.dir(feature);
+
+                            var zoneQueryTask = new QueryTask(ZONING_LAYER);
+                            var zoneQuery = new Query();
+
+                            zoneQuery.outSpatialReference = { wkid: 102100 };
+                            zoneQuery.returnGeometry = true;
+                            zoneQuery.outFields = ["*"];
+                            zoneQuery.geometry = feature.geometry;
+                            zoneQuery.spatialRelationship = Query.SPATIAL_REL_INTERSECTS; //Query.SPATIAL_REL_INTERSECTS; //SPATIAL_REL_OVERLAPS?
+                            zoneQuery.where = "1=1";
+                            zoneQuery.maxAllowableOffset = 0;
+                            zoneQuery.distance = 0;
+
+                            zoneQueryTask.execute(zoneQuery, function (zqresult) {
+                                console.log("back from zone query with a result: ");
+                                console.dir(zqresult);
+                                zqresult.features.forEach(function (zfeature) {
+                                    if (!$scope.row.Zones.contains(zfeature.attributes.ZONECODE))
+                                        $scope.row.Zones.push(zfeature.attributes.ZONECODE);
+                                    console.dir($scope.row.Zones);
+                                });
+
+                                //refresh our view
+                                setTimeout(function () {
+                                    $scope.$apply(function () {
+                                        //$scope.row.Zoning = zones; //zones.join(",");
+                                        $scope.refreshingZones = false;
+                                    });
+                                }, 500);
+
+                            }, function (err) {
+                                console.log("Failure executing query!");
+                                console.dir(err);
+                                console.dir(zoneQuery);
+                                $scope.refreshingZones = false;
+                            });
+
+                        });
+
+                        if (result.features.length == 0)
+                            $scope.refreshingZones = false;
+
+                    }, function (err) {
+                        console.log("Failure executing query!");
+                        console.dir(err);
+                        console.dir(zoneQuery);
+                        $scope.refreshingZones = false;
+                    });
+
+                });
+
+
+        };
+
+
+        $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
+
+            console.log("onHeaderEditingStopped: " + field.DbColumnName);
+
+            //build event to send for validation
             var event = {
                 colDef: field,
                 node: { data: $scope.row },
@@ -525,13 +913,13 @@
             };
 
             if (GridService.validateCell(event)) {
-                    GridService.fireRule("OnChange", event); //only fires when valid change is made
+                GridService.fireRule("OnChange", event); //only fires when valid change is made
             }
 
             //update our collection of header errors if any were returned
             $scope.headerFieldErrors = [];
             if ($scope.row.rowHasError) {
-                $scope.row.validationErrors.forEach(function (error) { 
+                $scope.row.validationErrors.forEach(function (error) {
                     if (Array.isArray($scope.headerFieldErrors[error.field.DbColumnName])) {
                         $scope.headerFieldErrors[error.field.DbColumnName].push(error.message);
                     } else {
@@ -540,46 +928,132 @@
                 });
             }
 
-            //update the error count -- determine if this bogs down on big datasets                 TODO
-            //$scope.PageErrorCount = $scope.getPageErrorCount();
+            if ($scope.row.hasOwnProperty(field.DbColumnName)) { //make sure it is a header field from the permit
 
-            $scope.row.dataChanged = true;
+                //did the data actually change?
 
-            //console.dir($scope.row);
-            if (field.DbColumnName == "PermitStatus") {
+                //the selected original permit
+                var selected = $scope.permitsGrid.api.getSelectedRows()[0];
+
+                //if we've lost our original selection, find it in the permits
+                if (!selected || selected.Id != $scope.row.Id) {
+                    $scope.permits.forEach(function (itr_permit) {
+                        if (itr_permit.Id == $scope.row.Id)
+                            selected = itr_permit;
+                    });
+                }
+
+                if (selected[field.DbColumnName] != $scope.row[field.DbColumnName]) {
+                    $scope.row.dataChanged = true;
+                }
 
             }
+
+            $rootScope.$emit('headerEditingStopped', field); //offer child scopes a chance to do something, i.e. add activity modal...
+
+            //if this is a new permit and they changed the Permit Type, then update the permit number
+            console.log(field.DbColumnName);
+            console.log($scope.row.Id);
+            if (field.DbColumnName == 'PermitType' && !$scope.row.Id) {
+                $scope.generatePermitNumber();
+            }
+
         };
 
-        $scope.calculatePermitNumber = function () { 
-            
+        $scope.generatePermitNumber = function () {
+            var permitnumber = "";
+            $scope.PermitTypes.forEach(function (type) { 
+                if (type.Id === $scope.row.PermitType) {
+                    if (moment().year() > type.CurrentPermitYear)
+                        type.CurrentPermitNumber = 1;
+
+                    permitnumber = (type.CurrentPermitNumber + 1+"").padStart(3, '0');
+                    permitnumber = type.PermitNumberPrefix + "-" + moment().format('YY') + "-" + permitnumber;
+
+                    $scope.row.PermitNumber = permitnumber;
+                }
+            });
+        };
+
+        $scope.cancel = function () { 
+            $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
+
+            if($scope.row)
+                $scope.selectPermit($scope.row.Id);
+
+            //console.log("cancelled...");
+            //console.dir($scope.row);
         };
 
         $scope.save = function () {
-            console.dir($scope.row);
-            var saved_permit = PermitService.savePermit($scope.row);
+            
+            var to_save = angular.copy($scope.row);
+            to_save.ReviewsRequired = angular.toJson(to_save.ReviewsRequired);
+            to_save.Zoning = angular.toJson(to_save.Zoning);
+            console.dir(to_save);
+
+            var saved_permit = PermitService.savePermit(to_save);
+
             saved_permit.$promise.then(function () { 
                 console.log("permit saved: ");
                 console.dir(saved_permit);
+
+                //requirement: if we saved a new status, add a record to the permitsevents
+                if ($scope.row.Id && $scope.row.PermitStatus !== $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus) {
+                    var new_event = {
+                        PermitId: $scope.row.Id,
+                        ByUser: $scope.Profile.Id,
+                        EventDate: moment().format('L'),
+                        RequestDate: moment().format('L'),
+                        ResponseDate: moment().format('L'),
+                        EventType: "Record",
+                        ItemType: "TPO",
+                        Reviewer: $scope.Profile.Fullname,
+                        Comments: "Update Status from " + $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus + " to " + $scope.row.PermitStatus
+                    };
+                    console.log("saving a permitevent since we updated the status"); console.dir(new_event);
+                    var save_event = PermitService.savePermitEvent(new_event);
+                    save_event.$promise.then(function () { 
+                        //refresh the activities now that we've saved a new one.
+                        $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
+                        $scope.PermitEvents.$promise.then(function () {
+                            $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                        });
+                    });
+                }
     
                 if (!$scope.row.Id) {
                     $scope.permits.push(saved_permit);
                     $scope.permitsGrid.api.setRowData($scope.permits);
+                    $scope.row = saved_permit;
+                    //$scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+                    $scope.row.dataChanged = false;
                     $scope.showAll();
                 }
                 else {
                     $scope.permits.forEach(function (existing_permit) { 
                         if (existing_permit.Id == $scope.row.Id) {
                             console.log(" found it -- ");
-                            angular.extend(existing_permit, $scope.saved_permit);
+                            angular.extend(existing_permit, saved_permit);
                         }
                     });
 
+                    //var selectedNode = $scope.permitsGrid.api.getSelectedRows()[0];
+
                     $scope.permitsGrid.api.setRowData($scope.permits);
-                    $scope.showAll();
+                    
+                    if ($scope.currentPage == "Applications") $scope.showApplications();
+                    if ($scope.currentPage == "Issued") $scope.showIssued();
+                    if ($scope.currentPage == "Archived") $scope.showArchived();
+                    if ($scope.currentPage == "All") $scope.showAll();
+                    
+                    $scope.row.dataChanged = false;
+
                 }
 
             });
         };
+
+
 
 }];

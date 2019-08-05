@@ -4,7 +4,7 @@
 
 <ul class="nav nav-pills">
     <li class="nav-item">
-        <a class="nav-link" href="#!/permits-search">Search</a>
+        <a class="nav-link" href="#!/permits/map">Search</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" ng-class="{'active': currentPage=='All'}" href ng-click="showAll()">All</a>
@@ -18,6 +18,10 @@
     <li class="nav-item">
         <a class="nav-link" ng-class="{'active': currentPage=='Archived'}" href ng-click="showArchived()">Archived</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" ng-class="{'active': currentPage=='My Permits'}" href ng-click="showAssignedToMe()">Assigned to me</a>
+    </li>
+
     
 </ul>
 

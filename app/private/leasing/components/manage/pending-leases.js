@@ -161,21 +161,12 @@
             },
             {
                 headerName: "Graze Start",
-                field: "GrazeStart", width: 160,
-                valueGetter: function (params) { return moment(params.node.data.GrazeStart) },
-                valueFormatter: function (params) {
-                    return valueFormatterDate(params.node.data.GrazeStart);
-                },menuTabs: ['filterMenuTab'], filter: "agDateColumnFilter"
+                field: "GrazeStart", width: 160,menuTabs: ['filterMenuTab'], filter: false
 
             },
             {
                 headerName: "Graze End",
-                field: "GrazeEnd", width: 160,
-                valueGetter: function (params) { return moment(params.node.data.GrazeEnd) },
-                valueFormatter: function (params) {
-                    return valueFormatterDate(params.node.data.GrazeEnd);
-                },menuTabs: ['filterMenuTab'], filter: "agDateColumnFilter"
-
+                field: "GrazeEnd", width: 160,menuTabs: ['filterMenuTab'], filter: false
             },
             { headerName: "Note", field: "Notes", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
             { headerName: "Residue Required Pct", field: "ResidueRequiredPct", width: 160, menuTabs: ['filterMenuTab'], filter: "number", hide: !$scope.canViewCropFields },

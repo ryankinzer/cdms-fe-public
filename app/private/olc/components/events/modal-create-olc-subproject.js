@@ -18,17 +18,30 @@ var modal_create_olc_subproject = ['$scope', '$rootScope', '$uibModalInstance', 
 		
 
         $scope.showAddDocument = true;
+        $scope.showOtherFacilityHoused = false;
 
 		console.log("$scope is next...");
 		console.dir($scope);
 		
         if ($scope.viewSubproject) {
             $scope.header_message = "Edit OLC project: " + $scope.viewSubproject.ProjectName;
-			
+
+            //$scope.viewSubproject.OtherFacilityHoused = "";
+
 			console.log("$scope.viewSubproject is next...");
 			console.dir($scope.viewSubproject);
 			
             $scope.subproject_row = angular.copy($scope.viewSubproject);
+
+            //var intColonLoc = $scope.subproject_row.FacilityHoused.indexOf(":");
+            //if (intColonLoc > -1) {
+            //    $scope.subproject_row.OtherFacilityHoused = $scope.subproject_row.FacilityHoused.substring(intColonLoc + 1, $scope.subproject_row.FacilityHoused.length - 1);
+            //$scope.subproject_row.FacilityHoused = JSON.parse($scope.subproject_row.FacilityHoused);
+            //}
+
+            if ($scope.subproject_row.FacilityHoused === "Other")
+                $scope.showOtherFacilityHoused = true;
+
             console.log("$scope.subproject_row is next...");
             console.dir($scope.subproject_row);
 
@@ -41,6 +54,13 @@ var modal_create_olc_subproject = ['$scope', '$rootScope', '$uibModalInstance', 
 
         console.log("$scope inside ModalCreateOlcSubprojectCtrl, after initializing, is next...");
         //console.dir($scope);
+
+        $scope.selectFacilityHoused = function () {
+            if ($scope.subproject_row.FacilityHoused === "Other")
+                $scope.showOtherFacilityHoused = true;
+            else
+                $scope.showOtherFacilityHoused = false;
+        };
 
         $scope.save = function () {
             console.log("Inside ModalCreateOlcSubprojectCtrl, save...");
@@ -64,6 +84,11 @@ var modal_create_olc_subproject = ['$scope', '$rootScope', '$uibModalInstance', 
                 //console.log("addDocument = " + addDocument);
                 //console.log("$scope.subproject_row, after del is next...");
                 //console.dir($scope.subproject_row);
+
+                //if ($scope.subproject_row.FacilityHoused === "Other") {
+                //    $scope.subproject_row.OtherFacilityHoused = $scope.subproject_row.OtherFacilityHoused;
+                //    $scope.subproject_row.OtherFacilityHoused = undefined;
+                //}
 
                 var saveRow = angular.copy($scope.subproject_row);
                 console.log("saveRow (after its creation) is next..");

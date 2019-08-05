@@ -12,54 +12,83 @@
         <form name="form" class="css-form modal-form" novalidate>
             <!-- We need this line, to make the directives work.-->
             <p>* = Required Items</p>
-            <div class="header-label">Catalog Number</div>
+            <!--<div class="header-label">Catalog Number</div>
+    <div class="header-value">
+        <input type="text" class="form-control" ng-model="subproject_row.CatalogNumber" />
+    </div>-->
+            <!--<div class="header-label">Box Location</div>-->
+            <div class="header-label">Agency</div>
             <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.CatalogNumber" />
+                <!--<input type="text" class="form-control" ng-model="subproject_row.BoxLocation" />-->
+                <input type="text" class="form-control" ng-model="subproject_row.Agency" />
+            </div>
+            <div class="header-label">Agency Location</div>
+            <div class="header-value">
+                <!--<input type="text" class="form-control" ng-model="subproject_row.BoxLocation" />-->
+                <input type="text" class="form-control" ng-model="subproject_row.AgencyLocation" />
             </div>
             <div class="header-label">Record Group</div>
             <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.RecordGroup"/>
+                <input type="text" class="form-control" ng-model="subproject_row.RecordGroup" />
             </div>
             <div class="header-label">Series Title</div>
             <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.SeriesTitle"/>
+                <input type="text" class="form-control" ng-model="subproject_row.SeriesTitle" />
             </div>
 
             <div class="header-label">Facility Housed</div>
             <div class="header-value">
-                <select ui-select2="select2Options" data-placeholder="Choose an Agency" style="width: 300px; margin-top: 4px;" ng-model="subproject_row.FacilityHoused" ng-change="selectAgency()">
+                <select ui-select2="select2Options" data-placeholder="Choose an Facility" style="width: 300px; margin-top: 4px;" ng-model="subproject_row.FacilityHoused" ng-change="selectFacilityHoused()">
                     <option ng-repeat="facility in getMetafield('FacilityHoused')" value="{{facility}}">{{facility}}</option>
                 </select>
+            </div>
+            <div>
+                <div ng-show="showOtherFacilityHoused">
+                    <div class="header-label">Other Facility Housed</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" ng-model="subproject_row.OtherFacilityHoused" />
+                    </div>
+                </div>
             </div>
 
             <div class="header-label">Box</div>
             <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.Box"/>
+                <input type="text" class="form-control" ng-model="subproject_row.Box" />
             </div>
-            <div class="header-label">Box Location</div>
+
+            <!--<div class="header-label">Category Title</div>
             <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.BoxLocation"/>
-            </div>
-            <div class="header-label">Category Title</div>
+                <input type="text" class="form-control" ng-model="subproject_row.CategoryTitle" />
+            </div>-->
+            <div class="header-label">Litigation Category</div>
             <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.CategoryTitle"/>
+                <input type="text" class="form-control" ng-model="subproject_row.LitigationCategory" />
             </div>
-            <div class="header-label">Category Index</div>
+            <!--<div class="header-label">Category Index</div>-->
+            <!--<div class="header-label">Category Subtitle</div>-->
+            <div class="header-label">File Unit</div>
             <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.CategoryIndex"/>
+                <!--<input type="text" class="form-control" ng-model="subproject_row.CategoryIndex" />-->
+                <!--<input type="text" class="form-control" ng-model="subproject_row.CategorySubtitle" />-->
+                <input type="text" class="form-control" ng-model="subproject_row.FileUnit" />
             </div>
-            <div class="header-label">Signatory Title</div>
+            <div class="header-label">Archive Id</div>
             <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.SignatoryTitle"/>
+                <!--<input type="text" class="form-control" ng-model="subproject_row.CategoryIndex" />-->
+                <input type="text" class="form-control" ng-model="subproject_row.SourceArchiveId" />
             </div>
-            <div class="header-label">Signatory Agency</div>
-            <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.SignatoryAgency"/>
-            </div>
-            <div class="header-label">SignatoryName</div>
-            <div class="header-value">
-                <input type="text" class="form-control" ng-model="subproject_row.SignatoryName"/>
-            </div>
+            <!--<div class="header-label">Signatory Title</div>
+    <div class="header-value">
+        <input type="text" class="form-control" ng-model="subproject_row.SignatoryTitle"/>
+    </div>-->
+            <!--<div class="header-label">Signatory Agency</div>
+    <div class="header-value">
+        <input type="text" class="form-control" ng-model="subproject_row.SignatoryAgency"/>
+    </div>-->
+            <!--<div class="header-label">SignatoryName</div>
+    <div class="header-value">
+        <input type="text" class="form-control" ng-model="subproject_row.SignatoryName"/>
+    </div>-->
 
         </form>
   	</div>

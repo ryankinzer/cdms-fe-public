@@ -12,6 +12,10 @@ common_module.factory('GetMetadataEntities',  ['$resource', function($resource){
         return $resource(serviceUrl+'/api/v1/metadata/GetMetadataEntities');
 }]);
 
+common_module.factory('GetMetadataProperty', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/metadata/GetMetadataProperty');
+}]);
+
 common_module.factory('GetLookupItems', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/lookuptable/getitems', {}, {
         query: { method: 'GET', isArray: true }
@@ -29,7 +33,6 @@ common_module.factory('SaveMetadataProperty', ['$resource', function ($resource)
 common_module.factory('DeleteMetadataProperty', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/metadata/DeleteMetadataProperty');
 }]);
-
 
 common_module.factory('SaveDatasetMetadata', ['$resource', function($resource){
     return $resource(serviceUrl +'/api/v1/metadata/setdatasetmetadata');
@@ -89,6 +92,11 @@ common_module.factory('GetLocationTypes', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/location/getlocationtypes');
 }]);
 
+common_module.factory('SaveFeedback', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/SaveFeedback');
+}]);
+
+
 common_module.service('CommonService', ['$q',
     'SaveDatasetMetadata',
     'GetMetadataFor',
@@ -109,6 +117,8 @@ common_module.service('CommonService', ['$q',
     'GetLookupItems',
     'SaveLookupTableItem',
     'GetMetadataPropertiesForEntity',
+    'SaveFeedback',
+    'GetMetadataProperty',  
     function ($q,
         SaveDatasetMetadata,
         GetMetadataFor,
@@ -128,7 +138,10 @@ common_module.service('CommonService', ['$q',
         DeleteMetadataProperty,
         GetLookupItems,
         SaveLookupTableItem,
-        GetMetadataPropertiesForEntity) {
+        GetMetadataPropertiesForEntity,
+        SaveFeedback,
+        GetMetadataProperty
+) {
 
         var service = {
 
@@ -139,36 +152,31 @@ common_module.service('CommonService', ['$q',
                 service.metadataProperties = null;
             },
 
-            getLocations: function(id)
-            {
+            getLocations: function (id) {
                 service.datastoreId = id;
-                return GetAllPossibleDatastoreLocations.query({id: id});
+                return GetAllPossibleDatastoreLocations.query({ id: id });
             },
 
             getLocationTypes: function () {
                 return GetLocationTypes.query();
             },
-            
-            getWaterBodies: function()
-            {
+
+            getWaterBodies: function () {
                 return GetWaterBodies.query();
             },
 
-            getSources: function ()
-            {
+            getSources: function () {
                 return GetSources.query();
             },
-            
-            deleteLocation: function(locationId)
-            {
-                return DeleteLocationAction.save({LocationId: locationId});
+
+            deleteLocation: function (locationId) {
+                return DeleteLocationAction.save({ LocationId: locationId });
             },
 
             //NB: not used anywhere
-            getTimeZones: function ()
-            {
+            getTimeZones: function () {
                 return GetTimeZones.query();
-            }, 
+            },
 
             getUsers: function () {
                 return Users.query();
@@ -189,8 +197,8 @@ common_module.service('CommonService', ['$q',
             filterListForOnlyActiveInstruments: function (instruments) {
                 var newInstrumentList = [];
 
-                angular.forEach(instruments, function(instrument){
-                    if(instrument.StatusId === 0) 
+                angular.forEach(instruments, function (instrument) {
+                    if (instrument.StatusId === 0)
                         newInstrumentList.push(instrument);
                 });
 
@@ -219,42 +227,15 @@ common_module.service('CommonService', ['$q',
                 return GetAllInstruments.query();
             },
 
-/*
-            getMetadataProperty: function (propertyId) {
-
-                if (!service.metadataProperties) {
-                    this._loadMetadataProperties().$promise.then(function () {
-                        return service.metadataProperties["ID_" + propertyId];
-                    });
-                }
-                else {
-                    return service.metadataProperties["ID_" + propertyId];
-                }
+            getMetadataProperty: function(id) {
+                return GetMetadataProperty.query({ id: id });
             },
-*/
-
 
             getMetadataProperties: function (propertyTypeId) {
-
                 return GetMetadataPropertiesForEntity.query({ id: propertyTypeId });
-
-                /*
-                var properties = $q.defer();
-
-                if (!service.metadataProperties) {
-                    this._loadMetadataProperties().$promise.then(function () {
-                        properties.resolve(getMatchingByField(service.metadataProperties, propertyTypeId, 'MetadataEntityId'));
-                    });
-                } else {
-                    properties.resolve(getMatchingByField(service.metadataProperties, propertyTypeId, 'MetadataEntityId'));
-                }
-
-                return properties;
-                */
-
             },
 
-            getMetadataEntities: function () { 
+            getMetadataEntities: function () {
                 return GetMetadataEntities.query();
             },
 
@@ -263,18 +244,6 @@ common_module.service('CommonService', ['$q',
                 return GetMetadataFor.save({ RelationId: relationId, EntityTypeId: typeId });
             },
 
-/*
-            //returns promise so you can carry on once it loads.
-            _loadMetadataProperties: function () {
-                return GetMetadataProperties.query(function (data) {
-                    service.metadataProperties = {};
-                    angular.forEach(data, function (value, key) {
-                        service.metadataProperties["ID_" + value.Id] = value;
-                    });
-                });
-
-            },
-*/
             saveDatasetMetadata: function (datasetId, metadata, saveResults) {
                 var payload = {
                     DatasetId: datasetId,
@@ -283,6 +252,10 @@ common_module.service('CommonService', ['$q',
 
                 return SaveDatasetMetadata.save(payload);
 
+            },
+
+            saveFeedback: function (feedback) { 
+                return SaveFeedback.save({ Feedback: feedback });
             },
 
             saveUser: function (user) {

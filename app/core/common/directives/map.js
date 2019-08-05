@@ -172,7 +172,7 @@ define([
 
             //setup our layer locationid function so we can all it again sometime
             layer.showLocationsById = function(locationObjectIds){
-				
+                console.warn(" --- showLocationsByid ---");
               try{
                 this.clearSelection();
 				
@@ -196,28 +196,35 @@ define([
 				
               }
 			  catch(e)
-              {
-                console.dir(e);
+			  {
+			      console.log("died in showLoactionsById");
+                  console.dir(e);
               }                  
             };
 
+  /* kb 8/1/2019 - i think this isn't used anymore...
           if(filter && filter == "location")
           {
               if(typeof $scope.locationObjectIds == "undefined")
               {
+
                 $scope.$watch('locationObjectIds', function(){
 
                   //skip the first run
                   if(typeof $scope.locationObjectIds == "undefined")
                     return;
-                  
+
+                  console.error("------------------             do we ever get called? I guess so... ");
+
                   layer.showLocationsById($scope.locationObjectIds); // now call it
 
                   layer.show();                  
 
                 });
+
               }
           }
+*/
           
           return map.locationLayer;
         };

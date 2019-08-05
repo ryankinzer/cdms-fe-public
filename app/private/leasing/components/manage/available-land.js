@@ -142,53 +142,7 @@
             window.location = "index.html#!leasing?allotment=" + params.AllotmentName;
         }
 
-        /* pattern = 
-            1056889599
-
-            1-Farming (other numbers for other types of leases 4, 7)
-            0-Place holder (they are about to reach the threshold of 10,000 leases) with soon be 1
-            5688-Old lease number (TL-5688) currently at 9600 something I think
-            95-last two digits of the lease start year
-            99-Last two digits of the lease end year
-        */
-        $scope.generateLeaseNumber = function (lease) {
-
-            if (lease.lastleasenumber)
-                return $scope.constructLeaseNumber(lease);
-
-            var systemvals = LeasingService.getLeasingSystemValues();
-
-            systemvals.$promise.then(function () {
-                systemvals.forEach(function (val) {
-                    if (val.Id == METADATA_PROPERTY_LEASING_SYSTEM_LASTLEASENUMBER) {
-                        lease.lastleasenumberproperty = val;
-                        lease.lastleasenumberproperty.PossibleValues = parseInt(val.PossibleValues);
-                        $scope.constructLeaseNumber(lease);
-                    }
-                });
-            });
-
-        };
-
-        //needs the lease.lastleasenumber already set
-        $scope.constructLeaseNumber = function (lease) { 
-
-            var nextlease = lease.lastleasenumberproperty.PossibleValues+1;
-
-            if (leasing_module.LeaseTypeLeaseNumber.hasOwnProperty(lease.LeaseType))
-                lease.LeaseNumber = leasing_module.LeaseTypeLeaseNumber[lease.LeaseType] + "0" + nextlease;
-            else
-                lease.LeaseNumber = "0" + nextlease;
-
-            var begin = moment(lease.LeaseStart);
-            if (begin.isValid() && lease.LeaseStart)
-                lease.LeaseNumber += begin.format("YY");
-
-            var end = moment(lease.LeaseEnd);
-            if (end.isValid() && lease.LeaseEnd)
-                lease.LeaseNumber += end.format("YY");
-
-        }
+        
 
 
 }];

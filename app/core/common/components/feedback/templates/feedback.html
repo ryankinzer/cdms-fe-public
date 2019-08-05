@@ -1,0 +1,49 @@
+﻿        <h3>Submit feedback to the CDMS team</h3>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm panel panel-default" style="margin-right:10px;">
+                    <div class="panel-body">
+
+                        <div style="margin-bottom: 30px;">
+                            <p>Please add a helpful title and message below. If you are reporting a bug, PLEASE include steps of how we can reproduce it and/or what you were trying to do when it occured.</p>
+                        </div>
+
+                        <form name="form" class="css-form" novalidate>
+
+                            <div class="header-label">Title:</div>
+                            <div class="header-value">
+                                <input class="form-control" ng-model="feedback.Title" />
+                            </div>
+
+                            <div class="header-label">Message:</div>
+                            <div class="header-value">
+                                <textarea class="form-control" ng-model="feedback.Message"></textarea>
+                            </div>
+
+                            <div class="header-label">Module:</div>
+                            <div class="header-value">
+                                <input class="form-control" ng-model="feedback.Module" />
+                            </div>
+
+                            <div class="header-label">Full name:</div>
+                            <div class="header-value">
+                                <input disabled class="form-control" ng-model="feedback.SubmitterName" />
+                            </div>
+
+                            <div class="header-label">Submit Date:</div>
+                            <div class="header-value">
+                                <input disabled class="form-control" ng-model="feedback.SubmitDate" />
+                            </div>
+
+                        </form>
+
+                        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                        <button ng-disabled="saving" class="btn btn-primary" ng-click="save()">Save</button>
+
+                        <div ng-show="successMessage" class="alert alert-success">{{successMessage}}</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
