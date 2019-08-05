@@ -282,7 +282,9 @@
                             }
 
                         }
-                        else if (field.ControlType === "select" && data_row[col] && typeof data_row[col] === "string") {
+                        //else if (field.ControlType === "select" && data_row[col] && typeof data_row[col] === "string") {
+                        else if ((field.ControlType === "select" || field.ControlType === "select-number" || field.ControlType === "fisherman-select")
+                            && data_row[col] && typeof data_row[col] === "string") {
                             //map select value - 
                             
                             //IF the value actually matches VALUE in PV then map the ID of the PV...
