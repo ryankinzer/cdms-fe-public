@@ -493,6 +493,8 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null))
                 $scope.event_row.Description = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.Description);
 
+            if ($scope.event_row.FileAttach)
+                $scope.event_row.FileAttach = undefined;
 
             $modalInstance.dismiss();
         };
