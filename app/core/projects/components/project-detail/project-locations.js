@@ -24,7 +24,6 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
         scope.datasets.$promise.then(function () {
             if ((scope.datasets) && (scope.datasets.length > 0)) {
 
-                console.log("scope.datasets.length (before delete) = " + scope.datasets.length);
                 // Exclude (delete) the Habitat-related datasets from the list
                 for (var i = 0; i < scope.datasets.length; i++) {
                     if (scope.datasets[i].Config){
@@ -36,7 +35,6 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
                     }
                 };
 
-                console.log("scope.datasets.length (after delete) = " + scope.datasets.length);
          	    for (var i = 0; i < scope.datasets.length; i++) {
 				    DatasetService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
 				}
