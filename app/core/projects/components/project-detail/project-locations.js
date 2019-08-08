@@ -22,9 +22,23 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
 
 		//once the datasets load, make sure each is configured with our scope.
         scope.datasets.$promise.then(function () {
-         	if ((scope.datasets) && (scope.datasets.length > 0)) {
-				for (var i = 0; i < scope.datasets.length; i++)	{
-					DatasetService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
+            if ((scope.datasets) && (scope.datasets.length > 0)) {
+
+                console.log("scope.datasets.length (before delete) = " + scope.datasets.length);
+                // Exclude (delete) the Habitat-related datasets from the list
+                for (var i = 0; i < scope.datasets.length; i++) {
+                    if (scope.datasets[i].Config){
+                        var tmpConfig = angular.fromJson(scope.datasets[i].Config);
+
+                        if ((tmpConfig.LocationsPage) && (tmpConfig.LocationsPage.HideDataset)) {
+                            scope.datasets.splice(i, 1);
+                        }
+                    }
+                };
+
+                console.log("scope.datasets.length (after delete) = " + scope.datasets.length);
+         	    for (var i = 0; i < scope.datasets.length; i++) {
+				    DatasetService.configureDataset(scope.datasets[i], scope);  // We must pass the scope along on this call.
 				}
 			} else {
 				console.warn("This project has no datasets.");
@@ -119,8 +133,19 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             scope.datatab_ag_grid = new agGrid.Grid(ag_grid_div, scope.dataGridOptions); //bind the grid to it.
             scope.dataGridOptions.api.showLoadingOverlay(); //show loading...
 
-            scope.project.$promise.then(function () { 
+            scope.project.$promise.then(function () {
+
+                // Exclude (delete) the Habitat-related locations from the list
+                var tmpProjLocations = [];
+                for (var i = 0; i < scope.project.Locations.length; i++) {
+                    if (scope.project.Locations[i].LocationTypeId !== LOCATION_TYPE_Hab)
+                        tmpProjLocations.push(scope.project.Locations[i]);
+
+                }
+                scope.project.Locations = angular.copy(tmpProjLocations);
+
                 scope.dataGridOptions.api.setRowData(scope.project.Locations);
+
                 if ($rootScope.Profile.canEdit(scope.project)) {
                     scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
                     scope.dataGridOptions.api.refreshHeader();
@@ -185,7 +210,7 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
             var selected_locations = [];
 
             //make a list of ids we have selected           
-            scope.dataGridOptions.selectedItems.forEach(function (location) {        
+            scope.dataGridOptions.selectedItems.forEach(function (location) {
                 selected_locationids.push(location.Id);
                 selected_locations.push(location);
             });
