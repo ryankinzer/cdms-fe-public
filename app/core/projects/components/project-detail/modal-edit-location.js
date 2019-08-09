@@ -52,6 +52,8 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                     // PrjParams.outSR is not set yet, so we must set it also.
                     PrjParams.outSR = outSR;
 
+                    //throw "Stopping right here...";
+
                     //do the projection (conversion)
                     geometryService.project(PrjParams, function (outputpoint) {
 

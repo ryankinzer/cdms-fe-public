@@ -130,6 +130,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
             $rootScope.newSubproject = $scope.newSubproject = false;
             $scope.subprojectFileList = $rootScope.subprojectFileList;
 
+            // Capture the Easting and Northing, so we can tell, during a Save, if they have changed.
+            $scope.GPSEasting = $scope.viewSubproject.GPSEasting;
+            $scope.GPSNorthing = $scope.viewSubproject.GPSNorthing;
+
             $scope.row = angular.copy($scope.viewSubproject);
             $scope.setupHabitatMetaFields();
 
@@ -858,6 +862,20 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		{
 			console.log("We are editing an existing subproject; no new location needed...");
 			subprojectId = $scope.viewSubproject.Id
+
+		    // Later in the process, the Easting and Northing get converted into x, y values that get stored in sdevector.
+		    // Therefore, if the Easting and Northing was changed, we must convert them to x, y values first.
+			if (($scope.GPSEasting !== existingLocation.GPSEasting) || ($scope.GPSNorthing !== existingLocation.GPSNorthing)) {
+			    console.log("Easting or Northing changed; updating the location...");
+			    var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
+			    newLocation.Label = $scope.row.ProjectName;
+			    newLocation.Description = $scope.row.ProjectDescription;
+			    newLocation.GPSEasting = $scope.row.GPSEasting;
+			    newLocation.GPSNorthing = $scope.row.GPSNorthing;
+			    newLocation.ProjectId = parseInt($scope.projectId);
+			    newLocation.LocationTypeId = LOCATION_TYPE_Hab;
+			    newLocation.WaterBodyId = $scope.row.WaterBodyId;
+			}
 				
 			//ok -- everything is set to save; we are editing a subproject don't have a new location to save; hand off to next step.
             $scope.saveFilesAndParent();
@@ -892,20 +910,22 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 				], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
 
 				    //nad83 zone 11...  might have to have this as a list somehwere...
-				    var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
+				    var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE }); //esri/SpatialReference
 				    var outSR = new SpatialReference({ wkid: 102100 });
-				    var geometryService = new GeometryService(GEOMETRY_SERVICE_URL);
-				    $scope.newPoint = new Point(newLocation.GPSEasting, newLocation.GPSNorthing, inSR);
+				    var geometryService = new GeometryService(GEOMETRY_SERVICE_URL); //esri/tasks/GeometryService
+				    $scope.newPoint = new Point(newLocation.GPSEasting, newLocation.GPSNorthing, inSR); // esri/geometry/Point
 
 				    //convert spatial reference
 				    //var PrjParams = new tasks.ProjectParameters();
-                    var PrjParams = new ProjectParameters();
+				    var PrjParams = new ProjectParameters(); //esri/tasks/ProjectParameters
 
 				    PrjParams.geometries = [$scope.newPoint];
 				    // PrjParams.outSR is not set yet, so we must set it also.
 				    PrjParams.outSR = outSR;
 
 				    //do the projection (conversion)
+				    // PrjParams has Easting and Northing; outputpoint has x, y values.
+                    // The x, y values are what get sent/stored in the points table in sdevector.
 				    geometryService.project(PrjParams, function (outputpoint) {
 
 				        $scope.newPoint = new Point(outputpoint[0], outSR);
