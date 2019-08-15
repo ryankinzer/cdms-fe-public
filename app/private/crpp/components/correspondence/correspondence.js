@@ -395,6 +395,8 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 templateUrl: 'app/private/crpp/components/correspondence/templates/modal-new-correspondenceEvent.html',
                 controller: 'ModalAddCorrespondenceEventCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -587,6 +589,8 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                 templateUrl: 'app/private/crpp/components/correspondence/templates/modal-create-subproject.html',
                 controller: 'ModalCreateSubprojectCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 		
@@ -623,6 +627,8 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                     templateUrl: 'app/private/crpp/components/correspondence/templates/modal-create-subproject.html',
                     controller: 'ModalCreateSubprojectCtrl',
                     scope: scope, //very important to pass the scope along...
+                    backdrop: "static",
+                    keyboard: false
             });
         };
 		
