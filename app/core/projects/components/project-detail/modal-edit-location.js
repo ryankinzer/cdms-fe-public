@@ -23,6 +23,11 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
 
             ], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
 
+                if ($scope.row.LocationTypeId === LOCATION_TYPE_Hab){
+                    alert("You cannot save a Habitat location here; this must be done via the Project->Data->Dataset Name Sites page.");
+                    return;
+                }
+
                 var payload = {
                     'ProjectId': $scope.project.Id,
                     'Location': $scope.row,
