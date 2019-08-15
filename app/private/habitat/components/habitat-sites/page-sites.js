@@ -543,6 +543,8 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-new-habitatItem.html',
                 controller: 'ModalAddHabitatItemCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
