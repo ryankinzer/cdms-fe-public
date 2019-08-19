@@ -282,6 +282,16 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                     });
                 }
             }
+            else {
+                Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValues).forEach(function (key) {
+
+                    if ($scope.Criteria.ParamFieldSelect[0].PossibleValues[key] == $scope.Criteria.Value) {
+                        $scope.Criteria.DisplayName = $scope.Criteria.Value;
+                    }
+
+                });
+            }
+
             
             $scope.criteriaList.push({
                 DbColumnName: 		$scope.Criteria.ParamFieldSelect[0].DbColumnName,
