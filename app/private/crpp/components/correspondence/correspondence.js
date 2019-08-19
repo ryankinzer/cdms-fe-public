@@ -418,6 +418,8 @@ var page_correspondence = ['$scope', '$timeout', 'SubprojectService', 'ProjectSe
                     templateUrl: 'app/core/common/components/modals/templates/modal-verifyAction.html',
                     controller: 'ModalVerifyActionCtrl',
                     scope: scope, //very important to pass the scope along...
+                    backdrop: "static",
+                    keyboard: false
                 });
             }
         };

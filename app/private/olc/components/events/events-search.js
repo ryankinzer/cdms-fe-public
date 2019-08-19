@@ -793,6 +793,8 @@ var events_search = ['$scope', '$timeout', 'SubprojectService', 'ProjectService'
                     templateUrl: 'app/private/olc/components/events/templates/modal-create-subproject.html',
                     controller: 'ModalCreateOlcSubprojectCtrl',
                     $scope: $scope, //very important to pass the $scope along...
+                    backdrop: "static",
+                    keyboard: false
             });
         };
 

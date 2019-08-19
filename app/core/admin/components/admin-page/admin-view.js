@@ -30,7 +30,8 @@ var admin_view = ['$scope', '$uibModal', 'DatasetService','ProjectService',
                 templateUrl: 'app/core/admin/components/admin-page/templates/add-new-project-dataset.html',
                 controller: 'ModalAddProjectDatasetCtrl',
                 scope: $scope, //very important to pass the scope along... 
-
+                backdrop: "static",
+                keyboard: false
             });
         };
 

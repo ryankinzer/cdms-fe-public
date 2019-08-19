@@ -42,6 +42,8 @@ var project_list = ['$scope', 'DatasetService', 'ProjectService','CommonService'
               templateUrl: templateUrl,
               controller: 'ModalProjectEditorCtrl',
               scope: scope, //very important to pass the scope along...
+              backdrop: "static",
+              keyboard: false
             }).result.then(function (saved_project) { 
                 scope.projects = ProjectService.getProjects();
                 scope.projects.$promise.then(function () { 

@@ -123,6 +123,8 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/lease-modal.html',
                 controller: 'LeaseModalController',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         }
 

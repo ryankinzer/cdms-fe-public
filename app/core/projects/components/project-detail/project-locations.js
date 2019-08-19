@@ -163,6 +163,8 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-location.html',
                 controller: 'ModalEditLocationCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_location) { 
                 //replace that location in the grid with the one we got back
                 scope.project.Locations.forEach(function (existing_location, index) {
@@ -191,6 +193,8 @@ var project_locations = ['$scope', '$routeParams','GridService', 'ProjectService
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-location.html',
                 controller: 'ModalEditLocationCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_location) { 
                 //add that location in the grid with the one we got back
                 scope.project.Locations.push(saved_location);
