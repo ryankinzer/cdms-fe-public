@@ -615,7 +615,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-rowqaupdate.html',
                 controller: 'ModalBulkRowQAChangeCtrl',
                 scope: $scope, //very important to pass the scope along...
-
+                backdrop: "static",
+                keyboard: false
             });
 
         };     
@@ -631,6 +632,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
                 controller: 'ModalCreateInstrumentCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_instrument) { 
                 //add saved_instrument to our list.
                 saved_instrument.AccuracyChecks = [];
@@ -649,6 +652,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-new-accuracycheck.html',
                 controller: 'ModalQuickAddAccuracyCheckCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_AC) { 
                 //add saved_AC to our list.
                 $scope.project.Instruments.forEach(function (inst) { 
@@ -670,6 +675,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/datasets/components/dataset-view/templates/changeqa-modal.html',
                 controller: 'ModalQaUpdateCtrl',
                 scope: $scope, //very important to pass the scope along... 
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -814,6 +821,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-fisherman.html',
                 controller: 'ModalCreateFishermanCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 		
@@ -858,6 +867,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-save-success.html',
                 controller: 'ModalSaveSuccess',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
             
         };

@@ -76,6 +76,8 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-edit-master-field.html',
                 controller: 'ModalEditMasterFieldCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_field) { 
                 //replace that field in the grid with the one we got back
                 $scope.datastore.Fields.forEach(function (existing_field,index) {

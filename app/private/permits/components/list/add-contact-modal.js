@@ -31,6 +31,8 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
                 templateUrl: 'app/private/permits/components/list/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_person) { 
                 $scope.PermitPersons.push(saved_person);
                 $scope.contact_modal.PermitPersonId = saved_person.Id;

@@ -513,7 +513,9 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/olc/components/events/templates/modal-migrate-olc-event.html',
                 controller: 'OlcMigrateEventCtrl',
-                scope: $scope //very important to pass the scope along...
+                scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 

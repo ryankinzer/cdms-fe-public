@@ -198,6 +198,8 @@ var dataset_seasons_list = ['$scope', '$routeParams',
                 templateUrl: 'app/core/datasets/components/dataset-seasons-list/templates/modal-create-season.html',
                 controller: 'ModalCreateSeasonCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -215,6 +217,8 @@ var dataset_seasons_list = ['$scope', '$routeParams',
                 templateUrl: 'app/core/datasets/components/dataset-seasons-list/templates/modal-create-season.html',
                 controller: 'ModalCreateSeasonCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 

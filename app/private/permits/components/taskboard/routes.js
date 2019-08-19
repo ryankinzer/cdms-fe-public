@@ -218,6 +218,8 @@
                 templateUrl: 'app/private/permits/components/taskboard/templates/add-fee-modal.html',
                 controller: 'AddFeeModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_permit) {
                 $scope.permitRoutesGrid.api.setRowData($scope.permits);
             });
@@ -233,6 +235,8 @@
                 templateUrl: 'app/private/permits/components/list/templates/add-activity-modal.html',
                 controller: 'ActivityModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_activity) {
 
                 //save the permit with the route updated
