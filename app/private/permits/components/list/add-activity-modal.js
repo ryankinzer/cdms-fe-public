@@ -5,6 +5,7 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
 
         $scope.permit = $scope.row;
         $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
+        $scope.modes_notifications = ['new_inspection','new_route','edit_route']; //modes we send notifications for
 
         $scope.Results = {
             SuccessMessage: null,
@@ -120,7 +121,10 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
 
             $scope.saved_event.$promise.then(function () {
                 console.log("done and success updating the files");
-                $scope.Results.SuccessMessage = "Saved and notifications sent.";
+                if($scope.modes_notifications.contains($scope.mode))
+                    $scope.Results.SuccessMessage = "Saved and notifications sent.";
+                else    
+                    $scope.Results.SuccessMessage = "Saved.";
                 
             }, function (data) {
                 console.error("failure!");

@@ -57,6 +57,11 @@
                     });
                 }
 
+                //if there is an incoming filter, select it
+                if($routeParams.filter) {
+                    $scope['show'+$routeParams.filter]();
+                }
+
             });
 
             //now do some caching...
@@ -88,8 +93,6 @@
             if (!$scope.permitEventsGridDiv) {
                 $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
                 new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
-                //TODO: if permission to edit:
-                //$scope.permitEventsGrid.columnApi.setColumnVisible("EditLinks", true);
             }
 
             $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
@@ -491,10 +494,11 @@
                 controller: 'ActivityModalController',
                 scope: $scope,
             }).result.then(function (saved_activity) {
-                $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
-                $scope.PermitEvents.$promise.then(function () {
-                    $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
-                });
+                $scope.selectPermit($scope.row.Id);
+                // $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
+                // $scope.PermitEvents.$promise.then(function () {
+                //     $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                // });
             });
         }
 
@@ -901,7 +905,7 @@
 
         $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
 
-            console.log("onHeaderEditingStopped: " + field.DbColumnName);
+            //console.log("onHeaderEditingStopped: " + field.DbColumnName);
 
             //build event to send for validation
             var event = {
@@ -952,8 +956,8 @@
             $rootScope.$emit('headerEditingStopped', field); //offer child scopes a chance to do something, i.e. add activity modal...
 
             //if this is a new permit and they changed the Permit Type, then update the permit number
-            console.log(field.DbColumnName);
-            console.log($scope.row.Id);
+            //console.log(field.DbColumnName);
+            //console.log($scope.row.Id);
             if (field.DbColumnName == 'PermitType' && !$scope.row.Id) {
                 $scope.generatePermitNumber();
             }
@@ -1038,6 +1042,7 @@
                         }
                     });
 
+                    $scope.selectPermit($scope.row.Id); //reload
                     //var selectedNode = $scope.permitsGrid.api.getSelectedRows()[0];
 
                     $scope.permitsGrid.api.setRowData($scope.permits);
