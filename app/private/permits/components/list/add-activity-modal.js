@@ -117,15 +117,29 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
             $scope.Results.DoneSaving = true;
 
             //save again to update with the files we uploaded
-            $scope.saved_event = PermitService.savePermitEvent(saveRow);
+            var saved_event = PermitService.savePermitEvent(saveRow);
 
-            $scope.saved_event.$promise.then(function () {
+            saved_event.$promise.then(function () {
                 console.log("done and success updating the files");
                 if($scope.modes_notifications.contains($scope.mode))
                     $scope.Results.SuccessMessage = "Saved and notifications sent.";
                 else    
                     $scope.Results.SuccessMessage = "Saved.";
-                
+
+                if(saved_event.EventType=='Review'){
+                    console.log(" -- updating route indicator: " + ["Route_" + saved_event.ItemType]);
+                    //now update the permit routing indicator
+                    var save_permit = angular.copy($scope.permit);
+                    save_permit.Zoning = angular.toJson(save_permit.Zoning);
+                    console.dir(saved_event);
+                    var route_indicator = (saved_event.ResponseDate) ? "*" : "+";
+                    console.log(" indicator: "+route_indicator);
+                    save_permit["Route_" + saved_event.ItemType] = route_indicator;
+                    save_permit.ReviewsRequired = angular.toJson(save_permit.ReviewsRequired);
+
+                    var permit_promise = PermitService.savePermit(save_permit);
+                }
+                    
             }, function (data) {
                 console.error("failure!");
                 console.dir(data);

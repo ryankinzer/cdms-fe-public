@@ -247,6 +247,7 @@
                 }
 
                 save_permit.ReviewsRequired = angular.toJson(save_permit.ReviewsRequired);
+                save_permit.Zoning = angular.toJson(save_permit.Zoning);
 
                 var permit_promise = PermitService.savePermit(save_permit);
 
