@@ -240,7 +240,7 @@
             $scope.person_modal = getById($scope.PermitPersons, person_id);
             console.dir($scope.person_modal.Id);
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/add-person-modal.html',
+                templateUrl: 'app/private/permits/components/contacts/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
             }).result.then(function (saved_person) {
@@ -363,7 +363,7 @@
 
             var div = document.createElement('div');
 
-            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Modify';
             editBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 $scope.openContactModal(param.data);
