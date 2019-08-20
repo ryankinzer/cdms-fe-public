@@ -543,6 +543,8 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-new-habitatItem.html',
                 controller: 'ModalAddHabitatItemCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -762,6 +764,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             scope.project.CollaboratorList = ProjectService.getProjectCollaborators(scope.project.Id);
 
             //this one we can start right away since project locations are loaded with the project.
+            scope.reloadSubprojectLocations();
             scope.matchLocationsToSubprojects();
 
             //do each match as the list finishes loading...
@@ -778,6 +781,10 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
             scope.project.CollaboratorList.$promise.then(function () {
                 //console.log(" -- ok done loading now matching CollaboratorList for " + scope.project.CollaboratorList.length);
                 scope.matchCollaboratorToSubproject();
+            });
+
+            scope.project.Locations.$promise.then(function () {
+
             });
         };
 

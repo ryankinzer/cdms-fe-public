@@ -41,6 +41,8 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-choose-duplicate-fields.html',
                 controller: 'ModalChooseDuplicateFieldsCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_field) { 
 
             });
@@ -52,6 +54,8 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-choose-activitylist-fields.html',
                 controller: 'ModalChooseActivityListFieldsCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_field) { 
 
             });

@@ -105,6 +105,8 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-file.html',
                 controller: 'ModalEditFileCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -117,6 +119,8 @@ var project_files = ['$scope', '$routeParams','SubprojectService', 'ProjectServi
                 backdrop  : 'static',
                 keyboard  : false,
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 

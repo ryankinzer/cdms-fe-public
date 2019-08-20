@@ -294,6 +294,8 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
             templateUrl: 'app/core/common/components/file/templates/modal-file.html',
             controller: 'FileModalCtrl',
             scope: $scope, //scope to make a child of
+            backdrop: "static",
+            keyboard: false
         }).result.then(function (saved_field) { 
             console.log(" (*(((*(9************ we are back! ");
             if(callback)

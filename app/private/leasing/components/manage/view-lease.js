@@ -589,7 +589,9 @@
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/leasing/components/manage/templates/lease-modal.html',
                 controller: 'LeaseModalController',
-                scope: $scope, 
+                scope: $scope,
+                backdrop: "static",
+                keyboard: false
             });
         }
 
@@ -600,7 +602,9 @@
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/leasing/components/manage/templates/lease-modal.html',
                 controller: 'LeaseModalController',
-                scope: $scope, 
+                scope: $scope,
+                backdrop: "static",
+                keyboard: false
             });
         }
 
@@ -608,7 +612,9 @@
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/leasing/components/manage/templates/modify-crop-plan-modal.html',
                 controller: 'ModifyCropPlanController',
-                scope: $scope, 
+                scope: $scope,
+                backdrop: "static",
+                keyboard: false
             });
         }
         
@@ -625,6 +631,8 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/add-production-modal.html',
                 controller: 'ProductionModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             });
         }
 
@@ -642,6 +650,8 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/add-compliance-inspection-modal.html',
                 controller: 'ComplianceInspectionModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             });
         }
 

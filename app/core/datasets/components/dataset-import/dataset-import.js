@@ -375,6 +375,8 @@
                 templateUrl: 'app/core/datasets/components/dataset-import/templates/modal-map-locations.html',
                 controller: 'ModalMapLocationsCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved) { 
 
                 //console.dir($scope.mappedLocations);

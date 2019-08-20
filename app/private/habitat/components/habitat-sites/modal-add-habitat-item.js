@@ -50,6 +50,8 @@ var modal_add_habitat = ['$scope', '$rootScope', '$uibModalInstance', '$uibModal
             templateUrl: 'app/core/common/components/modals/templates/modal-link-field.html',
 			controller: 'LinkModalCtrl',
 			scope: $scope, //scope to make a child of
+			backdrop: "static",
+			keyboard: false
 		});
     };
 
