@@ -5,7 +5,7 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
 
         $scope.mode = "edit";
 
-        if (!$scope.contact_modal.Id) {
+        if (!$scope.contact_modal.PermitPersonId) {
             $scope.mode = "new";
         }
 
@@ -27,11 +27,17 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
 
 
         $scope.addPermitPersonModal = function(){
+            //$scope.person_modal = $scope.contact_modal;
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/add-person-modal.html',
+                templateUrl: 'app/private/permits/components/contacts/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
             }).result.then(function (saved_person) { 
+
+                saved_person.Label = (saved_person.Organization) ? saved_person.Organization : saved_person.FullName;
+                if (saved_person.Label == "")
+                    saved_person.FirstName + " " + saved_person.LastName;
+
                 $scope.PermitPersons.push(saved_person);
                 $scope.contact_modal.PermitPersonId = saved_person.Id;
                 $(function () { $("#persons-select").select2(); });

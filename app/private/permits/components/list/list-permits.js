@@ -23,6 +23,13 @@
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
         $scope.PermitFileTypes = CommonService.getMetadataProperty(METADATA_PROPERTY_PERMIT_FILETYPES);
+        $scope.contactsdataset = DatasetService.getDataset(PERMITCONTACTS_DATASETID);
+        $scope.contactsGrid = {};
+
+        $scope.contactsdataset.$promise.then(function () {
+            var ColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
+            $scope.contactsGrid.columnDefs = ColumnDefs.HeaderFields;
+        });
 
         $scope.PermitFileTypes.$promise.then(function () {
             $scope.PermitFileTypes = angular.fromJson($scope.PermitFileTypes.PossibleValues);
@@ -510,6 +517,8 @@
             } else {
                 $scope.contact_modal = { PermitId: $scope.row.Id };
             }
+
+            console.dir($scope.contact_modal);
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/permits/components/list/templates/add-contact-modal.html',

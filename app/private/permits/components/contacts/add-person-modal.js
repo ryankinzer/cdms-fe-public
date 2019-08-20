@@ -3,24 +3,26 @@
 
         $scope.header_message = "Edit Contact Person";
 
+        $scope.row = $scope.person_modal;
+
         //if we're not editing then we are creating a new one
-        if (!$scope.person_modal) {
+        if (!$scope.row) {
             $scope.header_message = "Add Contact Person";
-            $scope.person_modal = { Id: 0 };
+            $scope.row = { Id: 0 };
         }
 
-        console.dir($scope.person_modal);
+        //console.dir($scope.row);
 
-        $scope.person_modal.LastUpdated = moment().format('L');
-        $scope.person_modal.UpdatedBy = $scope.Profile.Fullname;
+        $scope.row.LastUpdated = moment().format('L');
+        $scope.row.UpdatedBy = $scope.Profile.Fullname;
 
         $scope.updateFullname = function () { 
-            $scope.person_modal.FullName = $scope.person_modal.FirstName + " " + $scope.person_modal.LastName;
+            $scope.row.FullName = $scope.row.FirstName + " " + $scope.row.LastName;
         };
 
         $scope.save = function () {
 
-            var save_result = PermitService.savePermitPerson($scope.person_modal);
+            var save_result = PermitService.savePermitPerson($scope.row);
 
             save_result.$promise.then(function () {
                 $modalInstance.close(save_result);
