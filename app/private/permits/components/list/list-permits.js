@@ -250,6 +250,8 @@
                 templateUrl: 'app/private/permits/components/contacts/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_person) {
                 $scope.PermitPersons = PermitService.getAllPersons();
             });
@@ -500,6 +502,8 @@
                 templateUrl: 'app/private/permits/components/list/templates/add-activity-modal.html',
                 controller: 'ActivityModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_activity) {
                 $scope.selectPermit($scope.row.Id);
                 // $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
@@ -524,6 +528,8 @@
                 templateUrl: 'app/private/permits/components/list/templates/add-contact-modal.html',
                 controller: 'ContactModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_contact) {
                 $scope.PermitContacts = PermitService.getPermitContacts(saved_contact.PermitId);
                 $scope.PermitContacts.$promise.then(function () {
@@ -545,6 +551,8 @@
                 templateUrl: 'app/private/permits/components/list/templates/add-parcel-modal.html',
                 controller: 'ParcelModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_parcel) {
                 $scope.PermitParcels = PermitService.getPermitParcels(saved_parcel.PermitId);
                 $scope.PermitParcels.$promise.then(function () {

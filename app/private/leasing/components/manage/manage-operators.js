@@ -92,6 +92,8 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/add-operator-modal.html',
                 controller: 'AddOperatorModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             });
         }
 

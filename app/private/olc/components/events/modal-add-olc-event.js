@@ -493,6 +493,8 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             if ((typeof $scope.event_row.Description !== 'undefined') && ($scope.event_row.Description !== null))
                 $scope.event_row.Description = convertStringWithSeparatorsAndReturnsToNormalString($scope.event_row.Description);
 
+            if ($scope.event_row.FileAttach)
+                $scope.event_row.FileAttach = undefined;
 
             $modalInstance.dismiss();
         };
@@ -511,7 +513,9 @@ var modal_add_olc_event = ['$scope', '$rootScope', '$uibModalInstance', '$uibMod
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/olc/components/events/templates/modal-migrate-olc-event.html',
                 controller: 'OlcMigrateEventCtrl',
-                scope: $scope //very important to pass the scope along...
+                scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 

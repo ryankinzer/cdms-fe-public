@@ -282,7 +282,9 @@
                             }
 
                         }
-                        else if (field.ControlType === "select" && data_row[col] && typeof data_row[col] === "string") {
+                        //else if (field.ControlType === "select" && data_row[col] && typeof data_row[col] === "string") {
+                        else if ((field.ControlType === "select" || field.ControlType === "select-number" || field.ControlType === "fisherman-select")
+                            && data_row[col] && typeof data_row[col] === "string") {
                             //map select value - 
                             
                             //IF the value actually matches VALUE in PV then map the ID of the PV...
@@ -373,6 +375,8 @@
                 templateUrl: 'app/core/datasets/components/dataset-import/templates/modal-map-locations.html',
                 controller: 'ModalMapLocationsCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved) { 
 
                 //console.dir($scope.mappedLocations);

@@ -32,6 +32,8 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
                 templateUrl: 'app/private/permits/components/contacts/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_person) { 
 
                 saved_person.Label = (saved_person.Organization) ? saved_person.Organization : saved_person.FullName;

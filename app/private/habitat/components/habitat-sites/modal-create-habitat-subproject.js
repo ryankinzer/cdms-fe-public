@@ -255,6 +255,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 
         //we are always here with a subproject id, so first handle saving the location (if new) so that saveHabSubproject doesn't fail (it requires a valid location)
 
+        var loc_promise = null;
+
         // Are we working with a new point, or an existing one?
         if ($scope.NewPoint) {
             console.log(" -------------- creating a new point 000000000000000000 ");
@@ -286,7 +288,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
             console.log("newLocation is next...");
             console.dir(newLocation);
 
-            var loc_promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
+            loc_promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
 
             loc_promise.$promise.then(function () {
                 console.log("Adding this to the project locations: ");
@@ -304,8 +306,44 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
         }
         else {
             console.log("We are working with an existing location...");
-            promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
-            $scope.finishAndClose(promise, saveRow);
+
+            // Get the SdeObjectId for the location.
+            var intSdeObjectId = -1;
+            angular.forEach($scope.project.Locations, function (loc) {
+                if (loc.Id === $scope.row.LocationId) {
+                    intSdeObjectId = loc.SdeObjectId;
+                }
+            });
+
+            var existingLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
+            existingLocation.Id = $scope.row.LocationId;
+            existingLocation.Label = saveRow.ProjectName;
+            existingLocation.Description = saveRow.ProjectDescription;
+            existingLocation.GPSEasting = saveRow.GPSEasting;
+            existingLocation.GPSNorthing = saveRow.GPSNorthing;
+            existingLocation.ProjectId = parseInt($scope.projectId);
+            existingLocation.SubprojectId = $scope.subprojectId;
+            existingLocation.SdeObjectId = intSdeObjectId;  //$scope.SdeObjectId; // We set this in the $scope.save function.
+            existingLocation.LocationTypeId = LOCATION_TYPE_Hab;
+            existingLocation.WaterBodyId = saveRow.WaterBodyId;
+
+            console.log("existingLocation is next...");
+            console.dir(existingLocation);
+
+            //throw ("Stopping right here...");
+
+            // Note this saves new, and updates existing locations.
+            loc_promise = CommonService.saveNewProjectLocation($scope.project.Id, existingLocation);
+
+            loc_promise.$promise.then(function () {
+                console.dir(loc_promise);
+
+                $scope.reloadSubprojectLocations();
+
+                //ok once this is done we can save our hab sub project
+                promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
+                $scope.finishAndClose(promise, saveRow);
+            });
         }	
 	};
 

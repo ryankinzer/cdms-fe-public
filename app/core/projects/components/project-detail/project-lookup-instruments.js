@@ -237,6 +237,8 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
                 controller: 'ModalCreateInstrumentCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -322,6 +324,8 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
                 controller: 'ModalCreateInstrumentCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_instrument) { 
                 //console.log("ok - we saved so update the grid...");
                 var total = scope.project.Instruments.length;
@@ -430,6 +434,8 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 templateUrl: 'app/core/common/components/modals/templates/modal-new-accuracycheck.html',
                 controller: 'ModalAddAccuracyCheckCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
