@@ -1,0 +1,43 @@
+﻿            <div class="modal-header">
+                <h4>{{header_message}}</h4>
+            </div>
+
+            <div class="modal-body modal-form">
+                <div style="margin-top: 30px;"></div>
+
+                    <div ng-repeat="field in contactsGrid.columnDefs" ng-switch on="field.ControlType">
+                        <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                        <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                        <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                        <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                        <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
+                        <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                        <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                        <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
+                        <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
+                        <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                        <ctuir-text-field ng-switch-default></ctuir-text-field>
+                    </div>
+
+                <div>
+                    <hr />
+                    <div class="header-label">Changed by:</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" value="{{row.UpdatedBy}}" ng-disabled="true" />
+                    </div>
+
+                    <div class="header-label">Changed date:</div>
+                    <div class="header-value">
+                        <input class="form-control" type="text" value="{{row.LastUpdated | date : shortDate}}" ng-disabled="true" />
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+            </div>
+
