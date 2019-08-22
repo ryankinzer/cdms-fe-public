@@ -121,7 +121,7 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
 
             $scope.saved_event.$promise.then(function () {
                 console.log("done and success updating the files");
-                if($scope.modes_notifications.contains($scope.mode))
+                if($scope.modes_notifications.contains($scope.mode) && !$scope.saved_event.ResponseDate)
                     $scope.Results.SuccessMessage = "Saved and notifications sent.";
                 else    
                     $scope.Results.SuccessMessage = "Saved.";
