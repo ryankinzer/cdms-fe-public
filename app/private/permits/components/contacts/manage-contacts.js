@@ -15,9 +15,9 @@ var permit_contacts = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 $scope.contactsGrid.api.setRowData($scope.contacts);
             });
     
-            $scope.DatasetColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
+            $scope.ContactsDatasetColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
 
-            $scope.contactsGrid.columnDefs = angular.copy($scope.DatasetColumnDefs.HeaderFields);
+            $scope.contactsGrid.columnDefs = angular.copy($scope.ContactsDatasetColumnDefs.HeaderFields);
             $scope.contactsGrid.columnDefs.unshift({ colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 60, menuTabs: [] });
                 
             $scope.contactsGridDiv = document.querySelector('#contacts-grid');
