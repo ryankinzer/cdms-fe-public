@@ -324,13 +324,13 @@
             onSelectionChanged: function (params) {
                 $scope.permitEventsGrid.selectedItem = $scope.permitEventsGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-            },
-            getRowHeight: function (params) {
-                var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
-                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                var file_height = 25 * (getFilesArrayAsList(params.data.Files).length); //count up the number of file lines we will have.
-                return (comment_height > file_height) ? comment_height : file_height;
-            },
+            }
+            // getRowHeight: function (params) {
+            //     var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
+            //     var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+            //     var file_height = 25 * (getFilesArrayAsList(params.data.Files).length); //count up the number of file lines we will have.
+            //     return (comment_height > file_height) ? comment_height : file_height;
+            // },
         }
 
         $scope.permitFilesGrid = {
@@ -614,7 +614,7 @@
 
             $scope.PermitTypes = PermitService.getPermitTypes(); //load the permit types fresh -- these have our permitnumber to increment...
 
-            $scope.row = GridService.getNewRow($scope.permitsGrid.columnDefs);;
+            $scope.row = $scope.permitsGrid.selectedItem = GridService.getNewRow($scope.permitsGrid.columnDefs);
 
             $scope.PermitContacts = [];
             $scope.PermitParcels = [];
@@ -952,7 +952,6 @@
             if ($scope.row.hasOwnProperty(field.DbColumnName)) { //make sure it is a header field from the permit
 
                 //did the data actually change?
-
                 //the selected original permit
                 var selected = $scope.permitsGrid.api.getSelectedRows()[0];
 
@@ -964,10 +963,13 @@
                     });
                 }
 
-                if (selected[field.DbColumnName] != $scope.row[field.DbColumnName]) {
+                if (selected && selected[field.DbColumnName] != $scope.row[field.DbColumnName]) {
                     $scope.row.dataChanged = true;
                 }
 
+                if(!selected && !$scope.row.Id) //then it is a new record
+                    $scope.row.dataChanged = true;
+                    
             }
 
             $rootScope.$emit('headerEditingStopped', field); //offer child scopes a chance to do something, i.e. add activity modal...
