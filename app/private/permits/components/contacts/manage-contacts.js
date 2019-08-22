@@ -15,17 +15,15 @@ var permit_contacts = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 $scope.contactsGrid.api.setRowData($scope.contacts);
             });
     
-            var ColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
-            
+            $scope.DatasetColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
 
-            ColumnDefs.HeaderFields.unshift({ colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 60, menuTabs: [] });
-            $scope.contactsGrid.columnDefs = ColumnDefs.HeaderFields;
+            $scope.contactsGrid.columnDefs = angular.copy($scope.DatasetColumnDefs.HeaderFields);
+            $scope.contactsGrid.columnDefs.unshift({ colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 60, menuTabs: [] });
                 
             $scope.contactsGridDiv = document.querySelector('#contacts-grid');
             new agGrid.Grid($scope.contactsGridDiv, $scope.contactsGrid);
 
         });
-
 
         var EditLinksTemplate = function (param) {
 

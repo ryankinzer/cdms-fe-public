@@ -1,5 +1,5 @@
-﻿var modal_add_permitperson = ['$scope', '$uibModalInstance', 'PermitService',
-    function ($scope, $modalInstance, PermitService) {
+﻿var modal_add_permitperson = ['$scope', '$uibModalInstance', 'PermitService', 'GridService',
+    function ($scope, $modalInstance, PermitService, GridService) {
 
         $scope.header_message = "Edit Contact Person";
 
@@ -29,6 +29,26 @@
             });
         };
 
+        $scope.onHeaderEditingStopped = function (field, logerrors) { 
+            //build event to send for validation
+            console.log("onHeaderEditingStopped: " + field.DbColumnName);
+            var event = {
+                colDef: field,
+                node: { data: $scope.row },
+                scope: $scope,
+                value: $scope.row[field.DbColumnName],
+                type: 'onHeaderEditingStopped'
+            };
+
+console.dir(event);
+
+            GridService.validateCell(event);
+            GridService.fireRule("OnChange", event); 
+        }
+
+        $scope.toggleMailingAddress = function(){
+            console.log("mailing address toggle fired");
+        }
 
         $scope.cancel = function () {
             $modalInstance.dismiss();

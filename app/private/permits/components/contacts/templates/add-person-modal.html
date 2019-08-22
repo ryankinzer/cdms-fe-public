@@ -5,7 +5,7 @@
             <div class="modal-body modal-form">
                 <div style="margin-top: 30px;"></div>
 
-                    <div ng-repeat="field in contactsGrid.columnDefs" ng-switch on="field.ControlType">
+                    <div ng-repeat="field in DatasetColumnDefs.HeaderFields" ng-switch on="field.ControlType">
                         <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
                         <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                         <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
