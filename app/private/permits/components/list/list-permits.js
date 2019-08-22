@@ -24,11 +24,9 @@
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
         $scope.PermitFileTypes = CommonService.getMetadataProperty(METADATA_PROPERTY_PERMIT_FILETYPES);
         $scope.contactsdataset = DatasetService.getDataset(PERMITCONTACTS_DATASETID);
-        $scope.contactsGrid = {};
 
         $scope.contactsdataset.$promise.then(function () {
-            var ColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
-            $scope.contactsGrid.columnDefs = ColumnDefs.HeaderFields;
+            $scope.ContactsDatasetColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
         });
 
         $scope.PermitFileTypes.$promise.then(function () {
