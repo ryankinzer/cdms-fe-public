@@ -8,7 +8,7 @@
         //if we're not editing then we are creating a new one
         if (!$scope.row) {
             $scope.header_message = "Add Contact Person";
-            $scope.row = { Id: 0 };
+            $scope.row = { Id: 0, IsMailingDifferent: false };
         }
 
         //console.dir($scope.row);
@@ -40,15 +40,29 @@
                 type: 'onHeaderEditingStopped'
             };
 
-console.dir(event);
-
             GridService.validateCell(event);
             GridService.fireRule("OnChange", event); 
         }
 
         $scope.toggleMailingAddress = function(){
-            console.log("mailing address toggle fired");
+            if($scope.row.IsMailingDifferent){
+                console.log("showing physical fields")
+                jQuery("[id^='field-Physical']").show();
+            }
+            else {
+                console.log("hiding physical fields")
+                jQuery("[id^='field-Physical']").hide();
+            }
+                
         }
+
+        $modalInstance.opened.then(function(){
+            setTimeout(function(){
+                $scope.toggleMailingAddress();
+            },500)
+            
+        });
+        
 
         $scope.cancel = function () {
             $modalInstance.dismiss();

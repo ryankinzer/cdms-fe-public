@@ -1,4 +1,4 @@
-<div class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;">
+<div class="form-group" id="field-{{field.DbColumnName}}" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;">
     <div data-title="{{field.cdmsField.Field.Description}}" class="header-label">{{field.Label}}:</div>
     <div class="header-value">
         <select class="form-control" ng-change="onHeaderEditingStopped(field)" ng-model="row[field.DbColumnName]" ng-options="id as name for (id, name) in selectOptions"></select>
