@@ -63,6 +63,8 @@ var permit_contacts = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 templateUrl: 'app/private/permits/components/contacts/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function(saved){
                 $scope.saveContactCallback();
             });
