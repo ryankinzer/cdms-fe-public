@@ -46,12 +46,12 @@
 
         $scope.toggleMailingAddress = function(){
             if($scope.row.IsMailingDifferent){
-                console.log("showing physical fields")
-                jQuery("[id^='field-Physical']").show();
+                console.log("showing mailing fields")
+                jQuery("[id^='field-Mailing']").show();
             }
             else {
-                console.log("hiding physical fields")
-                jQuery("[id^='field-Physical']").hide();
+                console.log("hiding mailing fields")
+                jQuery("[id^='field-Mailing']").hide();
             }
                 
         }
