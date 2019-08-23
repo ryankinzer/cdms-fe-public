@@ -463,7 +463,7 @@
 
         $scope.permitFilesGrid.columnDefs = [
             //{ colId: 'EditLinks', cellRenderer: EditFileLinksTemplate, width: 60, menuTabs: [], hide: true },
-            { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: [] },
+            { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Description', headerName: 'File Type', width: 200, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'Description', headerName: 'File Type', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -761,6 +761,23 @@
                         $scope.PermitStatus.push(route);
                     }
                 });
+
+                //rule: if the permit is already saved, PermitType should be disabled
+                if($scope.row.Id){
+                    jQuery("#field-PermitType select.form-control").attr("disabled","disabled");
+                }
+                else{
+                    jQuery("#field-PermitType select.form-control").removeAttr("disabled");
+                }
+                    
+
+                $('textarea').each(function () {
+                    this.setAttribute('style', 'min-height: 130px','height:auto; height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+                  }).on('input', function () {
+                    this.style.height = 'auto';
+                    this.style.minheight = '130px';
+                    this.style.height = (this.scrollHeight) + 'px';
+                  });
 
             });
 

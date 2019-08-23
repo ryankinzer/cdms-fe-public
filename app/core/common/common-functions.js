@@ -2213,3 +2213,22 @@ if (!String.prototype.includes) {
     }
   };
 }
+
+//returns the next business day with the given format (default to 'L')
+function getNextBusinessDay(dateFormat){
+    if(!dateFormat)
+    dateFormat = 'L';
+
+    let dayIncrement = 1;
+
+    if (moment().day() === 5) {
+        // set to monday
+        dayIncrement = 3;
+    } else if (moment().day() === 6) {
+        // set to monday
+        dayIncrement = 2;
+    }
+
+return moment().add(dayIncrement,'d').format(dateFormat);
+
+}

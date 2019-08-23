@@ -39,7 +39,6 @@ var permit_contacts = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             return div;
         };
 
-
         $scope.deleteContact = function () { 
 
             if (confirm("Are you sure you want to delete this contact?")) {

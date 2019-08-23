@@ -36,11 +36,15 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         if ($scope.mode == 'new_inspection') {
             $scope.permitEventsGrid.columnDefs.forEach(function (coldef) {
                 if (coldef.DbColumnName == 'Reference')
-                    coldef.Label = "Inspection Type";
+                    coldef.Label = "Inspection Description";
 
                 if (coldef.DbColumnName == 'RequestDate')
                     coldef.Label = "Date Inspection Desired";
             });
+
+            //also set the request date to the next business day
+            $scope.row.RequestDate = getNextBusinessDay('L');
+
         } else {
             $scope.permitEventsGrid.columnDefs.forEach(function (coldef) { 
                 if (coldef.DbColumnName == 'Reference')
