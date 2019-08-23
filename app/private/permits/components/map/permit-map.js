@@ -136,7 +136,7 @@
 
             $scope.map[selector](e.mapPoint, null, function (features) {
                 if (features.length == 0) {
-                    alert('No '+$scope.clickselect+' found at that location.');
+                    alert('No parcel found at that location.');
                     $scope.map.loading = false;
                     $scope.$apply(); //bump angular
                     return;

@@ -358,7 +358,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                     else {
                         //if ((typeof row['InterviewTime'] !== 'undefined' && row['InterviewTime'] !== null) && ((typeof event.scope.row['NumberAnglersInterviewed'] === 'undefined') || (event.scope.row['NumberAnglersInterviewed'] === 0)))
                         //    row_errors.push('[InterviewTime] An interview cannot be present, when NumberAnglersInterviewed = 0');
-
+                        console.log("Firing a rule: " + type + " on " + field.DbColumnName);
                         eval(MasterFieldRule[type]);
                     }
                 }

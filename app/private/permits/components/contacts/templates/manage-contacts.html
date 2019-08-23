@@ -1,0 +1,17 @@
+<h2>Manage Contacts</h2>
+
+Total number of contacts listed: <b>{{contacts.length}}</b><br /><br />
+
+<div>
+    <button class="btn btn-sm" style="margin-bottom: 20px;" ng-click="openAddContact()">New Contact</button>
+    <div class="right">
+        <div ng-show="saveResults" style="float: left;">
+            <div ng-click="saveResults=null" ng-show="saveResults.success" class="delete-error alert alert-success">Deleted</div>
+            <div ng-click="saveResults=null" ng-show="saveResults.failure" class="delete-error alert alert-danger">Error</div>
+        </div>
+        <button project-role="editor" class="btn right btn-danger" ng-show="contactsGrid.selectedItems.length > 0" ng-click="deleteContact()">Delete</button>
+
+    </div>
+</div>
+
+<div id="contacts-grid" style="height: 600px;width:100%;" class="ag-theme-blue"></div>

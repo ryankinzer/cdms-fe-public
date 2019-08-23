@@ -23,6 +23,11 @@
         $scope.dataset = DatasetService.getDataset(PERMIT_DATASETID);
         $scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
         $scope.PermitFileTypes = CommonService.getMetadataProperty(METADATA_PROPERTY_PERMIT_FILETYPES);
+        $scope.contactsdataset = DatasetService.getDataset(PERMITCONTACTS_DATASETID);
+
+        $scope.contactsdataset.$promise.then(function () {
+            $scope.ContactsDatasetColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
+        });
 
         $scope.PermitFileTypes.$promise.then(function () {
             $scope.PermitFileTypes = angular.fromJson($scope.PermitFileTypes.PossibleValues);
@@ -57,6 +62,11 @@
                     });
                 }
 
+                //if there is an incoming filter, select it
+                if($routeParams.filter) {
+                    $scope['show'+$routeParams.filter]();
+                }
+
             });
 
             //now do some caching...
@@ -88,8 +98,6 @@
             if (!$scope.permitEventsGridDiv) {
                 $scope.permitEventsGridDiv = document.querySelector('#permit-events-grid');
                 new agGrid.Grid($scope.permitEventsGridDiv, $scope.permitEventsGrid);
-                //TODO: if permission to edit:
-                //$scope.permitEventsGrid.columnApi.setColumnVisible("EditLinks", true);
             }
 
             $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
@@ -237,7 +245,7 @@
             $scope.person_modal = getById($scope.PermitPersons, person_id);
             console.dir($scope.person_modal.Id);
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/add-person-modal.html',
+                templateUrl: 'app/private/permits/components/contacts/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
                 backdrop: "static",
@@ -314,13 +322,13 @@
             onSelectionChanged: function (params) {
                 $scope.permitEventsGrid.selectedItem = $scope.permitEventsGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
-            },
-            getRowHeight: function (params) {
-                var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
-                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
-                var file_height = 25 * (getFilesArrayAsList(params.data.Files).length); //count up the number of file lines we will have.
-                return (comment_height > file_height) ? comment_height : file_height;
-            },
+            }
+            // getRowHeight: function (params) {
+            //     var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
+            //     var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+            //     var file_height = 25 * (getFilesArrayAsList(params.data.Files).length); //count up the number of file lines we will have.
+            //     return (comment_height > file_height) ? comment_height : file_height;
+            // },
         }
 
         $scope.permitFilesGrid = {
@@ -362,7 +370,7 @@
 
             var div = document.createElement('div');
 
-            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Modify';
             editBtn.addEventListener('click', function (event) {
                 event.preventDefault();
                 $scope.openContactModal(param.data);
@@ -495,10 +503,11 @@
                 backdrop: "static",
                 keyboard: false
             }).result.then(function (saved_activity) {
-                $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
-                $scope.PermitEvents.$promise.then(function () {
-                    $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
-                });
+                $scope.selectPermit($scope.row.Id);
+                // $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
+                // $scope.PermitEvents.$promise.then(function () {
+                //     $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                // });
             });
         }
 
@@ -510,6 +519,8 @@
             } else {
                 $scope.contact_modal = { PermitId: $scope.row.Id };
             }
+
+            console.dir($scope.contact_modal);
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/permits/components/list/templates/add-contact-modal.html',
@@ -601,7 +612,7 @@
 
             $scope.PermitTypes = PermitService.getPermitTypes(); //load the permit types fresh -- these have our permitnumber to increment...
 
-            $scope.row = GridService.getNewRow($scope.permitsGrid.columnDefs);;
+            $scope.row = $scope.permitsGrid.selectedItem = GridService.getNewRow($scope.permitsGrid.columnDefs);
 
             $scope.PermitContacts = [];
             $scope.PermitParcels = [];
@@ -909,7 +920,7 @@
 
         $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
 
-            console.log("onHeaderEditingStopped: " + field.DbColumnName);
+            //console.log("onHeaderEditingStopped: " + field.DbColumnName);
 
             //build event to send for validation
             var event = {
@@ -939,7 +950,6 @@
             if ($scope.row.hasOwnProperty(field.DbColumnName)) { //make sure it is a header field from the permit
 
                 //did the data actually change?
-
                 //the selected original permit
                 var selected = $scope.permitsGrid.api.getSelectedRows()[0];
 
@@ -951,17 +961,20 @@
                     });
                 }
 
-                if (selected[field.DbColumnName] != $scope.row[field.DbColumnName]) {
+                if (selected && selected[field.DbColumnName] != $scope.row[field.DbColumnName]) {
                     $scope.row.dataChanged = true;
                 }
 
+                if(!selected && !$scope.row.Id) //then it is a new record
+                    $scope.row.dataChanged = true;
+                    
             }
 
             $rootScope.$emit('headerEditingStopped', field); //offer child scopes a chance to do something, i.e. add activity modal...
 
             //if this is a new permit and they changed the Permit Type, then update the permit number
-            console.log(field.DbColumnName);
-            console.log($scope.row.Id);
+            //console.log(field.DbColumnName);
+            //console.log($scope.row.Id);
             if (field.DbColumnName == 'PermitType' && !$scope.row.Id) {
                 $scope.generatePermitNumber();
             }
@@ -1046,6 +1059,7 @@
                         }
                     });
 
+                    $scope.selectPermit($scope.row.Id); //reload
                     //var selectedNode = $scope.permitsGrid.api.getSelectedRows()[0];
 
                     $scope.permitsGrid.api.setRowData($scope.permits);
