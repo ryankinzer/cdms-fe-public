@@ -66,6 +66,7 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         $scope.save = function () {
 
             $scope.Results.DoneSaving = false;
+            $scope.Results.IsSaving = true;
 
             $scope.row.ByUser = $scope.Profile.Id;
 
@@ -91,10 +92,22 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
                     delete $scope.row.ReviewersContact[key];
             });
 
+            //$scope.row.FilesToInclude = angular.toJson($scope.row.FilesToInclude);
+            var new_files = [];
+            $scope.row.FilesToInclude.forEach(function(file){
+                console.dir(file);
+                file = angular.fromJson(file);
+                delete file.User;
+                new_files.push(file);
+            })
+
+            var to_save = angular.copy($scope.row);
+            to_save.FilesToInclude = new_files;
+
             //if this is a new event, save it first to get the ID
             if (!$scope.row.Id) {
 
-                var new_event = PermitService.savePermitEvent($scope.row);
+                var new_event = PermitService.savePermitEvent(to_save);
 
                 new_event.$promise.then(function () {
                     console.log("done and success saving event!");
@@ -118,12 +131,13 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         //call back from save above once the files are done processing and we're ready to save the item
         $scope.modalFile_saveParentItem = function (saveRow) {
 
-            $scope.Results.DoneSaving = true;
-
             //save again to update with the files we uploaded
             $scope.saved_event = PermitService.savePermitEvent(saveRow);
 
             $scope.saved_event.$promise.then(function () {
+
+                $scope.Results.DoneSaving = true;
+
                 console.log("done and success updating the files");
                 if($scope.modes_notifications.contains($scope.mode) && !$scope.saved_event.ResponseDate)
                     $scope.Results.SuccessMessage = "Saved and notifications sent.";
@@ -217,6 +231,10 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         
         if (typeof $scope.row.ItemType === 'string') {
             $scope.loadRecipientsFromRoute();
+        }
+
+        $scope.getFileLabel = function(file){
+            return file.Name + ((file.Description) ? " ("+file.Description+")" : "");
         }
 
         //setup an event listener that fires from list-permits.js every time a header field is changed. we listen for ItemType changing.
