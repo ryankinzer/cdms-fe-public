@@ -281,9 +281,22 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 		$scope.checkAllRowsForDuplicates = function () {
 			console.log('<<<---checkAllRowsForDuplicates--->>>');
 
-            if (!$scope.dataset.Config.EnableDuplicateChecking || !$scope.dataset.Config.DuplicateCheckFields.contains('ActivityDate')) {
-                return; //early return, bail out since we aren't configured to duplicate check or don't have ActivityDate as a key
-            }
+			$scope.DuplicateCheckFields = [];
+
+			if (!$scope.dataset.Config.EnableDuplicateChecking || !$scope.dataset.Config.DuplicateCheckFields.contains('ActivityDate')) {
+				return; //early return, bail out since we aren't configured to duplicate check or don't have ActivityDate as a key
+			}
+			else {
+				//JN: but if this dataset has been configured for dup check, we need to get those special fields, yo! 
+				console.log('<<<---finding dup check fields--->>>');
+				$scope.dataset.Config.DuplicateCheckFields.forEach(function (field) {
+					if (field != 'ActivityDate' && field != 'LocationId') {
+						console.log('Add to DuplicatedCheckFields: ' + field);
+						$scope.DuplicateCheckFields.push(field);
+					} 
+				})
+
+			}
 
             $scope.ActivitiesChecked = [];
             $scope.num_checked = 0;
@@ -293,14 +306,14 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 				var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
 				var the_location = + node.data.Activity.LocationId;
 				var the_key = the_date + '_' + the_location;
-				//console.log(the_key);
+				console.log('For each node in the grid, log the_key: ' + the_key);
 
 				if (!$scope.ActivitiesChecked.contains(the_key)) {
                     //ok, let's check this one...
-					//console.log('Check ' + the_key);
+					console.log('Okay--we need to test this key for dups:  ' + the_key);
 					//console.dir(node);
 					$scope.ActivitiesChecked.push(the_key);
-                    $scope.checkRowForDuplicates(node, the_date, the_location); 
+                    $scope.checkRowForDuplicates(node, the_date, the_location, the_key); 
                 }
             });
         };
@@ -309,8 +322,9 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
 		//JN: TRIBAL CDMS Edit
 		//checks a row(node) for duplicate record. if so, pushes to ActivityDuplicates
-		$scope.checkRowForDuplicates = function (node, the_date, the_location) {
-			//console.log('<<<---checkRowForDuplicates--->>>');
+		$scope.checkRowForDuplicates = function (node, the_date, the_location, the_key) {
+			console.log('<<<---checkRowForDuplicates--->>>');
+			//console.dir(node);
 
 			var row = {
 				'Activity': {
@@ -319,6 +333,13 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 					'Id': 0,
 				}
 			};
+
+			//JN: add our dup check fields to this row to grid-service can run correctly
+			$scope.DuplicateCheckFields.forEach(function (field) {
+				console.log('<<<---node.data.field value: ' + node.data[field] + '--->>>');
+				//console.dir(node);
+				row.Activity[field] = node.data[field];
+			})
 
 			//if this is already marked as a duplicate, don't bother sending off another request...
 
