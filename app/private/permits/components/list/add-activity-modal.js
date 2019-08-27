@@ -92,17 +92,18 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
                     delete $scope.row.ReviewersContact[key];
             });
 
-            //$scope.row.FilesToInclude = angular.toJson($scope.row.FilesToInclude);
-            var new_files = [];
-            $scope.row.FilesToInclude.forEach(function(file){
-                console.dir(file);
-                file = angular.fromJson(file);
-                delete file.User;
-                new_files.push(file);
-            })
-
             var to_save = angular.copy($scope.row);
-            to_save.FilesToInclude = new_files;
+
+            if($scope.row.FilesToInclude){
+                var new_files = [];
+                $scope.row.FilesToInclude.forEach(function(file){
+                    console.dir(file);
+                    file = angular.fromJson(file);
+                    delete file.User;
+                    new_files.push(file);
+                })
+                to_save.FilesToInclude = new_files;
+            }
 
             //if this is a new event, save it first to get the ID
             if (!$scope.row.Id) {

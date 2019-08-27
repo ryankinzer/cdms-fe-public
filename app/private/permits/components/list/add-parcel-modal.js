@@ -10,12 +10,16 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
         }
 
         $scope.parcelEntry = "";
-        $scope.parcelMatches = "";
+        $scope.parcelMatches = [];
+
+        $scope.Selected = {Parcel : []};
 
         $scope.parcelEntryUpdate = function () { 
             $scope.parcelEntry = $scope.parcelEntry.toUpperCase();
-            $scope.parcelMatches = "";
+            $scope.parcelMatches = [];
+            $scope.Selected.Parcel.length = 0;
             $scope.parcel_modal = {};
+
 
             var entryLength = $scope.parcelEntry.length;
 
@@ -24,18 +28,21 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
                 if (parcel.ParcelId == null || parcel.ParcelId == "")
                     return;
 
-                if (parcel.ParcelId == $scope.parcelEntry) {
-                    $scope.parcel_modal = parcel;
-                    console.dir(parcel);
-                }
-                else 
-                { 
-                    if (entryLength > 2 && parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry) {
-                        $scope.parcelMatches += parcel.ParcelId + "\n";
+                if (entryLength > 2 && parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry) {
+
+                    if (parcel.ParcelId == $scope.parcelEntry) {
+                        $scope.parcel_modal = parcel;
+                        $scope.Selected.Parcel.push(angular.toJson($scope.parcel_modal)); //this is the trick
                     }
+
+                    $scope.parcelMatches.push(parcel);
                 }
             });
         };
+
+        $scope.selectParcel = function(){
+            $scope.parcel_modal = angular.fromJson($scope.Selected.Parcel[0]); //this is the trick
+        }
 
         $scope.save = function () {
 
