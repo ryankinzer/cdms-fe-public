@@ -103,6 +103,8 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
                     new_files.push(file);
                 })
                 to_save.FilesToInclude = new_files;
+            }else{
+                to_save.FilesToInclude = [];
             }
 
             //if this is a new event, save it first to get the ID
