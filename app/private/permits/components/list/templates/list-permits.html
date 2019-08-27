@@ -37,8 +37,9 @@
             <div ng-show="row.PermitType==15 && (row.PermitStatus=='Approved' || row.PermitStatus=='Conditionally Approved')" style="margin-top: -40px; margin-right:9px;" class="right"><a href="https://paluutreports.ctuir.org/Reports/report/TPO/DevelopmentPermit?PermitNumber={{row.PermitNumber}}" target="_blank" role="button" class="btn btn-sm">Generate Permit</a></div>
 
             <div ng-show="Profile.hasRole('Permits') && row.dataChanged" style="margin: 10px; float: right;">
-                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-                <button class="btn btn-primary" ng-click="save()">Save</button>
+                <div class="alert alert-danger" ng-show="row.hasError">{{row.errorMessage}}</div>
+                <button ng-disabled="row.isSaving" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button ng-disabled="row.isSaving" class="btn btn-primary" ng-click="save()">Save</button>
             </div>
 
 
@@ -285,8 +286,9 @@
             </form>
             <div class="modal-footer">
                 <div ng-show="Profile.hasRole('Permits') && row.dataChanged" style="margin: 10px; float: right;">
-                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-                    <button class="btn btn-primary" ng-click="save()">Save</button>
+                    <div class="alert alert-danger" ng-show="row.hasError">{{row.errorMessage}}</div>
+                    <button ng-disabled="row.isSaving" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                    <button ng-disabled="row.isSaving" class="btn btn-primary" ng-click="save()">Save</button>
                 </div>
             </div>
 
