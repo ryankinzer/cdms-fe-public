@@ -78,7 +78,7 @@
 
             $scope.permits.forEach( function (permit) {
 
-                if (permit.PermitNumber && permit.PermitNumber.indexOf(in_string) !== -1) {
+                if (permit.PermitNumber && permit.PermitNumber.toUpperCase().indexOf(in_string) !== -1) {
                     $scope.searchResults.push(permit);
                 }
                 
