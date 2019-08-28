@@ -8,6 +8,7 @@
 
         $scope.currentPage = "All";
         $scope.row = null;
+        $scope.clearingFilters = false;
 
         $scope.PermitContacts = [];
         $scope.PermitParcels = [];
@@ -34,12 +35,26 @@
         });
 
         $scope.dataset.$promise.then(function () {
-            console.log(" -- dataset back -- ");
+            // console.log(" -- dataset back -- ");
             $scope.AllColumnDefs = GridService.getAgColumnDefs($scope.dataset);
             $scope.permitsGrid.columnDefs = $scope.AllColumnDefs.HeaderFields;
+
+            //setup some custom "tweaks" to the column definition defaults TODO: might be a better way
             $scope.permitsGrid.columnDefs.forEach(function (coldef) {
-                if (coldef.DbColumnName == 'PermitNumber')
+                if (coldef.DbColumnName == 'PermitNumber'){
                     coldef.Disabled = true;
+                    coldef.filter='agTextColumnFilter'; //change from the default (checkboxes) to a "contains" filter
+                }
+                if(coldef.DbColumnName == 'ProjectName' || coldef.DbColumnName == 'SiteAddress')
+                    coldef.filter='agTextColumnFilter'; 
+
+                if(coldef.DbColumnName == 'ReviewsRequired'){
+                    coldef.valueFormatter = function (params) {
+                        return valueFormatterArrayToList(params.node.data.ReviewsRequired);
+                    }
+                }
+                    
+                
             });
 
             //activate the grid with the permits data
@@ -49,7 +64,7 @@
             $scope.permits = PermitService.getAllPermits();
 
             $scope.permits.$promise.then(function () {
-                console.log(" -- permits back -- ");
+                // console.log(" -- permits back -- ");
                 $scope.permitsGrid.api.setRowData($scope.permits);
 
                 //if there is an incoming Id, select it.
@@ -164,6 +179,11 @@
             filter_component.selectEverything();
         };
 
+        $scope.clearFilters = function(){
+            $scope.clearingFilters = true;
+            $scope.permitsGrid.api.setFilterModel(null);
+        }
+
         //requirement: can navigate permits by up and down arrow keys
         $scope.keyboardNavigation = function (params) {
             console.log("my navigation");
@@ -208,6 +228,7 @@
             columnDefs: null,
             rowData: null,
             rowSelection: 'single',
+            hasFilters: false,
             onSelectionChanged: function (params) {
 
                 if ($scope.row && $scope.row.dataChanged) {
@@ -235,6 +256,14 @@
                 editable: false,
                 sortable: true,
                 resizable: true,
+            },
+            onFilterChanged: function(params){
+                if($scope.clearingFilters == true)
+                    $scope.permitsGrid.hasFilters = $scope.clearingFilters = false;
+                else
+                    $scope.permitsGrid.hasFilters = true;
+                    
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
             navigateToNextCell: $scope.keyboardNavigation
         }
