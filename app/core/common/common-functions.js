@@ -1938,8 +1938,8 @@ function valueFormatterBoolean(in_bool) {
 // if it isn't an array, it returns what we got.
 function valueFormatterArrayToList(the_array) {
 
-    if (!Array.isArray(the_array) || is_empty(the_array))
-        return "";
+    if (is_empty(the_array))
+         return "";
 
     var list = the_array;
 
@@ -1957,7 +1957,7 @@ function valueFormatterArrayToList(the_array) {
         console.log("problem parsing: " + the_array );
     }
 
-    console.dir(list);
+    //console.dir(list);
 
     return list;
 
