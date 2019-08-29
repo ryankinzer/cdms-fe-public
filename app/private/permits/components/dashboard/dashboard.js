@@ -113,6 +113,11 @@
                 editable: false,
                 sortable: true,
                 resizable: true,
+                cellStyle: function(params){
+                    if(moment(params.data.ExpireDate).isBefore(moment())) {
+                        return {color: 'red'}
+                    }
+                }
             }
         };
 
