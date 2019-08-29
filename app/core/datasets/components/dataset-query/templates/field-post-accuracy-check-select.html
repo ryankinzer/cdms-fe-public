@@ -1,4 +1,5 @@
 <select size="10" class="form-control" ng-model="Criteria.Value" convert-to-number>
     <option value="">- Is Empty -</option>
-    <option ng-repeat="check in row.Activity.Instrument.AccuracyChecks" value="{{check.Id}}">{{check | dataGrade}} on {{check.CheckDate | date}}</option>
+    <!--<option ng-repeat="check in row.Activity.Instrument.AccuracyChecks" value="{{check.Id}}">{{check | dataGrade}} on {{check.CheckDate | date}}</option>-->
+    <option ng-repeat="check in row.Activity.Instrument.AccuracyChecks" value="{{check.Id}}">{{check.CheckDate}}</option>
 </select>

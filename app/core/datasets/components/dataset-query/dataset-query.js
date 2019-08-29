@@ -11,13 +11,23 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
         $scope.selectedRow = {};
         $scope.onField = {};
 
+        $scope.instrumentIdList = [];
+        $scope.instrumentAccuracyCheckList = [];
+
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
         $scope.dataset.$promise.then(function () {
 
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 
-            $scope.project.$promise.then(function () { 
+            if ($scope.dataset.Datastore.TablePrefix === "WaterTemp")
+                $scope.instrumentAccuracyCheckList = ProjectService.getAllInstrumentAccuracyChecks();
+
+            $scope.project.$promise.then(function () {
+
+                //if ($scope.dataset.Datastore.TablePrefix === "WaterTemp")
+                //    $scope.instrumentAccuracyCheckList = ProjectService.getAllInstrumentAccuracyChecks();
+
                 $scope.activateGrid();
             });
 
@@ -80,7 +90,14 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 if (instrument_coldef) {
                     instrument_coldef.Field.PossibleValues = instrumentsToPossibleValues($scope.project.Instruments);
                 }
-                
+
+                //var accuracyCheck_coldef = getByField($scope.dataset.Fields, "AccuracyCheckId", "DbColumnName");
+                //if (accuracyCheck_coldef) {
+                    //$scope.project.Instruments.forEach
+
+                //    accuracyCheck_coldef.Field.PossibleValues = instrumentAccuracyChecksToPossibleValues($scope.project.Instruments.AccuracyChecks);
+                //}
+              
                 //var hidden_header_controltypes = ["file", "hidden", "accuracy-check-select", "activity-text", "instrument-select", "post-accuracy-check-select", "qa-status-comment", "timezone-select"];
                 var hidden_header_controltypes = ["file", "hidden", "activity-text", "instrument-select", "qa-status-comment", "timezone-select"];
                 //var hidden_grid_controltypes = ["hidden", "activity-text","accuracy-check-select","timezone-select","post-accuracy-check-select"];
@@ -173,6 +190,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 
                         if (fieldDef.hasOwnProperty('setPossibleValues'))
                             fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
+
+                        //fieldDef.AccuracyChecks = 
 
                     } else if (fieldDef.ControlType == "fisherman-select") {
                         fieldDef.PossibleValuesList = fieldDef.PossibleValues;
@@ -338,8 +357,21 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             $scope.query.results = DatasetService.queryActivities($scope.query);
             
             $scope.query.results.$promise.then(function () { 
+
+                $scope.query.results.forEach(function (item) {
+                    $scope.instrumentAccuracyCheckList.forEach(function (accCheck) {
+                        if (item.AccuracyCheckId === accCheck.Id) {
+                            item.AccuracyCheckId = accCheck.Bath1Grade + "-" + accCheck.Bath2Grade + " " + moment(accCheck.CheckDate).format('MMM DD YYYY');
+                        }
+                        if (item.PostAccuracyCheckId === accCheck.Id) {
+                            item.PostAccuracyCheckId = accCheck.Bath1Grade + "-" + accCheck.Bath2Grade + " " + moment(accCheck.CheckDate).format('MMM DD YYYY');
+                        }
+                    });
+                });
+
                 $scope.dataAgGridOptions.api.setRowData($scope.query.results);
                 $scope.query.loading = false;
+
             });
 
         };

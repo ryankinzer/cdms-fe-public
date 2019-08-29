@@ -61,6 +61,10 @@ projects_module.factory('GetAllInstruments', ['$resource', function ($resource) 
     return $resource(serviceUrl + '/api/v1/instrument/getinstruments');
 }]);
 
+projects_module.factory('GetAllInstrumentAccuracyChecks', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/instrument/getallinstrumentaccuracychecks');
+}]);
+
 projects_module.factory('SaveProjectInstrument', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/instrument/saveprojectinstrument');
 }]);
@@ -143,6 +147,7 @@ projects_module.service('ProjectService', ['$q',
     'SetProjectEditors',
     'SaveProject',
     'GetAllInstruments',
+    'GetAllInstrumentAccuracyChecks',
     'SaveProjectInstrument',
     'SaveProjectFisherman',
     'SaveInstrument',
@@ -172,6 +177,7 @@ projects_module.service('ProjectService', ['$q',
         SetProjectEditors,
         SaveProject,
         GetAllInstruments,
+        GetAllInstrumentAccuracyChecks,
         SaveProjectInstrument,
         SaveProjectFisherman,
         SaveInstrument,
@@ -367,6 +373,10 @@ projects_module.service('ProjectService', ['$q',
             getProjectFishermen: function (projectId) {
                 console.log("Inside getProjectFishermen, projectId = " + projectId);
                 return GetProjectFishermen.query({ id: projectId });
+            },
+
+            getAllInstrumentAccuracyChecks: function (instrumentIdList) {
+                return GetAllInstrumentAccuracyChecks.query();
             },
 
             saveInstrumentAccuracyCheck: function (instrumentId, ac) {
