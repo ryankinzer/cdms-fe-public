@@ -158,6 +158,7 @@
                                             <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
                                             <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
                                             <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                                            <ctuir-currency-field ng-switch-when="currency"></ctuir-currency-field>
                                             <ctuir-text-field ng-switch-default></ctuir-text-field>
                                         </div>
                                     </fieldset>
@@ -263,6 +264,7 @@
                                     <div class="col-lg">
                                         <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:5}" ng-switch on="field.ControlType">
                                             <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                                            <ctuir-currency-field ng-switch-when="currency"></ctuir-currency-field>
                                             <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                                             <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
                                             <ctuir-date-field ng-switch-when="date"></ctuir-date-field>

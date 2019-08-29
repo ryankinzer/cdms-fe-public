@@ -13,6 +13,18 @@ common_module.directive('ctuirTextField',
 
     });
 
+common_module.directive('ctuirCurrencyField',
+    function(){
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-currency.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+
 common_module.directive('ctuirHiddenField',
     function(){
         var result = {
