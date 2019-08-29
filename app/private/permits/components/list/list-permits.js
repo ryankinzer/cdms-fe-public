@@ -733,10 +733,9 @@
             $scope.PermitParcels = PermitService.getPermitParcels(Id);
             $scope.PermitEvents = PermitService.getPermitEvents(Id);
             $scope.PermitFiles = PermitService.getPermitFiles(Id);
-            $scope.PermitStatus = [];
-
+            
             $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
-
+            
             if (!Array.isArray($scope.row.ReviewsRequired))
                 $scope.row.ReviewsRequired = [];
 
@@ -755,6 +754,8 @@
             $scope.PermitEvents.$promise.then(function () {
                 $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
                 $scope.permitEventsGrid.selectedItem = null;
+
+                $scope.PermitStatus = [];
 
                 //setup our handy array for the Status tab
                 $scope.row.ReviewsRequired.forEach(function (review) { 
