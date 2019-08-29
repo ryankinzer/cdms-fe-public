@@ -39,7 +39,6 @@ var permit_contacts = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             return div;
         };
 
-
         $scope.deleteContact = function () { 
 
             if (confirm("Are you sure you want to delete this contact?")) {
@@ -63,6 +62,8 @@ var permit_contacts = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 templateUrl: 'app/private/permits/components/contacts/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function(saved){
                 $scope.saveContactCallback();
             });
