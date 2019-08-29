@@ -333,6 +333,9 @@
                 sortable: true,
                 resizable: true,
             },
+            onRowDoubleClicked: function (params) { 
+                window.open("index.html#!/permits/list?Id=" + params.data.Id, "_blank");
+            },
         }
 
         $scope.permitEventsGrid = {
