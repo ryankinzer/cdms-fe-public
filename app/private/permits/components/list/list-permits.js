@@ -168,6 +168,11 @@
             var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
             filter_component.selectNothing();
             filter_component.selectValue($scope.Profile.Fullname);
+
+            var filter_componentPS = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
+            filter_componentPS.selectEverything();
+            filter_componentPS.unselectValue('Archived');
+
             $scope.permitsGrid.api.onFilterChanged();
             if ($scope.currentPage !== "My Permits")
                 $scope.permitsGrid.api.deselectAll();
