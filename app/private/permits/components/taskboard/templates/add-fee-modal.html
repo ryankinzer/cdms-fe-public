@@ -7,6 +7,7 @@
 
             <div ng-repeat="field in permitColumnDefs | filter:{ColumnIndex:5}" ng-switch on="field.ControlType">
                 <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                <ctuir-currency-field ng-switch-when="currency"></ctuir-currency-field>
                 <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                 <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
                 <ctuir-date-field ng-switch-when="date"></ctuir-date-field>

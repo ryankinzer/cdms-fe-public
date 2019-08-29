@@ -168,6 +168,11 @@
             var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
             filter_component.selectNothing();
             filter_component.selectValue($scope.Profile.Fullname);
+
+            var filter_componentPS = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
+            filter_componentPS.selectEverything();
+            filter_componentPS.unselectValue('Archived');
+
             $scope.permitsGrid.api.onFilterChanged();
             if ($scope.currentPage !== "My Permits")
                 $scope.permitsGrid.api.deselectAll();
@@ -332,6 +337,9 @@
                 editable: false,
                 sortable: true,
                 resizable: true,
+            },
+            onRowDoubleClicked: function (params) { 
+                window.open("index.html#!/permits/list?Id=" + params.data.Id, "_blank");
             },
         }
 
@@ -733,10 +741,9 @@
             $scope.PermitParcels = PermitService.getPermitParcels(Id);
             $scope.PermitEvents = PermitService.getPermitEvents(Id);
             $scope.PermitFiles = PermitService.getPermitFiles(Id);
-            $scope.PermitStatus = [];
-
+            
             $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
-
+            
             if (!Array.isArray($scope.row.ReviewsRequired))
                 $scope.row.ReviewsRequired = [];
 
@@ -755,6 +762,8 @@
             $scope.PermitEvents.$promise.then(function () {
                 $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
                 $scope.permitEventsGrid.selectedItem = null;
+
+                $scope.PermitStatus = [];
 
                 //setup our handy array for the Status tab
                 $scope.row.ReviewsRequired.forEach(function (review) { 
