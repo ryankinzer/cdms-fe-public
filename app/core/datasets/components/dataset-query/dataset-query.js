@@ -90,13 +90,6 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 if (instrument_coldef) {
                     instrument_coldef.Field.PossibleValues = instrumentsToPossibleValues($scope.project.Instruments);
                 }
-
-                //var accuracyCheck_coldef = getByField($scope.dataset.Fields, "AccuracyCheckId", "DbColumnName");
-                //if (accuracyCheck_coldef) {
-                    //$scope.project.Instruments.forEach
-
-                //    accuracyCheck_coldef.Field.PossibleValues = instrumentAccuracyChecksToPossibleValues($scope.project.Instruments.AccuracyChecks);
-                //}
               
                 //var hidden_header_controltypes = ["file", "hidden", "accuracy-check-select", "activity-text", "instrument-select", "post-accuracy-check-select", "qa-status-comment", "timezone-select"];
                 var hidden_header_controltypes = ["file", "hidden", "activity-text", "instrument-select", "qa-status-comment", "timezone-select"];
