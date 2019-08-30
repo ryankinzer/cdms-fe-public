@@ -92,9 +92,9 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 }
               
                 //var hidden_header_controltypes = ["file", "hidden", "accuracy-check-select", "activity-text", "instrument-select", "post-accuracy-check-select", "qa-status-comment", "timezone-select"];
-                var hidden_header_controltypes = ["file", "hidden", "activity-text", "instrument-select", "qa-status-comment", "timezone-select"];
+                var hidden_header_controltypes = ["file", "hidden", "activity-text", "instrument-select", "qa-status-comment"];
                 //var hidden_grid_controltypes = ["hidden", "activity-text","accuracy-check-select","timezone-select","post-accuracy-check-select"];
-                var hidden_grid_controltypes = ["hidden", "activity-text", "timezone-select"];
+                var hidden_grid_controltypes = ["hidden", "activity-text"];
 
                 $scope.dataAgColumnDefs = GridService.getAgColumnDefs($scope.dataset);
                 
@@ -360,6 +360,9 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                             item.PostAccuracyCheckId = accCheck.Bath1Grade + "-" + accCheck.Bath2Grade + " " + moment(accCheck.CheckDate).format('MMM DD YYYY');
                         }
                     });
+
+                    var parsedTimezone = JSON.parse(item.Timezone);
+                    item.Timezone = parsedTimezone.Name;
                 });
 
                 $scope.dataAgGridOptions.api.setRowData($scope.query.results);
