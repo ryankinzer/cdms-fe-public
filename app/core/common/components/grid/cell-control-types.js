@@ -406,7 +406,10 @@ var ControlTypeDefinitions = {
     'location-select' : SelectControlType,
     'activity-date' : DateControlType,
     'qa-status-select': SelectControlType,
-
+    'accuracy-check-select': SelectControlType,
+    'post-accuracy-check-select': SelectControlType,
+    'timezone-select': SelectControlType,
+    'activity-text': TextControlType
 };
 
 function getControlDefinition(def) {

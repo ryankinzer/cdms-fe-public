@@ -32,6 +32,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.PageErrorCount = 0;
         $scope.NextActivity = $scope.PreviousActivity = 0;
 
+        $scope.dsConfig = null;
+
         //returns the number of errors on the page, headers + details
         //TODO this is probably expensive for big grids, maybe not...
         $scope.getPageErrorCount = function () { 
@@ -72,6 +74,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);
             $scope.dataset_activities.$promise.then(function () {
                 $scope.dataset = $scope.dataset_activities.Dataset;
+                $scope.dsConfig = JSON.parse($scope.dataset.Config);
+                //console.log("$scope.dsConfig.DataEntryPage.ShowFields.contains('AccuracyCheck') = " + $scope.dsConfig.DataEntryPage.ShowFields.contains('AccuracyCheck'));
+
                 //$scope.row is the Header fields data row
                 $scope.row = $scope.dataset_activities.Header;
                 $scope.row.FishermanFullName = "";
@@ -494,6 +499,19 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
+            if ((typeof $scope.row.Activity.AccuracyCheck !== 'undefined') && ($scope.row.Activity.AccuracyCheck !== null)) {
+                // We don't need a line return on the form.
+                $scope.row.AccuracyCheckBreak = false;
+                $scope.row.Activity.AccuracyCheckText = $scope.row.Activity.AccuracyCheck.Bath1Grade + "-" + $scope.row.Activity.AccuracyCheck.Bath2Grade + " on " + moment($scope.row.Activity.AccuracyCheck.CheckDate).format('MMM DD YYYY');
+                $scope.row.Activity.PostAccuracyCheckText = $scope.row.Activity.PostAccuracyCheck.Bath1Grade + "-" + $scope.row.Activity.PostAccuracyCheck.Bath2Grade + " on " + moment($scope.row.Activity.PostAccuracyCheck.CheckDate).format('MMM DD YYYY');
+            }
+            else {
+                // We need line return on the form.
+                $scope.row.AccuracyCheckBreak = true;
+                $scope.row.AccuracyCheckText = null;
+                $scope.row.Activity.PostAccuracyCheckText = null;
+            }
+
             $scope.activateGrid();
 
             //load the files related to this dataset
@@ -523,6 +541,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
+            console.log("$scope.row (in $scope.afterDatasetLoadedEvent) is next...");
             console.dir($scope.row);
             
 
