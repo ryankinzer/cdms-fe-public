@@ -1938,8 +1938,8 @@ function valueFormatterBoolean(in_bool) {
 // if it isn't an array, it returns what we got.
 function valueFormatterArrayToList(the_array) {
 
-    if (!Array.isArray(the_array) || is_empty(the_array))
-        return "";
+    if (is_empty(the_array))
+         return "";
 
     var list = the_array;
 
@@ -1957,7 +1957,7 @@ function valueFormatterArrayToList(the_array) {
         console.log("problem parsing: " + the_array );
     }
 
-    console.dir(list);
+    //console.dir(list);
 
     return list;
 
@@ -2212,4 +2212,23 @@ if (!String.prototype.includes) {
       return this.indexOf(search, start) !== -1;
     }
   };
+}
+
+//returns the next business day with the given format (default to 'L')
+function getNextBusinessDay(dateFormat){
+    if(!dateFormat)
+    dateFormat = 'L';
+
+    let dayIncrement = 1;
+
+    if (moment().day() === 5) {
+        // set to monday
+        dayIncrement = 3;
+    } else if (moment().day() === 6) {
+        // set to monday
+        dayIncrement = 2;
+    }
+
+return moment().add(dayIncrement,'d').format(dateFormat);
+
 }

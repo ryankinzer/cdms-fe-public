@@ -246,6 +246,7 @@
                 save_permit.ReviewsRequired.remove("TPO");
 
                 if (save_permit.AdditionalConditions) {
+                    save_permit.AdditionalConditions = saved_activity.ItemType + ": " + save_permit.AdditionalConditions;
                     save_permit.PermitConditions = (save_permit.PermitConditions) ? save_permit.PermitConditions + "; " + save_permit.AdditionalConditions : save_permit.AdditionalConditions;
                     delete save_permit.AdditionalConditions;
                 }

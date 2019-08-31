@@ -8,6 +8,7 @@
 
         $scope.currentPage = "All";
         $scope.row = null;
+        $scope.clearingFilters = false;
 
         $scope.PermitContacts = [];
         $scope.PermitParcels = [];
@@ -34,12 +35,26 @@
         });
 
         $scope.dataset.$promise.then(function () {
-            console.log(" -- dataset back -- ");
+            // console.log(" -- dataset back -- ");
             $scope.AllColumnDefs = GridService.getAgColumnDefs($scope.dataset);
             $scope.permitsGrid.columnDefs = $scope.AllColumnDefs.HeaderFields;
+
+            //setup some custom "tweaks" to the column definition defaults TODO: might be a better way
             $scope.permitsGrid.columnDefs.forEach(function (coldef) {
-                if (coldef.DbColumnName == 'PermitNumber')
+                if (coldef.DbColumnName == 'PermitNumber'){
                     coldef.Disabled = true;
+                    coldef.filter='agTextColumnFilter'; //change from the default (checkboxes) to a "contains" filter
+                }
+                if(coldef.DbColumnName == 'ProjectName' || coldef.DbColumnName == 'SiteAddress')
+                    coldef.filter='agTextColumnFilter'; 
+
+                if(coldef.DbColumnName == 'ReviewsRequired'){
+                    coldef.valueFormatter = function (params) {
+                        return valueFormatterArrayToList(params.node.data.ReviewsRequired);
+                    }
+                }
+                    
+                
             });
 
             //activate the grid with the permits data
@@ -49,7 +64,7 @@
             $scope.permits = PermitService.getAllPermits();
 
             $scope.permits.$promise.then(function () {
-                console.log(" -- permits back -- ");
+                // console.log(" -- permits back -- ");
                 $scope.permitsGrid.api.setRowData($scope.permits);
 
                 //if there is an incoming Id, select it.
@@ -153,6 +168,11 @@
             var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
             filter_component.selectNothing();
             filter_component.selectValue($scope.Profile.Fullname);
+
+            var filter_componentPS = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
+            filter_componentPS.selectEverything();
+            filter_componentPS.unselectValue('Archived');
+
             $scope.permitsGrid.api.onFilterChanged();
             if ($scope.currentPage !== "My Permits")
                 $scope.permitsGrid.api.deselectAll();
@@ -163,6 +183,11 @@
             var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
             filter_component.selectEverything();
         };
+
+        $scope.clearFilters = function(){
+            $scope.clearingFilters = true;
+            $scope.permitsGrid.api.setFilterModel(null);
+        }
 
         //requirement: can navigate permits by up and down arrow keys
         $scope.keyboardNavigation = function (params) {
@@ -208,6 +233,7 @@
             columnDefs: null,
             rowData: null,
             rowSelection: 'single',
+            hasFilters: false,
             onSelectionChanged: function (params) {
 
                 if ($scope.row && $scope.row.dataChanged) {
@@ -235,6 +261,14 @@
                 editable: false,
                 sortable: true,
                 resizable: true,
+            },
+            onFilterChanged: function(params){
+                if($scope.clearingFilters == true)
+                    $scope.permitsGrid.hasFilters = $scope.clearingFilters = false;
+                else
+                    $scope.permitsGrid.hasFilters = true;
+                    
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
             navigateToNextCell: $scope.keyboardNavigation
         }
@@ -303,6 +337,9 @@
                 editable: false,
                 sortable: true,
                 resizable: true,
+            },
+            onRowDoubleClicked: function (params) { 
+                window.open("index.html#!/permits/list?Id=" + params.data.Id, "_blank");
             },
         }
 
@@ -463,7 +500,7 @@
 
         $scope.permitFilesGrid.columnDefs = [
             //{ colId: 'EditLinks', cellRenderer: EditFileLinksTemplate, width: 60, menuTabs: [], hide: true },
-            { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: [] },
+            { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Description', headerName: 'File Type', width: 200, menuTabs: ['filterMenuTab'], filter: true },
             //{ field: 'Description', headerName: 'File Type', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
@@ -621,6 +658,7 @@
             $scope.ParcelHistory = [];
 
             $scope.resetGrids();
+            $scope.togglePermitTypeField();
 
             $('#tab-basicinfo').tab('show'); //default to the "Permit Details" tab when select a different permit
 
@@ -703,10 +741,9 @@
             $scope.PermitParcels = PermitService.getPermitParcels(Id);
             $scope.PermitEvents = PermitService.getPermitEvents(Id);
             $scope.PermitFiles = PermitService.getPermitFiles(Id);
-            $scope.PermitStatus = [];
-
+            
             $scope.row.ReviewsRequired = ($scope.row.ReviewsRequired) ? angular.fromJson($scope.row.ReviewsRequired) : [];
-
+            
             if (!Array.isArray($scope.row.ReviewsRequired))
                 $scope.row.ReviewsRequired = [];
 
@@ -725,6 +762,8 @@
             $scope.PermitEvents.$promise.then(function () {
                 $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
                 $scope.permitEventsGrid.selectedItem = null;
+
+                $scope.PermitStatus = [];
 
                 //setup our handy array for the Status tab
                 $scope.row.ReviewsRequired.forEach(function (review) { 
@@ -762,6 +801,17 @@
                     }
                 });
 
+                $scope.togglePermitTypeField();
+
+                //stretch the textareas to the height of the content
+                $('textarea').each(function () {
+                    this.setAttribute('style', 'min-height: 130px','height:auto; height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+                  }).on('input', function () {
+                    this.style.height = 'auto';
+                    this.style.minheight = '130px';
+                    this.style.height = (this.scrollHeight) + 'px';
+                  });
+
             });
 
             $scope.PermitFiles.$promise.then(function () {
@@ -783,6 +833,16 @@
         };
 
         $scope.resetGrids();
+
+        //if the permit is already saved, PermitType should be disabled
+        $scope.togglePermitTypeField = function(){
+            if($scope.row.Id){
+                jQuery("#field-PermitType select.form-control").attr("disabled","disabled");
+            }
+            else{
+                jQuery("#field-PermitType select.form-control").removeAttr("disabled");
+            }
+        }
 
         $scope.refreshParcelHistory = function () {
             $scope.ParcelHistory = [];
@@ -997,27 +1057,26 @@
         };
 
         $scope.cancel = function () { 
-            $scope.row = angular.copy($scope.permitsGrid.api.getSelectedRows()[0]);
-
-            if($scope.row)
-                $scope.selectPermit($scope.row.Id);
-
-            //console.log("cancelled...");
-            //console.dir($scope.row);
+            
+            $scope.permitsGrid.selectedItem = $scope.row = null;
+            $scope.permitsGrid.api.deselectAll();
+            
         };
 
         $scope.save = function () {
             
             var to_save = angular.copy($scope.row);
+            $scope.row.isSaving = true;
             to_save.ReviewsRequired = angular.toJson(to_save.ReviewsRequired);
             to_save.Zoning = angular.toJson(to_save.Zoning);
-            console.dir(to_save);
+            // console.dir(to_save);
 
             var saved_permit = PermitService.savePermit(to_save);
 
             saved_permit.$promise.then(function () { 
-                console.log("permit saved: ");
-                console.dir(saved_permit);
+                $scope.row.isSaving = false;
+                // console.log("permit saved: ");
+                // console.dir(saved_permit);
 
                 //requirement: if we saved a new status, add a record to the permitsevents
                 if ($scope.row.Id && $scope.row.PermitStatus !== $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus) {
@@ -1047,7 +1106,6 @@
                     $scope.permits.push(saved_permit);
                     $scope.permitsGrid.api.setRowData($scope.permits);
                     $scope.row = saved_permit;
-                    //$scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
                     $scope.row.dataChanged = false;
                     $scope.showAll();
                 }
@@ -1060,8 +1118,7 @@
                     });
 
                     $scope.selectPermit($scope.row.Id); //reload
-                    //var selectedNode = $scope.permitsGrid.api.getSelectedRows()[0];
-
+                    
                     $scope.permitsGrid.api.setRowData($scope.permits);
                     
                     if ($scope.currentPage == "Applications") $scope.showApplications();
@@ -1073,6 +1130,16 @@
 
                 }
 
+                //select the permit we just saved/updated
+                $scope.permitsGrid.api.forEachNode(function(node){
+                    if(node.data.PermitNumber == $scope.row.PermitNumber)
+                        node.setSelected(true);                        
+                })
+
+            },function(data){
+                $scope.row.isSaving = false;
+                $scope.row.hasError = true;
+                $scope.row.errorMessage = "There was a problem saving."
             });
         };
 

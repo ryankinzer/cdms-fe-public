@@ -103,6 +103,18 @@
                         </div>
                     </div>
                 </div>
+
+                <div ng-show="PermitFiles.length > 0">
+                    <div class="header-label">Files to include:</div>
+                    <div class="header-value">
+                        <select multiple="true" class="form-control" ng-model="row.FilesToInclude">
+                            <option ng-repeat="file in PermitFiles" value={{file}}>{{getFileLabel(file)}}</option>
+                        </select>
+
+                    </div>
+                    
+                </div>
+
             </div>
         </form>
     </div>
@@ -112,8 +124,8 @@
     <div ng-show="Results.FailureMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-danger">{{Results.FailureMessage}}</div>
 
     <div ng-show="!Results.DoneSaving">
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        <button class="right btn" ng-click="save()">Save</button>
+        <button class="btn btn-warning" ng-disabled="Results.IsSaving" ng-click="cancel()">Cancel</button>
+        <button class="right btn" ng-disabled="Results.IsSaving" ng-click="save()">Save</button>
     </div>
     <div ng-show="Results.DoneSaving">
         <button style="margin-top: 30px;" class="right btn" ng-click="close()">Close</button>

@@ -7,9 +7,13 @@
             angular.rootScope.go("/unauthorized");
 
         $scope.permits = PermitService.getAllPermits();
+        $scope.CadasterParcels = PermitService.getAllParcels();
 
         $scope.searchResults = [];
         $scope.searchComplete = false;
+
+        $scope.parcelMatches = [];
+        $scope.Selected = {Parcel : []};
 
         $scope.permits.$promise.then(function () {
 
@@ -21,7 +25,6 @@
             if ($routeParams.allotment != null) {
                 $scope.searchTerm = $routeParams.allotment;
                 $scope.searchButton();
-                //$scope.findOnMap($routeParams.allotment);
             }
 
 
@@ -72,29 +75,65 @@
 
         $scope.searchByString = function (in_string) {
             console.log("search " + in_string);
-            $scope.searchResults.length = 0;
+            $scope.searchComplete = false;
 
-            in_string = $scope.searchTerm = in_string.toUpperCase();
+            $scope.searchResults.length = 0; //permit matches
+            $scope.Selected.Parcel.length = 0;
+            $scope.parcelMatches = [];
 
+            var in_string = $scope.searchTerm = in_string.toUpperCase();
+            var exact_match = false;
+
+            //step 1 - search for matching permits
             $scope.permits.forEach( function (permit) {
 
-                if (permit.PermitNumber && permit.PermitNumber.indexOf(in_string) !== -1) {
+                if (permit.PermitNumber && permit.PermitNumber.toUpperCase().indexOf(in_string) !== -1) {
                     $scope.searchResults.push(permit);
                 }
                 
             });
+
             $scope.searchDescription = "Permits matching " + in_string;
             $scope.searchGrid.api.setRowData($scope.searchResults);
 
-            $scope.findOnMap($scope.searchTerm);
+            //step 2 - search for matching parcels
+            $scope.CadasterParcels.forEach(function (parcel) { 
+
+                if (parcel.ParcelId == null || parcel.ParcelId == "")
+                    return;
+
+                var regex = RegExp(in_string,'g');
+
+                if (regex.test(parcel.ParcelId)) {
+                    //$scope.Selected.Parcel.push(angular.toJson(parcel)); //this is the trick
+                    $scope.parcelMatches.push(parcel);
+                    if(parcel.ParcelId == in_string)
+                        exact_match = true;
+                }
+            });
+
+            if(exact_match){
+                $scope.findOnMap(in_string);
+            }
 
             $scope.searchComplete = true;
+        }
+
+        $scope.selectParcel = function(){
+            var parcel = angular.fromJson($scope.Selected.Parcel[0])
+            $scope.findOnMap(parcel.ParcelId);
         }
 
         $scope.showRelatedParcels = function (id) { 
             $scope.PermitParcels = PermitService.getPermitParcels(id);
         };
         
+        //clicked when user clicks id of related parcel
+        $scope.clickRelatedParcel = function(id) {
+            $scope.parcelMatches.length = 0;
+            $scope.findOnMap(id);
+        }
+
         $scope.viewPermit = function (Id) {
             window.open("index.html#!/permits/list?Id=" + Id, "_blank");
         };
