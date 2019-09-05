@@ -83,7 +83,7 @@
                                                         <span ng-if="row.FeeNotificationDate && !row.FeePaymentDate">&#9898</span>
                                                         <span ng-if="row.FeePaymentDate">&#9899</span>
                                                     </td>
-                                                    <td><span ng-if="row.Fee">${{row.Fee}}</span></td>
+                                                    <td><span ng-if="row.Fee">{{row.Fee | currency}}</span></td>
                                                 </tr>
 
                                                 <tr>
