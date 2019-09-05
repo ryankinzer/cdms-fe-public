@@ -104,7 +104,7 @@
                     </div>
                 </div>
 
-                <div ng-show="PermitFiles.length > 0">
+                <div ng-show="mode == 'new_route' && PermitFiles.length > 0">
                     <div class="header-label">Files to include:</div>
                     <div class="header-value">
                         <select multiple="true" class="form-control" ng-model="row.FilesToInclude">
