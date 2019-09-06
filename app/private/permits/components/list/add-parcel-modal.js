@@ -28,7 +28,7 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
                 if (parcel.ParcelId == null || parcel.ParcelId == "")
                     return;
 
-                if (entryLength > 2 && parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry) {
+                if (entryLength > 0 && parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry) {
 
                     if (parcel.ParcelId == $scope.parcelEntry) {
                         $scope.parcel_modal = parcel;
