@@ -269,8 +269,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             }
             */
 
-
             if ($scope.Criteria.ParamFieldSelect[0].PossibleValues && !Array.isArray($scope.Criteria.ParamFieldSelect[0].PossibleValues)) {
+            //if ((typeof $scope.Criteria.ParamFieldSelect[0].PossibleValues !== 'undefined') && (($scope.Criteria.ParamFieldSelect[0].PossibleValues) === null) || (!Array.isArray($scope.Criteria.ParamFieldSelect[0].PossibleValues))) {
                 if (Array.isArray($scope.Criteria.Value)) {
                     var arySearchList = [];
                     var aryDisplayList = [];
@@ -312,13 +312,18 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 }
             }
             else {
-                Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValues).forEach(function (key) {
+                if (typeof $scope.Criteria.Value === 'string') {
+                    $scope.Criteria.DisplayName = $scope.Criteria.Value;
+                }
+                else {
+                    Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValues).forEach(function (key) {
 
-                    if ($scope.Criteria.ParamFieldSelect[0].PossibleValues[key] == $scope.Criteria.Value) {
-                        $scope.Criteria.DisplayName = $scope.Criteria.Value;
-                    }
+                        if ($scope.Criteria.ParamFieldSelect[0].PossibleValues[key] == $scope.Criteria.Value) {
+                            $scope.Criteria.DisplayName = $scope.Criteria.Value;
+                        }
 
-                });
+                    });
+                }
             }
 
             
@@ -361,8 +366,10 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                         }
                     });
 
-                    var parsedTimezone = JSON.parse(item.Timezone);
-                    item.Timezone = parsedTimezone.Name;
+                    if (item.Timezone) {
+                        var parsedTimezone = JSON.parse(item.Timezone);
+                        item.Timezone = parsedTimezone.Name;
+                    }
                 });
 
                 $scope.dataAgGridOptions.api.setRowData($scope.query.results);
