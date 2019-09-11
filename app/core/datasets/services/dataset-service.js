@@ -357,7 +357,7 @@ datasets_module.service('DatasetService', ['$q',
                     dataset.Config = angular.fromJson(dataset.Config);
 
                     //if there are page routes in configuration, set them in our dataset
-                    if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)
+                    if (dataset.Config && dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)
                         dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
 
                     //part of configuration is authorization.  If the user isn't authorized
