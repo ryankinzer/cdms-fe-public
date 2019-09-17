@@ -2,27 +2,29 @@
 var admin_view = ['$scope', '$uibModal', 'DatasetService','ProjectService',
     function ($scope, $modal, DatasetService, ProjectService) {
 
-        //TODO: a nicer global route authorization scheme...
         if (!$scope.Profile.isAdmin())
             angular.rootScope.go("/unauthorized");
 
         $scope.datastores = DatasetService.getDatastores();
         $scope.projects = ProjectService.getProjects();
 
-        var watcher = $scope.$watch('datastores', function () {
-
-            if ($scope.datastores.length > 0) {
-                watcher();	//removes watch since we're about to do some updates that would cause multiple firings...!
-
-                angular.forEach($scope.datastores, function (datastore, key) {
-                    datastore.Datasets = DatasetService.getDatastoreDatasets(datastore.Id);
-                });
-
-            }
+        $scope.datastores.$promise.then(function(){
+            angular.forEach($scope.datastores, function (datastore, key) {
+                datastore.Datasets = DatasetService.getDatastoreDatasets(datastore.Id);
+            });
+        })
 
 
-        }, true);
-
+        $scope.createMasterDataset = function(){
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/admin/components/admin-page/templates/modal-datastore.html',
+                controller: 'ModalDatastore',
+                scope: $scope, //very important to pass the scope along... 
+                backdrop: "static",
+                keyboard: false
+            });
+            
+        };
 
         $scope.addNewProjectDataset = function (datastore) {
             $scope.datastore = datastore;
