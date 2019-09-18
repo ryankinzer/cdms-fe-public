@@ -5,14 +5,59 @@ var admin_view = ['$scope', '$uibModal', 'DatasetService','ProjectService',
         if (!$scope.Profile.isAdmin())
             angular.rootScope.go("/unauthorized");
 
-        $scope.datastores = DatasetService.getDatastores();
-        $scope.projects = ProjectService.getProjects();
 
-        $scope.datastores.$promise.then(function(){
-            angular.forEach($scope.datastores, function (datastore, key) {
-                datastore.Datasets = DatasetService.getDatastoreDatasets(datastore.Id);
+            $scope.datasets = DatasetService.getDatasetsList();
+
+            $scope.datasets.$promise.then(function () {
+    
+                //angular.forEach($scope.datasets, function (dataset, key) {
+                    //need to bump this to get the route
+                //    DatasetService.configureDataset(dataset, $scope);
+                //});
+    
+                var CellRendererDataset = function (params) {
+                    return '<div>' +
+                        '<a title="' + params.node.data.Description
+                        + '" href="#!/admin-dataset/'+ params.node.data.Id + '">'
+                        + params.node.data.Name + '</a>' +
+                        '</div>';
+                };
+
+                var CellRendererDatastore = function (params) {
+                    return '<div>' +
+                        '<a title="' + params.node.data.Description
+                        + '" href="#!/admin-master/'+ params.node.data.DatastoreId + '">'
+                        + params.node.data.DatastoreName + '</a>' +
+                        '</div>';
+                };
+
+                var agColumnDefs = [
+                    { field: 'DatastoreName', headerName: 'Master Dataset', cellRenderer: CellRendererDatastore, width: 280, menuTabs: ['filterMenuTab'], filter: 'text', sort: 'asc'},
+                    { field: 'Name', headerName: 'Dataset Name', cellRenderer: CellRendererDataset, width: 300, menuTabs: ['filterMenuTab'], filter: 'text'},
+                    { field: 'ProjectName', headerName: 'Project', width: 300, menuTabs: ['filterMenuTab'], filter: 'text'},
+                ];
+    
+                $scope.agGridOptions = {
+                    animateRows: true,
+                    showToolPanel: false,
+                    columnDefs: agColumnDefs,
+                    rowData: $scope.projects,
+                    debug: false,
+                    onGridReady: function (params) {
+                        params.api.sizeColumnsToFit();
+                    },
+                    defaultColDef: {
+                        sortable: true,
+                        resizable: true,
+                    },
+                };
+    
+                var ag_grid_div = document.querySelector('#datasets-list-grid');    //get the container id...
+                $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.agGridOptions); //bind the grid to it.
+    
+                $scope.agGridOptions.api.setRowData($scope.datasets);
+            
             });
-        })
 
 
         $scope.createMasterDataset = function(){
@@ -36,16 +81,6 @@ var admin_view = ['$scope', '$uibModal', 'DatasetService','ProjectService',
                 keyboard: false
             });
         };
-
-        $scope.getProjectName = function (id) {
-            var ret = "";
-            var project = getMatchingByField($scope.projects, id, 'Id');
-            if (Array.isArray(project) && project.length == 1) {
-                ret = project[0].Name;
-            }
-            return ret;
-        }
-
 
     }
 
