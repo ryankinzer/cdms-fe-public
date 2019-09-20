@@ -191,7 +191,7 @@
 
         //requirement: can navigate permits by up and down arrow keys
         $scope.keyboardNavigation = function (params) {
-            console.log("my navigation");
+            //console.log("my navigation");
             var previousCell = params.previousCellDef;
             var suggestedNextCell = params.nextCellDef;
 
@@ -202,7 +202,7 @@
 
             switch (params.key) {
                 case KEY_DOWN:
-                    console.log("down");
+                    //console.log("down");
                     previousCell = params.previousCellDef;
                     // set selected cell on current cell + 1
                     $scope.permitsGrid.api.forEachNode(function (node) {
