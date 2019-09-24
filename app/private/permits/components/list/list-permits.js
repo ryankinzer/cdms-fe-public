@@ -326,6 +326,9 @@
                 $scope.permitParcelsGrid.selectedItem = $scope.permitParcelsGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
+            onRowDoubleClicked: function (params) {
+                window.open("index.html#!/permits/map?ParcelId=" + params.data.ParcelId, "_blank");
+            },
         }
 
 
