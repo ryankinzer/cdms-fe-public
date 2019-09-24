@@ -575,6 +575,11 @@
 
         $scope.openParcelModal = function (params) {
 
+            if ($scope.row.dataChanged){
+                alert("Please save or cancel your changes before adding a new parcel.");
+                return;
+            }
+
             //if editing, we'll have incoming params
             if (params) {
                 $scope.parcel_modal = params;
@@ -594,6 +599,12 @@
                     $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
                     $scope.refreshZones();
                     $scope.refreshParcelHistory();
+                    $scope.row.LegalDescription = ($scope.row.LegalDescription) ? $scope.row.LegalDescription +","+saved_parcel.ParcelId : saved_parcel.ParcelId;
+                    $scope.permits.forEach(function (existing_permit) { 
+                        if (existing_permit.Id == $scope.row.Id) {
+                            existing_permit.LegalDescription = $scope.row.LegalDescription;
+                        }
+                    });
                 });
             });
         }
