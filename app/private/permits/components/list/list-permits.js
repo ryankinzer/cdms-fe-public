@@ -857,6 +857,7 @@
                     this.style.height = 'auto';
                     this.style.minheight = '130px';
                     this.style.height = (this.scrollHeight) + 'px';
+                    this.value = this.value.replace(/\n/g, ""); //do not allow hard-returns
                   });
 
             });
