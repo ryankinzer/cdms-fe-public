@@ -1090,13 +1090,13 @@
         };
 
         $scope.generatePermitNumber = function () {
-            var permitnumber = "";
+            var permitnumber = "XXX";
             $scope.PermitTypes.forEach(function (type) { 
                 if (type.Id === $scope.row.PermitType) {
                     if (moment().year() > type.CurrentPermitYear)
                         type.CurrentPermitNumber = 1;
 
-                    permitnumber = (type.CurrentPermitNumber + 1+"").padStart(3, '0');
+                    //permitnumber = (type.CurrentPermitNumber + 1+"").padStart(3, '0');
                     permitnumber = type.PermitNumberPrefix + "-" + moment().format('YY') + "-" + permitnumber;
 
                     $scope.row.PermitNumber = permitnumber;
