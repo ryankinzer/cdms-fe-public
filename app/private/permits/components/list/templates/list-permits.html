@@ -35,8 +35,8 @@
             </ul>
 
             <div style="margin-top: -40px; margin-right:9px; display:flex;" class="right">
-                <div style="margin-left: 5px;" ng-show="(row.PermitType==15 || row.ImprovementType=='Forest Practice') && (row.PermitStatus=='Approved' || row.PermitStatus=='Conditionally Approved')"><a href="https://paluutreports.ctuir.org/Reports/report/TPO/DevelopmentPermit?PermitNumber={{row.PermitNumber}}" target="_blank" role="button" class="btn btn-sm">Generate Permit</a></div>
-                <div style="margin-left: 5px;" ng-show="row.COIssueDate"><a href="https://paluutreports.ctuir.org/Reports/report/TPO/CertificateOfOccupancy?PermitNumber={{row.PermitNumber}}" target="_blank" role="button" class="btn btn-sm">Generate CO</a></div>
+                <div style="margin-left: 5px;" ng-show="(row.PermitStatus=='Approved' || row.PermitStatus=='Conditionally Approved')"><button ng-click="openPermitReport()" class="btn btn-sm">Generate Permit</button></div>
+                <div style="margin-left: 5px;" ng-show="row.COIssueDate"><button ng-click="openCOReport()" class="btn btn-sm">Generate CO</button></div>
             </div>
 
             <div ng-show="Profile.hasRole('Permits') && row.dataChanged" style="margin: 10px; float: right;">

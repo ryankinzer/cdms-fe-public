@@ -162,6 +162,7 @@
         };
 
         $scope.showAll = function () {
+            $scope.clearingFilters = true;
             $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectEverything();
@@ -194,6 +195,7 @@
         $scope.clearFilters = function(){
             $scope.clearingFilters = true;
             $scope.permitsGrid.api.setFilterModel(null);
+            $scope.currentPage = "All";
         }
 
         //requirement: can navigate permits by up and down arrow keys
@@ -337,7 +339,6 @@
                 window.open("index.html#!/permits/map?ParcelId=" + params.data.ParcelId, "_blank");
             },
         }
-
 
         $scope.parcelHistoryGrid = {
             columnDefs: null,
@@ -711,6 +712,33 @@
                 });
             }
         };
+
+        $scope.hasPrimaryContact = function() {
+            var hasPrimaryContact = false;
+
+            $scope.PermitContacts.forEach(function (contact, index) {
+                if(contact.IsPrimary)
+                    hasPrimaryContact = true;
+            });
+
+            return hasPrimaryContact;
+        }
+
+        $scope.openPermitReport = function(){
+            if(!$scope.hasPrimaryContact()){
+                alert("You must specify a primary contact before you can generate a Permit report.")
+                return;
+            }
+            window.open("https://paluutreports.ctuir.org/Reports/report/TPO/DevelopmentPermit?PermitNumber=" + $scope.row.PermitNumber, "_blank");
+        }
+
+        $scope.openCOReport = function(){
+            if(!$scope.hasPrimaryContact()){
+                alert("You must specify a primary contact before you can generate a Certificate of Occupancy report.")
+                return;
+            }
+            window.open("https://paluutreports.ctuir.org/Reports/report/TPO/CertificateOfOccupancy?PermitNumber=" + $scope.row.PermitNumber, "_blank");
+        }
 
         $scope.resetGrids = function () {
 
