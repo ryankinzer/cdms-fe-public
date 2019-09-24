@@ -90,9 +90,7 @@
 
             $scope.PermitPersons.$promise.then(function () {
                 $scope.PermitPersons.forEach(function (person) {
-                    person.Label = (person.Organization) ? person.Organization : person.FullName;
-                    if (person.Label == "")
-                        person.FirstName + " " + person.LastName;
+                    person.Label = $scope.getPersonLabel(person);
                 });
 
                 $scope.PermitPersons = $scope.PermitPersons.sort(orderByAlpha);
@@ -100,6 +98,15 @@
 
 
         });
+
+        //returns a composed label for a person
+        $scope.getPersonLabel = function(person){
+            var label = (person.Organization) ? person.Organization : person.FullName;
+            if (label == "")
+                person.FirstName + " " + person.LastName;
+
+            return label;
+        }
 
         $scope.eventsdataset.$promise.then(function () {
             console.log(" -- events dataset back -- ");
@@ -458,10 +465,7 @@
             {
                 headerName: "Contact", width: 200,
                 cellRenderer: function (params) {
-                    if (params.node.data.PermitPerson.Organization)
-                        return params.node.data.PermitPerson.Organization
-
-                    return (params.node.data.PermitPerson.FullName) ? params.node.data.PermitPerson.FullName : params.node.data.PermitPerson.FirstName + " " + params.node.data.PermitPerson.LastName;
+                    return $scope.getPersonLabel(params.node.data.PermitPerson);
                 },
                 filter: 'text',
                 menuTabs: ['filterMenuTab'],
@@ -556,6 +560,7 @@
             //if editing, we'll have incoming params
             if (params) {
                 $scope.contact_modal = params;
+                $scope.contact_modal.PermitPerson.Label = $scope.getPersonLabel($scope.contact_modal.PermitPerson);
             } else {
                 $scope.contact_modal = { PermitId: $scope.row.Id };
             }
@@ -684,7 +689,7 @@
                 removed.$promise.then(function () {
                     $scope.PermitContacts.forEach(function (contact, index) {
                         if (contact.PermitPersonId == $scope.permitContactsGrid.selectedItem.PermitPersonId) {
-                            $scope.PermitContacts.splice(index);
+                            $scope.PermitContacts.splice(index,1);
                             $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
                         }
                     });
