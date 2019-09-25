@@ -499,7 +499,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
-            if ((typeof $scope.row.Activity.AccuracyCheck !== 'undefined') && ($scope.row.Activity.AccuracyCheck !== null)) {
+            if ((typeof $scope.row.Activity.AccuracyCheck !== 'undefined' && $scope.row.Activity.AccuracyCheck !== null) && 
+                (typeof $scope.row.Activity.PostAccuracyCheck !== 'undefined' && $scope.row.Activity.PostAccuracyCheck !== null) ) {
                 // We don't need a line return on the form.
                 $scope.row.AccuracyCheckBreak = false;
                 $scope.row.Activity.AccuracyCheckText = $scope.row.Activity.AccuracyCheck.Bath1Grade + "-" + $scope.row.Activity.AccuracyCheck.Bath2Grade + " on " + moment($scope.row.Activity.AccuracyCheck.CheckDate).format('MMM DD YYYY');
