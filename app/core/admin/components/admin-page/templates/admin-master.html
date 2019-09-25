@@ -6,10 +6,13 @@
 
 	<div class="panel panel-default">
         <div class="panel-body">
-            <h3>{{datastore.Name}} :: Master Fields</h3>
+            <h3>{{datastore.Name}} :: Master Dataset Fields</h3>
 
-            <p><i>Manage the master fields for this datastore.</i></p>
+            <p><i>Manage the fields for this master dataset.</i></p>
             <hr />
+
+            <button style="margin-top: -65px; margin-right: 105px;" class="btn right" ng-click="go('admin-new-dataset/'+datastore.Id)">Add to Project</button>
+            <button style="margin-top: -65px" class="btn right" ng-click="createMasterField()">Create Field</button> 
 
             <div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
                 <div id="fields-grid" class="ag-theme-blue gridStyle-small"></div>

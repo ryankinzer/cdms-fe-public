@@ -17,7 +17,10 @@
         $scope.row.UpdatedBy = $scope.Profile.Fullname;
 
         $scope.updateFullname = function () { 
-            $scope.row.FullName = $scope.row.FirstName + " " + $scope.row.LastName;
+            $scope.row.FullName = ($scope.row.Prefix) ? $scope.row.Prefix + " " : "";
+            $scope.row.FullName += ($scope.row.FirstName) ? $scope.row.FirstName + " " : "";
+            $scope.row.FullName += ($scope.row.LastName) ? $scope.row.LastName : "";
+            $scope.row.FullName += ($scope.row.Suffix) ? ", " + $scope.row.Suffix : "";
         };
 
         $scope.save = function () {

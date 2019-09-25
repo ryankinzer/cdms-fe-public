@@ -46,6 +46,8 @@ var permit_contacts = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 
                 deleting.$promise.then(function () {
                     $scope.saveContactCallback(); //refresh the contacts...
+                }, function(data){
+                    alert("Error: " + data.data.InnerException.ExceptionMessage)
                 });
             }
         };

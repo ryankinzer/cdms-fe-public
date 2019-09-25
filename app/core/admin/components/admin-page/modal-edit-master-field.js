@@ -3,6 +3,8 @@ var modal_admin_edit_master_field = ['$scope', '$uibModal','$uibModalInstance','
 
     function ($scope, $modal, $modalInstance, AdminService) {
 
+        $scope.field_to_edit.DatastoreId = $scope.datastore.Id;
+
         $scope.save = function () {
 			var saved_field = AdminService.saveMasterField($scope.field_to_edit);
             saved_field.$promise.then(function () { 

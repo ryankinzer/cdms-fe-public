@@ -92,6 +92,21 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
             });
         };
 
+        $scope.createMasterField = function(){
+            $scope.SaveMessage = null;
+            $scope.field_to_edit = {};
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/admin/components/admin-page/templates/modal-edit-master-field.html',
+                controller: 'ModalEditMasterFieldCtrl',
+                scope: $scope, 
+                backdrop: "static",
+                keyboard: false
+            }).result.then(function (saved_field) { 
+                $scope.datastore.Fields.push(saved_field);
+                $scope.fieldGridOptions.api.setRowData($scope.datastore.Fields);
+                $scope.SaveMessage = "Success.";
+            });
+        }
 		
 	}
 ];
