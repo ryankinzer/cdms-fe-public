@@ -348,18 +348,12 @@ datasets_module.service('DatasetService', ['$q',
                 //default page routes
                 dataset.activitiesRoute = "activities"; //default route -- when they click to go to "activities" this is the route they should use.
 
-                //objectify our dataset config for later use
-                //console.log("dataset.Config is next...");
-                //console.dir(dataset.Config);
-                //if(dataset.Config) // Original line.
-                // If we are verifying the variable is defined, this works the best.  Lastly, the database column config may either be null, or contain the text "NULL", so we must check for that too.
-
-                dataset.Config = angular.fromJson(dataset.Config);
-
-                if ((typeof dataset.Config == 'undefined') || (dataset.Config == null) || (dataset.Config == "NULL") || (dataset.Config == "null")) {
+                if (typeof dataset.Config == 'undefined' || dataset.Config == null || dataset.Config == "NULL" || dataset.Config == "null") {
                     dataset.Config = {};
                     return;
                 }
+
+                dataset.Config = angular.fromJson(dataset.Config);
 
                 //if there are page routes in configuration, set them in our dataset
                 if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)
