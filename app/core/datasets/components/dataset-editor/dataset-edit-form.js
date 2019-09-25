@@ -143,7 +143,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             
             tabToNextCell: function (params) { 
-                console.dir(params);
+                //console.dir(params);
                 var previousCell = params.previousCellDef;
                 var nextCell = params.nextCellDef;
 
@@ -950,12 +950,20 @@ console.log("SaveParentItem!");
                 'details': [],
             };
 
-            // 1) all current detail records from the grid
+            // 1) all current detail records from the grid if it is new OR just edited details if editing
             $scope.dataAgGridOptions.api.forEachNode(function (node) { 
-                var data = angular.copy(node.data);
-                payload.details.push(data); 
-            });
+                console.log("Node id: " + node.data.Id);
+                console.dir($scope.dataAgGridOptions.editedRowIds);
+                console.log(" does editedRowIds contain this id? " + $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id));
 
+                if(!$scope.row.ActivityId || !node.data.Id || $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id)){
+                    
+                    console.log("adding row id " + node.data.Id + " to be saved...");
+                    var data = angular.copy(node.data);
+                    payload.details.push(data); 
+                }
+            });
+        
 			// If the user removed a row, the grid no longer contains that row.
 			// However, when we remove a row, it is not deleted from the database; it is marked as deleted in the backend (ROWSTATUS_DELETED).
 			// Therefore, we need to add the removed row back into the list that we send to the database, but we DO NOT want to add it back 
@@ -1016,7 +1024,6 @@ console.log("SaveParentItem!");
             });
 
             console.dir(payload);
-            //return;
 
             var save_promise = null;
 
