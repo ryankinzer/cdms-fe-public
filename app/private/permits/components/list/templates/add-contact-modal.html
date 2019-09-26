@@ -17,8 +17,7 @@
                 <div style="margin-top: 10px" ng-show="personMatches != ''">
                     <div class="header-label">Contact:</div>
                     <div class="header-value">
-                        <select class="form-control" ng-model="Selected.Person" ng-change="selectPerson()" multiple="true">
-                            <option ng-repeat="person in personMatches" ng-selected="person.Id == Selected.Person[0].Id" value="{{person}}">{{person.Label}}</option>
+                        <select class="form-control" ng-options="person as person.Label for person in personMatches track by person.Id" ng-model="Selected.Person" ng-change="selectPerson()" multiple="true">
                         </select>
                     </div>
                 </div>

@@ -14,8 +14,7 @@
             <div style="margin-top: 10px" ng-show="parcelMatches != ''">
                 <div class="header-label">Results:</div>
                 <div class="header-value">
-                    <select class="form-control" ng-model="Selected.Parcel" ng-change="selectParcel()" multiple="true">
-                        <option ng-repeat="parcel in parcelMatches" ng-selected="parcel.ParcelId == Selected.Parcel[0].ParcelId" value="{{parcel}}">{{parcel.ParcelId}}</option>
+                    <select class="form-control" ng-options="parcel as parcel.ParcelId for parcel in parcelMatches track by parcel.ParcelId" ng-model="Selected.Parcel" ng-change="selectParcel()" multiple="true">
                     </select>
                 </div>
             </div>
