@@ -725,10 +725,19 @@
         }
 
         $scope.openPermitReport = function(){
+            if(!$scope.hasPrimaryContact() && $scope.row.IssueDate == null){
+                alert("You must specify a primary contact and IssueDate before you can generate a Permit report.")
+                return;
+            }
             if(!$scope.hasPrimaryContact()){
                 alert("You must specify a primary contact before you can generate a Permit report.")
                 return;
             }
+            if($scope.row.IssueDate == null){
+                alert("You must specify an IssueDate before you can generate a Permit report.")
+                return;
+            }
+
             window.open("https://paluutreports.ctuir.org/Reports/report/TPO/DevelopmentPermit?PermitNumber=" + $scope.row.PermitNumber, "_blank");
         }
 
