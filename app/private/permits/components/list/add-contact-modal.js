@@ -56,7 +56,6 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
         $scope.selectPerson = function(){
             if(!$scope.Selected)
                 return;
-                
             var person = angular.fromJson($scope.Selected.Person[0]); //this is the trick
             $scope.contact_modal.PermitPersonId = person.Id;
             $scope.contact_modal.Person = person;

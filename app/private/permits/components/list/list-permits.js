@@ -741,6 +741,10 @@
             window.open("https://paluutreports.ctuir.org/Reports/report/TPO/DevelopmentPermit?PermitNumber=" + $scope.row.PermitNumber, "_blank");
         }
 
+        $scope.openParcelInMap = function(){
+            window.open("index.html#!/permits/map?ParcelId="+ $scope.permitParcelsGrid.selectedItem.ParcelId, "_blank");
+        }
+
         $scope.openCOReport = function(){
             if(!$scope.hasPrimaryContact()){
                 alert("You must specify a primary contact before you can generate a Certificate of Occupancy report.")

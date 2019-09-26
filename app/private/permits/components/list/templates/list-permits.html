@@ -229,6 +229,7 @@
                                     <fieldset style=" margin-top: 30px;">
                                         <legend>Parcels</legend>
                                         <div id="permit-parcels-grid" style="height: 120px;width:100%;" class="ag-theme-blue"></div>
+                                        <button ng-show="permitParcelsGrid.selectedItem" class="btn btn-secondary btn-sm right margin-5" ng-click="openParcelInMap()">Open in Map</button>
                                         <button ng-show="row.Id" class="btn btn-secondary btn-sm right margin-5" ng-click="openParcelModal()">Add</button>
                                         <button ng-show="permitParcelsGrid.selectedItem" class="btn btn-warning btn-sm right margin-5" ng-click="removeSelectedParcel()">Remove</button>
                                     </fieldset>
