@@ -255,8 +255,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log("cell editing stopped >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 //console.dir(event);
 
+                if ($rootScope.waypoints)
+                    $scope.waypoints = $rootScope.waypoints;
+
                 if (GridService.validateCell(event, $scope)) {
-                    GridService.fireRule("OnChange", event); //only fires when valid change is made
+                    GridService.fireRule("OnChange", event, $scope); //only fires when valid change is made
                 }
 
                 $scope.PageErrorCount = $scope.getPageErrorCount();
@@ -638,7 +641,21 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 keyboard: false
             });
 
-        };     
+        };
+        
+		$scope.openWaypointFileModal = function(row, field)
+        {
+            $scope.file_row = row;
+            $scope.file_field = field;
+            
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
+                controller: 'WaypointFileModalCtrl',
+                scope: $scope, //scope to make a child of
+                backdrop: "static",
+                keyboard: false
+            });
+        };
 
         $scope.openEdit = function () {
             $location.path("/edit/" + $scope.dataset_activities.Header.Activity.Id);
