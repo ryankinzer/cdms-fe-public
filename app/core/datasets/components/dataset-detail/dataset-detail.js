@@ -110,10 +110,10 @@ var dataset_detail = ['$scope', '$routeParams', 'DatasetService', 'ProjectServic
                 metadata.push({ MetadataPropertyId: item.propertyId, Values: item.value});
             });
 
-            console.log("metadatalist - ");
-            console.dir(scope.metadataList);
-            console.log("what we're sending - ");
-            console.dir(metadata);
+            // console.log("metadatalist - ");
+            // console.dir(scope.metadataList);
+            // console.log("what we're sending - ");
+            // console.dir(metadata);
 
             var promise = CommonService.saveDatasetMetadata(scope.dataset.Id, metadata, scope.saveResults);
 
