@@ -90,9 +90,7 @@
 
             $scope.PermitPersons.$promise.then(function () {
                 $scope.PermitPersons.forEach(function (person) {
-                    person.Label = (person.Organization) ? person.Organization : person.FullName;
-                    if (person.Label == "")
-                        person.FirstName + " " + person.LastName;
+                    person.Label = $scope.getPersonLabel(person);
                 });
 
                 $scope.PermitPersons = $scope.PermitPersons.sort(orderByAlpha);
@@ -100,6 +98,15 @@
 
 
         });
+
+        //returns a composed label for a person
+        $scope.getPersonLabel = function(person){
+            var label = (person.Organization) ? person.Organization : person.FullName;
+            if (label == "")
+                person.FirstName + " " + person.LastName;
+
+            return label;
+        }
 
         $scope.eventsdataset.$promise.then(function () {
             console.log(" -- events dataset back -- ");
@@ -155,6 +162,7 @@
         };
 
         $scope.showAll = function () {
+            $scope.clearingFilters = true;
             $scope.clearReviewedBy();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectEverything();
@@ -187,11 +195,12 @@
         $scope.clearFilters = function(){
             $scope.clearingFilters = true;
             $scope.permitsGrid.api.setFilterModel(null);
+            $scope.currentPage = "All";
         }
 
         //requirement: can navigate permits by up and down arrow keys
         $scope.keyboardNavigation = function (params) {
-            console.log("my navigation");
+            //console.log("my navigation");
             var previousCell = params.previousCellDef;
             var suggestedNextCell = params.nextCellDef;
 
@@ -202,7 +211,7 @@
 
             switch (params.key) {
                 case KEY_DOWN:
-                    console.log("down");
+                    //console.log("down");
                     previousCell = params.previousCellDef;
                     // set selected cell on current cell + 1
                     $scope.permitsGrid.api.forEachNode(function (node) {
@@ -326,8 +335,10 @@
                 $scope.permitParcelsGrid.selectedItem = $scope.permitParcelsGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
+            onRowDoubleClicked: function (params) {
+                window.open("index.html#!/permits/map?ParcelId=" + params.data.ParcelId, "_blank");
+            },
         }
-
 
         $scope.parcelHistoryGrid = {
             columnDefs: null,
@@ -455,10 +466,7 @@
             {
                 headerName: "Contact", width: 200,
                 cellRenderer: function (params) {
-                    if (params.node.data.PermitPerson.Organization)
-                        return params.node.data.PermitPerson.Organization
-
-                    return (params.node.data.PermitPerson.FullName) ? params.node.data.PermitPerson.FullName : params.node.data.PermitPerson.FirstName + " " + params.node.data.PermitPerson.LastName;
+                    return $scope.getPersonLabel(params.node.data.PermitPerson);
                 },
                 filter: 'text',
                 menuTabs: ['filterMenuTab'],
@@ -553,6 +561,7 @@
             //if editing, we'll have incoming params
             if (params) {
                 $scope.contact_modal = params;
+                $scope.contact_modal.PermitPerson.Label = $scope.getPersonLabel($scope.contact_modal.PermitPerson);
             } else {
                 $scope.contact_modal = { PermitId: $scope.row.Id };
             }
@@ -575,6 +584,11 @@
 
         $scope.openParcelModal = function (params) {
 
+            if ($scope.row.dataChanged){
+                alert("Please save or cancel your changes before adding a new parcel.");
+                return;
+            }
+
             //if editing, we'll have incoming params
             if (params) {
                 $scope.parcel_modal = params;
@@ -594,6 +608,12 @@
                     $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
                     $scope.refreshZones();
                     $scope.refreshParcelHistory();
+                    $scope.row.LegalDescription = ($scope.row.LegalDescription) ? $scope.row.LegalDescription +","+saved_parcel.ParcelId : saved_parcel.ParcelId;
+                    $scope.permits.forEach(function (existing_permit) { 
+                        if (existing_permit.Id == $scope.row.Id) {
+                            existing_permit.LegalDescription = $scope.row.LegalDescription;
+                        }
+                    });
                 });
             });
         }
@@ -670,7 +690,7 @@
                 removed.$promise.then(function () {
                     $scope.PermitContacts.forEach(function (contact, index) {
                         if (contact.PermitPersonId == $scope.permitContactsGrid.selectedItem.PermitPersonId) {
-                            $scope.PermitContacts.splice(index);
+                            $scope.PermitContacts.splice(index,1);
                             $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
                         }
                     });
@@ -692,6 +712,46 @@
                 });
             }
         };
+
+        $scope.hasPrimaryContact = function() {
+            var hasPrimaryContact = false;
+
+            $scope.PermitContacts.forEach(function (contact, index) {
+                if(contact.IsPrimary)
+                    hasPrimaryContact = true;
+            });
+
+            return hasPrimaryContact;
+        }
+
+        $scope.openPermitReport = function(){
+            if(!$scope.hasPrimaryContact() && $scope.row.IssueDate == null){
+                alert("You must specify a primary contact and IssueDate before you can generate a Permit report.")
+                return;
+            }
+            if(!$scope.hasPrimaryContact()){
+                alert("You must specify a primary contact before you can generate a Permit report.")
+                return;
+            }
+            if($scope.row.IssueDate == null){
+                alert("You must specify an IssueDate before you can generate a Permit report.")
+                return;
+            }
+
+            window.open("https://paluutreports.ctuir.org/Reports/report/TPO/DevelopmentPermit?PermitNumber=" + $scope.row.PermitNumber, "_blank");
+        }
+
+        $scope.openParcelInMap = function(){
+            window.open("index.html#!/permits/map?ParcelId="+ $scope.permitParcelsGrid.selectedItem.ParcelId, "_blank");
+        }
+
+        $scope.openCOReport = function(){
+            if(!$scope.hasPrimaryContact()){
+                alert("You must specify a primary contact before you can generate a Certificate of Occupancy report.")
+                return;
+            }
+            window.open("https://paluutreports.ctuir.org/Reports/report/TPO/CertificateOfOccupancy?PermitNumber=" + $scope.row.PermitNumber, "_blank");
+        }
 
         $scope.resetGrids = function () {
 
@@ -810,6 +870,7 @@
                     this.style.height = 'auto';
                     this.style.minheight = '130px';
                     this.style.height = (this.scrollHeight) + 'px';
+                    this.value = this.value.replace(/\n/g, ""); //do not allow hard-returns
                   });
 
             });
@@ -1042,13 +1103,13 @@
         };
 
         $scope.generatePermitNumber = function () {
-            var permitnumber = "";
+            var permitnumber = "XXX";
             $scope.PermitTypes.forEach(function (type) { 
                 if (type.Id === $scope.row.PermitType) {
                     if (moment().year() > type.CurrentPermitYear)
                         type.CurrentPermitNumber = 1;
 
-                    permitnumber = (type.CurrentPermitNumber + 1+"").padStart(3, '0');
+                    //permitnumber = (type.CurrentPermitNumber + 1+"").padStart(3, '0');
                     permitnumber = type.PermitNumberPrefix + "-" + moment().format('YY') + "-" + permitnumber;
 
                     $scope.row.PermitNumber = permitnumber;

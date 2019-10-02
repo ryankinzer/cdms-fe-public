@@ -70,6 +70,7 @@
                         return leasing_module.LeaseStatus[params.value];
                 }, filter: true, menuTabs: ['filterMenuTab'] 
             },
+            { headerName: "Lease Type", field: "LeaseType", width: 160, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Allotment", field: "AllotmentName", width: 180, menuTabs: ['filterMenuTab'], filter:"text" },
             { headerName: "TAAMSNumber", field: "TAAMSNumber", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
             { headerName: "Lease Number", field: "LeaseNumber", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
@@ -83,9 +84,28 @@
             },
             //{ headerName: "Farm Number", field: "FarmNumber", width: 160 },
             //{ headerName: "Level", field: "Level", width: 160 },
-            
+            {
+                headerName: "Lease Start",
+                field: "LeaseStart", width: 160,
+                valueGetter: function (params) { return moment(params.node.data.LeaseStart) }, 
+                valueFormatter: function (params) {
+                    return valueFormatterDate(params.node.data.LeaseStart);
+                },
+                menuTabs: ['filterMenuTab'],
+                filter: "agDateColumnFilter"
+            },
+            {
+                headerName: "Lease End",
+                field: "LeaseEnd", width: 160,
+                valueGetter: function (params) { return moment(params.node.data.LeaseEnd) },
+                valueFormatter: function (params) {
+                    return valueFormatterDate(params.node.data.LeaseEnd);
+                },
+                menuTabs: ['filterMenuTab'],
+                filter: "agDateColumnFilter"
+            },
             { headerName: "Status By", field: "StatusBy", width: 160, menuTabs: ['filterMenuTab'], filter:'text' },
-{
+            {
                 headerName: "Transaction Date",
                 field: "TransactionDate", width: 160,
                 valueGetter: function (params) { return moment(params.node.data.TransactionDate) },
@@ -107,7 +127,6 @@
             },
             { headerName: "FSA Tract", field: "FSATractNumber", width: 160, menuTabs: ['filterMenuTab'], filter: "text" },
             //{ headerName: "HEL", field: "HEL", width: 160 },
-            { headerName: "Lease Type", field: "LeaseType", width: 160, menuTabs: ['filterMenuTab'], filter: true },
             { headerName: "Lease Acres", field: "LeaseAcres", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
             //{ headerName: "Lease Duration", field: "LeaseDuration", width: 160 },
             { headerName: "Productive Acres", field: "ProductiveAcres", width: 160, menuTabs: ['filterMenuTab'], filter: "number" },
@@ -117,26 +136,6 @@
                 valueGetter: function (params) { return moment(params.node.data.NegotiateDate) },
                 valueFormatter: function (params) {
                     return valueFormatterDate(params.node.data.NegotiateDate);
-                },
-                menuTabs: ['filterMenuTab'],
-                filter: "agDateColumnFilter"
-            },
-            {
-                headerName: "Lease Start",
-                field: "LeaseStart", width: 160,
-                valueGetter: function (params) { return moment(params.node.data.LeaseStart) }, 
-                valueFormatter: function (params) {
-                    return valueFormatterDate(params.node.data.LeaseStart);
-                },
-                menuTabs: ['filterMenuTab'],
-                filter: "agDateColumnFilter"
-            },
-            {
-                headerName: "Lease End",
-                field: "LeaseEnd", width: 160,
-                valueGetter: function (params) { return moment(params.node.data.LeaseEnd) },
-                valueFormatter: function (params) {
-                    return valueFormatterDate(params.node.data.LeaseEnd);
                 },
                 menuTabs: ['filterMenuTab'],
                 filter: "agDateColumnFilter"

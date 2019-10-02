@@ -16,6 +16,7 @@ require([
     'core/admin/components/admin-page/modal-edit-metadataproperty',
     'core/admin/components/admin-page/admin-users',
     'core/admin/components/admin-page/admin-manage-users-modal',
+    'core/admin/components/admin-page/modal-datastore',
 
     //service
     'core/admin/admin-service',
@@ -38,6 +39,7 @@ require([
     admin_module.controller('ModalEditMetadataPropertyCtrl', modal_admin_edit_metadataproperty);
     admin_module.controller('AdminUsersCtrl', admin_users);
     admin_module.controller('ModalManageUserCtrl', modal_manage_user);
+    admin_module.controller('ModalDatastore',modal_admin_new_datastore);
 
     //load services
 
