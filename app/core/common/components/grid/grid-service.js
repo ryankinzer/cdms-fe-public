@@ -323,7 +323,8 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
 
 
         //fires the given rule and returns row_errors
-        service.fireRule = function (type, event) { //row, field, value, headers, errors, scope) {
+        //service.fireRule = function (type, event) { //row, field, value, headers, errors, scope) {
+        service.fireRule = function (type, event, scope) { //row, field, value, headers, errors, scope) {
 
             if (!event.colDef.hasOwnProperty('cdmsField')) {
                 console.warn("fireRule (" + type + ")- no cdmsField defined so there are no rules - skipping. The event:");
@@ -358,6 +359,8 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                     else {
                         //if ((typeof row['InterviewTime'] !== 'undefined' && row['InterviewTime'] !== null) && ((typeof event.scope.row['NumberAnglersInterviewed'] === 'undefined') || (event.scope.row['NumberAnglersInterviewed'] === 0)))
                         //    row_errors.push('[InterviewTime] An interview cannot be present, when NumberAnglersInterviewed = 0');
+                        //console.log("scope is next...");
+                        //console.dir(scope);
                         console.log("Firing a rule: " + type + " on " + field.DbColumnName);
                         eval(MasterFieldRule[type]);
                     }
