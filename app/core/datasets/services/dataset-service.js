@@ -56,6 +56,12 @@ datasets_module.factory('GetDatasetsList', ['$resource', function ($resource) {
     });
 }]);
 
+datasets_module.factory('GetTableData', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/dataset/gettabledata', {}, {
+        query: { method: 'GET', params: {id: 'id'}, isArray: true }
+    });
+}]);
+
 datasets_module.factory('Data', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/activity/getdatasetactivitydata', {}, {
         query: { method: 'GET', params: { id: 'activityId' }, isArray: false }
@@ -255,6 +261,7 @@ datasets_module.service('DatasetService', ['$q',
     'UpdateDataset',
     'HasExistingActivity',
     'GetDatasetsList',
+    'GetTableData',
     function ($q,
         DatasetFiles,
         Activities,
@@ -294,7 +301,8 @@ datasets_module.service('DatasetService', ['$q',
         AddDatasetToProject,
         UpdateDataset,
         HasExistingActivity,
-        GetDatasetsList)
+        GetDatasetsList,
+        GetTableData)
     {
 
         var service = {
@@ -340,6 +348,10 @@ datasets_module.service('DatasetService', ['$q',
 			
             getDatasetsList: function () {
                 return GetDatasetsList.query();
+            },
+
+            getTableData: function(datasetId){
+                return GetTableData.query({id: datasetId})
             },
 
             //configureDataset: function(dataset)
