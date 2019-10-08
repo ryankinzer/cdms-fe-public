@@ -68,6 +68,14 @@ datasets_module.factory('SaveTableData', ['$resource', function ($resource) {
     });
 }]);
 
+datasets_module.factory('DeleteTableData', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/table/deletetabledata', {}, {
+        save: { method: 'POST', isArray: false }
+    });
+}]);
+
+
+
 datasets_module.factory('Data', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/activity/getdatasetactivitydata', {}, {
         query: { method: 'GET', params: { id: 'activityId' }, isArray: false }
@@ -269,6 +277,7 @@ datasets_module.service('DatasetService', ['$q',
     'GetDatasetsList',
     'GetTableData',
     'SaveTableData',
+    'DeleteTableData',
     function ($q,
         DatasetFiles,
         Activities,
@@ -310,7 +319,8 @@ datasets_module.service('DatasetService', ['$q',
         HasExistingActivity,
         GetDatasetsList,
         GetTableData,
-        SaveTableData)
+        SaveTableData,
+        DeleteTableData)
     {
 
         var service = {
@@ -364,6 +374,10 @@ datasets_module.service('DatasetService', ['$q',
 
             saveTableData: function(dataset, data){
                 return SaveTableData.save({DatasetId: dataset.Id, TableData: data});
+            },
+
+            deleteDataTableRow: function(dataset, data){
+                return DeleteTableData.save({DatasetId: dataset.Id, TableData: data});
             },
 
             //configureDataset: function(dataset)

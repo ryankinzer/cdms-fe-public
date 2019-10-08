@@ -31,7 +31,7 @@ var table_editor = ['$scope', '$routeParams','GridService', 'ProjectService', 'D
             var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
             editBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                scope.openEditData(param.data);
+                scope.openDataModal(param.data);
             });
             div.appendChild(editBtn);
 
@@ -55,13 +55,22 @@ var table_editor = ['$scope', '$routeParams','GridService', 'ProjectService', 'D
             },
         }
 
-        scope.openEditData = function (params) {
+        scope.delete = function(){
+            if(scope.tableGrid.selectedItems.length == 1 && confirm("Are you sure you want to delete the selected row? This is irreversible."))
+                var deleted = DatasetService.deleteDataTableRow(scope.dataset, scope.tableGrid.selectedItems[0]);
+                deleted.$promise.then(function(){
+                    scope.tabledata.forEach(function(data,index){ 
+                        if(scope.tableGrid.selectedItems[0].Id == data.Id)
+                            scope.tabledata.splice(index,1);
+                    })
+                    scope.tableGrid.api.setRowData(scope.tabledata);
+                    scope.tableGrid.selectedItems.length = 0;
+                });
+        }
 
-            delete scope.data_modal;
+        scope.openDataModal = function (params) {
 
-            if (params) {
-                scope.data_modal = params;
-            }
+            scope.data_modal = (params) ? params : {};
 
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/datasets/components/dataset-table/templates/edit-data-modal.html',
@@ -70,7 +79,9 @@ var table_editor = ['$scope', '$routeParams','GridService', 'ProjectService', 'D
                 backdrop: "static",
                 keyboard: false
             }).result.then(function(saved){
-                if(params.Id == 0 && saved.Id > 0){
+                saved = saved[0]; //get the first row
+                if(!scope.data_modal.hasOwnProperty('Id')){
+                    //console.log("added to tabledata");
                     scope.tabledata.push(saved);
                 }
                 else
@@ -81,8 +92,10 @@ var table_editor = ['$scope', '$routeParams','GridService', 'ProjectService', 'D
                             angular.extend(data, saved);
                         }
                     });
+                    //console.log("updated tabledata");
                 }
-                
+                //console.dir(saved);
+
                 scope.tableGrid.api.setRowData(scope.tabledata);
             });
         }

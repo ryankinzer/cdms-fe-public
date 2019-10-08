@@ -18,7 +18,12 @@ var modal_admin_new_datastore = ['$scope', '$uibModal','$uibModalInstance','Admi
 
         $scope.checkTablePrefix = function(){
             $scope.datastore.TablePrefix = $scope.datastore.TablePrefix.replace(" ","");
-            $scope.to_generate = $scope.datastore.TablePrefix + "_Header + "+$scope.datastore.TablePrefix + "_Detail";
+            $scope.datastore.TablePrefix = $scope.datastore.TablePrefix.charAt(0).toUpperCase() + $scope.datastore.TablePrefix.slice(1)
+            if($scope.datastore.TableType == 'Single')
+                $scope.to_generate = $scope.datastore.TablePrefix;
+            else
+                $scope.to_generate = $scope.datastore.TablePrefix + "_Header + "+$scope.datastore.TablePrefix + "_Detail";
+            
         }
 
         $scope.cancel = function () {

@@ -1,3 +1,19 @@
+<h2>Manage {{dataset.Name}}</h2>
+
+Total number of rows: <b>{{tabledata.length}}</b><br /><br />
+
+<div>
+    <button project-role="editor" class="btn btn-sm" style="margin-bottom: 20px;" ng-click="openDataModal()">New</button>
+    <div class="right">
+        <div ng-show="saveResults" style="float: left;">
+            <div ng-click="saveResults=null" ng-show="saveResults.success" class="delete-error alert alert-success">Deleted</div>
+            <div ng-click="saveResults=null" ng-show="saveResults.failure" class="delete-error alert alert-danger">Error</div>
+        </div>
+        <button project-role="editor" class="btn btn-sm right btn-danger" ng-show="tableGrid.selectedItems.length > 0" ng-click="delete()">Delete</button>
+
+    </div>
+</div>
+
 <div>
     <div id="table-grid" class="ag-theme-blue gridStyle-small"></div>
 </div>
