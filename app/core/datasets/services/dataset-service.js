@@ -57,8 +57,14 @@ datasets_module.factory('GetDatasetsList', ['$resource', function ($resource) {
 }]);
 
 datasets_module.factory('GetTableData', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/dataset/gettabledata', {}, {
+    return $resource(serviceUrl + '/api/v1/table/gettabledata', {}, {
         query: { method: 'GET', params: {id: 'id'}, isArray: true }
+    });
+}]);
+
+datasets_module.factory('SaveTableData', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/table/savetabledata', {}, {
+        save: { method: 'POST', isArray: true }
     });
 }]);
 
@@ -262,6 +268,7 @@ datasets_module.service('DatasetService', ['$q',
     'HasExistingActivity',
     'GetDatasetsList',
     'GetTableData',
+    'SaveTableData',
     function ($q,
         DatasetFiles,
         Activities,
@@ -302,7 +309,8 @@ datasets_module.service('DatasetService', ['$q',
         UpdateDataset,
         HasExistingActivity,
         GetDatasetsList,
-        GetTableData)
+        GetTableData,
+        SaveTableData)
     {
 
         var service = {
@@ -352,6 +360,10 @@ datasets_module.service('DatasetService', ['$q',
 
             getTableData: function(datasetId){
                 return GetTableData.query({id: datasetId})
+            },
+
+            saveTableData: function(dataset, data){
+                return SaveTableData.save({DatasetId: dataset.Id, TableData: data});
             },
 
             //configureDataset: function(dataset)

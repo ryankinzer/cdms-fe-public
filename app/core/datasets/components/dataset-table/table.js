@@ -70,7 +70,20 @@ var table_editor = ['$scope', '$routeParams','GridService', 'ProjectService', 'D
                 backdrop: "static",
                 keyboard: false
             }).result.then(function(saved){
-                //scope.saveContactCallback();
+                if(params.Id == 0 && saved.Id > 0){
+                    scope.tabledata.push(saved);
+                }
+                else
+                {
+                    scope.tabledata.forEach(function(data){
+                        if(data.Id == saved.Id)
+                        {
+                            angular.extend(data, saved);
+                        }
+                    });
+                }
+                
+                scope.tableGrid.api.setRowData(scope.tabledata);
             });
         }
 

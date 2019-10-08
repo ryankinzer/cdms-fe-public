@@ -17,7 +17,7 @@
 
         $scope.save = function () {
 
-            var save_result = DatasetService.saveTableData($scope.row);
+            var save_result = DatasetService.saveTableData($scope.dataset, $scope.row);
 
             save_result.$promise.then(function () {
                 $modalInstance.close(save_result);
