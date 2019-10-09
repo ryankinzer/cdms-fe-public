@@ -128,7 +128,7 @@ CDMSSelectCellEditor.prototype.init = function (params) {
 
     _this.values = params.values;
     _this.container = document.createElement('div');
-    _this.container.style = "border-radius: 3px; border: 1px solid grey;background: #e6e6e6";
+    _this.container.style = "width: 420px;border-radius: 3px; border: 1px solid grey;background: #e6e6e6";
     _this.container.onkeydown = onKeyDown;
     _this.eSelect = document.createElement("select");
     _this.eSelect.size = 7;
