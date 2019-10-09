@@ -391,7 +391,12 @@ datasets_module.service('DatasetService', ['$q',
                     return;
                 }
 
-                dataset.Config = angular.fromJson(dataset.Config);
+                try{
+                    dataset.Config = angular.fromJson(dataset.Config);
+                }catch(e){
+                    console.error("Could not parse Config for this dataset:");
+                    console.dir(dataset);
+                }
 
                 //if there are page routes in configuration, set them in our dataset
                 if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)

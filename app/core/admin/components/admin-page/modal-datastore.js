@@ -3,7 +3,7 @@ var modal_admin_new_datastore = ['$scope', '$uibModal','$uibModalInstance','Admi
 
     function ($scope, $modal, $modalInstance, AdminService) {
 
-        $scope.datastore = {};
+        $scope.datastore = { TableType: 'Header+Detail'};
         $scope.to_generate = "";
 
         $scope.save = function () {
