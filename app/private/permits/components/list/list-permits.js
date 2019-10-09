@@ -393,6 +393,9 @@
                 $scope.permitFilesGrid.selectedItem = $scope.permitFilesGrid.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
+            onRowDoubleClicked: function (params) {
+                $scope.openEditFileTypeModal($scope.permitFilesGrid.selectedItem);
+            },
         }
 
 
@@ -582,6 +585,25 @@
             });
         }
 
+        //open a modal for editing only the filetype
+        $scope.openEditFileTypeModal = function(params){
+            $scope.file_modal = params;
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/modal-edit-file.html',
+                controller: 'EditFileTypeModalController',
+                scope: $scope,
+                backdrop: "static",
+                keyboard: false
+            }).result.then(function (saved_file) {
+                $scope.PermitFiles.forEach(function (file, index) {
+                    if (file.Id == saved_file.Id) {
+                        file.Description = saved_file.Description;
+                        $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
+                    }
+                }); 
+            });
+        }
+
         $scope.openParcelModal = function (params) {
 
             if ($scope.row.dataChanged){
@@ -655,7 +677,6 @@
                         $scope.PermitFiles.splice(index, 1);
                         $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
                     }
-
                 });
             });
 
