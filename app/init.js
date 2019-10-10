@@ -29,8 +29,20 @@
       'core/projects/projects-module',
       'core/datasets/datasets-module',
       'core/admin/admin-module',
+<<<<<<< HEAD
       'core/user/user-module'
       
+=======
+      'core/user/user-module',
+      'private/all-modules',
+      'private/crpp/crpp-module',
+      'private/habitat/habitat-module',
+        'private/appraisals/appraisals-module',
+        'private/leasing/leasing-module',
+        'private/permits/permit-module',
+        'private/olc/olc-module',
+
+>>>>>>> d012d83510e1854eb25fc09d3c95bb0a7e2cd94c
     ], function (angular, parser) {
    
         angular.element(document).ready(function () {           //punch it, Chewy!

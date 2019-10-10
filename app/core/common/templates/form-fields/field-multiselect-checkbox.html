@@ -1,6 +1,6 @@
 <div class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;">
 
-    <div class="header-label">{{field.Label}}:</div>
+    <div data-title="{{field.cdmsField.Field.Description}}" class="header-label">{{field.Label}}:</div>
     <div class="header-value" style="margin-left: 198px;">
         <div class="checkbox-itemlist">
             <div ng-repeat="option in selectOptions">

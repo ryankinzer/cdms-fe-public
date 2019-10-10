@@ -61,6 +61,10 @@ projects_module.factory('GetAllInstruments', ['$resource', function ($resource) 
     return $resource(serviceUrl + '/api/v1/instrument/getinstruments');
 }]);
 
+projects_module.factory('GetAllInstrumentAccuracyChecks', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/instrument/getallinstrumentaccuracychecks');
+}]);
+
 projects_module.factory('SaveProjectInstrument', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/instrument/saveprojectinstrument');
 }]);
@@ -125,6 +129,9 @@ projects_module.factory('GetCrppStaff', ['$resource', function($resource){
     return $resource(serviceUrl+'/api/v1/user/GetCrppStaff'); // This line will need adjusting.
 }]);
 
+projects_module.factory('GetOlcStaff', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/user/GetOlcStaff'); // This line will need adjusting.
+}]);
 
 /*
 * define the service that can be used by any module in our application to work with projects.
@@ -132,7 +139,7 @@ projects_module.factory('GetCrppStaff', ['$resource', function($resource){
 projects_module.service('ProjectService', ['$q', 
     'ProjectFunders',
     'ProjectCollaborators',
-	'ProjectCounties',
+    'ProjectCounties',
     'Projects',
     'Project',
     'ProjectFiles',
@@ -140,6 +147,7 @@ projects_module.service('ProjectService', ['$q',
     'SetProjectEditors',
     'SaveProject',
     'GetAllInstruments',
+    'GetAllInstrumentAccuracyChecks',
     'SaveProjectInstrument',
     'SaveProjectFisherman',
     'SaveInstrument',
@@ -155,12 +163,13 @@ projects_module.service('ProjectService', ['$q',
     'GetProjectFishermen',
     'RemoveProjectFisherman',
     'RemoveInstrumentAccuracyCheck',
-	'GetCrppStaff',
+    'GetCrppStaff',
+    'GetOlcStaff',
     'SaveProjectConfig',
     function ($q,
         ProjectFunders,
         ProjectCollaborators,
-		ProjectCounties,
+        ProjectCounties,
         Projects,
         Project,
         ProjectFiles,
@@ -168,6 +177,7 @@ projects_module.service('ProjectService', ['$q',
         SetProjectEditors,
         SaveProject,
         GetAllInstruments,
+        GetAllInstrumentAccuracyChecks,
         SaveProjectInstrument,
         SaveProjectFisherman,
         SaveInstrument,
@@ -183,7 +193,8 @@ projects_module.service('ProjectService', ['$q',
         GetProjectFishermen,
         RemoveProjectFisherman,
         RemoveInstrumentAccuracyCheck,
-		GetCrppStaff,
+        GetCrppStaff,
+        GetOlcStaff,
         SaveProjectConfig
 		) {
 
@@ -364,6 +375,10 @@ projects_module.service('ProjectService', ['$q',
                 return GetProjectFishermen.query({ id: projectId });
             },
 
+            getAllInstrumentAccuracyChecks: function (instrumentIdList) {
+                return GetAllInstrumentAccuracyChecks.query();
+            },
+
             saveInstrumentAccuracyCheck: function (instrumentId, ac) {
                 return SaveInstrumentAccuracyCheck.save({ InstrumentId: instrumentId, AccuracyCheck: ac });
             },
@@ -386,6 +401,11 @@ projects_module.service('ProjectService', ['$q',
             {
 				console.log("Inside getCrppStaff...");
                 return GetCrppStaff.query();
+            },
+
+            getOlcStaff: function () {
+                console.log("Inside getOlcStaff...");
+                return GetOlcStaff.query();
             },
         };
 

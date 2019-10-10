@@ -38,7 +38,7 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 
-    <script src="bower_components/d3/d3.js" charset="utf-8"></script>
+    <script src="bower_components/d3/d3.min.js" charset="utf-8"></script>
     <script src="bower_components/nvd3/build/nv.d3.js"></script> <!-- or use another assembly -->
     <script src="bower_components/angular-nvd3/dist/angular-nvd3.js"></script>
     <script src="bower_components/Stickyfill/dist/stickyfill.js"></script>
@@ -94,6 +94,45 @@
                     </div>
                 </li>
 
+<<<<<<< HEAD
+=======
+                <li class="nav-item dropdown" ng-show="Profile.hasRole('Leasing')" ng-cloak>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Leasing</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#!/leasing">Search</a>
+                        <a href class="dropdown-item divider"></a>
+                        <a class="dropdown-item" href="#!/available-land">Available Land for Lease</a>
+                        <a class="dropdown-item" href="#!/pending-leases">Pending Leases</a>
+                        <a class="dropdown-item" href="#!/active-leases">Active Leases</a>
+                        <a class="dropdown-item" href="#!/violations">Inspection Violations</a>
+                        <a href class="dropdown-item divider"></a>
+                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item" href="#!/manage-operators">Manage Operators</a>
+                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item" href="#!/manage-lookups">Manage Lookups</a>
+                        <a class="dropdown-item" href="/assets/pdf/LeaseProcessingWorkflow.pdf" target="_blank">Workflow Diagram (pdf)</a>
+
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown" ng-show="Profile.hasRole('Permits')" ng-cloak>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Permits</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#!/permits/map">Parcel Map</a>
+                        <a href class="dropdown-item divider"></a>
+                        <a class="dropdown-item" href="#!/permits/dashboard">Dashboard</a>
+                        <a class="dropdown-item" href="#!/permits/list">All Permits</a>
+                        <a class="dropdown-item" href="#!/permits/routes">Taskboard</a>
+                        <a class="dropdown-item" href="#!/permits/inspection">Inspection Request</a>
+                        <a href class="dropdown-item divider"></a>
+                        <a class="dropdown-item" href="#!/permits/contacts">Manage Contacts</a>
+                        <a class="dropdown-item" href="#!/projectLookups/11044">Manage Lookups</a>
+                        <a class="dropdown-item" href="#!/permits/notifications">Notifications</a>
+                        <a class="dropdown-item" href="https://paluutreports.ctuir.org/Reports/browse/TPO" target="_blank">Reports</a>
+                        <a class="dropdown-item" href="https://gisportal.ctuir.org/arcgis/apps/webappviewer/index.html?id=75e639bc5e2b45759fa890f6585e030f" target="_blank">GIS Tax Parcels</a>
+                    </div>
+                </li>
+
+
+>>>>>>> d012d83510e1854eb25fc09d3c95bb0a7e2cd94c
                 <li ng-cloak ng-show="Profile.isAdmin()" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -107,6 +146,9 @@
             </ul>
 
             <ul class="navbar-nav navbar-right">
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/feedback" target="_blank">Feedback</a>
+                </li>
                 <li class="dropdown" ng-cloak>
                     <a class="nav-item nav-link dropdown-toggle" data-toggle="dropdown">{{Profile.Fullname}}</a>
                     <ul class="dropdown-menu">

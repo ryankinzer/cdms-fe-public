@@ -169,6 +169,8 @@ var admin_edit_dataset_fields = ['$scope', '$uibModal', '$timeout', '$routeParam
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-edit-dataset-field.html',
                 controller: 'ModalEditDatasetFieldCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_field) { 
                 //replace that field in the grid with the one we got back
                 $scope.dataset.Fields.forEach(function (existing_field,index) {

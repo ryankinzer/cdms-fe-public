@@ -9,8 +9,9 @@
             link: function (scope, element, attrs, ngModel) {
 
                 function parse(viewValue, noRender) {
+                    // console.log("CURRENCY: " + viewValue);
                     if (!viewValue) {
-                        return viewValue;
+                        return ""; //viewValue;
                     }
                     
                     // strips all non digits leaving periods.
@@ -33,8 +34,12 @@
                 ngModel.$parsers.unshift(parse);
 
                 ngModel.$render = function () {
-                    //console.log('viewValue', ngModel.$viewValue);
-                    //console.log('modelValue', ngModel.$modelValue);
+                    // console.log('viewValue', ngModel.$viewValue);
+                    // console.log('modelValue', ngModel.$modelValue);
+
+                    if(ngModel.$modelValue == null) //kb fix: was keeping the previous currency value!
+                        element.val("");
+
                     var clean = parse(ngModel.$viewValue, true);
                     if (!clean)
                         return;

@@ -1,6 +1,6 @@
 ﻿//GridService - enables CDMS field validators and editors on ag-grid
 
-datasets_module.service('GridService', ['$window', '$route','DatasetService',
+datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
     function ($window, $route, DatasetService, $q) {
 
         var service = {
@@ -34,16 +34,16 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                         //set them if we have them already at construction time. for system fields, usually
                         if (col_def.hasOwnProperty('PossibleValues'))
                             col_def.cellEditorParams.values = col_def.PossibleValues;
-                        
+
                         //only call with object version of the possible values
                         col_def.setPossibleValues = function (in_values) {
                             this.PossibleValues = in_values;
                             if (this.hasOwnProperty('cellEditorParams'))
                                 this.cellEditorParams.values = in_values;
                         };
-                        
+
                     }
-    
+
                     //setup tooltip
                     col_def.tooltipField = "rowErrorTooltip";  //rowErrorTooltip is populated only when a validation error exists for any cell in a row.
                     col_def.cellClassRules = {
@@ -72,41 +72,41 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                     console.warn("Notice: There isn't a ControlTypeDefinition for " + cdms_field.DbColumnName + " with ControlType = " + cdms_field.ControlType);
                 }
             },
-/*
-//TODO - still need this? - use a filter?
-            convertStatus: function (aStatus) {
-                //console.log("Inside convertStatus...");
-                //console.log("aStatus = " + aStatus);
-
-                var strStatus = null;
-
-                if (aStatus === 0) {
-                    strStatus = "Active";
-                }
-                else {
-                    strStatus = "Inactive";
-                }
-                //console.log("strStatus = " + strStatus);
-
-                return strStatus;
-            },
-            convertOkToCall: function (aStatus) {
-                //console.log("Inside convertOkToCall...");
-                //console.log("aStatus = " + aStatus);
-
-                var strStatus = null;
-
-                if (aStatus === 0) {
-                    strStatus = "Yes";
-                }
-                else {
-                    strStatus = "No";
-                }
-                //console.log("strStatus = " + strStatus);
-
-                return strStatus;
-            },
-*/
+            /*
+            //TODO - still need this? - use a filter?
+                        convertStatus: function (aStatus) {
+                            //console.log("Inside convertStatus...");
+                            //console.log("aStatus = " + aStatus);
+            
+                            var strStatus = null;
+            
+                            if (aStatus === 0) {
+                                strStatus = "Active";
+                            }
+                            else {
+                                strStatus = "Inactive";
+                            }
+                            //console.log("strStatus = " + strStatus);
+            
+                            return strStatus;
+                        },
+                        convertOkToCall: function (aStatus) {
+                            //console.log("Inside convertOkToCall...");
+                            //console.log("aStatus = " + aStatus);
+            
+                            var strStatus = null;
+            
+                            if (aStatus === 0) {
+                                strStatus = "Yes";
+                            }
+                            else {
+                                strStatus = "No";
+                            }
+                            //console.log("strStatus = " + strStatus);
+            
+                            return strStatus;
+                        },
+            */
         };
 
         //This method builds the column definitions of a dataset for use on any grid view.
@@ -122,7 +122,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
             //dataset defined header fields 
             FieldsSorted.forEach(function (field, index) {
                 if (field.FieldRoleId === FIELD_ROLE_HEADER) {
-            
+
                     field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
 
                     //initial values for header column definition
@@ -130,17 +130,18 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                         headerName: field.Label,
                         field: field.DbColumnName,
                         width: SystemDefaultColumnWidth,
-                        Label: field.Label,                 
-                        DbColumnName: field.DbColumnName,   
-                        ControlType: field.ControlType,     
-                        PossibleValues: getJsonObjects(field.Field.PossibleValues), 
+                        Label: field.Label,
+                        DbColumnName: field.DbColumnName,
+                        ColumnIndex: field.ColumnIndex,
+                        ControlType: field.ControlType,
+                        PossibleValues: getJsonObjects(field.Field.PossibleValues),
                         cdmsField: field, //our own we can use later
                         filter: getAgGridFilterByType(field.Field.ControlType),
                         filterParams: getAgGridFilterParamsByType(field.Field.ControlType),
                         DatastoreId: field.Field.DatastoreId,
                         DatasetId: dataset.Id,
                         ProjectId: dataset.ProjectId,
-                        menuTabs: ['filterMenuTab'],
+                        menuTabs: ['filterMenuTab']
                     };
 
                     //setup column def for HEADER and add it to our list
@@ -162,11 +163,11 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                         field: field.DbColumnName,
                         width: SystemDefaultColumnWidth,
                         menuTabs: ['filterMenuTab'],
-                        Label: field.Label,                 
-                        DbColumnName: field.DbColumnName,   
-                        ControlType: field.ControlType,     
-                        PossibleValues: getJsonObjects(field.Field.PossibleValues), 
-                        cdmsField: field,        
+                        Label: field.Label,
+                        DbColumnName: field.DbColumnName,
+                        ControlType: field.ControlType,
+                        PossibleValues: getJsonObjects(field.Field.PossibleValues),
+                        cdmsField: field,
                         DatastoreId: field.Field.DatastoreId,
                         DatasetId: dataset.Id,
                         ProjectId: dataset.ProjectId,
@@ -188,7 +189,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
         //pass a grid columndefs and we'll autosize the columns
         service.autosizeColumns = function (coldefObject) {
             var allColumnIds = [];
-            coldefObject.columnApi.getAllColumns().forEach( function(columnDef) {
+            coldefObject.columnApi.getAllColumns().forEach(function (columnDef) {
                 allColumnIds.push(columnDef.colId);
             });
             coldefObject.columnApi.autoSizeColumns(allColumnIds);
@@ -204,7 +205,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
         //  data.rowHasError = true (or false if no error)
         //  data.rowErrorTooltip = "error messages" from all validation errors for this cell for display as a tooltip (displayed on hover)
         // returns boolean: have an error?
-        service.validateCell = function (event) { 
+        service.validateCell = function (event, scope) {
 
             //console.log(" --- validate cell for event : ");
             //console.dir(event);
@@ -224,10 +225,10 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
             //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
-            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data });
+            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope: scope });
             //console.dir(fieldRuleValidationErrors);
             fieldRuleValidationErrors.forEach(function (error) { fieldValidationErrors.push({ "field": event.colDef, "message": error }) });
-            
+
             //merge in any row errors with this cell's errors.
             event.node.data.validationErrors = event.node.data.validationErrors.concat(fieldValidationErrors);
             //console.dir(event.node.data.validationErrors);
@@ -269,11 +270,11 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 node.data.rowErrorTooltip = (index === 0) ? "" : node.data.rowErrorTooltip + "\n"; //either initialize to "" or add a newline
 
                 //flatten the error messages for this cell
-                var the_next_message = (error.field) ?  "[" + error.field.DbColumnName + "] " + error.message : error.message;
+                var the_next_message = (error.field) ? "[" + error.field.DbColumnName + "] " + error.message : error.message;
 
                 if (!error.field && node.data.rowErrorTooltip.indexOf(error.message) > -1)
                     the_next_message = ""; //if a row message like this already exists, don't re-add it.
-                
+
                 node.data.rowErrorTooltip = node.data.rowErrorTooltip + the_next_message;
                 //console.warn(node.data.rowErrorTooltip);
             });
@@ -285,12 +286,12 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
             //we redraw the current row/column in order to immediately update the UI about the validation result
             //console.dir(event);
             //event.api.redrawRows({ columns: event.column });
-            event.api.redrawRows({rowNodes: [event.node] });
+            event.api.redrawRows({ rowNodes: [event.node] });
             var cell = event.api.getFocusedCell();
             //console.dir(cell);
             //if ( cell && cell.column.colDef.ControlType !== "select") {
             //    console.log(" ---- set focus --- ");
-                event.api.setFocusedCell( cell.rowIndex, cell.column );
+            event.api.setFocusedCell(cell.rowIndex, cell.column);
             //}
         };
 
@@ -322,10 +323,11 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
 
 
         //fires the given rule and returns row_errors
+        //service.fireRule = function (type, event) { //row, field, value, headers, errors, scope) {
         service.fireRule = function (type, event, scope) { //row, field, value, headers, errors, scope) {
-            
+
             if (!event.colDef.hasOwnProperty('cdmsField')) {
-                console.warn("fireRule ("+ type +")- no cdmsField defined so there are no rules - skipping. The event:");
+                console.warn("fireRule (" + type + ")- no cdmsField defined so there are no rules - skipping. The event:");
                 console.dir(event);
                 return;
             }
@@ -341,6 +343,7 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 var field = event.colDef;
                 var value = (event.value) ? event.value : "";
                 var row = (event.data) ? event.data : {};
+                var header = (event.node && event.node.data) ? event.node.data : {};
 
                 //fire MasterFieldRule rule if it exists
                 if (MasterFieldRule && MasterFieldRule.hasOwnProperty(type)) {
@@ -348,17 +351,22 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                     console.log("Firing a master rule: " + type + " on " + field.DbColumnName);
 
                     if (type == "DefaultValue") {
-                        if (typeof DatasetFieldRule[type] == 'string')
+                        if (typeof MasterFieldRule[type] == 'string')
                             event.colDef.DefaultValue = MasterFieldRule[type].replace(/"/g, '');
                         else
                             console.log(MasterFieldRule[type] + " was not a string, skipping.");
                     }
                     else {
+                        //if ((typeof row['InterviewTime'] !== 'undefined' && row['InterviewTime'] !== null) && ((typeof event.scope.row['NumberAnglersInterviewed'] === 'undefined') || (event.scope.row['NumberAnglersInterviewed'] === 0)))
+                        //    row_errors.push('[InterviewTime] An interview cannot be present, when NumberAnglersInterviewed = 0');
+                        //console.log("scope is next...");
+                        //console.dir(scope);
+                        console.log("Firing a rule: " + type + " on " + field.DbColumnName);
                         eval(MasterFieldRule[type]);
                     }
                 }
 
-                //fire DatasetFieldRule rule if it exists. this will override any results of the MasterFieldRule
+                //fire DatasetFieldRule rule if it exists. this can override any results of the MasterFieldRule
                 if (DatasetFieldRule && DatasetFieldRule.hasOwnProperty(type)) {
         
                     console.log("Firing a rule: " + type + " on " + field.DbColumnName);

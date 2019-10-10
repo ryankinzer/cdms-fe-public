@@ -1,4 +1,4 @@
-<div class="header-label">{{field.Label}}:</div>
+<div data-title="{{field.cdmsField.Field.Description}}" class="header-label">{{field.Label}}:</div>
 <div class="header-value">
 	<input class="form-control-checkbox" ng-blur="onHeaderEditingStopped(field)" type="checkbox" ng-model="row[field.DbColumnName]"></input>
 </div>

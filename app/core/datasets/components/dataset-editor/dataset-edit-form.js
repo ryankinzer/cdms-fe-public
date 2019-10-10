@@ -8,7 +8,14 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
         ActivityParser, GridService, Upload, ChartService, $compile) {
 
-        $scope.system = { loading: true, messages : [] };
+        $scope.system = { loading: true, messages: [] };
+
+        $scope.fishermen = ProjectService.getFishermen();
+        $scope.fishermen.$promise.then(function () {
+            console.log("Fishermen loaded...");
+            //console.log("Fishermen loaded and is next...");
+            //console.dir($scope.fishermen);
+        });
         
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
 
@@ -24,6 +31,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         
         $scope.PageErrorCount = 0;
         $scope.NextActivity = $scope.PreviousActivity = 0;
+
+        $scope.dsConfig = null;
 
         //returns the number of errors on the page, headers + details
         //TODO this is probably expensive for big grids, maybe not...
@@ -65,8 +74,20 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);
             $scope.dataset_activities.$promise.then(function () {
                 $scope.dataset = $scope.dataset_activities.Dataset;
+                $scope.dsConfig = JSON.parse($scope.dataset.Config);
+                //console.log("$scope.dsConfig.DataEntryPage.ShowFields.contains('AccuracyCheck') = " + $scope.dsConfig.DataEntryPage.ShowFields.contains('AccuracyCheck'));
+
                 //$scope.row is the Header fields data row
                 $scope.row = $scope.dataset_activities.Header;
+                $scope.row.FishermanFullName = "";
+
+                angular.forEach($scope.fishermen, function (afisherman) {
+                    if (afisherman.Id === $scope.row.FishermanId)
+                        $scope.row.FishermanFullName = afisherman.FullName;
+                });
+
+                if ($scope.row.FishermanFullName === 2019)
+                    console.log("$scope.row.FishermanFullName = " + $scope.row.FishermanFullName);
 
                 $scope.afterDatasetLoadedEvent();
             });
@@ -78,7 +99,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                         try {
                             console.log("found the index: " + index);
                             console.dir(act_list);
-                            if (index == 0) {
+                            if ((index == 0) && ($rootScope.activities.length === 1)) // One and only one record so far.
+                            {
+                                $scope.NextActivity = $rootScope.activities[index].Id;
+                                $scope.PreviousActivity = $rootScope.activities[index].Id;
+                            }
+                            else if (index == 0) {
                                 $scope.NextActivity = $rootScope.activities[index + 1].Id;
                                 $scope.PreviousActivity = $rootScope.activities[index].Id;
 
@@ -117,7 +143,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             
             tabToNextCell: function (params) { 
-                console.dir(params);
+                //console.dir(params);
                 var previousCell = params.previousCellDef;
                 var nextCell = params.nextCellDef;
 
@@ -229,8 +255,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log("cell editing stopped >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 //console.dir(event);
 
-                if (GridService.validateCell(event)) {
-                    GridService.fireRule("OnChange", event); //only fires when valid change is made
+                if ($rootScope.waypoints)
+                    $scope.waypoints = $rootScope.waypoints;
+
+                if (GridService.validateCell(event, $scope)) {
+                    GridService.fireRule("OnChange", event, $scope); //only fires when valid change is made
                 }
 
                 $scope.PageErrorCount = $scope.getPageErrorCount();
@@ -473,6 +502,20 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
+            if ((typeof $scope.row.Activity.AccuracyCheck !== 'undefined' && $scope.row.Activity.AccuracyCheck !== null) && 
+                (typeof $scope.row.Activity.PostAccuracyCheck !== 'undefined' && $scope.row.Activity.PostAccuracyCheck !== null) ) {
+                // We don't need a line return on the form.
+                $scope.row.AccuracyCheckBreak = false;
+                $scope.row.Activity.AccuracyCheckText = $scope.row.Activity.AccuracyCheck.Bath1Grade + "-" + $scope.row.Activity.AccuracyCheck.Bath2Grade + " on " + moment($scope.row.Activity.AccuracyCheck.CheckDate).format('MMM DD YYYY');
+                $scope.row.Activity.PostAccuracyCheckText = $scope.row.Activity.PostAccuracyCheck.Bath1Grade + "-" + $scope.row.Activity.PostAccuracyCheck.Bath2Grade + " on " + moment($scope.row.Activity.PostAccuracyCheck.CheckDate).format('MMM DD YYYY');
+            }
+            else {
+                // We need line return on the form.
+                $scope.row.AccuracyCheckBreak = true;
+                $scope.row.AccuracyCheckText = null;
+                $scope.row.Activity.PostAccuracyCheckText = null;
+            }
+
             $scope.activateGrid();
 
             //load the files related to this dataset
@@ -502,6 +545,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
+            console.log("$scope.row (in $scope.afterDatasetLoadedEvent) is next...");
             console.dir($scope.row);
             
 
@@ -594,10 +638,25 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-rowqaupdate.html',
                 controller: 'ModalBulkRowQAChangeCtrl',
                 scope: $scope, //very important to pass the scope along...
-
+                backdrop: "static",
+                keyboard: false
             });
 
-        };     
+        };
+        
+		$scope.openWaypointFileModal = function(row, field)
+        {
+            $scope.file_row = row;
+            $scope.file_field = field;
+            
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
+                controller: 'WaypointFileModalCtrl',
+                scope: $scope, //scope to make a child of
+                backdrop: "static",
+                keyboard: false
+            });
+        };
 
         $scope.openEdit = function () {
             $location.path("/edit/" + $scope.dataset_activities.Header.Activity.Id);
@@ -610,6 +669,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
                 controller: 'ModalCreateInstrumentCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_instrument) { 
                 //add saved_instrument to our list.
                 saved_instrument.AccuracyChecks = [];
@@ -628,6 +689,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-new-accuracycheck.html',
                 controller: 'ModalQuickAddAccuracyCheckCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_AC) { 
                 //add saved_AC to our list.
                 $scope.project.Instruments.forEach(function (inst) { 
@@ -649,6 +712,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/datasets/components/dataset-view/templates/changeqa-modal.html',
                 controller: 'ModalQaUpdateCtrl',
                 scope: $scope, //very important to pass the scope along... 
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -711,14 +776,25 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             
             var HeaderLocation = getAllMatchingFromArray($scope.dataAgColumnDefs.HeaderFields, 'LocationId', 'DbColumnName');
-            if (Array.isArray(HeaderLocation) && HeaderLocation.length == 1 && !$scope.row.Activity.hasOwnProperty("LocationId")) { 
-                alert("Location is required. Please choose a location and try again.");
-                console.dir(HeaderLocation);
-                console.dir($scope.row);
-                return;
+            if (HeaderLocation.length === 0) {
+                console.log("Location is blank...setting the location to the primary project location...");
+                $scope.row.Activity.LocationId = getProjectPrimaryLocation($scope.project.Locations, $scope.project.Id);
             }
+            else if (Array.isArray(HeaderLocation) && HeaderLocation.length == 1) {
+                if (HeaderLocation[0].ControlType === "hidden") {
+                    console.log("Location is hidden...setting the location to the primary project location...");
 
-
+                    $scope.row.Activity.LocationId = getProjectPrimaryLocation($scope.project.Locations, $scope.project.Id);
+                    console.dir(HeaderLocation);
+                    console.dir($scope.row);
+                }
+                else if (!$scope.row.Activity.hasOwnProperty("LocationId")){
+                    alert("Location is required. Please choose a location and try again.");
+                    console.dir(HeaderLocation);
+                    console.dir($scope.row);
+                    return;
+                }
+            }
 
             console.log(" -- save -- ");
 
@@ -782,6 +858,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-fisherman.html',
                 controller: 'ModalCreateFishermanCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 		
@@ -826,6 +904,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 templateUrl: 'app/core/common/components/modals/templates/modal-save-success.html',
                 controller: 'ModalSaveSuccess',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
             
         };
@@ -887,12 +967,20 @@ console.log("SaveParentItem!");
                 'details': [],
             };
 
-            // 1) all current detail records from the grid
+            // 1) all current detail records from the grid if it is new OR just edited details if editing
             $scope.dataAgGridOptions.api.forEachNode(function (node) { 
-                var data = angular.copy(node.data);
-                payload.details.push(data); 
-            });
+                console.log("Node id: " + node.data.Id);
+                console.dir($scope.dataAgGridOptions.editedRowIds);
+                console.log(" does editedRowIds contain this id? " + $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id));
 
+                if(!$scope.row.ActivityId || !node.data.Id || $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id)){
+                    
+                    console.log("adding row id " + node.data.Id + " to be saved...");
+                    var data = angular.copy(node.data);
+                    payload.details.push(data); 
+                }
+            });
+        
 			// If the user removed a row, the grid no longer contains that row.
 			// However, when we remove a row, it is not deleted from the database; it is marked as deleted in the backend (ROWSTATUS_DELETED).
 			// Therefore, we need to add the removed row back into the list that we send to the database, but we DO NOT want to add it back 
@@ -953,7 +1041,6 @@ console.log("SaveParentItem!");
             });
 
             console.dir(payload);
-            //return;
 
             var save_promise = null;
 
