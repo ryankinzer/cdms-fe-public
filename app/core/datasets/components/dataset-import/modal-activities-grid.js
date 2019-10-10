@@ -14,7 +14,8 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
         };
 
         $scope.hasDuplicateError = false;
-        $scope.ActivityDatesDuplicates = [];
+       // $scope.ActivityDatesDuplicates = [];
+		$scope.ActivityDuplicates = [];
         $scope.ActivitiesToSave = [];
 
         $scope.calculateStatistics = function () { 
@@ -31,14 +32,15 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
                 try {
                     var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-                    var the_key = the_date + "_" + node.data.Activity.LocationId;
+					var the_key = the_date + "_" + node.data.Activity.LocationId;
                     if (!$scope.ActivityDates.contains(the_key)) {
                         $scope.ActivityDates.push(the_key);
                     }
                 }catch(e){ 
                     console.warn("invalid date not added to ActivityDates calculation: "+node.data.Activity.ActivityDate);
                     console.dir(e);
-                }
+				}
+				
             });
         };
 
@@ -192,84 +194,208 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
         };
 
         //check for duplicates in all rows
-        $scope.checkAllRowsForDuplicates = function () {
+		//JN: CDMS 2.0 Original Code Commented Out 8/23/2019. See Revision Below.
+		//$scope.checkAllRowsForDuplicates = function () {
+			
 
-            if (!$scope.dataset.Config.EnableDuplicateChecking || !$scope.dataset.Config.DuplicateCheckFields.contains('ActivityDate')) {
-                return; //early return, bail out since we aren't configured to duplicate check or don't have ActivityDate as a key
-            }
+  //          if (!$scope.dataset.Config.EnableDuplicateChecking || !$scope.dataset.Config.DuplicateCheckFields.contains('ActivityDate')) {
+  //              return; //early return, bail out since we aren't configured to duplicate check or don't have ActivityDate as a key
+  //          }
 
-            $scope.ActivityDatesChecked = [];
+  //          $scope.ActivityDatesChecked = [];
+  //          $scope.num_checked = 0;
+
+  //          //check for duplicate using each unique ActivityDate (if there is one defined (water temp doesn't have one))
+  //          $scope.dataAgGridOptions.api.forEachNode(function (node) { 
+  //              var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+        
+  //              if (!$scope.ActivityDatesChecked.contains(the_date)) {
+  //                  //ok, let's check this one...
+  //                  $scope.ActivityDatesChecked.push(the_date);
+  //                  $scope.checkRowForDuplicates(node); 
+  //              }
+  //          });
+  //      };
+
+
+  //      //checks a row(node) for duplicate record. if so, pushes to ActivityDatesDuplicates
+		//$scope.checkRowForDuplicates = function (node) {
+
+		//	console.log('<<<---checkRowForDuplicates--->>>');
+
+  //          var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+
+  //          var row = {
+  //              'Activity': {
+  //                  'ActivityDate': node.data.Activity.ActivityDate,
+  //                  'LocationId': node.data.Activity.LocationId,
+  //                  'Id': 0,
+  //              }
+  //          };
+
+  //          //if this is already marked as a duplicate, don't bother sending off another request...
+
+  //          var saveResult = {};
+  //          var dupe_promise = GridService.checkForDuplicates($scope.dataset, $scope.dataAgGridOptions, row, saveResult );
+  //          if (dupe_promise !== null) {
+  //              dupe_promise.$promise.then(function () {
+  //                  $scope.num_checked++;
+  //                  if (saveResult.hasError) { //is a duplicate!
+  //                      var existing_dupe = getByField($scope.ActivityDatesDuplicates, the_date, 'ActivityDate');
+  //                      if (existing_dupe) {
+  //                          existing_dupe.marked = false;
+  //                      } else {
+  //                          $scope.ActivityDatesDuplicates.push({ 'ActivityDate': the_date, 'LocationId': node.data.Activity.LocationId, 'marked': false, 'message': saveResult.error, 'row': row }); //will be marked by a watcher
+  //                      }
+  //                  }
+  //                  if ($scope.num_checked == $scope.ActivityDatesChecked.length) {
+  //                      //console.log(" >>>>>>>>> ok all done with all rows! --------------------");
+  //                      //ok, duplicate checking promises are all back -- let's mark any in our grid that are duplicates and then bubble them up.
+  //                      var hadAnyError = false;
+
+  //                      $scope.ActivityDatesDuplicates.forEach(function (dupe) {
+  //                          if (!dupe.marked && $scope.dataAgGridOptions.api) {
+  //                              dupe.marked = true;
+  //                              $scope.dataAgGridOptions.api.forEachNode(function (node) {
+  //                                  var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+
+  //                                  if (the_date == dupe.ActivityDate) {
+  //                                      hadAnyError = true;
+  //                                      GridService.addErrorToNode(node, dupe.message, null);
+  //                                  }
+  //                              });
+  //                          }
+  //                      });
+
+  //                      if (hadAnyError) {
+  //                          $scope.hasDuplicateError = hadAnyError;
+  //                          $scope.dataAgGridOptions.api.redrawRows();
+  //                          $scope.calculateStatistics();
+  //                          GridService.bubbleErrors($scope.dataAgGridOptions);
+  //                      }
+  //                  }
+  //              });
+  //          }
+  //      };
+
+
+		//JN: TRIBAL CDMS Revision. See Original Code Above.
+		$scope.checkAllRowsForDuplicates = function () {
+			console.log('<<<---checkAllRowsForDuplicates--->>>');
+
+			$scope.DuplicateCheckFields = [];
+
+			if (!$scope.dataset.Config.EnableDuplicateChecking || !$scope.dataset.Config.DuplicateCheckFields.contains('ActivityDate')) {
+				return; //early return, bail out since we aren't configured to duplicate check or don't have ActivityDate as a key
+			}
+			else {
+				//JN: but if this dataset has been configured for dup check, we need to get those special fields, yo! 
+				console.log('<<<---finding dup check fields--->>>');
+				$scope.dataset.Config.DuplicateCheckFields.forEach(function (field) {
+					if (field != 'ActivityDate' && field != 'LocationId') {
+						console.log('Add to DuplicatedCheckFields: ' + field);
+						$scope.DuplicateCheckFields.push(field);
+					} 
+				})
+
+			}
+
+            $scope.ActivitiesChecked = [];
             $scope.num_checked = 0;
 
             //check for duplicate using each unique ActivityDate (if there is one defined (water temp doesn't have one))
             $scope.dataAgGridOptions.api.forEachNode(function (node) { 
-                var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-        
-                if (!$scope.ActivityDatesChecked.contains(the_date)) {
+				var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+				var the_location = + node.data.Activity.LocationId;
+				var the_key = the_date + '_' + the_location;
+				console.log('For each node in the grid, log the_key: ' + the_key);
+
+				if (!$scope.ActivitiesChecked.contains(the_key)) {
                     //ok, let's check this one...
-                    $scope.ActivityDatesChecked.push(the_date);
-                    $scope.checkRowForDuplicates(node); 
+					console.log('Okay--we need to test this key for dups:  ' + the_key);
+					//console.dir(node);
+					$scope.ActivitiesChecked.push(the_key);
+                    $scope.checkRowForDuplicates(node, the_date, the_location, the_key); 
                 }
             });
         };
 
-        //checks a row(node) for duplicate record. if so, pushes to ActivityDatesDuplicates
-        $scope.checkRowForDuplicates = function (node) {
-            
-            var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+	
 
-            var row = {
-                'Activity': {
-                    'ActivityDate': node.data.Activity.ActivityDate,
-                    'LocationId': node.data.Activity.LocationId,
-                    'Id': 0,
-                }
-            };
+		//JN: TRIBAL CDMS Edit
+		//checks a row(node) for duplicate record. if so, pushes to ActivityDuplicates
+		$scope.checkRowForDuplicates = function (node, the_date, the_location, the_key) {
+			console.log('<<<---checkRowForDuplicates--->>>');
+			//console.dir(node);
 
-            //if this is already marked as a duplicate, don't bother sending off another request...
+			var row = {
+				'Activity': {
+					'ActivityDate': node.data.Activity.ActivityDate,
+					'LocationId': node.data.Activity.LocationId,
+					'Id': 0,
+				}
+			};
 
-            var saveResult = {};
-            var dupe_promise = GridService.checkForDuplicates($scope.dataset, $scope.dataAgGridOptions, row, saveResult );
-            if (dupe_promise !== null) {
-                dupe_promise.$promise.then(function () {
-                    $scope.num_checked++;
-                    if (saveResult.hasError) { //is a duplicate!
-                        var existing_dupe = getByField($scope.ActivityDatesDuplicates, the_date, 'ActivityDate');
-                        if (existing_dupe) {
-                            existing_dupe.marked = false;
-                        } else {
-                            $scope.ActivityDatesDuplicates.push({ 'ActivityDate': the_date, 'LocationId': node.data.Activity.LocationId, 'marked': false, 'message': saveResult.error, 'row': row }); //will be marked by a watcher
-                        }
-                    }
-                    if ($scope.num_checked == $scope.ActivityDatesChecked.length) {
-                        //console.log(" >>>>>>>>> ok all done with all rows! --------------------");
-                        //ok, duplicate checking promises are all back -- let's mark any in our grid that are duplicates and then bubble them up.
-                        var hadAnyError = false;
+			//JN: add our dup check fields to this row to grid-service can run correctly
+			$scope.DuplicateCheckFields.forEach(function (field) {
+				console.log('<<<---node.data.field value: ' + node.data[field] + '--->>>');
+				//console.dir(node);
+				row.Activity[field] = node.data[field];
+			})
 
-                        $scope.ActivityDatesDuplicates.forEach(function (dupe) {
-                            if (!dupe.marked && $scope.dataAgGridOptions.api) {
-                                dupe.marked = true;
-                                $scope.dataAgGridOptions.api.forEachNode(function (node) {
-                                    var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+			//if this is already marked as a duplicate, don't bother sending off another request...
 
-                                    if (the_date == dupe.ActivityDate) {
-                                        hadAnyError = true;
-                                        GridService.addErrorToNode(node, dupe.message, null);
-                                    }
-                                });
-                            }
-                        });
+			var saveResult = {};
+			var dupe_promise = GridService.checkForDuplicates($scope.dataset, $scope.dataAgGridOptions, row, saveResult);
 
-                        if (hadAnyError) {
-                            $scope.hasDuplicateError = hadAnyError;
-                            $scope.dataAgGridOptions.api.redrawRows();
-                            $scope.calculateStatistics();
-                            GridService.bubbleErrors($scope.dataAgGridOptions);
-                        }
-                    }
-                });
-            }
-        };
+			if (dupe_promise !== null) {
+				dupe_promise.$promise.then(function () {
+					$scope.num_checked++;
+					console.log('<<<---Activity #' + $scope.num_checked + ' --->>>');
+					if (saveResult.hasError) { //is a duplicate!
+						//just add it to the duplicates array 
+						console.log('Add ' + the_key + ' to the duplicates array!');
+						$scope.ActivityDuplicates.push({ 'ActivityDate': the_date, 'LocationId': node.data.Activity.LocationId, 'marked': false, 'message': saveResult.error, 'row': row }); //will be marked by a watcher
+					}
+					if ($scope.num_checked == $scope.ActivitiesChecked.length) {
+						console.log(" >>>>>>>>> ok all done with all rows! --------------------");
+						
+						if ($scope.ActivityDuplicates ===undefined || $scope.ActivityDuplicates.length == 0) {
+							console.log("No duplicates!");
+						}
+						else {
+							console.log("Found some duplicates! No worries. Save function can handle it.");
+							console.dir($scope.ActivityDuplicates);
+						}
+						
+						//ok, duplicate checking promises are all back -- let's mark any in our grid that are duplicates and then bubble them up.
+						var hadAnyError = false;
+
+						$scope.ActivityDuplicates.forEach(function (dupe) {
+							if (!dupe.marked && $scope.dataAgGridOptions.api) {
+								dupe.marked = true;
+								$scope.dataAgGridOptions.api.forEachNode(function (node) {
+									var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+									var the_location = + node.data.Activity.LocationId;
+
+									if (the_date == dupe.ActivityDate && the_location == dupe.LocationId) {
+										hadAnyError = true;
+										GridService.addErrorToNode(node, dupe.message, null);
+									}
+								});
+							}
+						});
+
+						if (hadAnyError) {
+							$scope.hasDuplicateError = hadAnyError;
+							$scope.dataAgGridOptions.api.redrawRows();
+							$scope.calculateStatistics();
+							GridService.bubbleErrors($scope.dataAgGridOptions);
+						}
+					}
+				});
+			}
+		};
 
 
         $scope.save = function () {
@@ -280,7 +406,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             $scope.system.loading = true;
 
             var unique_dates = [];
-            $scope.ActivityDatesDuplicates.forEach(function (dupe) { unique_dates.push(dupe.ActivityDate+"_"+dupe.LocationId) });
+            $scope.ActivityDuplicates.forEach(function (dupe) { unique_dates.push(dupe.ActivityDate+"_"+dupe.LocationId) });
             
             var missing_fields = false;
 
@@ -288,16 +414,23 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 if (!node.data.Activity.ActivityDate || !node.data.Activity.LocationId) {
                     missing_fields = true;
                     console.log("uhoh - missing stuff from activity:");
-                    console.dir(node.data.Activity);
+                  
                 }
                 var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
                 var the_key = the_date + "_" + node.data.Activity.LocationId;
+				//console.log("the_key_____________________________________________");
+				//console.dir(the_key);
+			    //console.dir($scope.ActivitiesToSave);
                 
                 if (!unique_dates.contains(the_key)) {
                     unique_dates.push(the_key);
                     $scope.ActivitiesToSave.push({ 'ActivityDate': the_date, 'Key': the_key, 'LocationId': node.data.Activity.LocationId });
-                }
-            });
+					
+				}
+
+			});
+
+		
 
             if (missing_fields) {
                 alert("All rows require an ActivityDate and Location. Please check your data and try again.");
@@ -305,7 +438,8 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 return;
             }
 
-            //console.dir($scope.ActivitiesToSave);
+			console.log('<<<---ActivitiesToSave--->>>');
+            console.dir($scope.ActivitiesToSave);
 
             if (!confirm("A total of " + $scope.ActivitiesToSave.length + " activities will be saved.")) {
                 $scope.system.loading = false;

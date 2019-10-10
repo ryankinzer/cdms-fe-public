@@ -4,8 +4,13 @@
 <div ng-show="AuthorizedToViewProject">
 
     <div style="width: 100%; display: inline-block; margin-top:30px;">
-        <button project-role="editor" style="margin-left: 5px; margin-right:43px;" class="btn right" ng-click="addLocation()">Create</button>
-        <button project-role="editor" class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteLocations()">Delete {{dataGridOptions.selectedItems.length}} Locations</button>
+		<!--Commented out and replaced with html below to restrict button access to admin only -->
+        <!--button project-role="editor" style="margin-left: 5px; margin-right:43px;" class="btn right" ng-click="addLocation()">Create</button-->
+        <!--button project-role="editor" class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteLocations()">Delete {{dataGridOptions.selectedItems.length}} Locations</button-->
+		<button ng-show="Profile.isAdmin()" style="margin-left: 5px; margin-right:43px;" class="btn right" ng-click="addLocation()">Create</button>
+        <button ng-cloak ng-show="Profile.isAdmin()" class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteLocations()">Delete {{dataGridOptions.selectedItems.length}} Locations</button>
+		
+		
     </div>
 
     <div>

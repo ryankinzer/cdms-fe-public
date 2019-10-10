@@ -250,9 +250,9 @@
                     //console.dir(field);
                     //console.dir(col);
                     if (field.Label !== MAP_DO_NOT_MAP_VALUE) {
-
                         //just ditch if it is an empty value
                         if (data_row[col] === null || data_row[col] === "") {
+							//console.log("Ditching " + field.Label);
                             return;
                         } else if (field.FieldRoleId == FIELD_ROLE_DETAIL) { //if we have data and we are a detail field then note that we have data. later, if there are no detail data we won't include a detail row.
                             new_row.data_row_hasdata = true;
@@ -301,15 +301,24 @@
 
                             new_row[field.DbColumnName] = data_row[col];
                         }
-                        else if (field.ControlType == "datetime" || field.ControlType == "time") {
+                        
+						else if (field.ControlType == "datetime" || field.ControlType == "time") {
                             try {
                                 if (data_row[col]) {
                                     var d = moment(data_row[col]);
+									//JN: Tribal CDMS edit to handle time data from Excel, which converts to year 1899.
+										if(moment(d).isBefore('1901-01-01')){
+											console.log('Found an invalid year. Setting year ' + d.format('YYYY') + ' to 1901');
+											d.year(1901);
+											
+										}
+	
                                     new_row[field.DbColumnName] = d.format('YYYY-MM-DDTHH:mm:ss');
-                                    //console.log(" --- here we are comparing our datetimes... ---");
-                                    //console.log(field.ControlType + " - " + field.DbColumnName + " = " + data_row[col]);
-                                    //console.dir(d.format('YYYY-MM-DDTHH:MM'));
+                                    console.log(" --- here we are comparing our datetimes... ---");
+                                    console.log("The field control type is = " + field.ControlType + " - " + field.DbColumnName + " = " + data_row[col]);
+                                    console.dir(d.format('YYYY-MM-DDTHH:MM'));
                                 }
+								
                             }
                             catch (e) {
                                 console.log("problem converting datetime: " + data_row[col]);
@@ -317,6 +326,7 @@
                             }
 
                         }
+					
                         else //just add the value to the cell
                         {
                             if (field.Label == MAP_LOCATION) {
@@ -353,20 +363,33 @@
 
 
         $scope.openLocationMappingModal = function () { 
-            
+		
             $scope.locationsToMap = $scope.getLocationsToMap();
-            //console.dir($scope.locationsToMap);
-            $scope.mappedLocations = {}; //the locations will be mapped into here { "datalocation" : project.Location object }
-
+			console.dir("locations from import file :" + $scope.locationsToMap);
+		    $scope.mappedLocations = {}; //the locations will be mapped into here { "datalocation" : project.Location object }
+			
+			//JN: added to debug location mapping
+			LocTypeId = $scope.dataset.Datastore.LocationTypeId;
+			console.log("only map cdms locations with LocationTypeId = " + LocTypeId);
+			
             //pre-populate our matches if we can find them...
             $scope.locationsToMap.forEach(function (data_location) {
+				
                 $scope.project.Locations.forEach(function (location) { 
-                    if (location.Label == data_location) {
-                        //console.log("found one!: " + location.Label + " - " + data_location.Id);
+					
+					//JN" added second condition to IF statement to filter locations by location type id
+					if (location.Label == data_location && location.LocationTypeId == LocTypeId) {
+					//if (location.Label == data_location) {
+						console.log("found one! map cdms location " + location.Label + " (ID " + location.Id + ") to import file location " + data_location);
                         $scope.mappedLocations[data_location] = location.Id;
+						
                     }
+				
                 });
             });
+			
+			
+			
 
             //console.dir($scope.mappedLocations);
             

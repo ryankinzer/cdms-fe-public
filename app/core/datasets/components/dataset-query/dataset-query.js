@@ -119,7 +119,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 //setup activity fields to point to the right place
                 //note: the "hide" property hides the column in the results grid; the "hide_header" hides it in the header list in columns multiselect
                 angular.forEach($scope.dataAgColumnDefs.HeaderFields, function (fieldDef) {
-                    //console.dir(fieldDef);
+                    console.dir(fieldDef);
                     if (fieldDef.field == "LocationId") {
 
                         //load the config so that we can check if we are supposed to include the habitat sites for this project                        
@@ -166,7 +166,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                         if (fieldDef.hasOwnProperty('setPossibleValues'))
                             fieldDef.setPossibleValues(fieldDef.PossibleValuesList);
 
-                        fieldDef.hide_header = true; //hide in header
+						//JN commented out for Tribal CDMS to allow queryies on QA Status
+                        //fieldDef.hide_header = true; //hide in header
                     }
                     else if (fieldDef.field == "QAComments") { //ActivityQAStatusId 
                         fieldDef.field = fieldDef.DbColumnName = "ActivityQAComments";

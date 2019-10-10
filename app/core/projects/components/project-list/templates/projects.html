@@ -1,6 +1,6 @@
 ﻿
 <div project-role="not-external" class="right" style="margin-top: 15px;">
-    <button class="btn" ng-click="newProject()">New Project</button>
+    <button class="btn" ng-show="Profile.isAdmin()" ng-click="newProject()">New Project</button>
 </div>
 
 <h3>Projects List</h3>
