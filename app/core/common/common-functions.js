@@ -265,6 +265,10 @@ function makeObjectsFromValues(key, valuesList) {
         angular.rootScope.Cache[key] = objects; //save into our cache
     }
     //console.log("returning " + objects.length);
+    //console.dir(objects);
+//    var retObjects = getOrderedObjectList(objects);
+    //console.dir(retObjects);
+//    return retObjects;
     return objects;
 }
 
@@ -302,6 +306,9 @@ function getOrderedObjectList(list) {
 
 function orderByAlpha(a, b) {
     if (!a || !b || !a.Label || !b.Label)
+        return 0;
+
+    if(typeof a.Label !== 'string' || typeof b.Label !== 'string')
         return 0;
 
     var nameA = a.Label.toLowerCase(), nameB = b.Label.toLowerCase()
@@ -1599,7 +1606,7 @@ function getJsonObjects(vals) {
             }
         }
     } catch (e) {
-        console.log("Failed converting to json most likely:" + vals);
+        console.error("Failed converting to json:" + vals);
         console.dir(e);
     }
     
