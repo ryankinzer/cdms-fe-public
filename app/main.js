@@ -29,18 +29,6 @@ define([
 
       'ngFileUpload',				
       'nvd3',					
-
-<<<<<<< HEAD
-=======
-      //these are ctuir specific
-      'CrppModule',
-      'AppraisalsModule',
-      'HabitatModule',
-      'LeasingModule',
-      'PermitModule',
-      'OlcModule',
-
->>>>>>> d012d83510e1854eb25fc09d3c95bb0a7e2cd94c
       'ngMaterial', 'ngMessages',
 
 	  ])
@@ -93,33 +81,6 @@ define([
             $routeProvider.when('/admin-master/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-master.html', controller: 'AdminEditMasterCtrl' });
             $routeProvider.when('/admin-new-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-new-dataset.html', controller: 'AdminNewDatasetCtrl' });
 
-<<<<<<< HEAD
-=======
-            $routeProvider.when('/leasing', { templateUrl: 'app/private/leasing/components/manage/templates/manage-leases.html', controller: 'LeasingHomeController' });
-            $routeProvider.when('/active-leases', { templateUrl: 'app/private/leasing/components/manage/templates/active-leases.html', controller: 'ActiveLeasesController' });
-            $routeProvider.when('/pending-leases', { templateUrl: 'app/private/leasing/components/manage/templates/pending-leases.html', controller: 'PendingLeasesController' });
-            $routeProvider.when('/view-lease/:Id', { templateUrl: 'app/private/leasing/components/manage/templates/view-lease.html', controller: 'ViewLeaseController' });
-            $routeProvider.when('/available-land', { templateUrl: 'app/private/leasing/components/manage/templates/available-land.html', controller: 'AvailableLandController' });
-            $routeProvider.when('/violations', { templateUrl: 'app/private/leasing/components/manage/templates/inspection-violations.html', controller: 'ViolationsController' });
-            $routeProvider.when('/manage-operators', { templateUrl: 'app/private/leasing/components/manage/templates/manage-operators.html', controller: 'ManageOperatorsController' });
-            $routeProvider.when('/manage-lookups', { templateUrl: 'app/private/leasing/components/manage/templates/lookups.html', controller: 'LookupListsController' });
-            
-            $routeProvider.when('/permits/list', { templateUrl: 'app/private/permits/components/list/templates/list-permits.html', controller: 'PermitListController'});
-            $routeProvider.when('/permits/routes', { templateUrl: 'app/private/permits/components/taskboard/templates/routes.html', controller: 'PermitRoutesController'});
-            $routeProvider.when('/permits/dashboard', { templateUrl: 'app/private/permits/components/dashboard/templates/dashboard.html', controller: 'PermitDashboardController'});
-            $routeProvider.when('/permits/inspection', { templateUrl: 'app/private/permits/components/list/templates/request-inspection.html', controller: 'RequestInspectionController'});
-            $routeProvider.when('/permits/notifications', { templateUrl: 'app/private/permits/components/notifications/templates/notifications.html', controller: 'PermitNotificationsController'});
-            $routeProvider.when('/permits/map', { templateUrl: 'app/private/permits/components/map/templates/permit-map.html', controller: 'PermitMapController'});
-            $routeProvider.when('/permits/contacts', { templateUrl: 'app/private/permits/components/contacts/templates/manage-contacts.html', controller: 'PermitManageContactsController'});
-
-	        //custom routes for datasets that require custom controller+pages
-            //$routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});
-            $routeProvider.when('/crppcorrespondence/:Id', { templateUrl: 'app/private/crpp/components/correspondence/templates/correspondence.html', controller: 'CRPPCorrespondenceCtrl'});
-            $routeProvider.when('/habitatsites/:Id', { templateUrl: 'app/private/habitat/components/habitat-sites/templates/sites.html', controller: 'HabitatSitesCtrl'});
-            $routeProvider.when('/olcevents/:Id', { templateUrl: 'app/private/olc/components/events/templates/events.html', controller: 'OlcEventsCtrl' });
-            $routeProvider.when('/olceventssearch/:Id', { templateUrl: 'app/private/olc/components/events/templates/events-search.html', controller: 'OlcEventsSearchCtrl' });
-
->>>>>>> d012d83510e1854eb25fc09d3c95bb0a7e2cd94c
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
             $routeProvider.when('/feedback', { templateUrl: 'app/core/common/components/feedback/templates/feedback.html',controller: 'FeedbackController'});
 
