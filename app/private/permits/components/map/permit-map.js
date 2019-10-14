@@ -22,8 +22,8 @@
                 new agGrid.Grid($scope.searchGridDiv, $scope.searchGrid);
             }
 
-            if ($routeParams.allotment != null) {
-                $scope.searchTerm = $routeParams.allotment;
+            if ($routeParams.ParcelId != null) {
+                $scope.searchTerm = $routeParams.ParcelId;
                 $scope.searchButton();
             }
 

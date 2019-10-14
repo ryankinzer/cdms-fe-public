@@ -143,7 +143,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             
             tabToNextCell: function (params) { 
-                console.dir(params);
+                //console.dir(params);
                 var previousCell = params.previousCellDef;
                 var nextCell = params.nextCellDef;
 
@@ -255,8 +255,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log("cell editing stopped >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 //console.dir(event);
 
+                if ($rootScope.waypoints)
+                    $scope.waypoints = $rootScope.waypoints;
+
                 if (GridService.validateCell(event, $scope)) {
-                    GridService.fireRule("OnChange", event); //only fires when valid change is made
+                    GridService.fireRule("OnChange", event, $scope); //only fires when valid change is made
                 }
 
                 $scope.PageErrorCount = $scope.getPageErrorCount();
@@ -499,7 +502,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
 
-            if ((typeof $scope.row.Activity.AccuracyCheck !== 'undefined') && ($scope.row.Activity.AccuracyCheck !== null)) {
+            if ((typeof $scope.row.Activity.AccuracyCheck !== 'undefined' && $scope.row.Activity.AccuracyCheck !== null) && 
+                (typeof $scope.row.Activity.PostAccuracyCheck !== 'undefined' && $scope.row.Activity.PostAccuracyCheck !== null) ) {
                 // We don't need a line return on the form.
                 $scope.row.AccuracyCheckBreak = false;
                 $scope.row.Activity.AccuracyCheckText = $scope.row.Activity.AccuracyCheck.Bath1Grade + "-" + $scope.row.Activity.AccuracyCheck.Bath2Grade + " on " + moment($scope.row.Activity.AccuracyCheck.CheckDate).format('MMM DD YYYY');
@@ -638,7 +642,21 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 keyboard: false
             });
 
-        };     
+        };
+        
+		$scope.openWaypointFileModal = function(row, field)
+        {
+            $scope.file_row = row;
+            $scope.file_field = field;
+            
+            var modalInstance = $modal.open({
+                templateUrl: 'app/core/common/components/file/templates/modal-waypoint-file.html',
+                controller: 'WaypointFileModalCtrl',
+                scope: $scope, //scope to make a child of
+                backdrop: "static",
+                keyboard: false
+            });
+        };
 
         $scope.openEdit = function () {
             $location.path("/edit/" + $scope.dataset_activities.Header.Activity.Id);
@@ -949,12 +967,20 @@ console.log("SaveParentItem!");
                 'details': [],
             };
 
-            // 1) all current detail records from the grid
+            // 1) all current detail records from the grid if it is new OR just edited details if editing
             $scope.dataAgGridOptions.api.forEachNode(function (node) { 
-                var data = angular.copy(node.data);
-                payload.details.push(data); 
-            });
+                console.log("Node id: " + node.data.Id);
+                console.dir($scope.dataAgGridOptions.editedRowIds);
+                console.log(" does editedRowIds contain this id? " + $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id));
 
+                if(!$scope.row.ActivityId || !node.data.Id || $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id)){
+                    
+                    console.log("adding row id " + node.data.Id + " to be saved...");
+                    var data = angular.copy(node.data);
+                    payload.details.push(data); 
+                }
+            });
+        
 			// If the user removed a row, the grid no longer contains that row.
 			// However, when we remove a row, it is not deleted from the database; it is marked as deleted in the backend (ROWSTATUS_DELETED).
 			// Therefore, we need to add the removed row back into the list that we send to the database, but we DO NOT want to add it back 
@@ -1015,7 +1041,6 @@ console.log("SaveParentItem!");
             });
 
             console.dir(payload);
-            //return;
 
             var save_promise = null;
 

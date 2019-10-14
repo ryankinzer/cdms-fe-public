@@ -4,15 +4,29 @@
 </div>
 <div class="modal-body" id="modal-body">
     <div class="row">
-        <form novalidate class="row-form modal-form" name="headerForm">
+        <form novalidate style="width: 550px;" class="row-form modal-form" name="headerForm">
 
 
-            <div class="header-label">Contact:</div>
-            <div class="header-value">
+            <div ng-show="mode=='new'">
                 <button ng-show="mode=='new'" type="button" style="float:right; margin-right:20px;" ng-click="addPermitPersonModal()" class="btn btn-sm" tabindex="-1">New</button>
-                <select ng-disabled="mode=='edit'" id="persons-select" ui-select2="select2Options" data-placeholder="Choose a contact" ng-model="contact_modal.PermitPersonId" convert-to-number>
-                    <option ng-repeat="person in PermitPersons" value="{{person.Id}}">{{person.Label}}</option>
-                </select>
+                <div class="header-label">Search by name:</div>
+                <div class="header-value" style="margin-top:-5px;">
+                    <input class="form-control" type="text" ng-change="personEntryUpdate()" placeholder="Enter person name" ng-model="personEntry" />
+                </div>
+
+                <div style="margin-top: 10px" ng-show="personMatches != ''">
+                    <div class="header-label">Contact:</div>
+                    <div class="header-value">
+                        <select class="form-control" ng-options="person as person.Label for person in personMatches track by person.Id" ng-model="Selected.Person" ng-change="selectPerson()" multiple="true">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="mode=='edit'">
+                <div class="header-label">Contact:</div>
+                <div class="header-value">
+                    <input ng-disabled="true" class="form-control" type="input" ng-model="contact_modal.PermitPerson.Label" />
+                </div>
             </div>
 
             <div class="header-label">Contact Type:</div>
