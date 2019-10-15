@@ -94,7 +94,7 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
 
         $scope.createMasterField = function(){
             $scope.SaveMessage = null;
-            $scope.field_to_edit = {};
+            $scope.field_to_edit = { ControlType: 'text', FieldRoleId: 1, DataType: 'string'};
             var modalInstance = $modal.open({
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-edit-master-field.html',
                 controller: 'ModalEditMasterFieldCtrl',
