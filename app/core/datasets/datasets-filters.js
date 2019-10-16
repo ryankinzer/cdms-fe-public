@@ -297,12 +297,26 @@ datasets_module
             filtered.sort(function(a,b){
                 var aVal = "";
                 var bVal = "";
+
+                for( key in Object.keys(a))
+                {
+                    aVal = a[key];
+                }
+
+                for( key in Object.keys(b))
+                {
+                    bVal = b[key];
+                }
+
+                /* not supported in IE 
                 for(let [akey,avalue] of Object.entries(a)){
                     aVal = avalue;
                     for( let [bkey,bvalue] of Object.entries(b)){
                         bVal = bvalue;
                     }
                 } 
+                */
+
                 return aVal > bVal ? 1 : -1;
             });
             //console.dir(filtered);
