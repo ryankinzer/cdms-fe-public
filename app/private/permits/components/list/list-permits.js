@@ -18,6 +18,7 @@
         $scope.PermitTypes = [];
         $scope.PermitStatus = [];
         $scope.PermitFileTypes = [];
+        $scope.ShowPermitListGrid = true;
 
         $scope.refreshingZones = false;
 
@@ -136,6 +137,7 @@
             if ($scope.currentPage !== "Issued")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Issued";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.showApplications = function () {
@@ -148,6 +150,7 @@
             if ($scope.currentPage !== "Applications")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Applications";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.showArchived = function () {
@@ -159,6 +162,7 @@
             if ($scope.currentPage !== "Archived")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Archived";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.showAll = function () {
@@ -170,6 +174,7 @@
             if ($scope.currentPage !== "All")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "All";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.showAssignedToMe = function () {
@@ -185,6 +190,7 @@
             if ($scope.currentPage !== "My Permits")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "My Permits";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.clearReviewedBy = function () {
@@ -1200,6 +1206,7 @@
                     });
 
                     $scope.selectPermit($scope.row.Id); //reload
+                    $scope.ShowPermitListGrid = true;
                     
                     $scope.permitsGrid.api.setRowData($scope.permits);
                     
@@ -1214,8 +1221,10 @@
 
                 //select the permit we just saved/updated
                 $scope.permitsGrid.api.forEachNode(function(node){
-                    if(node.data.PermitNumber == $scope.row.PermitNumber)
+                    if(node.data.PermitNumber == $scope.row.PermitNumber){
                         node.setSelected(true);                        
+                        $scope.permitsGrid.api.ensureIndexVisible(node.index, 'bottom'); //scroll to the selected row
+                    }
                 })
 
             },function(data){
@@ -1225,6 +1234,5 @@
             });
         };
 
-
-
+   
 }];
