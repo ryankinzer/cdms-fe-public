@@ -503,9 +503,9 @@
         ];
 
         $scope.permitParcelsGrid.columnDefs = [
-            { headerName: "Parcel Id", field: "ParcelId", width: 250, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: "PLSS", field: "Object.PLSS_Label", width: 250, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
+            { headerName: "Parcel Id", field: "ParcelId", width: 200, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "PLSS", field: "PLSS", width: 250, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
         ];
 
         $scope.parcelHistoryGrid.columnDefs = [
@@ -636,12 +636,15 @@
                     $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
                     $scope.refreshZones();
                     $scope.refreshParcelHistory();
+
+                    /* not maintaining this field any longer
                     $scope.row.LegalDescription = ($scope.row.LegalDescription) ? $scope.row.LegalDescription +","+saved_parcel.ParcelId : saved_parcel.ParcelId;
                     $scope.permits.forEach(function (existing_permit) { 
                         if (existing_permit.Id == $scope.row.Id) {
                             existing_permit.LegalDescription = $scope.row.LegalDescription;
                         }
                     });
+                    */
                 });
             });
         }
