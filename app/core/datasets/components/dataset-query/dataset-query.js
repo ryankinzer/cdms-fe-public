@@ -1,7 +1,7 @@
 ﻿
-var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$uibModal', 'DataSheet', '$rootScope', 'ChartService',
+var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$uibModal', '$rootScope', 'ChartService',
     'ProjectService', 'CommonService', 'SubprojectService','GridService','$timeout', 
-    function ($scope, $routeParams, DatasetService, $location, $modal, DataSheet, $rootScope, ChartService, ProjectService, CommonService, SubprojectService, GridService, $timeout) {
+    function ($scope, $routeParams, DatasetService, $location, $modal, $rootScope, ChartService, ProjectService, CommonService, SubprojectService, GridService, $timeout) {
 
         $scope.system = { loading: true, messages : [] };
 
