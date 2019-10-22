@@ -18,6 +18,7 @@
         $scope.PermitTypes = [];
         $scope.PermitStatus = [];
         $scope.PermitFileTypes = [];
+        $scope.ShowPermitListGrid = true;
 
         $scope.refreshingZones = false;
 
@@ -136,6 +137,7 @@
             if ($scope.currentPage !== "Issued")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Issued";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.showApplications = function () {
@@ -148,6 +150,7 @@
             if ($scope.currentPage !== "Applications")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Applications";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.showArchived = function () {
@@ -159,6 +162,7 @@
             if ($scope.currentPage !== "Archived")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Archived";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.showAll = function () {
@@ -170,6 +174,7 @@
             if ($scope.currentPage !== "All")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "All";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.showAssignedToMe = function () {
@@ -185,6 +190,7 @@
             if ($scope.currentPage !== "My Permits")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "My Permits";
+            $scope.ShowPermitListGrid = true;
         };
 
         $scope.clearReviewedBy = function () {
@@ -497,9 +503,9 @@
         ];
 
         $scope.permitParcelsGrid.columnDefs = [
-            { headerName: "Parcel Id", field: "ParcelId", width: 250, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: "PLSS", field: "Object.PLSS_Label", width: 250, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
+            { headerName: "Parcel Id", field: "ParcelId", width: 200, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "PLSS", field: "PLSS", width: 250, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
         ];
 
         $scope.parcelHistoryGrid.columnDefs = [
@@ -510,21 +516,8 @@
         ];
 
         $scope.permitFilesGrid.columnDefs = [
-            //{ colId: 'EditLinks', cellRenderer: EditFileLinksTemplate, width: 60, menuTabs: [], hide: true },
             { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: ['filterMenuTab'], filter: true },
-            //{ field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Description', headerName: 'File Type', width: 200, menuTabs: ['filterMenuTab'], filter: true },
-            //{ field: 'Description', headerName: 'File Type', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
-            //{
-            //    headerName: 'Sharing Level', field: 'SharingLevel', width: 150,
-            //    cellRenderer: function (params) {
-            //        if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
-            //            return SharingLevel['SHARINGLEVEL_PRIVATE'];
-            //        else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
-            //            return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
-            //        else return 'Unknown';
-            //   }, menuTabs: [],
-            //},
             { field: 'Uploaded', headerName: "Uploaded", width: 240, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
         ];
 
@@ -630,12 +623,15 @@
                     $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
                     $scope.refreshZones();
                     $scope.refreshParcelHistory();
+
+                    /* not maintaining this field any longer
                     $scope.row.LegalDescription = ($scope.row.LegalDescription) ? $scope.row.LegalDescription +","+saved_parcel.ParcelId : saved_parcel.ParcelId;
                     $scope.permits.forEach(function (existing_permit) { 
                         if (existing_permit.Id == $scope.row.Id) {
                             existing_permit.LegalDescription = $scope.row.LegalDescription;
                         }
                     });
+                    */
                 });
             });
         }
@@ -1200,6 +1196,7 @@
                     });
 
                     $scope.selectPermit($scope.row.Id); //reload
+                    $scope.ShowPermitListGrid = true;
                     
                     $scope.permitsGrid.api.setRowData($scope.permits);
                     
@@ -1214,8 +1211,10 @@
 
                 //select the permit we just saved/updated
                 $scope.permitsGrid.api.forEachNode(function(node){
-                    if(node.data.PermitNumber == $scope.row.PermitNumber)
+                    if(node.data.PermitNumber == $scope.row.PermitNumber){
                         node.setSelected(true);                        
+                        $scope.permitsGrid.api.ensureIndexVisible(node.index, 'bottom'); //scroll to the selected row
+                    }
                 })
 
             },function(data){
@@ -1225,6 +1224,5 @@
             });
         };
 
-
-
+   
 }];
