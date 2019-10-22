@@ -762,6 +762,7 @@ margin-left: -8px !important;
     border: 1px solid lightgrey;
     border-radius: 3px;
     width: 240px;
+    overflow: auto;
 }
 
 .form-file {

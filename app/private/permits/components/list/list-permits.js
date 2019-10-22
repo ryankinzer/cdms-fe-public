@@ -516,21 +516,8 @@
         ];
 
         $scope.permitFilesGrid.columnDefs = [
-            //{ colId: 'EditLinks', cellRenderer: EditFileLinksTemplate, width: 60, menuTabs: [], hide: true },
             { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: ['filterMenuTab'], filter: true },
-            //{ field: 'Title', headerName: 'Title', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text' },
             { field: 'Description', headerName: 'File Type', width: 200, menuTabs: ['filterMenuTab'], filter: true },
-            //{ field: 'Description', headerName: 'File Type', cellStyle: { 'white-space': 'normal' }, width: 300, menuTabs: ['filterMenuTab'], filter: 'text' },
-            //{
-            //    headerName: 'Sharing Level', field: 'SharingLevel', width: 150,
-            //    cellRenderer: function (params) {
-            //        if (params.node.data.SharingLevel == SHARINGLEVEL_PRIVATE)
-            //            return SharingLevel['SHARINGLEVEL_PRIVATE'];
-            //        else if (params.node.data.SharingLevel == SHARINGLEVEL_PUBLICREAD)
-            //            return SharingLevel['SHARINGLEVEL_PUBLICREAD'];
-            //        else return 'Unknown';
-            //   }, menuTabs: [],
-            //},
             { field: 'Uploaded', headerName: "Uploaded", width: 240, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
         ];
 
