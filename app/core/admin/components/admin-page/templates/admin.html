@@ -5,10 +5,17 @@
 
 	<div class="container-fluid">
 		
-		<h3>Manage Datasets</h3>
+		<h3>Manage Datastores and Datasets</h3>
 
-		<button style="margin-top: -45px;" class="btn right" ng-click="createMasterDataset()">Create Master Dataset</button> 
+		<button style="margin-top: -45px;" class="btn right" ng-click="createDatastore()">Create Datastore</button> 
 		
+		<div ng-show="hasNewDatastore">
+			<b>Datastores without a dataset: </b>
+			<ul>
+				<li ng-repeat="datastore in datastores | filter:{hasDataset:false}"><a href="#!/admin-master/{{datastore.Id}}">{{datastore.Name}}</a></li>
+			</ul>
+		</div>
+
 		<div class="row-fluid">
 			<div class="span10">
 				<div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">

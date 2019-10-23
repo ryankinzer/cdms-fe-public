@@ -19,6 +19,7 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
 
         $scope.saveConfig = function () {
             $scope.SaveMessage = "Saving...";
+            console.dir($scope.dataset.Config);
             $scope.dataset.Config = angular.toJson($scope.dataset.Config);
             var promise = DatasetService.saveDataset($scope.dataset );
 

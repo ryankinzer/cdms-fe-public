@@ -24,6 +24,8 @@ var modal_add_habitat = ['$scope', '$rootScope', '$uibModalInstance', '$uibModal
     }
 	else
 	{
+        $scope.hi_row.SharingLevel = SHARINGLEVEL_PRIVATE; //set default
+
 		if ((typeof $scope.viewSubproject !== 'undefined' ) && ($scope.viewSubproject !== null))
 			$scope.header_message = "Add Item to: " + $scope.viewSubproject.ProjectName;
 		else if ((typeof $scope.habProjectName !== 'undefined' ) && ($scope.habProjectName !== null))

@@ -14,6 +14,7 @@ require([
     'private/permits/components/list/add-contact-modal',
     'private/permits/components/list/add-parcel-modal',
     'private/permits/components/list/modal-new-file',
+    'private/permits/components/list/modal-edit-file',
     'private/permits/components/contacts/add-person-modal',
     'private/permits/components/taskboard/add-fee-modal',
     'private/permits/components/list/request-inspection',
@@ -39,6 +40,7 @@ require([
     permit_module.controller('PermitNotificationsController', permit_notifications);
     permit_module.controller('PermitMapController', permit_map);
     permit_module.controller('PermitManageContactsController', permit_contacts);
+    permit_module.controller('EditFileTypeModalController', modal_edit_filetype);
 
     permit_module.filter('personOrgName', function () {
         return function (person) {

@@ -1,7 +1,7 @@
 ﻿
-var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$uibModal', 'DataSheet', '$rootScope', 'ChartService',
+var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$uibModal', '$rootScope', 'ChartService',
     'ProjectService', 'CommonService', 'SubprojectService','GridService','$timeout', 
-    function ($scope, $routeParams, DatasetService, $location, $modal, DataSheet, $rootScope, ChartService, ProjectService, CommonService, SubprojectService, GridService, $timeout) {
+    function ($scope, $routeParams, DatasetService, $location, $modal, $rootScope, ChartService, ProjectService, CommonService, SubprojectService, GridService, $timeout) {
 
         $scope.system = { loading: true, messages : [] };
 
@@ -315,7 +315,12 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 if (typeof $scope.Criteria.Value === 'string') {
                     $scope.Criteria.DisplayName = $scope.Criteria.Value;
                 }
+                else if (typeof $scope.Criteria.Value === 'object'){
+                    if($scope.Criteria.Value.hasOwnProperty('ParamFieldDateType') && $scope.Criteria.Value.ParamFieldDateType == 'between')
+                        $scope.Criteria.DisplayName = $scope.Criteria.Value.BetweenFromFieldDate + " - " + $scope.Criteria.Value.BetweenToFieldDate;
+                }
                 else {
+                    if($scope.Criteria.ParamFieldSelect[0].PossibleValues)
                     Object.keys($scope.Criteria.ParamFieldSelect[0].PossibleValues).forEach(function (key) {
 
                         if ($scope.Criteria.ParamFieldSelect[0].PossibleValues[key] == $scope.Criteria.Value) {
