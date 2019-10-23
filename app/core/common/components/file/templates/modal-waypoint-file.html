@@ -5,13 +5,25 @@
                 <p ng-show="errorMessage" class="alert alert-danger">{{locationErrorMessage}}</p>
             </div>
         </div>
+
+        <ng-include src="'app/core/common/templates/system-header.html'"></ng-include>
+
         <div class="modal-body">
             <h4>Upload file:</h4>
             <!--<input type="file" ngf-select="onWaypointFileSelect(file_field.DbColumnName,$files)" value="Something">-->
             <input type="file" ngf-select="onWaypointFileSelect(file_field,$files)" value="Something">
+            <button class="btn" ng-click="getWaypointHeaders()">Get fields</button>
+            <h4>Select waypoint Id field:</h4>
+            <div class="header-value">
+                <select class="form-control" ng-change="onHeaderEditingStopped(field)" ng-model="row[waypointIdField]" ng-options="id as name for (id, name) in headerFields">
+                    <option value=""></option>
+                </select>
+                <p class="field-error-block" ng-show="headerFieldErrors[waypointIdField]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             <button class="btn btn-primary" ng-click="uploadWaypoints()">Upload</button>
+            <!--<button class="btn btn-primary" ng-click="getWaypointHeaders()">Upload</button>-->
         </div>
         

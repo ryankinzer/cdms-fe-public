@@ -1,6 +1,17 @@
-<div style="margin-top: 5px; margin-bottom: 3px;">
-	<div class="header-label">{{field.Label}}:</div>
+<div class="form-group" id="field-{{field.DbColumnName}}" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;"></div>
+	<!--<div class="header-label">{{field.Label}}:</div>-->
+	<div class="header-label">Waypoints:</div>
 	<div class="header-value" style="margin-left: 198px; min-height: 24px;  border-radius: 3px;">
-		<button class="btn btn-xs" ng-click="openWaypointFileModal(row, 'Waypoints')">Load Waypoints</button>
+		<button class="btn btn-xs" ng-click="openWaypointFileModal(row, 'Waypoints')">Load Waypoint Id Options</button>
 	</div>
+
+	<div class="header-label">Waypoint Id Options:</div>
+	<div class="header-value">
+		<select class="form-control" ng-change="onHeaderEditingStopped(field)" ng-model="row[WaypointIdField]" ng-options="id as name for (id, name) in headerFields">
+			<option value=""></option>
+		</select>
+		<p class="field-error-block" ng-show="headerFieldErrors[field.DbColumnName]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>
+	</div>
+	<div class="header-label">{{field.Label}}:</div>
+	<button class="btn btn-xs" ng-click="uploadWaypoints()">Load Waypoints</button>
 </div>
