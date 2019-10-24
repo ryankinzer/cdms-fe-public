@@ -5,6 +5,8 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
 
         $scope.getWaypointHeaders = function () {
             $scope.system.loading = true;
+            $scope.theDelimiter = "";
+
             var formData = new FormData();
 
             var hasFilesToUpload = true;
@@ -61,7 +63,7 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
             //throw "Stopping right here...";
 
             $.ajax({
-                url: serviceUrl + '/api/v1/file/getwaypointscolheaders',
+                url: serviceUrl + '/api/v1/file/getwaypointscolheaders2',
                 type: 'POST',
                 data: formData,
                 processData: false,  // tell jQuery not to process the data
@@ -75,6 +77,9 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
                     //console.log(waypoints);
 
                     var size = 0, key;
+
+                    $scope.theDelimiter = headerFields[headerFields.length - 1];
+                    headerFields = headerFields.slice(0, headerFields.length - 1);
 
                     //for (key in waypoints)
                     for (key in headerFields)
@@ -113,8 +118,25 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
             //$modalInstance.dismiss();
         };
 
-        $scope.uploadWaypoints = function () {
+        $scope.uploadWaypoints = function (waypointIdField) {
+
+            console.log("Inside $scope.uploadWaypoints");
+            console.log("waypointIdField = " + waypointIdField);
+            console.dir($scope.headerFields);
+
             var formData = new FormData();
+
+            var waypointIdFieldName = "";
+
+            for (var i = 0; i < $scope.headerFields.length; i++)
+            {
+                if (i === parseInt(waypointIdField))
+                {
+                    waypointIdFieldName = $scope.headerFields[i];
+                }
+            }
+            formData.append('WaypointIdFieldName', waypointIdFieldName);
+            formData.append('TheDelimiter', $scope.theDelimiter);
 
             var hasFilesToUpload = true;
 
@@ -170,7 +192,8 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
             //throw "Stopping right here...";
 
             $.ajax({
-                url: serviceUrl + '/api/v1/file/handlewaypoints',
+                //url: serviceUrl + '/api/v1/file/handlewaypoints',
+                url: serviceUrl + '/api/v1/file/handlewaypoints2',
                 type: 'POST',
                 data: formData,
                 processData: false,  // tell jQuery not to process the data
