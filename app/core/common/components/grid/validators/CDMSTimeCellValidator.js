@@ -53,7 +53,9 @@ CDMSTimeCellValidator.prototype.validateFieldControlTypeValidation = function (d
 		 // JN Tribal CDMS edit to allow unformatted time value from Excel
     {
         if (the_date.year() < 1899)
-            this.errors.push(new ValidationError(this.cdms_field, "Year is before 1901 (set from Excel?); Please update Year."));
+
+            this.errors.push(new ValidationError(this.cdms_field, "Year is before 1899 (set from Excel?); Please update Year."));
+
     }
 
     return this.errors;

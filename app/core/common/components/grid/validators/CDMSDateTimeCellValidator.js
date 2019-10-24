@@ -22,10 +22,10 @@ CDMSDateTimeCellValidator.prototype.validateFieldControlTypeValidation = functio
     if (!the_date.isValid()) {
         this.errors.push(new ValidationError(this.cdms_field, "Value is not a date-time (mm-dd-yyyy hh:mm)."));
     }
-    else // it IS a valid date value, make sure it isn't older than 1901!
+    else // it IS a valid date value, make sure it isn't older than 1899!
     {
-        if(the_date.year() < 1901)
-            this.errors.push(new ValidationError(this.cdms_field, "Year is before 1901 (set from Excel?); Please update Year."));
+        if(the_date.year() < 1899)
+            this.errors.push(new ValidationError(this.cdms_field, "Year is before 1899 (set from Excel?); Please update Year."));
     }
 
     return this.errors;
