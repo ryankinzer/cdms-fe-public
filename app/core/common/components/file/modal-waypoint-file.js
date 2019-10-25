@@ -41,12 +41,6 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
                     } else {
 
                         filesReadyToUpload.push(incoming_file);
-
-                        //add to the currentfiles ONLY if the file is one coming from this field in the row...
-                        //if (isFileInList(incoming_file, $scope.file_row.fieldFilesToUpload[$scope.file_field])) {
-                        //    //add to our current files for display once they close this modal
-                        //    $scope.currentFiles.push(incoming_file);
-                        //}
                     }
                 });
 
@@ -70,37 +64,23 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (data) {
 
-                    //var waypoints = eval("(" + data + ")");
                     var headerFields = eval("(" + data + ")");
-                    //$scope.headerFields = eval("(" + data + ")");
-
-                    //console.log(waypoints);
+                    //console.log(headerFields);
 
                     var size = 0, key;
 
+                    // Capture the delimiter and then strip it off of the end of the array.
+                    // In the backend, we tacked it onto the end of the return array, just for an easy way to pass it to the frontend.
                     $scope.theDelimiter = headerFields[headerFields.length - 1];
                     headerFields = headerFields.slice(0, headerFields.length - 1);
 
-                    //for (key in waypoints)
                     for (key in headerFields)
                     {
-                    //for (key in $scope.headerFields)
                         size++;
                     }
 
                     alert(size + " headerFields loaded");
 
-                    //if ($scope.headerFields !== null)
-                    //if (headerFields !== null)
-                    //{
-                        //var theHeaderFields = makeObjects($scope.headerFields, 'Id', 'Name');
-                        //var theHeaderFields = makeObjects(headerFields, 'Id', 'Name');
-
-                        //headerFields = makeObjects(headerFields, 'Id', 'Name');
-                        //$scope.headerFields = angular.copy(theHeaderFields);
-                    //}
-
-                    //$rootScope.waypoints = $scope.waypoints = waypoints;
                     $rootScope.headerFields = $scope.headerFields = headerFields;
                     $scope.system.loading = false;
                     $scope.$apply();
@@ -114,15 +94,15 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
                 }
             });
 
-            //$scope.system.loading = false;
+            // Don't close the modal window.
             //$modalInstance.dismiss();
         };
 
         $scope.uploadWaypoints = function (waypointIdField) {
 
             console.log("Inside $scope.uploadWaypoints");
-            console.log("waypointIdField = " + waypointIdField);
-            console.dir($scope.headerFields);
+            //console.log("waypointIdField = " + waypointIdField);
+            //console.dir($scope.headerFields);
 
             var formData = new FormData();
 
@@ -135,6 +115,7 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
                     waypointIdFieldName = $scope.headerFields[i];
                 }
             }
+            console.log("waypointIdFieldName = " + waypointIdFieldName);
             formData.append('WaypointIdFieldName', waypointIdFieldName);
             formData.append('TheDelimiter', $scope.theDelimiter);
 
