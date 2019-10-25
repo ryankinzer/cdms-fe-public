@@ -104,6 +104,12 @@ var modal_waypoint_files = ['$scope', '$uibModalInstance', 'DatasetService', '$r
             //console.log("waypointIdField = " + waypointIdField);
             //console.dir($scope.headerFields);
 
+            if ((typeof waypointIdField === 'undefined') || (waypointIdField === null))
+            {
+                alert("You must select a Waypoint Id field!");
+                return;
+            }
+
             var formData = new FormData();
 
             var waypointIdFieldName = "";
