@@ -419,7 +419,10 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 return null; //early return, bail out.
             }
 
-            saveResult.saving = true;
+            // Situation:  We open data entry, we change the location, and we end up here correctly.
+            // However, the question is, why are we setting "saveResult.saving" to true here?
+            // We are not saving yet...
+            //saveResult.saving = true;
             saveResult.saveMessage = "Checking for duplicates...";
 
             //console.log("we are dupe checking!");

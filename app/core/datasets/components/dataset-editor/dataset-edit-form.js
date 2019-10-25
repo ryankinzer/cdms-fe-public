@@ -799,6 +799,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             }
 
             console.log(" -- save -- ");
+            if(!$scope.background_save)
+                $scope.saveResult.saving = true;
 
             /* -- we dynamically duplicate check, so don't check AGAIN --
             var dupe_check = $scope.checkForDuplicates(); 
@@ -931,8 +933,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         //finish saving after file saving completes...
         $scope.modalFile_saveParentItem = function (saveRow) {
             
-console.log("SaveParentItem!");
-
             //clean up some things from the copy of activity that we don't need to send to the backend.
             var new_activity = angular.copy($scope.row.Activity);
             delete new_activity.AccuracyCheck;
