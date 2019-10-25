@@ -16,6 +16,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //console.log("Fishermen loaded and is next...");
             //console.dir($scope.fishermen);
         });
+
+        $scope.WaypointIdField = "";
         
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
 
@@ -255,8 +257,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log("cell editing stopped >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 //console.dir(event);
 
-                if ($rootScope.waypoints)
-                    $scope.waypoints = $rootScope.waypoints;
+                if ($rootScope.headerFields)
+                    $scope.headerFields = $rootScope.headerFields;
 
                 if (GridService.validateCell(event, $scope)) {
                     GridService.fireRule("OnChange", event, $scope); //only fires when valid change is made

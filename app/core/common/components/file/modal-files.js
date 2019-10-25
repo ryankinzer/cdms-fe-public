@@ -342,9 +342,9 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
     };
 
 
+    $scope.handlewaypoints = function (in_data, in_target, $upload) {
 
-
-
+    };
 
 
     /**
