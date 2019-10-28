@@ -30,20 +30,21 @@ var admin_new_dataset = ['$scope', '$uibModal', 'DatasetService', 'AdminService'
 
                     });
 
-                    //let's also load the system fields
-                    var systemFields = AdminService.getMasterFields(DATASTORE_ACTIVITYSYSTEMFIELDS);
-                    systemFields.$promise.then(function () { 
-                        systemFields.forEach(function (systemfield) {
-                            if (systemfield.PossibleValues)
-                                systemfield.Values = makeObjectsFromValues(DATASTORE_ACTIVITYSYSTEMFIELDS + systemfield.DbColumnName, systemfield.PossibleValues);
+                    //let's also load the system fields if it isn't a "single" type table
+                    if($scope.datastore.TableType != 'Single'){
+                        var systemFields = AdminService.getMasterFields(DATASTORE_ACTIVITYSYSTEMFIELDS);
+                        systemFields.$promise.then(function () { 
+                            systemFields.forEach(function (systemfield) {
+                                if (systemfield.PossibleValues)
+                                    systemfield.Values = makeObjectsFromValues(DATASTORE_ACTIVITYSYSTEMFIELDS + systemfield.DbColumnName, systemfield.PossibleValues);
 
-                            if ($scope.DefaultExcludeFields.contains(systemfield.Name))
-                                systemfield.exclude = true;
+                                if ($scope.DefaultExcludeFields.contains(systemfield.Name))
+                                    systemfield.exclude = true;
 
-                            $scope.datastoreFields.push(systemfield);
-                        })
-                    });
-
+                                $scope.datastoreFields.push(systemfield);
+                            })
+                        });
+                    }
                 });
 
             }
@@ -89,14 +90,6 @@ var admin_new_dataset = ['$scope', '$uibModal', 'DatasetService', 'AdminService'
                 return;
             }
 
-            /*angular.forEach($scope.projects, function (project) {
-                if (project.Id === parseInt($scope.SelectedProject))
-                {
-                    console.log("Found project " + project.Name);
-
-                }
-            });
-            */
             var projectIndex = $scope.projects.indexOf(parseInt($scope.SelectedProject));
             console.log("projectIndex = " + projectIndex);
                 

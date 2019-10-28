@@ -283,10 +283,46 @@ datasets_module
             // apply a custom sorting function
             array.sort(orderByAlpha);
 
-            console.dir(array);
+            //console.dir(array);
             return array;
           };
-        })
+    }).filter('orderAlpha',function(){
+        return function(items) {
+            var filtered = [];
+            
+            Object.keys(items).forEach(function (key) {
+                filtered.push({ key: items[key] });
+            });
+
+            filtered.sort(function(a,b){
+                var aVal = "";
+                var bVal = "";
+
+                for( key in Object.keys(a))
+                {
+                    aVal = a[key];
+                }
+
+                for( key in Object.keys(b))
+                {
+                    bVal = b[key];
+                }
+
+                /* not supported in IE 
+                for(let [akey,avalue] of Object.entries(a)){
+                    aVal = avalue;
+                    for( let [bkey,bvalue] of Object.entries(b)){
+                        bVal = bvalue;
+                    }
+                } 
+                */
+
+                return aVal > bVal ? 1 : -1;
+            });
+            //console.dir(filtered);
+            return filtered;
+          };
+    })
     
 
 ;

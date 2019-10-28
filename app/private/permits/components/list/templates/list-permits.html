@@ -9,8 +9,14 @@
     <div class="alert alert-primary" role="alert" ng-hide="permits">
         Good things come to those who wait... (loading...)
     </div>
-    <div ng-show="permitsGrid.hasFilters" style="margin-bottom: 10px;"><button class="btn-sm btn-warning" ng-click="clearFilters()">Clear Filters</button></div>
-    <div id="active-permits-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
+
+    <div ng-hide="!permits" style="display: flex">
+        <button class="btn btn-light btn-sm" type="button" ng-click="ShowPermitListGrid = !ShowPermitListGrid"><span ng-show="!ShowPermitListGrid" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowPermitListGrid" class="glyphicon glyphicon-circle-arrow-down"></span></button>
+        <div ng-show="permitsGrid.hasFilters && ShowPermitListGrid" style="margin-left: 5px; margin-bottom: 10px;"><button class="btn-sm btn-warning" ng-click="clearFilters()">Clear Filters</button></div>
+    </div>
+
+    
+    <div ng-show="ShowPermitListGrid" id="active-permits-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
 
     <div class="alert alert-secondary" role="alert" ng-hide="permitsGrid.selectedItem || !permits">Click a permit to display details.</div>
 

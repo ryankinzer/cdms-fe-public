@@ -225,7 +225,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
             //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
-            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope: scope });
+            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope: scope, value: event.value });
             //console.dir(fieldRuleValidationErrors);
             fieldRuleValidationErrors.forEach(function (error) { fieldValidationErrors.push({ "field": event.colDef, "message": error }) });
 
@@ -344,6 +344,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 var value = (event.value) ? event.value : "";
                 var row = (event.data) ? event.data : {};
                 var header = (event.node && event.node.data) ? event.node.data : {};
+                var node = event.node;
 
                 //fire MasterFieldRule rule if it exists
                 if (MasterFieldRule && MasterFieldRule.hasOwnProperty(type)) {
@@ -418,7 +419,10 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 return null; //early return, bail out.
             }
 
-            saveResult.saving = true;
+            // Situation:  We open data entry, we change the location, and we end up here correctly.
+            // However, the question is, why are we setting "saveResult.saving" to true here?
+            // We are not saving yet...
+            //saveResult.saving = true;
             saveResult.saveMessage = "Checking for duplicates...";
 
             //console.log("we are dupe checking!");

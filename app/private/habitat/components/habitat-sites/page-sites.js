@@ -783,9 +783,10 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 scope.matchCollaboratorToSubproject();
             });
 
-            scope.project.Locations.$promise.then(function () {
+            //there is no project.Locations promise so this is breaking (kb 10/23)
+            //scope.project.Locations.$promise.then(function () {
 
-            });
+            //});
         };
 
         //fired after a user saves a new or edited project.
