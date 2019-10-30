@@ -211,11 +211,11 @@ datasets_module
 							if (fileIsString)
 							{
                                 //retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
-                                retval.push("<a href='" + cdmsShareUrl + "/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
+                                retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
 							}
 							else
                                 //retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
-                                retval.push("<a href='" + cdmsShareUrl + "/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");	
+                                retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");	
 						}
 						else if ($scope.newSubproject) // New subproject, with no viewSubproject yet.
 						{
