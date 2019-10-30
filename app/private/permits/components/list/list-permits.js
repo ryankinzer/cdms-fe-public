@@ -508,7 +508,11 @@
             //{ headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
             { headerName: "GIS", width: 150, menuTabs: ['filterMenuTab'], 
                 valueGetter: function(param){
-                    return (param.data.ObjectId) ? "Cadaster" : "Historical";
+                    if(param.data.Object) { //then we have joined cadaster on objectid for this parcel
+                        return (param.data.Object.ParcelId == param.data.ParcelId) ? "Cadaster" : "Updated";
+                    } else {
+                        return "Historical"; // if no cadaster object 
+                    }
                 } 
             },
         ];
