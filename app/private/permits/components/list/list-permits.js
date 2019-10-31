@@ -503,9 +503,18 @@
         ];
 
         $scope.permitParcelsGrid.columnDefs = [
-            { headerName: "Parcel Id", field: "ParcelId", width: 200, menuTabs: ['filterMenuTab'], filter: true },
-            { headerName: "PLSS", field: "PLSS", width: 250, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Parcel Id", field: "ParcelId", width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "PLSS", field: "PLSS", width: 180, menuTabs: ['filterMenuTab'], filter: true },
             //{ headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
+            { headerName: "GIS", width: 150, menuTabs: ['filterMenuTab'], 
+                valueGetter: function(param){
+                    if(param.data.Object) { //then we have joined cadaster on objectid for this parcel
+                        return (param.data.Object.ParcelId == param.data.ParcelId) ? "Cadaster" : "Updated";
+                    } else {
+                        return "Historical"; // if no cadaster object 
+                    }
+                } 
+            },
         ];
 
         $scope.parcelHistoryGrid.columnDefs = [
