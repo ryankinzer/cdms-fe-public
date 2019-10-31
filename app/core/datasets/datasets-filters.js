@@ -208,32 +208,37 @@ datasets_module
 						if ($scope.dataset && $scope.dataset.Id) // It's a dataset
 						{
 							//console.log("This is a dataset file.");
-							if (fileIsString)
-                                retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
+                            if (fileIsString)
+                            {
+                                retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file + "' target=\"_blank\">" + file + "</a>");
+                            }
                             else
                                 retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.dataset.ProjectId + "/D/" + $scope.dataset.Id + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
 
 						}
-						else if ($scope.newSubproject) // New subproject, with no viewSubproject yet.
+                        /* Subproject files are handled in private/...
+                        else if ($scope.newSubproject) // New subproject, with no viewSubproject yet.
 						{
 							//console.log("This is a subproject file.");
-							if (fileIsString)
-							{
-								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/S/[TBD]" + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
-							}
+                            if (fileIsString)
+                            {
+                                retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/S/[TBD]" + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
+                            }
 							else
 								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/S/[TBD]" + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
-						}
+                        }
+                        // Project files are handled in projects/components/project-detail/project-files.js
 						else // It's a project
 						{
 							console.log("This is a project file.");
-							if (fileIsString)
-							{
-								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
-							}
+                            if (fileIsString)
+                            {
+                                retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/" + file + "' target=\"_blank\">" + file.Name + "</a>");
+                            }
 							else
 								retval.push("<a href='" + cdmsShareUrl + "P/" + $scope.project.Id + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
-						}
+                        }
+                        */
 					}
 					else if ($scope.viewSubproject) // We are working with a subproject file.
 					{
