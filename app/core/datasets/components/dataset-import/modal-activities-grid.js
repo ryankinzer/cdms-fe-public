@@ -14,9 +14,9 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
         };
 
         $scope.hasDuplicateError = false;
-       // $scope.ActivityDatesDuplicates = [];
 		$scope.ActivityDuplicates = [];
-        $scope.ActivitiesToSave = [];
+		$scope.ActivitiesToSave = [];
+		
 
         $scope.calculateStatistics = function () { 
             
@@ -26,22 +26,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             if (!$scope.dataAgGridOptions.hasOwnProperty('api'))
                 return; //not loaded yet.
 
-            $scope.dataAgGridOptions.api.forEachNode(function (node) {
-                if (node.data.rowHasError)
-                    $scope.PageErrorCount++;
 
-                try {
-                    var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-					var the_key = the_date + "_" + node.data.Activity.LocationId;
-                    if (!$scope.ActivityDates.contains(the_key)) {
-                        $scope.ActivityDates.push(the_key);
-                    }
-                }catch(e){ 
-                    console.warn("invalid date not added to ActivityDates calculation: "+node.data.Activity.ActivityDate);
-                    console.dir(e);
-				}
-				
-            });
         };
 
 
@@ -191,93 +176,8 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             //}, 0);
         };
 
-        //check for duplicates in all rows
-		//JN: CDMS 2.0 Original Code Commented Out 8/23/2019. See Revision Below.
-		//$scope.checkAllRowsForDuplicates = function () {
-			
-
-  //          if (!$scope.dataset.Config.EnableDuplicateChecking || !$scope.dataset.Config.DuplicateCheckFields.contains('ActivityDate')) {
-  //              return; //early return, bail out since we aren't configured to duplicate check or don't have ActivityDate as a key
-  //          }
-
-  //          $scope.ActivityDatesChecked = [];
-  //          $scope.num_checked = 0;
-
-  //          //check for duplicate using each unique ActivityDate (if there is one defined (water temp doesn't have one))
-  //          $scope.dataAgGridOptions.api.forEachNode(function (node) { 
-  //              var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-        
-  //              if (!$scope.ActivityDatesChecked.contains(the_date)) {
-  //                  //ok, let's check this one...
-  //                  $scope.ActivityDatesChecked.push(the_date);
-  //                  $scope.checkRowForDuplicates(node); 
-  //              }
-  //          });
-  //      };
-
-
-  //      //checks a row(node) for duplicate record. if so, pushes to ActivityDatesDuplicates
-		//$scope.checkRowForDuplicates = function (node) {
-
-		//	console.log('<<<---checkRowForDuplicates--->>>');
-
-  //          var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-
-  //          var row = {
-  //              'Activity': {
-  //                  'ActivityDate': node.data.Activity.ActivityDate,
-  //                  'LocationId': node.data.Activity.LocationId,
-  //                  'Id': 0,
-  //              }
-  //          };
-
-  //          //if this is already marked as a duplicate, don't bother sending off another request...
-
-  //          var saveResult = {};
-  //          var dupe_promise = GridService.checkForDuplicates($scope.dataset, $scope.dataAgGridOptions, row, saveResult );
-  //          if (dupe_promise !== null) {
-  //              dupe_promise.$promise.then(function () {
-  //                  $scope.num_checked++;
-  //                  if (saveResult.hasError) { //is a duplicate!
-  //                      var existing_dupe = getByField($scope.ActivityDatesDuplicates, the_date, 'ActivityDate');
-  //                      if (existing_dupe) {
-  //                          existing_dupe.marked = false;
-  //                      } else {
-  //                          $scope.ActivityDatesDuplicates.push({ 'ActivityDate': the_date, 'LocationId': node.data.Activity.LocationId, 'marked': false, 'message': saveResult.error, 'row': row }); //will be marked by a watcher
-  //                      }
-  //                  }
-  //                  if ($scope.num_checked == $scope.ActivityDatesChecked.length) {
-  //                      //console.log(" >>>>>>>>> ok all done with all rows! --------------------");
-  //                      //ok, duplicate checking promises are all back -- let's mark any in our grid that are duplicates and then bubble them up.
-  //                      var hadAnyError = false;
-
-  //                      $scope.ActivityDatesDuplicates.forEach(function (dupe) {
-  //                          if (!dupe.marked && $scope.dataAgGridOptions.api) {
-  //                              dupe.marked = true;
-  //                              $scope.dataAgGridOptions.api.forEachNode(function (node) {
-  //                                  var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-
-  //                                  if (the_date == dupe.ActivityDate) {
-  //                                      hadAnyError = true;
-  //                                      GridService.addErrorToNode(node, dupe.message, null);
-  //                                  }
-  //                              });
-  //                          }
-  //                      });
-
-  //                      if (hadAnyError) {
-  //                          $scope.hasDuplicateError = hadAnyError;
-  //                          $scope.dataAgGridOptions.api.redrawRows();
-  //                          $scope.calculateStatistics();
-  //                          GridService.bubbleErrors($scope.dataAgGridOptions);
-  //                      }
-  //                  }
-  //              });
-  //          }
-  //      };
-
-
-		//JN: TRIBAL CDMS Revision. See Original Code Above.
+ 
+		//JN: TRIBAL CDMS Revision. 
 		$scope.checkAllRowsForDuplicates = function () {
 			console.log('<<<---checkAllRowsForDuplicates--->>>');
 
@@ -288,32 +188,44 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 			}
 			else {
 				//JN: but if this dataset has been configured for dup check, we need to get those special fields, yo! 
-				console.log('<<<---finding dup check fields--->>>');
+				//console.log('<<<---finding dup check fields--->>>');
 				$scope.dataset.Config.DuplicateCheckFields.forEach(function (field) {
 					if (field != 'ActivityDate' && field != 'LocationId') {
-						console.log('Add to DuplicatedCheckFields: ' + field);
+						//console.log('Add to DuplicatedCheckFields: ' + field);
 						$scope.DuplicateCheckFields.push(field);
 					} 
 				})
 
 			}
+			console.dir($scope.DuplicateCheckFields);
 
             $scope.ActivitiesChecked = [];
             $scope.num_checked = 0;
 
             //check for duplicate using each unique ActivityDate (if there is one defined (water temp doesn't have one))
-            $scope.dataAgGridOptions.api.forEachNode(function (node) { 
-				var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-				var the_location = + node.data.Activity.LocationId;
-				var the_key = the_date + '_' + the_location;
-				console.log('For each node in the grid, log the_key: ' + the_key);
+			$scope.dataAgGridOptions.api.forEachNode(function (node) { 
+
+				var the_key = GetActivityKey(node);
+				//console.log("<<<--- THE KEY --->>>");
+				//console.log(the_key);
+				//var the_location = + node.data.Activity.LocationId;
+				//var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+				//var the_key = the_date + '_' + the_location;
+
+				////Append any user-defined duplicate check fieds to the key
+				//$scope.DuplicateCheckFields.forEach(function (field) {
+				//	the_key = the_key + "_" + node.data[field];
+
+				//});
+
+				//console.log('For each node in the grid, log the_key: ' + the_key);
 
 				if (!$scope.ActivitiesChecked.contains(the_key)) {
                     //ok, let's check this one...
-					console.log('Okay--we need to test this key for dups:  ' + the_key);
+					//console.log('Okay--we need to test this key for dups:  ' + the_key);
 					//console.dir(node);
 					$scope.ActivitiesChecked.push(the_key);
-                    $scope.checkRowForDuplicates(node, the_date, the_location, the_key); 
+                    $scope.checkRowForDuplicates(node, the_date, the_key); 
                 }
             });
         };
@@ -322,10 +234,8 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
 		//JN: TRIBAL CDMS Edit
 		//checks a row(node) for duplicate record. if so, pushes to ActivityDuplicates
-		$scope.checkRowForDuplicates = function (node, the_date, the_location, the_key) {
-			console.log('<<<---checkRowForDuplicates--->>>');
-			//console.dir(node);
-
+		$scope.checkRowForDuplicates = function (node, the_date, the_key) {
+			
 			var row = {
 				'Activity': {
 					'ActivityDate': node.data.Activity.ActivityDate,
@@ -336,10 +246,13 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
 			//JN: add our dup check fields to this row to grid-service can run correctly
 			$scope.DuplicateCheckFields.forEach(function (field) {
-				console.log('<<<---node.data.field value: ' + node.data[field] + '--->>>');
+				//console.log('<<<---node.data.field value: ' + node.data[field] + '--->>>');
 				//console.dir(node);
 				row.Activity[field] = node.data[field];
 			})
+
+			console.log('<<<---checkRowForDuplicates--->>>');
+			console.dir(row);
 
 			//if this is already marked as a duplicate, don't bother sending off another request...
 
@@ -353,7 +266,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 					if (saveResult.hasError) { //is a duplicate!
 						//just add it to the duplicates array 
 						console.log('Add ' + the_key + ' to the duplicates array!');
-						$scope.ActivityDuplicates.push({ 'ActivityDate': the_date, 'LocationId': node.data.Activity.LocationId, 'marked': false, 'message': saveResult.error, 'row': row }); //will be marked by a watcher
+						$scope.ActivityDuplicates.push({'ActivityKey': the_key, 'ActivityDate': the_date, 'LocationId': node.data.Activity.LocationId, 'marked': false, 'message': saveResult.error, 'row': row }); //will be marked by a watcher
 					}
 					if ($scope.num_checked == $scope.ActivitiesChecked.length) {
 						console.log(" >>>>>>>>> ok all done with all rows! --------------------");
@@ -396,57 +309,90 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 		};
 
 
-        $scope.save = function () {
-            //compose an activity for each and give a condition "we will save 17 new activities"
-            //lets get a list of all activities that we will save
-        
-            $scope.system.messages.length = 0;
-            $scope.system.loading = true;
+		//JN: TRIBAL CDMS Edit
+		//Group data into activities with user-defined duplicate check fields when available
+		$scope.save = function () {
 
-            var unique_dates = [];
-            $scope.ActivityDuplicates.forEach(function (dupe) { unique_dates.push(dupe.ActivityDate+"_"+dupe.LocationId) });
-            
-            var missing_fields = false;
+			$scope.system.messages.length = 0;
+			$scope.system.loading = true;
 
-            $scope.dataAgGridOptions.api.forEachNode(function (node) {
-                if (!node.data.Activity.ActivityDate || !node.data.Activity.LocationId) {
-                    missing_fields = true;
-                    console.log("uhoh - missing stuff from activity:");
-                  
-                }
-                var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-                var the_key = the_date + "_" + node.data.Activity.LocationId;
-				//console.log("the_key_____________________________________________");
-				//console.dir(the_key);
-			    //console.dir($scope.ActivitiesToSave);
-                
-                if (!unique_dates.contains(the_key)) {
-                    unique_dates.push(the_key);
-                    $scope.ActivitiesToSave.push({ 'ActivityDate': the_date, 'Key': the_key, 'LocationId': node.data.Activity.LocationId });
-					
+			var unique_activities = [];
+			var missing_fields = false;
+
+			$scope.dataAgGridOptions.api.forEachNode(function (node) {
+
+				//Check activity key fields for values
+				if (!IsValidRow(node)) {
+					missing_fields = true;
+					console.log("uhoh - missing stuff from activity:");
 				}
 
+				////Create unique key for each activity
+				var the_key = GetActivityKey(node);
+				//console.log("<<<--- THE KEY --->>>");
+				//console.log(the_key);
+
+				//var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+				//var the_key = the_date + "_" + node.data.Activity.LocationId;
+
+				////Append any user-defined duplicate check fieds to the key
+				//$scope.DuplicateCheckFields.forEach(function (field) {
+				//	the_key = the_key + "_" + node.data[field];
+						
+				//});
+
+		
+				//Add key to the unique activities array if it's not identified as a duplicate
+				if (!unique_activities.contains(the_key) && !IsDuplicateRow(the_key)) {
+
+					//console.log("<<<---IsDuplicateRow--->>");
+					//console.log(IsDuplicateRow(the_key));
+
+					unique_activities.push(the_key);
+
+					var activity = { 'ActivityDate': the_date, 'Key': the_key, 'LocationId': node.data.Activity.LocationId };
+
+					//Add duplicate check fields to activity
+					$scope.DuplicateCheckFields.forEach(function (field) {
+						activity[field] = node.data[field];
+					});
+
+					$scope.ActivitiesToSave.push(activity);
+
+				}
 			});
 
 		
 
-            if (missing_fields) {
-                alert("All rows require an ActivityDate and Location. Please check your data and try again.");
-                $scope.ActivitiesToSave.length = 0;
-                return;
-            }
+			if ($scope.ActivitiesToSave.length == 0) {
+				alert("CDMS has checked the import file for duplicates and found 0 new Activies to import. Please check your data and try again.");
+				$modalInstance.close();
+				return;
 
-			console.log('<<<---ActivitiesToSave--->>>');
-            console.dir($scope.ActivitiesToSave);
+			}
+			else
+			{
+				if (missing_fields) {
 
-            if (!confirm("A total of " + $scope.ActivitiesToSave.length + " activities will be saved.")) {
-                $scope.system.loading = false;
-                $scope.ActivitiesToSave.length = 0;
-                return;
-            }
+					alert("CDMS has detected a data quality issue in the import file\n\nAll rows require an ActivityDate and Location. Values are also required for any user-defined duplicate check fields. Please check your data and try again.\n\nNo records have been imported.");
+					$scope.ActivitiesToSave.length = 0;
+					$modalInstance.close();
+					return;
+				}
+				else {
 
-            $scope.ActivitiesToSave.forEach(function (activity) { 
-                //compose our payload 
+					if (!confirm("A total of " + $scope.ActivitiesToSave.length + " activities will be saved.")) {
+						$scope.system.loading = false;
+						$scope.ActivitiesToSave.length = 0;
+						return;
+					}
+				}
+			}
+	
+         
+
+			$scope.ActivitiesToSave.forEach(function (activity) { 
+
                 var payload = {
                     'Activity': null,
                     'DatasetId': $scope.dataset.Id,
@@ -456,49 +402,51 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                     'editedRowIds': [],
                     'header': null,
                     'details': [],
-                };
+			};
 
-                $scope.dataAgGridOptions.api.forEachNode(function (node, index) { 
-                    var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+		
+				$scope.dataAgGridOptions.api.forEachNode(function (node, index) { 
 
-                    if (activity.ActivityDate == the_date && node.data.Activity.LocationId == activity.LocationId) {
-                        //console.dir(node);
-                        if (payload.header == null) {
-                            payload.Activity = node.data.Activity;
-                            payload.header = {};
+					var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
 
-                            $scope.dataAgColumnDefs.HeaderFields.forEach(function (header_field) { 
-                                payload.header[header_field.DbColumnName] = node.data[header_field.DbColumnName];
-                            })
-                            //add the ActivityQAStatus back in with values from the activity
-                            payload.Activity.ActivityQAStatus = {
-                                'Comments': node.data.Activity.QAComments,
-                                'QAStatusId': node.data.Activity.QAStatusId,
-                            };
-                            delete payload.header['QAStatusId'];
-                            delete payload.header['QAComments'];
-                            delete payload.header['LocationId'];
-                            delete payload.header['ActivityDate'];
+					//Test row 
+					if (IsValidActivityRow(activity, node)) {
+						if (payload.header == null) {
+							payload.Activity = node.data.Activity;
+							payload.header = {};
 
-                        }
-                        //console.dir(node);
-                        if (node.data.data_row_hasdata) {
+							$scope.dataAgColumnDefs.HeaderFields.forEach(function (header_field) {
+								payload.header[header_field.DbColumnName] = node.data[header_field.DbColumnName];
+							})
+							//add the ActivityQAStatus back in with values from the activity
+							payload.Activity.ActivityQAStatus = {
+								'Comments': node.data.Activity.QAComments,
+								'QAStatusId': node.data.Activity.QAStatusId,
+							};
+							delete payload.header['QAStatusId'];
+							delete payload.header['QAComments'];
+							delete payload.header['LocationId'];
+							delete payload.header['ActivityDate'];
 
-                            var the_detail = { 'QAStatusId': node.data['QAStatusId'] };
+						}
+						if (node.data.data_row_hasdata) {
 
-                            $scope.dataAgColumnDefs.DetailFields.forEach(function (detail_field) {
-                                if (detail_field.ControlType == "multiselect" && Array.isArray(node.data[detail_field.DbColumnName]))
-                                    the_detail[detail_field.DbColumnName] = angular.toJson(node.data[detail_field.DbColumnName]);
-                                else
-                                    the_detail[detail_field.DbColumnName] = node.data[detail_field.DbColumnName];
-                            });
-                            payload.details.push(the_detail);
-                            //console.dir(the_detail);
-                        } else { 
-                            console.log("skipping data for this row because it was empty!");
-                        }
-                        
-                    }
+							var the_detail = { 'QAStatusId': node.data['QAStatusId'] };
+
+							$scope.dataAgColumnDefs.DetailFields.forEach(function (detail_field) {
+								if (detail_field.ControlType == "multiselect" && Array.isArray(node.data[detail_field.DbColumnName]))
+									the_detail[detail_field.DbColumnName] = angular.toJson(node.data[detail_field.DbColumnName]);
+								else
+									the_detail[detail_field.DbColumnName] = node.data[detail_field.DbColumnName];
+							});
+							payload.details.push(the_detail);
+							//console.dir(the_detail);
+						} else {
+							console.log("skipping data for this row because it was empty!");
+						}
+					}
+				
+
                 });
 
                 activity.numRecords = payload.details.length;
@@ -530,18 +478,94 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
             });
 
+		};
 
 
+		//JN TRIBAL CDMS EDIT
+		//Check if row belongs to activity
+		IsValidActivityRow = function (activity, node) {
 
-            //$scope.dataAgGridOptions.api.forEachNode(function (node) {
+			var result = true;
+			var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
 
-            //$scope.ActivityDatesDuplicates.forEach(function(unique_activity
+			if (activity.ActivityDate == the_date && node.data.Activity.LocationId == activity.LocationId) {
+				
+				$scope.DuplicateCheckFields.forEach(function (field) {
 
-            //$scope.dataAgColumnDefs.HeaderFields.forEach(
-            
+					if (activity[field] != node.data[field]) {
+						result = false;
+					}
+				});
+			}
+			else
+			{
+				result = false;
+			}
+		
+			return result;
+		}
 
-            //$modalInstance.close();
-        };
+		//JN TRIBAL CDMS EDIT
+		//Check if row has values for each activity field
+		IsValidRow = function (node) {
+
+			var result = true;
+			if (node.data.Activity.ActivityDate && node.data.Activity.LocationId) {
+
+				$scope.DuplicateCheckFields.forEach(function (field) {
+
+					if (!node.data[field]) {
+						result = false;
+					}
+				});
+
+			}
+			else {
+
+				result = false;
+			}
+
+			return result;
+		}
+
+		//JN TRIBAL CDMS EDIT
+		//Check if row key is a duplicate key
+		IsDuplicateRow = function (the_key) {
+
+			var result = false;
+
+			$scope.ActivityDuplicates.forEach(function (dup) {
+
+				if (dup.ActivityKey == the_key) {
+					result = true;
+				}
+				
+				return result;
+			});
+			
+
+			return result;
+		}
+
+		//JN TRIBAL CDMS EDIT
+		//Create the_key here instead of in multiple places
+		GetActivityKey = function (node) {
+			console.log("<<<---Getting Key--->>>");
+			//Create unique key for each activity
+			var activityDate = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+			var activityKey = activityDate + "_" + node.data.Activity.LocationId;
+
+			//Append any user-defined duplicate check fieds to the key
+			$scope.DuplicateCheckFields.forEach(function (field) {
+				activityKey = activityKey + "_" + node.data[field];
+			});
+			console.log(activityKey);
+			return activityKey;
+		}
+
+		
+
+
 
         $scope.cancel = function () {
             $modalInstance.dismiss();

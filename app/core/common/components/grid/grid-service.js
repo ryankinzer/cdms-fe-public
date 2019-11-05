@@ -432,6 +432,9 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 'QAStatusId' : 'all',
             };
 
+			console.log('<<<---Duplicate Cheker Query--->>>');
+			//console.log(query);
+
             var AbortNoFullKey = false;
 
             //add in the duplicate checker key fields configured for this dataset 
@@ -448,7 +451,9 @@ datasets_module.service('GridService', ['$window', '$route','DatasetService',
                 }
 
 
-            });
+			});
+
+			console.log(query);
 
             if (AbortNoFullKey) {
                 console.warn("Aborting duplicate check because not all key fields have values");
