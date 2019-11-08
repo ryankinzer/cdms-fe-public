@@ -395,9 +395,21 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
 
         //in filesToUpload there might be several fields with files to handle.
         if ((typeof $scope.filesToUpload !== 'undefined') && ($scope.filesToUpload !== null)) {
+
             var file_fields = Object.keys($scope.filesToUpload);
             //console.log("Fields that have files in them to upload: ");
-			//console.dir(file_fields);
+            //console.dir(file_fields);
+            
+            // Do we have any waypoint files?
+            // If so, we want to skip them, because these should not be uploaded; they are temporary files
+            // that we use to get the waypoint number from.
+            if ($scope.dataset.Config.HasWaypointFile)
+            {
+                var intWaypointsLoc = file_fields.indexOf($scope.dataset.Config.WaypointFileProperty);
+                if (intWaypointsLoc > -1)
+                    file_fields.splice(intWaypointsLoc, 1);
+
+            }
 
             //if there are no files being uploaded for any field then carry on.
             if (file_fields.length === 0) {
