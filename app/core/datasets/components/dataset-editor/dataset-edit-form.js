@@ -260,6 +260,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 if ($rootScope.headerFields)
                     $scope.headerFields = $rootScope.headerFields;
 
+                if ($rootScope.waypoints)
+                    $scope.waypoints = $rootScope.waypoints;
+
                 if (GridService.validateCell(event, $scope)) {
                     GridService.fireRule("OnChange", event, $scope); //only fires when valid change is made
                 }
