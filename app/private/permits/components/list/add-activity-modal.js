@@ -7,6 +7,8 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         $scope.row = $scope.activity_modal; //note: this creates a LOCAL scope variable of ROW that will go away when this scope goes away...
         $scope.modes_notifications = ['new_inspection','new_route','edit_route']; //modes we send notifications for
 
+        $scope.row.PreferredTime = {'Any': true };
+
         $scope.Results = {
             SuccessMessage: null,
             FailureMessage: null,
@@ -214,8 +216,11 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         };
 
         $scope.loadRecipientsFromRoute = function () { 
-            
-            if ($scope.activity_modal.EventType == 'Review' && ($scope.mode == 'new' || $scope.mode == 'new_route')) {
+            console.dir($scope.mode);
+            console.dir($scope.activity_modal);
+
+            if ( ($scope.activity_modal.EventType == 'Inspection' || $scope.activity_modal.EventType == 'Review') 
+                && ($scope.mode == 'new' || $scope.mode == 'new_route' || $scope.mode == 'new_inspection') )  {
                 $scope.row.ReviewersContact = {};
 
                 //console.log("getting routes for: " + $scope.activity_modal.ItemType);

@@ -155,7 +155,7 @@
 
         $scope.showArchived = function () {
             $scope.clearReviewedBy();
-            var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
+            var filter_component = $scope.permitsGrid.api.getFilterInstance('FileStatus');
             filter_component.selectNothing();
             filter_component.selectValue('Archived');
             $scope.permitsGrid.api.onFilterChanged();

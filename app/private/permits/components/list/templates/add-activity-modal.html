@@ -46,19 +46,6 @@
                     <ctuir-text-field ng-switch-default></ctuir-text-field>
                 </div>
 
-                <div ng-show="PermitRoutes.length > 0">
-                    <div class="checkbox-fix">
-                        <div class="header-label">Reviewers to Contact:</div>
-                        <div class="header-value">
-                            <div class="checkbox-itemlist" style="margin-top: -25px; width: 300px;">
-                                <span ng-repeat="route in PermitRoutes | orderBy: 'Rank'">
-                                    <input type="checkbox" ng-model="row.ReviewersContact[route.Email]" value="{{route.Email}}"/> {{route.Email}} <br />
-                                </span>
-                            </div>
-                        </div>
-                    </div>           
-                </div>
-
                 <div ng-show="mode=='edit_route'">
 
                     <div ng-show="permit.PermitConditions != ''">
@@ -92,16 +79,19 @@
                         </label>
                     </div>
 
+                </div>
+
+                <div style="margin-top: 10px;" ng-show="PermitRoutes.length > 0">
                     <div class="checkbox-fix">
-                        <div class="header-label">Inspectors to Contact:</div>
+                        <div class="header-label">Reviewers to Contact:</div>
                         <div class="header-value">
-                            <div class="checkbox-itemlist">
-                                <input type="checkbox" ng-model="row.InspectorsContact['Structural']" value="Struct"> Structural/Mechanical<br />
-                                <input type="checkbox" ng-model="row.InspectorsContact['Plumbing']" value="PM"> Plumbing<br />
-                                <input type="checkbox" ng-model="row.InspectorsContact['Electrical']" value="Any"> Electrical
+                            <div class="checkbox-itemlist" style="margin-top: -25px; width: 300px;">
+                                <span ng-repeat="route in PermitRoutes | orderBy: 'Rank'">
+                                    <input type="checkbox" ng-model="row.ReviewersContact[route.Email]" value="{{route.Email}}"/> {{route.Email}} <br />
+                                </span>
                             </div>
                         </div>
-                    </div>
+                    </div>           
                 </div>
 
                 <div ng-show="mode == 'new_route' && PermitFiles.length > 0">
