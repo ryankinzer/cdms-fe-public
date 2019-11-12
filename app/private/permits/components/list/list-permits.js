@@ -128,7 +128,7 @@
         });
 
         $scope.showIssued = function () {
-            $scope.clearReviewedBy();
+            $scope.clearFilters();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('Approved');
@@ -141,7 +141,7 @@
         };
 
         $scope.showApplications = function () {
-            $scope.clearReviewedBy();
+            $scope.clearFilters();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('New Application');
@@ -154,7 +154,7 @@
         };
 
         $scope.showArchived = function () {
-            $scope.clearReviewedBy();
+            $scope.clearFilters();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('FileStatus');
             filter_component.selectNothing();
             filter_component.selectValue('Archived');
@@ -166,8 +166,8 @@
         };
 
         $scope.showAll = function () {
-            $scope.clearingFilters = true;
-            $scope.clearReviewedBy();
+            //$scope.clearingFilters = true;
+            $scope.clearFilters();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectEverything();
             $scope.permitsGrid.api.onFilterChanged();
@@ -178,13 +178,14 @@
         };
 
         $scope.showAssignedToMe = function () {
+            $scope.clearFilters();
             var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
             filter_component.selectNothing();
             filter_component.selectValue($scope.Profile.Fullname);
 
-            var filter_componentPS = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
-            filter_componentPS.selectEverything();
-            filter_componentPS.unselectValue('Archived');
+            //var filter_componentPS = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
+            //filter_componentPS.selectEverything();
+            //filter_componentPS.unselectValue('Archived');
 
             $scope.permitsGrid.api.onFilterChanged();
             if ($scope.currentPage !== "My Permits")
