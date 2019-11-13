@@ -218,6 +218,8 @@
                 templateUrl: 'app/private/permits/components/taskboard/templates/add-fee-modal.html',
                 controller: 'AddFeeModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_permit) {
                 $scope.permitRoutesGrid.api.setRowData($scope.permits);
             });
@@ -233,6 +235,8 @@
                 templateUrl: 'app/private/permits/components/list/templates/add-activity-modal.html',
                 controller: 'ActivityModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_activity) {
 
                 //save the permit with the route updated
@@ -242,11 +246,13 @@
                 save_permit.ReviewsRequired.remove("TPO");
 
                 if (save_permit.AdditionalConditions) {
+                    save_permit.AdditionalConditions = saved_activity.ItemType + ": " + save_permit.AdditionalConditions;
                     save_permit.PermitConditions = (save_permit.PermitConditions) ? save_permit.PermitConditions + "; " + save_permit.AdditionalConditions : save_permit.AdditionalConditions;
                     delete save_permit.AdditionalConditions;
                 }
 
                 save_permit.ReviewsRequired = angular.toJson(save_permit.ReviewsRequired);
+                save_permit.Zoning = angular.toJson(save_permit.Zoning);
 
                 var permit_promise = PermitService.savePermit(save_permit);
 

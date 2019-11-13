@@ -88,8 +88,12 @@ permit_module.factory('SavePermitEvent', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/SavePermitEvent');
 }]);
 
-permit_module.factory('DeleteFile', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/permit/DeleteFile');
+permit_module.factory('DeletePermitFile', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/DeletePermitFile');
+}]);
+
+permit_module.factory('DeletePermitPerson', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/DeletePermitPerson');
 }]);
 
 permit_module.factory('GetOutstandingRequests', ['$resource', function ($resource) {
@@ -160,7 +164,7 @@ permit_module.service('PermitService', ['$q',
     'SavePermitEvent',
     'RoutingPermits',
     'InspectionPermits',
-    'DeleteFile',
+    'DeletePermitFile',
     'GetRelatedParcels',
     'GetExpiringPermits',
     'GetOutstandingRequests',
@@ -170,6 +174,7 @@ permit_module.service('PermitService', ['$q',
     'GetNotifications',
     'GetPermitRoutes',
 'GetPermitTypes',
+'DeletePermitPerson',
   
     function ($q,
        
@@ -189,7 +194,7 @@ permit_module.service('PermitService', ['$q',
         SavePermitEvent,
         RoutingPermits,
         InspectionPermits,
-        DeleteFile,
+        DeletePermitFile,
         GetRelatedParcels,
         GetExpiringPermits,
         GetOutstandingRequests,
@@ -198,7 +203,8 @@ permit_module.service('PermitService', ['$q',
         GetPublicHearingPermits,
         GetNotifications,
         GetPermitRoutes,
-GetPermitTypes
+GetPermitTypes,
+DeletePermitPerson
       
     ) {
         var service = {
@@ -276,7 +282,11 @@ GetPermitTypes
             },
 
             deleteFile: function (projectId, subprojectId, itemId, file) {
-                return DeleteFile.save({ ProjectId: projectId, SubprojectId: subprojectId, ItemId: itemId, File: file });
+                return DeletePermitFile.save({ ProjectId: projectId, SubprojectId: subprojectId, ItemId: itemId, File: file });
+            },
+
+            deletePermitPerson: function(Id){
+                return DeletePermitPerson.save({Id: Id});
             },
 
             getOutstandingRequests: function () { 

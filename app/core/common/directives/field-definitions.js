@@ -13,6 +13,18 @@ common_module.directive('ctuirTextField',
 
     });
 
+common_module.directive('ctuirCurrencyField',
+    function(){
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-currency.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+
 common_module.directive('ctuirHiddenField',
     function(){
         var result = {
@@ -238,7 +250,7 @@ common_module.directive('ctuirSelectField',
             templateUrl: 'app/core/common/templates/form-fields/field-select.html',
             restrict: 'E',
             controller: function ($scope, $element, $attrs) {
-                $scope.selectOptions = makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
+                $scope.selectOptions = getOrderedObjectList(makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues));
             }
         };
 
@@ -270,7 +282,7 @@ common_module.directive('ctuirSelectNumberField',
             templateUrl: 'app/core/common/templates/form-fields/field-select-number.html',
             restrict: 'E',
             controller: function ($scope, $element, $attrs) {
-                $scope.selectOptions = makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
+                $scope.selectOptions = getOrderedObjectList(makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues));
             }
         };
 

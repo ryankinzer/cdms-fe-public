@@ -3,21 +3,28 @@
     <li class="active">Administration</li>
 </ul>
 
+	<div class="container-fluid">
+		
+		<h3>Manage Datastores and Datasets</h3>
 
-	<div class="panel panel-default">
-	  <div class="panel-body" ng-repeat="store in datastores">
-	  		<h3>Dataset: {{store.Name}}</h3>
-	  		<p><i>Select a dataset to manage.</i></p>
-	  		<button class="hidden btn btn-sm" ng-click="addNewProjectDataset(store)">Add New Dataset</button>
-	  		<button class="btn btn-sm" ng-click="go('admin-master/'+store.Id)">Edit Master Dataset</button>
-            <button class="btn btn-sm" ng-click="go('admin-new-dataset/'+store.Id)">Add to Project</button>
-	  		<hr/>
+		<button style="margin-top: -45px;" class="btn right" ng-click="createDatastore()">Create Datastore</button> 
+		
+		<div ng-show="hasNewDatastore">
+			<b>Datastores without a dataset: </b>
+			<ul>
+				<li ng-repeat="datastore in datastores | filter:{hasDataset:false}"><a href="#!/admin-master/{{datastore.Id}}">{{datastore.Name}}</a></li>
+			</ul>
+		</div>
 
-	    	<ul>
-	    		<li ng-repeat="dataset in store.Datasets"><a href="#!/admin-dataset/{{dataset.Id}}">{{dataset.Name}}</a><br/><div><i>{{getProjectName(dataset.ProjectId)}}</i></div><br/></li>
-	    	</ul>
-
-	  </div>
+		<div class="row-fluid">
+			<div class="span10">
+				<div style="height: 400px; width: 100%; margin-top: 35px; margin-bottom: 115px;">
+					<div id="datasets-list-grid" class="ag-theme-blue gridStyle-small"></div>
+					<div >Total datasets: {{datasets.length}}</div>
+				</div>
+			</div>
+		</div>
+	
 	</div>
-
+	
 	

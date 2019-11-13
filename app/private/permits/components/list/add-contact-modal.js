@@ -5,7 +5,7 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
 
         $scope.mode = "edit";
 
-        if (!$scope.contact_modal.Id) {
+        if (!$scope.contact_modal.PermitPersonId) {
             $scope.mode = "new";
         }
 
@@ -20,6 +20,49 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
 
         };
 
+        $scope.personEntry = "";
+        $scope.personMatches = [];
+
+        $scope.Selected = {Person : []};
+
+        $scope.personEntryUpdate = function () { 
+            $scope.personMatches = [];
+            $scope.Selected.Person.length = 0;
+            $scope.person_modal = {};
+
+            var regex = RegExp($scope.personEntry, "gi"); //global + case insensitive
+            var entryLength = $scope.personEntry.length;
+
+            if(entryLength < 2)
+                return;
+
+            $scope.PermitPersons.forEach(function (person) { 
+
+                if (person.Label == null || person.Label == "")
+                    return;
+
+                if (regex.test(person.Label)) {
+
+                    // if (person.ParcelId == $scope.personEntry) {
+                    //     $scope.person_modal = person;
+                    //     $scope.Selected.Parcel.push(angular.toJson($scope.person_modal)); //this is the trick
+                    // }
+
+                    $scope.personMatches.push(person);
+                }
+            });
+        };
+
+        $scope.selectPerson = function(){
+            if(!$scope.Selected)
+                return;
+            var person = angular.fromJson($scope.Selected.Person[0]); //this is the trick
+            $scope.contact_modal.PermitPersonId = person.Id;
+            $scope.contact_modal.Person = person;
+            //console.dir(person);
+            //console.dir($scope.contact_modal);
+        }
+
   
         $scope.cancel = function () {
             $modalInstance.dismiss();
@@ -27,14 +70,22 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
 
 
         $scope.addPermitPersonModal = function(){
+            //$scope.person_modal = $scope.contact_modal;
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/add-person-modal.html',
+                templateUrl: 'app/private/permits/components/contacts/templates/add-person-modal.html',
                 controller: 'AddPermitPersonModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_person) { 
+
+                saved_person.Label = (saved_person.Organization) ? saved_person.Organization : saved_person.FullName;
+                if (saved_person.Label == "")
+                    saved_person.FirstName + " " + saved_person.LastName;
+
                 $scope.PermitPersons.push(saved_person);
                 $scope.contact_modal.PermitPersonId = saved_person.Id;
-                $(function () { $("#persons-select").select2(); });
+                //$(function () { $("#persons-select").select2(); });
             });
         }
 

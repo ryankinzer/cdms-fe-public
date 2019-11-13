@@ -1,0 +1,43 @@
+
+<div class="modal-header" style="display: block;">
+    <h3>Create New Datastore</h3>
+    <p>This creates a new set of tables (or single table) for a new kind of dataset (datastore).</p>
+</div>
+<div class="modal-body" id="modal-body">
+
+    <table class="inherited-properties">
+        <tr>
+            <td class="prop-name">Name:</td>
+            <td class="prop-val"><input class="form-control" type="text" ng-model="datastore.Name" name="Name"></td>
+        </tr>
+        <tr>
+            <td class="prop-name">Description:</td>
+            <td class="prop-val"><textarea textarea rows="4" style="margin-left: 5px;" class="form-control" type="text" ng-model="datastore.Description" name="Description"></textarea></td>
+        </tr>
+        <tr>
+            <td class="prop-name">Table Prefix:</td>
+            <td class="prop-val"><input class="form-control" type="text" ng-change="checkTablePrefix()" ng-model="datastore.TablePrefix" name="TablePrefix"></td>
+        </tr>
+        <tr>
+            <td class="prop-name">Single Table:</td>
+            <td class="prop-val">
+                <select class="form-control" ng-change="checkTablePrefix()" ng-model="datastore.TableType" name="TableType">
+                    <option>Header+Detail</option>
+                    <option>Single</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="prop-name">Table to create:</td>
+            <td class="prop-val"><span style="margin-left: 5px;">{{to_generate}}</span></td>
+        </tr>
+        
+    </table>
+</div>
+<div class="modal-footer">
+    <button style="margin-top: 30px;" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button style="margin-top: 30px;" class="right btn" ng-click="save()">Create</button>
+    <div ng-show="SaveMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{SaveMessage}}</div>
+</div>
+
+

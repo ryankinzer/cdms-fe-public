@@ -149,6 +149,8 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
               templateUrl: 'app/core/projects/components/project-detail/templates/modal-choosemap.html',
               controller: 'ModalChooseMapCtrl',
               scope: scope, //very important to pass the scope along...
+              backdrop: "static",
+              keyboard: false
             });
         };
 
@@ -157,6 +159,8 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-choosesummaryimages.html',
               controller: 'ModalChooseSummaryImagesCtrl',
               scope: scope, //very important to pass the scope along...
+              backdrop: "static",
+              keyboard: false
             });
         };
         		

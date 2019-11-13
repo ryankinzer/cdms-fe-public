@@ -20,6 +20,20 @@ datasets_module.service('ConvertStatus', ['Logger', '$window', '$route',
 
                 return strStatus;
             },
+            convertStatusToInt: function (aStatus) {
+                //console.log("Inside convertStatus...");
+                //console.log("aStatus = " + aStatus);
+
+                var intStatus = 1;
+
+                if (aStatus === "Active") {
+                    intStatus = 0;
+                }
+
+                //console.log("intStatus = " + intStatus);
+
+                return intStatus;
+            },
             convertOkToCall: function (aStatus) {
                 //console.log("Inside convertOkToCall...");
                 //console.log("aStatus = " + aStatus);

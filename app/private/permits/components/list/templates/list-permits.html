@@ -10,7 +10,13 @@
         Good things come to those who wait... (loading...)
     </div>
 
-    <div id="active-permits-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
+    <div ng-hide="!permits" style="display: flex">
+        <button class="btn btn-light btn-sm" type="button" ng-click="ShowPermitListGrid = !ShowPermitListGrid"><span ng-show="!ShowPermitListGrid" class="glyphicon glyphicon-circle-arrow-right"></span><span ng-show="ShowPermitListGrid" class="glyphicon glyphicon-circle-arrow-down"></span></button>
+        <div ng-show="permitsGrid.hasFilters && ShowPermitListGrid" style="margin-left: 5px; margin-bottom: 10px;"><button class="btn-sm btn-warning" ng-click="clearFilters()">Clear Filters</button></div>
+    </div>
+
+    
+    <div ng-show="ShowPermitListGrid" id="active-permits-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
 
     <div class="alert alert-secondary" role="alert" ng-hide="permitsGrid.selectedItem || !permits">Click a permit to display details.</div>
 
@@ -34,11 +40,15 @@
                 </li>
             </ul>
 
-            <div ng-show="row.PermitType==15 && (row.PermitStatus=='Approved' || row.PermitStatus=='Conditionally Approved')" style="margin-top: -40px; margin-right:9px;" class="right"><a href="https://paluutreports.ctuir.org/Reports/report/TPO/DevelopmentPermit?PermitNumber={{row.PermitNumber}}" target="_blank" role="button" class="btn btn-sm">Generate Permit</a></div>
+            <div style="margin-top: -40px; margin-right:9px; display:flex;" class="right">
+                <div style="margin-left: 5px;" ng-show="(row.PermitStatus=='Approved' || row.PermitStatus=='Conditionally Approved')"><button ng-click="openPermitReport()" class="btn btn-sm">Generate Permit</button></div>
+                <div style="margin-left: 5px;" ng-show="row.COIssueDate"><button ng-click="openCOReport()" class="btn btn-sm">Generate CO</button></div>
+            </div>
 
             <div ng-show="Profile.hasRole('Permits') && row.dataChanged" style="margin: 10px; float: right;">
-                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-                <button class="btn btn-primary" ng-click="save()">Save</button>
+                <div class="alert alert-danger" ng-show="row.hasError">{{row.errorMessage}}</div>
+                <button ng-disabled="row.isSaving" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                <button ng-disabled="row.isSaving" class="btn btn-primary" ng-click="save()">Save</button>
             </div>
 
 
@@ -54,7 +64,7 @@
                                     <div class="panel-body">
                                         <table class="table table-striped table-hover">
                                             <thead>
-                                                <tr><th>TPO Action</th><th>Date</th><th>Status</th><th width="400">Comments</th></tr>
+                                                <tr><th>TPO Action</th><th>Date</th><th>Status</th><th style="max-width: 400px;" width="400">Comments</th></tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
@@ -70,7 +80,34 @@
                                                     <td>{{row.StatusNotes}}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><b>Route to:</b></td>
+                                                    <td>Fee Status</td>
+                                                    <td>
+                                                        <span ng-if="row.FeeNotificationDate && !row.FeePaymentDate">{{row.FeeNotificationDate | date :shortDate}}</span>
+                                                        <span ng-if="row.FeePaymentDate">{{row.FeePaymentDate | date :shortDate}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span ng-if="row.FeeNotificationDate && !row.FeePaymentDate">&#9898</span>
+                                                        <span ng-if="row.FeePaymentDate">&#9899</span>
+                                                    </td>
+                                                    <td><span ng-if="row.Fee">{{row.Fee | currency}}</span></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Permit Issued</td>
+                                                    <td>{{row.IssueDate | date : shortDate}}</td>
+                                                    <td><span ng-if="row.IssuedBy">By {{row.IssuedBy}}</span></td>
+                                                    <td>{{row.PermitConditions}}</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>File Status</td>
+                                                    <td>{{row.FileStatus}}</td>
+                                                    <td>{{row.CloseDate | date : shortDate}}</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td><b>Routes</b></td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
@@ -87,27 +124,7 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <td>Fee Status</td>
-                                                    <td>
-                                                        <span ng-if="row.FeeNotificationDate && !row.FeePaymentDate">{{row.FeeNotificationDate | date :shortDate}}</span>
-                                                        <span ng-if="row.FeePaymentDate">{{row.FeePaymentDate | date :shortDate}}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span ng-if="row.FeeNotificationDate && !row.FeePaymentDate">&#9898</span>
-                                                        <span ng-if="row.FeePaymentDate">&#9899</span>
-                                                    </td>
-                                                    <td><span ng-if="row.Fee">${{row.Fee}}</span></td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>Permit Issued</td>
-                                                    <td>{{row.IssueDate | date : shortDate}}</td>
-                                                    <td><span ng-if="row.IssuedBy">By {{row.IssuedBy}}</span></td>
-                                                    <td>{{row.PermitConditions}}</td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td><b>Inspections:</b></td>
+                                                    <td><b>Inspections</b></td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
@@ -122,12 +139,7 @@
                                                     </td>
                                                     <td>{{status.Result}} {{status.Comments}}</td>
                                                 </tr>
-                                                <tr>
-                                                    <td><b>File Status</b></td>
-                                                    <td>{{row.FileStatus}}</td>
-                                                    <td>{{row.CloseDate | date : shortDate}}</td>
-                                                    <td>&nbsp;</td>
-                                                </tr>
+                                                
                                             </tbody>
                                         </table>
                                     </div>
@@ -146,30 +158,16 @@
                                     <fieldset>
                                         <legend class="bump-over">General Information</legend>
                                         <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:1}" ng-switch on="field.ControlType">
-                                            <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
-                                            <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
-                                            <ctuir-instrument-select-field ng-switch-when="instrument-select"></ctuir-instrument-select-field>
-                                            <ctuir-accuracy-check-select-field ng-switch-when="accuracy-check-select"></ctuir-accuracy-check-select-field>
-                                            <ctuir-post-accuracy-check-select-field ng-switch-when="post-accuracy-check-select"></ctuir-post-accuracy-check-select-field>
-                                            <ctuir-timezone-select-field ng-switch-when="timezone-select"></ctuir-timezone-select-field>
                                             <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                                            <ctuir-activity-text-field ng-switch-when="activity-text"></ctuir-activity-text-field>
                                             <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                                             <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
                                             <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
                                             <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                                            <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
-                                            <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
-                                            <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
                                             <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
                                             <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
                                             <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
-                                            <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
-                                            <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
                                             <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                                            <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
-                                            <ctuir-qa-status-select-field ng-switch-when="qa-status-select"></ctuir-qa-status-select-field>
-                                            <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
+                                            <ctuir-currency-field ng-switch-when="currency"></ctuir-currency-field>
                                             <ctuir-text-field ng-switch-default></ctuir-text-field>
                                         </div>
                                     </fieldset>
@@ -179,35 +177,20 @@
                                     <fieldset>
                                         <legend class="bump-over">Location Information</legend>
                                         <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:2}" ng-switch on="field.ControlType">
-                                            <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
-                                            <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
-                                            <ctuir-instrument-select-field ng-switch-when="instrument-select"></ctuir-instrument-select-field>
-                                            <ctuir-accuracy-check-select-field ng-switch-when="accuracy-check-select"></ctuir-accuracy-check-select-field>
-                                            <ctuir-post-accuracy-check-select-field ng-switch-when="post-accuracy-check-select"></ctuir-post-accuracy-check-select-field>
-                                            <ctuir-timezone-select-field ng-switch-when="timezone-select"></ctuir-timezone-select-field>
                                             <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                                            <ctuir-activity-text-field ng-switch-when="activity-text"></ctuir-activity-text-field>
                                             <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                                             <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
                                             <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
                                             <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                                            <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
-                                            <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
-                                            <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
                                             <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
                                             <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
                                             <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
-                                            <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
-                                            <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
                                             <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                                            <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
-                                            <ctuir-qa-status-select-field ng-switch-when="qa-status-select"></ctuir-qa-status-select-field>
-                                            <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                                             <ctuir-text-field ng-switch-default></ctuir-text-field>
                                         </div>
 
                                         <div class="form-group">
-                                            <div class="header-label">Zoning:</div>
+                                            <div class="header-label">Zoning</div>
                                             <div class="header-value">
                                                 <select class="form-control" ng-blur="onHeaderEditingStopped({'DbColumnName':'Zoning'})" multiple ng-model="row.Zoning" >
                                                     <option ng-repeat="zone in row.Zones | orderBy:'+'" value="{{zone}}">{{zone}}</option>
@@ -220,30 +203,15 @@
                                     <fieldset style="margin-top: 30px;">
                                         <legend class="bump-over">Other Information</legend>
                                         <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:3}" ng-switch on="field.ControlType">
-                                            <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
-                                            <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
-                                            <ctuir-instrument-select-field ng-switch-when="instrument-select"></ctuir-instrument-select-field>
-                                            <ctuir-accuracy-check-select-field ng-switch-when="accuracy-check-select"></ctuir-accuracy-check-select-field>
-                                            <ctuir-post-accuracy-check-select-field ng-switch-when="post-accuracy-check-select"></ctuir-post-accuracy-check-select-field>
-                                            <ctuir-timezone-select-field ng-switch-when="timezone-select"></ctuir-timezone-select-field>
                                             <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                                            <ctuir-activity-text-field ng-switch-when="activity-text"></ctuir-activity-text-field>
                                             <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                                             <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
                                             <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
                                             <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                                            <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
-                                            <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
-                                            <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
                                             <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
                                             <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
                                             <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
-                                            <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
-                                            <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
                                             <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                                            <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
-                                            <ctuir-qa-status-select-field ng-switch-when="qa-status-select"></ctuir-qa-status-select-field>
-                                            <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                                             <ctuir-text-field ng-switch-default></ctuir-text-field>
                                         </div>
                                     </fieldset>
@@ -267,6 +235,7 @@
                                     <fieldset style=" margin-top: 30px;">
                                         <legend>Parcels</legend>
                                         <div id="permit-parcels-grid" style="height: 120px;width:100%;" class="ag-theme-blue"></div>
+                                        <button ng-show="permitParcelsGrid.selectedItem" class="btn btn-secondary btn-sm right margin-5" ng-click="openParcelInMap()">Open in Map</button>
                                         <button ng-show="row.Id" class="btn btn-secondary btn-sm right margin-5" ng-click="openParcelModal()">Add</button>
                                         <button ng-show="permitParcelsGrid.selectedItem" class="btn btn-warning btn-sm right margin-5" ng-click="removeSelectedParcel()">Remove</button>
                                     </fieldset>
@@ -304,35 +273,21 @@
                                 <div class="row">
                                     <div class="col-lg">
                                         <div ng-repeat="field in permitsGrid.columnDefs | filter:{ColumnIndex:5}" ng-switch on="field.ControlType">
-                                            <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
-                                            <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
-                                            <ctuir-instrument-select-field ng-switch-when="instrument-select"></ctuir-instrument-select-field>
-                                            <ctuir-accuracy-check-select-field ng-switch-when="accuracy-check-select"></ctuir-accuracy-check-select-field>
-                                            <ctuir-post-accuracy-check-select-field ng-switch-when="post-accuracy-check-select"></ctuir-post-accuracy-check-select-field>
-                                            <ctuir-timezone-select-field ng-switch-when="timezone-select"></ctuir-timezone-select-field>
                                             <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                                            <ctuir-activity-text-field ng-switch-when="activity-text"></ctuir-activity-text-field>
+                                            <ctuir-currency-field ng-switch-when="currency"></ctuir-currency-field>
                                             <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                                             <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
                                             <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
                                             <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                                            <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
-                                            <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
-                                            <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
                                             <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
                                             <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
                                             <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
-                                            <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
-                                            <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
                                             <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                                            <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
-                                            <ctuir-qa-status-select-field ng-switch-when="qa-status-select"></ctuir-qa-status-select-field>
-                                            <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                                             <ctuir-text-field ng-switch-default></ctuir-text-field>
                                         </div>
                                     </div>
                                     <div class="col-lg">
-                                            Fee calculation...
+                                            
                                     </div>
                                 </div>
                             </div>
@@ -343,8 +298,9 @@
             </form>
             <div class="modal-footer">
                 <div ng-show="Profile.hasRole('Permits') && row.dataChanged" style="margin: 10px; float: right;">
-                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-                    <button class="btn btn-primary" ng-click="save()">Save</button>
+                    <div class="alert alert-danger" ng-show="row.hasError">{{row.errorMessage}}</div>
+                    <button ng-disabled="row.isSaving" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                    <button ng-disabled="row.isSaving" class="btn btn-primary" ng-click="save()">Save</button>
                 </div>
             </div>
 

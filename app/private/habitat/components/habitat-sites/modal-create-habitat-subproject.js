@@ -727,6 +727,13 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 			$scope.subprojectSave.error = true;
 			$scope.subprojectSave.errorMessage += "Easting and Northing cannot be blank!  ";
 		}
+
+		if ((typeof $scope.row.ProjectLead === 'undefined') || ($scope.row.ProjectLead === null)) 
+		{
+			console.log("Project Lead is empty...");
+			$scope.subprojectSave.errorMessage += "Project Lead cannot be blank!  "; 
+			$scope.subprojectSave.error = true;
+		}
 		
         if ($scope.subprojectSave.error)
             return;

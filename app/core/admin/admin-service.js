@@ -32,6 +32,12 @@ admin_module.factory('GetAllDatastoreFields', ['$resource', function ($resource)
     return $resource(serviceUrl + '/api/v1/datastore/getdatastorefields');
 }]);
 
+admin_module.factory('SaveNewDatastore', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/datastore/saveNewDatastore');
+}]);
+
+
+
 
 admin_module.service('AdminService', ['$q', 
     'SaveDatasetField',
@@ -41,6 +47,7 @@ admin_module.service('AdminService', ['$q',
     'AddMasterFieldToDataset',
     'GetAllDatastoreFields',
     'SaveDataset',
+    'SaveNewDatastore',
     function ($q,
         SaveDatasetField,
         SaveMasterField,
@@ -48,13 +55,18 @@ admin_module.service('AdminService', ['$q',
         GetAllFields,
         AddMasterFieldToDataset,
         GetAllDatastoreFields,
-        SaveDataset) {
+        SaveDataset, 
+        SaveNewDatastore) {
 
         var service = {
 
            addMasterFieldToDataset: function(datasetId, fieldId)
             {
                return AddMasterFieldToDataset.save({ DatasetId: datasetId, FieldId: fieldId });
+            },
+
+            saveNewDatastore: function(datastore){
+                return SaveNewDatastore.save({ Datastore: datastore });
             },
 
             removeField: function(datasetId, fieldId)

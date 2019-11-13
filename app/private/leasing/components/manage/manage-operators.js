@@ -9,6 +9,7 @@
         leasing_module.prepareLeaseModalScope($scope, LeasingService);
 
         $scope.operators = LeasingService.getOperators();
+        $scope.saveResults = {};
 
         $scope.operators.$promise.then(function () {
             $scope.operatorsGridDiv = document.querySelector('#operators-grid');
@@ -71,17 +72,22 @@
 
         $scope.deleteOperator = function () { 
 
+            $scope.saveResults = {};
             if (confirm("Are you sure you want to delete this operator?")) {
                 var deleting = LeasingService.deleteOperator($scope.operatorsGrid.selectedItems[0]);
                 
                 deleting.$promise.then(function () {
                     $scope.saveOperatorCallback(); //refresh the operators...
+                    $scope.saveResults.success=true;
+                },function(data){
+                    $scope.saveResults.failure=true;
+                    $scope.saveResults.message="Most likely there is a lease associated with this Operator."
                 });
             }
         };
 
         $scope.openAddOperator = function (params) {
-
+            $scope.saveResults = {};
             delete $scope.operator_modal;
 
             if (params) {
@@ -92,6 +98,8 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/add-operator-modal.html',
                 controller: 'AddOperatorModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             });
         }
 

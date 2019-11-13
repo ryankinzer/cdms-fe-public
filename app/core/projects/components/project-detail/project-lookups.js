@@ -148,6 +148,8 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-lookup-item.html',
                 controller: 'ModalEditLookupItemCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_item) { 
                 //replace that item in the grid with the one we got back
                 var found = false;
@@ -178,6 +180,8 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-edit-lookup-item.html',
                 controller: 'ModalEditLookupItemCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_item) { 
                 //add that item in the grid with the one we got back
                 scope.lookupItems.push(saved_item);

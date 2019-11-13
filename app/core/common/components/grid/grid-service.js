@@ -225,7 +225,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
             //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
-            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope: scope });
+            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope: scope, value: event.value });
             //console.dir(fieldRuleValidationErrors);
             fieldRuleValidationErrors.forEach(function (error) { fieldValidationErrors.push({ "field": event.colDef, "message": error }) });
 
@@ -323,7 +323,8 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
 
 
         //fires the given rule and returns row_errors
-        service.fireRule = function (type, event) { //row, field, value, headers, errors, scope) {
+        //service.fireRule = function (type, event) { //row, field, value, headers, errors, scope) {
+        service.fireRule = function (type, event, scope) { //row, field, value, headers, errors, scope) {
 
             if (!event.colDef.hasOwnProperty('cdmsField')) {
                 console.warn("fireRule (" + type + ")- no cdmsField defined so there are no rules - skipping. The event:");
@@ -343,6 +344,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 var value = (event.value) ? event.value : "";
                 var row = (event.data) ? event.data : {};
                 var header = (event.node && event.node.data) ? event.node.data : {};
+                var node = event.node;
 
                 //fire MasterFieldRule rule if it exists
                 if (MasterFieldRule && MasterFieldRule.hasOwnProperty(type)) {
@@ -358,7 +360,9 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                     else {
                         //if ((typeof row['InterviewTime'] !== 'undefined' && row['InterviewTime'] !== null) && ((typeof event.scope.row['NumberAnglersInterviewed'] === 'undefined') || (event.scope.row['NumberAnglersInterviewed'] === 0)))
                         //    row_errors.push('[InterviewTime] An interview cannot be present, when NumberAnglersInterviewed = 0');
-
+                        //console.log("scope is next...");
+                        //console.dir(scope);
+                        console.log("Firing a rule: " + type + " on " + field.DbColumnName);
                         eval(MasterFieldRule[type]);
                     }
                 }
@@ -415,7 +419,10 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 return null; //early return, bail out.
             }
 
-            saveResult.saving = true;
+            // Situation:  We open data entry, we change the location, and we end up here correctly.
+            // However, the question is, why are we setting "saveResult.saving" to true here?
+            // We are not saving yet...
+            //saveResult.saving = true;
             saveResult.saveMessage = "Checking for duplicates...";
 
             //console.log("we are dupe checking!");

@@ -107,6 +107,8 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-edit-metadataproperty.html',
                 controller: 'ModalEditMetadataPropertyCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved) { 
                 //replace that location in the grid with the one we got back
                 var found = false;

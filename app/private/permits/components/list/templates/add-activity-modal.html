@@ -30,20 +30,11 @@
 
             <div style="margin-top: 35px;">
                 <div ng-repeat="field in permitEventsGrid.columnDefs | filter:doShowField" ng-switch on="field.ControlType">
-                    <ctuir-activity-date-field ng-switch-when="activity-date"></ctuir-activity-date-field>
-                    <ctuir-location-select-field ng-switch-when="location-select"></ctuir-location-select-field>
-                    <ctuir-instrument-select-field ng-switch-when="instrument-select"></ctuir-instrument-select-field>
-                    <ctuir-accuracy-check-select-field ng-switch-when="accuracy-check-select"></ctuir-accuracy-check-select-field>
-                    <ctuir-post-accuracy-check-select-field ng-switch-when="post-accuracy-check-select"></ctuir-post-accuracy-check-select-field>
-                    <ctuir-timezone-select-field ng-switch-when="timezone-select"></ctuir-timezone-select-field>
                     <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                    <ctuir-activity-text-field ng-switch-when="activity-text"></ctuir-activity-text-field>
                     <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
                     <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
                     <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
                     <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                    <ctuir-easting-field ng-switch-when="easting"></ctuir-easting-field>
-                    <ctuir-northing-field ng-switch-when="northing"></ctuir-northing-field>
                     <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
                     <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
                     <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
@@ -52,23 +43,7 @@
                     <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
                     <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
                     <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                    <ctuir-temp-waypoint-file-field ng-switch-when="temp-waypoint-file"></ctuir-temp-waypoint-file-field>
-                    <ctuir-qa-status-select-field ng-switch-when="qa-status-select"></ctuir-qa-status-select-field>
-                    <ctuir-qa-status-comment-field ng-switch-when="qa-status-comment"></ctuir-qa-status-comment-field>
                     <ctuir-text-field ng-switch-default></ctuir-text-field>
-                </div>
-
-                <div ng-show="PermitRoutes.length > 0">
-                    <div class="checkbox-fix">
-                        <div class="header-label">Reviewers to Contact:</div>
-                        <div class="header-value">
-                            <div class="checkbox-itemlist" style="margin-top: -25px; width: 300px;">
-                                <span ng-repeat="route in PermitRoutes | orderBy: 'Rank'">
-                                    <input type="checkbox" ng-model="row.ReviewersContact[route.Email]" value="{{route.Email}}"/> {{route.Email}} <br />
-                                </span>
-                            </div>
-                        </div>
-                    </div>           
                 </div>
 
                 <div ng-show="mode=='edit_route'">
@@ -104,17 +79,32 @@
                         </label>
                     </div>
 
+                </div>
+
+                <div style="margin-top: 10px;" ng-show="PermitRoutes.length > 0">
                     <div class="checkbox-fix">
-                        <div class="header-label">Inspectors to Contact:</div>
+                        <div class="header-label">Reviewers to Contact:</div>
                         <div class="header-value">
-                            <div class="checkbox-itemlist">
-                                <input type="checkbox" ng-model="row.InspectorsContact['Structural']" value="Struct"> Structural/Mechanical<br />
-                                <input type="checkbox" ng-model="row.InspectorsContact['Plumbing']" value="PM"> Plumbing<br />
-                                <input type="checkbox" ng-model="row.InspectorsContact['Electrical']" value="Any"> Electrical
+                            <div class="checkbox-itemlist" style="margin-top: -25px; width: 300px;">
+                                <span ng-repeat="route in PermitRoutes | orderBy: 'Rank'">
+                                    <input type="checkbox" ng-model="row.ReviewersContact[route.Email]" value="{{route.Email}}"/> {{route.Email}} <br />
+                                </span>
                             </div>
                         </div>
-                    </div>
+                    </div>           
                 </div>
+
+                <div ng-show="mode == 'new_route' && PermitFiles.length > 0">
+                    <div class="header-label">Files to include:</div>
+                    <div class="header-value">
+                        <select multiple="true" class="form-control" ng-model="row.FilesToInclude">
+                            <option ng-repeat="file in PermitFiles" value={{file}}>{{getFileLabel(file)}}</option>
+                        </select>
+
+                    </div>
+                    
+                </div>
+
             </div>
         </form>
     </div>
@@ -124,8 +114,8 @@
     <div ng-show="Results.FailureMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-danger">{{Results.FailureMessage}}</div>
 
     <div ng-show="!Results.DoneSaving">
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        <button class="right btn" ng-click="save()">Save</button>
+        <button class="btn btn-warning" ng-disabled="Results.IsSaving" ng-click="cancel()">Cancel</button>
+        <button class="right btn" ng-disabled="Results.IsSaving" ng-click="save()">Save</button>
     </div>
     <div ng-show="Results.DoneSaving">
         <button style="margin-top: 30px;" class="right btn" ng-click="close()">Close</button>

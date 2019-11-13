@@ -132,6 +132,8 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/inspection-violation-modal.html',
                 controller: 'InspectionViolationModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             });
         }
 

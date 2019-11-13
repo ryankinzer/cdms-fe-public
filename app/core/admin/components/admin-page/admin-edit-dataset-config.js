@@ -19,6 +19,7 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
 
         $scope.saveConfig = function () {
             $scope.SaveMessage = "Saving...";
+            console.dir($scope.dataset.Config);
             $scope.dataset.Config = angular.toJson($scope.dataset.Config);
             var promise = DatasetService.saveDataset($scope.dataset );
 
@@ -41,6 +42,8 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-choose-duplicate-fields.html',
                 controller: 'ModalChooseDuplicateFieldsCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_field) { 
 
             });
@@ -52,6 +55,8 @@ var admin_edit_dataset_config = ['$scope', '$uibModal', '$timeout', '$routeParam
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-choose-activitylist-fields.html',
                 controller: 'ModalChooseActivityListFieldsCtrl',
                 scope: $scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_field) { 
 
             });

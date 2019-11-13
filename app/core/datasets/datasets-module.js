@@ -24,13 +24,14 @@ require([
     'core/datasets/components/dataset-query/big-bucket-query',
     'core/datasets/components/dataset-seasons-list/dataset-seasons-list',
     'core/datasets/components/dataset-seasons-list/modal-create-season',
-
+    'core/datasets/components/dataset-table/table',
+    'core/datasets/components/dataset-table/table-data-modal',
 
     //load the various dataset services
     'core/datasets/services/dataset-service',
     'core/datasets/services/activity-parser',
     'core/datasets/services/convert-status',
-    'core/datasets/services/datasheet',
+    //'core/datasets/services/datasheet',
 
 ], function () {
     //add the controllers and services to the module once the files are loaded!
@@ -50,6 +51,8 @@ require([
     datasets_module.controller('ModalCreateSeasonCtrl', modal_create_season);
     datasets_module.controller('ModalMapLocationsCtrl', modal_map_locations);
     datasets_module.controller('ModalActivitiesGridCtrl', modal_activities_grid);
+    datasets_module.controller('TableCtrl', table_editor);
+    datasets_module.controller('TableDataModal',table_data_modal);
 
     datasets_module.filter('dataGrade', function () { 
         return function (check) {

@@ -748,7 +748,8 @@ margin-left: -8px !important;
 
 .modal-form .field-error-block
 {
-    margin-left: 192px;
+    margin-left: 240px;
+    width: 250px;
 }
 
 .modal-form .select2-container {
@@ -761,6 +762,7 @@ margin-left: -8px !important;
     border: 1px solid lightgrey;
     border-radius: 3px;
     width: 240px;
+    overflow: auto;
 }
 
 .form-file {

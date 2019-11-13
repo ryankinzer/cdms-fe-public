@@ -8,7 +8,15 @@
 
             <div class="header-label">Search:</div>
             <div class="header-value">
-                <input type="text" ng-change="parcelEntryUpdate()" placeholder="Enter parcel id" ng-model="parcelEntry" />
+                <input class="form-control" type="text" ng-change="parcelEntryUpdate()" placeholder="Enter parcel id" ng-model="parcelEntry" />
+            </div>
+
+            <div style="margin-top: 10px" ng-show="parcelMatches != ''">
+                <div class="header-label">Results:</div>
+                <div class="header-value">
+                    <select class="form-control" ng-options="parcel as parcel.ParcelId for parcel in parcelMatches track by parcel.ParcelId" ng-model="Selected.Parcel" ng-change="selectParcel()" multiple="true">
+                    </select>
+                </div>
             </div>
 
             <div class="header-label">Parcel Id:</div>
@@ -19,11 +27,6 @@
 
             <div class="header-label">Zones:</div>
             <div class="header-value">{{parcel_modal.ZoneCode.replace(':',', ')}}&nbsp;</div>
-
-            <div style="margin-top: 10px" ng-show="parcelMatches != ''">
-                <div class="header-label">Similar Results:</div>
-                <div class="header-value"><textarea disabled cols="20" rows="6">{{parcelMatches}}</textarea></div>
-            </div>
 
         </form>
     </div>

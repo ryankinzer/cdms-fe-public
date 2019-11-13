@@ -226,6 +226,8 @@
                 templateUrl: 'app/private/leasing/components/manage/templates/lease-modal.html',
                 controller: 'LeaseModalController',
                 scope: $scope,
+                backdrop: "static",
+                keyboard: false
             });
         }
 

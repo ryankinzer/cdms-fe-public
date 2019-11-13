@@ -128,7 +128,7 @@ CDMSSelectCellEditor.prototype.init = function (params) {
 
     _this.values = params.values;
     _this.container = document.createElement('div');
-    _this.container.style = "border-radius: 3px; border: 1px solid grey;background: #e6e6e6";
+    _this.container.style = "width: 420px;border-radius: 3px; border: 1px solid grey;background: #e6e6e6";
     _this.container.onkeydown = onKeyDown;
     _this.eSelect = document.createElement("select");
     _this.eSelect.size = 7;
@@ -140,7 +140,7 @@ CDMSSelectCellEditor.prototype.init = function (params) {
     
     //this gets set in dataset-edit-form when tabbing. a work-around because the grid was stealing the focus after edit and tab.
     if (params.column.tabbingIn) {
-        console.log("--- cancelling becauswe we are tabbing in ------- .>>>>>>>>>>>>>>>>");
+        //console.log("--- cancelling becauswe we are tabbing in ------- .>>>>>>>>>>>>>>>>");
         params.column.tabbingIn = false;
         this.cancelBeforeStart = true;
     } else { 
@@ -188,21 +188,21 @@ CDMSSelectCellEditor.prototype.isCancelBeforeStart = function () {
 };
 
 CDMSSelectCellEditor.prototype.getGui = function () {
-    console.log("getgui fired");
+    //console.log("getgui fired");
     //console.dir(this.container);
     //this.eSelect.focus();
     return this.container;
 };
 
 CDMSSelectCellEditor.prototype.getValue = function () {
-    console.log("getvalue fired ------------ " + this.eSelect.value);
+    //console.log("getvalue fired ------------ " + this.eSelect.value);
     return this.eSelect.value;
 };
 
 CDMSSelectCellEditor.prototype.destroy = function () { };
 CDMSSelectCellEditor.prototype.isPopup = function () { return true; };
 CDMSSelectCellEditor.prototype.afterGuiAttached = function () { 
-    console.log("afterguiattched"); 
+    //console.log("afterguiattched"); 
     //var _this = this;
     //setTimeout(function () {
     //    console.log("timout reached! focusing");

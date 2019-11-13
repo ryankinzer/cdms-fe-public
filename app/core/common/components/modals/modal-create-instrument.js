@@ -27,6 +27,9 @@
         console.dir($scope.instrument_row);
         console.dir($scope);
 
+        // We set StatusText, so that the column filter would work properly, but we don't want to save it.
+        $scope.instrument_row.StatusText = undefined;
+
         if (!$scope.instrument_row.InstrumentTypeId) {
             alert("You must select an Instrument Type!");
             return;

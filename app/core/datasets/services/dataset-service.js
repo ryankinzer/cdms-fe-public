@@ -56,6 +56,26 @@ datasets_module.factory('GetDatasetsList', ['$resource', function ($resource) {
     });
 }]);
 
+datasets_module.factory('GetTableData', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/table/gettabledata', {}, {
+        query: { method: 'GET', params: {id: 'id'}, isArray: true }
+    });
+}]);
+
+datasets_module.factory('SaveTableData', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/table/savetabledata', {}, {
+        save: { method: 'POST', isArray: true }
+    });
+}]);
+
+datasets_module.factory('DeleteTableData', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/table/deletetabledata', {}, {
+        save: { method: 'POST', isArray: false }
+    });
+}]);
+
+
+
 datasets_module.factory('Data', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/activity/getdatasetactivitydata', {}, {
         query: { method: 'GET', params: { id: 'activityId' }, isArray: false }
@@ -255,6 +275,9 @@ datasets_module.service('DatasetService', ['$q',
     'UpdateDataset',
     'HasExistingActivity',
     'GetDatasetsList',
+    'GetTableData',
+    'SaveTableData',
+    'DeleteTableData',
     function ($q,
         DatasetFiles,
         Activities,
@@ -294,7 +317,10 @@ datasets_module.service('DatasetService', ['$q',
         AddDatasetToProject,
         UpdateDataset,
         HasExistingActivity,
-        GetDatasetsList)
+        GetDatasetsList,
+        GetTableData,
+        SaveTableData,
+        DeleteTableData)
     {
 
         var service = {
@@ -342,48 +368,63 @@ datasets_module.service('DatasetService', ['$q',
                 return GetDatasetsList.query();
             },
 
+            getTableData: function(datasetId){
+                return GetTableData.query({id: datasetId})
+            },
+
+            saveTableData: function(dataset, data){
+                return SaveTableData.save({DatasetId: dataset.Id, TableData: data});
+            },
+
+            deleteDataTableRow: function(dataset, data){
+                return DeleteTableData.save({DatasetId: dataset.Id, TableData: data});
+            },
+
             //configureDataset: function(dataset)
             configureDataset: function (dataset, scope) {
                 //console.log("configuring dataset.Name = " + dataset.Name);
                 //default page routes
                 dataset.activitiesRoute = "activities"; //default route -- when they click to go to "activities" this is the route they should use.
 
-                //objectify our dataset config for later use
-                //console.log("dataset.Config is next...");
-                //console.dir(dataset.Config);
-                //if(dataset.Config) // Original line.
-                // If we are verifying the variable is defined, this works the best.  Lastly, the database column config may either be null, or contain the text "NULL", so we must check for that too.
-                if ((typeof dataset.Config !== 'undefined') && (dataset.Config !== null) && (dataset.Config !== "NULL")) {
-                    dataset.Config = angular.fromJson(dataset.Config);
-
-                    //if there are page routes in configuration, set them in our dataset
-                    if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)
-                        dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
-
-                    //part of configuration is authorization.  If the user isn't authorized
-                    //  for this dataset, bump them to error
-                    if (typeof dataset.Config.RestrictRoles !== 'undefined') {
-                        var authorized = false;
-                        for (var i = dataset.Config.RestrictRoles.length - 1; i >= 0; i--) {
-                            if (angular.rootScope.Profile.hasRole(dataset.Config.RestrictRoles[i]))
-                                authorized = true;
-                        };
-
-                        if (!authorized) {
-                                
-                            if (typeof scope !== 'undefined') {
-                                scope.AuthorizedToViewProject = false;
-                            }
-                            else {
-                                angular.rootScope.go('/unauthorized');
-                            }
-                        }
-
-                        //console.dir(angular.rootScope.Profile);
-                        //console.dir(dataset.Config.RestrictRoles);
-                    }
-                    
+                if (typeof dataset.Config == 'undefined' || dataset.Config == null || dataset.Config == "NULL" || dataset.Config == "null") {
+                    dataset.Config = {};
+                    return;
                 }
+
+                try{
+                    dataset.Config = angular.fromJson(dataset.Config);
+                }catch(e){
+                    console.error("Could not parse Config for this dataset:");
+                    console.dir(dataset);
+                }
+
+                //if there are page routes in configuration, set them in our dataset
+                if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)
+                    dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
+
+                //part of configuration is authorization.  If the user isn't authorized
+                //  for this dataset, bump them to error
+                if (typeof dataset.Config.RestrictRoles !== 'undefined') {
+                    var authorized = false;
+                    for (var i = dataset.Config.RestrictRoles.length - 1; i >= 0; i--) {
+                        if (angular.rootScope.Profile.hasRole(dataset.Config.RestrictRoles[i]))
+                            authorized = true;
+                    };
+
+                    if (!authorized) {
+                            
+                        if (typeof scope !== 'undefined') {
+                            scope.AuthorizedToViewProject = false;
+                        }
+                        else {
+                            angular.rootScope.go('/unauthorized');
+                        }
+                    }
+
+                    //console.dir(angular.rootScope.Profile);
+                    //console.dir(dataset.Config.RestrictRoles);
+                }
+                    
             },
 			
             getHeadersDataForDataset: function (datasetId) {

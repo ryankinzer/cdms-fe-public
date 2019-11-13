@@ -10,6 +10,10 @@
 
         $scope.DisplayStats = [];
 
+        $scope.getDisplayStats = function(stat){
+            return ($scope.DisplayStats[stat]) ? $scope.DisplayStats[stat] : 0;
+        }
+
         $scope.OutstandingRequests.$promise.then(function () { 
             $scope.requestsGridDiv = document.querySelector('#outstanding-requests-grid');
             new agGrid.Grid($scope.requestsGridDiv, $scope.requestsGrid);
@@ -109,6 +113,11 @@
                 editable: false,
                 sortable: true,
                 resizable: true,
+                cellStyle: function(params){
+                    if(moment(params.data.ExpireDate).isBefore(moment())) {
+                        return {color: 'red'}
+                    }
+                }
             }
         };
 

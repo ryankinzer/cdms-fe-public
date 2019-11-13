@@ -543,6 +543,8 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-new-habitatItem.html',
                 controller: 'ModalAddHabitatItemCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -781,9 +783,10 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 scope.matchCollaboratorToSubproject();
             });
 
-            scope.project.Locations.$promise.then(function () {
+            //there is no project.Locations promise so this is breaking (kb 10/23)
+            //scope.project.Locations.$promise.then(function () {
 
-            });
+            //});
         };
 
         //fired after a user saves a new or edited project.
