@@ -84,7 +84,7 @@
             var in_string = $scope.searchTerm = in_string.toUpperCase();
             var exact_match = false;
 
-            //step 1 - search for matching permits
+            //step 1 - search for matching permits by permit number
             $scope.permits.forEach( function (permit) {
 
                 if (permit.PermitNumber && permit.PermitNumber.toUpperCase().indexOf(in_string) !== -1) {

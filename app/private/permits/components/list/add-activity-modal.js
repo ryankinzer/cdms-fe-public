@@ -216,8 +216,8 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         };
 
         $scope.loadRecipientsFromRoute = function () { 
-            console.dir($scope.mode);
-            console.dir($scope.activity_modal);
+            //console.dir($scope.mode);
+            //console.dir($scope.activity_modal);
 
             if ( ($scope.activity_modal.EventType == 'Inspection' || $scope.activity_modal.EventType == 'Review') 
                 && ($scope.mode == 'new' || $scope.mode == 'new_route' || $scope.mode == 'new_inspection') )  {
