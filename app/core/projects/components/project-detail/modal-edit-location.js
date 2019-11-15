@@ -21,7 +21,7 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                 'esri/geometry/Point',
                 'esri/tasks/ProjectParameters',
 
-            ], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
+                ], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
 
                 if ($scope.row.LocationTypeId === LOCATION_TYPE_Hab){
                     alert("You cannot save a Habitat location here; this must be done via the Project->Data->Dataset Name Sites page.");
@@ -33,9 +33,9 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                     'Location': $scope.row,
                 };
 
-            //OK -- if we are saving a NEW location then start off by adding the point to the featurelayer
-            if (!$scope.row.Id) {
-                console.log("Adding a NEW location...");
+                //OK -- if we are saving a NEW location then start off by adding the point to the featurelayer
+                if (!$scope.row.Id) {
+                    console.log("Adding a NEW location...");
 
                     $scope.map.reposition(); //this is important or else we end up with our map points off somehow.
 
