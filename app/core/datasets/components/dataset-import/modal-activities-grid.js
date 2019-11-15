@@ -331,34 +331,20 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 
 				////Create unique key for each activity
 				var the_key = GetActivityKey(node);
-				//console.log("<<<--- THE KEY --->>>");
-				//console.log(the_key);
-
-				//var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
-				//var the_key = the_date + "_" + node.data.Activity.LocationId;
-
-				////Append any user-defined duplicate check fieds to the key
-				//$scope.DuplicateCheckFields.forEach(function (field) {
-				//	the_key = the_key + "_" + node.data[field];
-						
-				//});
-
 		
 				//Add key to the unique activities array if it's not identified as a duplicate
 				if (!unique_activities.contains(the_key) && !IsDuplicateRow(the_key)) {
 
-					//console.log("<<<---IsDuplicateRow--->>");
-					//console.log(IsDuplicateRow(the_key));
-
 					unique_activities.push(the_key);
-
+					var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
 					var activity = { 'ActivityDate': the_date, 'Key': the_key, 'LocationId': node.data.Activity.LocationId };
-
+				
 					//Add duplicate check fields to activity
 					$scope.DuplicateCheckFields.forEach(function (field) {
 						activity[field] = node.data[field];
 					});
-
+					console.log("Add this Activity to Save List");
+					console.dir(activity);
 					$scope.ActivitiesToSave.push(activity);
 
 				}
@@ -409,7 +395,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 		
 				$scope.dataAgGridOptions.api.forEachNode(function (node, index) { 
 
-					var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
+					//var the_date = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
 
 					//Test row 
 					if (IsValidActivityRow(activity, node)) {
@@ -552,7 +538,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 		//JN TRIBAL CDMS EDIT
 		//Create the_key here instead of in multiple places
 		GetActivityKey = function (node) {
-			console.log("<<<---Getting Key--->>>");
+			console.log("<<<---Key Getter--->>>");
 			//Create unique key for each activity
 			var activityDate = moment(node.data.Activity.ActivityDate).format('YYYY-MM-DDTHH:mm');
 			var activityKey = activityDate + "_" + node.data.Activity.LocationId;
@@ -561,6 +547,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 			$scope.DuplicateCheckFields.forEach(function (field) {
 				activityKey = activityKey + "_" + node.data[field];
 			});
+
 			console.log(activityKey);
 			return activityKey;
 		}
