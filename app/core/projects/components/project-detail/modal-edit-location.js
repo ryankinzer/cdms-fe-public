@@ -90,6 +90,104 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                         ProjectId: $scope.project.Id,
                     };
 
+                    // Capture the old SdeObjectId, so we can delete it later.
+                    $scope.OldSdeObjectId = $scope.row.SdeObjectId;
+
+                    var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
+                    var outSR = new SpatialReference({ wkid: 102100, latestWkid:3857 })
+                    var geometryService = new GeometryService(GEOMETRY_SERVICE_URL);
+                    $scope.newPoint = new Point($scope.row.GPSEasting, $scope.row.GPSNorthing, inSR);
+
+                    //convert spatial reference
+                    var PrjParams = new ProjectParameters();
+
+                    PrjParams.geometries = [$scope.newPoint];
+                    // PrjParams.outSR is not set yet, so we must set it also.
+                    PrjParams.outSR = outSR;
+
+                    //throw "Stopping right here...";
+
+                    //do the projection (conversion)
+                    geometryService.project(PrjParams, function (outputpoint) {
+
+                        $scope.newPoint = new Point(outputpoint[0], outSR);
+                        $scope.newGraphic = new Graphic($scope.newPoint, new SimpleMarkerSymbol());
+                        $scope.map.graphics.add($scope.newGraphic);
+                        
+                        //var edits = { updates: [{ geometry: $scope.newPoint, attributes: {OBJECTID: $scope.row.SdeObjectId}}]};
+                        /*var edits = { 
+                            "id": 0,
+                            "updates": [{ 
+                            "geometry": {
+                                "x": $scope.newPoint.x,
+                                "y": $scope.newPoint.y,
+                                "spatialReference":{
+                                    "wkid": 102100,
+                                    "latestWkid": 3857
+                                }
+                            },
+                            "attributes": {
+                                "OBJECTID": $scope.row.SdeObjectId,
+                                "SDEObjectID": $scope.row.SdeObjectId
+                            }
+                        }]};*/
+                        var attributes = {OBJECTID: $scope.row.SdeObjectId};
+                        
+                        //$scope.aryDeletes = [];
+                        //$scope.aryDeletes.push($scope.OldSdeObjectId);
+
+                        $scope.map.locationLayer.applyEdits([$scope.newGraphic], null, null).then(function (addResults) {
+                            if (addResults[0].success) {
+                                $scope.row.SdeObjectId = addResults[0].objectId;
+                                console.log("Added new point! " + $scope.row.SdeObjectId);
+
+                                //throw "Stopping right here...";
+
+                                var attributes = {
+                                    OBJECTID: $scope.OldSdeObjectId
+                                }
+                                var deleteGraphic = new Graphic($scope.newPoint, null, attributes);
+
+                                //$scope.map.locationLayer.applyEdits(null, null, pointsToDelete).then(function (deleteResults) {
+                                //$scope.map.locationLayer.applyEdits(null, null, $scope.aryDeletes).then(function (deleteResults) {
+                                $scope.map.locationLayer.applyEdits(null, null, [deleteGraphic], function (addResults, updateResults, deleteResults) {
+
+                                    //var query = new Query();
+                                    //query.objectIds = [deletes[0].objectId];
+                                    //$scope.map.locationLayer.selectFeatures(query, )
+                                    console.log("deleteResults is next...");
+                                    console.dir(deleteResults[0]);
+
+                                    //.then(function (deleteResults) {
+                                    if (deleteResults[0].success) {
+                                        console.log("Deleted old point! " + $scope.row.SdeObjectId);
+                                    }
+                                    else {
+                                        $scope.SaveMessage = "There was a problem deleting that location.";
+                                        console.dir(deleteResults);
+                                    }
+                                }, function (err) {
+                                    console.log("Apply Edits - Delete - failed:  " + err.message);
+                                });
+                                
+
+
+                                var data = {
+                                    ProjectId: $scope.project.Id,
+                                };
+
+                                var target = '/api/v1/file/UploadProjectFile';
+                                $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+                            }
+                            else {
+                                $scope.SaveMessage = "There was a problem adding the new location.";
+                                console.dir(addResults);
+                            }
+                            
+
+                        });
+                    });
+
                     var target = '/api/v1/file/UploadProjectFile';
 
                     $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
