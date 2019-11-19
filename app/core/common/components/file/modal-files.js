@@ -404,7 +404,7 @@ function modalFiles_setupControllerForFileChooserModal($scope, $modal, in_files_
             // If so, we want to skip them, because these should not be uploaded; they are temporary files
             // that we use to get the waypoint number from.
 
-            if ($scope.dataset.Config && $scope.dataset.Config.hasOwnProperty("HasWaypointFile") )
+            if (($scope.dataset) && ($scope.dataset.Config && $scope.dataset.Config.hasOwnProperty("HasWaypointFile") ) )
             {
                 var intWaypointsLoc = file_fields.indexOf($scope.dataset.Config.WaypointFileProperty);
                 if (intWaypointsLoc > -1)
