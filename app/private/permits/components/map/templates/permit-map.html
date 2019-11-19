@@ -138,7 +138,7 @@
     <div ng-show="PermitParcels.length > 0" style="margin-top: 20px;">
         <h4>Parcels related to {{selectedPermit.PermitNumber}}</h4>
         <ul>
-            <li ng-click="clickRelatedParcel(parcel.Object.ParcelId)" ng-repeat="parcel in PermitParcels"><a href>{{parcel.Object.ParcelId}}</a> ( {{parcel.Object.PLSS_Label}} )</li>
+            <li ng-click="clickRelatedParcel(parcel.ParcelId)" ng-repeat="parcel in PermitParcels"><a href>{{parcel.ParcelId}}</a> ( {{parcel.PLSS}} )</li>
         </ul>
     </div>
 
