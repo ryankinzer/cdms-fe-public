@@ -159,8 +159,16 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                                     console.dir(deleteResults[0]);
 
                                     //.then(function (deleteResults) {
-                                    if (deleteResults[0].success) {
-                                        console.log("Deleted old point! " + $scope.row.SdeObjectId);
+                                    if (deleteResults[0].length === 0)
+                                    {
+                                        $scope.SaveMessage = "The location did not exist in SDE.";
+                                        console.dir(deleteResults);
+                                    }
+                                    else if (deleteResults[0].success) {                                       
+                                        console.log("Deleted old point in sdevector! " + $scope.row.SdeObjectId);
+
+                                        //CommonService.UpdateLocationAction($scope.project.Id, $scope.row.Id, $scope.row.SdeObjectId, $scope.OldSdeObjectId);
+                                        CommonService.updateLocationAction($scope.project.Id, $scope.row.Id, $scope.row.SdeObjectId);
                                     }
                                     else {
                                         $scope.SaveMessage = "There was a problem deleting that location.";
@@ -170,7 +178,7 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                                     console.log("Apply Edits - Delete - failed:  " + err.message);
                                 });
                                 
-
+                                //throw "Stopping right here...";
 
                                 var data = {
                                     ProjectId: $scope.project.Id,
