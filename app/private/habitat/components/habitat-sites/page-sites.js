@@ -10,6 +10,7 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
         scope.subprojectFileList = null;
         scope.funderList = null;
         scope.collaboratorList = null;
+        $rootScope.savedSubproject = null;
 
         //options from config.js for sharing level field
         scope.SHARINGLEVEL_PRIVATE = SHARINGLEVEL_PRIVATE;

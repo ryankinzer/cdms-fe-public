@@ -870,19 +870,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 			console.log("We are editing an existing subproject; no new location needed...");
 			subprojectId = $scope.viewSubproject.Id
 
-		    // Later in the process, the Easting and Northing get converted into x, y values that get stored in sdevector.
-		    // Therefore, if the Easting and Northing was changed, we must convert them to x, y values first.
-			if (($scope.GPSEasting !== existingLocation.GPSEasting) || ($scope.GPSNorthing !== existingLocation.GPSNorthing)) {
-			    console.log("Easting or Northing changed; updating the location...");
-			    var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
-			    newLocation.Label = $scope.row.ProjectName;
-			    newLocation.Description = $scope.row.ProjectDescription;
-			    newLocation.GPSEasting = $scope.row.GPSEasting;
-			    newLocation.GPSNorthing = $scope.row.GPSNorthing;
-			    newLocation.ProjectId = parseInt($scope.projectId);
-			    newLocation.LocationTypeId = LOCATION_TYPE_Hab;
-			    newLocation.WaterBodyId = $scope.row.WaterBodyId;
-			}
+			$rootScope.savedSubproject = null;
+			$rootScope.savedSubproject = angular.copy($scope.row);
 				
 			//ok -- everything is set to save; we are editing a subproject don't have a new location to save; hand off to next step.
             $scope.saveFilesAndParent();
