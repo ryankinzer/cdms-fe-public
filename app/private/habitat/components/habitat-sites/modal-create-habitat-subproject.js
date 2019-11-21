@@ -127,14 +127,19 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
             
         } else {
             $scope.header_message = "Edit Habitat project: " + $scope.viewSubproject.ProjectName;
-            $rootScope.newSubproject = $scope.newSubproject = false;
+			$rootScope.newSubproject = $scope.newSubproject = false;
+			
+			if ($rootScope.savedSubproject !== null)
+				$scope.row = angular.copy($rootScope.savedSubproject);
+			else
+				$scope.row = angular.copy($scope.viewSubproject);
+
             $scope.subprojectFileList = $rootScope.subprojectFileList;
 
             // Capture the Easting and Northing, so we can tell, during a Save, if they have changed.
             $scope.GPSEasting = $scope.viewSubproject.GPSEasting;
             $scope.GPSNorthing = $scope.viewSubproject.GPSNorthing;
 
-            $scope.row = angular.copy($scope.viewSubproject);
             $scope.setupHabitatMetaFields();
 
 
