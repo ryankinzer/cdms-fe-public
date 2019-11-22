@@ -83,7 +83,7 @@
 
             var in_string = $scope.searchTerm = in_string.toUpperCase();
             var exact_match = false;
-
+            
             //step 1 - search for matching permits by permit number
             $scope.permits.forEach( function (permit) {
 
@@ -112,9 +112,22 @@
                 }
             });
 
-            if(exact_match){
-                $scope.findOnMap(in_string);
+/*
+
+            //step 3 - if we have no parcel match, search our own list of parcels to see if any "outdated" ones (not in Cadaster) match
+            if(!exact_match){
+                var oldpermitidmatches = PermitService.getPermitsByRelatedParcels(in_string);
+                oldpermitidmatches.$promise.then(function(){
+                    oldpermitidmatches.forEach(function(permit){
+                        $scope.parcelMatches.push(permit);
+                    })
+                });
             }
+*/
+
+  //          if(exact_match){
+                $scope.findOnMap(in_string);
+  //          }
 
             $scope.searchComplete = true;
         }
@@ -140,7 +153,11 @@
 
 
         $scope.findOnMap = function (in_allotment) {
+
             console.log("finding on map " + in_allotment);
+
+            console.log("first search for related parcels")
+            $scope.findRelatedPermits(in_allotment);
 
             $scope.map.queryMatchParcel(in_allotment, function (features) {
                 if (features.length == 0) {
@@ -151,7 +168,7 @@
                     $scope.map.querySelectParcel(null, features[0].attributes.OBJECTID, function (geo_features) {
                         $scope.map.addParcelToMap(geo_features[0]);
                         $scope.map.centerAndZoomToGraphic($scope.map.selectedGraphic, 2);
-                        $scope.findRelatedPermits(features[0].attributes.PARCELID);
+                        //$scope.findRelatedPermits(features[0].attributes.PARCELID);
                     });
                     
                 }

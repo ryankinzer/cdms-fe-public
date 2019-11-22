@@ -954,15 +954,16 @@
         $scope.refreshZones = function () {
             $scope.row.Zones.length = 0;
             $scope.PermitParcels.forEach(function (parcel) {
+                if(parcel.Object){
+                    var the_zones = parcel.Object.ZoneCode.split(":");
 
-                var the_zones = parcel.Object.ZoneCode.split(":");
-
-                if (Array.isArray(the_zones)) {
-                    the_zones.forEach(function (zone) {
-                        if (!$scope.row.Zones.contains(zone))
-                            $scope.row.Zones.push(zone);
-                    });
-                };
+                    if (Array.isArray(the_zones)) {
+                        the_zones.forEach(function (zone) {
+                            if (!$scope.row.Zones.contains(zone))
+                                $scope.row.Zones.push(zone);
+                        });
+                    };
+                }
             });
         };
 
