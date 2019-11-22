@@ -736,184 +736,184 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		$scope.locationId = 0;
 		$scope.NewPoint = false;
 		
-		if ((typeof $scope.row.ProjectName === 'undefined') || ($scope.row.ProjectName === null))
-		{
-			console.log("Project name is empty...");
-			$scope.subprojectSave.error = true;
-			$scope.subprojectSave.errorMessage = "Project Name cannot be blank!  ";
-		}
-		
-		if ((typeof $scope.row.GPSEasting === 'undefined') || (typeof $scope.row.GPSNorthing === 'undefined'))
-		{
-			console.log("Easting or Northing is blank...");
-			$scope.subprojectSave.error = true;
-			$scope.subprojectSave.errorMessage += "Easting and Northing cannot be blank!  ";
-		}
+		require([
+			'esri/symbols/SimpleMarkerSymbol',
+			'esri/graphic',
+			'esri/SpatialReference',
+			'esri/tasks/GeometryService',
+			'esri/geometry/Point',
+			'esri/tasks/ProjectParameters',
 
-		if ((typeof $scope.row.ProjectLead === 'undefined') || ($scope.row.ProjectLead === null)) 
-		{
-			console.log("Project Lead is empty...");
-			$scope.subprojectSave.errorMessage += "Project Lead cannot be blank!  "; 
-			$scope.subprojectSave.error = true;
-		}
-		
-        if ($scope.subprojectSave.error)
-            return;
+		], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
 
-
-		console.log("$scope.row, full is next...");
-		console.dir($scope.row);
-
-		// Capture the AddDocument flag, before discarding it.			
-		$scope.addDocument = $scope.row.AddDocument;
-		$scope.row.AddDocument = null;
-			
-		if (!$scope.row.LocationId)
-			$scope.row.LocationId = 0;
-			
-		/********* A note about time start ***********/
-		/* 	When we save the subproject, when the backend converts the ProjectStartDate and ProjectEndDate to UTC (adds 8 hours).
-			So, with an initial saved time of 0000, the backend converts it to 0800.
-			Each time we save then, the time will have 8 hours added to it.  On the 4th save, it will go into the next day.
-			To avoid this, we take the saved date (now 0800), and set it back to 0000.
-			This will keep the time in the same spot (keep it from changing).
-			There may be a better way to handle this issue, but this technique works too...
-		*/
-			
-		if ($scope.row.ProjectStartDate)
-		{
-			var psDate = new Date(Date.parse($scope.row.ProjectStartDate));
-			$scope.row.ProjectStartDate = setDateTo0000(psDate);
-		}
-			
-		if ($scope.row.ProjectEndDate)
-		{
-			var peDate = new Date(Date.parse($scope.row.ProjectEndDate));
-			$scope.row.ProjectEndDate = setDateTo0000(peDate);
-		}
-		/********* A note about time end ***********/
-
-		console.log("$scope.addDocument = " + $scope.addDocument);
-		console.log("$scope.row, after del is next...");
-		console.dir($scope.row);			
-			
-		$scope.saveResults = {};
-		//console.log("$scope is next...");
-		//console.dir($scope);
-			
-		// First, a little cleanup.
-		$scope.subprojectSave.error = false;
-		$scope.subprojectSave.errorMessage = "";
-		
-        // First Foods
-		console.log("First Foods = " + $scope.row.FirstFoods);
-			
-		// Funding
-		console.log("$scope.row.Funding is next...");
-		console.dir($scope.row.Funding);
-		console.log("type of $scope.row.Funding = " + typeof $scope.row.Funding);
-			
-		//if ($scope.row.Funding.length > 0)
-		if ((typeof $scope.row.strFunders !== 'undefined') && ($scope.row.strFunders !== null) && ($scope.row.strFunders.length > 0))
-		{
-			if ($scope.row.strFunders.length > 0)
+			if ((typeof $scope.row.ProjectName === 'undefined') || ($scope.row.ProjectName === null))
 			{
-				$rootScope.fundersPresent = $scope.fundersPresent = true;
-				var strFunders = $scope.row.strFunders.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
-				var aryFunders = $scope.row.strFunders.split(";");  // 
-				aryFunders.splice(-1, 1);
-					
-				angular.forEach(aryFunders, function(item) {
-					console.log("item = " + item);
-					var funderRecord = item.split(",");
-						
-					var fundingOption = new Object();
-					//fundingOption.Checked = false;
-					fundingOption.Id = 0;
-					fundingOption.Name = "";
-					fundingOption.Amount = 0;
-						
-					fundingOption.Name = funderRecord[0].trim();
-					console.log("fundingOption.Name = " + fundingOption.Name);
-						
-					// Get the Id for the funder from funderList.
-					//angular.forEach($scope.funderList, function(funder) {
-					//	if (funder.Name = fundingOption.Name)
-					//		fundingOption.Id = funder.Id;
-					//});
-						
-					fundingOption.Amount = parseFloat(funderRecord[1]);
-					console.log("fundingOption.Amount = " + fundingOption.Amount);
-						
-					$scope.row.Funding.push(fundingOption);		
-				});
-				$scope.row.strFunders = undefined;
+				console.log("Project name is empty...");
+				$scope.subprojectSave.error = true;
+				$scope.subprojectSave.errorMessage = "Project Name cannot be blank!  ";
 			}
-		}
 			
-		// Collaborators
-		console.log("$scope.row.strCollaborators = " + $scope.row.strCollaborators);
-		console.log("type of $scope.row.strCollaborators = " + typeof $scope.row.strCollaborators);
-	
-		if ((typeof $scope.row.strCollaborators !== 'undefined') && ($scope.row.strCollaborators !== null) && ($scope.row.strCollaborators.length > 0))
-		{
-			$rootScope.collaboratorPresent = $scope.collaboratorPresent = true;
-			var strCollaborators = $scope.row.strCollaborators.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
-			console.log("strCollaborators = " + strCollaborators);
-			var aryCollaborators = $scope.row.strCollaborators.split(";");  // 
-			//aryCollaborators.splice(-1, 1);
+			if ((typeof $scope.row.GPSEasting === 'undefined') || (typeof $scope.row.GPSNorthing === 'undefined'))
+			{
+				console.log("Easting or Northing is blank...");
+				$scope.subprojectSave.error = true;
+				$scope.subprojectSave.errorMessage += "Easting and Northing cannot be blank!  ";
+			}
+
+			if ((typeof $scope.row.ProjectLead === 'undefined') || ($scope.row.ProjectLead === null)) 
+			{
+				console.log("Project Lead is empty...");
+				$scope.subprojectSave.errorMessage += "Project Lead cannot be blank!  "; 
+				$scope.subprojectSave.error = true;
+			}
+			
+			if ($scope.subprojectSave.error)
+				return;
+
+
+			console.log("$scope.row, full is next...");
+			console.dir($scope.row);
+
+			// Capture the AddDocument flag, before discarding it.			
+			$scope.addDocument = $scope.row.AddDocument;
+			$scope.row.AddDocument = null;
 				
-			angular.forEach(aryCollaborators, function(item) {
-				//After the split on ";", one of the lines is a newline.  We need to watch for and omit that line.
-				//console.log("item = X" + item + "X");
-				//item = item.replace(/(\r\n|\r|\n)/gm, "");
-				item = item.replace(/\n/g, "");
-				//console.log("item = X" + item + "X");
-					
-				if (item.length > 0)
-				{
-					var collaboratorOption = new Object();
-					collaboratorOption.Id = 0;
-					collaboratorOption.Name = "";
-						
-					collaboratorOption.Name = item.trim();
-					//console.log("collaboratorOption.Name = " + collaboratorOption.Name);
-						
-					$scope.row.Collaborators.push(collaboratorOption);
-				}
-			});
-			$scope.row.strCollaborators = undefined;
-		}
+			if (!$scope.row.LocationId)
+				$scope.row.LocationId = 0;
+				
+			/********* A note about time start ***********/
+			/* 	When we save the subproject, when the backend converts the ProjectStartDate and ProjectEndDate to UTC (adds 8 hours).
+				So, with an initial saved time of 0000, the backend converts it to 0800.
+				Each time we save then, the time will have 8 hours added to it.  On the 4th save, it will go into the next day.
+				To avoid this, we take the saved date (now 0800), and set it back to 0000.
+				This will keep the time in the same spot (keep it from changing).
+				There may be a better way to handle this issue, but this technique works too...
+			*/
+				
+			if ($scope.row.ProjectStartDate)
+			{
+				var psDate = new Date(Date.parse($scope.row.ProjectStartDate));
+				$scope.row.ProjectStartDate = setDateTo0000(psDate);
+			}
+				
+			if ($scope.row.ProjectEndDate)
+			{
+				var peDate = new Date(Date.parse($scope.row.ProjectEndDate));
+				$scope.row.ProjectEndDate = setDateTo0000(peDate);
+			}
+			/********* A note about time end ***********/
+
+			console.log("$scope.addDocument = " + $scope.addDocument);
+			console.log("$scope.row, after del is next...");
+			console.dir($scope.row);			
+				
+			$scope.saveResults = {};
+			//console.log("$scope is next...");
+			//console.dir($scope);
+				
+			// First, a little cleanup.
+			$scope.subprojectSave.error = false;
+			$scope.subprojectSave.errorMessage = "";
 			
-		var subprojectId = 0;
-		// Are we creating a new Subproject, or editing an existing one?
-		if ($scope.viewSubproject)
-		{
-			console.log("We are editing an existing subproject; no new location needed...");
-			subprojectId = $scope.viewSubproject.Id;
+			// First Foods
+			console.log("First Foods = " + $scope.row.FirstFoods);
+				
+			// Funding
+			console.log("$scope.row.Funding is next...");
+			console.dir($scope.row.Funding);
+			console.log("type of $scope.row.Funding = " + typeof $scope.row.Funding);
+				
+			//if ($scope.row.Funding.length > 0)
+			if ((typeof $scope.row.strFunders !== 'undefined') && ($scope.row.strFunders !== null) && ($scope.row.strFunders.length > 0))
+			{
+				if ($scope.row.strFunders.length > 0)
+				{
+					$rootScope.fundersPresent = $scope.fundersPresent = true;
+					var strFunders = $scope.row.strFunders.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
+					var aryFunders = $scope.row.strFunders.split(";");  // 
+					aryFunders.splice(-1, 1);
+						
+					angular.forEach(aryFunders, function(item) {
+						console.log("item = " + item);
+						var funderRecord = item.split(",");
+							
+						var fundingOption = new Object();
+						//fundingOption.Checked = false;
+						fundingOption.Id = 0;
+						fundingOption.Name = "";
+						fundingOption.Amount = 0;
+							
+						fundingOption.Name = funderRecord[0].trim();
+						console.log("fundingOption.Name = " + fundingOption.Name);
+							
+						// Get the Id for the funder from funderList.
+						//angular.forEach($scope.funderList, function(funder) {
+						//	if (funder.Name = fundingOption.Name)
+						//		fundingOption.Id = funder.Id;
+						//});
+							
+						fundingOption.Amount = parseFloat(funderRecord[1]);
+						console.log("fundingOption.Amount = " + fundingOption.Amount);
+							
+						$scope.row.Funding.push(fundingOption);		
+					});
+					$scope.row.strFunders = undefined;
+				}
+			}
+				
+			// Collaborators
+			console.log("$scope.row.strCollaborators = " + $scope.row.strCollaborators);
+			console.log("type of $scope.row.strCollaborators = " + typeof $scope.row.strCollaborators);
+		
+			if ((typeof $scope.row.strCollaborators !== 'undefined') && ($scope.row.strCollaborators !== null) && ($scope.row.strCollaborators.length > 0))
+			{
+				$rootScope.collaboratorPresent = $scope.collaboratorPresent = true;
+				var strCollaborators = $scope.row.strCollaborators.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
+				console.log("strCollaborators = " + strCollaborators);
+				var aryCollaborators = $scope.row.strCollaborators.split(";");  // 
+				//aryCollaborators.splice(-1, 1);
+					
+				angular.forEach(aryCollaborators, function(item) {
+					//After the split on ";", one of the lines is a newline.  We need to watch for and omit that line.
+					//console.log("item = X" + item + "X");
+					//item = item.replace(/(\r\n|\r|\n)/gm, "");
+					item = item.replace(/\n/g, "");
+					//console.log("item = X" + item + "X");
+						
+					if (item.length > 0)
+					{
+						var collaboratorOption = new Object();
+						collaboratorOption.Id = 0;
+						collaboratorOption.Name = "";
+							
+						collaboratorOption.Name = item.trim();
+						//console.log("collaboratorOption.Name = " + collaboratorOption.Name);
+							
+						$scope.row.Collaborators.push(collaboratorOption);
+					}
+				});
+				$scope.row.strCollaborators = undefined;
+			}
+				
+			var subprojectId = 0;
+			// Are we creating a new Subproject, or editing an existing one?
+			if ($scope.viewSubproject)
+			{
+				console.log("We are editing an existing subproject; no new location needed...");
+				subprojectId = $scope.viewSubproject.Id;
 
-			//$scope.OldSdeObjectId = $rootScope.SdeObjectId;
+				//$scope.OldSdeObjectId = $rootScope.SdeObjectId;
 
-			$rootScope.savedSubproject = null;
-			$rootScope.savedSubproject = angular.copy($scope.row);
+				$rootScope.savedSubproject = null;
+				$rootScope.savedSubproject = angular.copy($scope.row);
 
-			// The location SdeObjectId update involves creating a new point, and deleting the old one.
-			// Therefore, we only want to update the location, if the Easting or Northing has changed.
-		    // Later in the process, the Easting and Northing get converted into x, y values that get stored in sdevector.
-		    // Therefore, if the Easting and Northing was changed, we must convert them to x, y values first.
-			if (($scope.GPSEasting !== $scope.row.GPSEasting) || ($scope.GPSNorthing !== $scope.row.GPSNorthing)) {
-			    console.log("Easting or Northing changed; updating the location...");
-
-				require([
-					'esri/symbols/SimpleMarkerSymbol',
-					'esri/graphic',
-					'esri/SpatialReference',
-					'esri/tasks/GeometryService',
-					'esri/geometry/Point',
-					'esri/tasks/ProjectParameters',
-	
-				], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
-	
+				// The location SdeObjectId update involves creating a new point, and deleting the old one.
+				// Therefore, we only want to update the location, if the Easting or Northing has changed.
+				// Later in the process, the Easting and Northing get converted into x, y values that get stored in sdevector.
+				// Therefore, if the Easting and Northing was changed, we must convert them to x, y values first.
+				if (($scope.GPSEasting !== $scope.row.GPSEasting) || ($scope.GPSNorthing !== $scope.row.GPSNorthing)) {
+					console.log("Easting or Northing changed; updating the location...");
+		
 					//nad83 zone 11...  might have to have this as a list somehwere...
 					var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE }); //esri/SpatialReference
 					var outSR = new SpatialReference({ wkid: 102100, latestWkid:3857 });
@@ -973,7 +973,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 										console.dir(deleteResults);
 									}
 								}, function (err) {
-                                    console.log("Apply Edits - Delete - failed:  " + err.message);
+									console.log("Apply Edits - Delete - failed:  " + err.message);
 								});
 
 								//throw "Stopping right here...";
@@ -988,40 +988,29 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	
 						}); //applyedits
 					}); //geometryservice.project
-				}); //require
+				}
+					
+				//ok -- everything is set to save; we are editing a subproject don't have a new location to save; hand off to next step.
+				$scope.saveFilesAndParent();
 			}
-				
-			//ok -- everything is set to save; we are editing a subproject don't have a new location to save; hand off to next step.
-            $scope.saveFilesAndParent();
-		}
-		else
-		{
-			subprojectId = $scope.subprojectId;
-				
-			//$scope.viewSubproject either does not exist or is null, so we are creating a new Subproject.
-			// Next, we add/save the location.
-			console.log("This is a new subproject; creating a new location...");
-			var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
-			newLocation.Label = $scope.row.ProjectName;
-			newLocation.Description = $scope.row.ProjectDescription;
-			newLocation.GPSEasting = $scope.row.GPSEasting;
-			newLocation.GPSNorthing = $scope.row.GPSNorthing;
-			newLocation.ProjectId = parseInt($scope.projectId);
-			newLocation.LocationTypeId = LOCATION_TYPE_Hab;
-			newLocation.WaterBodyId = $scope.row.WaterBodyId;
-			//newLocation.SubprojectId = $scope.subprojectId; // When we are creating a new subproject, we do not have the subprojectId yet; this is from the old one.
-			console.log("newLocation is next...");
-			console.dir(newLocation);
-
-			require([
-				'esri/symbols/SimpleMarkerSymbol',
-				'esri/graphic',
-				'esri/SpatialReference',
-				'esri/tasks/GeometryService',
-				'esri/geometry/Point',
-				'esri/tasks/ProjectParameters',
-
-			], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
+			else
+			{
+				subprojectId = $scope.subprojectId;
+					
+				//$scope.viewSubproject either does not exist or is null, so we are creating a new Subproject.
+				// Next, we add/save the location.
+				console.log("This is a new subproject; creating a new location...");
+				var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
+				newLocation.Label = $scope.row.ProjectName;
+				newLocation.Description = $scope.row.ProjectDescription;
+				newLocation.GPSEasting = $scope.row.GPSEasting;
+				newLocation.GPSNorthing = $scope.row.GPSNorthing;
+				newLocation.ProjectId = parseInt($scope.projectId);
+				newLocation.LocationTypeId = LOCATION_TYPE_Hab;
+				newLocation.WaterBodyId = $scope.row.WaterBodyId;
+				//newLocation.SubprojectId = $scope.subprojectId; // When we are creating a new subproject, we do not have the subprojectId yet; this is from the old one.
+				console.log("newLocation is next...");
+				console.dir(newLocation);
 
 				//nad83 zone 11...  might have to have this as a list somehwere...
 				var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE }); //esri/SpatialReference
@@ -1085,20 +1074,17 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 						else {
 							$scope.subprojectSave.errorMessage = "There was a problem saving that location.";
 						}
-
 					}); //applyedits
 				}); //geometryservice.project
-			}); //require
-		}
-
-			
-		// If we had a problem saving the location, stop here and do not save the subproject.
-		if ($scope.subprojectSave.errorMessage.length > 0)
-		{
-			console.log("Had a problem saving the location.  Stopping the save...");
-			return;
-		}
-		
+			}
+				
+			// If we had a problem saving the location, stop here and do not save the subproject.
+			if ($scope.subprojectSave.errorMessage.length > 0)
+			{
+				console.log("Had a problem saving the location.  Stopping the save...");
+				return;
+			}
+		}); // require
     };
 
 
