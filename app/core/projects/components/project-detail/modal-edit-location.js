@@ -114,27 +114,7 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                         $scope.newGraphic = new Graphic($scope.newPoint, new SimpleMarkerSymbol());
                         $scope.map.graphics.add($scope.newGraphic);
                         
-                        //var edits = { updates: [{ geometry: $scope.newPoint, attributes: {OBJECTID: $scope.row.SdeObjectId}}]};
-                        /*var edits = { 
-                            "id": 0,
-                            "updates": [{ 
-                            "geometry": {
-                                "x": $scope.newPoint.x,
-                                "y": $scope.newPoint.y,
-                                "spatialReference":{
-                                    "wkid": 102100,
-                                    "latestWkid": 3857
-                                }
-                            },
-                            "attributes": {
-                                "OBJECTID": $scope.row.SdeObjectId,
-                                "SDEObjectID": $scope.row.SdeObjectId
-                            }
-                        }]};*/
                         var attributes = {OBJECTID: $scope.row.SdeObjectId};
-                        
-                        //$scope.aryDeletes = [];
-                        //$scope.aryDeletes.push($scope.OldSdeObjectId);
 
                         $scope.map.locationLayer.applyEdits([$scope.newGraphic], null, null).then(function (addResults) {
                             if (addResults[0].success) {
@@ -148,6 +128,9 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                                 }
                                 var deleteGraphic = new Graphic($scope.newPoint, null, attributes);
 
+                                // Note:  You cannot just pass the point to delete; they must be in a graphic object,
+                                //        or the code dies in dojo-land, which is different than what is shown in 
+                                //        ArcGIS documenation on the service interface.
                                 //$scope.map.locationLayer.applyEdits(null, null, pointsToDelete).then(function (deleteResults) {
                                 //$scope.map.locationLayer.applyEdits(null, null, $scope.aryDeletes).then(function (deleteResults) {
                                 $scope.map.locationLayer.applyEdits(null, null, [deleteGraphic], function (addResults, updateResults, deleteResults) {
@@ -259,6 +242,8 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
 
         //fire validation for all columns when we load (if we are editing)
         if ($scope.mode === 'edit') {
+            console.log("Location Id = " + $scope.$parent.row.Id);
+
             $scope.dataGridOptions.columnDefs.forEach(function (field) {
                 $scope.onHeaderEditingStopped(field);
             });
