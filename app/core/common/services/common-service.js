@@ -205,7 +205,7 @@ common_module.service('CommonService', ['$q',
                 console.log("Inside CommonService.updateProjectLocation...");
                 console.log("ProjectId = " + projectId + ", location = " + location + ", newSdeObjectId = " + newSdeObjectId); // + ", oldSdeObjectId = " + oldSdeObjectId);
                 //return UpdateLocationAction.save({ ProjectId: projectId, Location: location, NewSdeObjectId: newSdeObjectId, OldSdeObjectId: oldSdeObjectId});
-                return UpdateLocationAction.save({ ProjectId: projectId, Location: location, NewSdeObjectId: newSdeObjectId});
+                return UpdateLocationAction.save({ ProjectId: projectId, LocationId: location, NewSdeObjectId: newSdeObjectId});
             },
 
             filterListForOnlyActiveInstruments: function (instruments) {
