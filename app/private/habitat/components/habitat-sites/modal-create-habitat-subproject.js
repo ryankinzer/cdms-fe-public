@@ -2,9 +2,9 @@
 // create/edit habitat subproject
 
 var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'DatasetService','CommonService','SubprojectService', 'ServiceUtilities', 
-	'$timeout', '$location', '$anchorScroll', '$document', 'Upload', 
+	'$timeout', '$location', '$anchorScroll', '$document', 'Upload','ProjectService', 
     function ($scope, $rootScope, $modalInstance, $modal, DatasetService, CommonService, SubprojectService, ServiceUtilities, 
-	$timeout, $location, $anchorScroll, $document, $upload){
+	$timeout, $location, $anchorScroll, $document, $upload, ProjectService){
 	console.log("Inside ModalCreateHabSubprojectCtrl...");
 
     initEdit(); //prevent backspace
@@ -16,8 +16,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	$scope.showAddDocument = true;
 	$scope.savingHabSubproject = false;
 	$scope.showFundingBox = false;
-	$rootScope.projectId = $scope.project.Id;
-	$scope.SdeObjectId = angular.copy($scope.SdeObjectId);
+	$scope.projectId = $scope.project.Id;
 	$scope.NewPoint = false;
 	$scope.fundersPresent = false;
 	$scope.collaboratorPresent = false;
@@ -26,7 +25,11 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
         StatusId: 0,
         //OwningDepartmentId: 1,
     };
-    $scope.subprojectId = 0; 
+	$scope.subprojectId = 0; 
+	$scope.GPSEasting = -1;
+	$scope.GPSNorthing = -1;
+	$rootScope.SdeObjectId = $scope.SdeObjectId = -1;
+	$scope.OldSdeObjectId = -1;
 	
 	// This line pulls in the Projection and the UTMZone
 	$scope.row = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
@@ -60,7 +63,17 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	$scope.uploadComplete = false;
 	var values = null;
 	
+	$scope.project = ProjectService.getProject($scope.project.Id);
 
+	$scope.project.$promise.then(function () {
+		console.log("Loaded project, for access to project.Locations...");
+		//console.dir($scope.project);
+
+		$scope.project.Locations.forEach(function(item) {
+			if (($scope.viewSubproject) && (item.Id === $scope.viewSubproject.LocationId))
+				$scope.OldSdeObjectId = item.SdeObjectId;
+		});
+	});
     
     //fetch all of the habitat metafields and two of the project metafields that are used for habitat sites ("subprojects")
     $scope.setupHabitatMetaFields = function () {
@@ -127,10 +140,23 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
             
         } else {
             $scope.header_message = "Edit Habitat project: " + $scope.viewSubproject.ProjectName;
-            $rootScope.newSubproject = $scope.newSubproject = false;
+			$rootScope.newSubproject = $scope.newSubproject = false;
+			
+            // Capture the Easting and Northing, so we can tell, during a Save, if they have changed.
+            $scope.GPSEasting = $scope.viewSubproject.GPSEasting;
+			$scope.GPSNorthing = $scope.viewSubproject.GPSNorthing;
+
+			// If we saved the Subproject and are now reviewing it, viewSubproject DOES NOT have the 
+			// changes we saved.  Therefore, before we saved, we copied the row into $rootScope.savedSubproject.
+			// If we saved, $rootScope.savedSubproject will not be null, so we must copy the values in from 
+			// the saved Subproject.
+			if ($rootScope.savedSubproject !== null)
+				$scope.row = angular.copy($rootScope.savedSubproject);
+			else
+				$scope.row = angular.copy($scope.viewSubproject);
+
             $scope.subprojectFileList = $rootScope.subprojectFileList;
 
-            $scope.row = angular.copy($scope.viewSubproject);
             $scope.setupHabitatMetaFields();
 
 
@@ -308,10 +334,10 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
             console.log("We are working with an existing location...");
 
             // Get the SdeObjectId for the location.
-            var intSdeObjectId = -1;
+            $rootScope.SdeObjectId = -1;
             angular.forEach($scope.project.Locations, function (loc) {
                 if (loc.Id === $scope.row.LocationId) {
-                    intSdeObjectId = loc.SdeObjectId;
+                    $rootScope.SdeObjectId = loc.SdeObjectId;
                 }
             });
 
@@ -323,12 +349,12 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
             existingLocation.GPSNorthing = saveRow.GPSNorthing;
             existingLocation.ProjectId = parseInt($scope.projectId);
             existingLocation.SubprojectId = $scope.subprojectId;
-            existingLocation.SdeObjectId = intSdeObjectId;  //$scope.SdeObjectId; // We set this in the $scope.save function.
+            existingLocation.SdeObjectId = $rootScope.SdeObjectId;  //$scope.SdeObjectId; // We set this in the $scope.save function.
             existingLocation.LocationTypeId = LOCATION_TYPE_Hab;
             existingLocation.WaterBodyId = saveRow.WaterBodyId;
 
-            console.log("existingLocation is next...");
-            console.dir(existingLocation);
+            console.log("$scope.existingLocation is next...");
+            console.dir($scope.existingLocation);
 
             //throw ("Stopping right here...");
 
@@ -710,268 +736,355 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 		$scope.locationId = 0;
 		$scope.NewPoint = false;
 		
-		if ((typeof $scope.row.ProjectName === 'undefined') || ($scope.row.ProjectName === null))
-		{
-			console.log("Project name is empty...");
-			$scope.subprojectSave.error = true;
-			$scope.subprojectSave.errorMessage = "Project Name cannot be blank!  ";
-		}
-		
-		if ((typeof $scope.row.GPSEasting === 'undefined') || (typeof $scope.row.GPSNorthing === 'undefined'))
-		{
-			console.log("Easting or Northing is blank...");
-			$scope.subprojectSave.error = true;
-			$scope.subprojectSave.errorMessage += "Easting and Northing cannot be blank!  ";
-		}
+		require([
+			'esri/symbols/SimpleMarkerSymbol',
+			'esri/graphic',
+			'esri/SpatialReference',
+			'esri/tasks/GeometryService',
+			'esri/geometry/Point',
+			'esri/tasks/ProjectParameters',
 
-		if ((typeof $scope.row.ProjectLead === 'undefined') || ($scope.row.ProjectLead === null)) 
-		{
-			console.log("Project Lead is empty...");
-			$scope.subprojectSave.errorMessage += "Project Lead cannot be blank!  "; 
-			$scope.subprojectSave.error = true;
-		}
-		
-        if ($scope.subprojectSave.error)
-            return;
+		], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
 
-
-		console.log("$scope.row, full is next...");
-		console.dir($scope.row);
-
-		// Capture the AddDocument flag, before discarding it.			
-		$scope.addDocument = $scope.row.AddDocument;
-		$scope.row.AddDocument = null;
-			
-		if (!$scope.row.LocationId)
-			$scope.row.LocationId = 0;
-			
-		/********* A note about time start ***********/
-		/* 	When we save the subproject, when the backend converts the ProjectStartDate and ProjectEndDate to UTC (adds 8 hours).
-			So, with an initial saved time of 0000, the backend converts it to 0800.
-			Each time we save then, the time will have 8 hours added to it.  On the 4th save, it will go into the next day.
-			To avoid this, we take the saved date (now 0800), and set it back to 0000.
-			This will keep the time in the same spot (keep it from changing).
-			There may be a better way to handle this issue, but this technique works too...
-		*/
-			
-		if ($scope.row.ProjectStartDate)
-		{
-			var psDate = new Date(Date.parse($scope.row.ProjectStartDate));
-			$scope.row.ProjectStartDate = setDateTo0000(psDate);
-		}
-			
-		if ($scope.row.ProjectEndDate)
-		{
-			var peDate = new Date(Date.parse($scope.row.ProjectEndDate));
-			$scope.row.ProjectEndDate = setDateTo0000(peDate);
-		}
-		/********* A note about time end ***********/
-
-		console.log("$scope.addDocument = " + $scope.addDocument);
-		console.log("$scope.row, after del is next...");
-		console.dir($scope.row);			
-			
-		$scope.saveResults = {};
-		//console.log("$scope is next...");
-		//console.dir($scope);
-			
-		// First, a little cleanup.
-		$scope.subprojectSave.error = false;
-		$scope.subprojectSave.errorMessage = "";
-		
-        // First Foods
-		console.log("First Foods = " + $scope.row.FirstFoods);
-			
-		// Funding
-		console.log("$scope.row.Funding is next...");
-		console.dir($scope.row.Funding);
-		console.log("type of $scope.row.Funding = " + typeof $scope.row.Funding);
-			
-		//if ($scope.row.Funding.length > 0)
-		if ((typeof $scope.row.strFunders !== 'undefined') && ($scope.row.strFunders !== null) && ($scope.row.strFunders.length > 0))
-		{
-			if ($scope.row.strFunders.length > 0)
+			if ((typeof $scope.row.ProjectName === 'undefined') || ($scope.row.ProjectName === null))
 			{
-				$rootScope.fundersPresent = $scope.fundersPresent = true;
-				var strFunders = $scope.row.strFunders.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
-				var aryFunders = $scope.row.strFunders.split(";");  // 
-				aryFunders.splice(-1, 1);
-					
-				angular.forEach(aryFunders, function(item) {
-					console.log("item = " + item);
-					var funderRecord = item.split(",");
-						
-					var fundingOption = new Object();
-					//fundingOption.Checked = false;
-					fundingOption.Id = 0;
-					fundingOption.Name = "";
-					fundingOption.Amount = 0;
-						
-					fundingOption.Name = funderRecord[0].trim();
-					console.log("fundingOption.Name = " + fundingOption.Name);
-						
-					// Get the Id for the funder from funderList.
-					//angular.forEach($scope.funderList, function(funder) {
-					//	if (funder.Name = fundingOption.Name)
-					//		fundingOption.Id = funder.Id;
-					//});
-						
-					fundingOption.Amount = parseFloat(funderRecord[1]);
-					console.log("fundingOption.Amount = " + fundingOption.Amount);
-						
-					$scope.row.Funding.push(fundingOption);		
-				});
-				$scope.row.strFunders = undefined;
+				console.log("Project name is empty...");
+				$scope.subprojectSave.error = true;
+				$scope.subprojectSave.errorMessage = "Project Name cannot be blank!  ";
 			}
-		}
 			
-		// Collaborators
-		console.log("$scope.row.strCollaborators = " + $scope.row.strCollaborators);
-		console.log("type of $scope.row.strCollaborators = " + typeof $scope.row.strCollaborators);
-	
-		if ((typeof $scope.row.strCollaborators !== 'undefined') && ($scope.row.strCollaborators !== null) && ($scope.row.strCollaborators.length > 0))
-		{
-			$rootScope.collaboratorPresent = $scope.collaboratorPresent = true;
-			var strCollaborators = $scope.row.strCollaborators.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
-			console.log("strCollaborators = " + strCollaborators);
-			var aryCollaborators = $scope.row.strCollaborators.split(";");  // 
-			//aryCollaborators.splice(-1, 1);
+			if ((typeof $scope.row.GPSEasting === 'undefined') || (typeof $scope.row.GPSNorthing === 'undefined'))
+			{
+				console.log("Easting or Northing is blank...");
+				$scope.subprojectSave.error = true;
+				$scope.subprojectSave.errorMessage += "Easting and Northing cannot be blank!  ";
+			}
+
+			if ((typeof $scope.row.ProjectLead === 'undefined') || ($scope.row.ProjectLead === null)) 
+			{
+				console.log("Project Lead is empty...");
+				$scope.subprojectSave.errorMessage += "Project Lead cannot be blank!  "; 
+				$scope.subprojectSave.error = true;
+			}
+			
+			if ($scope.subprojectSave.error)
+				return;
+
+
+			console.log("$scope.row, full is next...");
+			console.dir($scope.row);
+
+			// Capture the AddDocument flag, before discarding it.			
+			$scope.addDocument = $scope.row.AddDocument;
+			$scope.row.AddDocument = null;
 				
-			angular.forEach(aryCollaborators, function(item) {
-				//After the split on ";", one of the lines is a newline.  We need to watch for and omit that line.
-				//console.log("item = X" + item + "X");
-				//item = item.replace(/(\r\n|\r|\n)/gm, "");
-				item = item.replace(/\n/g, "");
-				//console.log("item = X" + item + "X");
-					
-				if (item.length > 0)
+			if (!$scope.row.LocationId)
+				$scope.row.LocationId = 0;
+				
+			/********* A note about time start ***********/
+			/* 	When we save the subproject, when the backend converts the ProjectStartDate and ProjectEndDate to UTC (adds 8 hours).
+				So, with an initial saved time of 0000, the backend converts it to 0800.
+				Each time we save then, the time will have 8 hours added to it.  On the 4th save, it will go into the next day.
+				To avoid this, we take the saved date (now 0800), and set it back to 0000.
+				This will keep the time in the same spot (keep it from changing).
+				There may be a better way to handle this issue, but this technique works too...
+			*/
+				
+			if ($scope.row.ProjectStartDate)
+			{
+				var psDate = new Date(Date.parse($scope.row.ProjectStartDate));
+				$scope.row.ProjectStartDate = setDateTo0000(psDate);
+			}
+				
+			if ($scope.row.ProjectEndDate)
+			{
+				var peDate = new Date(Date.parse($scope.row.ProjectEndDate));
+				$scope.row.ProjectEndDate = setDateTo0000(peDate);
+			}
+			/********* A note about time end ***********/
+
+			console.log("$scope.addDocument = " + $scope.addDocument);
+			console.log("$scope.row, after del is next...");
+			console.dir($scope.row);			
+				
+			$scope.saveResults = {};
+			//console.log("$scope is next...");
+			//console.dir($scope);
+				
+			// First, a little cleanup.
+			$scope.subprojectSave.error = false;
+			$scope.subprojectSave.errorMessage = "";
+			
+			// First Foods
+			console.log("First Foods = " + $scope.row.FirstFoods);
+				
+			// Funding
+			console.log("$scope.row.Funding is next...");
+			console.dir($scope.row.Funding);
+			console.log("type of $scope.row.Funding = " + typeof $scope.row.Funding);
+				
+			//if ($scope.row.Funding.length > 0)
+			if ((typeof $scope.row.strFunders !== 'undefined') && ($scope.row.strFunders !== null) && ($scope.row.strFunders.length > 0))
+			{
+				if ($scope.row.strFunders.length > 0)
 				{
-					var collaboratorOption = new Object();
-					collaboratorOption.Id = 0;
-					collaboratorOption.Name = "";
+					$rootScope.fundersPresent = $scope.fundersPresent = true;
+					var strFunders = $scope.row.strFunders.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
+					var aryFunders = $scope.row.strFunders.split(";");  // 
+					aryFunders.splice(-1, 1);
 						
-					collaboratorOption.Name = item.trim();
-					//console.log("collaboratorOption.Name = " + collaboratorOption.Name);
-						
-					$scope.row.Collaborators.push(collaboratorOption);
+					angular.forEach(aryFunders, function(item) {
+						console.log("item = " + item);
+						var funderRecord = item.split(",");
+							
+						var fundingOption = new Object();
+						//fundingOption.Checked = false;
+						fundingOption.Id = 0;
+						fundingOption.Name = "";
+						fundingOption.Amount = 0;
+							
+						fundingOption.Name = funderRecord[0].trim();
+						console.log("fundingOption.Name = " + fundingOption.Name);
+							
+						// Get the Id for the funder from funderList.
+						//angular.forEach($scope.funderList, function(funder) {
+						//	if (funder.Name = fundingOption.Name)
+						//		fundingOption.Id = funder.Id;
+						//});
+							
+						fundingOption.Amount = parseFloat(funderRecord[1]);
+						console.log("fundingOption.Amount = " + fundingOption.Amount);
+							
+						$scope.row.Funding.push(fundingOption);		
+					});
+					$scope.row.strFunders = undefined;
 				}
-			});
-			$scope.row.strCollaborators = undefined;
-		}
-			
-		var subprojectId = 0;
-		// Are we creating a new Subproject, or editing an existing one?
-		if ($scope.viewSubproject)
-		{
-			console.log("We are editing an existing subproject; no new location needed...");
-			subprojectId = $scope.viewSubproject.Id
-				
-			//ok -- everything is set to save; we are editing a subproject don't have a new location to save; hand off to next step.
-            $scope.saveFilesAndParent();
-		}
-		else
-		{
-			subprojectId = $scope.subprojectId;
-				
-			//$scope.viewSubproject either does not exist or is null, so we are creating a new Subproject.
-			// Next, we add/save the location.
-			console.log("This is a new subproject; creating a new location...");
-			var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
-			newLocation.Label = $scope.row.ProjectName;
-			newLocation.Description = $scope.row.ProjectDescription;
-			newLocation.GPSEasting = $scope.row.GPSEasting;
-			newLocation.GPSNorthing = $scope.row.GPSNorthing;
-			newLocation.ProjectId = parseInt($scope.projectId);
-			newLocation.LocationTypeId = LOCATION_TYPE_Hab;
-			newLocation.WaterBodyId = $scope.row.WaterBodyId;
-			//newLocation.SubprojectId = $scope.subprojectId; // When we are creating a new subproject, we do not have the subprojectId yet; this is from the old one.
-			console.log("newLocation is next...");
-			console.dir(newLocation);
-
-				require([
-                    'esri/symbols/SimpleMarkerSymbol',
-                    'esri/graphic',
-                    'esri/SpatialReference',
-                    'esri/tasks/GeometryService',
-                    'esri/geometry/Point',
-                    'esri/tasks/ProjectParameters',
-
-				], function (SimpleMarkerSymbol, Graphic, SpatialReference, GeometryService, Point, ProjectParameters) {
-
-				    //nad83 zone 11...  might have to have this as a list somehwere...
-				    var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE });
-				    var outSR = new SpatialReference({ wkid: 102100 });
-				    var geometryService = new GeometryService(GEOMETRY_SERVICE_URL);
-				    $scope.newPoint = new Point(newLocation.GPSEasting, newLocation.GPSNorthing, inSR);
-
-				    //convert spatial reference
-				    //var PrjParams = new tasks.ProjectParameters();
-                    var PrjParams = new ProjectParameters();
-
-				    PrjParams.geometries = [$scope.newPoint];
-				    // PrjParams.outSR is not set yet, so we must set it also.
-				    PrjParams.outSR = outSR;
-
-				    //do the projection (conversion)
-				    geometryService.project(PrjParams, function (outputpoint) {
-
-				        $scope.newPoint = new Point(outputpoint[0], outSR);
-                        //$scope.newGraphic = new Graphic($scope.newPoint, new symbol.SimpleMarkerSymbol());
-                        $scope.newGraphic = new Graphic($scope.newPoint, new SimpleMarkerSymbol());
-				        $scope.map.graphics.add($scope.newGraphic);
-
-				        //add the graphic to the map and get SDE_ObjectId
-				        $scope.map.locationLayer.applyEdits([$scope.newGraphic], null, null).then(function (results) {
-
-				            if (results[0].success) {
-				                newLocation.SdeObjectId = $scope.SdeObjectId = results[0].objectId;
-				                $scope.setSdeObjectId($scope.SdeObjectId);
-				                console.log("Created a new point! " + newLocation.SdeObjectId);
-				                $scope.NewPoint = true;
-
-				                var promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
-				                promise.$promise.then(function (result) {
-				                    console.log("done and success!");
-				                    console.log("result is next...");
-				                    console.dir(result);
-				                    angular.forEach(result, function (item, key) {
-				                        //console.log("key = " + key + ", item is next...");
-				                        //console.dir(item);
-				                        if (key === "Id") {
-				                            //$scope.locationId = promise.LocationId;
-                                            //$scope.subproject_row.LocationId = item;
-                                            $scope.row.LocationId = item;
-                                            //console.log("$scope.subproject_row.LocationId = " + $scope.subproject_row.LocationId);
-                                            console.log("$scope.row.LocationId = " + $scope.row.LocationId);
-
-				                            //ok - new location is saved and we are prepped to save the subproject so handoff to next step:
-				                            $scope.saveFilesAndParent();
-				                        }
-				                    });
-
-				                    //reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
-				                    //$scope.refreshProjectLocations();
-				                    //$modalInstance.dismiss();  // This is from the ActivitiesConroller, ModalAddLocationCtrl.  We have this down below, so we do not need it here; it causes an error.
-				                });
-
-				            }
-				            else {
-				                $scope.subprojectSave.errorMessage = "There was a problem saving that location.";
-				            }
-
-				        }); //applyedits
-				    }); //geometryservice.project
-				}); //require
 			}
-
-			
-		// If we had a problem saving the location, stop here and do not save the subproject.
-		if ($scope.subprojectSave.errorMessage.length > 0)
-		{
-			console.log("Had a problem saving the location.  Stopping the save...");
-			return;
-		}
+				
+			// Collaborators
+			console.log("$scope.row.strCollaborators = " + $scope.row.strCollaborators);
+			console.log("type of $scope.row.strCollaborators = " + typeof $scope.row.strCollaborators);
 		
+			if ((typeof $scope.row.strCollaborators !== 'undefined') && ($scope.row.strCollaborators !== null) && ($scope.row.strCollaborators.length > 0))
+			{
+				$rootScope.collaboratorPresent = $scope.collaboratorPresent = true;
+				var strCollaborators = $scope.row.strCollaborators.replace(/(\r\n|\r|\n)/gm, "");  // Remove all newlines (used for presentation).
+				console.log("strCollaborators = " + strCollaborators);
+				var aryCollaborators = $scope.row.strCollaborators.split(";");  // 
+				//aryCollaborators.splice(-1, 1);
+					
+				angular.forEach(aryCollaborators, function(item) {
+					//After the split on ";", one of the lines is a newline.  We need to watch for and omit that line.
+					//console.log("item = X" + item + "X");
+					//item = item.replace(/(\r\n|\r|\n)/gm, "");
+					item = item.replace(/\n/g, "");
+					//console.log("item = X" + item + "X");
+						
+					if (item.length > 0)
+					{
+						var collaboratorOption = new Object();
+						collaboratorOption.Id = 0;
+						collaboratorOption.Name = "";
+							
+						collaboratorOption.Name = item.trim();
+						//console.log("collaboratorOption.Name = " + collaboratorOption.Name);
+							
+						$scope.row.Collaborators.push(collaboratorOption);
+					}
+				});
+				$scope.row.strCollaborators = undefined;
+			}
+				
+			var subprojectId = 0;
+			// Are we creating a new Subproject, or editing an existing one?
+			if ($scope.viewSubproject)
+			{
+				console.log("We are editing an existing subproject; no new location needed...");
+				subprojectId = $scope.viewSubproject.Id;
+
+				//$scope.OldSdeObjectId = $rootScope.SdeObjectId;
+
+				$rootScope.savedSubproject = null;
+				$rootScope.savedSubproject = angular.copy($scope.row);
+
+				// The location SdeObjectId update involves creating a new point, and deleting the old one.
+				// Therefore, we only want to update the location, if the Easting or Northing has changed.
+				// Later in the process, the Easting and Northing get converted into x, y values that get stored in sdevector.
+				// Therefore, if the Easting and Northing was changed, we must convert them to x, y values first.
+				if (($scope.GPSEasting !== $scope.row.GPSEasting) || ($scope.GPSNorthing !== $scope.row.GPSNorthing)) {
+					console.log("Easting or Northing changed; updating the location...");
+		
+					//nad83 zone 11...  might have to have this as a list somehwere...
+					var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE }); //esri/SpatialReference
+					var outSR = new SpatialReference({ wkid: 102100, latestWkid:3857 });
+					var geometryService = new GeometryService(GEOMETRY_SERVICE_URL); //esri/tasks/GeometryService
+					$scope.newPoint = new Point($scope.row.GPSEasting, $scope.row.GPSNorthing, inSR); // esri/geometry/Point
+	
+					//convert spatial reference
+					//var PrjParams = new tasks.ProjectParameters();
+					var PrjParams = new ProjectParameters(); //esri/tasks/ProjectParameters
+	
+					PrjParams.geometries = [$scope.newPoint];
+					// PrjParams.outSR is not set yet, so we must set it also.
+					PrjParams.outSR = outSR;
+	
+					//do the projection (conversion)
+					// PrjParams has Easting and Northing; outputpoint has x, y values.
+					// The x, y values are what get sent/stored in the points table in sdevector.
+					geometryService.project(PrjParams, function (outputpoint) {
+	
+						$scope.newPoint = new Point(outputpoint[0], outSR);
+						$scope.newGraphic = new Graphic($scope.newPoint, new SimpleMarkerSymbol());
+						$scope.map.graphics.add($scope.newGraphic);
+	
+						//add the graphic to the map and get SDE_ObjectId
+						$scope.map.locationLayer.applyEdits([$scope.newGraphic], null, null).then(function (addResults) {
+	
+							if (addResults[0].success) {
+								//newLocation.SdeObjectId = $scope.SdeObjectId = addResults[0].objectId;
+								$scope.row.SdeObjectId = $scope.SdeObjectId = addResults[0].objectId;
+								$scope.setSdeObjectId($scope.SdeObjectId);
+								//console.log("Added a new point! " + newLocation.SdeObjectId);
+								console.log("Added a new point! " + $scope.row.SdeObjectId);
+
+								//$scope.NewPoint = true;
+								var attributes = {OBJECTID: $scope.OldSdeObjectId}
+								var deleteGraphic = new Graphic($scope.newPoint, null, attributes);
+	
+								$scope.map.locationLayer.applyEdits(null, null, [deleteGraphic]).then(function (addResults, updateResults, deleteResults) {
+									console.log("deleteResults is next...");
+									console.dir(deleteResults);
+
+									if (deleteResults.length === 0)
+									{
+										$scope.SaveMessage = "The location did not exist in SDE.";
+										console.log("The location did not exist in SDE.");
+										console.dir(deleteResults);
+										CommonService.updateLocationAction($scope.project.Id, $scope.row.LocationId, $scope.row.SdeObjectId);
+									}
+									else if (deleteResults[0].success) {                                       
+										console.log("Deleted old point in sdevector! " + $scope.OldSdeObjectId);
+
+										//CommonService.updateLocationAction($scope.project.Id, $scope.row.Id, $scope.row.SdeObjectId);
+										CommonService.updateLocationAction($scope.project.Id, $scope.row.LocationId, $scope.row.SdeObjectId);
+									}
+									else {
+										$scope.SaveMessage = "There was a problem deleting that location.";
+										console.dir(deleteResults);
+									}
+								}, function (err) {
+									console.log("Apply Edits - Delete - failed:  " + err.message);
+								});
+
+								//throw "Stopping right here...";
+
+								//ok - new location is saved and we are prepped to save the subproject so handoff to next step:
+								$scope.saveFilesAndParent();
+							}
+							else {
+								$scope.SaveMessage = "There was a problem adding the new location.";
+								console.dir(addResults);
+							}	
+	
+						}); //applyedits
+					}); //geometryservice.project
+				}
+					
+				//ok -- everything is set to save; we are editing a subproject don't have a new location to save; hand off to next step.
+				$scope.saveFilesAndParent();
+			}
+			else
+			{
+				subprojectId = $scope.subprojectId;
+					
+				//$scope.viewSubproject either does not exist or is null, so we are creating a new Subproject.
+				// Next, we add/save the location.
+				console.log("This is a new subproject; creating a new location...");
+				var newLocation = angular.copy(DEFAULT_LOCATION_PROJECTION_ZONE);
+				newLocation.Label = $scope.row.ProjectName;
+				newLocation.Description = $scope.row.ProjectDescription;
+				newLocation.GPSEasting = $scope.row.GPSEasting;
+				newLocation.GPSNorthing = $scope.row.GPSNorthing;
+				newLocation.ProjectId = parseInt($scope.projectId);
+				newLocation.LocationTypeId = LOCATION_TYPE_Hab;
+				newLocation.WaterBodyId = $scope.row.WaterBodyId;
+				//newLocation.SubprojectId = $scope.subprojectId; // When we are creating a new subproject, we do not have the subprojectId yet; this is from the old one.
+				console.log("newLocation is next...");
+				console.dir(newLocation);
+
+				//nad83 zone 11...  might have to have this as a list somehwere...
+				var inSR = new SpatialReference({ wkt: NAD83_SPATIAL_REFERENCE }); //esri/SpatialReference
+				var outSR = new SpatialReference({ wkid: 102100 });
+				var geometryService = new GeometryService(GEOMETRY_SERVICE_URL); //esri/tasks/GeometryService
+				$scope.newPoint = new Point(newLocation.GPSEasting, newLocation.GPSNorthing, inSR); // esri/geometry/Point
+
+				//convert spatial reference
+				//var PrjParams = new tasks.ProjectParameters();
+				var PrjParams = new ProjectParameters(); //esri/tasks/ProjectParameters
+
+				PrjParams.geometries = [$scope.newPoint];
+				// PrjParams.outSR is not set yet, so we must set it also.
+				PrjParams.outSR = outSR;
+
+				//do the projection (conversion)
+				// PrjParams has Easting and Northing; outputpoint has x, y values.
+				// The x, y values are what get sent/stored in the points table in sdevector.
+				geometryService.project(PrjParams, function (outputpoint) {
+
+					$scope.newPoint = new Point(outputpoint[0], outSR);
+					//$scope.newGraphic = new Graphic($scope.newPoint, new symbol.SimpleMarkerSymbol());
+					$scope.newGraphic = new Graphic($scope.newPoint, new SimpleMarkerSymbol());
+					$scope.map.graphics.add($scope.newGraphic);
+
+					//add the graphic to the map and get SDE_ObjectId
+					$scope.map.locationLayer.applyEdits([$scope.newGraphic], null, null).then(function (results) {
+
+						if (results[0].success) {
+							newLocation.SdeObjectId = $scope.SdeObjectId = results[0].objectId;
+							$scope.setSdeObjectId($scope.SdeObjectId);
+							console.log("Created a new point! " + newLocation.SdeObjectId);
+							$scope.NewPoint = true;
+
+							var promise = CommonService.saveNewProjectLocation($scope.project.Id, newLocation);
+							promise.$promise.then(function (result) {
+								console.log("done and success!");
+								console.log("result is next...");
+								console.dir(result);
+								angular.forEach(result, function (item, key) {
+									//console.log("key = " + key + ", item is next...");
+									//console.dir(item);
+									if (key === "Id") {
+										//$scope.locationId = promise.LocationId;
+										//$scope.subproject_row.LocationId = item;
+										$scope.row.LocationId = item;
+										//console.log("$scope.subproject_row.LocationId = " + $scope.subproject_row.LocationId);
+										console.log("$scope.row.LocationId = " + $scope.row.LocationId);
+
+										//ok - new location is saved and we are prepped to save the subproject so handoff to next step:
+										$scope.saveFilesAndParent();
+									}
+								});
+
+								//reload the project -- this will cause the locations and locationlayer to be reloaded!  wow!  go AngularJS!  :)
+								//$scope.refreshProjectLocations();
+								//$modalInstance.dismiss();  // This is from the ActivitiesConroller, ModalAddLocationCtrl.  We have this down below, so we do not need it here; it causes an error.
+							});
+
+						}
+						else {
+							$scope.subprojectSave.errorMessage = "There was a problem saving that location.";
+						}
+					}); //applyedits
+				}); //geometryservice.project
+			}
+				
+			// If we had a problem saving the location, stop here and do not save the subproject.
+			if ($scope.subprojectSave.errorMessage.length > 0)
+			{
+				console.log("Had a problem saving the location.  Stopping the save...");
+				return;
+			}
+		}); // require
     };
 
 

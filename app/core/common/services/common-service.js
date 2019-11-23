@@ -80,6 +80,10 @@ common_module.factory('SaveProjectLocation', ['$resource', function ($resource) 
     return $resource(serviceUrl + '/api/v1/location/saveprojectlocation');
 }]);
 
+common_module.factory('UpdateLocationAction', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/location/updatelocation');
+}]);
+
 common_module.factory('DeleteLocationAction', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/location/deletelocation');
 }]);
@@ -111,6 +115,7 @@ common_module.service('CommonService', ['$q',
     'GetAllPossibleDatastoreLocations',
     'GetLocationTypes',
     'SaveProjectLocation',
+    'UpdateLocationAction',
     'GetMetadataEntities',
     'SaveMetadataProperty',
     'DeleteMetadataProperty',
@@ -133,6 +138,7 @@ common_module.service('CommonService', ['$q',
         GetAllPossibleDatastoreLocations,
         GetLocationTypes,
         SaveProjectLocation,
+        UpdateLocationAction,
         GetMetadataEntities,
         SaveMetadataProperty,
         DeleteMetadataProperty,
@@ -192,6 +198,14 @@ common_module.service('CommonService', ['$q',
 
             saveNewProjectLocation: function (projectId, location) {
                 return SaveProjectLocation.save({ ProjectId: projectId, Location: location });
+            },
+
+            //updateProjectLocation: function (projectId, location, newSdeObjectId, oldSdeObjectId) {
+            updateLocationAction: function (projectId, location, newSdeObjectId) {
+                console.log("Inside CommonService.updateProjectLocation...");
+                console.log("ProjectId = " + projectId + ", location = " + location + ", newSdeObjectId = " + newSdeObjectId); // + ", oldSdeObjectId = " + oldSdeObjectId);
+                //return UpdateLocationAction.save({ ProjectId: projectId, Location: location, NewSdeObjectId: newSdeObjectId, OldSdeObjectId: oldSdeObjectId});
+                return UpdateLocationAction.save({ ProjectId: projectId, LocationId: location, NewSdeObjectId: newSdeObjectId});
             },
 
             filterListForOnlyActiveInstruments: function (instruments) {
