@@ -141,19 +141,25 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
         } else {
             $scope.header_message = "Edit Habitat project: " + $scope.viewSubproject.ProjectName;
 			$rootScope.newSubproject = $scope.newSubproject = false;
-			
-            // Capture the Easting and Northing, so we can tell, during a Save, if they have changed.
-            $scope.GPSEasting = $scope.viewSubproject.GPSEasting;
-			$scope.GPSNorthing = $scope.viewSubproject.GPSNorthing;
 
+			// Original line.
+			$scope.row = angular.copy($scope.viewSubproject);
+
+			// New code.
 			// If we saved the Subproject and are now reviewing it, viewSubproject DOES NOT have the 
 			// changes we saved.  Therefore, before we saved, we copied the row into $rootScope.savedSubproject.
 			// If we saved, $rootScope.savedSubproject will not be null, so we must copy the values in from 
 			// the saved Subproject.
-			if ($rootScope.savedSubproject !== null)
-				$scope.row = angular.copy($rootScope.savedSubproject);
-			else
-				$scope.row = angular.copy($scope.viewSubproject);
+			//if (($rootScope.savedSubproject !== null) && ($rootScope.savedSubproject.Id === $scope.viewSubproject.Id)) {
+			//	$scope.row = angular.copy($rootScope.savedSubproject);
+			//	$rootScope.savedSubproject = null;
+			//}
+			//else
+			//	$scope.row = angular.copy($scope.viewSubproject);
+			
+            // Capture the Easting and Northing, so we can tell, during a Save, if they have changed.
+            $scope.GPSEasting = $scope.row.GPSEasting;
+			$scope.GPSNorthing = $scope.row.GPSNorthing;
 
             $scope.subprojectFileList = $rootScope.subprojectFileList;
 
@@ -239,7 +245,7 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 
         //if we are saving a new project...
         if ($scope.subprojectId === 0) {
-            console.log("saveFielsAndParent -- we are creating a new one before we sav so that we have the subprojectId...");
+            console.log("saveFilesAndParent -- we are creating a new one before we save so that we have the subprojectId...");
 
             var save_subproject_promise = SubprojectService.saveHabSubproject(parseInt($scope.projectId), saveRow, $scope.saveResults);
             save_subproject_promise.$promise.then(function () {
@@ -253,7 +259,12 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
                 console.error("something went wrong: ", error);
             });
             return;
-        }
+		}
+		
+		// Grab a copy of $scope.row, so that if we review the saved records right afterward, it will have the current items,
+		// rather than the old items.
+		//$rootScope.savedSubproject = null;
+		//$rootScope.savedSubproject = angular.copy($scope.row);
 
         //if we are editing a project, we carry on from here...
         var data = {
@@ -400,8 +411,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
                     $scope.showFormItems = false;
                 }
 
-                if ($scope.filesWithErrors == 0)
-                    $scope.UploadUserMessage = "All actions successful.";
+				if ($scope.filesWithErrors == 0)
+					$scope.UploadUserMessage = "All actions successful.";
                 else
                     $scope.UploadUserMessage = "There was a problem uploading a file.  Please try again or contact the Helpdesk if this issue continues.";
 
@@ -904,8 +915,8 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 
 				//$scope.OldSdeObjectId = $rootScope.SdeObjectId;
 
-				$rootScope.savedSubproject = null;
-				$rootScope.savedSubproject = angular.copy($scope.row);
+				//$rootScope.savedSubproject = null;
+				//$rootScope.savedSubproject = angular.copy($scope.row);
 
 				// The location SdeObjectId update involves creating a new point, and deleting the old one.
 				// Therefore, we only want to update the location, if the Easting or Northing has changed.
