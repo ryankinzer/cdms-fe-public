@@ -361,12 +361,13 @@ var page_sites = ['$scope', '$timeout','$routeParams', 'SubprojectService', 'Pro
                 
                 var rows = scope.sitesGridOptions.api.getSelectedRows();
 
+                scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+
                 if (Array.isArray(rows) && rows[0] != null)
                 {
                     console.log("rows:");
                     console.dir(rows);
                 }
-                
             },
             //onFilterModified: function () {
             //    scope.sitesGridOptions.api.deselectAll();
