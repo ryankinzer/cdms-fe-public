@@ -1818,7 +1818,12 @@ function getFilesArrayAsList (theFiles) {
         files = angular.fromJson(theFiles);
     }
     catch (e) { 
-        console.error("could not parse files: " + theFiles);
+        try { // theFiles is not an object; is it a string?
+            files = theFiles.split(",");
+        }
+        catch (e) {
+            console.error("could not parse files: " + theFiles);
+        }
     }
 
     return (files === null || !Array.isArray(files)) ? [] : files; //if it isn't an array, make an empty array
@@ -1875,8 +1880,10 @@ function getProjectFilesArrayAsLinks (a_projectId, a_datasetId, a_files)
         //console.dir(file);
         if(file.Link)
             retval.push("<a href='" + file.Link + "' target=\"_blank\">" + file.Name + "</a>");
-        else
+        else if (file.Name)
             retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/D/" + a_datasetId + "/" + file.Name + "' target=\"_blank\">" + file.Name + "</a>");
+        else
+            retval.push("<a href='" + cdmsShareUrl + "P/" + a_projectId + "/D/" + a_datasetId + "/" + file + "' target=\"_blank\">" + file + "</a>");
     });
 
     return retval;
