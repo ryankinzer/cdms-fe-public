@@ -482,7 +482,12 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 var files = getFilesArrayAsList(params.value);
                 files.forEach(function (file) { 
                     if (params.column.colDef.ControlType == 'file')
-                        retvalue.push(file.Name);
+                    {
+                        if (file.Name)
+                            retvalue.push(file.Name);
+                        else
+                            retvalue.push(file);
+                    }
                     else if (params.column.colDef.ControlType == 'link')
                         retvalue.push(file.Link);
                 });
