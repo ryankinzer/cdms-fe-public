@@ -83,6 +83,8 @@
                     $scope['show'+$routeParams.filter]();
                 }
 
+                GridService.autosizeColumns($scope.permitsGrid);
+
             });
 
             //now do some caching...
@@ -129,11 +131,25 @@
 
         $scope.showIssued = function () {
             $scope.clearFilters();
+
+            //first select all but archived
+            var archive_filter_component = $scope.permitsGrid.api.getFilterInstance('FileStatus');
+            archive_filter_component.selectNothing();
+            for (var i = 0; i<archive_filter_component.getUniqueValueCount(); i++) {
+                var value = archive_filter_component.getUniqueValue(i);
+                if (value != 'Archived') {
+                    archive_filter_component.selectValue(value);
+                }
+            }
+
+            //now select approved and conditionally approved
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('Approved');
             filter_component.selectValue('Conditionally Approved');
+
             $scope.permitsGrid.api.onFilterChanged();
+
             if ($scope.currentPage !== "Issued")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Issued";
@@ -142,10 +158,23 @@
 
         $scope.showApplications = function () {
             $scope.clearFilters();
+
+            //first select all but archived
+            var archive_filter_component = $scope.permitsGrid.api.getFilterInstance('FileStatus');
+            archive_filter_component.selectNothing();
+            for (var i = 0; i<archive_filter_component.getUniqueValueCount(); i++) {
+                var value = archive_filter_component.getUniqueValue(i);
+                if (value != 'Archived') {
+                    archive_filter_component.selectValue(value);
+                }
+            }
+
+            //now select by permit status
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('New Application');
             filter_component.selectValue('Under Review');
+
             $scope.permitsGrid.api.onFilterChanged();
             if ($scope.currentPage !== "Applications")
                 $scope.permitsGrid.api.deselectAll();
@@ -179,6 +208,17 @@
 
         $scope.showAssignedToMe = function () {
             $scope.clearFilters();
+
+            //first select all but archived
+            var archive_filter_component = $scope.permitsGrid.api.getFilterInstance('FileStatus');
+            archive_filter_component.selectNothing();
+            for (var i = 0; i<archive_filter_component.getUniqueValueCount(); i++) {
+                var value = archive_filter_component.getUniqueValue(i);
+                if (value != 'Archived') {
+                    archive_filter_component.selectValue(value);
+                }
+            }
+            
             var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
             filter_component.selectNothing();
             filter_component.selectValue($scope.Profile.Fullname);
@@ -907,15 +947,17 @@
                 $scope.permitFilesGrid.selectedItem = null;
             });
 
-            $scope.row.Zones = [];
+            if(!Array.isArray($scope.row.Zones)){
+                $scope.row.Zones = [];
 
-            if ($scope.row.Zoning) {
-                $scope.row.Zoning = getJsonObjects($scope.row.Zoning);
-                //console.warn(" -- Zoning -- ");
-                //console.dir($scope.row.Zoning);
+                if ($scope.row.Zoning) {
+                    $scope.row.Zoning = getJsonObjects($scope.row.Zoning);
+                    //console.warn(" -- Zoning -- ");
+                    //console.dir($scope.row.Zoning);
 
-            } else {
-                $scope.row.Zoning = [];
+                } else {
+                    $scope.row.Zoning = [];
+                }
             }
 
         };
@@ -1196,26 +1238,29 @@
                     $scope.permitsGrid.api.setRowData($scope.permits);
                     $scope.row = saved_permit;
                     $scope.row.dataChanged = false;
-                    $scope.showAll();
+                    $scope.showAll(); 
                 }
                 else {
                     $scope.permits.forEach(function (existing_permit) { 
                         if (existing_permit.Id == $scope.row.Id) {
-                            console.log(" found it -- ");
                             angular.extend(existing_permit, saved_permit);
                         }
                     });
 
-                    $scope.selectPermit($scope.row.Id); //reload
+                    $scope.selectPermit($scope.row.Id); 
                     $scope.ShowPermitListGrid = true;
                     
-                    $scope.permitsGrid.api.setRowData($scope.permits);
+                    $scope.permitsGrid.api.redrawRows();
+                    //$scope.permitsGrid.api.setRowData($scope.permits); 
+
                     
+                    /* 12/5 - commented so that we don't mess with the user's current filter... 
                     if ($scope.currentPage == "Applications") $scope.showApplications();
                     if ($scope.currentPage == "Issued") $scope.showIssued();
                     if ($scope.currentPage == "Archived") $scope.showArchived();
                     if ($scope.currentPage == "All") $scope.showAll();
-                    
+                    */
+
                     $scope.row.dataChanged = false;
 
                 }
@@ -1223,8 +1268,8 @@
                 //select the permit we just saved/updated
                 $scope.permitsGrid.api.forEachNode(function(node){
                     if(node.data.PermitNumber == $scope.row.PermitNumber){
-                        node.setSelected(true);                        
-                        $scope.permitsGrid.api.ensureIndexVisible(node.index, 'bottom'); //scroll to the selected row
+                        node.setSelected(true);
+                        $scope.permitsGrid.api.ensureIndexVisible(node.childIndex, 'bottom'); //scroll to the selected row
                     }
                 })
 
