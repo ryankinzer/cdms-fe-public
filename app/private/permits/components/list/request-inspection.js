@@ -60,8 +60,11 @@
                         EventType: 'Inspection',
                         EventDate: moment().format('L'),
                         RequestDate: moment().format('L'),
-                        ByUser: $scope.Profile.Id
+                        ByUser: $scope.Profile.Id,
+                        PreferredTime: {'Any': true }
                     };
+
+                    $scope.PermitRoutes = [];
 
                     $scope.ResultMessage = "Permit found.";
                 }
@@ -111,6 +114,34 @@
 
         $scope.close = function () { 
             $scope.cancel();
+        };
+
+        $scope.loadRecipientsFromRoute = function () { 
+            $scope.row.ReviewersContact = {};
+
+            console.log("getting routes for: " + $scope.row.ItemType);
+
+            $scope.PermitRoutes = PermitService.getPermitRoutesByItemType($scope.row.ItemType);
+            $scope.PermitRoutes.$promise.then(function () {
+
+                //select the first one
+                $scope.PermitRoutes.forEach(function (route) {
+                    if (route.Rank == 0)
+                        $scope.row.ReviewersContact[route.Email] = true;
+                });
+            });
+        }
+
+        $scope.getFileLabel = function(file){
+            return file.Name + ((file.Description) ? " ("+file.Description+")" : "");
+        }
+
+        //setup an event listener that fires from list-permits.js every time a header field is changed. we listen for ItemType changing.
+        $scope.onHeaderEditingStopped = function(field) {
+            console.log("on header editing stopped " + field.DbColumnName);
+            if (field.DbColumnName == 'ItemType') {
+                $scope.loadRecipientsFromRoute();
+            }
         };
 
     }
