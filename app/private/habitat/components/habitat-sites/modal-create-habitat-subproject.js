@@ -63,16 +63,9 @@ var modal_create_habitat_subproject = ['$scope', '$rootScope', '$uibModalInstanc
 	$scope.uploadComplete = false;
 	var values = null;
 	
-	$scope.project = ProjectService.getProject($scope.project.Id);
-
-	$scope.project.$promise.then(function () {
-		console.log("Loaded project, for access to project.Locations...");
-		//console.dir($scope.project);
-
-		$scope.project.Locations.forEach(function(item) {
-			if (($scope.viewSubproject) && (item.Id === $scope.viewSubproject.LocationId))
-				$scope.OldSdeObjectId = item.SdeObjectId;
-		});
+	$scope.$parent.project.Locations.forEach(function(item) {
+		if (($scope.viewSubproject) && (item.Id === $scope.viewSubproject.LocationId))
+			$scope.OldSdeObjectId = item.SdeObjectId;
 	});
     
     //fetch all of the habitat metafields and two of the project metafields that are used for habitat sites ("subprojects")
