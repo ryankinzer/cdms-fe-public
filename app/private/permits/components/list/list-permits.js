@@ -129,11 +129,25 @@
 
         $scope.showIssued = function () {
             $scope.clearFilters();
+
+            //first select all but archived
+            var archive_filter_component = $scope.permitsGrid.api.getFilterInstance('FileStatus');
+            archive_filter_component.selectNothing();
+            for (var i = 0; i<archive_filter_component.getUniqueValueCount(); i++) {
+                var value = archive_filter_component.getUniqueValue(i);
+                if (value != 'Archived') {
+                    archive_filter_component.selectValue(value);
+                }
+            }
+
+            //now select approved and conditionally approved
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('Approved');
             filter_component.selectValue('Conditionally Approved');
+
             $scope.permitsGrid.api.onFilterChanged();
+
             if ($scope.currentPage !== "Issued")
                 $scope.permitsGrid.api.deselectAll();
             $scope.currentPage = "Issued";
@@ -142,10 +156,23 @@
 
         $scope.showApplications = function () {
             $scope.clearFilters();
+
+            //first select all but archived
+            var archive_filter_component = $scope.permitsGrid.api.getFilterInstance('FileStatus');
+            archive_filter_component.selectNothing();
+            for (var i = 0; i<archive_filter_component.getUniqueValueCount(); i++) {
+                var value = archive_filter_component.getUniqueValue(i);
+                if (value != 'Archived') {
+                    archive_filter_component.selectValue(value);
+                }
+            }
+
+            //now select by permit status
             var filter_component = $scope.permitsGrid.api.getFilterInstance('PermitStatus');
             filter_component.selectNothing();
             filter_component.selectValue('New Application');
             filter_component.selectValue('Under Review');
+
             $scope.permitsGrid.api.onFilterChanged();
             if ($scope.currentPage !== "Applications")
                 $scope.permitsGrid.api.deselectAll();
@@ -179,6 +206,17 @@
 
         $scope.showAssignedToMe = function () {
             $scope.clearFilters();
+
+            //first select all but archived
+            var archive_filter_component = $scope.permitsGrid.api.getFilterInstance('FileStatus');
+            archive_filter_component.selectNothing();
+            for (var i = 0; i<archive_filter_component.getUniqueValueCount(); i++) {
+                var value = archive_filter_component.getUniqueValue(i);
+                if (value != 'Archived') {
+                    archive_filter_component.selectValue(value);
+                }
+            }
+            
             var filter_component = $scope.permitsGrid.api.getFilterInstance('ReviewedBy');
             filter_component.selectNothing();
             filter_component.selectValue($scope.Profile.Fullname);
