@@ -283,8 +283,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     $scope.checkForDuplicates();
 
                 //bah - another special case for water quality: fire dupecheck if sampledate changed
-                if($scope.dataset.Datastore.TablePrefix == "WaterQuality" && event.colDef.DbColumnName == "SampleDate")
+                if(($scope.dataset.Datastore.TablePrefix == "WaterQuality" || $scope.dataset.Datastore.TablePrefix == "MetStation")
+                    && event.colDef.DbColumnName == "SampleDate"){
                     $scope.checkForDuplicates();
+                }
             
 
             },
