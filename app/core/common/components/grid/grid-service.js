@@ -432,7 +432,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 row.Activity.Description = getRangeForDetailField("ReadingDateTime", dataAgGridOptions);
             }
 
-            if (dataset.Datastore.TablePrefix == "WaterQuality") {
+            if (dataset.Datastore.TablePrefix == "WaterQuality" || dataset.Datastore.TablePrefix == "MetStation") {
                 row.Activity.Description = getRangeForDetailField("SampleDate", dataAgGridOptions);
             }
 
