@@ -91,9 +91,18 @@
         };
 
         $scope.save = function () { 
-            $scope.Results.DoneSaving = true;
+            
+            //drop any recipients that are 'false' since they were unchecked
+            if($scope.row.ReviewersContact)
+            Object.keys($scope.row.ReviewersContact).forEach(function (key) { 
+                if ($scope.row.ReviewersContact[key] === false)
+                    delete $scope.row.ReviewersContact[key];
+            });
+
             var new_event = PermitService.savePermitEvent($scope.row);
+
             new_event.$promise.then(function () {
+                $scope.Results.DoneSaving = true;
                 console.log("done and success updating the files");
                 $scope.Results.SuccessMessage = "Saved and notifications sent.";
                 $scope.Results.FailureMessage = "";
