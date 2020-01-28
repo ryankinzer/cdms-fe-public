@@ -189,7 +189,33 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                 scope.dataGridOptions.api.setRowData(scope.lookupItems);
                 scope.SaveMessage = "Success.";
             });
-        };
+		};
+
+		//Delete 
+		scope.deleteItems = function () {
+			var lookupId = scope.selectedLookup.Id;	
+			scope.dataGridOptions.selectedItems.forEach(function (item) {
+				var delete_item = CommonService.deleteLookupItem(item, lookupId);
+				delete_item.$promise.then(function () {
+					scope.lookupItems.forEach(function (existing, index) {
+						if (existing.Id == item.Id) {
+							scope.lookupItems.splice(index);
+							scope.dataGridOptions.api.setRowData(scope.lookupItems);
+							scope.selectLookup(scope.selectedLookup);
+							
+						}
+
+					}), function () {
+						alert("There was a problem deleting item(s) from " + scope.selectedLookup.Label + ".  Please contact CDMS support." );
+					};
+				});
+			}, function () {
+				console.log("something went wrong");
+			});
+
+		};
+
+		
 
         //handle favorite toggle
         scope.isFavorite = $rootScope.Profile.isProjectFavorite(routeParams.Id);
