@@ -210,8 +210,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log("GRID IS DONE ------------------------------------------>>>");
                 //console.dir($scope.row);
                 $scope.system.loading = false;
-                $scope.$apply();
-                GridService.autosizeColumns($scope.dataAgGridOptions);
+                
+                setTimeout(function(){
+                    GridService.autosizeColumns($scope.dataAgGridOptions);
+                    $scope.$apply();
+                    console.log("resize grid columns")
+                },200);
 
             },
 
@@ -292,6 +296,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             },
         };
 
+        $scope.resizeGrid = function(){
+            GridService.autosizeColumns($scope.dataAgGridOptions);
+        }
 
         $scope.bubbleErrors = function () {
             GridService.bubbleErrors($scope.dataAgGridOptions);

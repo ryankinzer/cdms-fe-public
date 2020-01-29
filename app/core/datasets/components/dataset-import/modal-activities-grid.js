@@ -68,8 +68,13 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             onGridReady: function (params) {
                 console.log("GRID READY fired. ------------------------------------------>>>");
                 $scope.system.loading = false;
-                $scope.$apply();
-                GridService.autosizeColumns($scope.dataAgGridOptions);
+                
+                setTimeout(function(){
+                    GridService.autosizeColumns($scope.dataAgGridOptions);
+                    $scope.$apply();
+                    console.log("resize grid columns")
+                },200);
+
             },
 
             defaultColDef: {
