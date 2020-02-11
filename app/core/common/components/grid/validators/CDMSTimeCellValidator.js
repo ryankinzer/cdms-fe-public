@@ -35,26 +35,45 @@ CDMSTimeCellValidator.prototype.validateFieldControlTypeValidation = function (d
  //   if (data.value == null || data.value == "")
  //       return this.errors;
 
-    if ((data.value.length < 19) && (!stringIsTime(data.value))) {
-        this.errors.push(new ValidationError(this.cdms_field, "Value is either not a time, or is in an invalid time format; please use hh:mm format."));
-        return this.errors;
-    }
 
-    var the_date = moment(data.value, ["HH:mm"], true);
+	//JN: If cell is empty, don't run this validation because we get unhandled errors on import.
+	//Instead, rely on Field and DatasetField table validation settings & rules to catch dataset specific quality issues
+	//This validator only enforces time formats
 
-    if (!the_date.isValid()) {
-        the_date = moment(data.value); //is it a "full" date?
-    }
+	if (data.value != null && data.value != "") {
+		//console.log("<<<---Running Valiation Tests--->>>");
 
-    if (!the_date.isValid()) {
-        this.errors.push(new ValidationError(this.cdms_field, "Value is not a time (hh:mm)."));
-    }
-    else // it IS a valid date value, make sure it isn't older than 1899!
-		 // JN Tribal CDMS edit to allow unformatted time value from Excel
-    {
-        if (the_date.year() < 1899)
-            this.errors.push(new ValidationError(this.cdms_field, "Year is before 1899 (set from Excel?); Please update Year."));
-    }
+		if ((data.value.length < 19) && (!stringIsTime(data.value))) {
+			this.errors.push(new ValidationError(this.cdms_field, "Value is either not a time, or is in an invalid time format; please use hh:mm format."));
+			return this.errors;
+		}
 
-    return this.errors;
+
+		var the_date = moment(data.value, ["HH:mm"], true);
+
+		if (!the_date.isValid()) {
+			the_date = moment(data.value); //is it a "full" date?
+		}
+
+		if (!the_date.isValid()) {
+			this.errors.push(new ValidationError(this.cdms_field, "Value is not a time (hh:mm)."));
+		}
+		else // it IS a valid date value, make sure it isn't older than 1899!
+		// JN Tribal CDMS edit to allow unformatted time value from Excel
+		{
+			if (the_date.year() < 1899)
+				this.errors.push(new ValidationError(this.cdms_field, "Year is before 1899 (set from Excel?); Please update Year."));
+		}
+
+		return this.errors;
+
+	}
+	
+
+
+
+
+	
+
+>>>>>>> 983058ec... Time Cell Validator/Import Issue (Helpdesk ticket 11) Fix
 };
