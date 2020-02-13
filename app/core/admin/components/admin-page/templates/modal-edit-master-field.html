@@ -72,7 +72,7 @@
 
         <tr ng-hide="field_to_edit.DataSource">
             <td class="prop-name">(Parsed):</td>
-            <td class="prop-val"><pre>{{field_to_edit.Values | arrayValues}}</pre></td>
+            <td class="prop-val"><pre>{{field_to_edit.Values | filter:arrayValues}}</pre></td>
         </tr>
     </table>
 </div>
