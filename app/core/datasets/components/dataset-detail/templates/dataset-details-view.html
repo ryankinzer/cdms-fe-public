@@ -41,53 +41,53 @@
         <tr ng-repeat="field in dataset.Fields">
             <td width="200"><b>{{ field.Label }}</b></td>
             <td>
-                <table class="table table-striped">
-                    <tr>
-                        <td width="170">Description</td>
-                        <td>{{field.Field.Description}}</td>
-                    </tr>
-                    <tr>
-                        <td>DbColumnName</td>
-                        <td>{{field.DbColumnName}}</td>
-                    </tr>
-                    <tr>
-                        <td>Units</td>
-                        <td>{{field.Field.Units}}</td>
-                    </tr>
-                    <tr>
-                        <td>Validation</td>
-                        <td>{{field.Field.Validation}}</td>
-                    </tr>
-                    <tr>
-                        <td>Data Type</td>
-                        <td>{{field.Field.DataType}}</td>
-                    </tr>
-                    <tr>
-                        <td>Field Control Type</td>
-                        <td>{{field.ControlType}}</td>
-                    </tr>
-                    <tr>
-                        <td>Possible Values</td>
-                        <td>{{field.Field.PossibleValues | arrayValues}}</td>
-                    </tr>
-                    <tr>
-                        <td>Field Role</td>
-                        <td>{{field.FieldRole.Name}}</td>
-                    </tr>
-                    <tr>
-                        <td>Source</td>
-                        <td>{{field.Source.Name}}</td>
-                    </tr>
-                    <tr>
-                        <td>Instrument</td>
-                        <td>{{Instrument.Name}}</td>
-                    </tr>
-                    <tr>
-                        <td>Order Index</td>
-                        <td>{{field.OrderIndex}}</td>
-                    </tr>
+				<table class="table table-striped">
+					<tr>
+						<td width="170">Description</td>
+						<td>{{field.Field.Description}}</td>
+					</tr>
+					<tr>
+						<td>DbColumnName</td>
+						<td>{{field.DbColumnName}}</td>
+					</tr>
+					<tr>
+						<td>Units</td>
+						<td>{{field.Field.Units}}</td>
+					</tr>
+					<tr>
+						<td>Validation</td>
+						<td>{{field.Field.Validation}}</td>
+					</tr>
+					<tr>
+						<td>Data Type</td>
+						<td>{{field.Field.DataType}}</td>
+					</tr>
+					<tr>
+						<td>Field Control Type</td>
+						<td>{{field.ControlType}}</td>
+					</tr>
+					<tr>
+						<td>Possible Values</td>
+						<td>{{field.Field.PossibleValues | filter:arrayValues}}</td>
+					</tr>
+					<tr>
+						<td>Field Role</td>
+						<td>{{field.FieldRole.Name}}</td>
+					</tr>
+					<tr>
+						<td>Source</td>
+						<td>{{field.Source.Name}}</td>
+					</tr>
+					<tr>
+						<td>Instrument</td>
+						<td>{{Instrument.Name}}</td>
+					</tr>
+					<tr>
+						<td>Order Index</td>
+						<td>{{field.OrderIndex}}</td>
+					</tr>
 
-                </table>
+				</table>
             </td>
         </tr>
         </tbody>
