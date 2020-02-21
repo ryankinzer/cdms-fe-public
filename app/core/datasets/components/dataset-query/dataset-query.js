@@ -454,7 +454,6 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                 $scope.executeQuery();
         };
 
-
         $scope.openActivity = function()
         {
             console.dir($scope.selectedRow);
