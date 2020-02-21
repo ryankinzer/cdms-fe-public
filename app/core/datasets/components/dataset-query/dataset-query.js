@@ -447,17 +447,12 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             return query;
         };
 
-<<<<<<< HEAD
-        $scope.removeCriteria = function(idx) {
-            $scope.criteriaList.splice(idx,1);
-=======
-		$scope.removeCriteria = function (idx) {
-		    $scope.criteriaList.splice(idx,1);
->>>>>>> a20280b8... Deselect field when adding query criteria
-            if($scope.AutoExecuteQuery)
-                $scope.executeQuery();
-        };
 
+		$scope.removeCriteria = function (idx) {
+			$scope.criteriaList.splice(idx, 1);
+			if ($scope.AutoExecuteQuery)
+				$scope.executeQuery();
+		};
 
         $scope.openActivity = function()
         {
