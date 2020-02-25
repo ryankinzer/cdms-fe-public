@@ -36,7 +36,9 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
         $scope.clearValue = function()
         {
             $scope.Criteria.Value = null;
-            console.dir($scope.Criteria);
+			console.dir($scope.Criteria);
+			console.log("<<--clearValue-->>");
+			
         };
 
 
@@ -51,7 +53,7 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             rowData: [],
             rowSelection: 'multiple',
 
-            onSelectionChanged: function (params) {
+			onSelectionChanged: function (params) {
                 $scope.selectedRow = $scope.dataAgGridOptions.api.getSelectedRows()[0];
                 $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
             },
@@ -265,12 +267,10 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
 				Value: $scope.Criteria.Value,
 			});
 
-
-			//console.log($scope.Criteria.ParamFieldSelect[0].PossibleValues
-			//console.dir($scope.Criteria.ParamFieldSelect[0]);
-			console.dir($scope.criteriaList);
-
 			$scope.Criteria.Value = null;
+			//JN 2-20-2020: Deselect item in the listbox
+			$scope.Criteria.ParamFieldSelect[0] = null;
+	
 
 			if ($scope.AutoExecuteQuery)
 				$scope.executeQuery();
@@ -447,8 +447,13 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
             return query;
         };
 
+<<<<<<< HEAD
         $scope.removeCriteria = function(idx) {
             $scope.criteriaList.splice(idx,1);
+=======
+		$scope.removeCriteria = function (idx) {
+		    $scope.criteriaList.splice(idx,1);
+>>>>>>> a20280b8... Deselect field when adding query criteria
             if($scope.AutoExecuteQuery)
                 $scope.executeQuery();
         };
