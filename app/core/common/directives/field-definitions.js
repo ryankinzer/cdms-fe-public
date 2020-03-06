@@ -13,6 +13,18 @@ common_module.directive('ctuirTextField',
 
     });
 
+common_module.directive('ctuirCurrencyField',
+    function(){
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-currency.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+
 common_module.directive('ctuirHiddenField',
     function(){
         var result = {
@@ -103,6 +115,18 @@ common_module.directive('ctuirInstrumentSelectField',
 
         var result = {
             templateUrl: 'app/core/common/templates/form-fields/field-instrument-select.html',
+            restrict: 'E',
+        };
+
+        return result;
+
+    });
+
+common_module.directive('ctuirFishermanSelectField',
+    function () {
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-fisherman-select.html',
             restrict: 'E',
         };
 
@@ -233,6 +257,22 @@ common_module.directive('ctuirSelectField',
         return result;
 
     });
+
+common_module.directive('ctuirSelectGroupField',
+    function () {
+
+        var result = {
+            templateUrl: 'app/core/common/templates/form-fields/field-select-group.html',
+            restrict: 'E',
+            controller: function ($scope, $element, $attrs) {
+                $scope.selectOptions = makeObjectsFromValues($scope.field.DatastoreId+$scope.field.DbColumnName, $scope.field.PossibleValues);
+            }
+        };
+
+        return result;
+
+    });
+
 
 
 common_module.directive('ctuirSelectNumberField',

@@ -8,6 +8,13 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
+        $scope.fishermen = ProjectService.getFishermen();
+        $scope.fishermen.$promise.then(function () {
+            console.log("Fishermen loaded...");
+            //console.log("Fishermen loaded and is next...");
+            //console.dir($scope.fishermen);
+        });
+
         //this is the default columns (fields) to show in the activities grid, 
         //  but it will be overridden if there is one configured in the dataset.
         var DefaultActivityListFields = [
@@ -58,22 +65,50 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
                     field.Label = (field.Field.Units) ? field.Label + " (" + field.Field.Units + ")" : field.Label;
 
+                    var newColDef = null;
                     //initial values for header column definition
-                    var newColDef = {
-                        headerName: field.Label,
-                        field: field.DbColumnName,
-                        width: SystemDefaultColumnWidth,
-                        Label: field.Label,                 
-                        DbColumnName: field.DbColumnName,   
-                        ControlType: field.ControlType,     
-                        PossibleValues: field.Field.PossibleValues, 
-                        //cellRenderer: $scope.CellRenderers[field.ControlType],
-                        valueGetter: $scope.ValueGetters[field.ControlType],
-                        valueFormatter: $scope.ValueFormatters[field.ControlType],
-                        filter: getAgGridFilterByType(field.ControlType),
-                        filterParams: getAgGridFilterParamsByType(field.ControlType),
-                        menuTabs: ['filterMenuTab'],
-                    };
+                    //var newColDef = {
+                    /*
+                    if (field.DbColumnName === "FishermanId") {
+                        newColDef = {
+                            headerName: field.Label,
+                            field: field.DbColumnName,
+                            width: SystemDefaultColumnWidth,
+                            Label: field.Label,
+                            DbColumnName: field.DbColumnName,
+                            ControlType: field.ControlType,
+                            PossibleValues: field.Field.PossibleValues,
+                            //cellRenderer: $scope.CellRenderers[field.ControlType],
+                            valueGetter: $scope.ValueGetters[field.ControlType],
+                            valueFormatter: function (params) { // Note:  params.node.data contains the row data
+                                var the_str = getNameFromUserId(params.node.data.FishermanId, $scope.fishermen);
+                                if (typeof the_str === 'string') //backwards compatible - remove the quotes
+                                    the_str = the_str.replace(/"/g, '');
+                                return the_str;
+                            },
+                            filter: getAgGridFilterByType(field.ControlType),
+                            filterParams: getAgGridFilterParamsByType(field.ControlType),
+                            menuTabs: ['filterMenuTab'],
+                        };
+                    }
+                    else {
+                    */
+                        newColDef = {
+                            headerName: field.Label,
+                            field: field.DbColumnName,
+                            width: SystemDefaultColumnWidth,
+                            Label: field.Label,
+                            DbColumnName: field.DbColumnName,
+                            ControlType: field.ControlType,
+                            PossibleValues: field.Field.PossibleValues,
+                            //cellRenderer: $scope.CellRenderers[field.ControlType],
+                            valueGetter: $scope.ValueGetters[field.ControlType],
+                            valueFormatter: $scope.ValueFormatters[field.ControlType],
+                            filter: getAgGridFilterByType(field.ControlType),
+                            filterParams: getAgGridFilterParamsByType(field.ControlType),
+                            menuTabs: ['filterMenuTab'],
+                        };
+                    //}
 
                     gridColDefs.push(newColDef); 
                 }
@@ -90,6 +125,17 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 menuTabs: ['filterMenuTab'],
                 filter: true,
             });
+
+            /*
+            gridColDefs.push({
+                headerName: "Fisherman",
+                field: "FullName", //column from the activities list
+                valueGetter: $scope.ValueGetters[field.ControlType],
+                valueFormatter: $scope.ValueFormatters[field.ControlType],
+                menuTabs: ['filterMenuTab'],
+                filter: true,
+            });
+            */
 
             //tell the grid we've changed the coldefs
             $scope.agGridOptions.api.setColumnDefs(gridColDefs); 
@@ -142,7 +188,17 @@ var dataset_activities_list = ['$scope', '$routeParams',
                 }
                 return $scope.InstrumentCache[params.node.data[params.colDef.DbColumnName]];
             },
-              
+            
+            'fisherman-select': function (params) {
+
+                if ($scope.fishermen && params.node.data[params.colDef.DbColumnName]) {
+                    var fisherman = getByField($scope.fishermen, params.node.data[params.colDef.DbColumnName], "Id");
+                    if (fisherman)
+                        params.node.data[params.colDef.DbColumnName] = fisherman.FullName;
+                }
+                return params.node.data[params.colDef.DbColumnName];
+            },
+            
             'multiselect': function (params) { 
                 var the_str = valueFormatterArrayToList(params.node.data[params.colDef.DbColumnName]);
                 if (typeof the_str === 'string') //backwards compatible - remove the quotes

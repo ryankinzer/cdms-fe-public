@@ -1,0 +1,7 @@
+<div class="form-group" ng-class="{ 'has-error' : headerFieldErrors[field.DbColumnName] }" style="margin-bottom: 0px;">
+    <div data-title="{{field.cdmsField.Field.Description}}" class="header-label">{{field.Label}}:</div>
+    <div class="header-value">
+        <select class="form-control" ng-change="onHeaderEditingStopped(field)" ng-model="row[field.DbColumnName]" ng-options="option.Id as option.Label group by option.Group for option in selectOptions"></select>
+        <p class="field-error-block" ng-show="headerFieldErrors[field.DbColumnName]" ng-repeat="error in headerFieldErrors[field.DbColumnName]">{{error}}</p>
+    </div>
+</div>

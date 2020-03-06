@@ -46,10 +46,10 @@
                 <tr>
                     <td class="prop-name">Default Activity QA:</td>
                     <td class="prop-val">
-                        <select ng-change="logStatus()" ng-model="dataset.DefaultActivityQAStatusId" ng-options="id as name for (id, name) in QAStatusList"></select>
+                        <select ng-change="logStatus()" ng-model="dataset.DefaultActivityQAStatusId" ng-options="id as name for (id, name) in QAStatusList" convert-to-number></select>
                     </td>
                 </tr>
-                <tr><td class="prop-name">Default Row QA:</td><td class="prop-val"><select ng-model="dataset.DefaultRowQAStatusId" ng-options="id as name for (id, name) in RowQAStatuses"></select></td></tr>
+                <tr><td class="prop-name">Default Row QA:</td><td class="prop-val"><select ng-model="dataset.DefaultRowQAStatusId" ng-options="id as name for (id, name) in RowQAStatuses" convert-to-number></select></td></tr>
                 <tr>
                     <td class="prop-name">Config Options:</td>
                     <td>

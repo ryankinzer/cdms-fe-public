@@ -87,12 +87,25 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 
         }
 
+        scope.getMetaField = function (id) { 
+
+            var result = "";
+
+            scope.project.MetaFields.forEach(function (field) { 
+                if (field.MetadataPropertyId == id)
+                    result = field;
+            });
+
+            return result;
+
+        };
+            
 
 		scope.uploadFileType = "";
 		scope.projectName = "";
 		scope.DatastoreTablePrefix = $rootScope.DatastoreTablePrefix = "";
 		scope.filesToUpload = {};
-		scope.AuthorizedToViewProject = true;
+		//scope.AuthorizedToViewProject = true; //We have this up at line 15 already...
 		
 		// Get the project ID from the url.
 		var theUrl = window.location.href;
@@ -136,6 +149,8 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
               templateUrl: 'app/core/projects/components/project-detail/templates/modal-choosemap.html',
               controller: 'ModalChooseMapCtrl',
               scope: scope, //very important to pass the scope along...
+              backdrop: "static",
+              keyboard: false
             });
         };
 
@@ -144,6 +159,8 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-choosesummaryimages.html',
               controller: 'ModalChooseSummaryImagesCtrl',
               scope: scope, //very important to pass the scope along...
+              backdrop: "static",
+              keyboard: false
             });
         };
         		

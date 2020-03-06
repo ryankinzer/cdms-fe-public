@@ -30,6 +30,8 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
                 templateUrl: 'app/core/projects/components/project-detail/templates/modal-choose-project-lists.html',
                 controller: 'ModalProjectConfigLists',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_field) { 
                 
             });
@@ -41,6 +43,8 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
                 templateUrl: 'app/private/habitat/components/habitat-sites/templates/modal-choose-showdatasets.html',
                 controller: 'ModalProjectConfigDatasets',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_field) { 
                 scope.project.Config.ShowHabitatSitesForDatasetsValues = parseArrayToStringValues(scope.project.Config.ShowHabitatSitesForDatasets);
             });

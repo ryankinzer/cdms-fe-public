@@ -122,7 +122,6 @@ datasets_module
                 }
             }
 
-
             //if multiselect and we have more than one value, compose them
             if (Array.isArray(the_val)) {
                 var arr_result = [];
@@ -136,7 +135,7 @@ datasets_module
             }
 
             if (!result)
-                result = input;
+                result = the_val;
 
             return result;
         };

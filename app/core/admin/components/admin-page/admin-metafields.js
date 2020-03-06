@@ -81,13 +81,18 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
             scope.dataGridOptions.api.showLoadingOverlay(); //show loading...
             scope.dataGridOptions.api.setRowData(scope.selectedEntity.Properties);           
 
-            scope.project.$promise.then(function () { 
-                //unhide the edit link column if they are the owner or editor.
-                if ($rootScope.Profile.isProjectOwner(scope.project)) {
+            if (scope.project) {
+                scope.project.$promise.then(function () {
+                    //unhide the edit link column if they are the owner or editor.
+                    if ($rootScope.Profile.isProjectOwner(scope.project)) {
+                        scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
+                        scope.dataGridOptions.api.refreshHeader();
+                    }
+                });
+            } else if ($rootScope.Profile.isAdmin()) {
                     scope.dataGridOptions.columnApi.setColumnVisible("EditLink", true);
                     scope.dataGridOptions.api.refreshHeader();
-                }
-            });
+            }
 
             
 
@@ -102,6 +107,8 @@ var admin_metafields = ['$scope', '$routeParams','GridService', 'ProjectService'
                 templateUrl: 'app/core/admin/components/admin-page/templates/modal-edit-metadataproperty.html',
                 controller: 'ModalEditMetadataPropertyCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved) { 
                 //replace that location in the grid with the one we got back
                 var found = false;

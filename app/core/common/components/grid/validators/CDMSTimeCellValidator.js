@@ -68,5 +68,4 @@ CDMSTimeCellValidator.prototype.validateFieldControlTypeValidation = function (d
 		return this.errors;
 
 	}
-
 };

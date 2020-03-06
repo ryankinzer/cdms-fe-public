@@ -116,8 +116,10 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 //setup activity fields to point to the right place
                 $scope.dataAgColumnDefs.HeaderFields.forEach(function (fieldDef) {
                     if (fieldDef.field == "LocationId") { 
-                        fieldDef.setPossibleValues(makeObjects($scope.project.Locations, 'Id', 'Label'));
-                        fieldDef.field = "Activity." + fieldDef.DbColumnName;
+                        if (fieldDef.setPossibleValues) {
+                            fieldDef.setPossibleValues(makeObjects($scope.project.Locations, 'Id', 'Label'));
+                            fieldDef.field = "Activity." + fieldDef.DbColumnName;
+                        }
                     }
 
                     if (fieldDef.field == "QAStatusId") { //ActivityQAStatusId 

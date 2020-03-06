@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en"  xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>CDMS v.2.0</title>
+    <title>CDMS v.2.1</title>
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -38,7 +38,7 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 
-    <script src="bower_components/d3/d3.js" charset="utf-8"></script>
+    <script src="bower_components/d3/d3.min.js" charset="utf-8"></script>
     <script src="bower_components/nvd3/build/nv.d3.js"></script> <!-- or use another assembly -->
     <script src="bower_components/angular-nvd3/dist/angular-nvd3.js"></script>
     <script src="bower_components/Stickyfill/dist/stickyfill.js"></script>
@@ -96,7 +96,6 @@
                         <a class="dropdown-item" href="http://gis.ctuir.org" target="_blank">GIS Website</a> -->
                     </div>
                 </li>
-
                 <li ng-cloak ng-show="Profile.isAdmin()" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -110,6 +109,9 @@
             </ul>
 
             <ul class="navbar-nav navbar-right">
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/feedback" target="_blank">Feedback</a>
+                </li>
                 <li class="dropdown" ng-cloak>
                     <a class="nav-item nav-link dropdown-toggle" data-toggle="dropdown">{{Profile.Fullname}}</a>
                     <ul class="dropdown-menu">

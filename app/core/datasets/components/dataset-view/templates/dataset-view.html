@@ -45,14 +45,28 @@
                         <div class="header-value">{{row.Activity.Instrument.Name}} (SN:{{row.Activity.Instrument.SerialNumber}})</div>
                     </div>
 
+                    <div ng-switch-when="fisherman-select" class="header-column">
+                        <div class="header-label">{{field.Label}}:</div>
+                        <div class="header-value">{{row.FishermanFullName}}</div>
+                    </div>
+
                     <div ng-switch-when="accuracy-check-select" class="header-column">
-                        <div ng-show="row.Activity.AccuracyCheck" class="header-label">Deploy Accuracy: </div>
-                        <div ng-show="row.Activity.AccuracyCheck" class="header-value">{{row.Activity.AccuracyCheck | dataGrade}} on {{row.Activity.AccuracyCheck.CheckDate | date}}</div>
+                        <!--<div ng-show="row.Activity.AccuracyCheck" class="header-label">Deploy Accuracy: </div>-->
+                        <!--<div ng-show="dsConfig.DataEntryPage.ShowFields.contains('AccuracyCheck')" class="header-label">Deploy Accuracy: </div>-->
+                        <div class="header-label">Deploy Accuracy: </div>
+                        <!--<div ng-show="row.Activity.AccuracyCheck" class="header-value">{{row.Activity.AccuracyCheck | dataGrade}} on {{row.Activity.AccuracyCheck.CheckDate | date}}</div>-->
+                        <!--<div ng-show="dsConfig.DataEntryPage.ShowFields.contains('AccuracyCheck')" class="header-value">{{row.Activity.AccuracyCheck | dataGrade}} on {{row.Activity.AccuracyCheck.CheckDate | date}}</div>-->
+                        <!-- If AccuracyCheck value is null or missing, we need to -->
+                        <div ng-show="!row.Activity.AccuracyCheckBreak" class="header-value">{{row.Activity.AccuracyCheckText}}</div><br />
+                        <div ng-show="row.Activity.AccuracyCheckBreak" class="header-value">{{row.Activity.AccuracyCheckText}}</div>
                     </div>
 
                     <div ng-switch-when="post-accuracy-check-select" class="header-column">
-                        <div ng-show="row.Activity.PostAccuracyCheck" class="header-label">Post-Deploy Accuracy: </div>
-                        <div ng-show="row.Activity.PostAccuracyCheck" class="header-value">{{row.Activity.PostAccuracyCheck | dataGrade}} on {{row.Activity.PostAccuracyCheck.CheckDate | date}}</div>
+                        <!--<div ng-show="row.Activity.PostAccuracyCheck" class="header-label">Post-Deploy Accuracy: </div>-->
+                        <!--<div ng-show="row.Activity.PostAccuracyCheck" class="header-value">{{row.Activity.PostAccuracyCheck | dataGrade}} on {{row.Activity.PostAccuracyCheck.CheckDate | date}}</div>-->
+                        <div class="header-label">Post-Deploy Accuracy: </div>
+                        <div ng-show="!row.Activity.AccuracyCheckBreak" class="header-value">{{row.Activity.PostAccuracyCheckText}}</div><br />
+                        <div ng-show="row.Activity.AccuracyCheckBreak" class="header-value">{{row.Activity.PostAccuracyCheckText}}</div>
                     </div>
 
                     <div ng-switch-when="timezone-select" class="header-column">
@@ -60,7 +74,7 @@
                         <div class="header-value">{{row.Activity.Timezone.Name}}&nbsp;</div>
                     </div>
 
-                    <div ng-switch-when="multiselect,select" ng-switch-when-separator="," class="header-column">
+                    <div ng-switch-when="multiselect,select,select-number" ng-switch-when-separator="," class="header-column">
                         <div class="header-label">{{field.Label}}:</div>
                         <div class="header-value">{{row[field.DbColumnName] | arrayDisplayValue:field}}&nbsp;</div>
                     </div>
@@ -121,15 +135,15 @@
 
 
                     <!--
-                        <div>
-                            <div ng-show="showProjectLeads">
-                                <div class="header-label">Selected Project Leads:</div>
-                                <div class="header-value">
-                                    <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strProjectLead"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    -->
+        <div>
+            <div ng-show="showProjectLeads">
+                <div class="header-label">Selected Project Leads:</div>
+                <div class="header-value">
+                    <textarea class="form-control" type="text" rows="4" readonly ng-model="row.strProjectLead"></textarea>
+                </div>
+            </div>
+        </div>
+    -->
 
                 </div>
             </div>

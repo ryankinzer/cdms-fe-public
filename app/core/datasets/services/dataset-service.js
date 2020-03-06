@@ -348,41 +348,40 @@ datasets_module.service('DatasetService', ['$q',
                 //default page routes
                 dataset.activitiesRoute = "activities"; //default route -- when they click to go to "activities" this is the route they should use.
 
-                //objectify our dataset config for later use
-                //console.log("dataset.Config is next...");
-                //console.dir(dataset.Config);
-                //if(dataset.Config) // Original line.
-                // If we are verifying the variable is defined, this works the best.  Lastly, the database column config may either be null, or contain the text "NULL", so we must check for that too.
-                if ((typeof dataset.Config !== 'undefined') && (dataset.Config !== null) && (dataset.Config !== "NULL")) {
-                    dataset.Config = angular.fromJson(dataset.Config);
+                if (typeof dataset.Config == 'undefined' || dataset.Config == null || dataset.Config == "NULL" || dataset.Config == "null") {
+                    dataset.Config = {};
+                    return;
+                }
 
-                    //if there are page routes in configuration, set them in our dataset
-                    if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)
-                        dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
+                dataset.Config = angular.fromJson(dataset.Config);
 
-                    if (typeof scope == 'undefined') {
-                        //console.log("SKIPPING dataset config - no scope is set!");
-                    }
-                    else {
-                        //part of configuration is authorization.  If the user isn't authorized
-                        //  for this dataset, bump them to error
-                        if (dataset.Config.RestrictRoles) {
-                            var authorized = false;
-                            for (var i = dataset.Config.RestrictRoles.length - 1; i >= 0; i--) {
-                                if (angular.rootScope.Profile.hasRole(dataset.Config.RestrictRoles[i]))
-                                    authorized = true;
-                            };
+                //if there are page routes in configuration, set them in our dataset
+                if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)
+                    dataset.activitiesRoute = dataset.Config.ActivitiesPage.Route;
 
-                            if (!authorized) {
-                                //angular.rootScope.go('/unauthorized');
-                                scope.AuthorizedToViewProject = false;
-                            }
+                //part of configuration is authorization.  If the user isn't authorized
+                //  for this dataset, bump them to error
+                if (typeof dataset.Config.RestrictRoles !== 'undefined') {
+                    var authorized = false;
+                    for (var i = dataset.Config.RestrictRoles.length - 1; i >= 0; i--) {
+                        if (angular.rootScope.Profile.hasRole(dataset.Config.RestrictRoles[i]))
+                            authorized = true;
+                    };
 
-                            //console.dir(angular.rootScope.Profile);
-                            //console.dir(dataset.Config.RestrictRoles);
+                    if (!authorized) {
+                            
+                        if (typeof scope !== 'undefined') {
+                            scope.AuthorizedToViewProject = false;
+                        }
+                        else {
+                            angular.rootScope.go('/unauthorized');
                         }
                     }
+
+                    //console.dir(angular.rootScope.Profile);
+                    //console.dir(dataset.Config.RestrictRoles);
                 }
+                    
             },
 			
             getHeadersDataForDataset: function (datasetId) {

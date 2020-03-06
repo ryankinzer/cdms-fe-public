@@ -19,6 +19,8 @@ var admin_users = ['$scope', '$uibModal', 'CommonService',
                 templateUrl: 'app/core/common/components/modals/templates/modal-manage-user.html',
                 controller: 'ModalManageUserCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 

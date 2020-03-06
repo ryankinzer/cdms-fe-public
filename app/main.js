@@ -29,7 +29,6 @@ define([
 
       'ngFileUpload',				
       'nvd3',					
-
       'ngMaterial', 'ngMessages',
 
 	  ])
@@ -67,6 +66,7 @@ define([
 
             $routeProvider.when('/datasetquery/:Id', { templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DataQueryCtrl'});
             $routeProvider.when('/dataset-details/:Id', { templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-view.html', controller: 'DatasetDetailsCtrl'});
+            $routeProvider.when('/dataset-edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-edit.html', controller: 'DatasetDetailsCtrl'});
             $routeProvider.when('/datasetimport/:Id', { templateUrl: 'app/core/datasets/components/dataset-import/templates/dataset-import.html', controller: 'DatasetImportCtrl', permission: 'Edit'});
 
             $routeProvider.when('/query/:Id', { templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DatastoreQueryCtrl'});
@@ -82,6 +82,7 @@ define([
             $routeProvider.when('/admin-new-dataset/:Id', { templateUrl: 'app/core/admin/components/admin-page/templates/admin-new-dataset.html', controller: 'AdminNewDatasetCtrl' });
 
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
+            $routeProvider.when('/feedback', { templateUrl: 'app/core/common/components/feedback/templates/feedback.html',controller: 'FeedbackController'});
 
 	        //when all else fails...
 	        $routeProvider.otherwise({redirectTo: '/dashboard'});

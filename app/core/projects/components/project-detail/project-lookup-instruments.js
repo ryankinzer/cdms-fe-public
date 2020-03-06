@@ -130,11 +130,21 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 { colId: 'EditLinksMaster', cellRenderer: EditLinksTemplate, width: 160, menuTabs: [], hide: true },
                 { field: 'Name', headerName: 'Name', width: 250, sort: 'asc', menuTabs: ['filterMenuTab'], filter: 'text', cellRenderer: 'group' },
                 { field: 'SerialNumber', headerName: 'Serial Number', width: 150, menuTabs: ['filterMenuTab'], filter: 'text'},
-                { field: 'Manufacturer', headerName: 'Manufacturer', width: 150, menuTabs: ['filterMenuTab'], },
-                { field: 'Model', headerName: 'Model', width: 180, menuTabs: ['filterMenuTab'], },
-                { field: 'InstrumentType.Name', headerName: 'Type', menuTabs: ['filterMenuTab'], },
-                { field: 'StatusId', headerName: 'Status', width: 150, menuTabs: ['filterMenuTab'], 
-                    cellRenderer: function (params) { return (params.node.data.StatusId == 0) ? 'Active' : 'Inactive'; },
+                { field: 'Manufacturer', headerName: 'Manufacturer', width: 150, menuTabs: ['filterMenuTab'], filter: 'text'},
+                { field: 'Model', headerName: 'Model', width: 180, menuTabs: ['filterMenuTab'], filter: 'text'},
+                { field: 'InstrumentType.Name', headerName: 'Type', menuTabs: ['filterMenuTab'], filter: 'text' },
+                {
+                    //field: 'StatusId',
+                    field: 'StatusText',
+                    headerName: 'Status',
+                    width: 150,
+                    menuTabs: ['filterMenuTab'],
+                    // When the StatusId is a number, the displayed values and the column filter suggest the user to enter text values (Active or Inactive).
+                    // However, the filter does not work, unless the user enters the corresponding StatusId number (0 for Active, 1 for Inactive).
+                    // This is confusing and makes the user thing the filter is broke.
+                    // Therefore, down below in scope.$parent.$watch, we set StatusText the value to the text, for displaying, and then the filter works.
+                    //cellRenderer: function (params) { return (params.node.data.StatusId == 0) ? 'Active' : 'Inactive'; },
+                    filter: 'text'
                 },
                 //{ field: 'OwningDepartment.Name', headerName: 'Owner', width: 250, menuTabs: ['filterMenuTab'], },
                 
@@ -203,7 +213,17 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 scope.instrGridOptions.api.showLoadingOverlay(); //show loading...
 
                 //build the grid based on our subprojects
-                scope.instrGridOptions.api.setRowData(scope.project.Instruments);
+                var tmpInstruments = angular.copy(scope.project.Instruments);
+
+                tmpInstruments.forEach(function (tmpInstrument) {
+                    //if (tmpInstrument.StatusId === 0)
+                    //    console.log("Found active one");
+
+                    tmpInstrument.StatusText = ConvertStatus.convertStatus(tmpInstrument.StatusId);
+                });
+
+                //scope.instrGridOptions.api.setRowData(scope.project.Instruments);
+                scope.instrGridOptions.api.setRowData(tmpInstruments);
 
                 //if user can edit, unhide the edit links
                 if ($rootScope.Profile.canEdit(scope.project)) {
@@ -237,6 +257,8 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
                 controller: 'ModalCreateInstrumentCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 
@@ -322,6 +344,8 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 templateUrl: 'app/core/common/components/modals/templates/modal-create-instrument.html',
                 controller: 'ModalCreateInstrumentCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             }).result.then(function (saved_instrument) { 
                 //console.log("ok - we saved so update the grid...");
                 var total = scope.project.Instruments.length;
@@ -430,6 +454,8 @@ var lookup_instruments = ['$scope', '$timeout','$routeParams', 'SubprojectServic
                 templateUrl: 'app/core/common/components/modals/templates/modal-new-accuracycheck.html',
                 controller: 'ModalAddAccuracyCheckCtrl',
                 scope: scope, //very important to pass the scope along...
+                backdrop: "static",
+                keyboard: false
             });
         };
 

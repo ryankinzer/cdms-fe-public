@@ -9,7 +9,7 @@
             var result = DatasetService.updateQaStatus(
                 $scope.row.Activity.Id,
                 $scope.NewActivityStatus.QAStatusId,
-                $scope.NewActivityStatus.Comments,
+                $scope.NewActivityStatus.Comments
             );
 
             console.dir(result);

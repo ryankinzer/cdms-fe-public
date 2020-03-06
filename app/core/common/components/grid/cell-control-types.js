@@ -267,7 +267,7 @@ var FileListCellTemplate = function (params) {
     //console.dir(params);
     //console.dir(this);
     var file_links = getProjectFilesArrayAsLinks(params.colDef.ProjectId, params.colDef.DatasetId, params.node.data[params.colDef.DbColumnName]);
-    console.dir(file_links);
+    //console.dir(file_links);
     file_links.forEach(function (link) {
         list += '<li>' + link + '</li>';
     });
@@ -276,6 +276,42 @@ var FileListCellTemplate = function (params) {
     //list += '</ul><button class="right btn btn-xs" style="margin: 0" ng-click="editCellFiles()">[*]</button></div>';
     //console.dir(list);
     return list;
+};
+
+var ItemListCellTemplate = function (params) {
+    var list = '<div class="event-item-list"><ul>';
+    //console.dir(params);
+    //console.dir(this);
+    //var itemList = getProjectFilesArrayAsLinks(params.colDef.ProjectId, params.colDef.DatasetId, params.node.data[params.colDef.DbColumnName]);
+    var itemList = getTextArrayAsList(params.node.data[params.colDef.field]);
+    //console.dir(file_links);
+    itemList.forEach(function (item) {
+        list += '<li>' + item + '</li>';
+    });
+
+    list += '</ul></div>';
+    //list += '</ul><button class="right btn btn-xs" style="margin: 0" ng-click="editCellFiles()">[*]</button></div>';
+    //console.dir(list);
+    return list;
+};
+
+var BulletedItemListCellTemplate = function (params) {
+    if (params.node.data[params.colDef.field] !== null) {
+        var list = '<div class="event-item-list"><ul>';
+
+        var itemList = params.node.data[params.colDef.field];
+        //itemList = JSON.parse(params.node.data.Boundary);
+        if (isArray(params.node.data[params.colDef.field])) {
+            itemList.forEach(function (item) {
+                list += '<li>' + item + '</li>';
+            });
+        }
+        else
+            list += '<li>' + itemList + '</li>';
+        list += '</ul></div>';
+        //console.dir(list);
+        return list;
+    }
 };
 
 var FileControlType = function (cdms_field, col_def) {
@@ -358,6 +394,7 @@ var ControlTypeDefinitions = {
     'number': NumberControlType,
     'select': SelectControlType,
     'instrument-select': SelectControlType,
+    'fisherman-select': SelectControlType,
     'select-number': SelectControlType,
     'string': TextControlType, //just use the Text renderer
     'temp-waypoint-file': TempWaypointFileControlType,
@@ -369,7 +406,10 @@ var ControlTypeDefinitions = {
     'location-select' : SelectControlType,
     'activity-date' : DateControlType,
     'qa-status-select': SelectControlType,
-
+    'accuracy-check-select': SelectControlType,
+    'post-accuracy-check-select': SelectControlType,
+    'timezone-select': SelectControlType,
+    'activity-text': TextControlType
 };
 
 function getControlDefinition(def) {
