@@ -144,6 +144,11 @@ permit_module.factory('GetPermitTypes', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('GetViolations', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/allviolations', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
 
 
 permit_module.service('PermitService', ['$q',
@@ -175,6 +180,7 @@ permit_module.service('PermitService', ['$q',
     'GetPermitRoutes',
 'GetPermitTypes',
 'DeletePermitPerson',
+'GetViolations',
   
     function ($q,
        
@@ -204,7 +210,8 @@ permit_module.service('PermitService', ['$q',
         GetNotifications,
         GetPermitRoutes,
 GetPermitTypes,
-DeletePermitPerson
+DeletePermitPerson,
+GetViolations
       
     ) {
         var service = {
@@ -300,7 +307,11 @@ DeletePermitPerson
             getPermitStatistics: function () { 
                 return GetPermitStatistics.query();
             },
-
+            
+            getAllViolations: function () { 
+                return GetViolations.query();
+            },
+            
             getPermitByPermitNumber: function (permitnumber) {
                 return GetPermitByPermitNumber.query({ PermitNumber: permitnumber });
             },

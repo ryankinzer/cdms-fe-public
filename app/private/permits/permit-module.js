@@ -8,6 +8,7 @@ require([
     'private/permits/components/notifications/notifications',
     'private/permits/components/map/permit-map',
     'private/permits/components/contacts/manage-contacts',
+    'private/permits/components/ehs-violations/list-violations',
 
     //modals
     'private/permits/components/list/add-activity-modal',
@@ -41,6 +42,7 @@ require([
     permit_module.controller('PermitMapController', permit_map);
     permit_module.controller('PermitManageContactsController', permit_contacts);
     permit_module.controller('EditFileTypeModalController', modal_edit_filetype);
+    permit_module.controller('EhsViolationsController', list_violations);
 
     permit_module.filter('personOrgName', function () {
         return function (person) {
