@@ -150,6 +150,9 @@ permit_module.factory('GetViolations', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('SaveViolation', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/permit/saveviolation');
+}]);
 
 permit_module.service('PermitService', ['$q',
 
@@ -181,6 +184,7 @@ permit_module.service('PermitService', ['$q',
 'GetPermitTypes',
 'DeletePermitPerson',
 'GetViolations',
+'SaveViolation',
   
     function ($q,
        
@@ -211,7 +215,8 @@ permit_module.service('PermitService', ['$q',
         GetPermitRoutes,
 GetPermitTypes,
 DeletePermitPerson,
-GetViolations
+GetViolations,
+SaveViolation
       
     ) {
         var service = {
@@ -310,6 +315,10 @@ GetViolations
             
             getAllViolations: function () { 
                 return GetViolations.query();
+            },
+
+            saveViolation: function(violation) {
+                return SaveViolation.save({Violation: violation})
             },
             
             getPermitByPermitNumber: function (permitnumber) {

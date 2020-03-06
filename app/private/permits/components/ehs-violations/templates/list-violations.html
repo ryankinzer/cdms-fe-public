@@ -5,7 +5,7 @@
 <div ng-show="violations.length > 0">
     Records displayed: <b>{{ehsGrid.api.getDisplayedRowCount()}}</b><br /><br />
     </div>
-    <div class="alert alert-primary" role="alert" ng-hide="permits">
+    <div class="alert alert-primary" role="alert" ng-hide="violations">
         Good things come to those who wait... (loading...)
     </div>
 
@@ -24,7 +24,7 @@
 
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a id="tab-basicinfo" class="nav-link-active" data-toggle="tab" data-target="#basicinfo">Details</a>
+                    <a id="tab-basicinfo" class="nav-link active" data-toggle="tab" data-target="#basicinfo">Details</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" data-target="#actions">Activities</a>
@@ -46,7 +46,7 @@
 
                 <div class="tab-content">
 
-                    <div role="tabpanel" class="tab-pane" id="basicinfo">
+                    <div role="tabpanel" class="tab-pane active" id="basicinfo">
                         <div class="list-group media-list media-list-stream">
 
                             <h2>{{row.Name}} ({{row.FileType}})</h2>
@@ -72,17 +72,27 @@
                                     </fieldset>
 
                                     <fieldset style="margin-top: 30px;">
-                                        <legend class="bump-over">Routing</legend>
-                                        <div class="checkbox-fix" ng-repeat="field in ehsGrid.columnDefs | filter:{ColumnIndex:6}" ng-switch on="field.ControlType">
-                                            <ctuir-multiselect-checkbox-field ng-switch-when="multiselect-checkbox"></ctuir-multiselect-checkbox-field>
+                                        <legend class="bump-over">Complainant Information</legend>
+                                        <div ng-repeat="field in ehsGrid.columnDefs | filter:{ColumnIndex:3}" ng-switch on="field.ControlType">
+                                            <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                                            <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                                            <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                                            <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                                            <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                                            <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                                            <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                                            <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
+                                            <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                                            <ctuir-text-field ng-switch-default></ctuir-text-field>
                                         </div>
                                     </fieldset>
-
                                 </div>
+
+
 
                                 <div class="col-lg-4" style="min-width: 450px;">
                                     <fieldset>
-                                        <legend class="bump-over">Location Information</legend>
+                                        <legend class="bump-over">Site Information</legend>
                                         <div ng-repeat="field in ehsGrid.columnDefs | filter:{ColumnIndex:2}" ng-switch on="field.ControlType">
                                             <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
                                             <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
@@ -98,21 +108,11 @@
                                     </fieldset>
 
                                     <fieldset style="margin-top: 30px;">
-                                        <legend class="bump-over">Complainant Information</legend>
-                                        <div ng-repeat="field in ehsGrid.columnDefs | filter:{ColumnIndex:3}" ng-switch on="field.ControlType">
-                                            <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                                            <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
-                                            <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
-                                            <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
-                                            <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                                            <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
-                                            <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
-                                            <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
-                                            <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                                            <ctuir-text-field ng-switch-default></ctuir-text-field>
+                                        <legend class="bump-over">Routing</legend>
+                                        <div class="checkbox-fix" ng-repeat="field in ehsGrid.columnDefs | filter:{ColumnIndex:6}" ng-switch on="field.ControlType">
+                                            <ctuir-multiselect-checkbox-field ng-switch-when="multiselect-checkbox"></ctuir-multiselect-checkbox-field>
                                         </div>
                                     </fieldset>
-
 
                                 </div>
 
@@ -126,7 +126,7 @@
                             <button class="btn btn-sm" ng-click="openActivityModal(null,'new_inspection')">Request Inspection</button>
                             <button class="btn btn-sm" ng-click="openActivityModal(null,'new_route')">Request Review</button>
                             <div style="margin-top: 10px;"></div>
-                            <div id="permit-events-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
+                            <div id="voilations-events-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
                         </div>
                     </div>
                     <div role="tabpanel" class="tab-pane fade in" id="code">
