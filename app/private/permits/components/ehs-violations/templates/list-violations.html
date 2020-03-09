@@ -116,6 +116,35 @@
 
                                 </div>
 
+
+                                <div class="col-lg-4" style="min-width: 480px;">
+                                    <fieldset>
+                                        <legend>Involved Parties</legend>
+                                        <div id="violation-contacts-grid" style="height: 120px;width:100%;" class="ag-theme-blue"></div>
+                                        <button ng-show="row.Id" class="btn btn-secondary btn-sm right margin-5" ng-click="openContactModal()">Add</button>
+                                        <button ng-show="violationContactsGrid.selectedItem" class="btn btn-warning btn-sm right margin-5" ng-click="removeSelectedContact()">Remove</button>
+                                    </fieldset>
+                                    <fieldset style=" margin-top: 30px;">
+                                        <legend>Involved Parcels</legend>
+                                        <div id="violation-parcels-grid" style="height: 120px;width:100%;" class="ag-theme-blue"></div>
+                                        <button ng-show="violationParcelsGrid.selectedItem" class="btn btn-secondary btn-sm right margin-5" ng-click="openParcelInMap()">Open in Map</button>
+                                        <button ng-show="row.Id" class="btn btn-secondary btn-sm right margin-5" ng-click="openParcelModal()">Add</button>
+                                        <button ng-show="violationParcelsGrid.selectedItem" class="btn btn-warning btn-sm right margin-5" ng-click="removeSelectedParcel()">Remove</button>
+                                    </fieldset>
+                                    <fieldset style=" margin-top: 30px;">
+                                        <legend>Parcel Violation History</legend>
+                                        <div id="parcel-history-grid" style="height: 120px;width:100%;" class="ag-theme-blue"></div>
+                                    </fieldset>
+                                    <fieldset style=" margin-top: 30px;">
+                                        <legend>Documents</legend>
+                                        <div id="violation-files-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
+                                        <button ng-show="row.Id" class="btn btn-secondary btn-sm right margin-5" ng-click="openFileModal()">Add</button>
+                                        <button ng-show="violationFilesGrid.selectedItem && !violationFilesGrid.selectedItem.ItemId" class="btn btn-warning btn-sm right margin-5" ng-click="removeSelectedFile()">Remove</button>
+                                    </fieldset>
+                                </div>
+
+
+
                             </div>
                         </div>
                     </div>

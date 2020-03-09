@@ -715,7 +715,7 @@
             }
 
             var file_to_remove = $scope.permitFilesGrid.selectedItem;
-            var deleted = PermitService.deleteFile(PERMIT_PROJECTID, $scope.row.Id, 0, file_to_remove);
+            var deleted = PermitService.deletePermitFile(PERMIT_PROJECTID, $scope.row.Id, 0, file_to_remove);
 
             deleted.$promise.then(function () {
                 $scope.PermitFiles.forEach(function (file, index) {

@@ -50,7 +50,7 @@ permit_module.factory('GetRelatedParcels', ['$resource', function ($resource) {
 
 permit_module.factory('GetPermitFiles', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/GetPermitFiles', {}, {
-        query: { method: 'GET', params: { ProjectId: 'ProjectId', PermitId: 'PermitId'}, isArray: true }
+        query: { method: 'GET', params: { ProjectId: 'ProjectId', DatasetId: PERMIT_DATASETID, PermitId: 'PermitId'}, isArray: true }
     });
 }]);
 
@@ -144,16 +144,6 @@ permit_module.factory('GetPermitTypes', ['$resource', function ($resource) {
     });
 }]);
 
-permit_module.factory('GetViolations', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/permit/allviolations', {}, {
-        query: { method: 'GET', params: { }, isArray: true }
-    });
-}]);
-
-permit_module.factory('SaveViolation', ['$resource', function ($resource) {
-    return $resource(serviceUrl + '/api/v1/permit/saveviolation');
-}]);
-
 permit_module.service('PermitService', ['$q',
 
     'AllPermits',
@@ -183,8 +173,6 @@ permit_module.service('PermitService', ['$q',
     'GetPermitRoutes',
 'GetPermitTypes',
 'DeletePermitPerson',
-'GetViolations',
-'SaveViolation',
   
     function ($q,
        
@@ -214,9 +202,7 @@ permit_module.service('PermitService', ['$q',
         GetNotifications,
         GetPermitRoutes,
 GetPermitTypes,
-DeletePermitPerson,
-GetViolations,
-SaveViolation
+DeletePermitPerson
       
     ) {
         var service = {
@@ -254,7 +240,7 @@ SaveViolation
             },
 
             getPermitFiles: function (PermitId) {
-                return GetPermitFiles.query({ ProjectId: PERMIT_PROJECTID, PermitId: PermitId });
+                return GetPermitFiles.query({ ProjectId: PERMIT_PROJECTID, DatasetId: PERMIT_DATASETID, PermitId: PermitId });
             },
 
             getPermitsByRelatedParcels: function (ParcelId) {
@@ -293,8 +279,8 @@ SaveViolation
                 return SavePermitEvent.save({ PermitEvent: permitevent });
             },
 
-            deleteFile: function (projectId, subprojectId, itemId, file) {
-                return DeletePermitFile.save({ ProjectId: projectId, SubprojectId: subprojectId, ItemId: itemId, File: file });
+            deletePermitFile: function (projectId, subprojectId, itemId, file) {
+                return DeletePermitFile.save({ ProjectId: projectId, DatasetId: PERMIT_DATASETID, SubprojectId: subprojectId, ItemId: itemId, File: file });
             },
 
             deletePermitPerson: function(Id){
@@ -311,14 +297,6 @@ SaveViolation
 
             getPermitStatistics: function () { 
                 return GetPermitStatistics.query();
-            },
-            
-            getAllViolations: function () { 
-                return GetViolations.query();
-            },
-
-            saveViolation: function(violation) {
-                return SaveViolation.save({Violation: violation})
             },
             
             getPermitByPermitNumber: function (permitnumber) {

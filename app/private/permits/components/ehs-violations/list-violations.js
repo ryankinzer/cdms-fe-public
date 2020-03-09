@@ -1,5 +1,5 @@
-var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'PermitService', 'GridService', 'DatasetService','CommonService',
-    function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope, PermitService, GridService, DatasetService, CommonService) {
+var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$location', '$window', '$rootScope', 'PermitService', 'ViolationService', 'GridService', 'DatasetService','CommonService',
+    function ($scope, $route, $routeParams, $modal, $location, $window, $rootScope, PermitService, ViolationService, GridService, DatasetService, CommonService) {
 
         $rootScope.inModule = "permits";
 
@@ -9,26 +9,26 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
         $scope.currentPage = "All";
         $scope.row = null;
 
-        /*
-        $scope.PermitParcels = [];
-        $scope.PermitEvents = [];
-        $scope.PermitFiles = [];
+        
+        $scope.ViolationParcels = [];
+        $scope.ViolationEvents = [];
+        $scope.ViolationFiles = [];
         $scope.ParcelHistory = [];
-        $scope.PermitFileTypes = [];
-        */
+        $scope.ViolationFileTypes = [];
+    
 
         $scope.dataset = DatasetService.getDataset(EHS_DATASETID);
-        //$scope.eventsdataset = DatasetService.getDataset(PERMITEVENTS_DATASETID);
-        //$scope.PermitFileTypes = CommonService.getMetadataProperty(METADATA_PROPERTY_PERMIT_FILETYPES);
-        //$scope.contactsdataset = DatasetService.getDataset(PERMITCONTACTS_DATASETID);
+        //$scope.eventsdataset = DatasetService.getDataset(ViolationEvents_DATASETID);
+        //$scope.ViolationFileTypes = CommonService.getMetadataProperty(METADATA_PROPERTY_PERMIT_FILETYPES);
+        //$scope.contactsdataset = DatasetService.getDataset(VIOLATIONSCONTACTS_DATASETID);
 
         /*
         $scope.contactsdataset.$promise.then(function () {
             $scope.ContactsDatasetColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
         });
 
-        $scope.PermitFileTypes.$promise.then(function () {
-            $scope.PermitFileTypes = angular.fromJson($scope.PermitFileTypes.PossibleValues);
+        $scope.ViolationFileTypes.$promise.then(function () {
+            $scope.ViolationFileTypes = angular.fromJson($scope.ViolationFileTypes.PossibleValues);
         });
         */
 
@@ -59,7 +59,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             $scope.ehsGridDiv = document.querySelector('#active-ehs-grid');
             new agGrid.Grid($scope.ehsGridDiv, $scope.ehsGrid);
 
-            $scope.violations = PermitService.getAllViolations();
+            $scope.violations = ViolationService.getAllViolations();
 
             $scope.violations.$promise.then(function () {
                 // console.log(" -- violations back -- ");
@@ -86,8 +86,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
 
             });
 
-            /*
-            //now do some caching...
+            //now do some caching from permits persons and parcels...
             $scope.PermitPersons = PermitService.getAllPersons();
             $scope.CadasterParcels = PermitService.getAllParcels();
 
@@ -98,7 +97,6 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
 
                 $scope.PermitPersons = $scope.PermitPersons.sort(orderByAlpha);
             });
-            */
         });
             //requirement: can navigate permits by up and down arrow keys
         $scope.keyboardNavigation = function (params) {
@@ -188,6 +186,225 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             navigateToNextCell: $scope.keyboardNavigation
         }
 
+
+        $scope.violationParcelsGrid = {
+            columnDefs: null,
+            rowData: null,
+            rowSelection: 'single',
+            selectedItem: null,
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+            onSelectionChanged: function (params) {
+                $scope.violationParcelsGrid.selectedItem = $scope.violationParcelsGrid.api.getSelectedRows()[0];
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+            onRowDoubleClicked: function (params) {
+                window.open("index.html#!/permits/map?ParcelId=" + params.data.ParcelId, "_blank");
+            },
+        }
+
+        $scope.violationHistoryGrid = {
+            columnDefs: null,
+            rowData: null,
+            rowSelection: 'single',
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+            onRowDoubleClicked: function (params) { 
+                window.open("index.html#!/permits/ehsviolations?Id=" + params.data.Id, "_blank");
+            },
+        }
+
+
+        $scope.violationFilesGrid = {
+            columnDefs: null,
+            rowData: null,
+            rowSelection: 'single',
+            selectedItem: null,
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+            onSelectionChanged: function (params) {
+                $scope.violationFilesGrid.selectedItem = $scope.violationFilesGrid.api.getSelectedRows()[0];
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+            onRowDoubleClicked: function (params) {
+                $scope.openEditFileTypeModal($scope.violationFilesGrid.selectedItem);
+            },
+        }
+
+        $scope.parcelHistoryGrid = {
+            columnDefs: null,
+            rowData: null,
+            rowSelection: 'single',
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+            onRowDoubleClicked: function (params) { 
+                window.open("index.html#!/permits/ehsviolations?Id=" + params.data.Id, "_blank");
+            },
+        }
+
+        $scope.violationContactsGrid = {
+            columnDefs: null,
+            rowData: null,
+            rowSelection: 'single',
+            selectedItem: null,
+            components: {
+                booleanEditor: BooleanEditor,
+                booleanCellRenderer: BooleanCellRenderer,
+            },
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+            onRowDoubleClicked: function (params) {
+                $scope.openPermitPersonModal($scope.violationContactsGrid.selectedItem.PermitPersonId);
+            },
+            onSelectionChanged: function (params) {
+                $scope.violationContactsGrid.selectedItem = $scope.violationContactsGrid.api.getSelectedRows()[0];
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+        }
+
+
+        var UploadedByTemplate = function (param) {
+            return moment(param.node.data.UploadDate).format('L') + " by " + param.node.data.User.Fullname;
+        };
+
+        var EditFileLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                $scope.openFileModal(param.data);
+            });
+            div.appendChild(editBtn);
+
+            return div;
+        };
+
+        var EditContactLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Modify';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                $scope.openContactModal(param.data);
+            });
+            div.appendChild(editBtn);
+
+            return div;
+        };
+
+        var EditEventLinksTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var editBtn = document.createElement('a'); editBtn.href = '#'; editBtn.innerHTML = 'Edit';
+            editBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                $scope.openActivityModal(param.data);
+            });
+            div.appendChild(editBtn);
+
+            return div;
+        };
+
+
+        var LinkTemplate = function (param) {
+
+            var div = document.createElement('div');
+
+            var linkBtn = document.createElement('a');
+            linkBtn.href = param.data.Link;
+            linkBtn.innerHTML = param.data.Name;
+            linkBtn.target = "_blank";
+            div.appendChild(linkBtn);
+            return div;
+        };
+
+
+        $scope.violationContactsGrid.columnDefs = [
+            { colId: 'EditLinks', cellRenderer: EditContactLinksTemplate, width: 60, menuTabs: [], hide: true },
+            {
+                headerName: "Primary", field: "IsPrimary", width: 110,
+                cellRenderer: 'booleanCellRenderer',
+                sort: 'desc'
+            },
+            {
+                headerName: "Contact", width: 200,
+                cellRenderer: function (params) {
+                    return $scope.getPersonLabel(params.node.data.PermitPerson);
+                },
+                filter: 'text',
+                menuTabs: ['filterMenuTab'],
+            },
+            { headerName: "Type", field: "ContactType", width: 160, menuTabs: ['filterMenuTab'], filter: true },
+            {
+                headerName: "Info", width: 120,
+                cellRenderer: function (params) {
+                    if (params.node.data.PermitPerson.CellPhone)
+                        return formatUsPhone(params.node.data.PermitPerson.CellPhone);
+
+                    if (params.node.data.PermitPerson.WorkPhone)
+                        return formatUsPhone(params.node.data.PermitPerson.WorkPhone);
+
+                    if (params.node.data.PermitPerson.HomePhone)
+                        return formatUsPhone(params.node.data.PermitPerson.HomePhone);
+
+                    return (params.node.data.PermitPerson.Email) ? params.node.data.PermitPerson.Email : "None provided";
+
+                },
+                filter: 'text',
+                menuTabs: ['filterMenuTab'],
+            },
+
+        ];
+
+        $scope.violationParcelsGrid.columnDefs = [
+            { headerName: "Parcel Id", field: "ParcelId", width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "PLSS", field: "PLSS", width: 180, menuTabs: ['filterMenuTab'], filter: true },
+            //{ headerName: "Acres", field: "Object.Acres_Cty", width: 150, menuTabs: ['filterMenuTab'] },
+            { headerName: "GIS", width: 150, menuTabs: ['filterMenuTab'], 
+                valueGetter: function(param){
+                    if(param.data.Object) { //then we have joined cadaster on objectid for this parcel
+                        return (param.data.Object.ParcelId == param.data.ParcelId) ? "Cadaster" : "Updated";
+                    } else {
+                        return "Historical"; // if no cadaster object 
+                    }
+                } 
+            },
+        ];
+
+        $scope.parcelHistoryGrid.columnDefs = [
+            { headerName: "File Number", field: "FileNumber", width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Name", field: "Name", width: 220, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Parcel Id", field: "MatchingParcelId", width: 150, menuTabs: ['filterMenuTab'], filter: true },
+            { headerName: "Status", field: "ViolationStatus", width: 150, menuTabs: ['filterMenuTab'], filter: true },
+        ];
+
+        $scope.violationFilesGrid.columnDefs = [
+            { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'Description', headerName: 'File Type', width: 200, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'Uploaded', headerName: "Uploaded", width: 240, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
+        ];
+        
+        
+
         $scope.createNew = function () {
 
             if ($scope.row && $scope.row.dataChanged && !confirm("It looks like you've made edits on this page. Are you sure you want to clear everything and start a new record?")) {
@@ -200,18 +417,124 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
 
             $scope.generateFileNumber();
 
-            /*
-            $scope.PermitContacts = [];
-            $scope.PermitParcels = [];
-            $scope.PermitEvents = [];
-            $scope.PermitFiles = [];
+            $scope.ViolationContacts = [];
+            $scope.ViolationParcels = [];
+            $scope.ViolationEvents = [];
+            $scope.ViolationFiles = [];
             $scope.ParcelHistory = [];
-*/
-  //          $scope.resetGrids();
+
+            $scope.resetGrids();
 
             $('#tab-basicinfo').tab('show'); //default to the "Permit Details" tab when select a different permit
 
         };
+
+        $scope.openContactModal = function (params) {
+
+            //if editing, we'll have incoming params
+            if (params) {
+                $scope.contact_modal = params;
+                $scope.contact_modal.PermitPerson.Label = $scope.getPersonLabel($scope.contact_modal.PermitPerson);
+            } else {
+                $scope.contact_modal = { PermitId: $scope.row.Id, EHSViolationId: $scope.row.Id };
+            }
+
+            console.dir($scope.contact_modal);
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/add-contact-modal.html',
+                controller: 'ContactModalController',
+                scope: $scope,
+                backdrop: "static",
+                keyboard: false
+            }).result.then(function (saved_contact) {
+                $scope.ViolationContacts = ViolationService.getViolationContacts(saved_contact.EHSViolationId);
+                $scope.ViolationContacts.$promise.then(function () {
+                    $scope.violationContactsGrid.api.setRowData($scope.ViolationContacts);
+                });
+            });
+        }
+
+        $scope.openParcelModal = function (params) {
+
+            if ($scope.row.dataChanged){
+                alert("Please save or cancel your changes before adding a new parcel.");
+                return;
+            }
+
+            //if editing, we'll have incoming params
+            if (params) {
+                $scope.parcel_modal = params;
+            } else {
+                $scope.parcel_modal = {};
+            }
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/add-parcel-modal.html',
+                controller: 'ParcelModalController',
+                scope: $scope,
+                backdrop: "static",
+                keyboard: false
+            }).result.then(function (saved_parcel) {
+                $scope.ViolationParcels = ViolationService.getViolationParcels(saved_parcel.EHSViolationId);
+                $scope.ViolationParcels.$promise.then(function () {
+                    $scope.violationParcelsGrid.api.setRowData($scope.ViolationParcels);
+                    //$scope.refreshZones();
+                    $scope.refreshParcelHistory();
+                });
+            });
+        }
+
+        $scope.openFileModal = function (params) {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/modal-new-file.html',
+                controller: 'ViolationFileModalController',
+                backdrop: 'static',
+                keyboard: false,
+                scope: $scope,
+            }).result.then(function (saved_files) {
+                if (Array.isArray(saved_files)) {
+
+                    saved_files.forEach(function (new_file) {
+                        $scope.ViolationFiles.push(new_file);
+                    });
+
+                    $scope.violationFilesGrid.api.setRowData($scope.ViolationFiles);
+                }
+                else
+                    console.warn("looks like no files were saved?");
+            });
+        }
+
+        $scope.removeSelectedFile = function () {
+
+            if (!confirm("Are you sure you want to delete this file?")) {
+                return;
+            }
+
+            var file_to_remove = $scope.violationFilesGrid.selectedItem;
+            var deleted = ViolationService.deleteViolationFile(PERMIT_PROJECTID, $scope.row.Id, 0, file_to_remove);
+
+            deleted.$promise.then(function () {
+                $scope.ViolationFiles.forEach(function (file, index) {
+                    if (file.Id == file_to_remove.Id) {
+                        $scope.ViolationFiles.splice(index, 1);
+                        $scope.violationFilesGrid.api.setRowData($scope.ViolationFiles);
+                    }
+                });
+            });
+
+        }
+
+        //returns a composed label for a person
+        $scope.getPersonLabel = function(person){
+            var label = (person.Organization) ? person.Organization : person.FullName;
+            if (label == "")
+                person.FirstName + " " + person.LastName;
+
+            return label;
+        }
 
         $scope.onHeaderEditingStopped = function (field) { //fired onChange for header fields (common/templates/form-fields)
 
@@ -284,6 +607,47 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             
         };
 
+        $scope.resetGrids = function () {
+
+            //activate the violation contacts grid
+            if (!$scope.violationContactsGridDiv) {
+                $scope.violationContactsGridDiv = document.querySelector('#violation-contacts-grid');
+                new agGrid.Grid($scope.violationContactsGridDiv, $scope.violationContactsGrid);
+            }
+
+            //activate the violation parcels grid
+            if (!$scope.violationParcelsGridDiv) {
+                $scope.violationParcelsGridDiv = document.querySelector('#violation-parcels-grid');
+                new agGrid.Grid($scope.violationParcelsGridDiv, $scope.violationParcelsGrid);
+            }
+
+            //activate the parcel history grid
+            if (!$scope.parcelHistoryGridDiv) {
+                $scope.parcelHistoryGridDiv = document.querySelector('#parcel-history-grid');
+                new agGrid.Grid($scope.parcelHistoryGridDiv, $scope.parcelHistoryGrid);
+            }
+
+            //activate the violation files grid
+            if (!$scope.violationFilesGridDiv) {
+                $scope.violationFilesGridDiv = document.querySelector('#violation-files-grid');
+                new agGrid.Grid($scope.violationFilesGridDiv, $scope.violationFilesGrid);
+            }
+            $scope.violationContactsGrid.api.setRowData($scope.ViolationContacts);
+            $scope.violationParcelsGrid.api.setRowData($scope.ViolationParcels);
+            $scope.violationFilesGrid.api.setRowData($scope.PermitFiles);
+            $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
+
+            if ($scope.violationEventsGrid && $scope.violationEventsGrid.api)
+                $scope.violationEventsGrid.api.setRowData($scope.ViolationEvents);
+
+            if ($scope.Profile.hasRole("Permits")) { //TODO: EditPermits?
+                $scope.violationContactsGrid.columnApi.setColumnVisible("EditLinks", true);
+                $scope.violationParcelsGrid.columnApi.setColumnVisible("EditLinks", true);
+                $scope.violationFilesGrid.columnApi.setColumnVisible("EditLinks", true);
+            }
+
+        };        
+
         $scope.save = function () {
             
             var to_save = angular.copy($scope.row);
@@ -293,7 +657,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             //to_save.Zoning = angular.toJson(to_save.Zoning);
             // console.dir(to_save);
 
-            var saved_violation = PermitService.saveViolation(to_save);
+            var saved_violation = ViolationService.saveViolation(to_save);
 
             saved_violation.$promise.then(function () { 
                 $scope.row.isSaving = false;
@@ -319,9 +683,9 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                     var save_event = PermitService.savePermitEvent(new_event);
                     save_event.$promise.then(function () { 
                         //refresh the activities now that we've saved a new one.
-                        $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
-                        $scope.PermitEvents.$promise.then(function () {
-                            $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                        $scope.ViolationEvents = PermitService.getViolationEvents($scope.row.Id);
+                        $scope.ViolationEvents.$promise.then(function () {
+                            $scope.ViolationEventsGrid.api.setRowData($scope.ViolationEvents);
                         });
                     });
                 }
@@ -364,14 +728,35 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             });
         };
 
+        $scope.resetGrids();
+
+        $scope.refreshParcelHistory = function () {
+            $scope.ParcelHistory = [];
+            $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
+
+            //iterate parcels to find any related violations
+            $scope.ViolationParcels.forEach(function (parcel) {
+                var related_violations = ViolationService.getViolationsByRelatedParcels(parcel.ParcelId);
+                related_violations.$promise.then(function () {
+                    related_violations.forEach(function (violation) {
+                        if (violation.Id !== $scope.row.Id) {
+                            violation.MatchingParcelId = parcel.ParcelId;
+                            $scope.ParcelHistory.push(violation);
+                        }
+                    });
+                    $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
+                });
+            });
+        };
+
 
         $scope.selectViolation = function (Id) {
-/*
-            $scope.PermitContacts = PermitService.getPermitContacts(Id);
-            $scope.PermitParcels = PermitService.getPermitParcels(Id);
-            $scope.PermitEvents = PermitService.getPermitEvents(Id);
-            $scope.PermitFiles = PermitService.getPermitFiles(Id);
-  */          
+            $scope.ViolationContacts = ViolationService.getViolationContacts(Id);
+            $scope.ViolationParcels = ViolationService.getViolationParcels(Id);
+            /*
+            $scope.ViolationEvents = PermitService.getViolationEvents(Id);
+            */          
+            $scope.ViolationFiles = ViolationService.getViolationFiles(Id);
             $scope.row.NotifyRoutes = ($scope.row.NotifyRoutes) ? angular.fromJson($scope.row.NotifyRoutes) : [];
             $scope.row.ViolationOffenses = ($scope.row.ViolationOffenses) ? angular.fromJson($scope.row.ViolationOffenses) : [];
             
@@ -381,22 +766,22 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             if (!Array.isArray($scope.row.ViolationOffenses))
                 $scope.row.ViolationOffenses = [];
 
-/*
-            $scope.PermitContacts.$promise.then(function () {
-                $scope.permitContactsGrid.api.setRowData($scope.PermitContacts);
-                $scope.permitContactsGrid.selectedItem = null;
+            $scope.ViolationContacts.$promise.then(function () {
+                $scope.violationContactsGrid.api.setRowData($scope.ViolationContacts);
+                $scope.violationContactsGrid.selectedItem = null;
             });
-
-            $scope.PermitParcels.$promise.then(function () {
-                $scope.permitParcelsGrid.api.setRowData($scope.PermitParcels);
-                $scope.permitParcelsGrid.selectedItem = null;
+            
+            $scope.ViolationParcels.$promise.then(function () {
+                $scope.violationParcelsGrid.api.setRowData($scope.ViolationParcels);
+                $scope.violationParcelsGrid.selectedItem = null;
                 $scope.refreshParcelHistory();
-                $scope.refreshZones();
+                //$scope.refreshZones();
             });
-
-            $scope.PermitEvents.$promise.then(function () {
-                $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
-                $scope.permitEventsGrid.selectedItem = null;
+            
+            /*
+            $scope.ViolationEvents.$promise.then(function () {
+                $scope.ViolationEventsGrid.api.setRowData($scope.ViolationEvents);
+                $scope.ViolationEventsGrid.selectedItem = null;
 
                 $scope.PermitStatus = [];
 
@@ -408,7 +793,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                         EventType: 'Review',
                     };
 
-                    $scope.PermitEvents.forEach(function (event) { 
+                    $scope.ViolationEvents.forEach(function (event) { 
                         if (event.ItemType == review) //should only be one, really...
                         {
                             route.RequestDate = event.RequestDate;
@@ -422,7 +807,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 });
 
                 //and now once for inspections
-                $scope.PermitEvents.forEach(function (event) { 
+                $scope.ViolationEvents.forEach(function (event) { 
                     var route = {};
                     if (event.EventType == "Inspection") 
                     {
@@ -451,9 +836,9 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             //});
 
             /*
-            $scope.PermitFiles.$promise.then(function () {
-                $scope.permitFilesGrid.api.setRowData($scope.PermitFiles);
-                $scope.permitFilesGrid.selectedItem = null;
+            $scope.ViolationFiles.$promise.then(function () {
+                $scope.ViolationFilesGrid.api.setRowData($scope.ViolationFiles);
+                $scope.ViolationFilesGrid.selectedItem = null;
             });
 
             if(!Array.isArray($scope.row.Zones)){

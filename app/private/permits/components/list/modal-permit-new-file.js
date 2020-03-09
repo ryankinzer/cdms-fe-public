@@ -1,5 +1,5 @@
 ﻿
-modal_new_file = ['$scope','$uibModalInstance', 'Upload',
+modal_permit_new_file = ['$scope','$uibModalInstance', 'Upload',
 	function($scope,  $modalInstance, $upload){
 		// note: file selected for upload in this controller are managed by onFileSelect in this controller (see below).
 
@@ -83,7 +83,7 @@ modal_new_file = ['$scope','$uibModalInstance', 'Upload',
 						method: "POST",
 						// headers: {'headerKey': 'headerValue'},
 						// withCredential: true,
-						data: {ProjectId: PERMIT_PROJECTID, Description: file.Description, SubprojectId: $scope.row.Id},
+						data: {ProjectId: PERMIT_PROJECTID, DatasetId: PERMIT_DATASETID, Description: file.Description, SubprojectId: $scope.row.Id},
 						file: file
 
 					}).progress(function (evt) {

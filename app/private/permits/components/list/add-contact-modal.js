@@ -1,7 +1,7 @@
 ﻿//modal to add/edit permit contact 
-var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','PermitService',
+var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','PermitService','ViolationService',
 
-    function ($scope, $modal, $modalInstance, PermitService) {
+    function ($scope, $modal, $modalInstance, PermitService, ViolationService) {
 
         $scope.mode = "edit";
 
@@ -11,7 +11,16 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
 
         $scope.save = function () {
 
-            var new_contact = PermitService.savePermitContact($scope.contact_modal);
+            var new_contact = "";
+
+            if($scope.violations != null)
+            {
+                new_contact = ViolationService.saveViolationContact($scope.contact_modal);
+            }
+            else{
+                new_contact = PermitService.savePermitContact($scope.contact_modal);
+            }
+            
 
             new_contact.$promise.then(function () {
                 console.log("done and success!");
@@ -26,6 +35,7 @@ var modal_edit_permitcontact = ['$scope', '$uibModal','$uibModalInstance','Permi
         $scope.Selected = {Person : []};
 
         $scope.personEntryUpdate = function () { 
+            console.log("searching... " + $scope.PermitPersons.length + " records");
             $scope.personMatches = [];
             $scope.Selected.Person.length = 0;
             $scope.person_modal = {};
