@@ -46,7 +46,7 @@ permit_module.factory('DeleteViolationFile', ['$resource', function ($resource) 
 
 permit_module.factory('GetViolationFiles', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/violation/GetViolationFiles', {}, {
-        query: { method: 'GET', params: { ProjectId: 'ProjectId', DatasetId: EHS_DATASETID, ViolationId: 'ViolationId'}, isArray: true }
+        query: { method: 'GET', params: { ProjectId: 'ProjectId', ViolationId: 'ViolationId'}, isArray: true }
     });
 }]);
 
@@ -106,11 +106,11 @@ permit_module.service('ViolationService', ['$q',
             },
 
             deleteViolationFile: function (projectId, subprojectId, itemId, file) {
-                return DeleteViolationFile.save({ ProjectId: projectId, DatasetId: EHS_DATASETID, SubprojectId: subprojectId, ItemId: itemId, File: file });
+                return DeleteViolationFile.save({ ProjectId: projectId, SubprojectId: subprojectId, ItemId: itemId, File: file });
             },
 
             getViolationFiles: function (ViolationId) {
-                return GetViolationFiles.query({ ProjectId: PERMIT_PROJECTID, DatasetId: EHS_DATASETID, ViolationId: ViolationId });
+                return GetViolationFiles.query({ ProjectId: EHS_PROJECTID, ViolationId: ViolationId });
             },
         };
 

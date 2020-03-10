@@ -633,7 +633,7 @@
             $scope.file_modal = params;
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/permits/components/list/templates/modal-edit-file.html',
-                controller: 'EditFileTypeModalController',
+                controller: 'EditPermitFileTypeModalController',
                 scope: $scope,
                 backdrop: "static",
                 keyboard: false

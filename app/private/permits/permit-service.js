@@ -50,7 +50,7 @@ permit_module.factory('GetRelatedParcels', ['$resource', function ($resource) {
 
 permit_module.factory('GetPermitFiles', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/permit/GetPermitFiles', {}, {
-        query: { method: 'GET', params: { ProjectId: 'ProjectId', DatasetId: PERMIT_DATASETID, PermitId: 'PermitId'}, isArray: true }
+        query: { method: 'GET', params: { ProjectId: 'ProjectId', PermitId: 'PermitId'}, isArray: true }
     });
 }]);
 
@@ -240,7 +240,7 @@ DeletePermitPerson
             },
 
             getPermitFiles: function (PermitId) {
-                return GetPermitFiles.query({ ProjectId: PERMIT_PROJECTID, DatasetId: PERMIT_DATASETID, PermitId: PermitId });
+                return GetPermitFiles.query({ ProjectId: PERMIT_PROJECTID, PermitId: PermitId });
             },
 
             getPermitsByRelatedParcels: function (ParcelId) {
@@ -280,7 +280,7 @@ DeletePermitPerson
             },
 
             deletePermitFile: function (projectId, subprojectId, itemId, file) {
-                return DeletePermitFile.save({ ProjectId: projectId, DatasetId: PERMIT_DATASETID, SubprojectId: subprojectId, ItemId: itemId, File: file });
+                return DeletePermitFile.save({ ProjectId: projectId, SubprojectId: subprojectId, ItemId: itemId, File: file });
             },
 
             deletePermitPerson: function(Id){

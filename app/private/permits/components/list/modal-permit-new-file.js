@@ -83,7 +83,7 @@ modal_permit_new_file = ['$scope','$uibModalInstance', 'Upload',
 						method: "POST",
 						// headers: {'headerKey': 'headerValue'},
 						// withCredential: true,
-						data: {ProjectId: PERMIT_PROJECTID, DatasetId: PERMIT_DATASETID, Description: file.Description, SubprojectId: $scope.row.Id},
+						data: {ProjectId: PERMIT_PROJECTID, Description: file.Description, SubprojectId: $scope.row.Id},
 						file: file
 
 					}).progress(function (evt) {

@@ -16,7 +16,8 @@ require([
     'private/permits/components/list/add-parcel-modal',
     'private/permits/components/list/modal-permit-new-file',
     'private/permits/components/list/modal-violation-new-file',
-    'private/permits/components/list/modal-edit-file',
+    'private/permits/components/list/modal-permit-edit-file',
+    'private/permits/components/list/modal-violation-edit-file',
     'private/permits/components/contacts/add-person-modal',
     'private/permits/components/taskboard/add-fee-modal',
     'private/permits/components/list/request-inspection',
@@ -44,7 +45,8 @@ require([
     permit_module.controller('PermitNotificationsController', permit_notifications);
     permit_module.controller('PermitMapController', permit_map);
     permit_module.controller('PermitManageContactsController', permit_contacts);
-    permit_module.controller('EditFileTypeModalController', modal_edit_filetype);
+    permit_module.controller('EditPermitFileTypeModalController', modal_permit_edit_filetype);
+    permit_module.controller('EditViolationFileTypeModalController', modal_violation_edit_filetype);
     permit_module.controller('EhsViolationsController', list_violations);
 
     permit_module.filter('personOrgName', function () {

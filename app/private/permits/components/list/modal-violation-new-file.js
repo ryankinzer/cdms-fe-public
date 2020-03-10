@@ -83,7 +83,7 @@ modal_violation_new_file = ['$scope','$uibModalInstance', 'Upload',
 						method: "POST",
 						// headers: {'headerKey': 'headerValue'},
 						// withCredential: true,
-						data: {ProjectId: PERMIT_PROJECTID, DatasetId: EHS_DATASETID, Description: file.Description, SubprojectId: $scope.row.Id},
+						data: {ProjectId: EHS_PROJECTID, Description: file.Description, SubprojectId: $scope.row.Id},
 						file: file
 
 					}).progress(function (evt) {

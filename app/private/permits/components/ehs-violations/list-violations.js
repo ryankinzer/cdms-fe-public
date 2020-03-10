@@ -15,11 +15,16 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
         $scope.ViolationFiles = [];
         $scope.ParcelHistory = [];
         $scope.ViolationFileTypes = [];
-    
+        $scope.PermitFileTypes = [];
+
+        $scope.PermitFileTypes = CommonService.getMetadataProperty(METADATA_PROPERTY_PERMIT_FILETYPES);
+
+        $scope.PermitFileTypes.$promise.then(function () {
+            $scope.PermitFileTypes = angular.fromJson($scope.PermitFileTypes.PossibleValues);
+        });
 
         $scope.dataset = DatasetService.getDataset(EHS_DATASETID);
         //$scope.eventsdataset = DatasetService.getDataset(ViolationEvents_DATASETID);
-        //$scope.ViolationFileTypes = CommonService.getMetadataProperty(METADATA_PROPERTY_PERMIT_FILETYPES);
         //$scope.contactsdataset = DatasetService.getDataset(VIOLATIONSCONTACTS_DATASETID);
 
         /*
@@ -27,9 +32,6 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             $scope.ContactsDatasetColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
         });
 
-        $scope.ViolationFileTypes.$promise.then(function () {
-            $scope.ViolationFileTypes = angular.fromJson($scope.ViolationFileTypes.PossibleValues);
-        });
         */
 
         $scope.dataset.$promise.then(function () {
@@ -507,6 +509,26 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             });
         }
 
+        //open a modal for editing only the filetype
+        $scope.openEditFileTypeModal = function(params){
+            $scope.file_modal = params;
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/modal-edit-file.html',
+                controller: 'EditViolationFileTypeModalController',
+                scope: $scope,
+                backdrop: "static",
+                keyboard: false
+            }).result.then(function (saved_file) {
+                $scope.ViolationFiles.forEach(function (file, index) {
+                    if (file.Id == saved_file.Id) {
+                        file.Description = saved_file.Description;
+                        $scope.violationFilesGrid.api.setRowData($scope.ViolationFiles);
+                    }
+                }); 
+            });
+        }
+
+
         $scope.removeSelectedFile = function () {
 
             if (!confirm("Are you sure you want to delete this file?")) {
@@ -514,7 +536,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             }
 
             var file_to_remove = $scope.violationFilesGrid.selectedItem;
-            var deleted = ViolationService.deleteViolationFile(PERMIT_PROJECTID, $scope.row.Id, 0, file_to_remove);
+            var deleted = ViolationService.deleteViolationFile(EHS_PROJECTID, $scope.row.Id, 0, file_to_remove);
 
             deleted.$promise.then(function () {
                 $scope.ViolationFiles.forEach(function (file, index) {
@@ -634,7 +656,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             }
             $scope.violationContactsGrid.api.setRowData($scope.ViolationContacts);
             $scope.violationParcelsGrid.api.setRowData($scope.ViolationParcels);
-            $scope.violationFilesGrid.api.setRowData($scope.PermitFiles);
+            $scope.violationFilesGrid.api.setRowData($scope.ViolationFiles);
             $scope.parcelHistoryGrid.api.setRowData($scope.ParcelHistory);
 
             if ($scope.violationEventsGrid && $scope.violationEventsGrid.api)
@@ -777,6 +799,12 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 $scope.refreshParcelHistory();
                 //$scope.refreshZones();
             });
+
+            $scope.ViolationFiles.$promise.then(function () {
+                $scope.violationFilesGrid.api.setRowData($scope.ViolationFiles);
+                $scope.violationFilesGrid.selectedItem = null;
+            });
+
             
             /*
             $scope.ViolationEvents.$promise.then(function () {
@@ -835,12 +863,8 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
 
             //});
 
+            
             /*
-            $scope.ViolationFiles.$promise.then(function () {
-                $scope.ViolationFilesGrid.api.setRowData($scope.ViolationFiles);
-                $scope.ViolationFilesGrid.selectedItem = null;
-            });
-
             if(!Array.isArray($scope.row.Zones)){
                 $scope.row.Zones = [];
 
