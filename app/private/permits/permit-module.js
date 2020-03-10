@@ -11,7 +11,8 @@ require([
     'private/permits/components/ehs-violations/list-violations',
 
     //modals
-    'private/permits/components/list/add-activity-modal',
+    'private/permits/components/list/add-violation-activity-modal',
+    'private/permits/components/list/add-permit-activity-modal',
     'private/permits/components/list/add-contact-modal',
     'private/permits/components/list/add-parcel-modal',
     'private/permits/components/list/modal-permit-new-file',
@@ -32,7 +33,8 @@ require([
 
 ], function () {
     permit_module.controller('PermitListController', list_permits);
-    permit_module.controller('ActivityModalController', modal_edit_permitevent);
+    permit_module.controller('PermitActivityModalController', modal_edit_permitevent);
+    permit_module.controller('ViolationActivityModalController', modal_edit_violationevent);
     permit_module.controller('ContactModalController', modal_edit_permitcontact);
     permit_module.controller('ParcelModalController', modal_edit_permitparcel);
     permit_module.controller('PermitFileModalController', modal_permit_new_file);
@@ -48,7 +50,7 @@ require([
     permit_module.controller('EditPermitFileTypeModalController', modal_permit_edit_filetype);
     permit_module.controller('EditViolationFileTypeModalController', modal_violation_edit_filetype);
     permit_module.controller('EhsViolationsController', list_violations);
-
+    
     permit_module.filter('personOrgName', function () {
         return function (person) {
             if (!person)

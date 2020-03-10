@@ -24,7 +24,8 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
         });
 
         $scope.dataset = DatasetService.getDataset(EHS_DATASETID);
-        //$scope.eventsdataset = DatasetService.getDataset(ViolationEvents_DATASETID);
+        $scope.eventsdataset = DatasetService.getDataset(EHS_EVENTS_DATASETID);
+
         //$scope.contactsdataset = DatasetService.getDataset(VIOLATIONSCONTACTS_DATASETID);
 
         /*
@@ -100,7 +101,29 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 $scope.PermitPersons = $scope.PermitPersons.sort(orderByAlpha);
             });
         });
-            //requirement: can navigate permits by up and down arrow keys
+
+        $scope.eventsdataset.$promise.then(function () {
+            console.log(" -- events dataset back -- ");
+            var EventColumnDefs = GridService.getAgColumnDefs($scope.eventsdataset);
+            $scope.violationEventsGrid.columnDefs = angular.merge(
+                //[{ colId: 'EditLinks', cellRenderer: EditEventLinksTemplate, width: 60, menuTabs: [], hide: true }], 
+                EventColumnDefs.HeaderFields
+            );
+
+            //activate the violation events grid
+            if (!$scope.violationEventsGridDiv) {
+                $scope.violationEventsGridDiv = document.querySelector('#violation-events-grid');
+                new agGrid.Grid($scope.violationEventsGridDiv, $scope.violationEventsGrid);
+            }
+
+            $scope.violationEventsGrid.api.setRowData($scope.ViolationEvents);
+
+        });
+
+
+
+
+        //requirement: can navigate permits by up and down arrow keys
         $scope.keyboardNavigation = function (params) {
             //console.log("my navigation");
             var previousCell = params.previousCellDef;
@@ -279,6 +302,30 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             },
         }
 
+        $scope.violationEventsGrid = {
+            columnDefs: null,
+            rowData: null,
+            selectedItem: null,
+            rowSelection: 'single',
+            defaultColDef: {
+                editable: false,
+                sortable: true,
+                resizable: true,
+            },
+            onRowDoubleClicked: function (params) {
+                $scope.openActivityModal($scope.violationEventsGrid.selectedItem);
+            },
+            onSelectionChanged: function (params) {
+                $scope.violationEventsGrid.selectedItem = $scope.violationEventsGrid.api.getSelectedRows()[0];
+                $scope.$apply(); //trigger angular to update our view since it doesn't monitor ag-grid
+            },
+            getRowHeight: function (params) {
+                var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
+                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+                var file_height = 25 * (getFilesArrayAsList(params.data.Files).length); //count up the number of file lines we will have.
+                return (comment_height > file_height) ? comment_height : file_height;
+            },
+        }
 
         var UploadedByTemplate = function (param) {
             return moment(param.node.data.UploadDate).format('L') + " by " + param.node.data.User.Fullname;
@@ -525,6 +572,33 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                         $scope.violationFilesGrid.api.setRowData($scope.ViolationFiles);
                     }
                 }); 
+            });
+        }
+
+        $scope.openActivityModal = function (params, intent) {
+
+            delete $scope.activity_modal;
+            $scope.intent = intent;
+
+            //if editing, we'll have incoming params
+            if (params) {
+                $scope.activity_modal = params;
+            } else {
+                $scope.activity_modal = { EHSViolationId: $scope.row.Id };
+            }
+
+            var modalInstance = $modal.open({
+                templateUrl: 'app/private/permits/components/list/templates/add-violation-activity-modal.html',
+                controller: 'ViolationActivityModalController',
+                scope: $scope,
+                backdrop: "static",
+                keyboard: false
+            }).result.then(function (saved_activity) {
+                $scope.selectViolation($scope.row.Id);
+                // $scope.PermitEvents = PermitService.getPermitEvents($scope.row.Id);
+                // $scope.PermitEvents.$promise.then(function () {
+                //     $scope.permitEventsGrid.api.setRowData($scope.PermitEvents);
+                // });
             });
         }
 
@@ -775,9 +849,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
         $scope.selectViolation = function (Id) {
             $scope.ViolationContacts = ViolationService.getViolationContacts(Id);
             $scope.ViolationParcels = ViolationService.getViolationParcels(Id);
-            /*
-            $scope.ViolationEvents = PermitService.getViolationEvents(Id);
-            */          
+            $scope.ViolationEvents = ViolationService.getViolationEvents(Id);
             $scope.ViolationFiles = ViolationService.getViolationFiles(Id);
             $scope.row.NotifyRoutes = ($scope.row.NotifyRoutes) ? angular.fromJson($scope.row.NotifyRoutes) : [];
             $scope.row.ViolationOffenses = ($scope.row.ViolationOffenses) ? angular.fromJson($scope.row.ViolationOffenses) : [];
@@ -805,52 +877,13 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 $scope.violationFilesGrid.selectedItem = null;
             });
 
-            
-            /*
             $scope.ViolationEvents.$promise.then(function () {
-                $scope.ViolationEventsGrid.api.setRowData($scope.ViolationEvents);
-                $scope.ViolationEventsGrid.selectedItem = null;
+                $scope.violationEventsGrid.api.setRowData($scope.ViolationEvents);
+                $scope.violationEventsGrid.selectedItem = null;
+            });
 
-                $scope.PermitStatus = [];
+//                $scope.togglePermitTypeField();
 
-                //setup our handy array for the Status tab
-                $scope.row.NotifyRoutes.forEach(function (review) { 
-
-                    var route = {
-                        ItemType: review,
-                        EventType: 'Review',
-                    };
-
-                    $scope.ViolationEvents.forEach(function (event) { 
-                        if (event.ItemType == review) //should only be one, really...
-                        {
-                            route.RequestDate = event.RequestDate;
-                            route.ResponseDate = event.ResponseDate;
-                            route.Comments = event.Comments;
-                        }
-                    });
-
-                    $scope.PermitStatus.push(route);
-                    
-                });
-
-                //and now once for inspections
-                $scope.ViolationEvents.forEach(function (event) { 
-                    var route = {};
-                    if (event.EventType == "Inspection") 
-                    {
-                        route.RequestDate = event.RequestDate;
-                        route.ResponseDate = event.ResponseDate;
-                        route.Comments = event.Comments;
-                        route.EventType = event.EventType;
-                        route.ItemType = event.ItemType;
-
-                        $scope.PermitStatus.push(route);
-                    }
-                });
-
-                $scope.togglePermitTypeField();
-*/
                 //stretch the textareas to the height of the content
                 $('textarea').each(function () {
                     this.setAttribute('style', 'min-height: 130px','height:auto; height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');

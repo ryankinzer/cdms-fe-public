@@ -50,6 +50,17 @@ permit_module.factory('GetViolationFiles', ['$resource', function ($resource) {
     });
 }]);
 
+permit_module.factory('GetViolationEvents', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/violation/GetViolationEvents', {}, {
+        query: { method: 'GET', params: { Id: 'Id'}, isArray: true }
+    });
+}]);
+
+permit_module.factory('SaveViolationEvent', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/violation/SaveViolationEvent');
+}]);
+
+
 
 permit_module.service('ViolationService', ['$q',
 'GetViolations',
@@ -61,6 +72,8 @@ permit_module.service('ViolationService', ['$q',
 'SaveViolationParcel',
 'DeleteViolationFile',
 'GetViolationFiles',
+'GetViolationEvents',
+'SaveViolationEvent',
   
     function ($q,
         GetViolations,
@@ -71,7 +84,9 @@ permit_module.service('ViolationService', ['$q',
         GetViolationRelatedParcels,
         SaveViolationParcel,
         DeleteViolationFile,
-        GetViolationFiles
+        GetViolationFiles,
+        GetViolationEvents,
+        SaveViolationEvent
       
     ) {
         var service = {
@@ -112,6 +127,15 @@ permit_module.service('ViolationService', ['$q',
             getViolationFiles: function (ViolationId) {
                 return GetViolationFiles.query({ ProjectId: EHS_PROJECTID, ViolationId: ViolationId });
             },
+
+            saveViolationEvent: function (violationevent) {
+                return SaveViolationEvent.save({ ViolationEvent: violationevent });
+            },
+
+            getViolationEvents:  function (Id) {
+                return GetViolationEvents.query({ Id: Id });
+            }
+            
         };
 
         return service;

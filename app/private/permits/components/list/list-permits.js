@@ -588,8 +588,8 @@
             }
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/add-activity-modal.html',
-                controller: 'ActivityModalController',
+                templateUrl: 'app/private/permits/components/list/templates/add-permit-activity-modal.html',
+                controller: 'PermitActivityModalController',
                 scope: $scope,
                 backdrop: "static",
                 keyboard: false
