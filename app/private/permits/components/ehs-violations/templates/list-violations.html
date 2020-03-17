@@ -112,7 +112,9 @@
                                         <div class="checkbox-fix" ng-repeat="field in ehsGrid.columnDefs | filter:{ColumnIndex:6}" ng-switch on="field.ControlType">
                                             <ctuir-multiselect-checkbox-field ng-switch-when="multiselect-checkbox"></ctuir-multiselect-checkbox-field>
                                         </div>
+                                        <button class="btn btn-secondary btn-sm right margin-5" style="margin-right:100px;" ng-click="sendNotifications()">Send</button>
                                     </fieldset>
+
 
                                 </div>
 
