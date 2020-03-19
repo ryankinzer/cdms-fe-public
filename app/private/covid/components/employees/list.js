@@ -11,6 +11,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
         $scope.save = {};
         $scope.loaded = false;
         
+        $scope.noCopyCells = ['Name','Program','Status','Access','IsHighRisk','IsUnique','Notes']
 
         $scope.employees.$promise.then(function () {
             $scope.work.$promise.then(function(){
@@ -55,6 +56,10 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
             { headerName: "Notes", field: "Notes", width: 200, menuTabs: [], },
             
         ]; 
+
+        $scope.isCopyableCell = function(){
+            return (!$scope.noCopyCells.contains($scope.selectedCell.column.colId));
+        }
 
         $scope.copyCellRight = function(){
             //console.dir($scope.selectedCell)
@@ -124,8 +129,9 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
                 $scope.$apply();
             },
             onCellClicked: function(event){
-                //console.dir(event)
+                console.dir(event)
                 $scope.selectedCell = event;
+                $scope.$apply();
             }
         }
 
