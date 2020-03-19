@@ -6,11 +6,12 @@
     <div id="employee-grid" style="width:100%;" class="ag-theme-blue"></div>
 </div>
 
-<div class="modal-footer">
+<div class="modal-footer" style="text-align: left;">
     <div style="margin: 10px; float: right;">
         <div class="alert alert-danger" ng-show="save.hasError">{{save.message}}</div>
         <div class="alert alert-success" ng-show="save.hasSuccess">{{save.message}}</div>
+        <div class="alert alert-primary" ng-show="save.isSaving">Saving changes...</div>
         <button ng-disabled="save.isSaving" class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        <button ng-disabled="save.isSaving" class="btn btn-primary" ng-click="save()">Save</button>
+        <button ng-disabled="save.isSaving" class="btn btn-primary" ng-click="saveRecords()">Save</button>
     </div>
 </div>

@@ -8,6 +8,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
         var today = moment();
         var begin = moment(new Date('03/02/2020'));
         $scope.lookup = {};
+        $scope.save = {};
         
 
         $scope.employees.$promise.then(function () {
@@ -58,6 +59,10 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
             selectedItem: null,
             selectedCell: null,
             selectedNode: null,
+            onCellEditingStopped: function(params){
+                //console.dir(params);
+                $scope.lookup[params.data.Id].updated = true;
+            },
             onSelectionChanged: function (params) {
                 //console.dir(params)
                 $scope.empGrid.selectedItem = $scope.row = angular.copy($scope.empGrid.api.getSelectedRows()[0]);
@@ -104,7 +109,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
                 var workdate = moment(item.WorkDate).format('M/D/YY');
                 $scope.lookup[item.EmployeeId][workdate] = item.WorkStatus
             })
-
+ 
             //activate the grid
             if (!$scope.empGridDiv) {
                 $scope.empGridDiv = document.querySelector('#employee-grid');
@@ -113,8 +118,58 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
 
         }
 
-        $scope.save = function(){
-            saving = CovidService.saveEmployees($scope.employees);
+        $scope.saveRecords = function(){
+            $scope.save.isSaving = true;
+
+            var updatedEmployees = [];
+
+            //only send changed records
+            $scope.employees.forEach(function(employee){
+                if(employee.updated){
+                    delete employee.updated;
+                    updatedEmployees.push(employee);
+                }
+            })
+
+            saving = CovidService.saveEmployees(updatedEmployees);
+            saving.$promise.then(function(){
+                $scope.save.isSaving = false;
+                $scope.save.hasSuccess = true;
+                $scope.save.hasError = false;
+                $scope.save.message = "Success.";
+            }, function(){
+                $scope.save.isSaving = false;
+                $scope.save.hasSuccess = false;
+                $scope.save.hasError = true;
+                $scope.save.message = "There was an error.";
+            })
+        }
+
+        $scope.cancel = function(){
+            if(confirm("Are you sure you want to reload the records?"))
+            {
+                $scope.lookup = {}
+                $scope.save = {}
+
+                $scope.employees = CovidService.getMyEmployees();
+                $scope.work = CovidService.getMyEmployeesWork();
+
+                $scope.work.$promise.then(function(){
+
+                    //populate the workdates
+                    $scope.employees.forEach(function(employee){
+                        $scope.lookup[employee.Id] = employee;
+                    })
+
+                    $scope.work.forEach(function(item){
+                        var workdate = moment(item.WorkDate).format('M/D/YY');
+                        $scope.lookup[item.EmployeeId][workdate] = item.WorkStatus
+                    })
+
+                    $scope.empGrid.api.setRowData($scope.employees);
+                });
+
+            }
         }
 
 
