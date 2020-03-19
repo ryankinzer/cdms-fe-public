@@ -175,20 +175,23 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
                 $scope.employees = CovidService.getMyEmployees();
                 $scope.work = CovidService.getMyEmployeesWork();
 
-                $scope.work.$promise.then(function(){
+                $scope.employees.$promise.then(function(){
+                    $scope.work.$promise.then(function(){
 
-                    //populate the workdates
-                    $scope.employees.forEach(function(employee){
-                        $scope.lookup[employee.Id] = employee;
-                    })
+                        //populate the workdates
+                        $scope.employees.forEach(function(employee){
+                            $scope.lookup[employee.Id] = employee;
+                        })
 
-                    $scope.work.forEach(function(item){
-                        var workdate = moment(item.WorkDate).format('M/D/YY');
-                        $scope.lookup[item.EmployeeId][workdate] = item.WorkStatus
-                    })
+                        $scope.work.forEach(function(item){
+                            var workdate = moment(item.WorkDate).format('M/D/YY');
+                            $scope.lookup[item.EmployeeId][workdate] = item.WorkStatus
+                        })
 
-                    $scope.empGrid.api.setRowData($scope.employees);
-                    $scope.loaded = true;
+                        $scope.empGrid.api.setRowData($scope.employees);
+                        $scope.loaded = true;
+                        
+                    });
                 });
 
             }
