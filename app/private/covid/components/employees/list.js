@@ -6,7 +6,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
 
         var today_text = moment(new Date()).format('M/D/YY');
         var today = moment();
-        var begin = moment(new Date('03/02/2020'));
+        var begin = moment(new Date('03/15/2020'));
         $scope.lookup = {};
         $scope.save = {};
         $scope.loaded = false;
