@@ -1,9 +1,18 @@
 <h2>Staff you supervise</h2>
-<h4>Use the grid below to record the working status of each member of your program or department. Double click a cell to edit.</h4>
+<h4>Use the grid below to record the working status of each member of your program or department.</h4>
+<p> Double click a cell to edit. Click a cell and click "Copy right" to fill in the cells to the right with that value.</p>
 
 <div>
     <button ng-show="row.Id" class="btn btn-secondary btn-sm right margin-5" style="margin-top: -40px;" ng-click="copyRight()">Copy right</button>
     <div id="employee-grid" style="width:100%;" class="ag-theme-blue"></div>
+</div>
+
+<div ng-show="loaded && employees.length == 0">
+    <div class="alert alert-primary">No staff are assigned to you in the system. Contact kenburcham@ctuir.org if that should not be the case.</div>
+</div>
+
+<div ng-show="!loaded">
+    <div class="alert alert-primary">Loading...</div>
 </div>
 
 <div class="modal-footer" style="text-align: left;">

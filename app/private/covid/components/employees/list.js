@@ -9,31 +9,47 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
         var begin = moment(new Date('03/02/2020'));
         $scope.lookup = {};
         $scope.save = {};
+        $scope.loaded = false;
         
 
         $scope.employees.$promise.then(function () {
             $scope.work.$promise.then(function(){
                 $scope.activateGrid();
                 $scope.empGrid.api.setRowData($scope.employees);
+                $scope.loaded = true;
             });
         });
         
 
         var empColumnDefs = [
-            { headerName: "Name", field: "Name", width: 160, pinned: 'left', editable: false },
-            { headerName: "Program", field: "Program", width: 150, pinned: 'left',  editable: false },
-            { headerName: "Status", field: "Status", width: 160, pinned: 'left', 
+            { headerName: "Staff Name", field: "Name", width: 160, pinned: 'left', editable: false },
+            { headerName: "Program/Dept", field: "Program", width: 130, pinned: 'left',  editable: false },
+            { headerName: "Status", field: "Status", width: 120, pinned: 'left', 
                 cellEditor: 'agSelectCellEditor', 
                 cellEditorParams: {
-                    values: ['Essential','Non-essential', 'High Risk']
+                    values: ['','Essential','Non-essential']
                 }
             },
-            { headerName: "Access", field: "Access", width: 160, pinned: 'left', 
+            { headerName: "Access", field: "Access", width: 120, pinned: 'left', 
                 cellEditor: 'agSelectCellEditor', 
                 cellEditorParams: {
-                    values: ['Home internet','Cell hotspot', 'None']
+                    values: ['','Home internet','Cell hotspot', 'None']
                 }
             },
+            { headerName: "High Risk?", field: "IsHighRisk", width: 100, pinned: 'left', 
+                cellEditor: 'agSelectCellEditor', 
+                cellEditorParams: {
+                    values: ['','Yes','No']
+                }
+            },
+            { headerName: "Unique?", field: "IsUnique", width: 100, pinned: 'left', 
+                cellEditor: 'agSelectCellEditor', 
+                cellEditorParams: {
+                    values: ['','Yes','No']
+                }
+            },
+            { headerName: "Notes", field: "Notes", width: 200, pinned: 'left' },
+            
         ]; 
 
         $scope.copyRight = function(){
@@ -54,7 +70,9 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
             enableFilter: true,
             rowSelection: 'single',
             defaultColDef: {
-                editable: true
+                editable: true,
+                sortable: true,
+                resizable: true
             },
             selectedItem: null,
             selectedCell: null,
@@ -94,7 +112,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
                     width: 160,
                     cellEditor: 'agSelectCellEditor', 
                     cellEditorParams: {
-                        values: ['Work from home', 'Admin leave','In office','Sick leave','Annual leave']
+                        values: ['','Work from home', 'Admin leave','In office','Sick leave','Annual leave']
                     } 
                 });
 
@@ -120,6 +138,8 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
 
         $scope.saveRecords = function(){
             $scope.save.isSaving = true;
+            $scope.save.hasSuccess = false;
+            $scope.save.hasError = false;
 
             var updatedEmployees = [];
 
@@ -150,6 +170,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
             {
                 $scope.lookup = {}
                 $scope.save = {}
+                $scope.loaded = false;
 
                 $scope.employees = CovidService.getMyEmployees();
                 $scope.work = CovidService.getMyEmployeesWork();
@@ -167,6 +188,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
                     })
 
                     $scope.empGrid.api.setRowData($scope.employees);
+                    $scope.loaded = true;
                 });
 
             }
