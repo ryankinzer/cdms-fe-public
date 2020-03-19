@@ -5,3 +5,4 @@ var appraisals_module = angular.module('AppraisalsModule', ['ui.bootstrap', 'ngR
 var leasing_module = angular.module('LeasingModule', ['ui.bootstrap', 'ngResource']);
 var permit_module = angular.module('PermitModule', ['ui.bootstrap', 'ngResource']);
 var olc_module = angular.module('OlcModule', ['ui.bootstrap', 'ngResource']);
+var covid_module = angular.module('CovidModule', ['ui.bootstrap', 'ngResource']);

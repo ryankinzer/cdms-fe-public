@@ -37,6 +37,7 @@ define([
       'LeasingModule',
       'PermitModule',
       'OlcModule',
+      'CovidModule',
 
       'ngMaterial', 'ngMessages',
 
@@ -123,7 +124,10 @@ define([
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
             $routeProvider.when('/feedback', { templateUrl: 'app/core/common/components/feedback/templates/feedback.html',controller: 'FeedbackController'});
 
-	        //when all else fails...
+            
+            $routeProvider.when('/covid', { templateUrl: 'app/private/covid/components/employees/templates/list.html',controller: 'CovidListController'})
+
+            //when all else fails...
 	        $routeProvider.otherwise({redirectTo: '/dashboard'});
 	    }]);
 
