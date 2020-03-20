@@ -16,17 +16,24 @@ covid_module.factory('SaveEmployees', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/covid/saveemployees');
 }]);
 
+covid_module.factory('RemoveEmployee', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/covid/removeemployee');
+}]);
+
+
 covid_module.service('CovidService', ['$q',
 
     'MyEmployees',
     'MyEmployeesWork',
     'SaveEmployees',
+    'RemoveEmployee',
     
     function ($q,
        
         MyEmployees,
         MyEmployeesWork,
-        SaveEmployees
+        SaveEmployees,
+        RemoveEmployee
       
     ) {
         var service = {
@@ -41,7 +48,13 @@ covid_module.service('CovidService', ['$q',
 
             saveEmployees: function(data){
                 return SaveEmployees.save({ Employees: data });
+            },
+
+            removeEmployee: function(Id) {
+                return RemoveEmployee.save({ Id: Id });
             }
+
+            
 
         };
 
