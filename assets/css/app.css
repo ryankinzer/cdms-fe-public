@@ -912,3 +912,12 @@ legend.bump-over {
 [data-title] {
     position: relative;
 }
+
+
+.cv-button-bar { 
+    margin: 10px;
+    margin-top: 20px;
+    display: block;
+    height: 50px;
+}
+.cv-control-buttons { float: right; }

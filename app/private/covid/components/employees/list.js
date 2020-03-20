@@ -70,6 +70,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
                 $scope.lookup[$scope.selectedCell.data.Id][nextDayText] = $scope.selectedCell.value;
             }
             $scope.empGrid.api.setRowData($scope.employees);
+            $scope.lookup[$scope.selectedCell.data.Id].updated = true;
         }
 
         $scope.copyColumnRight = function(){
@@ -89,6 +90,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
             $scope.employees.forEach(function(employee){
                 var valToCopy = employee[$scope.selectedCell.column.colId];
                 employee[nextDayField] = valToCopy;
+                employee.updated = true;
             });
 
             $scope.empGrid.api.setRowData($scope.employees);
@@ -168,7 +170,8 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
 
             $scope.work.forEach(function(item){
                 var workdate = moment(item.WorkDate).format('M/D/YY');
-                $scope.lookup[item.EmployeeId][workdate] = item.WorkStatus
+                if($scope.lookup[item.EmployeeId])
+                    $scope.lookup[item.EmployeeId][workdate] = item.WorkStatus
             })
  
             //activate the grid
@@ -209,35 +212,62 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
         }
 
         $scope.cancel = function(){
-            if(confirm("Are you sure you want to reload the records?"))
-            {
-                $scope.lookup = {}
-                $scope.save = {}
-                $scope.loaded = false;
-
-                $scope.employees = CovidService.getMyEmployees();
-                $scope.work = CovidService.getMyEmployeesWork();
-
-                $scope.employees.$promise.then(function(){
-                    $scope.work.$promise.then(function(){
-
-                        //populate the workdates
-                        $scope.employees.forEach(function(employee){
-                            $scope.lookup[employee.Id] = employee;
-                        })
-
-                        $scope.work.forEach(function(item){
-                            var workdate = moment(item.WorkDate).format('M/D/YY');
-                            $scope.lookup[item.EmployeeId][workdate] = item.WorkStatus
-                        })
-
-                        $scope.empGrid.api.setRowData($scope.employees);
-                        $scope.loaded = true;
-
-                    });
-                });
-
+            if(!confirm("Are you sure you want to reload the records?")) {
+                return;
             }
+
+            $scope.lookup = {}
+            $scope.save = {}
+            $scope.loaded = false;
+
+            $scope.employees = CovidService.getMyEmployees();
+            $scope.work = CovidService.getMyEmployeesWork();
+
+            $scope.employees.$promise.then(function(){
+                $scope.work.$promise.then(function(){
+
+                    //populate the workdates
+                    $scope.employees.forEach(function(employee){
+                        $scope.lookup[employee.Id] = employee;
+                    })
+
+                    $scope.work.forEach(function(item){
+                        var workdate = moment(item.WorkDate).format('M/D/YY');
+                        if($scope.lookup[item.EmployeeId])
+                            $scope.lookup[item.EmployeeId][workdate] = item.WorkStatus
+                    })
+
+                    $scope.empGrid.api.setRowData($scope.employees);
+                    $scope.loaded = true;
+
+                });
+            });
+
+        };
+
+        $scope.addEmployee = function(){
+            alert("To add employees, email a spreadsheet to kenburcham@ctuir.org with:  Name, Title, Email, Department, Program, Supervisor, Department Supervisor");
+        }
+
+        $scope.removeEmployee = function(){
+            if(!confirm("Are you sure you want to remove this employee?")){
+                return;
+            }
+
+            var removed = CovidService.removeEmployee($scope.row.Id);
+
+            removed.$promise.then(function(){
+                $scope.employees.forEach(function (file, index) {
+                    if (file.Id == $scope.row.Id) {
+                        $scope.employees.splice(index, 1);
+                        $scope.empGrid.api.setRowData($scope.employees);
+                        delete $scope.lookup[file.Id]
+                    }
+                });
+            }, function(){
+                alert("There was a problem removing that employee.");
+            });
+
         }
 
 
