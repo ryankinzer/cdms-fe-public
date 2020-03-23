@@ -85,6 +85,10 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
             }
 
             nextDay = nextDay.add(1,'d'); 
+            while (nextDay.day() === 0 || nextDay.day() === 6) { //skip the weekend days
+                nextDay = nextDay.add(1,'d');     
+            }
+
             nextDayField = nextDay.format('M/D/YY')
 
             $scope.employees.forEach(function(employee){
@@ -131,7 +135,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
                 $scope.$apply();
             },
             onCellClicked: function(event){
-                console.dir(event)
+                //console.dir(event)
                 $scope.selectedCell = event;
                 $scope.$apply();
             }
@@ -156,7 +160,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
                     width: 160,
                     cellEditor: 'agSelectCellEditor', 
                     cellEditorParams: {
-                        values: ['','Work from home', 'Admin leave','In office','Sick leave','Annual leave']
+                        values: ['','Work from home', 'Admin leave','In office','Sick leave','Annual leave',"Not Scheduled"]
                     },
                     menuTabs: ['filterMenuTab'],
                 });
@@ -165,6 +169,17 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
 
             //populate the workdates
             $scope.employees.forEach(function(employee){
+                /*
+                // this sets our supervisors to an array, though not currently necessary since we neither display nor save
+                try{
+                    employee.SupervisorUsername = (employee.SupervisorUsername) ? angular.fromJson(employee.SupervisorUsername) : [];
+                    
+                }catch(e){
+                    var supervisors = [];
+                    supervisors.push(employee.SupervisorUsername);
+                    employee.SupervisorUsername = supervisors;
+                }
+                */
                 $scope.lookup[employee.Id] = employee;
             })
 
@@ -193,6 +208,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
             $scope.employees.forEach(function(employee){
                 if(employee.updated){
                     delete employee.updated;
+                    //employee.SupervisorUsername = angular.toJson(employee.SupervisorUsername); //if we ever want to save them from the FE
                     updatedEmployees.push(employee);
                 }
             })
@@ -246,11 +262,11 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
         };
 
         $scope.addEmployee = function(){
-            alert("To add employees, email a spreadsheet to kenburcham@ctuir.org with:  Name, Title, Email, Department, Program, Supervisor, Department Supervisor");
+            alert("To add employees, email a spreadsheet to kenburcham@ctuir.org with:  Name, Title, Email, Department, Program, Supervisor(s), Department Supervisor");
         }
 
         $scope.removeEmployee = function(){
-            if(!confirm("Are you sure you want to remove this employee?")){
+            if(!confirm("Are you sure you want to remove this employee? NOTE: You should only remove invalid staff, not misassigned staff. If staff is misassigned to you, please contact kenburcham@ctuir.org for reassignment.")){
                 return;
             }
 
