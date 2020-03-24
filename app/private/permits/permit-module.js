@@ -12,6 +12,7 @@ require([
 
     //modals
     'private/permits/components/list/add-violation-activity-modal',
+    'private/permits/components/list/add-violation-code-modal',
     'private/permits/components/list/add-permit-activity-modal',
     'private/permits/components/list/add-contact-modal',
     'private/permits/components/list/add-parcel-modal',
@@ -50,6 +51,7 @@ require([
     permit_module.controller('EditPermitFileTypeModalController', modal_permit_edit_filetype);
     permit_module.controller('EditViolationFileTypeModalController', modal_violation_edit_filetype);
     permit_module.controller('EhsViolationsController', list_violations);
+    permit_module.controller('ViolationCodesModalController',modal_edit_violationcode);
     
     permit_module.filter('personOrgName', function () {
         return function (person) {

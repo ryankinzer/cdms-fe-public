@@ -161,30 +161,9 @@
                     <div role="tabpanel" class="tab-pane fade in" id="code">
                         <div class="list-group media-list media-list-stream">
                             <div style="margin-top: 30px;"></div>
-
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg">
-                                        <div ng-repeat="field in ehsGrid.columnDefs | filter:{ColumnIndex:5}" ng-switch on="field.ControlType">
-                                            <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
-                                            <ctuir-currency-field ng-switch-when="currency"></ctuir-currency-field>
-                                            <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
-                                            <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
-                                            <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
-                                            <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
-                                            <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
-                                            <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
-                                            <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
-                                            <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
-                                            <ctuir-text-field ng-switch-default></ctuir-text-field>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg">
-                                            
-                                    </div>
-                                </div>
-                            </div>
-
+                            <button class="btn btn-sm" ng-click="openCodeModal()">Add Code Violation</button>
+                            <div style="margin-top: 10px;"></div>
+                            <div id="violation-codes-grid" style="height: 200px;width:100%;" class="ag-theme-blue"></div>
                         </div>
                     </div>
                 </div>

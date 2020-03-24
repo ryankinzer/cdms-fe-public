@@ -60,6 +60,15 @@ permit_module.factory('SaveViolationEvent', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/violation/SaveViolationEvent');
 }]);
 
+permit_module.factory('GetViolationCodes', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/violation/GetViolationCodes', {}, {
+        query: { method: 'GET', params: { Id: 'Id'}, isArray: true }
+    });
+}]);
+
+permit_module.factory('SaveViolationCode', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/violation/SaveViolationCode');
+}]);
 
 
 permit_module.service('ViolationService', ['$q',
@@ -74,6 +83,8 @@ permit_module.service('ViolationService', ['$q',
 'GetViolationFiles',
 'GetViolationEvents',
 'SaveViolationEvent',
+'GetViolationCodes',
+'SaveViolationCode',
   
     function ($q,
         GetViolations,
@@ -86,7 +97,9 @@ permit_module.service('ViolationService', ['$q',
         DeleteViolationFile,
         GetViolationFiles,
         GetViolationEvents,
-        SaveViolationEvent
+        SaveViolationEvent,
+        GetViolationCodes,
+        SaveViolationCode
       
     ) {
         var service = {
@@ -134,6 +147,14 @@ permit_module.service('ViolationService', ['$q',
 
             getViolationEvents:  function (Id) {
                 return GetViolationEvents.query({ Id: Id });
+            },
+
+            saveViolationCode: function (violationcode) {
+                return SaveViolationCode.save({ ViolationCode: violationcode });
+            },
+
+            getViolationCodes:  function (Id) {
+                return GetViolationCodes.query({ Id: Id });
             }
             
         };
