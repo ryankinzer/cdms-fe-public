@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
-<html lang="en"  xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>CDMS v.2.0</title>
 
@@ -65,6 +66,7 @@
 
 
 </head>
+
 <body>
 
 
@@ -84,18 +86,24 @@
                     <a class="nav-link" href="#!/datasets">Datasets</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</a>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Tools</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{config.REPORTSERVER_URL}}" target="_blank">Reports</a>
-                        <a class="dropdown-item" href="http://gis.ctuir.org/wp-content/uploads/2019/03/CDMSVersion2UserGuide.pdf" target="_blank">User Guide</a>
+                        <a class="dropdown-item"
+                            href="http://gis.ctuir.org/wp-content/uploads/2019/03/CDMSVersion2UserGuide.pdf"
+                            target="_blank">User Guide</a>
                         <div class="dropdown-divider">External Resources</div>
-                        <a class="dropdown-item" href="https://ctuirgis.maps.arcgis.com/home/gallery.html?view=grid&sortOrder=true&sortField=relevance" target="_blank">ArcGIS Online</a>
+                        <a class="dropdown-item"
+                            href="https://ctuirgis.maps.arcgis.com/home/gallery.html?view=grid&sortOrder=true&sortField=relevance"
+                            target="_blank">ArcGIS Online</a>
                         <a class="dropdown-item" href="http://gis.ctuir.org" target="_blank">GIS Website</a>
                     </div>
                 </li>
 
                 <li class="nav-item dropdown" ng-show="Profile.hasRole('Leasing')" ng-cloak>
-                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Leasing</a>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Leasing</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#!/leasing">Search</a>
                         <a href class="dropdown-item divider"></a>
@@ -104,15 +112,19 @@
                         <a class="dropdown-item" href="#!/active-leases">Active Leases</a>
                         <a class="dropdown-item" href="#!/violations">Inspection Violations</a>
                         <a href class="dropdown-item divider"></a>
-                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item" href="#!/manage-operators">Manage Operators</a>
-                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item" href="#!/manage-lookups">Manage Lookups</a>
-                        <a class="dropdown-item" href="/assets/pdf/LeaseProcessingWorkflow.pdf" target="_blank">Workflow Diagram (pdf)</a>
+                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item"
+                            href="#!/manage-operators">Manage Operators</a>
+                        <a ng-show="Profile.hasRole('LeasingEditor')" class="dropdown-item"
+                            href="#!/manage-lookups">Manage Lookups</a>
+                        <a class="dropdown-item" href="/assets/pdf/LeaseProcessingWorkflow.pdf" target="_blank">Workflow
+                            Diagram (pdf)</a>
 
                     </div>
                 </li>
 
                 <li class="nav-item dropdown" ng-show="Profile.hasRole('Permits')" ng-cloak>
-                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Permits</a>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Permits</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#!/permits/map">Parcel Map</a>
                         <a href class="dropdown-item divider"></a>
@@ -120,21 +132,26 @@
                         <a class="dropdown-item" href="#!/permits/list">All Permits</a>
                         <a class="dropdown-item" href="#!/permits/routes">Taskboard</a>
                         <a class="dropdown-item" href="#!/permits/inspection">Inspection Request</a>
+                        <a class="dropdown-item" href="#!/permits/ehsviolations">EHS Violations</a>
                         <a href class="dropdown-item divider"></a>
                         <a class="dropdown-item" href="#!/permits/contacts">Manage Contacts</a>
                         <a class="dropdown-item" href="#!/projectLookups/11044">Manage Lookups</a>
                         <a class="dropdown-item" href="#!/permits/notifications">Notifications</a>
-                        <a class="dropdown-item" href="https://paluutreports.ctuir.org/Reports/browse/TPO" target="_blank">Reports</a>
-                        <a class="dropdown-item" href="https://gisportal.ctuir.org/portal/apps/webappviewer/index.html?id=54fd175f4e2745ff92b278d04b987ad9" target="_blank">GIS Tax Parcels</a>
+                        <a class="dropdown-item" href="https://paluutreports.ctuir.org/Reports/browse/TPO"
+                            target="_blank">Reports</a>
+                        <a class="dropdown-item"
+                            href="https://gisportal.ctuir.org/portal/apps/webappviewer/index.html?id=54fd175f4e2745ff92b278d04b987ad9"
+                            target="_blank">GIS Tax Parcels</a>
                     </div>
                 </li>
 
-                <li class="nav-item">
+                <li class="nav-item" ng-show="PUBLIC_OR_PRIVATE=='private'">
                     <a class="nav-link" href="#!/covid">COVID-19 Work Station</a>
                 </li>
 
                 <li ng-cloak ng-show="Profile.isAdmin()" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Admin</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#!/admin">Datasets</a>
                         <a class="dropdown-item" href="#!admin-users">Users</a>
@@ -175,4 +192,5 @@
 
     <div ng-include="'app/core/common/templates/footer.html'"></div>
 </body>
+
 </html>

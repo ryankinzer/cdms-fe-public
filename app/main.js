@@ -113,6 +113,7 @@ define([
             $routeProvider.when('/permits/notifications', { templateUrl: 'app/private/permits/components/notifications/templates/notifications.html', controller: 'PermitNotificationsController'});
             $routeProvider.when('/permits/map', { templateUrl: 'app/private/permits/components/map/templates/permit-map.html', controller: 'PermitMapController'});
             $routeProvider.when('/permits/contacts', { templateUrl: 'app/private/permits/components/contacts/templates/manage-contacts.html', controller: 'PermitManageContactsController'});
+            $routeProvider.when('/permits/ehsviolations', { templateUrl: 'app/private/permits/components/ehs-violations/templates/list-violations.html', controller: 'EhsViolationsController'});
 
 	        //custom routes for datasets that require custom controller+pages
             //$routeProvider.when('/appraisals/:Id', { templateUrl: 'app/private/appraisals/components/appraisal-activities/templates/appraisal-activities.html', controller: 'AppraisalCtrl'});

@@ -1,0 +1,44 @@
+﻿<div class="modal-header">
+    <h3 ng-show="mode=='edit'">Edit Violation Code</h3>
+    <h3 ng-show="mode=='new'">Add Violation Code</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="row">
+        <form novalidate class="row-form modal-form" name="headerForm">
+
+            <div style="margin-top: 35px;">
+                <div ng-repeat="field in violationCodesGrid.columnDefs | filter:doShowField" ng-switch on="field.ControlType">
+                    <ctuir-text-field ng-switch-when="text"></ctuir-text-field>
+                    <ctuir-textarea-field ng-switch-when="textarea"></ctuir-textarea-field>
+                    <ctuir-number-field ng-switch-when="number"></ctuir-number-field>
+                    <ctuir-date-field ng-switch-when="date"></ctuir-date-field>
+                    <ctuir-time-field ng-switch-when="time"></ctuir-time-field>
+                    <ctuir-radio-field ng-switch-when="radio"></ctuir-radio-field>
+                    <ctuir-checkbox-field ng-switch-when="checkbox"></ctuir-checkbox-field>
+                    <ctuir-select-field ng-switch-when="select"></ctuir-select-field>
+                    <ctuir-select-group-field ng-switch-when="select-group"></ctuir-select-group-field>
+                    <ctuir-select-number-field ng-switch-when="select-number"></ctuir-select-number-field>
+                    <ctuir-file-field ng-switch-when="file"></ctuir-file-field>
+                    <ctuir-link-field ng-switch-when="link"></ctuir-link-field>
+                    <ctuir-multiselect-field ng-switch-when="multiselect"></ctuir-multiselect-field>
+                    <ctuir-text-field ng-switch-default></ctuir-text-field>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <div ng-show="Results.SuccessMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{Results.SuccessMessage}}</div>
+    <div ng-show="Results.FailureMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-danger">{{Results.FailureMessage}}</div>
+
+    <div ng-show="!Results.DoneSaving">
+        <button class="btn btn-warning" ng-disabled="Results.IsSaving" ng-click="cancel()">Cancel</button>
+        <button class="right btn" ng-disabled="Results.IsSaving" ng-click="save()">Save</button>
+    </div>
+    <div ng-show="Results.DoneSaving">
+        <button style="margin-top: 30px;" class="right btn" ng-click="close()">Close</button>
+    </div>
+
+
+</div>

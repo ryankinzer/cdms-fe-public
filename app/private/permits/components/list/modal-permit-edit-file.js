@@ -1,5 +1,5 @@
 ﻿
-var modal_edit_filetype = ['$scope', '$uibModalInstance', 'ProjectService',
+var modal_permit_edit_filetype = ['$scope', '$uibModalInstance', 'ProjectService',
     function ($scope, $modalInstance, ProjectService){
 
 		$scope.header_message = "Edit File Type";

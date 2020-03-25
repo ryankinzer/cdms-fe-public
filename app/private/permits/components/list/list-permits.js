@@ -588,8 +588,8 @@
             }
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/add-activity-modal.html',
-                controller: 'ActivityModalController',
+                templateUrl: 'app/private/permits/components/list/templates/add-permit-activity-modal.html',
+                controller: 'PermitActivityModalController',
                 scope: $scope,
                 backdrop: "static",
                 keyboard: false
@@ -633,7 +633,7 @@
             $scope.file_modal = params;
             var modalInstance = $modal.open({
                 templateUrl: 'app/private/permits/components/list/templates/modal-edit-file.html',
-                controller: 'EditFileTypeModalController',
+                controller: 'EditPermitFileTypeModalController',
                 scope: $scope,
                 backdrop: "static",
                 keyboard: false
@@ -715,7 +715,7 @@
             }
 
             var file_to_remove = $scope.permitFilesGrid.selectedItem;
-            var deleted = PermitService.deleteFile(PERMIT_PROJECTID, $scope.row.Id, 0, file_to_remove);
+            var deleted = PermitService.deletePermitFile(PERMIT_PROJECTID, $scope.row.Id, 0, file_to_remove);
 
             deleted.$promise.then(function () {
                 $scope.PermitFiles.forEach(function (file, index) {
