@@ -28,6 +28,13 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
         $scope.eventsdataset = DatasetService.getDataset(EHS_EVENTS_DATASETID);
         $scope.codesdataset = DatasetService.getDataset(EHS_CODES_DATASETID);
 
+        $scope.contactsdataset = DatasetService.getDataset(PERMITCONTACTS_DATASETID);
+
+        $scope.contactsdataset.$promise.then(function () {
+            $scope.ContactsDatasetColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
+        });
+
+
         //$scope.contactsdataset = DatasetService.getDataset(VIOLATIONSCONTACTS_DATASETID);
 
         /*
