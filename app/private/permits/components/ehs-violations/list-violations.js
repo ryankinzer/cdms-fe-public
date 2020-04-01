@@ -140,8 +140,52 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
 
         });
 
+        $scope.clearFilters = function(){
+            $scope.clearingFilters = true;
+            $scope.ehsGrid.api.setFilterModel(null);
+            $scope.currentPage = "All";
+        }
 
+        $scope.showComplaints = function () {
+            $scope.clearFilters();
 
+            var filter_component = $scope.ehsGrid.api.getFilterInstance('FileType');
+            filter_component.selectNothing();
+            filter_component.selectValue('Complaint');
+            $scope.ehsGrid.api.onFilterChanged();
+            $scope.currentPage = "Complaints";
+        };
+
+        $scope.showViolations = function () {
+            $scope.clearFilters();
+
+            var filter_component = $scope.ehsGrid.api.getFilterInstance('FileType');
+            filter_component.selectNothing();
+            filter_component.selectValue('Violation');
+            $scope.ehsGrid.api.onFilterChanged();
+            $scope.currentPage = "Violations";
+        };
+
+        $scope.showResolved = function () {
+            $scope.clearFilters();
+
+            var filter_component = $scope.ehsGrid.api.getFilterInstance('ViolationResolvedDate');
+            console.dir(filter_component);
+            //filter_component.selectNothing();
+            filter_component.setModel({
+                type: "greaterThan",
+                dateFrom: "2000-01-01",
+                dateTo: null
+            });
+
+            //filter_component.selectValue('Violation');
+            $scope.ehsGrid.api.onFilterChanged();
+            $scope.currentPage = "Resolved";
+        };
+
+        $scope.showAll = function(){
+            $scope.clearFilters();
+        }
 
         //requirement: can navigate permits by up and down arrow keys
         $scope.keyboardNavigation = function (params) {
