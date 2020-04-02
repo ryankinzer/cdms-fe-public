@@ -28,20 +28,29 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
                 if (parcel.ParcelId == null || parcel.ParcelId == "")
                     return;
 
-                if (entryLength > 0 && parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry) {
+                if (entryLength > 0){
 
-                    if (parcel.ParcelId == $scope.parcelEntry) {
-                        $scope.parcel_modal = parcel;
-                        $scope.Selected.Parcel.push(angular.toJson($scope.parcel_modal)); //this is the trick
+                    if(parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry || 
+                        (parcel.Address && parcel.Address.toUpperCase().substring(0, entryLength) == $scope.parcelEntry ) ) {
+
+                        if (parcel.ParcelId == $scope.parcelEntry || (parcel.Address && parcel.Address.toUpperCase() == $scope.parcelEntry)) {
+                            $scope.parcel_modal = parcel;
+                            $scope.Selected.Parcel.push(angular.toJson($scope.parcel_modal)); //this is the trick
+                        }
+
+                        $scope.parcelMatches.push(parcel);
                     }
-
-                    $scope.parcelMatches.push(parcel);
                 }
             });
         };
 
         $scope.selectParcel = function(){
             $scope.parcel_modal = angular.fromJson($scope.Selected.Parcel[0]); //this is the trick
+        }
+
+        if($scope.row.SiteAddress) {
+            $scope.parcelEntry = $scope.row.SiteAddress;
+            $scope.parcelEntryUpdate();
         }
 
         $scope.save = function () {

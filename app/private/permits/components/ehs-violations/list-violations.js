@@ -28,6 +28,13 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
         $scope.eventsdataset = DatasetService.getDataset(EHS_EVENTS_DATASETID);
         $scope.codesdataset = DatasetService.getDataset(EHS_CODES_DATASETID);
 
+        $scope.contactsdataset = DatasetService.getDataset(PERMITCONTACTS_DATASETID);
+
+        $scope.contactsdataset.$promise.then(function () {
+            $scope.ContactsDatasetColumnDefs = GridService.getAgColumnDefs($scope.contactsdataset);
+        });
+
+
         //$scope.contactsdataset = DatasetService.getDataset(VIOLATIONSCONTACTS_DATASETID);
 
         /*
@@ -140,8 +147,52 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
 
         });
 
+        $scope.clearFilters = function(){
+            $scope.clearingFilters = true;
+            $scope.ehsGrid.api.setFilterModel(null);
+            $scope.currentPage = "All";
+        }
 
+        $scope.showComplaints = function () {
+            $scope.clearFilters();
 
+            var filter_component = $scope.ehsGrid.api.getFilterInstance('FileType');
+            filter_component.selectNothing();
+            filter_component.selectValue('Complaint');
+            $scope.ehsGrid.api.onFilterChanged();
+            $scope.currentPage = "Complaints";
+        };
+
+        $scope.showViolations = function () {
+            $scope.clearFilters();
+
+            var filter_component = $scope.ehsGrid.api.getFilterInstance('FileType');
+            filter_component.selectNothing();
+            filter_component.selectValue('Violation');
+            $scope.ehsGrid.api.onFilterChanged();
+            $scope.currentPage = "Violations";
+        };
+
+        $scope.showResolved = function () {
+            $scope.clearFilters();
+
+            var filter_component = $scope.ehsGrid.api.getFilterInstance('ViolationResolvedDate');
+            console.dir(filter_component);
+            //filter_component.selectNothing();
+            filter_component.setModel({
+                type: "greaterThan",
+                dateFrom: "2000-01-01",
+                dateTo: null
+            });
+
+            //filter_component.selectValue('Violation');
+            $scope.ehsGrid.api.onFilterChanged();
+            $scope.currentPage = "Resolved";
+        };
+
+        $scope.showAll = function(){
+            $scope.clearFilters();
+        }
 
         //requirement: can navigate permits by up and down arrow keys
         $scope.keyboardNavigation = function (params) {
@@ -921,6 +972,36 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 });
             });
         };
+
+        $scope.removeSelectedParcel = function () {
+            if ($scope.violationParcelsGrid.selectedItem && confirm("Are you sure you want to remove this Parcel?")) {
+                var removed = ViolationService.removeViolationParcel($scope.violationParcelsGrid.selectedItem);
+                removed.$promise.then(function () {
+                    $scope.ViolationParcels = ViolationService.getViolationParcels($scope.row.Id);
+                    $scope.ViolationParcels.$promise.then(function () {
+                        $scope.violationParcelsGrid.api.setRowData($scope.ViolationParcels);
+                        $scope.refreshParcelHistory();
+                    });
+
+                });
+            }
+        };
+
+
+        $scope.removeSelectedContact = function () {
+            if ($scope.violationContactsGrid.selectedItem && confirm("Are you sure you want to remove this Contact?")) {
+                var removed = ViolationService.removeViolationContact($scope.violationContactsGrid.selectedItem);
+                removed.$promise.then(function () {
+                    $scope.ViolationContacts.forEach(function (contact, index) {
+                        if (contact.PermitPersonId == $scope.violationContactsGrid.selectedItem.PermitPersonId) {
+                            $scope.ViolationContacts.splice(index,1);
+                            $scope.violationContactsGrid.api.setRowData($scope.ViolationContacts);
+                        }
+                    });
+                });
+            }
+        };
+
 
 
         $scope.selectViolation = function (Id) {
