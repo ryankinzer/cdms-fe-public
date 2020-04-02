@@ -29,6 +29,7 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                     if (scope.lookupTables.length > 0) {
                         scope.selectLookup(scope.lookupTables[0]);
                     }
+                    console.log("scope.lookupTables is next...");
                     console.dir(scope.lookupTables);
                 }
             } catch (e) { 
@@ -70,7 +71,25 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
             scope.selectedLookup.Dataset = DatasetService.getDataset(scope.selectedLookup.DatasetId);
 
             scope.selectedLookup.Dataset.$promise.then(function () { 
+                scope.dataGridOptions.columnDefs = null;
                 scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields;
+                
+                //console.log("HeaderFields...");
+                //console.dir(GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields);
+                //console.log("DetailFields...");
+                //console.dir(GridService.getAgColumnDefs(scope.selectedLookup.Dataset).DetailFields);
+                
+                if (GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields.length > 0)
+                {
+                    scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields;
+                }
+
+                if (GridService.getAgColumnDefs(scope.selectedLookup.Dataset).DetailFields.length > 0)
+                {
+                    scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).DetailFields;
+                }
+                
+
                 scope.dataGridOptions.columnDefs.unshift({ field: 'EditLink', headerName: '', cellRenderer: EditLinkTemplate, width: 50, menuTabs: [], hide: true }); //alwaysShowField: true, ?
 
                 scope.lookupItems.$promise.then(function () {
