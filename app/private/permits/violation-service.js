@@ -70,6 +70,14 @@ permit_module.factory('SaveViolationCode', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/violation/SaveViolationCode');
 }]);
 
+permit_module.factory('RemoveViolationContact', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/violation/RemoveViolationContact');
+}]);
+
+permit_module.factory('RemoveViolationParcel', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/violation/RemoveViolationParcel');
+}]);
+
 
 permit_module.service('ViolationService', ['$q',
 'GetViolations',
@@ -85,6 +93,8 @@ permit_module.service('ViolationService', ['$q',
 'SaveViolationEvent',
 'GetViolationCodes',
 'SaveViolationCode',
+'RemoveViolationContact',
+'RemoveViolationParcel',
   
     function ($q,
         GetViolations,
@@ -99,7 +109,9 @@ permit_module.service('ViolationService', ['$q',
         GetViolationEvents,
         SaveViolationEvent,
         GetViolationCodes,
-        SaveViolationCode
+        SaveViolationCode,
+        RemoveViolationContact,
+        RemoveViolationParcel
       
     ) {
         var service = {
@@ -155,7 +167,15 @@ permit_module.service('ViolationService', ['$q',
 
             getViolationCodes:  function (Id) {
                 return GetViolationCodes.query({ Id: Id });
-            }
+            },
+
+            removeViolationParcel: function (violationparcel) {
+                return RemoveViolationParcel.save({ ViolationParcel: violationparcel });
+            },
+
+            removeViolationContact: function (violationcontact) {
+                return RemoveViolationContact.save({ ViolationContact: violationcontact });
+            },
             
         };
 

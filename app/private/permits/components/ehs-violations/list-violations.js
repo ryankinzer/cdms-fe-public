@@ -973,6 +973,36 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             });
         };
 
+        $scope.removeSelectedParcel = function () {
+            if ($scope.violationParcelsGrid.selectedItem && confirm("Are you sure you want to remove this Parcel?")) {
+                var removed = ViolationService.removeViolationParcel($scope.violationParcelsGrid.selectedItem);
+                removed.$promise.then(function () {
+                    $scope.ViolationParcels = ViolationService.getViolationParcels($scope.row.Id);
+                    $scope.ViolationParcels.$promise.then(function () {
+                        $scope.violationParcelsGrid.api.setRowData($scope.ViolationParcels);
+                        $scope.refreshParcelHistory();
+                    });
+
+                });
+            }
+        };
+
+
+        $scope.removeSelectedContact = function () {
+            if ($scope.violationContactsGrid.selectedItem && confirm("Are you sure you want to remove this Contact?")) {
+                var removed = ViolationService.removeViolationContact($scope.violationContactsGrid.selectedItem);
+                removed.$promise.then(function () {
+                    $scope.ViolationContacts.forEach(function (contact, index) {
+                        if (contact.PermitPersonId == $scope.violationContactsGrid.selectedItem.PermitPersonId) {
+                            $scope.ViolationContacts.splice(index,1);
+                            $scope.violationContactsGrid.api.setRowData($scope.ViolationContacts);
+                        }
+                    });
+                });
+            }
+        };
+
+
 
         $scope.selectViolation = function (Id) {
             $scope.ViolationContacts = ViolationService.getViolationContacts(Id);
