@@ -32,6 +32,7 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                     console.log("scope.lookupTables is next...");
                     console.dir(scope.lookupTables);
                 }
+
             } catch (e) { 
                 console.error("config could not be parsed for project: " + scope.project.Config);
                 console.dir(e);
@@ -62,6 +63,15 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                 });
             }
 
+            if (scope.project.Config.hasOwnProperty('ShowDelete')) {
+                scope.ShowDelete = scope.project.Config.ShowDelete;
+
+                console.log("ShowDelete = " + ((scope.dataGridOptions.selectedItems.length > 0) && (scope.ShowDelete == true)));
+
+                //if (scope.HideItems.contains("delete"))
+                //    scope.HideDelete = true;
+            }
+
             //if a lookup doesn't have a dataset then don't try to load up the grid.
             if (lookup.DatasetId == null)
                 return;
@@ -72,12 +82,12 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
 
             scope.selectedLookup.Dataset.$promise.then(function () { 
                 scope.dataGridOptions.columnDefs = null;
-                scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields;
+                //scope.dataGridOptions.columnDefs = GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields;
                 
-                //console.log("HeaderFields...");
+                console.log("HeaderFields.length = " + (GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields.length));
                 //console.dir(GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields);
-                //console.log("DetailFields...");
-                //console.dir(GridService.getAgColumnDefs(scope.selectedLookup.Dataset).DetailFields);
+                console.log("DetailFields.length = " + (GridService.getAgColumnDefs(scope.selectedLookup.Dataset).DetailFields.length));
+                //console.dir(GridService.getAgColumnDefs(scope.selectedLookup.Dataset).DetailFields.length);
                 
                 if (GridService.getAgColumnDefs(scope.selectedLookup.Dataset).HeaderFields.length > 0)
                 {
@@ -125,6 +135,15 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                 scope.openEditModal(param.data);
             });
             div.appendChild(editBtn);
+            //div.appendChild(document.createTextNode(" | "));
+
+            /*var delBtn = document.createElement('a'); delBtn.href = '#'; delBtn.innerHTML = 'Delete';
+            delBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                scope.removeCharacteristic(param.data);
+            });
+            div.appendChild(delBtn);
+            */
             
             return div;
         };
@@ -208,6 +227,29 @@ var project_lookups = ['$scope', '$routeParams','GridService', 'ProjectService',
                 scope.dataGridOptions.api.setRowData(scope.lookupItems);
                 scope.SaveMessage = "Success.";
             });
+        };
+
+        scope.deleteItems = function (a_selection) {
+
+        };
+
+        scope.removeCharacteristic = function (characteristic) {
+            scope.viewCharacteristic = characteristic;
+            if (!scope.viewCharacteristic)
+                return;
+
+            if (confirm("Are you sure you want to remove this characteristic from this Project?")) {
+                var promise = ProjectService.removeCharacteristic(scope.viewCharacteristic.Id);
+
+                promise.$promise.then(function () {
+                    scope.project.Charactersitics.forEach(function (item, index) {
+                        if (item.Id === scope.viewCharacteristic.Id) {
+                            scope.project.Charactersitics.splice(index, 1);
+                            scope.instrGridOptions.api.setRowData(scope.project.Charactersitics);
+                        }
+                    });
+                });
+            }
         };
 
         //handle favorite toggle
