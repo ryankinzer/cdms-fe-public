@@ -17,6 +17,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //console.dir($scope.fishermen);
         });
 
+        $scope.Characteristics = null;
+
         $scope.WaypointIdField = "";
         
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
@@ -482,6 +484,21 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                             }
                         });
                     }
+
+                    if (($scope.project.Config) && ($scope.project.Config.Lookups))
+                    {
+                        $scope.project.Config.Lookups.forEach(function (item){
+                            if (item.Label === "Characteristics")
+                            {
+                                $scope.Characteristics = CommonService.getLookupItems(item);
+                                $scope.Characteristics.$promise.then(function () {
+                                    //fieldDef.setPossibleValues(makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name'));
+                                    //console.log("$scope.Characteristics is next...");
+                                    //console.dir($scope.Characteristics);
+                                });
+                            }
+                        });
+                    }
                 });
                 
 
@@ -590,6 +607,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
 
             });
+
+            //$scope.activateGrid();
         };
 
         //this is a workaround for angularjs' either too loose matching or too strict...
@@ -988,7 +1007,24 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 console.log(" does editedRowIds contain this id? " + $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id));
 
                 if(!$scope.row.ActivityId || !node.data.Id || $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id)){
-                    
+                
+                    if (($scope.project.Config) && ($scope.project.Config.Lookups))
+                    {
+                        $scope.project.Config.Lookups.forEach(function (item){
+                            if (item.Label === "Characteristics")
+                            {
+                                var blnFoundIt = false;
+                                $scope.Characteristics.forEach(function(aCharacteristic){
+                                    if ((!blnFoundIt) && (aCharacteristic.Id === parseInt(node.data.CharacteristicName)))
+                                    {
+                                        node.data.CharacteristicName = aCharacteristic.CharacteristicName;
+                                        blnFoundIt = true;
+                                    }
+                                });
+                            }
+                        });
+                    }
+
                     console.log("adding row id " + node.data.Id + " to be saved...");
                     var data = angular.copy(node.data);
                     payload.details.push(data); 
