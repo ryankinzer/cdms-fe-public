@@ -455,6 +455,32 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
 
+                /*$scope.dataset_activities.Details.forEach(function(detail){
+                    // If we are on WaterQuality, the Characteristics options were originally
+                    // stored in dbo.Fields.PossibleValues as Text.  Later (because there are
+                    // so many), we moved them out to their own table.  Now they come in with
+                    // Id, so the Id must be converted to the Name, because we don't want to
+                    // convert Characteristic from text to int for the millions of records
+                    // in WaterQuality_Detail.
+                    if (($scope.project.Config) && ($scope.project.Config.Lookups))
+                    {
+                        $scope.project.Config.Lookups.forEach(function (item){
+                            if (item.Label === "Characteristics")
+                            {
+                                var blnFoundIt = false;
+                                $scope.Characteristics.forEach(function(aCharacteristic){
+                                    if ((!blnFoundIt) && (aCharacteristic.CharacteristicName === parseInt(node.data.CharacteristicName)))
+                                    {
+                                        node.data.CharacteristicName = aCharacteristic.Id;
+                                        blnFoundIt = true;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                */
+
                 //set the detail values into the grid
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
                 
@@ -492,9 +518,22 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                             {
                                 $scope.Characteristics = CommonService.getLookupItems(item);
                                 $scope.Characteristics.$promise.then(function () {
-                                    //fieldDef.setPossibleValues(makeObjects($scope.dataset.RowQAStatuses, 'Id', 'Name'));
-                                    //console.log("$scope.Characteristics is next...");
-                                    //console.dir($scope.Characteristics);
+                                    $scope.dataset_activities.Details.forEach(function(detail){
+                                        // If we are on WaterQuality, the Characteristics options were originally
+                                        // stored in dbo.Fields.PossibleValues as Text.  Later (because there are
+                                        // so many), we moved them out to their own table.  Now they come in with
+                                        // Id, so the Id must be converted to the Name, because we don't want to
+                                        // convert Characteristic from text to int for the millions of records
+                                        // in WaterQuality_Detail.
+                                        var blnFoundIt = false;
+                                        $scope.Characteristics.forEach(function(aCharacteristic){
+                                            if ((!blnFoundIt) && (aCharacteristic.CharacteristicName === detail.CharacteristicName))
+                                            {
+                                                detail.CharacteristicName = aCharacteristic.Id;
+                                                blnFoundIt = true;
+                                            }
+                                        });
+                                    });
                                 });
                             }
                         });
