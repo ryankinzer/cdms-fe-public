@@ -1,0 +1,42 @@
+<div class="cv-header">
+    <h2>Staff you supervise</h2>
+    <h4>Use the grid below to record the working status of each member of your program or department.</h4>
+    <p>Instructions: Double click a cell to edit. Click a cell and click "Copy right" to fill in the cells to the right with that value.</p>
+    <p>Note: These records represent information voluntarily contributed by staff members.</p>
+</div>
+<hr/>
+<div ng-show="loaded && employees.length > 0">
+    <div class="cv-button-bar">
+        <div class="cv-control-buttons">
+            <button ng-show="row.Id && isCopyableCell()" class="btn btn-secondary margin-5" ng-click="copyCellRight()">Copy cell right</button>
+            <button ng-show="row.Id && isCopyableCell()" class="btn btn-secondary margin-5" ng-click="copyColumnRight()">Copy column right</button>
+            <button ng-disabled="save.isSaving" class="btn btn-warning" ng-click="cancel()">Cancel/Reload</button>
+            <button ng-disabled="save.isSaving" class="btn btn-primary" ng-click="saveRecords()">Save</button>
+        </div>
+    </div>
+    <div id="employee-grid" style="width:100%; min-height: 150px;" class="ag-theme-blue"></div>
+</div>
+
+<div ng-show="loaded && employees.length == 0">
+    <div class="alert alert-primary">No staff are assigned to you in the system. Contact kenburcham@ctuir.org if that should not be the case.</div>
+</div>
+
+<div ng-show="!loaded">
+    <div class="alert alert-primary">Loading...</div>
+</div>
+
+<hr/>
+
+<div ng-show="loaded && employees.length > 0" style="height: 130px;">
+    <div style="margin: 10px; float: right;">
+        <div class="alert alert-danger" ng-show="save.hasError">{{save.message}}</div>
+        <div class="alert alert-success" ng-show="save.hasSuccess">{{save.message}}</div>
+        <div class="alert alert-primary" ng-show="save.isSaving">Saving changes...</div>
+        <button ng-disabled="save.isSaving" class="btn btn-warning" ng-click="cancel()">Cancel/Reload</button>
+        <button ng-disabled="save.isSaving" class="btn btn-primary" ng-click="saveRecords()">Save</button>
+    </div>
+    <div class="cv-employee-buttons" style="float:left;">
+        <button class="btn btn-secondary margin-5" ng-click="addEmployee()">Add Employees</button>
+        <button ng-show="row.Id" class="btn btn-warning margin-5" ng-click="removeEmployee()">Remove Employee</button>
+    </div>
+</div>

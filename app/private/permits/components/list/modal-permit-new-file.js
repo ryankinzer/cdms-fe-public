@@ -1,5 +1,5 @@
 ﻿
-modal_new_file = ['$scope','$uibModalInstance', 'Upload',
+modal_permit_new_file = ['$scope','$uibModalInstance', 'Upload',
 	function($scope,  $modalInstance, $upload){
 		// note: file selected for upload in this controller are managed by onFileSelect in this controller (see below).
 

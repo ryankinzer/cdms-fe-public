@@ -1,0 +1,25 @@
+﻿<div ng-show="Profile.hasRole('Permits')" style="margin: 10px; float: right;">
+    <button class="btn btn-sm" ng-click="createNew()">New Complaint/Violation</button>
+</div>
+
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link" href="#!/ehs-violations/map">Search</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" ng-class="{'active': currentPage=='All'}" href ng-click="showAll()">All</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" ng-class="{'active': currentPage=='Complaints'}" href ng-click="showComplaints()">Complaints</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" ng-class="{'active': currentPage=='Violations'}" href ng-click="showViolations()">Violations</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" ng-class="{'active': currentPage=='Resolved'}" href ng-click="showResolved()">Resolved</a>
+    </li>
+    
+    
+</ul>
+
+<hr/>

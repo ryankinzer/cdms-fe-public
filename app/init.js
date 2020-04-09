@@ -38,6 +38,7 @@
         'private/leasing/leasing-module',
         'private/permits/permit-module',
         'private/olc/olc-module',
+        'private/covid/covid-module'
 
     ], function (angular, parser) {
    

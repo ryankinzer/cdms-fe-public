@@ -1,7 +1,7 @@
 ﻿//modal to add/edit permit parcel
-var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload','PermitService',
+var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload','PermitService','ViolationService',
 
-    function ($scope, $modal, $modalInstance, $upload, PermitService) {
+    function ($scope, $modal, $modalInstance, $upload, PermitService, ViolationService) {
 
         $scope.mode = "edit";
 
@@ -28,14 +28,18 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
                 if (parcel.ParcelId == null || parcel.ParcelId == "")
                     return;
 
-                if (entryLength > 0 && parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry) {
+                if (entryLength > 0){
 
-                    if (parcel.ParcelId == $scope.parcelEntry) {
-                        $scope.parcel_modal = parcel;
-                        $scope.Selected.Parcel.push(angular.toJson($scope.parcel_modal)); //this is the trick
+                    if(parcel.ParcelId.substring(0, entryLength) == $scope.parcelEntry || 
+                        (parcel.Address && parcel.Address.toUpperCase().substring(0, entryLength) == $scope.parcelEntry ) ) {
+
+                        if (parcel.ParcelId == $scope.parcelEntry || (parcel.Address && parcel.Address.toUpperCase() == $scope.parcelEntry)) {
+                            $scope.parcel_modal = parcel;
+                            $scope.Selected.Parcel.push(angular.toJson($scope.parcel_modal)); //this is the trick
+                        }
+
+                        $scope.parcelMatches.push(parcel);
                     }
-
-                    $scope.parcelMatches.push(parcel);
                 }
             });
         };
@@ -44,11 +48,25 @@ var modal_edit_permitparcel = ['$scope', '$uibModal','$uibModalInstance','Upload
             $scope.parcel_modal = angular.fromJson($scope.Selected.Parcel[0]); //this is the trick
         }
 
+        if($scope.row.SiteAddress) {
+            $scope.parcelEntry = $scope.row.SiteAddress;
+            $scope.parcelEntryUpdate();
+        }
+
         $scope.save = function () {
 
-            var new_parcel = PermitService.savePermitParcel($scope.parcel_modal);
-
-            $scope.parcel_modal.PermitId = $scope.row.Id;
+            var new_parcel = "";
+            
+            if($scope.violations != null){
+                $scope.parcel_modal.EHSViolationId = $scope.row.Id;
+                new_parcel = ViolationService.saveViolationParcel($scope.parcel_modal);
+            }
+            else
+            {
+                $scope.parcel_modal.PermitId = $scope.row.Id;
+                new_parcel = PermitService.savePermitParcel($scope.parcel_modal);
+            }
+            
             var the_new_parcel = getByField($scope.CadasterParcels, $scope.parcel_modal.ParcelId, 'ParcelId');
             $scope.parcel_modal.ObjectId = the_new_parcel.ObjectId;
 

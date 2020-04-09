@@ -144,8 +144,6 @@ permit_module.factory('GetPermitTypes', ['$resource', function ($resource) {
     });
 }]);
 
-
-
 permit_module.service('PermitService', ['$q',
 
     'AllPermits',
@@ -281,7 +279,7 @@ DeletePermitPerson
                 return SavePermitEvent.save({ PermitEvent: permitevent });
             },
 
-            deleteFile: function (projectId, subprojectId, itemId, file) {
+            deletePermitFile: function (projectId, subprojectId, itemId, file) {
                 return DeletePermitFile.save({ ProjectId: projectId, SubprojectId: subprojectId, ItemId: itemId, File: file });
             },
 
@@ -300,7 +298,7 @@ DeletePermitPerson
             getPermitStatistics: function () { 
                 return GetPermitStatistics.query();
             },
-
+            
             getPermitByPermitNumber: function (permitnumber) {
                 return GetPermitByPermitNumber.query({ PermitNumber: permitnumber });
             },
