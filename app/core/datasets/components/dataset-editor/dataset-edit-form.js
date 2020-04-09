@@ -17,6 +17,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //console.dir($scope.fishermen);
         });
 
+        $scope.Characteristics = null;
+
         $scope.WaypointIdField = "";
         
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
@@ -453,6 +455,32 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
 
+                /*$scope.dataset_activities.Details.forEach(function(detail){
+                    // If we are on WaterQuality, the Characteristics options were originally
+                    // stored in dbo.Fields.PossibleValues as Text.  Later (because there are
+                    // so many), we moved them out to their own table.  Now they come in with
+                    // Id, so the Id must be converted to the Name, because we don't want to
+                    // convert Characteristic from text to int for the millions of records
+                    // in WaterQuality_Detail.
+                    if (($scope.project.Config) && ($scope.project.Config.Lookups))
+                    {
+                        $scope.project.Config.Lookups.forEach(function (item){
+                            if (item.Label === "Characteristics")
+                            {
+                                var blnFoundIt = false;
+                                $scope.Characteristics.forEach(function(aCharacteristic){
+                                    if ((!blnFoundIt) && (aCharacteristic.CharacteristicName === parseInt(node.data.CharacteristicName)))
+                                    {
+                                        node.data.CharacteristicName = aCharacteristic.Id;
+                                        blnFoundIt = true;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                */
+
                 //set the detail values into the grid
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
                 
@@ -479,6 +507,34 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                             if (loc.LocationTypeId == PRIMARY_PROJECT_LOCATION_TYPEID) {
                                 $scope.row.Activity.LocationId = loc.Id;
                                 console.log(" --> setting Activity.LocationId to primary project location because there is only one defined.");
+                            }
+                        });
+                    }
+
+                    if (($scope.project.Config) && ($scope.project.Config.Lookups))
+                    {
+                        $scope.project.Config.Lookups.forEach(function (item){
+                            if (item.Label === "Characteristics")
+                            {
+                                $scope.Characteristics = CommonService.getLookupItems(item);
+                                $scope.Characteristics.$promise.then(function () {
+                                    $scope.dataset_activities.Details.forEach(function(detail){
+                                        // If we are on WaterQuality, the Characteristics options were originally
+                                        // stored in dbo.Fields.PossibleValues as Text.  Later (because there are
+                                        // so many), we moved them out to their own table.  Now they come in with
+                                        // Id, so the Id must be converted to the Name, because we don't want to
+                                        // convert Characteristic from text to int for the millions of records
+                                        // in WaterQuality_Detail.
+                                        var blnFoundIt = false;
+                                        $scope.Characteristics.forEach(function(aCharacteristic){
+                                            if ((!blnFoundIt) && (aCharacteristic.CharacteristicName === detail.CharacteristicName))
+                                            {
+                                                detail.CharacteristicName = aCharacteristic.Id;
+                                                blnFoundIt = true;
+                                            }
+                                        });
+                                    });
+                                });
                             }
                         });
                     }
@@ -590,6 +646,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
 
             });
+
+            //$scope.activateGrid();
         };
 
         //this is a workaround for angularjs' either too loose matching or too strict...
@@ -988,7 +1046,24 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 console.log(" does editedRowIds contain this id? " + $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id));
 
                 if(!$scope.row.ActivityId || !node.data.Id || $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id)){
-                    
+                
+                    if (($scope.project.Config) && ($scope.project.Config.Lookups))
+                    {
+                        $scope.project.Config.Lookups.forEach(function (item){
+                            if (item.Label === "Characteristics")
+                            {
+                                var blnFoundIt = false;
+                                $scope.Characteristics.forEach(function(aCharacteristic){
+                                    if ((!blnFoundIt) && (aCharacteristic.Id === parseInt(node.data.CharacteristicName)))
+                                    {
+                                        node.data.CharacteristicName = aCharacteristic.CharacteristicName;
+                                        blnFoundIt = true;
+                                    }
+                                });
+                            }
+                        });
+                    }
+
                     console.log("adding row id " + node.data.Id + " to be saved...");
                     var data = angular.copy(node.data);
                     payload.details.push(data); 
