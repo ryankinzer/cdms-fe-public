@@ -14,16 +14,15 @@
         }
 
         $scope.save = function () {
+            console.log("Inside add-production-modal.js, save...");
+            console.log("$scope.production_modal is next...");
             console.dir($scope.production_modal);
             
-            var intCropAcres = parseInt($scope.production_modal.CropAcres);
-            //if (($scope.production_modal.CropAcres !== 'undefined') && (intCropAcres === NaN))
             if (isNaN($scope.production_modal.CropAcres))
             {
                 $scope.saveResult.error = "Crop Acres must be either blank, or a number."
                 return;
             }
-            //throw "Stopping right here...";
 
             $scope.production_modal.LeaseId = $scope.lease.Id;
             var save_result = LeasingService.saveProduction($scope.production_modal);
