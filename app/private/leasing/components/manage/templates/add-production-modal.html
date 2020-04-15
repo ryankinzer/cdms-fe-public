@@ -25,6 +25,10 @@
 
                                 <div style="margin-top: 30px;"></div>
 
+                                <div>
+                                    <p ng-show="saveResult.error" class="alert alert-danger">{{saveResult.error}}</p>
+                                </div>
+
                                 <div class="header-label">Lease Year</div>
                                 <div class="header-value">
                                     <input class="form-control" type="text" ng-model="production_modal.LeaseYear" />
