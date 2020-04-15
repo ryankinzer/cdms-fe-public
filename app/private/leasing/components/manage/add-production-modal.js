@@ -18,7 +18,7 @@
             console.log("$scope.production_modal is next...");
             console.dir($scope.production_modal);
             
-            if (isNaN($scope.production_modal.CropAcres))
+            if (($scope.production_modal.CropAcres != undefined) && (isNaN($scope.production_modal.CropAcres)))
             {
                 $scope.saveResult.error = "Crop Acres must be either blank, or a number."
                 return;
