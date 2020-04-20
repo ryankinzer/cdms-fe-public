@@ -78,6 +78,10 @@ permit_module.factory('RemoveViolationParcel', ['$resource', function ($resource
     return $resource(serviceUrl + '/api/v1/violation/RemoveViolationParcel');
 }]);
 
+permit_module.factory('SendNotification', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/violation/SendNotification');
+}]);
+
 
 permit_module.service('ViolationService', ['$q',
 'GetViolations',
@@ -95,6 +99,7 @@ permit_module.service('ViolationService', ['$q',
 'SaveViolationCode',
 'RemoveViolationContact',
 'RemoveViolationParcel',
+'SendNotification',
   
     function ($q,
         GetViolations,
@@ -111,7 +116,8 @@ permit_module.service('ViolationService', ['$q',
         GetViolationCodes,
         SaveViolationCode,
         RemoveViolationContact,
-        RemoveViolationParcel
+        RemoveViolationParcel,
+        SendNotification
       
     ) {
         var service = {
@@ -171,6 +177,10 @@ permit_module.service('ViolationService', ['$q',
 
             removeViolationParcel: function (violationparcel) {
                 return RemoveViolationParcel.save({ ViolationParcel: violationparcel });
+            },
+
+            sendNotifications: function (notification) {
+                return SendNotification.save({ EHSViolationId: notification.EHSViolationId, NotifyRoutes: notification.NotifyRoutes });
             },
 
             removeViolationContact: function (violationcontact) {

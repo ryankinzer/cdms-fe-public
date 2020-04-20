@@ -1134,5 +1134,29 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
 
         };
 
+        $scope.sendNotifications = function(){
+            if($scope.row.dataChanged){
+                if(!confirm ("The record will be saved before sending notifications. Proceed?"))
+                    return;
+                $scope.save();
+            }
+
+            notification = {
+                EHSViolationId: $scope.row.Id,
+                NotifyRoutes: $scope.row.NotifyRoutes
+            };
+
+            console.dir(notification)
+
+            sending = ViolationService.sendNotifications(notification);
+            sending.$promise.then(function(){
+
+            }, function(data){
+                alert("There was a problem sending notifications.");
+            })
+
+            
+        }
+
         
     }];        
