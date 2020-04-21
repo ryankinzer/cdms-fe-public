@@ -82,6 +82,11 @@ permit_module.factory('SendNotification', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/violation/SendNotification');
 }]);
 
+permit_module.factory('GetNotifications', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/syslog/GetNotificationsByModule', {}, {
+        query: { method: 'GET', params: { }, isArray: true }
+    });
+}]);
 
 permit_module.service('ViolationService', ['$q',
 'GetViolations',
@@ -100,6 +105,7 @@ permit_module.service('ViolationService', ['$q',
 'RemoveViolationContact',
 'RemoveViolationParcel',
 'SendNotification',
+'GetNotifications',
   
     function ($q,
         GetViolations,
@@ -117,7 +123,8 @@ permit_module.service('ViolationService', ['$q',
         SaveViolationCode,
         RemoveViolationContact,
         RemoveViolationParcel,
-        SendNotification
+        SendNotification,
+        GetNotifications
       
     ) {
         var service = {
@@ -186,6 +193,10 @@ permit_module.service('ViolationService', ['$q',
             removeViolationContact: function (violationcontact) {
                 return RemoveViolationContact.save({ ViolationContact: violationcontact });
             },
+
+            getNotifications: function () { 
+                return GetNotifications.query({ Module: 'EHSInspectionViolation' });
+            }
             
         };
 
