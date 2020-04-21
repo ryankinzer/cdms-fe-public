@@ -5,8 +5,8 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
         $scope.work = CovidService.getMyEmployeesWork();
 
         //note: they asked to show all dates through 4/30 instead of just through today... hence the redefinition of "today" :)
-        var today_text = moment(new Date('04/30/2020')).format('M/D/YY');
-        var today = moment(new Date('04/30/2020'));
+        var today_text = moment(new Date('05/31/2020')).format('M/D/YY');
+        var today = moment(new Date('05/31/2020'));
         var begin = moment(new Date('03/15/2020'));
         $scope.lookup = {};
         $scope.save = {};
