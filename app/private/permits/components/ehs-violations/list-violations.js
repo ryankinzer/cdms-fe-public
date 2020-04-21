@@ -392,7 +392,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
             },
             getRowHeight: function (params) {
                 var comment_length = (params.data.Comments === null) ? 1 : params.data.Comments.length;
-                var comment_height = 25 * (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
+                var comment_height = 25 * 1; // (Math.floor(comment_length / 45) + 1); //base our detail height on the comments field.
                 var file_height = 25 * (getFilesArrayAsList(params.data.Files).length); //count up the number of file lines we will have.
                 return (comment_height > file_height) ? comment_height : file_height;
             },
@@ -888,32 +888,9 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 // console.log("permit saved: ");
                 // console.dir(saved_permit);
 
-/* -- comment for now...
+                $scope.afterSaveEvents($scope.row, angular.copy($scope.ehsGrid.selectedNode.data));
 
-                //requirement: if we saved a new status, add a record to the permitsevents
-                if ($scope.row.Id && $scope.row.PermitStatus !== $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus) {
-                    var new_event = {
-                        PermitId: $scope.row.Id,
-                        ByUser: $scope.Profile.Id,
-                        EventDate: moment().format('L'),
-                        RequestDate: moment().format('L'),
-                        ResponseDate: moment().format('L'),
-                        EventType: "Record",
-                        ItemType: "TPO",
-                        Reviewer: $scope.Profile.Fullname,
-                        Comments: "Update Status from " + $scope.permitsGrid.api.getSelectedRows()[0].PermitStatus + " to " + $scope.row.PermitStatus
-                    };
-                    console.log("saving a permitevent since we updated the status"); console.dir(new_event);
-                    var save_event = PermitService.savePermitEvent(new_event);
-                    save_event.$promise.then(function () { 
-                        //refresh the activities now that we've saved a new one.
-                        $scope.ViolationEvents = PermitService.getViolationEvents($scope.row.Id);
-                        $scope.ViolationEvents.$promise.then(function () {
-                            $scope.ViolationEventsGrid.api.setRowData($scope.ViolationEvents);
-                        });
-                    });
-                }
-*/
+                //refresh 
                 if (!$scope.row.Id) {
                     $scope.violations.push(saved_violation);
                     $scope.ehsGrid.api.setRowData($scope.violations);
@@ -951,6 +928,106 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 $scope.row.errorMessage = "There was a problem saving."
             });
         };
+
+        //in certain state changes, we want to add an activity to the events
+        $scope.afterSaveEvents = function(saved_record, existing_record) {
+
+            if(!saved_record.Id)
+                return;
+
+            //make the existing record arrays useable
+            existing_record.NotifyRoutes = (existing_record.NotifyRoutes) ? angular.fromJson(existing_record.NotifyRoutes) : [];
+            existing_record.ViolationOffenses = (existing_record.ViolationOffenses) ? angular.fromJson(existing_record.ViolationOffenses) : [];
+            
+            if (!Array.isArray(existing_record.NotifyRoutes))
+                existing_record.NotifyRoutes = [];
+
+            if (!Array.isArray(existing_record.ViolationOffenses))
+                existing_record.ViolationOffenses = [];
+
+            /*
+                Save an activity in these cases:
+
+                FileType (Complaint -> Violation)
+                ViolationOffenses (Adding or removing)
+                ViolationResolvedDate (when it is set)
+                ViolationStatus (change)
+                Notifications (sent)
+            */
+
+            //console.dir(saved_record);
+            //console.dir(existing_record);
+
+            changes_to_send = false;
+
+            comment_list = [];
+
+            var new_event = {
+                EHSViolationId: saved_record.Id,
+                ByUser: $scope.Profile.Id,
+                EventDate: moment().format('L'),
+                EventType: "Record",
+                //Comments: ""   //Update Status from " + "" + " to " + saved_record.PermitStatus
+            };
+
+            //if saving a brand-new record, existing_record will be null and if we saved then the BE sent notifications.
+            if(!existing_record){
+
+                comment_list.push("Notifications sent to " + saved_record.Notifications.join("+"));
+                changes_to_send = true;
+
+            } else {
+                
+                //filetype changed?
+                if (saved_record.FileType !== existing_record.FileType) {
+                    comment_list.push("File type changed from "+existing_record.FileType + " to " + saved_record.FileType);
+                    changes_to_send = true;
+                }
+    
+                //violationoffenses changed?
+                if (saved_record.ViolationOffenses.length != existing_record.ViolationOffenses.length) {
+                    comment_list.push("Violation offenses changed from '"+ existing_record.ViolationOffenses.join("+") + "' to '" + saved_record.ViolationOffenses.join("+") + "'");
+                    changes_to_send = true;
+                }
+    
+                //violationresolved date set?
+                if(existing_record.ViolationResolvedDate != saved_record.ViolationResolvedDate)
+                {
+                    comment_list.push("Violation resolved set to " + moment(saved_record.ViolationResolvedDate).format('L'));
+                    changes_to_send = true;
+                }
+    
+                if (saved_record.ViolationStatus != existing_record.ViolationStatus) {
+                    comment_list.push("Violation status changed from " + existing_record.ViolationStatus + " to " + saved_record.ViolationStatus);
+                    changes_to_send = true;
+                }
+
+            }
+
+            if(!changes_to_send)
+                return;
+
+            new_event.Comments = comment_list.join(", ");
+
+            console.log("Saving a violation state change event: ");
+            console.dir(new_event);
+
+            var save_event = ViolationService.saveViolationEvent(new_event);
+
+            save_event.$promise.then(function () { 
+                //refresh the activities now that we've saved a new one.
+                $scope.ViolationEvents = ViolationService.getViolationEvents($scope.row.Id);
+                $scope.ViolationEvents.$promise.then(function () {
+                    $scope.violationEventsGrid.api.setRowData($scope.ViolationEvents);
+                });
+                console.log('success!');
+            }, function(data){
+                console.log ("An error occured! ");
+                console.dir(data);
+            });
+        
+
+        }
 
         $scope.resetGrids();
 
@@ -1028,7 +1105,6 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 $scope.violationParcelsGrid.api.setRowData($scope.ViolationParcels);
                 $scope.violationParcelsGrid.selectedItem = null;
                 $scope.refreshParcelHistory();
-                //$scope.refreshZones();
             });
 
             $scope.ViolationFiles.$promise.then(function () {
@@ -1046,8 +1122,6 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 $scope.violationCodesGrid.selectedItem = null;
             });
 
-//                $scope.togglePermitTypeField();
-
                 //stretch the textareas to the height of the content
                 $('textarea').each(function () {
                     this.setAttribute('style', 'min-height: 130px','height:auto; height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
@@ -1058,24 +1132,31 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                     this.value = this.value.replace(/\n/g, ""); //do not allow hard-returns
                   });
 
-            //});
+        };
+
+        $scope.sendNotifications = function(){
+            if($scope.row.dataChanged){
+                if(!confirm ("The record will be saved before sending notifications. Proceed?"))
+                    return;
+                $scope.save();
+            }
+
+            notification = {
+                EHSViolationId: $scope.row.Id,
+                NotifyRoutes: $scope.row.NotifyRoutes
+            };
+
+            console.dir(notification)
+
+            sending = ViolationService.sendNotifications(notification);
+            sending.$promise.then(function(){
+                alert("Notifications sent.");
+            }, function(data){
+                alert("There was a problem sending notifications.");
+            })
 
             
-            /*
-            if(!Array.isArray($scope.row.Zones)){
-                $scope.row.Zones = [];
-
-                if ($scope.row.Zoning) {
-                    $scope.row.Zoning = getJsonObjects($scope.row.Zoning);
-                    //console.warn(" -- Zoning -- ");
-                    //console.dir($scope.row.Zoning);
-
-                } else {
-                    $scope.row.Zoning = [];
-                }
-            }
-*/
-        };
+        }
 
         
     }];        

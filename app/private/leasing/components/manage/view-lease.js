@@ -269,6 +269,7 @@
             rowData: [],
             enableSorting: true,
             enableFilter: true,
+            enableColResize: true,
             rowSelection: 'single'
         }
 
