@@ -1150,7 +1150,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
 
             sending = ViolationService.sendNotifications(notification);
             sending.$promise.then(function(){
-
+                alert("Notifications sent.");
             }, function(data){
                 alert("There was a problem sending notifications.");
             })
