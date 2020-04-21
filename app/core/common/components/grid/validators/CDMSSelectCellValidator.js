@@ -33,8 +33,16 @@ CDMSSelectCellValidator.prototype.validateFieldControlTypeValidation = function 
         }
         else
         {
-            if (!Object.keys(data.colDef.cellEditorParams.values).containsExactly(data.value)) {
-                this.errors.push(new ValidationError(this.cdms_field, "Invalid selection (" + data.value + " not in PossibleValues)."));
+            // If data.value is an Id, this works.
+            // If data.value is a text value, this does not work.
+            //if (!Object.keys(data.colDef.cellEditorParams.values).containsExactly(data.value)) {
+            //    this.errors.push(new ValidationError(this.cdms_field, "Invalid selection (" + data.value + " not in PossibleValues)."));
+            //}
+
+            // If data.value is either an Id, or a text value, this works.
+            if ((!Object.keys(data.colDef.cellEditorParams.values).containsExactly(data.value)) &&
+                (!Object.values(data.colDef.cellEditorParams.values).containsExactly(data.value))){
+                    this.errors.push(new ValidationError(this.cdms_field, "Invalid selection (" + data.value + " not in PossibleValues)."));
             }
         }
     }
