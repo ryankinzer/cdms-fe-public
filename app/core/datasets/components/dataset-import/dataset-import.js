@@ -114,9 +114,19 @@
             }).error(function (data) {
                     //$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
                     var errorStem = "There was a problem uploading your file.\n";
-                    var errorSpecificPart1 = "The form says the column headers start on line " + $scope.startOnLine + ".  ";
-                    var errorSpecificPart2 = "Is this correct?  Also verify that the data/time entries are in 24-hour format.";
-                    $scope.uploadErrorMessage = errorStem + errorSpecificPart1 + errorSpecificPart2;
+
+                    var errorSpecificPart1 = "";
+                    if ($scope.file.name.indexOf(".xls") < 0)
+                        errorSpecificPart1 = "The form says the column headers start on line " + $scope.startOnLine + ".  Is this correct?  ";
+
+                    var errorSpecificPart2 = "Also verify that the date/time entries are in 24-hour format.  ";
+                    var errorSpecificPart3 = "Specific error from backend:  " + $scope.upload.$$state.value.data.InnerException.ExceptionMessage;
+                    var intCutoffLocation = errorSpecificPart3.indexOf(" at"); // Note the space in front (" at")
+                    // We want to strip off " at this file/method", but we want to keep "date".
+
+                    errorSpecificPart3 = errorSpecificPart3.substr(0, intCutoffLocation);
+                    //$scope.uploadErrorMessage = errorStem + errorSpecificPart1 + errorSpecificPart2;
+                    $scope.uploadErrorMessage = errorStem + errorSpecificPart1 + errorSpecificPart2 + errorSpecificPart3;
                     console.log("$scope.upload next...");
                     console.dir($scope.upload);
                     $scope.loading = false;
