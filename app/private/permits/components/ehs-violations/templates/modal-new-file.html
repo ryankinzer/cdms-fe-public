@@ -1,0 +1,27 @@
+
+<div class="modal-header">
+  	<h4>{{header_message}}</h4>
+<div>    
+    <p ng-show="uploadErrorMessage" class="alert alert-danger">{{uploadErrorMessage}}</p>
+</div>
+</div>
+<div class="modal-body" id="modal-body">
+
+<input ng-disabled="doneUploading" type="file" ngf-select="onFileSelect($files)" multiple>
+
+<table ng-show="uploadFiles" class="table table-striped">
+    <tr><th>Filename</th><th>Caption</th><th>Results</th></tr>
+    <tr ng-repeat="file in uploadFiles">
+    <td>{{file.name}}</td>
+    <td>
+        <input type="text" class="form-control" ng-model="file.Description"/>
+    </td>
+    <td>{{file.success}}</td>
+    </tr>
+</table>
+  		
+</div>
+<div class="modal-footer">
+    <button ng-hide="isUploading" class="btn btn-warning" ng-click="cancel()">Close</button>
+    <button ng-show="readyToUpload && !doneUploading" class="btn btn-primary" ng-click="save()">Upload</button>
+</div>

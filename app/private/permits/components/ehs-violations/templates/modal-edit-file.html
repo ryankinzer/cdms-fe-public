@@ -1,0 +1,21 @@
+	<div class="modal-header">
+  		<h4>{{header_message}}</h4>
+  	</div>
+    <div class="modal-body modal-form">
+
+        <div class="header-label">Name</div>
+        <div class="header-value">
+            <input ng-disabled="true" class="form-control" type="text" ng-model="file_modal.Name" />
+        </div>
+
+        <div class="header-label">Caption</div>
+        <div class="header-value">
+            <input type="text" class="form-control" ng-model="file_modal.Description"/>
+        </div>
+
+    </div>
+	<div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="save()">Save</button>
+    </div>
+

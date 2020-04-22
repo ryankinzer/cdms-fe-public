@@ -547,7 +547,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
 
         $scope.violationFilesGrid.columnDefs = [
             { headerName: 'File', cellRenderer: LinkTemplate, width: 220, menuTabs: ['filterMenuTab'], filter: true },
-            { field: 'Description', headerName: 'File Type', width: 200, menuTabs: ['filterMenuTab'], filter: true },
+            { field: 'Description', headerName: 'Caption', width: 200, menuTabs: ['filterMenuTab'], filter: true },
             { field: 'Uploaded', headerName: "Uploaded", width: 240, valueGetter: UploadedByTemplate, menuTabs: ['filterMenuTab'], filter: 'text' },
         ];
         
@@ -636,7 +636,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
         $scope.openFileModal = function (params) {
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/modal-new-file.html',
+                templateUrl: 'app/private/permits/components/ehs-violations/templates/modal-new-file.html',
                 controller: 'ViolationFileModalController',
                 backdrop: 'static',
                 keyboard: false,
@@ -659,7 +659,7 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
         $scope.openEditFileTypeModal = function(params){
             $scope.file_modal = params;
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/modal-edit-file.html',
+                templateUrl: 'app/private/permits/components/ehs-violations/templates/modal-edit-file.html',
                 controller: 'EditViolationFileTypeModalController',
                 scope: $scope,
                 backdrop: "static",
