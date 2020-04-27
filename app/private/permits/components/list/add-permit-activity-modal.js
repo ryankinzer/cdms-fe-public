@@ -22,6 +22,8 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
             $scope.mode = ($scope.row.Id) ? "edit" : "new";
         }
 
+        console.log("mode = " + $scope.mode);
+
         if (!$scope.row.Id) {
             $scope.row.EventDate = moment().format('L');
             $scope.row.RequestDate = moment().format('L');    
