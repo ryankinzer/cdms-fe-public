@@ -3,7 +3,7 @@ modal_violation_new_file = ['$scope','$uibModalInstance', 'Upload',
 	function($scope,  $modalInstance, $upload){
 		// note: file selected for upload in this controller are managed by onFileSelect in this controller (see below).
 
-        $scope.header_message = "Add file(s) to: " + $scope.row.FileName;
+        $scope.header_message = "Add file(s) to: " + $scope.row.Name;
         $scope.doneUploading = false;
         $scope.isUploading = false;
         $scope.readyToUpload = false;

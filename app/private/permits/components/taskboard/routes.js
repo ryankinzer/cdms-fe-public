@@ -97,6 +97,7 @@
             { headerName: "TERO", field: "Route_TERO", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "CRPP", field: "Route_CRPP", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Roads", field: "Route_Roads", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
+            { headerName: "Fire", field: "Route_Fire", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'routeCellRenderer' },
             { headerName: "Fee Paid", field: "FeePaymentAmount", menuTabs: ['filterMenuTab'], width: 100, cellRenderer: 'feeCellRenderer' },
             //{ headerName: "Issued By", field: "IssuedBy", menuTabs: ['filterMenuTab'], width: 160, filter: true },
             { headerName: "Comments", field: "Comments", menuTabs: ['filterMenuTab'], width: 460 }
@@ -232,8 +233,8 @@
             $scope.intent = intent;
 
             var modalInstance = $modal.open({
-                templateUrl: 'app/private/permits/components/list/templates/add-activity-modal.html',
-                controller: 'ActivityModalController',
+                templateUrl: 'app/private/permits/components/list/templates/add-permit-activity-modal.html',
+                controller: 'PermitActivityModalController',
                 scope: $scope,
                 backdrop: "static",
                 keyboard: false

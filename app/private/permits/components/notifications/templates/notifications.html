@@ -5,9 +5,7 @@
     <div class="row">
 
         <div class="col-lg-12">
-
-
-            <h4>Permit Notification Routes</h4>
+            <h4>Notification Routes</h4>
             <div id="routes-grid" style="height: 300px;width:100%;" class="ag-theme-blue"></div>
 
             <div ng-show="Results.SuccessMessage" style="float: right;margin-right: 20px;margin-top:25px;" class="alert alert-success">{{Results.SuccessMessage}}</div>
@@ -20,11 +18,16 @@
         </div>
     </div>
 
-    <div class="row" style="margin-top: 40px;">
+    <div style="margin-top: 30px;">
+        <button class="btn btn-sm" ng-click="viewPermitNotifications()">Permits</button>
+        <button class="btn btn-sm" ng-click="viewViolationNotifications()">Inspection Violations</button>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
 
         <div class="col-lg-12">
 
-            <h4>Permit Notification Log</h4>
+            <h4>Notification Log</h4>
             <table class="table table-striped">
                 <tr>
                     <th>Recipient</th>
@@ -34,7 +37,7 @@
                     <th>SentDate</th>
                     <th>Result</th>
                 </tr>
-                <tr ng-repeat="log in PermitNotifications">
+                <tr ng-repeat="log in Notifications">
                     <td>{{log.Recipient}}</td>
                     <td>{{log.Sender}}</td>
                     <td>{{log.Subject}}</td>

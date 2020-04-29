@@ -140,6 +140,7 @@ define([
           REPORTSERVER_URL: REPORTSERVER_URL,
           build_version: BUILD_VERSION,
           DISPLAY_NAME: DISPLAY_NAME,
+          PUBLIC_OR_PRIVATE: PUBLIC_OR_PRIVATE
 	  };
 
       $rootScope.serverUrl = serverUrl; 
