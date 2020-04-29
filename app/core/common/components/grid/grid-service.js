@@ -349,7 +349,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 //fire MasterFieldRule rule if it exists
                 if (MasterFieldRule && MasterFieldRule.hasOwnProperty(type)) {
 
-                    console.log("Firing a master rule: " + type + " on " + field.DbColumnName);
+                    //console.log("Firing a master rule: " + type + " on " + field.DbColumnName);
 
                     if (type == "DefaultValue") {
                         if (typeof MasterFieldRule[type] == 'string')
@@ -362,7 +362,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                         //    row_errors.push('[InterviewTime] An interview cannot be present, when NumberAnglersInterviewed = 0');
                         //console.log("scope is next...");
                         //console.dir(scope);
-                        console.log("Firing a rule: " + type + " on " + field.DbColumnName);
+                        //console.log("Firing a rule: " + type + " on " + field.DbColumnName);
                         eval(MasterFieldRule[type]);
                     }
                 }
