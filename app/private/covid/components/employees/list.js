@@ -209,6 +209,7 @@ var covid_list = ['$scope', '$route', '$routeParams', '$uibModal', '$location', 
             $scope.employees.forEach(function(employee){
                 if(employee.updated){
                     delete employee.updated;
+                    delete employee.EnrollmentStatus;
                     //employee.SupervisorUsername = angular.toJson(employee.SupervisorUsername); //if we ever want to save them from the FE
                     updatedEmployees.push(employee);
                 }
