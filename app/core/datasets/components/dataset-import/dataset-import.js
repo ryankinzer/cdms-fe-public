@@ -102,12 +102,17 @@
                 var objdata = angular.fromJson(data);
                 $scope.UploadResults.Fields = objdata.columns;
                 $scope.UploadResults.Data = objdata.rows;
+                //$scope.UploadResults.DataCleaned = [];
+                //objdata.rows.forEach( function (row){
+                //    console.dir(row);
+                //    $scope.UploadResults.DataCleaned.push(row.ItemArray);
+                //});
 
                 $scope.loading = false;
                 $scope.enablePreview = true;
 
                 console.log("$scope.UploadResults is next...");
-                console.dir($scope.UploadResults);
+                //console.dir($scope.UploadResults);
                 
                 $scope.afterFileUploaded();
 
@@ -243,6 +248,7 @@
             var default_activitydate = moment().format('YYYY-MM-DDTHH:mm:ss');
 
             $scope.UploadResults.Data.forEach( function(data_row){
+                //console.log("data_row is next...");
 				//console.dir(data_row);
                 
 				//set default Row QA StatusId
@@ -280,6 +286,7 @@
                             new_row[field.DbColumnName] = [];
 
                             //split on commas -- if any
+                            //console.log("typeof data_row[col] = " + typeof data_row[col]);
                             if (typeof data_row[col] === 'string') {
                                 var row_items = data_row[col].trim().split(",");
 
