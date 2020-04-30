@@ -102,21 +102,36 @@
                 var objdata = angular.fromJson(data);
                 $scope.UploadResults.Fields = objdata.columns;
                 $scope.UploadResults.Data = objdata.rows;
+                //$scope.UploadResults.DataCleaned = [];
+                //objdata.rows.forEach( function (row){
+                //    console.dir(row);
+                //    $scope.UploadResults.DataCleaned.push(row.ItemArray);
+                //});
 
                 $scope.loading = false;
                 $scope.enablePreview = true;
 
                 console.log("$scope.UploadResults is next...");
-                console.dir($scope.UploadResults);
+                //console.dir($scope.UploadResults);
                 
                 $scope.afterFileUploaded();
 
             }).error(function (data) {
                     //$scope.uploadErrorMessage = "There was a problem uploading your file.  Please try again or contact the Helpdesk if this issue continues.";
                     var errorStem = "There was a problem uploading your file.\n";
-                    var errorSpecificPart1 = "The form says the column headers start on line " + $scope.startOnLine + ".  ";
-                    var errorSpecificPart2 = "Is this correct?  Also verify that the data/time entries are in 24-hour format.";
-                    $scope.uploadErrorMessage = errorStem + errorSpecificPart1 + errorSpecificPart2;
+
+                    var errorSpecificPart1 = "";
+                    if ($scope.file.name.indexOf(".xls") < 0)
+                        errorSpecificPart1 = "The form says the column headers start on line " + $scope.startOnLine + ".  Is this correct?  ";
+
+                    var errorSpecificPart2 = "Also verify that the date/time entries are in 24-hour format.  ";
+                    var errorSpecificPart3 = "Specific error from backend:  " + $scope.upload.$$state.value.data.InnerException.ExceptionMessage;
+                    var intCutoffLocation = errorSpecificPart3.indexOf(" at"); // Note the space in front (" at")
+                    // We want to strip off " at this file/method", but we want to keep "date".
+
+                    errorSpecificPart3 = errorSpecificPart3.substr(0, intCutoffLocation);
+                    //$scope.uploadErrorMessage = errorStem + errorSpecificPart1 + errorSpecificPart2;
+                    $scope.uploadErrorMessage = errorStem + errorSpecificPart1 + errorSpecificPart2 + errorSpecificPart3;
                     console.log("$scope.upload next...");
                     console.dir($scope.upload);
                     $scope.loading = false;
@@ -233,6 +248,7 @@
             var default_activitydate = moment().format('YYYY-MM-DDTHH:mm:ss');
 
             $scope.UploadResults.Data.forEach( function(data_row){
+                //console.log("data_row is next...");
 				//console.dir(data_row);
                 
 				//set default Row QA StatusId
@@ -270,6 +286,7 @@
                             new_row[field.DbColumnName] = [];
 
                             //split on commas -- if any
+                            //console.log("typeof data_row[col] = " + typeof data_row[col]);
                             if (typeof data_row[col] === 'string') {
                                 var row_items = data_row[col].trim().split(",");
 
