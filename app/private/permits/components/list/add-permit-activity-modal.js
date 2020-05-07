@@ -25,8 +25,8 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
         console.log("mode = " + $scope.mode);
 
         if (!$scope.row.Id) {
-            $scope.row.EventDate = moment().format('L');
-            $scope.row.RequestDate = moment().format('L');    
+            $scope.row.EventDate = moment().format('L'); //today
+            $scope.row.RequestDate = getNextBusinessDay('L'); //next business day 
         }
         else {
             if(!$scope.row.ResponseDate)
@@ -46,8 +46,8 @@ var modal_edit_permitevent = ['$rootScope','$scope', '$uibModal','$uibModalInsta
                     coldef.Label = "Date Inspection Desired";
             });
 
-            //also set the request date to the next business day
-            $scope.row.RequestDate = getNextBusinessDay('L');
+            //also set the request date to the next business day - note: set above; we always do this now
+            //$scope.row.RequestDate = getNextBusinessDay('L');
 
         } else {
             $scope.permitEventsGrid.columnDefs.forEach(function (coldef) { 
