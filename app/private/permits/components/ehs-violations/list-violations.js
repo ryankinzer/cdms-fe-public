@@ -888,8 +888,6 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                 // console.log("permit saved: ");
                 // console.dir(saved_permit);
 
-                $scope.afterSaveEvents($scope.row, angular.copy($scope.ehsGrid.selectedNode.data));
-
                 //refresh 
                 if (!$scope.row.Id) {
                     $scope.violations.push(saved_violation);
@@ -899,6 +897,9 @@ var list_violations = ['$scope', '$route', '$routeParams', '$uibModal', '$locati
                     $scope.showAll(); 
                 }
                 else {
+                    
+                    $scope.afterSaveEvents($scope.row, angular.copy($scope.ehsGrid.selectedNode.data));
+
                     $scope.violations.forEach(function (existing_violation) { 
                         if (existing_violation.Id == $scope.row.Id) {
                             angular.extend(existing_violation, saved_violation);
