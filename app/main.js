@@ -63,6 +63,7 @@ define([
        
             $routeProvider.when('/edit/:Id', { templateUrl: 'app/core/datasets/components/dataset-editor/templates/dataset-edit-form.html', controller: 'DataEditCtrl', permission: 'Edit'});
             $routeProvider.when('/dataview/:Id', { templateUrl: 'app/core/datasets/components/dataset-view/templates/dataset-view.html', controller: 'DataEditCtrl'});
+            $routeProvider.when('/table/:Id', { templateUrl: 'app/core/datasets/components/dataset-table/templates/table.html', controller: 'TableCtrl'});
 
             $routeProvider.when('/datasetquery/:Id', { templateUrl: 'app/core/datasets/components/dataset-query/templates/dataset-query.html', controller: 'DataQueryCtrl'});
             $routeProvider.when('/dataset-details/:Id', { templateUrl: 'app/core/datasets/components/dataset-detail/templates/dataset-details-view.html', controller: 'DatasetDetailsCtrl'});
@@ -84,7 +85,7 @@ define([
             $routeProvider.when('/unauthorized', { templateUrl: 'app/core/common/templates/unauthorized.html',controller: 'ErrorCtrl'});
             $routeProvider.when('/feedback', { templateUrl: 'app/core/common/components/feedback/templates/feedback.html',controller: 'FeedbackController'});
 
-	        //when all else fails...
+            //when all else fails...
 	        $routeProvider.otherwise({redirectTo: '/dashboard'});
 	    }]);
 
@@ -96,6 +97,7 @@ define([
           REPORTSERVER_URL: REPORTSERVER_URL,
           build_version: BUILD_VERSION,
           DISPLAY_NAME: DISPLAY_NAME,
+          PUBLIC_OR_PRIVATE: PUBLIC_OR_PRIVATE
 	  };
 
       $rootScope.serverUrl = serverUrl; 

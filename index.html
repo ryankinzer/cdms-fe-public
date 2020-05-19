@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
-<html lang="en"  xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>CDMS v.2.1</title>
 
@@ -65,6 +66,7 @@
 
 
 </head>
+
 <body>
 
 
@@ -84,17 +86,23 @@
                     <a class="nav-link" href="#!/datasets">Datasets</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</a>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Tools</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{config.REPORTSERVER_URL}}" target="_blank">Reports</a>
-                        <a class="dropdown-item" href="http://gis.ctuir.org/wp-content/uploads/2019/03/CDMSVersion2UserGuide.pdf" target="_blank">User Guide</a>
+                        <a class="dropdown-item"
+                            href="http://gis.ctuir.org/wp-content/uploads/2019/03/CDMSVersion2UserGuide.pdf"
+                            target="_blank">User Guide</a>
                         <div class="dropdown-divider">External Resources</div>
-                        <a class="dropdown-item" href="https://ctuirgis.maps.arcgis.com/home/gallery.html?view=grid&sortOrder=true&sortField=relevance" target="_blank">ArcGIS Online</a>
+                        <a class="dropdown-item"
+                            href="https://ctuirgis.maps.arcgis.com/home/gallery.html?view=grid&sortOrder=true&sortField=relevance"
+                            target="_blank">ArcGIS Online</a>
                         <a class="dropdown-item" href="http://gis.ctuir.org" target="_blank">GIS Website</a>
                     </div>
                 </li>
                 <li ng-cloak ng-show="Profile.isAdmin()" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Admin</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#!/admin">Datasets</a>
                         <a class="dropdown-item" href="#!admin-users">Users</a>
@@ -135,4 +143,5 @@
 
     <div ng-include="'app/core/common/templates/footer.html'"></div>
 </body>
+
 </html>

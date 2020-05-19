@@ -51,6 +51,13 @@
                 </tr>
                 <tr><td class="prop-name">Default Row QA:</td><td class="prop-val"><select ng-model="dataset.DefaultRowQAStatusId" ng-options="id as name for (id, name) in RowQAStatuses" convert-to-number></select></td></tr>
                 <tr>
+                    <td class="prop-name">Custom Route:</td>
+                    <td class="prop-val">
+                            <input type="text" ng-model="dataset.Config.ActivitiesPage.Route"/> ("activities" is default)<br/>
+                    </td>
+                </tr>
+                
+                <tr>
                     <td class="prop-name">Config Options:</td>
                     <td>
                         <input type="checkbox" ng-model="dataset.Config.AllowSaveWithErrors" /> Allow saving data even if there are errors.<br />

@@ -58,20 +58,20 @@ app.controller('LoginCtrl', ['$scope','LoginSvc', function($scope, LoginSvc){
 
 		if(!$scope.Username || !$scope.Password)
 			return;
-		
+
 		// For some reason, the login runs twice, without this if check to prevent it.
 		if ($scope.loggingIn === false)
 		{
 			$scope.loggingIn = true;
 			
 			try{		
-				$scope.Password = LoginSvc.encrypt($scope.Password);
+				$scope.EncryptedPassword = LoginSvc.encrypt($scope.Password);
 				//console.log("$scope.Password = " + $scope.Password);
 				//throw "Stopping right here...";
 				
 				try{
 					
-					var login_try = LoginSvc.login($scope.Username, $scope.Password);
+					var login_try = LoginSvc.login($scope.Username, $scope.EncryptedPassword);
 
 					if(login_try)
 					{
