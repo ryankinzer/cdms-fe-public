@@ -11,7 +11,24 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
 
         modalFiles_setupControllerForFileChooserModal($scope, $modal, $scope.project.Files); 
 
-        $scope.save = function () {
+        $scope.save = function(){
+
+            //if the map is configured then we'll save with GIS
+            if($scope.map)
+                return $scope.saveWithGIS();
+            
+            //otherwise, just the location in CDMS (Tribal CDMS)
+            var data = {
+                ProjectId: $scope.project.Id,
+            };
+
+            var target = '/api/v1/file/UploadProjectFile';
+
+            $scope.handleFilesToUploadRemove($scope.row, data, target, $upload); //when done (handles failed files, etc., sets in scope objects) then calls modalFiles_saveParentItem below.
+
+        }
+
+        $scope.saveWithGIS = function () {
 
             require([
                 'esri/symbols/SimpleMarkerSymbol',
@@ -28,13 +45,8 @@ var modal_edit_location = ['$scope', '$uibModal','$uibModalInstance','GridServic
                     return;
                 }
 
-                var payload = {
-                    'ProjectId': $scope.project.Id,
-                    'Location': $scope.row,
-                };
-
                 //OK -- if we are saving a NEW location then start off by adding the point to the featurelayer
-                if ($scope.map && !$scope.row.Id) {
+                if (!$scope.row.Id) {
                     console.log("Adding a NEW location...");
 
                     $scope.map.reposition(); //this is important or else we end up with our map points off somehow.

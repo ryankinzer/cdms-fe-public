@@ -60,7 +60,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                     GridService.autosizeColumns($scope.dataAgGridOptions);
                     $scope.$apply();
                     console.log("resize grid columns")
-                },200);
+                },400);
 
             },
 

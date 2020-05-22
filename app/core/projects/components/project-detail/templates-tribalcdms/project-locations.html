@@ -8,7 +8,7 @@
         <!--button project-role="editor" style="margin-left: 5px; margin-right:43px;" class="btn right" ng-click="addLocation()">Create</button-->
         <!--button project-role="editor" class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteLocations()">Delete {{dataGridOptions.selectedItems.length}} Locations</button-->
 		<button ng-show="Profile.isAdmin()" style="margin-left: 5px; margin-right:43px;" class="btn right" ng-click="addLocation()">Create</button>
-        <button ng-cloak ng-show="Profile.isAdmin()" class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteLocations()">Delete {{dataGridOptions.selectedItems.length}} Locations</button>
+        <button ng-cloak class="btn right btn-warning" ng-show="Profile.isAdmin() && dataGridOptions.selectedItems.length > 0" ng-click="deleteLocations()">Delete {{dataGridOptions.selectedItems.length}} Locations</button>
 		
 		
     </div>

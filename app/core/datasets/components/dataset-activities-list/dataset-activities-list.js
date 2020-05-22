@@ -8,6 +8,7 @@ var dataset_activities_list = ['$scope', '$routeParams',
 
         $scope.dataset = DatasetService.getDataset($routeParams.Id);
 
+        //TODO: this is running EVERY SINGLE TIME.... should only run if the dataset has a field that needs it.
         $scope.fishermen = ProjectService.getFishermen();
         $scope.fishermen.$promise.then(function () {
             console.log("Fishermen loaded...");
