@@ -217,7 +217,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     GridService.autosizeColumns($scope.dataAgGridOptions);
                     $scope.$apply();
                     console.log("resize grid columns")
-                },200);
+                },400);
 
             },
 
@@ -455,35 +455,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.ag_grid = new agGrid.Grid(ag_grid_div, $scope.dataAgGridOptions); //bind the grid to it.
                 $scope.dataAgGridOptions.api.showLoadingOverlay(); //show loading...
 
-                /*$scope.dataset_activities.Details.forEach(function(detail){
-                    // If we are on WaterQuality, the Characteristics options were originally
-                    // stored in dbo.Fields.PossibleValues as Text.  Later (because there are
-                    // so many), we moved them out to their own table.  Now they come in with
-                    // Id, so the Id must be converted to the Name, because we don't want to
-                    // convert Characteristic from text to int for the millions of records
-                    // in WaterQuality_Detail.
-                    if (($scope.project.Config) && ($scope.project.Config.Lookups))
-                    {
-                        $scope.project.Config.Lookups.forEach(function (item){
-                            if (item.Label === "Characteristics")
-                            {
-                                var blnFoundIt = false;
-                                $scope.Characteristics.forEach(function(aCharacteristic){
-                                    if ((!blnFoundIt) && (aCharacteristic.CharacteristicName === parseInt(node.data.CharacteristicName)))
-                                    {
-                                        node.data.CharacteristicName = aCharacteristic.Id;
-                                        blnFoundIt = true;
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-                */
-
                 //set the detail values into the grid
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
-                
                 
                 console.dir($scope.dataAgColumnDefs);
 
@@ -545,6 +518,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 
                 //console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);
+
+                if ($rootScope.hasOwnProperty('imported_rows')) {
+                    //when importing fire any onchange rules (like watertemp C to F)
+                    GridService.fireAllOnChange($scope.dataAgGridOptions);
+                }
+
                 $scope.dataAgGridOptions.api.redrawRows();
                 //console.log("GRID Validate IS DONE ------------------------------------------>>>");
 
