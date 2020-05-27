@@ -61,7 +61,6 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                     $scope.$apply();
                     console.log("resize grid columns")
                 },400);
-
             },
 
             defaultColDef: {
@@ -165,6 +164,9 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
                 //console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);
                 //console.log("GRID Validate IS DONE ------------------------------------------>>>");
+
+                //fire any onchange rules (like watertemp C to F)
+                GridService.fireAllOnChange($scope.dataAgGridOptions);
 
                 $scope.system.messages.push("Checking for duplicates...");
                 //console.log("GRID Dupe check ------------------------------------------>>>");
