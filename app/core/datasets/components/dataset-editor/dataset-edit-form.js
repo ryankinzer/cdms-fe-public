@@ -217,7 +217,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     GridService.autosizeColumns($scope.dataAgGridOptions);
                     $scope.$apply();
                     console.log("resize grid columns")
-                },400);
+                },500);
 
             },
 
@@ -324,7 +324,13 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             };
 
             if (GridService.validateCell(event)) {
-                    GridService.fireRule("OnChange", event); //only fires when valid change is made
+                //console.log("ran validation and is valid")
+                GridService.fireRule("OnChange", event); //only fires when valid change is made
+            }
+            else    
+            {
+                //console.log("ran validation and is INVALID")
+                //console.dir($scope.row)
             }
 
             //update our collection of header errors if any were returned
@@ -847,7 +853,19 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
+            //fire validation on all header fields
+            for (headerField of $scope.dataAgColumnDefs.HeaderFields){
+                $scope.onHeaderEditingStopped(headerField);
+            }
+
+            if ($scope.PageErrorCount > 0) {
+                alert("There are errors on the page. Please fix them before saving.");
+                console.dir($scope.headerFieldErrors);
+                return;
+            }
+
             console.log(" -- save -- ");
+
             if(!$scope.background_save)
                 $scope.saveResult.saving = true;
 

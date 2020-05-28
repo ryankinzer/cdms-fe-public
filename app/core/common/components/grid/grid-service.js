@@ -176,8 +176,9 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
             //console.log(" --- validate cell for event : ");
             //console.dir(event);
 
-            if (!event.colDef.hasOwnProperty('validator'))
+            if (!event.colDef.hasOwnProperty('validator')){
                 return false; //no error since no validator
+            }
 
             //var validator = event.colDef.validator;
 

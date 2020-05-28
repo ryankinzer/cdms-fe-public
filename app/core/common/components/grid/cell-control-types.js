@@ -372,8 +372,7 @@ var TextControlType = function (cdms_field, col_def) {
 //textarea - our own special text box
 var TextAreaControlType = function (cdms_field, col_def) {
     col_def.cellEditor = CDMSTextareaCellEditor;     
-    //col_def.cellValidator = CDMSTextareaCellValidator;
-//TODO
+    col_def.cellValidator = CDMSTextCellValidator;
     return col_def;
 };
 
