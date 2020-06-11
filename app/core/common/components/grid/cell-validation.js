@@ -84,7 +84,7 @@ CellValidator.prototype.validateFieldLevelValidation = function (data) {
         console.log("Checking required field: ")
         console.dir(this.cdms_field);
 
-        if((data.value === null || data.value === '')) //this is probably not sufficient.
+        if((data.value == undefined || data.value === null || data.value === '')) //this is probably not sufficient.
             this.errors.push(new ValidationError(this.cdms_field, "Field is required."));
 
     }
