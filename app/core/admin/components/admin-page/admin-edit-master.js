@@ -29,10 +29,7 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
         };
 
         $scope.fieldGridOptions = {
-            //enableSorting: true,
-            //enableFilter: true,
-            //enableColResize: true,
-            rowSelection: 'multiple',
+            rowSelection: 'single',
 
             columnDefs:
             [
@@ -53,8 +50,33 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
                 sortable: true,
                 resizable: true,
             },
+
+            selectedItem: null,
+
+            onSelectionChanged: function (params) {
+                $scope.fieldGridOptions.selectedItem = angular.copy($scope.fieldGridOptions.api.getSelectedRows()[0]);
+                $scope.$apply();
+            }
+
         };
 
+        $scope.removeMasterField = function(){
+            if(!confirm("Remove field: are you sure? Any data in the table for this column will be deleted and cannot be undone.")){
+                return;
+            }
+
+            var removed = AdminService.removeMasterField($scope.datastore.Id, $scope.fieldGridOptions.selectedItem.Id);
+            removed.$promise.then(function(data){
+                $scope.datastore.Fields = AdminService.getMasterFields($scope.datastore.Id); 
+                $scope.fieldGridOptions.api.showLoadingOverlay(); //show loading...
+                $scope.datastore.Fields.$promise.then(function () {
+                    $scope.fieldGridOptions.api.setRowData($scope.datastore.Fields);
+                });
+                $scope.fieldGridOptions.selectedItem = null;
+            }, function(error){
+                console.dir(error);
+            });
+        }
 
         $scope.activateGrid = function () {
 

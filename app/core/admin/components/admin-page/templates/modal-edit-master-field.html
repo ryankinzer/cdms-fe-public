@@ -23,18 +23,18 @@
         </tr>
         <tr>
             <td class="prop-name">Db Column Name:</td>
-            <td class="prop-val"><input class="form-control" type="text" ng-model="field_to_edit.DbColumnName" name="DbColumnName"></td>
+            <td class="prop-val"><input ng-disabled="field_to_edit.Id > 0" ng-change="cleanDbColumnName()" class="form-control" type="text" ng-model="field_to_edit.DbColumnName" name="DbColumnName"></td>
         </tr>
         <tr>
             <td class="prop-name">Field Role:</td>
-            <td class="prop-val"><select class="form-control" ng-model="field_to_edit.FieldRoleId" convert-to-number>
+            <td class="prop-val"><select ng-disabled="field_to_edit.Id > 0" class="form-control" ng-model="field_to_edit.FieldRoleId" convert-to-number>
                 <option value=1>Header</option>
                 <option ng-show="datastore.TableType!='Single'" value=2>Detail</option>
             </select></td>
         </tr>
         <tr>
             <td class="prop-name">Data Type:</td>
-            <td class="prop-val"><select class="form-control" ng-model="field_to_edit.DataType"><option>date</option><option>int</option><option>float</option><option>string</option></select></td>
+            <td class="prop-val"><select ng-disabled="field_to_edit.Id > 0" class="form-control" ng-model="field_to_edit.DataType"><option>date</option><option>int</option><option>float</option><option>string</option></select></td>
         </tr>
         <tr>
             <td class="prop-name">Control Type:</td>
