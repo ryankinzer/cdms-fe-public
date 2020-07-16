@@ -1122,7 +1122,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                         date: activity_date.date()
                     });
 
-                payload.header[time_field.DbColumnName] = the_combined_date.format('YYYY-MM-DDTHH:mm');
+                payload.header[time_field.DbColumnName] = the_combined_date.format('MM/DD/YYYY HH:mm');//Tribal CDMS format edit
                 //console.log(" >> final date = " + payload.header[time_field.DbColumnName]);
             });
 
