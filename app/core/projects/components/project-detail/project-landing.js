@@ -18,8 +18,15 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 		scope.currentUserId = $rootScope.Profile.Id;
         
         scope.UserIsAdmin = false;
-        scope.UserIsOwner = false;
-        scope.UserIsEditor = false;
+       // scope.UserIsOwner = false;
+		scope.UserIsEditor = false;
+
+	  //Tribal CDMS edit
+		scope.UserIsOwner = function () {
+			console.log("UserIsOwner called");
+			if (scope.project.OwnerId == scope.currentUserId)
+				return true;
+		};
         
         //scope.metadataList = {};
         scope.CellOptions = {}; //for metadata dropdown options

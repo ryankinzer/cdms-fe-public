@@ -7,7 +7,7 @@
 
 			<div project-role="editor" class="right" style="margin-top: -80px;">
 				<button ng-show="Profile.isAdmin() && project.Name == 'StreamNet'" ng-click="syncToStreamnet()" class="btn">Upload to StreamNet</button>
-				<button ng-show="Profile.isAdmin()" ng-disabled="!project.Id" ng-click="openProjectEditor()" class="btn">Edit Project</button>
+				<button ng-show="Profile.isAdmin() || UserIsOwner()"" ng-disabled="!project.Id" ng-click="openProjectEditor()" class="btn">Edit Project</button>
 			</div>
 
             <div class="row" ng-if="project.MetaFields.length > 0">
