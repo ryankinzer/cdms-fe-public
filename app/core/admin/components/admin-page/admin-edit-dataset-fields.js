@@ -49,7 +49,7 @@ var admin_edit_dataset_fields = ['$scope', '$uibModal', '$timeout', '$routeParam
             columnDefs:
             [
                 { colId: 'EditLinks', cellRenderer: EditLinksTemplate, width: 120, menuTabs: [] },
-                { field: 'FieldRoleId', headerName: 'Field Role', width: 120, menuTabs: ['filterMenuTab'] },
+                { field: 'FieldRoleId', headerName: 'Field Role', width: 120, menuTabs: ['filterMenuTab'], filter: true },
                 { field: 'Label', headerName: 'Label', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'OrderIndex', headerName: 'Order Index', sort:'asc', width: 120, menuTabs: ['filterMenuTab'], filter: 'text' },
                 { field: 'Validation', headerName: 'Local Validation', width: 250, menuTabs: ['filterMenuTab'], filter: 'text' },

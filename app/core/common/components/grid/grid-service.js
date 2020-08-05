@@ -72,41 +72,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                     console.warn("Notice: There isn't a ControlTypeDefinition for " + cdms_field.DbColumnName + " with ControlType = " + cdms_field.ControlType);
                 }
             },
-            /*
-            //TODO - still need this? - use a filter?
-                        convertStatus: function (aStatus) {
-                            //console.log("Inside convertStatus...");
-                            //console.log("aStatus = " + aStatus);
             
-                            var strStatus = null;
-            
-                            if (aStatus === 0) {
-                                strStatus = "Active";
-                            }
-                            else {
-                                strStatus = "Inactive";
-                            }
-                            //console.log("strStatus = " + strStatus);
-            
-                            return strStatus;
-                        },
-                        convertOkToCall: function (aStatus) {
-                            //console.log("Inside convertOkToCall...");
-                            //console.log("aStatus = " + aStatus);
-            
-                            var strStatus = null;
-            
-                            if (aStatus === 0) {
-                                strStatus = "Yes";
-                            }
-                            else {
-                                strStatus = "No";
-                            }
-                            //console.log("strStatus = " + strStatus);
-            
-                            return strStatus;
-                        },
-            */
         };
 
         //This method builds the column definitions of a dataset for use on any grid view.
@@ -210,8 +176,9 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
             //console.log(" --- validate cell for event : ");
             //console.dir(event);
 
-            if (!event.colDef.hasOwnProperty('validator'))
+            if (!event.colDef.hasOwnProperty('validator')){
                 return false; //no error since no validator
+            }
 
             //var validator = event.colDef.validator;
 
@@ -225,7 +192,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
             //console.log(' ERRORS for this validation?');
             //console.dir(fieldValidationErrors);
 
-            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope: scope });
+            var fieldRuleValidationErrors = service.fireRule("OnValidate", { colDef: event.colDef, data: event.node.data, scope: scope, value: event.value });
             //console.dir(fieldRuleValidationErrors);
             fieldRuleValidationErrors.forEach(function (error) { fieldValidationErrors.push({ "field": event.colDef, "message": error }) });
 
@@ -300,6 +267,44 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
             gridOptions.api.redrawRows();
         };
 
+        //fire any columns with onchange rule (used in import)
+        service.fireAllOnChange = function(gridOptions) {
+            //get all of the columns for the grid
+            var gridColumns = gridOptions.columnApi.getAllColumns();
+
+            //any columns with OnChange rules?
+            var colsWithOnChange = [];
+            for (col of gridColumns){
+
+                var MasterFieldRule = col.colDef.cdmsField.Field.Rule = (typeof col.colDef.cdmsField.Field.Rule === 'string') ? getJsonObjects(col.colDef.cdmsField.Field.Rule) : col.colDef.cdmsField.Field.Rule;
+                var DatasetFieldRule = col.colDef.cdmsField.Rule = (typeof col.colDef.cdmsField.Rule === 'string') ? getJsonObjects(col.colDef.cdmsField.Rule) : col.colDef.cdmsField.Rule;
+
+                if( (MasterFieldRule && MasterFieldRule.hasOwnProperty('OnChange')) || (DatasetFieldRule && DatasetFieldRule.hasOwnProperty('OnChange') ) ){
+                    colsWithOnChange.push(col);
+                }
+                
+            }
+
+            //bail out if we don't have any onchange rules to process
+            if(colsWithOnChange.length == 0)
+                return;
+
+            //iterate each node, columns and fire the onchange rule
+            gridOptions.api.forEachNode(function (node, index) {
+                var datasnapshot = angular.copy(node.data);
+                colsWithOnChange.forEach(function (column) {
+                    if(datasnapshot[column.colDef.field] && datasnapshot[column.colDef.field] != '')
+                    service.fireRule("OnChange", {
+                        node: node,
+                        colDef: column.colDef,
+                        data: node.data,
+                        value: node.data[column.colDef.field],
+                        api: gridOptions.api,
+                    })
+                });
+            });
+        }
+
 
 
         service.validateGrid = function (gridOptions) {
@@ -316,7 +321,6 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                         api: gridOptions.api,
                     })
                 });
-
             });
 
         };
@@ -344,11 +348,12 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 var value = (event.value) ? event.value : "";
                 var row = (event.data) ? event.data : {};
                 var header = (event.node && event.node.data) ? event.node.data : {};
+                var node = event.node;
 
                 //fire MasterFieldRule rule if it exists
                 if (MasterFieldRule && MasterFieldRule.hasOwnProperty(type)) {
 
-                    console.log("Firing a master rule: " + type + " on " + field.DbColumnName);
+                    //console.log("Firing a master rule: " + type + " on " + field.DbColumnName);
 
                     if (type == "DefaultValue") {
                         if (typeof MasterFieldRule[type] == 'string')
@@ -357,11 +362,6 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                             console.log(MasterFieldRule[type] + " was not a string, skipping.");
                     }
                     else {
-                        //if ((typeof row['InterviewTime'] !== 'undefined' && row['InterviewTime'] !== null) && ((typeof event.scope.row['NumberAnglersInterviewed'] === 'undefined') || (event.scope.row['NumberAnglersInterviewed'] === 0)))
-                        //    row_errors.push('[InterviewTime] An interview cannot be present, when NumberAnglersInterviewed = 0');
-                        //console.log("scope is next...");
-                        //console.dir(scope);
-                        console.log("Firing a rule: " + type + " on " + field.DbColumnName);
                         eval(MasterFieldRule[type]);
                     }
                 }
@@ -369,7 +369,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 //fire DatasetFieldRule rule if it exists. this can override any results of the MasterFieldRule
                 if (DatasetFieldRule && DatasetFieldRule.hasOwnProperty(type)) {
         
-                    console.log("Firing a rule: " + type + " on " + field.DbColumnName);
+                    //console.log("Firing a rule: " + type + " on " + field.DbColumnName);
 
                     if (type == "DefaultValue") {
                         if (typeof DatasetFieldRule[type] == 'string')
@@ -377,10 +377,10 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                         else
                             console.log(DatasetFieldRule[type] + " was not a string, skipping.");
                     }
-                    else
+                    else{
                         eval(DatasetFieldRule[type]);
+                    }
                 }
-
 
             } catch (e) {
                 //so we don't die if the rule fails....
@@ -418,7 +418,10 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 return null; //early return, bail out.
             }
 
-            saveResult.saving = true;
+            // Situation:  We open data entry, we change the location, and we end up here correctly.
+            // However, the question is, why are we setting "saveResult.saving" to true here?
+            // We are not saving yet...
+            //saveResult.saving = true;
             saveResult.saveMessage = "Checking for duplicates...";
 
             //console.log("we are dupe checking!");
@@ -428,7 +431,7 @@ datasets_module.service('GridService', ['$window', '$route', 'DatasetService',
                 row.Activity.Description = getRangeForDetailField("ReadingDateTime", dataAgGridOptions);
             }
 
-            if (dataset.Datastore.TablePrefix == "WaterQuality") {
+            if (dataset.Datastore.TablePrefix == "WaterQuality" || dataset.Datastore.TablePrefix == "MetStation") {
                 row.Activity.Description = getRangeForDetailField("SampleDate", dataAgGridOptions);
             }
 

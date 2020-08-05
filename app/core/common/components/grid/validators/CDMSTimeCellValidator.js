@@ -69,11 +69,4 @@ CDMSTimeCellValidator.prototype.validateFieldControlTypeValidation = function (d
 
 	}
 	
-
-
-
-
-	
-
->>>>>>> 983058ec... Time Cell Validator/Import Issue (Helpdesk ticket 11) Fix
 };

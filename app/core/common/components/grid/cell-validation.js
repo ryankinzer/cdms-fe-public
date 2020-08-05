@@ -79,10 +79,15 @@ CellValidator.prototype.validateFieldLevelValidation = function (data) {
     //console.dir(data);
     //console.dir(this.validation);
     //validation: is the field required? "required" or "nb" (for "not blank")
-    if (  (this.validation.contains('required') || this.validation.contains("nb"))
-          && (data.value === null || data.value === '')) //this is probably not sufficient.
-        this.errors.push(new ValidationError(this.cdms_field, "Field is required."));
+    if (  (this.validation.contains('required') || this.validation.contains("nb")) ) {
 
+        console.log("Checking required field: ")
+        console.dir(this.cdms_field);
+
+        if((data.value == undefined || data.value === null || data.value === '')) //this is probably not sufficient.
+            this.errors.push(new ValidationError(this.cdms_field, "Field is required."));
+
+    }
     //other types of field-level validation?
     //console.dir(this.errors);
     return this.errors;

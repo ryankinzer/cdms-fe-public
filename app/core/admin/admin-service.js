@@ -16,6 +16,10 @@ admin_module.factory('SaveMasterField', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/datastore/savemasterfield');
 }]);
 
+admin_module.factory('RemoveMasterField', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/datastore/removemasterfield');
+}]);
+
 admin_module.factory('DeleteDatasetField', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/dataset/deletedatasetfield');
 }]);
@@ -48,6 +52,7 @@ admin_module.service('AdminService', ['$q',
     'GetAllDatastoreFields',
     'SaveDataset',
     'SaveNewDatastore',
+    'RemoveMasterField',
     function ($q,
         SaveDatasetField,
         SaveMasterField,
@@ -56,7 +61,9 @@ admin_module.service('AdminService', ['$q',
         AddMasterFieldToDataset,
         GetAllDatastoreFields,
         SaveDataset, 
-        SaveNewDatastore) {
+        SaveNewDatastore,
+        RemoveMasterField
+        ) {
 
         var service = {
 
@@ -73,6 +80,10 @@ admin_module.service('AdminService', ['$q',
             {
 				console.log("Trying to remove a field... datasetId = " + datasetId + ", fieldId = " + fieldId);
                 return DeleteDatasetField.save({ DatasetId: datasetId, FieldId: fieldId });
+            },
+
+            removeMasterField: function(datastoreid, fieldId) {
+                return RemoveMasterField.save({ DatastoreId: datastoreid, FieldId: fieldId });
             },
 
             getFields: function (id) {

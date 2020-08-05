@@ -6,6 +6,7 @@
 var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
     'ActivityParser', 'GridService','Upload','ChartService','$compile',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
+
         ActivityParser, GridService, Upload, ChartService, $compile) {
 
         $scope.system = { loading: true, messages: [] };
@@ -16,6 +17,10 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             //console.log("Fishermen loaded and is next...");
             //console.dir($scope.fishermen);
         });
+
+        $scope.Characteristics = null;
+
+        $scope.WaypointIdField = "";
         
         initEdit(); // stop backspace while editing from sending us back to the browser's previous page.
 
@@ -53,6 +58,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.pagemode = $location.path().match(/\/(.*)\//)[1]; //edit, dataentryform, dataview - our 3 options from our route... nothing else is possible.
 
         // Are we editing or not?
+	
         if ($scope.pagemode == 'dataentryform') {
             $scope.dataset_activities = { Header: {}, Details: [] };
 
@@ -70,7 +76,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.afterDatasetLoadedEvent();
             });
         }
-        else {  //either edit or data view - both load a particular activity
+		else {  //either edit or data view - both load a particular activity
+		
             $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);
             $scope.dataset_activities.$promise.then(function () {
                 $scope.dataset = $scope.dataset_activities.Dataset;
@@ -89,7 +96,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 if ($scope.row.FishermanFullName === 2019)
                     console.log("$scope.row.FishermanFullName = " + $scope.row.FishermanFullName);
 
-                $scope.afterDatasetLoadedEvent();
+				$scope.afterDatasetLoadedEvent();
+				
             });
 
             //setup our next/previous
@@ -139,7 +147,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             rowData: [],
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             dataChanged: false, //updated to true if ever any data is changed
-            rowSelection: 'multiple',
+			rowSelection: 'multiple',
+			
 
             
             tabToNextCell: function (params) { 
@@ -208,8 +217,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log("GRID IS DONE ------------------------------------------>>>");
                 //console.dir($scope.row);
                 $scope.system.loading = false;
-                $scope.$apply();
-                GridService.autosizeColumns($scope.dataAgGridOptions);
+                
+				setTimeout(function () {
+					$scope.$apply();
+                    GridService.autosizeColumns($scope.dataAgGridOptions);
+                    console.log("resize grid columns")
+				}, 500);
 
             },
 
@@ -255,6 +268,9 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.log("cell editing stopped >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 //console.dir(event);
 
+                if ($rootScope.headerFields)
+                    $scope.headerFields = $rootScope.headerFields;
+
                 if ($rootScope.waypoints)
                     $scope.waypoints = $rootScope.waypoints;
 
@@ -278,13 +294,18 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                     $scope.checkForDuplicates();
 
                 //bah - another special case for water quality: fire dupecheck if sampledate changed
-                if($scope.dataset.Datastore.TablePrefix == "WaterQuality" && event.colDef.DbColumnName == "SampleDate")
+                if(($scope.dataset.Datastore.TablePrefix == "WaterQuality" || $scope.dataset.Datastore.TablePrefix == "MetStation")
+                    && event.colDef.DbColumnName == "SampleDate"){
                     $scope.checkForDuplicates();
+                }
             
 
             },
         };
 
+        $scope.resizeGrid = function(){
+            GridService.autosizeColumns($scope.dataAgGridOptions);
+        }
 
         $scope.bubbleErrors = function () {
             GridService.bubbleErrors($scope.dataAgGridOptions);
@@ -308,7 +329,13 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             };
 
             if (GridService.validateCell(event)) {
-                    GridService.fireRule("OnChange", event); //only fires when valid change is made
+                //console.log("ran validation and is valid")
+                GridService.fireRule("OnChange", event); //only fires when valid change is made
+            }
+            else    
+            {
+                //console.log("ran validation and is INVALID")
+                //console.dir($scope.row)
             }
 
             //update our collection of header errors if any were returned
@@ -393,6 +420,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         };
 
 
+
         //call to fire up the grid after the $scope.dataset is ready
         $scope.activateGrid = function () {
             
@@ -442,7 +470,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //set the detail values into the grid
                 $scope.dataAgGridOptions.api.setRowData($scope.dataset_activities.Details);
                 
-                
                 console.dir($scope.dataAgColumnDefs);
 
                 //convert timezone to object if it exists
@@ -468,6 +495,34 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                             }
                         });
                     }
+
+                    if (($scope.project.Config) && ($scope.project.Config.Lookups))
+                    {
+                        $scope.project.Config.Lookups.forEach(function (item){
+                            if (item.Label === "Characteristics")
+                            {
+                                $scope.Characteristics = CommonService.getLookupItems(item);
+                                $scope.Characteristics.$promise.then(function () {
+                                    $scope.dataset_activities.Details.forEach(function(detail){
+                                        // If we are on WaterQuality, the Characteristics options were originally
+                                        // stored in dbo.Fields.PossibleValues as Text.  Later (because there are
+                                        // so many), we moved them out to their own table.  Now they come in with
+                                        // Id, so the Id must be converted to the Name, because we don't want to
+                                        // convert Characteristic from text to int for the millions of records
+                                        // in WaterQuality_Detail.
+                                        var blnFoundIt = false;
+                                        $scope.Characteristics.forEach(function(aCharacteristic){
+                                            if ((!blnFoundIt) && (aCharacteristic.CharacteristicName === detail.CharacteristicName))
+                                            {
+                                                detail.CharacteristicName = aCharacteristic.Id;
+                                                blnFoundIt = true;
+                                            }
+                                        });
+                                    });
+                                });
+                            }
+                        });
+                    }
                 });
                 
 
@@ -475,6 +530,12 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 
                 //console.log("GRID Validate. ------------------------------------------>>>");
                 GridService.validateGrid($scope.dataAgGridOptions);
+
+                if ($rootScope.hasOwnProperty('imported_rows')) {
+                    //when importing fire any onchange rules (like watertemp C to F)
+                    GridService.fireAllOnChange($scope.dataAgGridOptions);
+                }
+
                 $scope.dataAgGridOptions.api.redrawRows();
                 //console.log("GRID Validate IS DONE ------------------------------------------>>>");
 
@@ -497,7 +558,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         //called after the dataset is loaded
         $scope.afterDatasetLoadedEvent = function () { 
-
+			
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
@@ -576,6 +637,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
 
             });
+
+            //$scope.activateGrid();
         };
 
         //this is a workaround for angularjs' either too loose matching or too strict...
@@ -796,7 +859,21 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 }
             }
 
+            //fire validation on all header fields
+            for (headerField of $scope.dataAgColumnDefs.HeaderFields){
+                $scope.onHeaderEditingStopped(headerField);
+            }
+
+            if ($scope.PageErrorCount > 0) {
+                alert("There are errors on the page. Please fix them before saving.");
+                console.dir($scope.headerFieldErrors);
+                return;
+            }
+
             console.log(" -- save -- ");
+
+            if(!$scope.background_save)
+                $scope.saveResult.saving = true;
 
             /* -- we dynamically duplicate check, so don't check AGAIN --
             var dupe_check = $scope.checkForDuplicates(); 
@@ -929,8 +1006,6 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         //finish saving after file saving completes...
         $scope.modalFile_saveParentItem = function (saveRow) {
             
-console.log("SaveParentItem!");
-
             //clean up some things from the copy of activity that we don't need to send to the backend.
             var new_activity = angular.copy($scope.row.Activity);
             delete new_activity.AccuracyCheck;
@@ -974,7 +1049,24 @@ console.log("SaveParentItem!");
                 console.log(" does editedRowIds contain this id? " + $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id));
 
                 if(!$scope.row.ActivityId || !node.data.Id || $scope.dataAgGridOptions.editedRowIds.containsInt(node.data.Id)){
-                    
+                
+                    if (($scope.project.Config) && ($scope.project.Config.Lookups))
+                    {
+                        $scope.project.Config.Lookups.forEach(function (item){
+                            if (item.Label === "Characteristics")
+                            {
+                                var blnFoundIt = false;
+                                $scope.Characteristics.forEach(function(aCharacteristic){
+                                    if ((!blnFoundIt) && (aCharacteristic.Id === parseInt(node.data.CharacteristicName)))
+                                    {
+                                        node.data.CharacteristicName = aCharacteristic.CharacteristicName;
+                                        blnFoundIt = true;
+                                    }
+                                });
+                            }
+                        });
+                    }
+
                     console.log("adding row id " + node.data.Id + " to be saved...");
                     var data = angular.copy(node.data);
                     payload.details.push(data); 
@@ -1036,7 +1128,7 @@ console.log("SaveParentItem!");
                         date: activity_date.date()
                     });
 
-                payload.header[time_field.DbColumnName] = the_combined_date.format('YYYY-MM-DDTHH:mm');
+                payload.header[time_field.DbColumnName] = the_combined_date.format('MM/DD/YYYY HH:mm');//Tribal CDMS format edit
                 //console.log(" >> final date = " + payload.header[time_field.DbColumnName]);
             });
 

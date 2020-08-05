@@ -6,7 +6,7 @@
 
     <div ng-show="selectedLookup && selectedLookup.DatasetId" project-role="editor" style="width: 100%; display: inline-block; margin-top:30px;">
         <button style="margin-left: 5px; margin-right:8px;" class="btn right" ng-click="addItem()">Create</button>
-        <button class="btn right btn-warning" ng-show="dataGridOptions.selectedItems.length > 0" ng-click="deleteItems()">Delete {{dataGridOptions.selectedItems.length}} Items</button>
+        <button class="btn right btn-warning" ng-show="((dataGridOptions.selectedItems.length > 0) && (ShowDelete == true))" ng-click="deleteItems()">Delete {{dataGridOptions.selectedItems.length}} Items</button>
     </div>
 
     <div class="row">
