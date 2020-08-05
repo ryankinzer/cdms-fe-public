@@ -6,6 +6,7 @@
 var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'DatasetService', 'SubprojectService', 'ProjectService', 'CommonService', '$uibModal', '$location', '$rootScope',
     'ActivityParser', 'GridService','Upload','ChartService','$compile',
     function ($scope, $q, $timeout, $sce, $routeParams, DatasetService, SubprojectService, ProjectService, CommonService, $modal, $location, $rootScope,
+
         ActivityParser, GridService, Upload, ChartService, $compile) {
 
         $scope.system = { loading: true, messages: [] };
@@ -57,6 +58,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         $scope.pagemode = $location.path().match(/\/(.*)\//)[1]; //edit, dataentryform, dataview - our 3 options from our route... nothing else is possible.
 
         // Are we editing or not?
+	
         if ($scope.pagemode == 'dataentryform') {
             $scope.dataset_activities = { Header: {}, Details: [] };
 
@@ -74,7 +76,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 $scope.afterDatasetLoadedEvent();
             });
         }
-        else {  //either edit or data view - both load a particular activity
+		else {  //either edit or data view - both load a particular activity
+		
             $scope.dataset_activities = DatasetService.getActivityData($routeParams.Id);
             $scope.dataset_activities.$promise.then(function () {
                 $scope.dataset = $scope.dataset_activities.Dataset;
@@ -93,7 +96,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 if ($scope.row.FishermanFullName === 2019)
                     console.log("$scope.row.FishermanFullName = " + $scope.row.FishermanFullName);
 
-                $scope.afterDatasetLoadedEvent();
+				$scope.afterDatasetLoadedEvent();
+				
             });
 
             //setup our next/previous
@@ -143,7 +147,8 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             rowData: [],
             //filterParams: { apply: true }, //enable option: doesn't do the filter unless you click apply
             dataChanged: false, //updated to true if ever any data is changed
-            rowSelection: 'multiple',
+			rowSelection: 'multiple',
+			
 
             
             tabToNextCell: function (params) { 
@@ -213,11 +218,11 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.dir($scope.row);
                 $scope.system.loading = false;
                 
-                setTimeout(function(){
+				setTimeout(function () {
+					$scope.$apply();
                     GridService.autosizeColumns($scope.dataAgGridOptions);
-                    $scope.$apply();
                     console.log("resize grid columns")
-                },500);
+				}, 500);
 
             },
 
@@ -415,6 +420,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
         };
 
 
+
         //call to fire up the grid after the $scope.dataset is ready
         $scope.activateGrid = function () {
             
@@ -552,7 +558,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
 
         //called after the dataset is loaded
         $scope.afterDatasetLoadedEvent = function () { 
-
+			
             $scope.project = ProjectService.getProject($scope.dataset.ProjectId);
 
             DatasetService.configureDataset($scope.dataset); //bump to load config since we are pulling it directly out of the activities
