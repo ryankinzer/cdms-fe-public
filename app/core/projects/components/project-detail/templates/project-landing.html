@@ -12,66 +12,54 @@
 
             <div class="row" ng-if="project.MetaFields.length > 0">
                 
-                <div class="col-md-7">
+                <div class="col-md-6">
 
                     <h5>{{getMetaField(9).Name}}</h5>
                     <p><pre>{{getMetaField(9).Values | arrayValues}}</pre></p>
+						
+						<div class="col-md-8">
+							<h5>Project Leader</h5>
+							<p><pre>{{project.Owner.Fullname}}</pre></p>
+					
+							<h5>{{getMetaField(44).Name}}</h5>
+							<p><pre>{{getMetaField(44).Values | arrayValues}}</pre></p>
+							
+							<h5>{{getMetaField(45).Name}}</h5>
+							<p><pre>{{getMetaField(45).Values | arrayValues}}</pre></p>
+						</div>
 
+						<div class="col-md-4">
+						
+							<h5>{{getMetaField(23).Name}}</h5>
+							<p><pre>{{getMetaField(23).Values | arrayValues}}</pre></p>
+							
+							<h5>{{getMetaField(24).Name}}</h5>
+							<p><pre>{{getMetaField(24).Values | arrayValues}}</pre></p>
+					
+							<h5>{{getMetaField(7).Name}}</h5>
+							<p><pre>{{getMetaField(7).Values | arrayValues}}</pre></p> 
+						</div>
+					</div>
+				
+                <div class="col-md-6">
                     <h5>{{getMetaField(20).Name}}</h5>
                     <p><pre>{{getMetaField(20).Values | arrayValues}}</pre></p>
 
-                    <h5>{{getMetaField(1).Name}}</h5>
-                    <p><pre>{{getMetaField(1).Values | arrayValues}}</pre></p>
-
-                    <h5>{{getMetaField(14).Name}}</h5>
-                    <p><pre>{{getMetaField(14).Values | arrayValues}}</pre></p>
-
-                    <h5>{{getMetaField(15).Name}}</h5>
-                    <p><pre>{{getMetaField(15).Values | arrayValues}}</pre></p>
-
+					<div>&nbsp;</div>
+                    <div class="col-md-2">
+                       <h5>Funding Information:</h5>
+                    </div>
+                    <div class="col-md-10">
+                        <h5>{{getMetaField(48).Name}}</h5>
+						<p><pre>{{getMetaField(48).Values | arrayValues}}</pre></p>
+						<h5>{{getMetaField(47).Name}}</h5>
+						<p><pre>{{getMetaField(47).Values | arrayValues}}</pre></p>
+                    </div>
                 </div>
+							<!-- Add staff names -->
+					<!--		<p><pre>{{project.Editors.length}}</pre></p> -->
 
-                <div class="col-md-5">
-                    <h5>Project Coordinator</h5>
-                    <p><pre>{{project.Owner.Fullname}}</pre></p>
-
-                    <h5>{{getMetaField(23).Name}}</h5>
-                    <p><pre>{{getMetaField(23).Values | arrayValues}}</pre></p>
-
-                    <h5>{{getMetaField(24).Name}}</h5>
-                    <p><pre>{{getMetaField(24).Values | arrayValues}}</pre></p>
-                    <div>&nbsp;</div>
-                    <h5>Inputs</h5>
-                    <div class="row">
-                        <div class="col-md-3">
-                            Funding
-                        </div>
-                        <div class="col-md-9">
-                            <p><pre>{{getMetaField(3).Values | arrayValues}}</pre></p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-3">
-                            Staff
-                        </div>
-                        <div class="col-md-9">
-                            <p><pre>{{getMetaField(4).Values | arrayValues}}</pre></p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-3">
-                            Collaborators
-                        </div>
-                        <div class="col-md-9">
-                            <p><pre>{{getMetaField(5).Values | arrayValues}}</pre></p>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
+            </div>            
         </div>
 
     </div>
