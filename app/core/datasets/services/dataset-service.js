@@ -56,6 +56,26 @@ datasets_module.factory('GetDatasetsList', ['$resource', function ($resource) {
     });
 }]);
 
+datasets_module.factory('GetTableData', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/table/gettabledata', {}, {
+        query: { method: 'GET', params: {id: 'id'}, isArray: true }
+    });
+}]);
+
+datasets_module.factory('SaveTableData', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/table/savetabledata', {}, {
+        save: { method: 'POST', isArray: true }
+    });
+}]);
+
+datasets_module.factory('DeleteTableData', ['$resource', function ($resource) {
+    return $resource(serviceUrl + '/api/v1/table/deletetabledata', {}, {
+        save: { method: 'POST', isArray: false }
+    });
+}]);
+
+
+
 datasets_module.factory('Data', ['$resource', function ($resource) {
     return $resource(serviceUrl + '/api/v1/activity/getdatasetactivitydata', {}, {
         query: { method: 'GET', params: { id: 'activityId' }, isArray: false }
@@ -255,6 +275,9 @@ datasets_module.service('DatasetService', ['$q',
     'UpdateDataset',
     'HasExistingActivity',
     'GetDatasetsList',
+    'GetTableData',
+    'SaveTableData',
+    'DeleteTableData',
     function ($q,
         DatasetFiles,
         Activities,
@@ -294,7 +317,10 @@ datasets_module.service('DatasetService', ['$q',
         AddDatasetToProject,
         UpdateDataset,
         HasExistingActivity,
-        GetDatasetsList)
+        GetDatasetsList,
+        GetTableData,
+        SaveTableData,
+        DeleteTableData)
     {
 
         var service = {
@@ -342,6 +368,18 @@ datasets_module.service('DatasetService', ['$q',
                 return GetDatasetsList.query();
             },
 
+            getTableData: function(datasetId){
+                return GetTableData.query({id: datasetId})
+            },
+
+            saveTableData: function(dataset, data){
+                return SaveTableData.save({DatasetId: dataset.Id, TableData: data});
+            },
+
+            deleteDataTableRow: function(dataset, data){
+                return DeleteTableData.save({DatasetId: dataset.Id, TableData: data});
+            },
+
             //configureDataset: function(dataset)
             configureDataset: function (dataset, scope) {
                 //console.log("configuring dataset.Name = " + dataset.Name);
@@ -353,7 +391,12 @@ datasets_module.service('DatasetService', ['$q',
                     return;
                 }
 
-                dataset.Config = angular.fromJson(dataset.Config);
+                try{
+                    dataset.Config = angular.fromJson(dataset.Config);
+                }catch(e){
+                    console.error("Could not parse Config for this dataset:");
+                    console.dir(dataset);
+                }
 
                 //if there are page routes in configuration, set them in our dataset
                 if (dataset.Config.ActivitiesPage && dataset.Config.ActivitiesPage.Route)

@@ -1,7 +1,8 @@
 ﻿<!DOCTYPE html>
-<html lang="en"  xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-    <title>CDMS v.2.1</title>
+    <title>CDMS v.2.2</title>
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -65,6 +66,7 @@
 
 
 </head>
+
 <body>
 
 
@@ -86,7 +88,8 @@
                     <a class="nav-link" href="#!/datasets">Datasets</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tools</a>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Tools</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{config.REPORTSERVER_URL}}" target="_blank">Reports</a>
                         <a class="dropdown-item" href="http://gis.ctuir.org/wp-content/uploads/2019/03/CDMSVersion2UserGuide.pdf" target="_blank">User Guide</a>
@@ -97,7 +100,8 @@
                     </div>
                 </li>
                 <li ng-cloak ng-show="Profile.isAdmin()" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                    <a class="nav-link dropdown-toggle" href id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Admin</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#!/admin">Datasets</a>
                         <a class="dropdown-item" href="#!admin-users">Users</a>
@@ -109,10 +113,11 @@
             </ul>
 
             <ul class="navbar-nav navbar-right">
-              <!-- RK commented out
-			  <li class="nav-item">
+
+                <!--<li class="nav-item">
                     <a class="nav-link" href="#!/feedback" target="_blank">Feedback</a>
-                </li> -->
+                </li>-->
+
                 <li class="dropdown" ng-cloak>
                     <a class="nav-item nav-link dropdown-toggle" data-toggle="dropdown">{{Profile.Fullname}}</a>
                     <ul class="dropdown-menu">
@@ -139,4 +144,5 @@
 
     <div ng-include="'app/core/common/templates/footer.html'"></div>
 </body>
+
 </html>
