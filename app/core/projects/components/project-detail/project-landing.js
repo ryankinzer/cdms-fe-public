@@ -50,6 +50,17 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
                 scope.afterProjectLoaded();
             });
         };
+		
+		scope.getEditors = function () {
+            console.log("getEditors called");
+            var result = "";
+            scope.project.Editors.forEach(function (item) {
+                result = result + item.Fullname + ', '
+                console.dir(item.Fullname);
+            });
+            result = result.slice(0, -2);
+            return result;
+        };
 
         scope.afterProjectLoaded = function () { 
             //load the metafields for this project once it loads
