@@ -99,12 +99,12 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "9ce675c2-aabb-4e28-90c6-6fe3a0f4fc0c",
+      "id": "2d62f74b-17e1-48ec-9316-59a16f5c8b97",
       "comment": "",
-      "command": "setWindowSize",
-      "target": "1054x808",
+      "command": "waitForElementPresent",
+      "target": "linkText=Admin",
       "targets": [],
-      "value": ""
+      "value": "30000"
     }, {
       "id": "186d0d1b-618c-4d98-acb2-4034c8307577",
       "comment": "",
@@ -121,6 +121,13 @@
         ["xpath=//a[contains(.,'Admin')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "9ac43976-574b-4a72-8c42-1407f6322cb7",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "css=.show > .dropdown-item:nth-child(1)",
+      "targets": [],
+      "value": "30000"
     }, {
       "id": "6447e5cb-4176-4235-888e-d409f4640f15",
       "comment": "",
@@ -249,10 +256,17 @@
       ],
       "value": ""
     }, {
+      "id": "b94a7fa0-35ea-4a1f-b697-fbe59287d4f7",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "xpath=//h3[contains(.,'TestDatastore :: Datastore Fields')]",
+      "targets": [],
+      "value": "30000"
+    }, {
       "id": "941bbc82-4567-49ec-92a0-a72da47564f3",
       "comment": "",
       "command": "assertText",
-      "target": "xpath=//h3",
+      "target": "xpath=//h3[contains(.,'TestDatastore :: Datastore Fields')]",
       "targets": [
         ["css=.panel-body > .ng-binding", "css:finder"],
         ["xpath=//div[@id='wrap']/div/div/div/div/div/h3", "xpath:idRelative"],
@@ -272,17 +286,17 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "33b2e2ab-3147-4f2d-b099-2aa6b0d9847c",
+      "id": "834b0b0a-e21b-410b-9d8a-7258f4250216",
       "comment": "",
-      "command": "setWindowSize",
-      "target": "1061x808",
+      "command": "waitForElementPresent",
+      "target": "xpath=//button[contains(.,'New Project')]",
       "targets": [],
-      "value": ""
+      "value": "30000"
     }, {
       "id": "e910072b-6b4b-456c-8be5-33325a931b53",
       "comment": "",
       "command": "click",
-      "target": "css=.btn",
+      "target": "xpath=//button[contains(.,'New Project')]",
       "targets": [
         ["css=.btn", "css:finder"],
         ["xpath=//div[@id='wrap']/div/div/div/div/button", "xpath:idRelative"],
@@ -290,6 +304,13 @@
         ["xpath=//button[contains(.,'New Project')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "6bde4723-a353-41ea-9c03-77ea870113b8",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "css=div:nth-child(2) > .header-value > .form-control",
+      "targets": [],
+      "value": "30000"
     }, {
       "id": "91f3a1cb-37af-4b73-b5dc-6b0cf32b3490",
       "comment": "",
@@ -338,33 +359,9 @@
       ],
       "value": ""
     }, {
-      "id": "c74df4fb-b66d-4752-9b94-15d8e7220982",
-      "comment": "",
-      "command": "mouseOver",
-      "target": "css=.ng-pristine > .md-datepicker-button",
-      "targets": [
-        ["css=.ng-pristine > .md-datepicker-button", "css:finder"],
-        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
-        ["xpath=//div[@id='basicinfo']/div/div[5]/div[2]/md-datepicker/button", "xpath:idRelative"],
-        ["xpath=//div[5]/div[2]/md-datepicker/button", "xpath:position"]
-      ],
-      "value": ""
-    }, {
       "id": "2455405b-2201-44b7-82b9-adec7c087e0a",
       "comment": "",
       "command": "click",
-      "target": "css=.ng-pristine > .md-datepicker-button",
-      "targets": [
-        ["css=.ng-pristine > .md-datepicker-button", "css:finder"],
-        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
-        ["xpath=//div[@id='basicinfo']/div/div[5]/div[2]/md-datepicker/button", "xpath:idRelative"],
-        ["xpath=//div[5]/div[2]/md-datepicker/button", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "bf6e7515-cd19-44bc-9f00-f564cb5ece49",
-      "comment": "",
-      "command": "mouseOut",
       "target": "css=.ng-pristine > .md-datepicker-button",
       "targets": [
         ["css=.ng-pristine > .md-datepicker-button", "css:finder"],
@@ -445,6 +442,13 @@
       ],
       "value": ""
     }, {
+      "id": "091bb8d2-e720-4602-953e-dd1d91851021",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "linkText=TestProject",
+      "targets": [],
+      "value": "30000"
+    }, {
       "id": "414b9b55-5f11-47d2-901f-1b788d7f0ae5",
       "comment": "",
       "command": "assertText",
@@ -463,17 +467,17 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "3d72d774-b9b2-4072-a804-c7fafc8188b7",
+      "id": "3424a865-cb59-45d5-9b1c-c3f387270fd2",
       "comment": "",
-      "command": "setWindowSize",
-      "target": "1051x806",
+      "command": "waitForElementPresent",
+      "target": "xpath=//button[contains(.,'Create Field')]",
       "targets": [],
-      "value": ""
+      "value": "30000"
     }, {
       "id": "0b3d4923-c755-4fe1-8bdc-e2e85763af91",
       "comment": "",
       "command": "click",
-      "target": "css=.btn:nth-child(1)",
+      "target": "xpath=//button[contains(.,'Create Field')]",
       "targets": [
         ["css=.btn:nth-child(1)", "css:finder"],
         ["xpath=//div[@id='wrap']/div/div/div/div/div/div/button", "xpath:idRelative"],
@@ -481,6 +485,13 @@
         ["xpath=//button[contains(.,'Create Field')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "a4b21787-28f4-4572-8e16-235a168f0d3a",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "name=Name",
+      "targets": [],
+      "value": "30000"
     }, {
       "id": "09b40112-4370-47cd-b1af-d3564141a4ed",
       "comment": "",
@@ -1190,12 +1201,12 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "438cf6dd-409e-484b-8155-a4465630f175",
+      "id": "de246530-f5c6-4a40-b31f-117d06c851d6",
       "comment": "",
-      "command": "setWindowSize",
-      "target": "1057x808",
+      "command": "waitForElementPresent",
+      "target": "linkText=TestProject",
       "targets": [],
-      "value": ""
+      "value": "30000"
     }, {
       "id": "cac962e8-3c01-4176-a37b-473ec0f616eb",
       "comment": "",
@@ -1212,6 +1223,13 @@
       ],
       "value": ""
     }, {
+      "id": "18c8d6d6-e546-4537-9536-1759dd3e5dde",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "linkText=Locations",
+      "targets": [],
+      "value": "30000"
+    }, {
       "id": "399eb061-3d85-415f-a7ed-333b043a09ca",
       "comment": "",
       "command": "click",
@@ -1227,25 +1245,17 @@
       ],
       "value": ""
     }, {
-      "id": "67922529-f041-4fac-a178-1431ff013df2",
+      "id": "ce83a1b1-0689-47d6-a63f-264ec9bd0676",
       "comment": "",
-      "command": "mouseOver",
-      "target": "linkText=Locations",
-      "targets": [
-        ["linkText=Locations", "linkText"],
-        ["css=.nav-item:nth-child(6) > .nav-link", "css:finder"],
-        ["xpath=//a[contains(text(),'Locations')]", "xpath:link"],
-        ["xpath=//div[@id='wrap']/div/div/div/div/ul[2]/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '//localhost:80/index.html#!/projectLocations/1032')]", "xpath:href"],
-        ["xpath=//li[6]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Locations')]", "xpath:innerText"]
-      ],
-      "value": ""
+      "command": "waitForElementPresent",
+      "target": "xpath=//button[contains(.,'Create')]",
+      "targets": [],
+      "value": "30000"
     }, {
       "id": "86588c6b-8dbd-4e15-883c-46584e1d2508",
       "comment": "",
       "command": "click",
-      "target": "css=.btn:nth-child(1)",
+      "target": "xpath=//button[contains(.,'Create')]",
       "targets": [
         ["css=.btn:nth-child(1)", "css:finder"],
         ["xpath=//div[@id='wrap']/div/div/div/div[2]/div/button", "xpath:idRelative"],
@@ -1254,29 +1264,12 @@
       ],
       "value": ""
     }, {
-      "id": "47d74820-3c10-4a4c-9a70-b296b1125129",
+      "id": "dccce441-7b27-4e7d-849f-2532a6cb61c1",
       "comment": "",
-      "command": "mouseOver",
-      "target": "css=.btn:nth-child(1)",
-      "targets": [
-        ["css=.btn:nth-child(1)", "css:finder"],
-        ["xpath=//div[@id='wrap']/div/div/div/div[2]/div/button", "xpath:idRelative"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,'Create')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "a1373086-6f04-41ff-b353-74391f4ba06e",
-      "comment": "",
-      "command": "mouseOut",
-      "target": "css=.right:nth-child(1)",
-      "targets": [
-        ["css=.right:nth-child(1)", "css:finder"],
-        ["xpath=//div[@id='wrap']/div/div/div/div[2]/div/button", "xpath:idRelative"],
-        ["xpath=//div[2]/div/button", "xpath:position"],
-        ["xpath=//button[contains(.,'Create')]", "xpath:innerText"]
-      ],
-      "value": ""
+      "command": "waitForElementPresent",
+      "target": "xpath=//div[@id='field-LocationTypeId']/div[2]/select",
+      "targets": [],
+      "value": "30000"
     }, {
       "id": "d347ad18-30ba-4f34-8a63-7521d49c6996",
       "comment": "",
@@ -5412,13 +5405,6 @@
       "target": "xpath=//h3[contains(.,'Projects List')]",
       "targets": [],
       "value": "30000"
-    }, {
-      "id": "748ec99c-7100-4524-977d-5f4e99fedc4d",
-      "comment": "",
-      "command": "setWindowSize",
-      "target": "1054x808",
-      "targets": [],
-      "value": ""
     }, {
       "id": "169efe0a-8276-4ecb-8d12-f535a6fd8fd7",
       "comment": "",
