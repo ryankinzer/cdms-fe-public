@@ -159,8 +159,9 @@ var TimeControlType = function (cdms_field, col_def) {
     col_def.cellEditorParams = {
         useFormatter: true,
     };
-    col_def.valueFormatter = function (params) { //formats for display
-        if (params.value == null)
+	col_def.valueFormatter = function (params) { //formats for display
+		console.dir(params);
+		if (params.value == null)
             return params.value;
         else {
             the_date = moment(params.value);
@@ -177,8 +178,17 @@ var TimeControlType = function (cdms_field, col_def) {
         else if (params.oldValue == null)
         {
             try {
-                var the_new_date = moment(params.api._headerrow.Activity.ActivityDate);
-                the_new_date.set({
+                //var the_new_date = moment(params.api._headerrow.Activity.ActivityDate);
+				//Tribal CDMS Edit: params varies depending on data entry or import grid
+
+				if (typeof params.data.Activity !== 'undefined') {
+					the_new_date = moment(params.data.Activity.ActivityDate);
+				}
+				else {
+					the_new_date = moment(params.api._headerrow.Activity.ActivityDate);
+				}
+				
+				the_new_date.set({
                     'hour': 0,
                     'minute': 0,
                     'second': 0
@@ -208,7 +218,8 @@ var TimeControlType = function (cdms_field, col_def) {
                 }
             } catch (e) {
                 console.error("failed to convert time: ");
-                console.dir(params);
+				console.dir(params);
+				console.dir(e);
                 return "error";
             }
             
