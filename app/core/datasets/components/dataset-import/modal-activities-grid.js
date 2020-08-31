@@ -24,8 +24,13 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
             $scope.PageErrorCount = 0;
 
             if (!$scope.dataAgGridOptions.hasOwnProperty('api'))
-                return; //not loaded yet.
+				return; //not loaded yet.
 
+			$scope.dataAgGridOptions.api.forEachNode(function (node) {
+				if (node.data.rowHasError)
+					$scope.PageErrorCount++;
+
+			});
 
         };
 
@@ -558,10 +563,6 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 			console.log(activityKey);
 			return activityKey;
 		}
-
-		
-
-
 
         $scope.cancel = function () {
             $modalInstance.dismiss();

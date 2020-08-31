@@ -14,7 +14,10 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 
         scope.AuthorizedToViewProject = true;
 
-        scope.project = ProjectService.getProject(routeParams.Id);
+		scope.project = ProjectService.getProject(routeParams.Id);
+		console.dir(scope.project);
+	
+
 		scope.currentUserId = $rootScope.Profile.Id;
         
         scope.UserIsAdmin = false;
@@ -27,6 +30,19 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
 			if (scope.project.OwnerId == scope.currentUserId)
 				return true;
 		};
+
+		//NPT CDMS edit
+		//scope.getEditors = function () {
+		//	console.log("getEditors called");
+		//	var result = "";
+		//	scope.project.Editors.forEach(function (item) {
+		//		result = result + item.Fullname + ', '
+		//		console.dir(item.Fullname);
+		//	});
+		//	result = result.slice(0, -2);
+		//	return result;
+		//};
+			
         
         //scope.metadataList = {};
         scope.CellOptions = {}; //for metadata dropdown options
@@ -84,11 +100,17 @@ var project_landing = ['$scope', '$routeParams','SubprojectService', 'ProjectSer
                             field.Values = getParsedMetadataValues(field.Values);
                         }
                     });
+
                 //});
                 
 
                 //console.dir(scope.project);
             });
+
+			//scope.project.Editors.forEach(function (item) {
+			//	console.log("<<<<<<<<<<<< >>>>>>>>>>>>");
+			//	console.dir(item.Fullname);
+			//});
 
             //Check our config to see if there is a role restriction for this project.
             if (scope.project.Config) {

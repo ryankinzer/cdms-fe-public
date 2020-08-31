@@ -40,17 +40,18 @@
 <div class="modal-footer">
     <div style="width:100%;">
         <div ng-show="ActivitiesToSave.length == 0">
+			<div>
+				<p ng-show="saveResult.error" class="alert alert-danger">{{saveResult.error}}</p>
+				</div>
             <div>
-                <p ng-show="saveResult.error" class="alert alert-danger">{{saveResult.error}}</p>
-            </div>
-            <div>
-                <div style="float:right;">
-                    <div ng-show="system.loading"><img src="/assets/images/Fish.gif" /></div>
-                    <button ng-disabled="system.loading" class="btn" ng-click="save()">Save Activities</button>
-                    <button class="btn btn-warning" ng-click="cancel()" style="margin-right: 10px;">Cancel</button>
-                    <br />
-                    <div ng-show="saveResult.saving" style="margin-right: 20px;" class="alert alert-danger">{{saveResult.saveMessage}}</div>
-                </div>
+				<div style="float:right;">
+					<div ng-show="system.loading"><img src="/assets/images/Fish.gif" /></div>
+					<div ng-show="(PageErrorCount > 0 && (dataset.Config.AllowSaveWithErrors == false))" class="alert alert-danger">Please correct errors before saving</div>
+					<button class="btn" ng-disabled="(saveResult.saving || (PageErrorCount > 0 && (dataset.Config && dataset.Config.AllowSaveWithErrors == false)) )" ng-click="save()">Save Activities</button>
+					<button class="btn btn-warning" ng-click="cancel()" style="margin-right: 10px;">Cancel</button>
+					<br />
+					<div ng-show="saveResult.saving" style="margin-right: 20px;" class="alert alert-danger">{{saveResult.saveMessage}}</div>
+				</div>
 
             </div>
         </div>
