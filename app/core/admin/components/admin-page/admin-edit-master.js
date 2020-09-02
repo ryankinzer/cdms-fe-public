@@ -3,6 +3,19 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
 	function($scope, $timeout, $modal, DatasetService, AdminService, $routeParams){
 
 		$scope.datastore = DatasetService.getDatastore($routeParams.Id);
+
+		//Tribal CDMS Edits
+		//Check for project datasets related to this datastore
+		//Use the count to determine whether datastore columns can be removed?
+		var datasets = DatasetService.getDatastoreDatasets($routeParams.Id);
+		$scope.datastore.locked = 0;
+		datasets.$promise.then(function () {
+			console.log("Datasets length = " + datasets.length); 
+			if (datasets.length > 0) {
+				$scope.datastore.locked = 1;
+			}
+		});
+
 		
 
         $scope.datastore.$promise.then(function () { 
@@ -53,29 +66,35 @@ var admin_edit_master = ['$scope', '$timeout', '$uibModal', 'DatasetService', 'A
 
             selectedItem: null,
 
-            onSelectionChanged: function (params) {
+			onSelectionChanged: function (params) {
                 $scope.fieldGridOptions.selectedItem = angular.copy($scope.fieldGridOptions.api.getSelectedRows()[0]);
                 $scope.$apply();
             }
 
         };
 
-        $scope.removeMasterField = function(){
-            if(!confirm("Remove field: are you sure? Any data in the table for this column will be deleted and cannot be undone.")){
-                return;
-            }
+		$scope.removeMasterField = function () {
+			
+			if ($scope.datastore.locked == 1) {
+				alert("Remove Field is disabled because one or more project dataset exists for this datastore. Deleting this field could result in data loss. Please contact support for assistance with this operation.");
+			}
+			else {
+				if (!confirm("Remove field: are you sure? Any data in the table for this column will be deleted and cannot be undone.")) {
+					return;
+				}
 
-            var removed = AdminService.removeMasterField($scope.datastore.Id, $scope.fieldGridOptions.selectedItem.Id);
-            removed.$promise.then(function(data){
-                $scope.datastore.Fields = AdminService.getMasterFields($scope.datastore.Id); 
-                $scope.fieldGridOptions.api.showLoadingOverlay(); //show loading...
-                $scope.datastore.Fields.$promise.then(function () {
-                    $scope.fieldGridOptions.api.setRowData($scope.datastore.Fields);
-                });
-                $scope.fieldGridOptions.selectedItem = null;
-            }, function(error){
-                console.dir(error);
-            });
+				var removed = AdminService.removeMasterField($scope.datastore.Id, $scope.fieldGridOptions.selectedItem.Id);
+				removed.$promise.then(function (data) {
+					$scope.datastore.Fields = AdminService.getMasterFields($scope.datastore.Id);
+					$scope.fieldGridOptions.api.showLoadingOverlay(); //show loading...
+					$scope.datastore.Fields.$promise.then(function () {
+						$scope.fieldGridOptions.api.setRowData($scope.datastore.Fields);
+					});
+					$scope.fieldGridOptions.selectedItem = null;
+				}, function (error) {
+					console.dir(error);
+				});
+			}
         }
 
         $scope.activateGrid = function () {
