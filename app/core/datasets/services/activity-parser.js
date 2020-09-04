@@ -275,7 +275,7 @@ datasets_module.service('ActivityParser', ['Logger',
                         row.ActivityQAStatus =
                             {
                                 QAStatusId: row.QAStatusId,
-                                Comments: ''
+                                QAComments: ''
                             };
                         row.QAStatusId = row.RowQAStatusId; // and then set QA status for this row...
                     }
@@ -308,7 +308,7 @@ datasets_module.service('ActivityParser', ['Logger',
                     activities.activities[key].ActivityQAStatus =
                         {
                             QAStatusID: row.ActivityQAStatus.QAStatusId,
-                            Comments: row.ActivityQAStatus.Comments,
+                            QAComments: row.ActivityQAStatus.QAComments,
                             Name: row.QAStatusName,
                             Description: row.QAStatusDescription
                         };
@@ -343,7 +343,7 @@ datasets_module.service('ActivityParser', ['Logger',
                     row.ActivityQAStatus =
                         {
                             QAStatusId: row.QAStatusId,
-                            Comments: ''
+                            QAComments: ''
                         };
                     row.QAStatusId = row.RowQAStatusId; // and then set QA status for this row...
 

@@ -655,12 +655,12 @@ datasets_module.service('DatasetService', ['$q',
 
             },
 			
-            updateQaStatus: function (ActivityId, QAStatusId, Comments) {
+            updateQaStatus: function (ActivityId, QAStatusId, QAComments) {
                 
                 var payload = {
                     QAStatusId: QAStatusId,
                     ActivityId: ActivityId,
-                    Comments: Comments,
+                    QAComments: QAComments,
                 };
 
                 console.dir(payload);

@@ -172,7 +172,8 @@ var dataset_query = ['$scope', '$routeParams', 'DatasetService', '$location', '$
                         //fieldDef.hide_header = true; //hide in header
                     }
                     else if (fieldDef.field == "QAComments") { //ActivityQAStatusId 
-                        fieldDef.field = fieldDef.DbColumnName = "ActivityQAComments";
+                        //fieldDef.field = fieldDef.DbColumnName = "ActivityQAComments";
+						fieldDef.field = fieldDef.DbColumnName = "QAComments";
                     }
 
                     if (fieldDef.ControlType == "select" || fieldDef.ControlType == "multiselect") {

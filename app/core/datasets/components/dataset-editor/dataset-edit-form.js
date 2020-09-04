@@ -594,7 +594,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 //console.warn("Header activity copying in activityqastatus");
                 $scope.row.ActivityQAStatus = {
                     QAStatusId: "" + $scope.dataset_activities.Header.Activity.ActivityQAStatus.QAStatusId,
-                    Comments: $scope.dataset_activities.Header.Activity.ActivityQAStatus.Comments,
+                    QAComments: $scope.dataset_activities.Header.Activity.ActivityQAStatus.QAComments,
                 }
             }
             //otherwise (new record), set it to the default. 
@@ -602,7 +602,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
                 console.warn("The ActivityQAStatus for this activity is not set, setting to default.");
                 $scope.row.ActivityQAStatus = {
                     QAStatusId: "" + $scope.dataset.DefaultRowQAStatusId,
-                    Comments: ""
+                    QAComments: ""
                 }
             }
 
@@ -1019,7 +1019,7 @@ var dataset_edit_form = ['$scope', '$q', '$timeout', '$sce', '$routeParams', 'Da
             
             //add the ActivityQAStatus back in with values from the activity
             new_activity.ActivityQAStatus = {
-                'Comments': $scope.row.Activity.ActivityQAStatus.Comments,
+                'QAComments': $scope.row.Activity.ActivityQAStatus.QAComments,
                 'QAStatusId': $scope.row.Activity.ActivityQAStatus.QAStatusId,
             };
 

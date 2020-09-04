@@ -420,7 +420,7 @@ var modal_activities_grid = ['$scope', '$uibModal','$uibModalInstance','GridServ
 							})
 							//add the ActivityQAStatus back in with values from the activity
 							payload.Activity.ActivityQAStatus = {
-								'Comments': node.data.Activity.QAComments,
+								'QAComments': node.data.Activity.QAComments,
 								'QAStatusId': node.data.Activity.QAStatusId,
 							};
 							delete payload.header['QAStatusId'];
