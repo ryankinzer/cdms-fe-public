@@ -7,35 +7,35 @@ var modal_admin_edit_master_field = ['$scope', '$uibModal','$uibModalInstance','
 		
 		$scope.save = function () {
 
-            if($scope.field_to_edit.DbColumnName == undefined || $scope.field_to_edit.Name == undefined){
-                alert("Error: Name and DbColumnName are required fields.");
-                return;
-            }
+			if ($scope.field_to_edit.DbColumnName == undefined || $scope.field_to_edit.Name == undefined) {
+				alert("Error: Name and DbColumnName are required fields.");
+				return;
+			}
 
 			var saved_field = AdminService.saveMasterField($scope.field_to_edit);
 
 			//Tribal CDMS Edit - check DbColumnName for SQL keywords
 			var dbcolumnname = $scope.field_to_edit.DbColumnName.toUpperCase();
-	
+
 			if (sql_keywords.includes(dbcolumnname)) {
-				
+
 				alert("Db Column Name " + dbcolumnname + " is an SQL keyword. "
 					+ "Please alter this value slightly (e.g., Prefix_" + dbcolumnname + ") or use a different column name.");
 			}
 			else {
-		
-				saved_field.$promise.then(function () { 
+
+				saved_field.$promise.then(function () {
 					$modalInstance.close(saved_field);
 				}, function (error) {
 					$scope.SaveMessage = "Error: " + error.data.ExceptionMessage;
 				});
 			};
 
-			$scope.cleanDbColumnName = function(){
+			$scope.cleanDbColumnName = function () {
 				$scope.field_to_edit.DbColumnName = $scope.field_to_edit.DbColumnName.replace(/\s/g, '');
 			}
 
-			$scope.parsePossibleValuesString = function () { 
+			$scope.parsePossibleValuesString = function () {
 				try {
 					$scope.field_to_edit.Values = angular.fromJson($scope.field_to_edit.PossibleValues);
 				} catch (exception) {
@@ -43,12 +43,12 @@ var modal_admin_edit_master_field = ['$scope', '$uibModal','$uibModalInstance','
 				}
 			}
 
-			$scope.cancel = function () {
-				$modalInstance.dismiss();
-			};
+			$scope.parsePossibleValuesString();
+		};
 
-			$scope.parsePossibleValuesString();        
-		}
+		$scope.cancel = function () {
+			$modalInstance.dismiss();
+		};
 		
 		var sql_keywords = ["ADD", "ALL", "ALTER", "AND", "ANY", "AS", "ASC", "AUTHORIZATION", "BACKUP", "BEGIN"
 			, "BETWEEN", "BREAK", "BROWSE", "BULK", "BY", "CASCADE", "CASE", "CHECKPOINT", "CLOSE", "CLUSTERED", "COALESCE"
