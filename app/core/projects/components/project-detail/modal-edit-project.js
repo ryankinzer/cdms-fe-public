@@ -16,13 +16,15 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
         scope.SavedConfig = scope.project.Config;
 
         //make the row of values that map to our field directives.
-        scope.project.MetaFields.forEach(function (field) { 
+		scope.project.MetaFields.forEach(function (field) { 
+			//console.log("MetaField");
+			//console.dir(field);
             field.DbColumnName = field.Label = field.Name;
             if (field.Values)
                 scope.row[field.DbColumnName] = field.Values;
             else
                 scope.row[field.DbColumnName] = null;
-        });
+		});
 
         scope.openChooseLookupLists = function () {
             
@@ -73,29 +75,39 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
                 return;
             }
 
-            scope.row.Metadata = [];
-            
+			scope.row.Metadata = [];
+			console.log("Scope Row");
+			console.dir(scope.row);
+
             //need to make multi-selects into json objects
-            angular.forEach(scope.row.MetaFields, function (md) {
-                if (scope.row[md.DbColumnName]) {
+			angular.forEach(scope.row.MetaFields, function (md) {
+				
+				if (scope.row[md.DbColumnName]) {
+					//flatten multiselect values into an json array string
+					if (md.ControlType == "multiselect" || md.ControlType == "multiselect-checkbox") {
+						md = angular.copy(md);
+						md.Values = angular.toJson(scope.row[md.DbColumnName]);
+					}
+					else {
 
-                    //flatten multiselect values into an json array string
-                    if (md.ControlType == "multiselect" || md.ControlType == "multiselect-checkbox") {
-                        md = angular.copy(md);
-                        md.Values = angular.toJson(scope.row[md.DbColumnName]);
-                    }
-                    else {
-                        md.Values = scope.row[md.DbColumnName];
-                    }
-                    md.RelationId = scope.project.Id; 
-                    md.UserId = scope.currentUserId;
-                    delete md.EffDt;
-                    scope.row.Metadata.push(md);
-                } 
+						md.Values = scope.row[md.DbColumnName];
+					}
+				}
+				else {
+
+					md.Values = scope.row[md.DbColumnName]
+				}
+					md.RelationId = scope.project.Id;
+					md.UserId = scope.currentUserId;
+					delete md.EffDt;
+					scope.row.Metadata.push(md);
+				
             });
-            
-            var saveRow = angular.copy(scope.row);
 
+			console.dir(scope.row.Metadata)
+
+			var saveRow = angular.copy(scope.row);
+			
             //saveRow.Config.ShowHabitatSitesForDatasets = parseStringValuesToArray(saveRow.Config.ShowHabitatSitesForDatasetsValues);
 
             delete saveRow.Editors;
@@ -115,10 +127,10 @@ var modal_edit_project = ['$scope', '$uibModal','$uibModalInstance', 'ProjectSer
             promise.$promise.then(function (saved_project) {
                 $modalInstance.close(saved_project);
             });
-
+			
         };
 
-        scope.cancel = function () {
+		scope.cancel = function () {
             scope.project.Config = scope.SavedConfig;
             $modalInstance.dismiss();
         };
