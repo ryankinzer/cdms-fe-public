@@ -9,7 +9,7 @@
             var result = DatasetService.updateQaStatus(
                 $scope.row.Activity.Id,
                 $scope.NewActivityStatus.QAStatusId,
-                $scope.NewActivityStatus.Comments
+                $scope.NewActivityStatus.QAComments
             );
 
             console.dir(result);
@@ -18,7 +18,7 @@
                 $scope.row.Activity.ActivityQAStatus.QAStatus = getById($scope.dataset.QAStatuses,$scope.NewActivityStatus.QAStatusId);
                 $scope.row.Activity.ActivityQAStatus.User = $scope.Profile;
                 $scope.row.Activity.ActivityQAStatus.QAStatusId = $scope.NewActivityStatus.QAStatusId;
-                $scope.row.Activity.ActivityQAStatus.Comments = $scope.NewActivityStatus.Comments;
+                $scope.row.Activity.ActivityQAStatus.QAComments = $scope.NewActivityStatus.QAComments;
 
                 console.dir($scope.row.Activity.ActivityQAStatus);
 

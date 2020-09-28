@@ -45,22 +45,17 @@
       ],
       "value": "TestAdmin"
     }, {
-      "id": "d7cd129e-05e0-446b-b9ab-d41558eb6e80",
+      "id": "8089698e-e6bd-4073-a9d4-1fafa419eeba",
       "comment": "",
       "command": "click",
-      "target": "css=.ng-pristine",
-      "targets": [
-        ["css=.ng-pristine", "css:finder"],
-        ["xpath=//input[@type='password']", "xpath:attributes"],
-        ["xpath=//div[@id='wrap']/div/div/div/center/div/div/div[2]/div/form/div/input[2]", "xpath:idRelative"],
-        ["xpath=//input[2]", "xpath:position"]
-      ],
+      "target": "xpath=//input[@type='password']",
+      "targets": [],
       "value": ""
     }, {
       "id": "c0e7348d-a771-4711-97d8-ba34e29c00b3",
       "comment": "",
       "command": "type",
-      "target": "css=.ng-untouched",
+      "target": "xpath=//input[@type='password']",
       "targets": [
         ["css=.ng-untouched", "css:finder"],
         ["xpath=//input[@type='password']", "xpath:attributes"],

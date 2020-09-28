@@ -12,10 +12,10 @@
             <hr />
 
             <div class="buttons">
-                <button style="margin-left: 10px;" class="btn right" ng-click="createMasterField()">Create Field</button> 
+                <button style="margin-left: 10px;"  class="btn right" ng-click="createMasterField()">Create Field</button> 
                 <button style="margin-left: 10px;" class="btn right" ng-click="go('admin-new-dataset/'+datastore.Id)">Add as Dataset to Project</button>
-                <button ng-show="fieldGridOptions.selectedItem" style="margin-left: 10px;" class="btn right btn-danger" ng-click="removeMasterField()">Remove Field</button> 
-            </div>
+                <button ng-show="fieldGridOptions.selectedItem"  style="margin-left: 10px;" class="btn right btn-danger" ng-click="removeMasterField()">Remove Field</button> 
+			</div>
             <div style="height: 400px; width: 100%; margin-top: 70px; margin-bottom: 115px;">
                 <div id="fields-grid" class="ag-theme-blue gridStyle-small"></div>
             </div>
